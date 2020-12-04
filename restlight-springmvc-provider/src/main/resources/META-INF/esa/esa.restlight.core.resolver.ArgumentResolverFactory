@@ -1,0 +1,7 @@
+esa.restlight.springmvc.resolver.arg.CookieValueArgumentResolver
+esa.restlight.springmvc.resolver.arg.MatrixVariableArgumentResolver
+esa.restlight.springmvc.resolver.arg.PathVariableArgumentResolver
+esa.restlight.springmvc.resolver.arg.RequestAttributeArgumentResolver
+esa.restlight.springmvc.resolver.arg.RequestHeaderArgumentResolver
+esa.restlight.springmvc.resolver.arg.RequestParamArgumentResolver
+esa.restlight.springmvc.resolver.arg.SpecifiedFixedRequestBodyArgumentResolver

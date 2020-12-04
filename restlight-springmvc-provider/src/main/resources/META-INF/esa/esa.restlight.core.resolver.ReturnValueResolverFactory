@@ -1,0 +1,2 @@
+esa.restlight.springmvc.resolver.result.ResponseStatusReturnValueResolver
+esa.restlight.springmvc.resolver.result.SpecifiedFixedResponseBodyReturnValueResolver

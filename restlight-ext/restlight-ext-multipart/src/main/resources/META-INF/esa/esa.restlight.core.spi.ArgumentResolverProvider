@@ -1,0 +1,2 @@
+esa.restlight.ext.multipart.spi.MultipartAttrArgumentResolverProvider
+esa.restlight.ext.multipart.spi.MultipartFileArgumentResolverProvider

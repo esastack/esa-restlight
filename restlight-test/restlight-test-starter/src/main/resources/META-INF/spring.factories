@@ -1,0 +1,9 @@
+# Test Execution Listeners
+org.springframework.test.context.TestExecutionListener=\
+esa.restlight.test.context.MockServerStarterListener
+
+# Auto Configure
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+esa.restlight.test.conflict.resolver.TestRestTemplateResolver
+org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc=\
+esa.restlight.test.autoconfig.MockMvcAutoConfiguration

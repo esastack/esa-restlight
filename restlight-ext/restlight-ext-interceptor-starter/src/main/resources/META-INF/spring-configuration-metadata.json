@@ -1,0 +1,53 @@
+{
+  "properties": [
+    {
+      "sourceType": "esa.restlight.ext.interceptor.config.SignatureOptions",
+      "name": "restlight.server.ext.sign.enable",
+      "type": "java.lang.Boolean",
+      "defaultValue": "false",
+      "description": "Is enable the sign verify."
+    },
+    {
+      "sourceType": "esa.restlight.ext.interceptor.config.SignatureOptions",
+      "name": "restlight.server.ext.sign.app-id-name",
+      "type": "java.lang.String",
+      "defaultValue": "appId",
+      "description": "The parameter name of appId."
+    },
+    {
+      "sourceType": "esa.restlight.ext.interceptor.config.SignatureOptions",
+      "name": "restlight.server.ext.sign.secret-version-name",
+      "type": "java.lang.String",
+      "defaultValue": "sv",
+      "description": "The parameter name of secret version."
+    },
+    {
+      "sourceType": "esa.restlight.ext.interceptor.config.SignatureOptions",
+      "name": "restlight.server.ext.sign.timestamp-name",
+      "type": "java.lang.String",
+      "defaultValue": "ts",
+      "description": "The parameter name of timestamp."
+    },
+    {
+      "sourceType": "esa.restlight.ext.interceptor.config.SignatureOptions",
+      "name": "restlight.server.ext.sign.signature-name",
+      "type": "java.lang.String",
+      "defaultValue": "sign",
+      "description": "The parameter name of signature."
+    },
+    {
+      "sourceType": "esa.restlight.ext.interceptor.config.SignatureOptions",
+      "name": "restlight.server.ext.sign.expire-seconds",
+      "type": "java.lang.String",
+      "defaultValue": "0",
+      "description": "The active seconds of timestamp."
+    },
+    {
+      "sourceType": "esa.restlight.ext.interceptor.config.SignatureOptions",
+      "name": "restlight.server.ext.sign.verify-all",
+      "type": "java.lang.Boolean",
+      "defaultValue": "false",
+      "description": "Whether to enable parameter signature verification for all interfaces."
+    }
+  ]
+}

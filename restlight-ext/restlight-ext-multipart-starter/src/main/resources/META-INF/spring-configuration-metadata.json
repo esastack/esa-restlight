@@ -1,0 +1,38 @@
+{
+  "properties": [
+    {
+      "sourceType": "esa.restlight.ext.multipart.core.MultipartConfig",
+      "name": "restlight.server.ext.multipart.charset",
+      "type": "java.lang.String",
+      "defaultValue": "UTF-8",
+      "description": "Multipart encoding"
+    },
+    {
+      "sourceType": "esa.restlight.ext.multipart.core.MultipartConfig",
+      "name": "restlight.server.ext.multipart.use-disk",
+      "type": "java.lang.Boolean",
+      "defaultValue": "false",
+      "description": "Whether to use disk to handle multipart item"
+    },
+    {
+      "sourceType": "esa.restlight.ext.multipart.core.MultipartConfig",
+      "name": "restlight.server.ext.multipart.memory-threshold",
+      "type": "java.lang.Long",
+      "defaultValue": "2097152L",
+      "description": "The min size(byte) transfer from memory to disk"
+    },
+    {
+      "sourceType": "esa.restlight.ext.multipart.core.MultipartConfig",
+      "name": "restlight.server.ext.multipart.max-size",
+      "type": "java.lang.Long",
+      "defaultValue": "-1",
+      "description": "The max size(byte) limit of single file"
+    },
+    {
+      "sourceType": "esa.restlight.ext.multipart.core.MultipartConfig",
+      "name": "restlight.server.ext.multipart.temp-dir",
+      "type": "java.lang.String",
+      "description": "The base directory of temp file"
+    }
+  ]
+}

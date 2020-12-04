@@ -1,0 +1,2 @@
+esa.restlight.core.spi.impl.RequestBeanArgumentResolverProvider
+esa.restlight.core.spi.impl.QueryBeanArgumentResolverProvider

@@ -1,0 +1,4 @@
+# Auto Configure
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+esa.restlight.starter.autoconfigure.RestlightServerAutoConfigurer,\
+esa.restlight.starter.autoconfigure.JacksonAutoConfiguration

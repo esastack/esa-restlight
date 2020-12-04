@@ -1,0 +1,374 @@
+{
+  "groups": [
+    {
+      "name": "restlight.server",
+      "type": "esa.restlight.starter.autoconfigure.AutoRestlightServerOptions",
+      "sourceType": "esa.restlight.starter.autoconfigure.AutoRestlightServerOptions"
+    }
+  ],
+  "properties": [
+    {
+      "name": "restlight.server.biz-termination-timeout-seconds",
+      "type": "java.lang.Long",
+      "description": "Max time of seconds to wait for the biz thread to terminate",
+      "sourceType": "esa.restlight.server.config.ServerOptions",
+      "defaultValue": "60L"
+    },
+    {
+      "name": "restlight.server.blocking-queue-length",
+      "type": "java.lang.Integer",
+      "description": "Length of blocking queue",
+      "sourceType": "esa.restlight.server.config.ServerOptions",
+      "defaultValue": "512"
+    },
+    {
+      "name": "restlight.server.compress",
+      "type": "java.lang.Boolean",
+      "description": "is compress",
+      "sourceType": "esa.restlight.server.config.ServerOptions",
+      "defaultValue": "false"
+    },
+    {
+      "name": "restlight.server.connector-threads",
+      "type": "java.lang.Integer",
+      "description": "Thread num of netty boss event loop group",
+      "sourceType": "esa.restlight.server.config.ServerOptions",
+      "defaultValue": "1"
+    },
+    {
+      "name": "restlight.server.context-path",
+      "type": "java.lang.String",
+      "description": "Global context path",
+      "sourceType": "esa.restlight.core.config.RestlightOptions",
+      "defaultValue": ""
+    },
+    {
+      "name": "restlight.server.core-biz-threads",
+      "type": "java.lang.Integer",
+      "description": "Thread num of cor biz thread pool",
+      "sourceType": "esa.restlight.server.config.ServerOptions",
+      "defaultValue": "cpu * 4 (must between 64 and 128)"
+    },
+    {
+      "name": "restlight.server.decompress",
+      "type": "java.lang.Boolean",
+      "description": "is decompress",
+      "sourceType": "esa.restlight.server.config.ServerOptions",
+      "defaultValue": "false"
+    },
+    {
+      "name": "restlight.server.ext",
+      "type": "java.util.Map<java.lang.String,java.lang.String>",
+      "sourceType": "esa.restlight.starter.autoconfigure.AutoRestlightServerOptions"
+    },
+    {
+      "name": "restlight.server.host",
+      "type": "java.lang.String",
+      "sourceType": "esa.restlight.starter.autoconfigure.AutoRestlightServerOptions"
+    },
+    {
+      "name": "restlight.server.http2-enable",
+      "type": "java.lang.Boolean",
+      "description": "Is http2 enabled.",
+      "sourceType": "esa.restlight.server.config.ServerOptions",
+      "defaultValue": "false"
+    },
+    {
+      "name": "restlight.server.idle-time-seconds",
+      "type": "java.lang.Integer",
+      "description": "Idle time of netty Idle state handler",
+      "sourceType": "esa.restlight.server.config.ServerOptions",
+      "defaultValue": "60"
+    },
+    {
+      "name": "restlight.server.io-threads",
+      "type": "java.lang.Integer",
+      "description": "Thread num of netty worker event loop group",
+      "sourceType": "esa.restlight.server.config.ServerOptions",
+      "defaultValue": "min(cpu * 2, 64)"
+    },
+    {
+      "name": "restlight.server.keep-alive-enable",
+      "type": "java.lang.Boolean",
+      "description": "Is server keep alive enable.",
+      "sourceType": "esa.restlight.server.config.ServerOptions",
+      "defaultValue": "true"
+    },
+    {
+      "name": "restlight.server.keep-alive-time-seconds",
+      "type": "java.lang.Long",
+      "description": "Keepalive time of max biz thread pool",
+      "sourceType": "esa.restlight.server.config.ServerOptions",
+      "defaultValue": "180L"
+    },
+    {
+      "name": "restlight.server.logging",
+      "type": "io.netty.handler.logging.LogLevel",
+      "description": "Logging level of netty channel.",
+      "sourceType": "esa.restlight.server.config.ServerOptions",
+      "defaultValue": "none"
+    },
+    {
+      "name": "restlight.server.max-biz-threads",
+      "type": "java.lang.Integer",
+      "description": "Thread num of max biz thread pool",
+      "sourceType": "esa.restlight.server.config.ServerOptions",
+      "defaultValue": "cpu * 6 (must between 128 and 256)"
+    },
+    {
+      "name": "restlight.server.max-content-length",
+      "type": "java.lang.Integer",
+      "description": "Max length of http body.",
+      "sourceType": "esa.restlight.server.config.ServerOptions",
+      "defaultValue": "4M"
+    },
+    {
+      "name": "restlight.server.max-header-size",
+      "type": "java.lang.Integer",
+      "description": "Max size of http header.",
+      "sourceType": "esa.restlight.server.config.ServerOptions",
+      "defaultValue": "8192"
+    },
+    {
+      "name": "restlight.server.max-initial-line-length",
+      "type": "java.lang.Integer",
+      "description": "Max initial line length of http protocol.",
+      "sourceType": "esa.restlight.server.config.ServerOptions",
+      "defaultValue": "4096"
+    },
+    {
+      "name": "restlight.server.port",
+      "type": "java.lang.Integer",
+      "sourceType": "esa.restlight.starter.autoconfigure.AutoRestlightServerOptions",
+      "defaultValue": 8080
+    },
+    {
+      "name": "restlight.server.print-banner",
+      "type": "java.lang.Boolean",
+      "sourceType": "esa.restlight.starter.autoconfigure.AutoRestlightServerOptions",
+      "defaultValue": true
+    },
+    {
+      "name": "restlight.server.route",
+      "type": "esa.restlight.server.config.RouteOptions",
+      "sourceType": "esa.restlight.starter.autoconfigure.AutoRestlightServerOptions"
+    },
+    {
+      "name": "restlight.server.route.compute-rate",
+      "type": "java.lang.Integer",
+      "description": "Rate of recompute cached mappings(from 0 to 1000).",
+      "sourceType": "esa.restlight.server.config.RouteOptions",
+      "defaultValue": "10"
+    },
+    {
+      "name": "restlight.server.route.use-cached-routing",
+      "type": "java.lang.Boolean",
+      "description": "enable to use cache routing",
+      "sourceType": "esa.restlight.server.config.RouteOptions",
+      "defaultValue": "true"
+    },
+    {
+      "name": "restlight.server.scheduling",
+      "type": "esa.restlight.server.config.SchedulingOptions",
+      "sourceType": "esa.restlight.starter.autoconfigure.AutoRestlightServerOptions"
+    },
+    {
+      "name": "restlight.server.scheduling.default-scheduler",
+      "type": "java.lang.String",
+      "description": "Default scheduler if controller's @Scheduled is missing.",
+      "sourceType": "esa.restlight.server.config.SchedulingOptions",
+      "defaultValue": "'BIZ'"
+    },
+    {
+      "name": "restlight.server.serialize",
+      "type": "esa.restlight.core.config.SerializesOptions",
+      "sourceType": "esa.restlight.starter.autoconfigure.AutoRestlightServerOptions"
+    },
+    {
+      "name": "restlight.server.serialize.request.negotiation",
+      "type": "java.lang.Boolean",
+      "description": "Is serialize negotiation enable.",
+      "sourceType": "esa.restlight.core.config.SerializeOptions",
+      "defaultValue": "false"
+    },
+    {
+      "name": "restlight.server.serialize.request.negotiation-param",
+      "type": "java.lang.String",
+      "description": "Parameter name of serialize negotiation.",
+      "sourceType": "esa.restlight.core.config.SerializeOptions",
+      "defaultValue": "format"
+    },
+    {
+      "name": "restlight.server.serialize.response.negotiation",
+      "type": "java.lang.Boolean",
+      "description": "Is serialize negotiation enable.",
+      "sourceType": "esa.restlight.core.config.SerializeOptions",
+      "defaultValue": "false"
+    },
+    {
+      "name": "restlight.server.serialize.response.negotiation-param",
+      "type": "java.lang.String",
+      "description": "Parameter name of serialize negotiation.",
+      "sourceType": "esa.restlight.core.config.SerializeOptions",
+      "defaultValue": "format"
+    },
+    {
+      "name": "restlight.server.so-backlog",
+      "type": "java.lang.Integer",
+      "description": "Netty configuration of ChannelOption.SO_BACKLOG",
+      "sourceType": "esa.restlight.server.config.ServerOptions",
+      "defaultValue": "128, (must over than 0)"
+    },
+    {
+      "name": "restlight.server.ssl.enable",
+      "type": "java.lang.Boolean",
+      "description": "https enable",
+      "sourceType": "esa.restlight.server.config.SslOptions",
+      "defaultValue": "false"
+    },
+    {
+      "name": "restlight.server.ssl.client-auth",
+      "type": "io.netty.handler.ssl.ClientAuth",
+      "description": "the state of the SSLEngine with respect to client authentication",
+      "sourceType": "esa.restlight.server.config.SslOptions",
+      "defaultValue": ""
+    },
+    {
+      "name": "restlight.server.ssl.cert-chain-path",
+      "type": "java.lang.String",
+      "description": "X.509 certificate chain file in PEM format",
+      "sourceType": "esa.restlight.server.config.SslOptions",
+      "defaultValue": "null"
+    },
+    {
+      "name": "restlight.server.ssl.ciphers",
+      "type": "java.util.List<java.lang.String>",
+      "description": "enabled-cipher-suites",
+      "sourceType": "esa.restlight.server.config.SslOptions",
+      "defaultValue": ""
+    },
+    {
+      "name": "restlight.server.ssl.enabled-protocols",
+      "type": "java.util.List<java.lang.String>",
+      "description": "enabled-protocols",
+      "sourceType": "esa.restlight.server.config.SslOptions",
+      "defaultValue": ""
+    },
+    {
+      "name": "restlight.server.ssl.key-path",
+      "type": "java.lang.String",
+      "description": "PKCS#8 private key file in PEM format",
+      "sourceType": "esa.restlight.server.config.SslOptions",
+      "defaultValue": "null"
+    },
+    {
+      "name": "restlight.server.ssl.key-password",
+      "type": "java.lang.String",
+      "description": "Password of the private key store if it is password-protected",
+      "sourceType": "esa.restlight.server.config.SslOptions",
+      "defaultValue": "null"
+    },
+    {
+      "name": "restlight.server.ssl.trust-certs-path",
+      "type": "java.lang.String",
+      "description": "Trusted certificates(X.509) for verifying the remote endpoint's certificate",
+      "sourceType": "esa.restlight.server.config.SslOptions",
+      "defaultValue": "null"
+    },
+    {
+      "name": "restlight.server.ssl.session-cache-size",
+      "type": "java.lang.Long",
+      "description": "ssl session cache size",
+      "sourceType": "esa.restlight.server.config.SslOptions",
+      "defaultValue": "0L"
+    },
+    {
+      "name": "restlight.server.ssl.session-timeout",
+      "type": "java.lang.Long",
+      "description": "session timeout of seconds",
+      "sourceType": "esa.restlight.server.config.SslOptions",
+      "defaultValue": "0L"
+    },
+    {
+      "name": "restlight.server.ssl.handshake-timeout-millis",
+      "type": "java.lang.Long",
+      "description": "Time out of tcp handshake",
+      "sourceType": "esa.restlight.server.config.SslOptions",
+      "defaultValue": "0L"
+    },
+    {
+      "name": "restlight.server.ssl.session-cache-enable",
+      "type": "java.lang.Boolean",
+      "description": "session-cache-enable",
+      "sourceType": "esa.restlight.server.config.SslOptions",
+      "defaultValue": "false",
+      "deprecated": true,
+      "deprecation": {
+        "reason": "unused",
+        "level": "error"
+      }
+    },
+    {
+      "name": "restlight.server.ssl.session-ticket-key-path",
+      "type": "java.lang.String",
+      "description": "ssl session ticket key",
+      "sourceType": "esa.restlight.server.config.SslOptions",
+      "defaultValue": "null",
+      "deprecated": true,
+      "deprecation": {
+        "reason": "unused",
+        "level": "error"
+      }
+    },
+    {
+      "name": "restlight.server.unix-domain-socket-file",
+      "type": "java.lang.String",
+      "sourceType": "esa.restlight.starter.autoconfigure.AutoRestlightServerOptions"
+    },
+    {
+      "name": "restlight.server.use-native-transports",
+      "type": "java.lang.Boolean",
+      "description": "Use EpollEventLoopGroup(recommend in Linux) or NIOEventLoopGroup",
+      "sourceType": "esa.restlight.server.config.ServerOptions",
+      "defaultValue": "false"
+    },
+    {
+      "name": "restlight.server.validation-message-file",
+      "type": "java.lang.String",
+      "description": "Validation message file name(file name must end of .properties)",
+      "sourceType": "esa.restlight.core.config.RestlightOptions",
+      "defaultValue": ""
+    },
+    {
+      "name": "restlight.server.warm-up",
+      "type": "esa.restlight.starter.autoconfigure.WarmUpOptions",
+      "sourceType": "esa.restlight.starter.autoconfigure.AutoRestlightServerOptions"
+    },
+    {
+      "name": "restlight.server.write-buffer-high-water-mark",
+      "type": "java.lang.Integer",
+      "description": "High Water mark",
+      "sourceType": "esa.restlight.server.config.ServerOptions",
+      "defaultValue": "-1(system default)"
+    },
+    {
+      "name": "restlight.server.write-buffer-low-water-mark",
+      "type": "java.lang.Integer",
+      "description": "Low Water mark",
+      "sourceType": "esa.restlight.server.config.ServerOptions",
+      "defaultValue": "-1(system default)"
+    },
+    {
+      "name": "restlight.server.route.cache-ratio",
+      "type": "java.lang.Integer",
+      "description": "Ratio of mappings to cache(from 0 to 100).",
+      "sourceType": "esa.restlight.server.config.RouteOptions",
+      "defaultValue": "20",
+      "deprecated": true,
+      "deprecation": {
+        "reason": "unused"
+      }
+    }
+  ],
+  "hints": []
+}
