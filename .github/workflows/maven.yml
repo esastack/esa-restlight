@@ -1,0 +1,42 @@
+  
+# This workflow will build a Java project with Maven
+# For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-maven
+
+name: Build
+
+on:
+  push:
+    branches-ignore: 
+      - '**-alpha'
+      - '**-tmp'
+      - '**-temp'
+  pull_request:
+    branches-ignore: 
+      - '**-alpha'
+      - '**-tmp'
+      - '**-temp'
+  workflow_dispatch:
+    inputs:
+      profiles:
+        description: 'mvn -P <arg>'
+        required: false
+        default: ''
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up JDK 1.8
+      uses: actions/setup-java@v1
+      with:
+        java-version: 1.8
+    - name: Clean and Package
+      run: mvn -P ${{ github.event.inputs.profiles }} clean package
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v1.0.2
+      with:
+          token: ${{secrets.CODECOV_TOKEN}}
+          directory: esa-commons
