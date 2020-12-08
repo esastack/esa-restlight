@@ -41,7 +41,7 @@ class ClassUtilsTest {
     }
 
     @Test
-    void testGetParameters() throws NoSuchMethodException {
+    void testGetParameterNames() throws NoSuchMethodException {
         assertArrayEquals(new String[]{"a", "b"},
                 ClassUtils.getParameterNames(ClassUtilsTest.class
                         .getDeclaredMethod("parameters", String.class, int.class)));
