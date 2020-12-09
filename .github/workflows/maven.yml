@@ -42,4 +42,3 @@ jobs:
       uses: codecov/codecov-action@v1.0.15
       with:
           token: ${{secrets.CODECOV_TOKEN}}
-          directory: esa-restlight
