@@ -15,7 +15,7 @@
  */
 package esa.restlight.ext.filter.xss;
 
-public enum  XssMode {
+public enum XssMode {
     /**
      * default escape mode
      */

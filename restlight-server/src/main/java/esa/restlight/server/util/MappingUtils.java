@@ -37,7 +37,6 @@ public class MappingUtils {
      *
      * @param parent parent mapping
      * @param child  child mapping
-     *
      * @return combined
      */
     public static Mapping combine(Mapping parent, Mapping child) {
@@ -79,12 +78,11 @@ public class MappingUtils {
 
 
     /**
-     * Parses given consumes predicates strings and headers predicates strings to  {@link
+     * Parses given consumes predicates strings and headers predicates strings to {@link
      * ConsumesPredicate.Expression}.
      *
      * @param consumes consumes
      * @param headers  headers
-     *
      * @return parsed expressions
      */
     public static Set<ConsumesPredicate.Expression> parseConsumeExpressions(String[] consumes,
@@ -112,12 +110,11 @@ public class MappingUtils {
     }
 
     /**
-     * Parses given produces predicates strings and headers predicates strings to  {@link
+     * Parses given produces predicates strings and headers predicates strings to {@link
      * ProducesPredicate.Expression}.
      *
      * @param produces consumes
      * @param headers  headers
-     *
      * @return parsed expressions
      */
     public static Set<ProducesPredicate.Expression> parseProduceExpressions(String[] produces,
@@ -149,7 +146,6 @@ public class MappingUtils {
      * @param a   components a
      * @param b   components a
      * @param <T> component type
-     *
      * @return {@code true} if given components may intersect potentially.
      */
     public static <T> boolean isIntersect(T[] a, T[] b) {

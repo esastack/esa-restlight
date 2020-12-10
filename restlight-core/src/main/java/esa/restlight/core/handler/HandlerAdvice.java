@@ -34,7 +34,6 @@ public interface HandlerAdvice extends Ordered {
      * @param response AsyncResponse
      * @param args     args of target method
      * @param invoker  HandlerInvoker
-     *
      * @return object
      * @throws Throwable exception occurred
      */

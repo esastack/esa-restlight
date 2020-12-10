@@ -165,7 +165,6 @@ public interface AsyncRequest {
      * 'x-www-form-urlencoded'
      *
      * @param parName parameter name
-     *
      * @return value
      */
     default String getParameter(String parName) {
@@ -181,7 +180,6 @@ public interface AsyncRequest {
      * 'x-www-form-urlencoded'
      *
      * @param parName parameter name
-     *
      * @return value
      */
     default List<String> getParameters(String parName) {
@@ -207,7 +205,6 @@ public interface AsyncRequest {
      * Returns a boolean indicating whether the named response header has already been set.
      *
      * @param name name
-     *
      * @return is contains
      */
     default boolean containsHeader(CharSequence name) {
@@ -222,11 +219,10 @@ public interface AsyncRequest {
     }
 
     /**
-     * Returns the value of a header with the specified name.  If there are more than one values for the specified name,
+     * Returns the value of a header with the specified name. If there are more than one values for the specified name,
      * the first value is returned.
      *
      * @param name The name of the header to search
-     *
      * @return The first header value or {@code null} if there is no such header
      */
     default String getHeader(CharSequence name) {
@@ -245,7 +241,6 @@ public interface AsyncRequest {
      * specified name, the first value is returned.
      *
      * @param name the name of the header to search
-     *
      * @return the first header value if the header is found and its value is an integer. {@code null} if there's no
      * such header or its value is not an integer.
      */
@@ -265,7 +260,6 @@ public interface AsyncRequest {
      * specified name, the first value is returned.
      *
      * @param name the name of the header to search
-     *
      * @return the first header value if the header is found and its value is an integer. {@code null} if there's no
      * such header or its value is not an integer.
      */
@@ -314,7 +308,6 @@ public interface AsyncRequest {
      * Returns a boolean indicating whether the named response header has already been set.
      *
      * @param name name
-     *
      * @return is contains
      */
     default boolean containsTrailer(CharSequence name) {
@@ -329,11 +322,10 @@ public interface AsyncRequest {
     }
 
     /**
-     * Returns the value of a trailing header with the specified name.  If there are more than one values for the
+     * Returns the value of a trailing header with the specified name. If there are more than one values for the
      * specified name, the first value is returned.
      *
      * @param name The name of the trailing header to search
-     *
      * @return The first trailing header value or {@code null} if there is no such trailing header
      */
     default String getTrailer(CharSequence name) {
@@ -352,7 +344,6 @@ public interface AsyncRequest {
      * specified name, the first value is returned.
      *
      * @param name the name of the trailing header to search
-     *
      * @return the first trailing header value if the trailing header is found and its value is an integer. {@code null}
      * if there's no such trailing header or its value is not an integer.
      */
@@ -372,7 +363,6 @@ public interface AsyncRequest {
      * specified name, the first value is returned.
      *
      * @param name the name of the header to search
-     *
      * @return the first trailing header value if the trailing header is found and its value is an integer. {@code null}
      * if there's no such trailing header or its value is not an integer.
      */
@@ -399,7 +389,6 @@ public interface AsyncRequest {
      * Gets the {@link Cookie} with given name.
      *
      * @param name cookie name
-     *
      * @return cookie or {@code null} if did not find.
      */
     default Cookie getCookie(String name) {
@@ -416,7 +405,6 @@ public interface AsyncRequest {
      * Returns the value of the named attribute as an Object, or{@code null} if no attribute of the given name exists.
      *
      * @param name name
-     *
      * @return value
      */
     Object getAttribute(String name);
@@ -434,7 +422,6 @@ public interface AsyncRequest {
      * the given name exists.
      *
      * @param name name
-     *
      * @return value
      */
     @SuppressWarnings("unchecked")
@@ -447,7 +434,6 @@ public interface AsyncRequest {
      * the request is being handled.
      *
      * @param name name
-     *
      * @return value
      */
     Object removeAttribute(String name);
@@ -457,7 +443,6 @@ public interface AsyncRequest {
      * only persist as long as the request is being handled.
      *
      * @param name name
-     *
      * @return value
      */
     @SuppressWarnings("unchecked")
@@ -469,7 +454,6 @@ public interface AsyncRequest {
      * Check whether the given attribute is present in current request.
      *
      * @param name name
-     *
      * @return {@code true} if the value of given attribute name is present, otherwise {@code false}
      */
     default boolean hasAttribute(String name) {
@@ -642,7 +626,6 @@ public interface AsyncRequest {
      * If there is an existing header with the same name, it is removed.
      *
      * @param value The value of the header being set
-     *
      * @deprecated header should not been modified in a request
      */
     @Deprecated
@@ -656,7 +639,6 @@ public interface AsyncRequest {
      * If there is an existing header with the same name, it is removed.
      *
      * @param value The value of the header being set
-     *
      * @deprecated header should not been modified in a request
      */
     @Deprecated
@@ -669,7 +651,6 @@ public interface AsyncRequest {
      *
      * @param name  name
      * @param value value
-     *
      * @deprecated header should not been modified in a request
      */
     @Deprecated
@@ -682,7 +663,6 @@ public interface AsyncRequest {
      *
      * @param name  name
      * @param value value
-     *
      * @deprecated header should not been modified in a request
      */
     @Deprecated

@@ -30,7 +30,6 @@ public interface HandlerInvoker {
      * @param request  request
      * @param response response
      * @param args     provided args
-     *
      * @return future
      * @throws Throwable exception occurred
      */

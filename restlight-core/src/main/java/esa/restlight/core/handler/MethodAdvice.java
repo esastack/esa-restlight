@@ -23,6 +23,7 @@ import esa.restlight.core.util.Ordered;
 /**
  * The class is designed to execute some additional operations around method invoking. Eg: validate parameters pre
  * invoking or validate return value post invoking.
+ *
  * @deprecated use {@link HandlerAdvice} please
  */
 @Deprecated

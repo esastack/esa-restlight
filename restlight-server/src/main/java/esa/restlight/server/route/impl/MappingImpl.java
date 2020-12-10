@@ -138,7 +138,7 @@ public class MappingImpl implements Mapping {
     }
 
     /**
-     * Sets the {@link #method} to a single value of {@link HttpMethod#GET}  and sets the {@link #path} to the given
+     * Sets the {@link #method} to a single value of {@link HttpMethod#GET} and sets the {@link #path} to the given
      * value.
      *
      * @param path path
@@ -160,7 +160,7 @@ public class MappingImpl implements Mapping {
     }
 
     /**
-     * Sets the {@link #method} to a single value of {@link HttpMethod#POST}  and sets the {@link #path} to the given
+     * Sets the {@link #method} to a single value of {@link HttpMethod#POST} and sets the {@link #path} to the given
      * value.
      *
      * @param path path
@@ -182,7 +182,7 @@ public class MappingImpl implements Mapping {
     }
 
     /**
-     * Sets the {@link #method} to a single value of {@link HttpMethod#DELETE}  and sets the {@link #path} to the given
+     * Sets the {@link #method} to a single value of {@link HttpMethod#DELETE} and sets the {@link #path} to the given
      * value.
      *
      * @param path path
@@ -204,7 +204,7 @@ public class MappingImpl implements Mapping {
     }
 
     /**
-     * Sets the {@link #method} to a single value of {@link HttpMethod#PUT}  and sets the {@link #path} to the given
+     * Sets the {@link #method} to a single value of {@link HttpMethod#PUT} and sets the {@link #path} to the given
      * value.
      *
      * @param path path
@@ -226,7 +226,7 @@ public class MappingImpl implements Mapping {
     }
 
     /**
-     * Sets the {@link #method} to a single value of {@link HttpMethod#PATCH}  and sets the {@link #path} to the given
+     * Sets the {@link #method} to a single value of {@link HttpMethod#PATCH} and sets the {@link #path} to the given
      * value.
      *
      * @param path path
@@ -248,7 +248,7 @@ public class MappingImpl implements Mapping {
     }
 
     /**
-     * Sets the {@link #method} to a single value of {@link HttpMethod#HEAD}  and sets the {@link #path} to the given
+     * Sets the {@link #method} to a single value of {@link HttpMethod#HEAD} and sets the {@link #path} to the given
      * value.
      *
      * @param path path
@@ -270,7 +270,7 @@ public class MappingImpl implements Mapping {
     }
 
     /**
-     * Sets the {@link #method} to a single value of {@link HttpMethod#OPTIONS}  and sets the {@link #path} to the given
+     * Sets the {@link #method} to a single value of {@link HttpMethod#OPTIONS} and sets the {@link #path} to the given
      * value.
      *
      * @param path path
@@ -292,7 +292,7 @@ public class MappingImpl implements Mapping {
     }
 
     /**
-     * Sets the {@link #method} to a single value of {@link HttpMethod#TRACE}  and sets the {@link #path} to the given
+     * Sets the {@link #method} to a single value of {@link HttpMethod#TRACE} and sets the {@link #path} to the given
      * value.
      *
      * @param path path
@@ -314,7 +314,7 @@ public class MappingImpl implements Mapping {
     }
 
     /**
-     * Sets the {@link #method} to a single value of {@link HttpMethod#CONNECT}  and sets the {@link #path} to the given
+     * Sets the {@link #method} to a single value of {@link HttpMethod#CONNECT} and sets the {@link #path} to the given
      * value.
      *
      * @param path path

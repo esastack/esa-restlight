@@ -32,7 +32,6 @@ public interface RestlightHandler {
      *
      * @param request  current request
      * @param response current response
-     *
      * @return future
      */
     CompletableFuture<Void> process(AsyncRequest request, AsyncResponse response);

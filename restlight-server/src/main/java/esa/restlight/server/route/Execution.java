@@ -31,7 +31,6 @@ public interface Execution {
      *
      * @param request  current request
      * @param response current response
-     *
      * @return future
      */
     CompletableFuture<Void> handle(AsyncRequest request, AsyncResponse response);

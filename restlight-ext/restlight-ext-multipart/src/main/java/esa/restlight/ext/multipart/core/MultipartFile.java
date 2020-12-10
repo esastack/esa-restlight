@@ -95,15 +95,15 @@ public interface MultipartFile {
      * Get the file on disk. Note that if the {@link #isInMemory()} is true then an IOException will be thrown.
      *
      * @return file
-     * @throws IOException  ex
+     * @throws IOException ex
      */
     File file() throws IOException;
 
     /**
      * Transfer this to destination file.
      *
-     * @param dest      destination
-     * @throws IOException  ex
+     * @param dest destination
+     * @throws IOException ex
      */
     void transferTo(File dest) throws IOException;
 
@@ -111,16 +111,16 @@ public interface MultipartFile {
      * Get file content with default charset of UTF-8.
      *
      * @return file content
-     * @throws IOException  ex
+     * @throws IOException ex
      */
     String string() throws IOException;
 
     /**
      * Get file content with specified charset.
      *
-     * @param charset   charset
+     * @param charset charset
      * @return file content in string
-     * @throws IOException  ex
+     * @throws IOException ex
      */
     String string(Charset charset) throws IOException;
 

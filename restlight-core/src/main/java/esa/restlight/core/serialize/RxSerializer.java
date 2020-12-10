@@ -30,7 +30,6 @@ public interface RxSerializer {
      * @param data data
      * @param type data type
      * @param <T>  generic type
-     *
      * @return decoded value
      * @throws Exception error
      */
@@ -43,7 +42,6 @@ public interface RxSerializer {
      * @param inputStream inputStream
      * @param type        data type
      * @param <T>         generic type
-     *
      * @return decoded value
      * @throws Exception error
      */
