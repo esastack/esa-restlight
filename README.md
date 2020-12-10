@@ -13,9 +13,9 @@ Create a Spring Boot application and add dependency
 
 ```xml
 <dependency>
-	<groupId>com.github.esastack</groupId>
-	<artifactId>restlight-starter</artifactId>
-	<version>${mvn.version}</version>
+    <groupId>com.github.esastack</groupId>
+    <artifactId>restlight-starter</artifactId>
+    <version>${mvn.version}</version>
 </dependency>
 ```
 
