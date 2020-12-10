@@ -35,8 +35,6 @@ import java.util.concurrent.Executor;
 
 import static esa.restlight.starter.actuator.endpoint.Utils.findField;
 
-/**
- */
 @Endpoint(id = "ioexecutor")
 public class RestlightIoExecutorEndpoint implements RestlightIoExecutorAware {
 

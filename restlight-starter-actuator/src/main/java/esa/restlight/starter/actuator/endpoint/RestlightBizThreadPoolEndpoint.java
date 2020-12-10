@@ -33,8 +33,6 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-/**
- */
 @Endpoint(id = "bizthreadpool")
 public class RestlightBizThreadPoolEndpoint implements RestlightBizExecutorAware, RestlightDeployContextAware {
 

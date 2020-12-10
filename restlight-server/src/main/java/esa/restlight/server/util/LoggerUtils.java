@@ -21,8 +21,6 @@ import esa.commons.logging.LoggerFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 
-/**
- */
 public final class LoggerUtils {
 
     private static final Logger logger
