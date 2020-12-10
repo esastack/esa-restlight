@@ -20,8 +20,6 @@ import esa.restlight.core.util.RestlightVer;
 import java.net.SocketAddress;
 import java.util.concurrent.Executor;
 
-/**
- */
 public interface RestlightServer {
 
     /**

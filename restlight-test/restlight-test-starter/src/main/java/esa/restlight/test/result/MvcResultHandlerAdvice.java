@@ -24,8 +24,6 @@ import esa.restlight.test.mock.MockAsyncRequest;
 
 import static esa.restlight.test.context.DefaultMockMvc.RETURN_VALUE_KEY;
 
-/**
- */
 @Internal
 public class MvcResultHandlerAdvice implements HandlerAdvice {
     @Override

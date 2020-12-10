@@ -21,8 +21,6 @@ import io.netty.handler.logging.LogLevel;
 
 import java.io.Serializable;
 
-/**
- */
 public class ServerOptions implements Serializable {
 
     private static final long serialVersionUID = 2611801193782941798L;
