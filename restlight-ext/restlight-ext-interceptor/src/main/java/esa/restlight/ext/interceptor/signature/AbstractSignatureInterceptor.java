@@ -15,6 +15,7 @@
  */
 package esa.restlight.ext.interceptor.signature;
 
+import esa.commons.Checks;
 import esa.commons.StringUtils;
 import esa.httpserver.core.AsyncRequest;
 import esa.httpserver.core.AsyncResponse;
@@ -32,7 +33,6 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 abstract class AbstractSignatureInterceptor implements InternalInterceptor {
 
@@ -42,8 +42,8 @@ abstract class AbstractSignatureInterceptor implements InternalInterceptor {
     private final SignatureOptions options;
 
     public AbstractSignatureInterceptor(SignatureOptions options, SecretProvider secretProvider) {
-        Objects.requireNonNull(options, "SignatureOptions must not be null");
-        Objects.requireNonNull(secretProvider, "SecretProvider must not be null");
+        Checks.checkNotNull(options, "options");
+        Checks.checkNotNull(secretProvider, "secretProvider");
         if (StringUtils.isEmpty(options.getAppId())
                 || StringUtils.isEmpty(options.getSecretVersion())
                 || StringUtils.isEmpty(options.getTimestamp())

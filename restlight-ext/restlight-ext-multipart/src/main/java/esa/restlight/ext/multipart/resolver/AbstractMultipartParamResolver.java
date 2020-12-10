@@ -15,6 +15,7 @@
  */
 package esa.restlight.ext.multipart.resolver;
 
+import esa.commons.Checks;
 import esa.commons.StringUtils;
 import esa.commons.logging.Logger;
 import esa.commons.logging.LoggerFactory;
@@ -28,12 +29,18 @@ import esa.restlight.ext.multipart.core.MultipartFileImpl;
 import io.netty.handler.codec.http.DefaultFullHttpRequest;
 import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpRequest;
-import io.netty.handler.codec.http.multipart.*;
+import io.netty.handler.codec.http.multipart.Attribute;
+import io.netty.handler.codec.http.multipart.DefaultHttpDataFactory;
+import io.netty.handler.codec.http.multipart.DiskFileUpload;
+import io.netty.handler.codec.http.multipart.FileUpload;
+import io.netty.handler.codec.http.multipart.HttpDataFactory;
+import io.netty.handler.codec.http.multipart.HttpPostMultipartRequestDecoder;
+import io.netty.handler.codec.http.multipart.HttpPostRequestDecoder;
+import io.netty.handler.codec.http.multipart.InterfaceHttpData;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 abstract class AbstractMultipartParamResolver extends AbstractNameAndValueArgumentResolver {
 
@@ -51,7 +58,7 @@ abstract class AbstractMultipartParamResolver extends AbstractNameAndValueArgume
 
     AbstractMultipartParamResolver(Param param, MultipartConfig config) {
         super(param);
-        Objects.requireNonNull(config, "FileUploadConfig must be not null!");
+        Checks.checkNotNull(config, "config");
         this.factory = buildFactory(config);
     }
 

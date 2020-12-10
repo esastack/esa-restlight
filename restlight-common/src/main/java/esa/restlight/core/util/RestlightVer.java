@@ -42,7 +42,7 @@ public final class RestlightVer {
         try (InputStream is = RestlightVer.class.getClassLoader()
                 .getResourceAsStream("META-INF/restlight/Restlight-Ver.txt")) {
             if (is == null) {
-                throw new IllegalStateException("Could not find out THE version of Restlight.");
+                throw new IllegalStateException("Could not find out the version of Restlight.");
             }
             try (Scanner scanner = new Scanner(is, StandardCharsets.UTF_8.name())) {
                 return scanner.hasNext() ? scanner.next() : StringUtils.empty();

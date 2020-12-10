@@ -24,6 +24,7 @@ import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import esa.commons.Checks;
 import esa.commons.ClassUtils;
 import esa.commons.logging.Logger;
 import esa.commons.logging.LoggerFactory;
@@ -42,7 +43,6 @@ import java.text.SimpleDateFormat;
 import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.TimeZone;
 
@@ -138,7 +138,7 @@ public class JacksonAutoConfiguration {
         Optional<Field> fieldOptional = ReflectionUtils.getAllDeclaredFields(PropertyNamingStrategy.class)
                 .stream()
                 .filter(field -> {
-                    if (fieldName == null || fieldName.equals(Objects.requireNonNull(field).getName())) {
+                    if (fieldName == null || fieldName.equals(Checks.checkNotNull(field).getName())) {
                         assert field != null;
                         return PropertyNamingStrategy.class.equals(field.getType());
                     }

@@ -15,6 +15,7 @@
  */
 package esa.restlight.server.bootstrap;
 
+import esa.commons.Checks;
 import esa.commons.NetworkUtils;
 import esa.httpserver.H2OptionsConfigure;
 import esa.httpserver.HttpServer;
@@ -38,7 +39,6 @@ import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.concurrent.Executor;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
@@ -72,8 +72,8 @@ public class NettyRestlightServer implements RestlightServer {
                          Map<ChannelOption<?>, Object> channelOptions,
                          Map<ChannelOption<?>, Object> childChannelOptions,
                          List<ChannelHandler> channelHandlers) {
-        Objects.requireNonNull(options, "ServerOptions must be not null!");
-        Objects.requireNonNull(handler, "Handler must be not null!");
+        Checks.checkNotNull(options, "options");
+        Checks.checkNotNull(handler, "handler");
         this.address = address == null ? new InetSocketAddress(8080) : address;
         this.handler = handler;
         this.httpServer = buildServer(options,

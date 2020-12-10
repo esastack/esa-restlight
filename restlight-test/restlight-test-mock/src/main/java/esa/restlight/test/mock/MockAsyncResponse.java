@@ -42,7 +42,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
 import java.util.function.Consumer;
 
@@ -379,13 +378,13 @@ public class MockAsyncResponse implements AsyncResponse {
         }
 
         public Builder withEndListeners(List<Consumer<AsyncResponse>> endListeners) {
-            Objects.requireNonNull(endListeners);
+            Checks.checkNotNull(endListeners, "endListeners");
             this.endListeners = endListeners;
             return this;
         }
 
         public Builder withEndListener(Consumer<AsyncResponse> endListener) {
-            Objects.requireNonNull(endListener);
+            Checks.checkNotNull(endListener, "endListener");
             this.endListeners.add(endListener);
             return this;
         }

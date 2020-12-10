@@ -16,6 +16,7 @@
 package esa.restlight.ext.filter.connectionlimit;
 
 import com.google.common.util.concurrent.RateLimiter;
+import esa.commons.Checks;
 import esa.httpserver.core.AsyncRequest;
 import esa.httpserver.core.AsyncResponse;
 import esa.restlight.server.handler.Filter;
@@ -23,7 +24,6 @@ import esa.restlight.server.handler.FilterChain;
 import esa.restlight.server.util.LoggerUtils;
 import io.netty.channel.ChannelHandlerContext;
 
-import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -37,10 +37,8 @@ public class ConnectionLimitFilter implements Filter {
     private final int permitsPerSecond;
 
     public ConnectionLimitFilter(ConnectionLimitOptions options) {
-        Objects.requireNonNull(options, "ConnectionLimitOptions must not be null!");
-        if (options.getMaxPerSecond() <= 0) {
-            throw new IllegalArgumentException("PermitsPerSecond must over than 0!");
-        }
+        Checks.checkNotNull(options, "options");
+        Checks.checkArg(options.getMaxPerSecond() > 0, "PermitsPerSecond must be over than 0!");
         this.permitsPerSecond = options.getMaxPerSecond();
         this.connects = RateLimiter.create((double) permitsPerSecond);
     }

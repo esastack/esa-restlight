@@ -23,6 +23,7 @@ import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.type.TypeFactory;
+import esa.commons.Checks;
 import esa.httpserver.core.HttpInputStream;
 import esa.httpserver.core.HttpOutputStream;
 
@@ -31,7 +32,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
-import java.util.Objects;
 
 public class JacksonSerializer implements JsonSerializer {
 
@@ -44,7 +44,7 @@ public class JacksonSerializer implements JsonSerializer {
     }
 
     public JacksonSerializer(ObjectMapper objectMapper) {
-        Objects.requireNonNull(objectMapper, "ObjectMapper must not be null!");
+        Checks.checkNotNull(objectMapper, "objectMapper");
         this.objectMapper = objectMapper;
     }
 

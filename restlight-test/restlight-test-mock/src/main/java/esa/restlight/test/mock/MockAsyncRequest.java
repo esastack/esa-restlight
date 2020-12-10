@@ -41,7 +41,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -247,7 +246,7 @@ public class MockAsyncRequest implements AsyncRequest {
         }
 
         public Builder withHeaders(HttpHeaders headers) {
-            Objects.requireNonNull(headers);
+            Checks.checkNotNull(headers, "headers");
             this.headers = headers;
             return this;
         }
@@ -295,13 +294,13 @@ public class MockAsyncRequest implements AsyncRequest {
         }
 
         public Builder withParameters(Map<String, List<String>> parameters) {
-            Objects.requireNonNull(parameters);
+            Checks.checkNotNull(parameters, "parameters");
             this.parameters = parameters;
             return this;
         }
 
         public Builder withParameter(String name, String value) {
-            Objects.requireNonNull(name);
+            Checks.checkNotNull(name, "name");
             List<String> values = this.parameters.get(name);
             if (values == null) {
                 values = new ArrayList<>(1);

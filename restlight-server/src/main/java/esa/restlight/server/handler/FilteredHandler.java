@@ -15,6 +15,7 @@
  */
 package esa.restlight.server.handler;
 
+import esa.commons.Checks;
 import esa.httpserver.core.AsyncRequest;
 import esa.httpserver.core.AsyncResponse;
 import esa.restlight.server.schedule.Scheduler;
@@ -22,7 +23,6 @@ import esa.restlight.server.util.Futures;
 import io.netty.channel.ChannelHandlerContext;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
@@ -33,8 +33,8 @@ public class FilteredHandler implements RestlightHandler {
     private final FilterChain filterChain;
 
     public FilteredHandler(RestlightHandler delegate, List<Filter> filters) {
-        Objects.requireNonNull(delegate, "Handler must not be null!");
-        Objects.requireNonNull(filters, "Filter must not be null!");
+        Checks.checkNotNull(delegate, "delegate");
+        Checks.checkNotNull(filters, "filters");
         this.delegate = delegate;
         this.filters = filters.toArray(new Filter[0]);
         this.filterChain = LinkedFilterChain.immutable(this.filters, ((request, response) -> {

@@ -15,6 +15,7 @@
  */
 package esa.restlight.core.resolver;
 
+import esa.commons.Checks;
 import esa.restlight.core.method.InvocableMethod;
 import esa.restlight.core.method.Param;
 import esa.restlight.core.serialize.HttpRequestSerializer;
@@ -25,7 +26,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -56,14 +56,8 @@ public class HandlerResolverFactoryImpl implements HandlerResolverFactory {
                                       Collection<? extends ReturnValueResolverAdviceAdapter> retValResolverAdvices,
                                       Collection<?
                                               extends ReturnValueResolverAdviceFactory> retValResolverAdviceFactories) {
-
-        if (rxSerializers == null || rxSerializers.isEmpty()) {
-            throw new IllegalArgumentException("Request serializer must not be null or empty!");
-        }
-
-        if (txSerializers == null || txSerializers.isEmpty()) {
-            throw new IllegalArgumentException("Request Serializer must not be or empty!");
-        }
+        Checks.checkNotEmptyArg(rxSerializers, "rxSerializers");
+        Checks.checkNotEmptyArg(txSerializers, "txSerializers");
         this.rxSerializers = sortForUnmodifiableList(rxSerializers);
         this.txSerializers = sortForUnmodifiableList(txSerializers);
 
@@ -144,7 +138,7 @@ public class HandlerResolverFactoryImpl implements HandlerResolverFactory {
         final ArgumentResolver resolver = argResolvers.stream()
                 .filter(r -> r.supports(param))
                 .findFirst()
-                .map(factory -> Objects.requireNonNull(factory.createResolver(param, rxSerializers),
+                .map(factory -> Checks.checkNotNull(factory.createResolver(param, rxSerializers),
                         "Failed to create argument resolver for parameter: " + param))
                 .orElse(null);
 
@@ -152,7 +146,7 @@ public class HandlerResolverFactoryImpl implements HandlerResolverFactory {
             List<ArgumentResolverAdvice> advices =
                     argResolverAdvices.stream()
                             .filter(advice -> advice.supports(param))
-                            .map(factory -> Objects.requireNonNull(factory.createResolverAdvice(param, resolver),
+                            .map(factory -> Checks.checkNotNull(factory.createResolverAdvice(param, resolver),
                                     "Failed to create argument resolver advice for parameter: " + param))
                             .collect(Collectors.toList());
 
@@ -168,7 +162,7 @@ public class HandlerResolverFactoryImpl implements HandlerResolverFactory {
         //resolve the fixed parameter resolver
         final ReturnValueResolver resolver = retValResolvers.stream()
                 .filter(r -> r.supports(handlerMethod))
-                .findFirst().map(factory -> Objects.requireNonNull(factory.createResolver(handlerMethod,
+                .findFirst().map(factory -> Checks.checkNotNull(factory.createResolver(handlerMethod,
                         txSerializers), "Failed to create return value resolver for handler: " + handlerMethod))
                 .orElseThrow(() -> new IllegalArgumentException("Could not resolve handler: " +
                         handlerMethod.method().getDeclaringClass().getName()
@@ -179,7 +173,7 @@ public class HandlerResolverFactoryImpl implements HandlerResolverFactory {
             List<ReturnValueResolverAdvice> advices =
                     retValResolverAdvices.stream()
                             .filter(advice -> advice.supports(handlerMethod))
-                            .map(factory -> Objects.requireNonNull(factory.createResolverAdvice(handlerMethod,
+                            .map(factory -> Checks.checkNotNull(factory.createResolverAdvice(handlerMethod,
                                     resolver),
                                     "Failed to create return value resolver advice for handler: "
                                             + handlerMethod))

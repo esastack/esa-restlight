@@ -58,8 +58,8 @@ public class CpuLoadProtectionFilter implements Filter {
     private static final ScheduledThreadPoolExecutor EXECUTOR = new ScheduledThreadPoolExecutor(1,
             ThreadFactories.namedThreadFactory("Cpu-Load-Timer"));
 
-    private static AtomicBoolean timerStarted = new AtomicBoolean(false);
-    private static com.sun.management.OperatingSystemMXBean bean;
+    private static final AtomicBoolean timerStarted = new AtomicBoolean(false);
+    private static final com.sun.management.OperatingSystemMXBean bean;
 
     static {
         OperatingSystemMXBean mxBean = ManagementFactory

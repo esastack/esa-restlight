@@ -15,12 +15,12 @@
  */
 package esa.restlight.core.method;
 
+import esa.commons.Checks;
 import esa.commons.ClassUtils;
 import esa.commons.reflect.AnnotationUtils;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
-import java.util.Objects;
 
 /**
  * Obtains the information of one controller method in the controller bean. resolve the parameters associate with the
@@ -34,8 +34,8 @@ public class HandlerMethod implements InvocableMethod {
     private final MethodParam[] parameters;
 
     protected HandlerMethod(Class<?> userType, Method method, Object bean) {
-        Objects.requireNonNull(bean, "Bean must be not null!");
-        Objects.requireNonNull(method, "Method must be not null!");
+        Checks.checkNotNull(bean, "bean");
+        Checks.checkNotNull(method, "method");
         this.bean = bean;
         this.beanType = userType;
         this.method = method;
