@@ -40,7 +40,6 @@ public interface ArgumentResolverAdvice {
      * @param arg      argument resolved by {@link ArgumentResolver}
      * @param request  request
      * @param response response
-     *
      * @return argument that was passed or a modified(possibly new) instance.
      */
     Object afterResolved(Object arg, AsyncRequest request, AsyncResponse response);

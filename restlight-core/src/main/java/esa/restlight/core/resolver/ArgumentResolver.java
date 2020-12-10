@@ -26,8 +26,8 @@ public interface ArgumentResolver {
     /**
      * Resolves method parameter into an argument value.
      *
-     * @param request   request
-     * @param response  response
+     * @param request  request
+     * @param response response
      * @return value resolved
      * @throws Exception ex
      */

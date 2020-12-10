@@ -38,7 +38,7 @@ public interface RequestTaskHook extends Ordered {
      * {@code null} value is returned which means {@link RequestTask} has been rejected and Restlight will try to
      * complete the {@link RequestTask} that was passed as much as possible.
      * <p>
-     * bad case: return a instance of {@link RequestTask} which returns a {@code  null} value by {@link
+     * bad case: return a instance of {@link RequestTask} which returns a {@code null} value by {@link
      * RequestTask#request()} and {@link RequestTask#response()} or {@link RequestTask#promise()}
      *
      * @param task request task

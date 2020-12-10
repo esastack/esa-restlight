@@ -34,7 +34,6 @@ public interface Filter extends Ordered {
      * and we will not catch exception thrown by this method!
      *
      * @param ctx context
-     *
      * @return {@code true} this connection should be executed next.
      */
     default boolean onConnected(ChannelHandlerContext ctx) {

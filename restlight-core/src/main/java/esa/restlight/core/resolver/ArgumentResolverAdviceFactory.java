@@ -38,8 +38,8 @@ public interface ArgumentResolverAdviceFactory extends ArgumentResolverPredicate
     /**
      * Creates an instance of {@link ArgumentResolverAdvice} for given handler method.
      *
-     * @param param method
-     * @param resolver  argumentResolver associated with this parameter
+     * @param param    method
+     * @param resolver argumentResolver associated with this parameter
      * @return advice
      */
     ArgumentResolverAdvice createResolverAdvice(Param param, ArgumentResolver resolver);

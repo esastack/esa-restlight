@@ -116,7 +116,6 @@ public interface AsyncResponse {
      * @param body byte data
      * @param off  off
      * @param len  len
-     *
      * @throws IllegalStateException if response has committed
      */
     void sendResult(byte[] body, int off, int len);
@@ -151,7 +150,6 @@ public interface AsyncResponse {
      * This method does not modify {@code readerIndex} or {@code writerIndex} of this buffer.
      *
      * @param code code
-     *
      * @see #sendResult(int, byte[], int, int)
      */
     default void sendResult(int code) {
@@ -187,7 +185,6 @@ public interface AsyncResponse {
      * @param len         len
      * @param autoRelease is automatically release this body ByteBuf even though this method call is retuning with a
      *                    Exception
-     *
      * @throws IllegalStateException if response has committed
      */
     default void sendResult(int code, ByteBuf body, int off, int len, boolean autoRelease) {
@@ -213,7 +210,6 @@ public interface AsyncResponse {
      * This method does not modify {@code readerIndex} or {@code writerIndex} of this buffer.
      *
      * @param body body
-     *
      * @see #sendResult(int, ByteBuf, int, int)
      */
     default void sendResult(ByteBuf body, boolean autoRelease) {
@@ -229,7 +225,6 @@ public interface AsyncResponse {
      *
      * @param code code
      * @param body body
-     *
      * @see #sendResult(int, ByteBuf, int, int)
      */
     default void sendResult(int code, ByteBuf body, boolean autoRelease) {
@@ -242,7 +237,6 @@ public interface AsyncResponse {
      *
      * @param code code
      * @param body body
-     *
      * @see #sendResult(int, ByteBuf, int, int)
      */
     default void sendResult(int code, ByteBuf body) {
@@ -253,7 +247,6 @@ public interface AsyncResponse {
      * This method does not modify {@code readerIndex} or {@code writerIndex} of this buffer.
      *
      * @param body body
-     *
      * @see #sendResult(int, ByteBuf, int, int)
      */
     default void sendResult(ByteBuf body) {
@@ -309,12 +302,11 @@ public interface AsyncResponse {
     ByteBufAllocator alloc();
 
     /**
-     * Return the value for the specified header, or {@code null} if this header has not been set.  If more than one
+     * Return the value for the specified header, or {@code null} if this header has not been set. If more than one
      * value was added for this name, only the first is returned; use {@link #getHeaders(String)} to retrieve all of
      * them.
      *
      * @param name healder name
-     *
      * @return value
      */
     default String getHeader(String name) {
@@ -322,12 +314,11 @@ public interface AsyncResponse {
     }
 
     /**
-     * Return the value for the specified header, or {@code null} if this header has not been set.  If more than one
+     * Return the value for the specified header, or {@code null} if this header has not been set. If more than one
      * value was added for this name, only the first is returned; use {@link #getHeaders(String)} to retrieve all of
      * them.
      *
      * @param name healder name
-     *
      * @return value
      */
     String getHeader(CharSequence name);
@@ -343,7 +334,6 @@ public interface AsyncResponse {
      * Return a Collection of all the header values associated with the specified header name.
      *
      * @param name header name
-     *
      * @return value
      */
     Collection<String> getHeaders(CharSequence name);
@@ -361,7 +351,6 @@ public interface AsyncResponse {
      * Returns a boolean indicating whether the named response header has already been set.
      *
      * @param name name
-     *
      * @return is contains
      */
     boolean containsHeader(CharSequence name);
@@ -560,7 +549,6 @@ public interface AsyncResponse {
      * Add a listener to this response, this listener will be called after current response has been write.
      *
      * @param endListener listener
-     *
      * @deprecated use {@link #onEnd(Consumer)}
      */
     @Deprecated
