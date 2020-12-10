@@ -15,14 +15,14 @@
  */
 package esa.restlight.core.serialize;
 
-import java.util.Objects;
+import esa.commons.Checks;
 
 public abstract class HttpJsonBodySerializerAdapter extends BaseHttpBodySerializer {
 
     private final Serializer serializer;
 
     public HttpJsonBodySerializerAdapter(Serializer serializer) {
-        Objects.requireNonNull(serializer, "Serializer must not be null!");
+        Checks.checkNotNull(serializer, "serializer");
         this.serializer = serializer;
     }
 

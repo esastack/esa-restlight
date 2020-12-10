@@ -15,6 +15,7 @@
  */
 package esa.restlight.ext.multipart.core;
 
+import esa.commons.Checks;
 import io.netty.buffer.ByteBufInputStream;
 import io.netty.handler.codec.http.multipart.FileUpload;
 
@@ -22,14 +23,13 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
-import java.util.Objects;
 
 public class MultipartFileImpl implements MultipartFile {
 
     private final FileUpload upload;
 
     public MultipartFileImpl(FileUpload fileUpload) {
-        Objects.requireNonNull(fileUpload, "FileUpload must not be null!");
+        Checks.checkNotNull(fileUpload, "fileUpload");
         this.upload = fileUpload;
     }
 

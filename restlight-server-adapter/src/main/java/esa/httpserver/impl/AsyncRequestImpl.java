@@ -62,9 +62,9 @@ public class AsyncRequestImpl implements AsyncRequest {
     private final ConcurrentHashMap<String, Object> attributes = new ConcurrentHashMap<>();
     private final Request req;
     private final HttpMethod method;
+    private final HttpHeaders headers;
+    private final HttpHeaders trailers;
     private Map<String, List<String>> params;
-    private HttpHeaders headers;
-    private HttpHeaders trailers;
     private HttpInputStream is;
     private Set<Cookie> cookies;
 

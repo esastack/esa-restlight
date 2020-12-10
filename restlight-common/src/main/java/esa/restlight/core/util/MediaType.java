@@ -166,9 +166,7 @@ public class MediaType extends MimeType {
      * @return parsed
      */
     public static MediaType valueOf(String mediaType) {
-        if (StringUtils.isEmpty(mediaType)) {
-            throw new IllegalArgumentException("'mediaType' must not be empty");
-        }
+        Checks.checkNotEmptyArg(mediaType, "mediaType");
         ParseResult cached = CACHE.get(mediaType);
         if (cached == null) {
             try {

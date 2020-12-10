@@ -15,6 +15,7 @@
  */
 package esa.httpserver.impl;
 
+import esa.commons.Checks;
 import esa.commons.ExceptionUtils;
 import esa.httpserver.core.HttpOutputStream;
 import esa.httpserver.core.Response;
@@ -58,9 +59,7 @@ final class ByteBufHttpOutputStream extends HttpOutputStream {
 
     @Override
     public void write(byte[] b, int off, int len) {
-        if (b == null) {
-            throw new NullPointerException("b");
-        }
+        Checks.checkNotNull(b, "b");
         if (MathUtil.isOutOfBounds(off, len, b.length)) {
             throw new IndexOutOfBoundsException();
         }
@@ -225,9 +224,7 @@ final class ByteBufHttpOutputStream extends HttpOutputStream {
     }
 
     private void checkNullAndCloseState(String s) {
-        if (s == null) {
-            throw new NullPointerException("s");
-        }
+        Checks.checkNotNull(s, "s");
         checkCloseState();
     }
 

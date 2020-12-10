@@ -24,10 +24,11 @@ import io.netty.channel.EventLoopGroup;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.Executor;
 
-import static esa.restlight.starter.actuator.endpoint.RestlightIoExecutorEndpoint.*;
+import static esa.restlight.starter.actuator.endpoint.RestlightIoExecutorEndpoint.EventLoopGroupMetrics;
+import static esa.restlight.starter.actuator.endpoint.RestlightIoExecutorEndpoint.EventLoopMetrics;
+import static esa.restlight.starter.actuator.endpoint.RestlightIoExecutorEndpoint.getMetrics;
 
 
 public class RestlightIoExecutorBinder implements RestlightIoExecutorAware {
@@ -77,7 +78,7 @@ public class RestlightIoExecutorBinder implements RestlightIoExecutorAware {
                 int finalI = i;
                 EventLoopMetrics eventLoopMetrics = childExecutors.get(i);
                 Gauge.builder(restlightIoThread, ioExecutor,
-                        io -> Objects.requireNonNull(getMetrics(ioExecutor))
+                        io -> Checks.checkNotNull(getMetrics(ioExecutor))
                                 .getChildExecutors()
                                 .get(finalI)
                                 .getPendingTasks())
@@ -88,7 +89,7 @@ public class RestlightIoExecutorBinder implements RestlightIoExecutorAware {
                         .register(registry);
 
                 Gauge.builder(restlightIoThread, ioExecutor,
-                        io -> Objects.requireNonNull(getMetrics(ioExecutor))
+                        io -> Checks.checkNotNull(getMetrics(ioExecutor))
                                 .getChildExecutors()
                                 .get(finalI)
                                 .getTaskQueueSize())
@@ -99,7 +100,7 @@ public class RestlightIoExecutorBinder implements RestlightIoExecutorAware {
                         .register(registry);
 
                 Gauge.builder(restlightIoThread, ioExecutor,
-                        io -> "RUNNABLE".equals(Objects.requireNonNull(getMetrics(ioExecutor))
+                        io -> "RUNNABLE".equals(Checks.checkNotNull(getMetrics(ioExecutor))
                                 .getChildExecutors()
                                 .get(finalI)
                                 .getThreadState()) ? 1 : 0)
@@ -123,7 +124,7 @@ public class RestlightIoExecutorBinder implements RestlightIoExecutorAware {
                 .description("Restlight IO threads metrics info")
                 .register(registry);
 
-        Gauge.builder(restlightIoThread, ioExecutor, io -> Objects.requireNonNull(getMetrics(ioExecutor))
+        Gauge.builder(restlightIoThread, ioExecutor, io -> Checks.checkNotNull(getMetrics(ioExecutor))
                 .getPendingTasks())
                 .tag(CATEGORY, "io")
                 .strongReference(true)
@@ -131,23 +132,23 @@ public class RestlightIoExecutorBinder implements RestlightIoExecutorAware {
                 .register(registry);
 
         Gauge.builder(restlightIoThread, ioExecutor,
-                io -> Objects.requireNonNull(getMetrics(ioExecutor)).getThreadStates().get("RUNNABLE") != null
-                        ? Objects.requireNonNull(getMetrics(ioExecutor)).getThreadStates().get("RUNNABLE")
-                        : Objects.requireNonNull(getMetrics(ioExecutor)).getThreadStates().get("TERMINATED"))
+                io -> Checks.checkNotNull(getMetrics(ioExecutor)).getThreadStates().get("RUNNABLE") != null
+                        ? Checks.checkNotNull(getMetrics(ioExecutor)).getThreadStates().get("RUNNABLE")
+                        : Checks.checkNotNull(getMetrics(ioExecutor)).getThreadStates().get("TERMINATED"))
                 .tag(CATEGORY, "io")
                 .strongReference(true)
                 .tags(Arrays.asList(Tag.of("threadName", "ioGlobal"), Tag.of("id", "thread.states.runnable")))
                 .register(registry);
 
         Gauge.builder(restlightIoThread, ioExecutor,
-                io -> Objects.requireNonNull(getMetrics(ioExecutor)).isTerminated() ? 1 : 0)
+                io -> Checks.checkNotNull(getMetrics(ioExecutor)).isTerminated() ? 1 : 0)
                 .tag(CATEGORY, "io")
                 .strongReference(true)
                 .tags(Arrays.asList(Tag.of("threadName", "ioGlobal"), Tag.of("id", "terminated")))
                 .register(registry);
 
         Gauge.builder(restlightIoThread, ioExecutor,
-                io -> Objects.requireNonNull(getMetrics(ioExecutor)).isShutDown() ? 1 : 0)
+                io -> Checks.checkNotNull(getMetrics(ioExecutor)).isShutDown() ? 1 : 0)
                 .tag(CATEGORY, "io")
                 .strongReference(true)
                 .tags(Arrays.asList(Tag.of("threadName", "ioGlobal"), Tag.of("id", "shutdown")))

@@ -16,7 +16,6 @@
 package esa.restlight.core.util;
 
 import esa.commons.Checks;
-import esa.commons.StringUtils;
 import esa.httpserver.core.AsyncResponse;
 import io.netty.handler.codec.http.HttpHeaderNames;
 
@@ -28,7 +27,6 @@ import java.io.OutputStream;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.util.Objects;
 
 /**
  * @deprecated use {@link AsyncResponse#sendFile(File)} please.
@@ -51,13 +49,10 @@ public final class MultipartFileUtils {
 
     public static void writeToResponse(AsyncResponse response, InputStream ins, String fileName, Charset charset)
             throws IOException {
-        Objects.requireNonNull(response, "AsyncResponse must not be null!");
-        Objects.requireNonNull(ins, "InputStream must be not null!");
-        Objects.requireNonNull(charset, "Charset must be not null!");
-
-        if (StringUtils.isEmpty(fileName)) {
-            throw new IllegalArgumentException("fileName must not be blank!");
-        }
+        Checks.checkNotNull(response, "response");
+        Checks.checkNotNull(ins, "ins");
+        Checks.checkNotNull(charset, "charset");
+        Checks.checkNotEmptyArg(fileName, "fileName");
 
         response.setHeader(HttpHeaderNames.CONTENT_TYPE.toString(),
                 MediaType.MULTIPART_FORM_DATA.value() + ";charset=" + charset.name());
