@@ -44,7 +44,7 @@ public class JacksonSerializer implements JsonSerializer {
     }
 
     public JacksonSerializer(ObjectMapper objectMapper) {
-        Checks.checkNotNull(objectMapper, "ObjectMapper must not be null!");
+        Checks.checkNotNull(objectMapper, "objectMapper");
         this.objectMapper = objectMapper;
     }
 

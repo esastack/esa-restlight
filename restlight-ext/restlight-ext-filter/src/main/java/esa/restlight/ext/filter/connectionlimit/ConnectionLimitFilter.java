@@ -38,7 +38,7 @@ public class ConnectionLimitFilter implements Filter {
 
     public ConnectionLimitFilter(ConnectionLimitOptions options) {
         Checks.checkNotNull(options, "options");
-        Checks.checkArg(options.getMaxPerSecond() > 0, "PermitsPerSecond must over than 0!");
+        Checks.checkArg(options.getMaxPerSecond() > 0, "PermitsPerSecond must be over than 0!");
         this.permitsPerSecond = options.getMaxPerSecond();
         this.connects = RateLimiter.create((double) permitsPerSecond);
     }
