@@ -20,8 +20,8 @@ import esa.httpserver.core.AsyncRequest;
 
 /**
  * This implementation of {@link InternalInterceptor} is used to match to a {@link esa.httpserver.core.AsyncRequest}
- * which has a {@link AsyncRequest#path()}(such as {@code /foo/bar})  by the {@link #includes()} and {@link
- * #excludes()}.
+ * which has a {@link AsyncRequest#path()}(such as {@code /foo/bar}) by the {@link #includes()} and {@link #excludes()}.
+ *
  * @see InternalInterceptor
  * @see InterceptorFactory#of(HandlerInterceptor)
  */
@@ -33,7 +33,7 @@ public interface HandlerInterceptor extends InternalInterceptor {
     /**
      * The paths to apply the interceptor
      *
-     * @return {@code null}  for all, or paths.
+     * @return {@code null} for all, or paths.
      */
     default String[] includes() {
         return null;
