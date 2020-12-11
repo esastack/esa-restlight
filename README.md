@@ -5,7 +5,7 @@
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.esastack/restlight/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.esastack/restlight/)
 [![GitHub license](https://img.shields.io/github/license/esastack/esa-restlight)](https://github.com/esastack/esa-restlight/blob/main/LICENSE)
 
-Restlight is a light and rest-oriented web framework.
+Restlight is a lightweight and rest-oriented web framework.
 
 ## Quick Start
 
@@ -19,7 +19,7 @@ Create a Spring Boot application and add dependency
 </dependency>
 ```
 
-Write Controller
+Write your Controller
 
 ```java
 @RestController
