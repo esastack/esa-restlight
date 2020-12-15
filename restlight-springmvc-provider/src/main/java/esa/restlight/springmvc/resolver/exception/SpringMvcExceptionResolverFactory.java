@@ -65,10 +65,11 @@ public class SpringMvcExceptionResolverFactory extends AbstractExceptionResolver
                                                                       boolean isController,
                                                                       HandlerLocator locator,
                                                                       HandlerResolverFactory factory) {
+        final Class<?> beanType = ClassUtils.getUserType(adviceBean);
         Annotation ann =
-                AnnotationUtils.findAnyAnnotation(adviceBean.getClass(), ControllerAdvice0.extendedClasses());
+                AnnotationUtils.findAnyAnnotation(beanType, ControllerAdvice0.extendedClasses());
         if (ann == null) {
-            ann = AnnotationUtils.findAnnotation(adviceBean.getClass(),
+            ann = AnnotationUtils.findAnnotation(beanType,
                     ControllerAdvice0.shadedClass());
         }
 
