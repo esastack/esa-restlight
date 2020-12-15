@@ -2,7 +2,7 @@
 
 ![Build](https://github.com/esastack/esa-restlight/workflows/Build/badge.svg?branch=main)
 [![codecov](https://codecov.io/gh/esastack/esa-restlight/branch/main/graph/badge.svg?token=CCQBCBQJP6)](https://codecov.io/gh/esastack/esa-restlight)
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.esastack/restlight/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.esastack/restlight/)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.esastack/restlight/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.esastack/restlight/)
 [![GitHub license](https://img.shields.io/github/license/esastack/esa-restlight)](https://github.com/esastack/esa-restlight/blob/main/LICENSE)
 
 Restlight is a lightweight and rest-oriented web framework.
@@ -13,7 +13,7 @@ Create a Spring Boot application and add dependency
 
 ```xml
 <dependency>
-    <groupId>com.github.esastack</groupId>
+    <groupId>io.esastack</groupId>
     <artifactId>restlight-starter</artifactId>
     <version>${mvn.version}</version>
 </dependency>
