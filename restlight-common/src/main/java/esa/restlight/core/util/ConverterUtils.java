@@ -18,6 +18,8 @@ package esa.restlight.core.util;
 import esa.commons.ClassUtils;
 import esa.commons.StringUtils;
 import esa.commons.UrlUtils;
+import esa.commons.annotation.Beta;
+import esa.commons.annotation.Internal;
 import esa.commons.reflect.ReflectionUtils;
 
 import java.lang.reflect.Array;
@@ -34,6 +36,8 @@ import java.util.function.Function;
 /**
  * Converts one type to another type.
  */
+@Beta
+@Internal
 public final class ConverterUtils {
 
     private static final String ARRAY_SEPARATOR_STR = ",";
@@ -73,7 +77,7 @@ public final class ConverterUtils {
                 Boolean.FALSE);
         STRING_CONVERTER_MAP.put(boolean.class, v -> (Boolean.parseBoolean(v) || "1".equals(v)));
 
-        STRING_CONVERTER_MAP.put(BigDecimal.class, v -> BigDecimal.valueOf(Double.valueOf(v)));
+        STRING_CONVERTER_MAP.put(BigDecimal.class, v -> BigDecimal.valueOf(Double.parseDouble(v)));
         STRING_CONVERTER_MAP.put(Timestamp.class, Timestamp::valueOf);
     }
 
@@ -134,7 +138,7 @@ public final class ConverterUtils {
             return null;
         } else {
 
-            Object converted = ConverterUtils.toStringValueConverter(generic).apply(value);
+            Object converted = ConverterUtils.stringValueConverter(generic).apply(value);
             if (!rawType.isInstance(converted)) {
                 throw new IllegalArgumentException("Could not convert given default value '"
                         + value
@@ -153,7 +157,7 @@ public final class ConverterUtils {
      * @return converted value or the given value itself if we do not figure out how to convert the given value.
      */
     public static Object convertIfNecessary(Object value, Type requiredType) {
-        return toConverter(requiredType).apply(value);
+        return converter(requiredType).apply(value);
     }
 
     /**
@@ -164,10 +168,10 @@ public final class ConverterUtils {
     }
 
     /**
-     * @see #toStringValueConverter(Type)
+     * @see #stringValueConverter(Type)
      */
-    public static Function<String, Object> toStringValueConverter(Class<?> requiredType) {
-        return toStringValueConverter((Type) requiredType);
+    public static Function<String, Object> stringValueConverter(Class<?> requiredType) {
+        return stringValueConverter((Type) requiredType);
     }
 
     /**
@@ -178,7 +182,7 @@ public final class ConverterUtils {
      *
      * @return converter
      */
-    public static Function<String, Object> toStringValueConverter(Type requiredType) {
+    public static Function<String, Object> stringValueConverter(Type requiredType) {
         final Class<?> requiredClass = getRequiredClass(requiredType);
         if (requiredClass == null) {
             // we don't know how to convert
@@ -232,8 +236,8 @@ public final class ConverterUtils {
      *
      * @return converter
      */
-    public static Function<Object, Object> toConverter(Class<?> requiredType) {
-        return toConverter((Type) requiredType);
+    public static Function<Object, Object> converter(Class<?> requiredType) {
+        return converter((Type) requiredType);
     }
 
     /**
@@ -244,7 +248,7 @@ public final class ConverterUtils {
      *
      * @return converter
      */
-    public static Function<Object, Object> toConverter(Type requiredType) {
+    public static Function<Object, Object> converter(Type requiredType) {
         final Class<?> requiredClass = getRequiredClass(requiredType);
         if (requiredClass == null) {
             // we don't know how to convert
@@ -299,7 +303,7 @@ public final class ConverterUtils {
         private final Function<String, Object> strConverter;
 
         private Default(Type requiredType) {
-            this.strConverter = toStringValueConverter(requiredType);
+            this.strConverter = stringValueConverter(requiredType);
         }
 
         @Override

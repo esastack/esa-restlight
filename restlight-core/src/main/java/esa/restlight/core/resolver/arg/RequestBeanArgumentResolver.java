@@ -245,7 +245,7 @@ public class RequestBeanArgumentResolver implements ArgumentResolverFactory {
         FieldAndSetter(Field field, BiConsumer<Object, Object> setter,
                        ArgumentResolver resolver) {
             this.resolver = resolver;
-            Function<Object, Object> converter = ConverterUtils.toConverter(field.getGenericType());
+            Function<Object, Object> converter = ConverterUtils.converter(field.getGenericType());
             this.setter = (obj, arg) -> setter.accept(obj, converter.apply(arg));
         }
     }

@@ -36,13 +36,13 @@ public abstract class AbstractNameAndValueArgumentResolver implements ArgumentRe
     public AbstractNameAndValueArgumentResolver(Param param) {
         this.param = param;
         this.nav = getNameAndValue(param);
-        this.converter = ConverterUtils.toConverter(param.genericType());
+        this.converter = ConverterUtils.converter(param.genericType());
     }
 
     public AbstractNameAndValueArgumentResolver(Param param, NameAndValue nav) {
         this.param = param;
         this.nav = updateNamedValueInfo(param, nav);
-        this.converter = ConverterUtils.toConverter(param.genericType());
+        this.converter = ConverterUtils.converter(param.genericType());
     }
 
     @Override
