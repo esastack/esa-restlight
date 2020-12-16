@@ -85,12 +85,12 @@ class ConverterUtilsTest {
         final Float aFloatResult = (Float) ConverterUtils.convertIfNecessary(forTest, Float.class);
         assertEquals(Float.valueOf(forTest), aFloatResult);
 
-        final BigDecimal bigDecimalResult = (BigDecimal) ConverterUtils.toConverter(BigDecimal.class).apply(forTest);
+        final BigDecimal bigDecimalResult = (BigDecimal) ConverterUtils.converter(BigDecimal.class).apply(forTest);
         assertEquals(new BigDecimal(forTest), bigDecimalResult);
 
         forTest = "2019-12-30 19:55:01";
         final Timestamp timestampResult =
-                (Timestamp) ConverterUtils.toStringValueConverter(Timestamp.class).apply(forTest);
+                (Timestamp) ConverterUtils.stringValueConverter(Timestamp.class).apply(forTest);
         assertEquals(Timestamp.valueOf(forTest), timestampResult);
 
     }

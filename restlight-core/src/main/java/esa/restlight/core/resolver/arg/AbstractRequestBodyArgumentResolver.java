@@ -89,7 +89,7 @@ public abstract class AbstractRequestBodyArgumentResolver implements ArgumentRes
             // should be not null
             this.required = required;
             this.param = param;
-            this.converter = ConverterUtils.toConverter(param.genericType());
+            this.converter = ConverterUtils.converter(param.genericType());
             this.defaultValue =
                     ConverterUtils.forceConvertStringValue(defaultValue, param.genericType(), param.type());
         }
