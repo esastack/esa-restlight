@@ -24,6 +24,7 @@ import esa.restlight.core.method.Param;
 import esa.restlight.core.resolver.ArgumentResolver;
 import esa.restlight.core.resolver.ArgumentResolverFactory;
 import esa.restlight.core.serialize.HttpRequestSerializer;
+import esa.restlight.core.util.ConverterUtils;
 import esa.restlight.server.bootstrap.WebServerException;
 import esa.restlight.server.util.PathVariableUtils;
 
@@ -31,6 +32,7 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 /**
  * Implementation of {@link ArgumentResolverFactory} for resolving argument that annotated by the MatrixVariable
@@ -50,13 +52,14 @@ public abstract class AbstractMatrixArgumentResolver implements ArgumentResolver
 
     protected class Resolver extends AbstractNameAndValueArgumentResolver {
 
+        private final Function<String, Object> converter;
         private String pathVar;
-
         private boolean isMatrixVariableMap;
         private boolean isSingleValueMap;
 
         protected Resolver(Param param) {
             super(param);
+            this.converter = ConverterUtils.str2ObjectConverter(param.genericType(), p -> p);
         }
 
         @Override
@@ -100,7 +103,7 @@ public abstract class AbstractMatrixArgumentResolver implements ArgumentResolver
             if (paramValues == null || paramValues.isEmpty()) {
                 return null;
             } else if (paramValues.size() == 1) {
-                return paramValues.get(0);
+                return converter.apply(paramValues.get(0));
             } else {
                 return paramValues;
             }

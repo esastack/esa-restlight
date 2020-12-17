@@ -16,6 +16,7 @@
 package esa.restlight.core.resolver.arg;
 
 import esa.commons.ObjectUtils;
+import esa.commons.StringUtils;
 import esa.httpserver.core.AsyncRequest;
 import esa.httpserver.core.AsyncResponse;
 import esa.restlight.core.method.Param;
@@ -28,49 +29,34 @@ import java.util.function.Function;
 public abstract class AbstractNameAndValueArgumentResolver implements ArgumentResolver {
 
     protected final Param param;
-
     protected final NameAndValue nav;
-
-    private final Function<Object, Object> converter;
 
     public AbstractNameAndValueArgumentResolver(Param param) {
         this.param = param;
         this.nav = getNameAndValue(param);
-        this.converter = ConverterUtils.converter(param.genericType());
     }
 
     public AbstractNameAndValueArgumentResolver(Param param, NameAndValue nav) {
         this.param = param;
         this.nav = updateNamedValueInfo(param, nav);
-        this.converter = ConverterUtils.converter(param.genericType());
     }
 
     @Override
     public Object resolve(AsyncRequest request, AsyncResponse response) throws Exception {
         Object arg = this.resolveName(nav.name, request);
-        if (arg == null) {
+        if (isArgumentMissing(arg)) {
             if (nav.defaultValue == null && nav.required) {
                 throw WebServerException.badRequest("Missing required value: " + nav.name);
             } else {
                 arg = nav.defaultValue;
             }
-        } else if ("".equals(arg) && nav.defaultValue != null) {
-            //we can resolve the default value by given express(such as a placeholder)
-            arg = nav.defaultValue;
         }
-        return converter.apply(arg);
+        return arg;
     }
 
-    /**
-     * Try to resolve the value by the given name from the {@link AsyncRequest}
-     *
-     * @param name    name
-     * @param request request
-     *
-     * @return resolved value
-     * @throws Exception occurred
-     */
-    protected abstract Object resolveName(String name, AsyncRequest request) throws Exception;
+    protected boolean isArgumentMissing(Object arg) {
+        return arg == null || (arg instanceof String && ((String) arg).length() == 0);
+    }
 
     protected NameAndValue getNameAndValue(Param param) {
         NameAndValue nav = createNameAndValue(param);
@@ -87,9 +73,24 @@ public abstract class AbstractNameAndValueArgumentResolver implements ArgumentRe
      */
     protected abstract NameAndValue createNameAndValue(Param param);
 
-    private NameAndValue updateNamedValueInfo(Param param, NameAndValue info) {
-        String name = info.name;
-        if (info.name.isEmpty()) {
+    protected boolean useObjectDefaultValueIfRequired(Param param, NameAndValue info) {
+        return !param.isFieldParam();
+    }
+
+    /**
+     * Try to resolve the value by the given name from the {@link AsyncRequest}
+     *
+     * @param name    name
+     * @param request request
+     *
+     * @return resolved value
+     * @throws Exception occurred
+     */
+    protected abstract Object resolveName(String name, AsyncRequest request) throws Exception;
+
+    private NameAndValue updateNamedValueInfo(Param param, NameAndValue nav) {
+        String name = nav.name;
+        if (nav.name.isEmpty()) {
             name = param.name();
             if (name == null) {
                 throw new IllegalArgumentException(
@@ -98,15 +99,14 @@ public abstract class AbstractNameAndValueArgumentResolver implements ArgumentRe
             }
         }
         Object defaultValue = null;
-        if (info.defaultValue != null) {
-            defaultValue = info.defaultValue;
-        } else if (!info.required && (useObjectDefaultValueIfRequired(param, info))) {
+        if (nav.defaultValue != null) {
+            defaultValue = nav.defaultValue;
+        } else if (!nav.required && (useObjectDefaultValueIfRequired(param, nav))) {
             defaultValue = ObjectUtils.defaultValue(param.type());
         }
-        return new NameAndValue(name, info.required, defaultValue);
-    }
-
-    protected boolean useObjectDefaultValueIfRequired(Param param, NameAndValue info) {
-        return !param.isFieldParam();
+        if (defaultValue instanceof String && !param.type().isInstance(defaultValue)) {
+            defaultValue = ConverterUtils.forceConvertStringValue((String) defaultValue, param.genericType());
+        }
+        return new NameAndValue(name, nav.required, defaultValue);
     }
 }

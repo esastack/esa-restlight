@@ -15,11 +15,13 @@
  */
 package esa.restlight.core.util;
 
+import esa.commons.Checks;
 import esa.commons.ClassUtils;
 import esa.commons.StringUtils;
 import esa.commons.UrlUtils;
 import esa.commons.annotation.Beta;
 import esa.commons.annotation.Internal;
+import esa.commons.function.ThrowingIntFunction;
 import esa.commons.reflect.ReflectionUtils;
 
 import java.lang.reflect.Array;
@@ -30,8 +32,20 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.NavigableSet;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.StringTokenizer;
+import java.util.TreeSet;
 import java.util.function.Function;
+import java.util.function.IntFunction;
 
 /**
  * Converts one type to another type.
@@ -52,24 +66,6 @@ public final class ConverterUtils {
         STRING_CONVERTER_MAP.put(Byte.class, Byte::valueOf);
         STRING_CONVERTER_MAP.put(byte.class, Byte::parseByte);
 
-        STRING_CONVERTER_MAP.put(Double.class, Double::valueOf);
-        STRING_CONVERTER_MAP.put(double.class, Double::parseDouble);
-
-        STRING_CONVERTER_MAP.put(Float.class, Float::valueOf);
-        STRING_CONVERTER_MAP.put(float.class, Float::parseFloat);
-
-        STRING_CONVERTER_MAP.put(Long.class, Long::valueOf);
-        STRING_CONVERTER_MAP.put(long.class, Long::parseLong);
-
-        STRING_CONVERTER_MAP.put(Short.class, Short::valueOf);
-        STRING_CONVERTER_MAP.put(short.class, Short::parseShort);
-
-        STRING_CONVERTER_MAP.put(Integer.class, Integer::valueOf);
-        STRING_CONVERTER_MAP.put(int.class, Integer::parseInt);
-
-        STRING_CONVERTER_MAP.put(Void.class, v -> v);
-        STRING_CONVERTER_MAP.put(void.class, v -> v);
-
         STRING_CONVERTER_MAP.put(Character.class, v -> v.length() > 0 ? v.charAt(0) : v);
         STRING_CONVERTER_MAP.put(char.class, v -> v.length() >= 1 ? v.charAt(0) : v);
 
@@ -77,15 +73,34 @@ public final class ConverterUtils {
                 Boolean.FALSE);
         STRING_CONVERTER_MAP.put(boolean.class, v -> (Boolean.parseBoolean(v) || "1".equals(v)));
 
+        STRING_CONVERTER_MAP.put(Short.class, Short::valueOf);
+        STRING_CONVERTER_MAP.put(short.class, Short::parseShort);
+
+        STRING_CONVERTER_MAP.put(Integer.class, Integer::valueOf);
+        STRING_CONVERTER_MAP.put(int.class, Integer::parseInt);
+
+        STRING_CONVERTER_MAP.put(Long.class, Long::valueOf);
+        STRING_CONVERTER_MAP.put(long.class, Long::parseLong);
+
+        STRING_CONVERTER_MAP.put(Double.class, Double::valueOf);
+        STRING_CONVERTER_MAP.put(double.class, Double::parseDouble);
+
+        STRING_CONVERTER_MAP.put(Float.class, Float::valueOf);
+        STRING_CONVERTER_MAP.put(float.class, Float::parseFloat);
+
+        STRING_CONVERTER_MAP.put(Void.class, v -> null);
+        STRING_CONVERTER_MAP.put(void.class, v -> null);
+
         STRING_CONVERTER_MAP.put(BigDecimal.class, v -> BigDecimal.valueOf(Double.parseDouble(v)));
         STRING_CONVERTER_MAP.put(Timestamp.class, Timestamp::valueOf);
+        STRING_CONVERTER_MAP.put(String.class, v -> v);
+        STRING_CONVERTER_MAP.put(Object.class, v -> v);
     }
 
     /**
      * Parses given context path to standard form.
      *
      * @param contextPath context path
-     *
      * @return context path, {@code ""} if given context path is null.
      */
     public static String standardContextPath(String contextPath) {
@@ -100,10 +115,9 @@ public final class ConverterUtils {
     }
 
     /**
-     * Normalise the given origin default value which would be the value of {@link Constants#DEFAULT_NONE}.
+     * Normalises the given origin default value which would be the value of {@link Constants#DEFAULT_NONE}.
      *
      * @param value origin default value
-     *
      * @return normalised value
      */
     public static String normaliseDefaultValue(String value) {
@@ -113,236 +127,205 @@ public final class ConverterUtils {
         return value;
     }
 
-
-    /**
-     * @see #forceConvertStringValue(String, Type, Class)
-     */
-    public static <T> T forceConvertStringValue(String value, Class<T> rawType) {
-        return forceConvertStringValue(value, rawType, rawType);
-    }
-
     /**
      * Converts the given {@link String} value to target type.
      *
-     * @param value   value to convert
-     * @param generic target generic type
-     * @param rawType target type
-     * @param <T>     target type
-     *
+     * @param value        value to convert
+     * @param requiredType target generic type
+     * @param <T>          target type
      * @return converted instance.
      * @throws IllegalArgumentException if failed to convert.
      */
     @SuppressWarnings("unchecked")
-    public static <T> T forceConvertStringValue(String value, Type generic, Class<T> rawType) {
+    public static <T> T forceConvertStringValue(String value, Type requiredType) {
+        Checks.checkNotNull(requiredType, "requiredType");
         if (StringUtils.isEmpty(value)) {
             return null;
         } else {
-
-            Object converted = ConverterUtils.stringValueConverter(generic).apply(value);
-            if (!rawType.isInstance(converted)) {
-                throw new IllegalArgumentException("Could not convert given default value '"
+            Function<String, Object> converter = ConverterUtils.str2ObjectConverter(requiredType);
+            if (converter == null) {
+                throw new IllegalArgumentException("Could not convert given value '"
                         + value
-                        + "'to target type '" + generic + "'");
+                        + "'to target type '" + requiredType + "'");
             }
-            return (T) converted;
+            return (T) converter.apply(value);
         }
     }
 
     /**
-     * Converts given {@link String} value to an instance of target type.
-     *
-     * @param value        value to be converted
-     * @param requiredType required type
-     *
-     * @return converted value or the given value itself if we do not figure out how to convert the given value.
+     * @see #str2ObjectConverter(Type, Function)
      */
-    public static Object convertIfNecessary(Object value, Type requiredType) {
-        return converter(requiredType).apply(value);
+    public static Function<String, Object> str2ObjectConverter(Type requiredType) {
+        return str2ObjectConverter(requiredType, null);
     }
 
     /**
-     * @see #convertIfNecessary(Object, Type)
-     */
-    public static Object convertIfNecessary(Object value, Class<?> requiredType) {
-        return convertIfNecessary(value, (Type) requiredType);
-    }
-
-    /**
-     * @see #stringValueConverter(Type)
-     */
-    public static Function<String, Object> stringValueConverter(Class<?> requiredType) {
-        return stringValueConverter((Type) requiredType);
-    }
-
-    /**
-     * Gets a converter of given required type for converting an {@link String} value to the required type if
-     * necessary.
+     * Generates a converter that converts a {@link String} value to {@code requiredType}.
      *
-     * @param requiredType required type
-     *
-     * @return converter
+     * @param requiredType target type
+     * @return converter or {@code def} if we don't know how to convert it
      */
-    public static Function<String, Object> stringValueConverter(Type requiredType) {
-        final Class<?> requiredClass = getRequiredClass(requiredType);
-        if (requiredClass == null) {
-            // we don't know how to convert
-            // maybe this type is a custom implementation of java.lang.reflect.Type.
-            return o -> o;
+    public static Function<String, Object> str2ObjectConverter(Type requiredType, Function<String, Object> def) {
+        Checks.checkNotNull(requiredType, "requiredType");
+        final Class<?> requiredClass = forRawType(requiredType);
+        final Function<String, Object> str2Object = getStr2ObjectConverter(requiredClass, requiredType);
+        if (str2Object == null) {
+            return def;
         }
-        Function<String, Object> converter = STRING_CONVERTER_MAP.get(requiredClass);
-        if (converter == null) {
-            if (requiredClass.isArray()) {
-                // array type
-                converter = new ArrayConverter(requiredClass);
-            } else if (Collection.class.isAssignableFrom(requiredClass)) {
-                // collection type
-                converter = new CollectionConverter(requiredType, requiredClass);
-            } else {
-                // have a constructor that accepts a single String argument.
-                Constructor<?> constructor = getSingleStringParameterConstructor(requiredClass);
-                if (constructor != null) {
-                    converter = v -> {
-                        try {
-                            ReflectionUtils.makeConstructorAccessible(constructor);
-                            return constructor.newInstance(v);
-                        } catch (Exception e) {
-                            throw new IllegalStateException("Unexpected converter error.", e);
-                        }
-                    };
-                } else {
-                    // Have a static method named valueOf() or fromString() that accepts a single String argument
-                    Method m = getValueOfOrFromStringMethod(requiredClass);
-                    if (m != null) {
-                        converter = v -> {
-                            try {
-                                ReflectionUtils.makeMethodAccessible(m);
-                                return m.invoke(null, v);
-                            } catch (Exception e) {
-                                throw new IllegalStateException("Unexpected converter error.", e);
-                            }
-                        };
-                    }
-                }
+        return p -> {
+            if (p == null) {
+                return null;
             }
-        }
-        return converter == null ? o -> o : converter;
+            return str2Object.apply(p);
+        };
     }
 
     /**
-     * Gets a converter of given required type for converting an {@link Object} value to the required type if
-     * necessary.
+     * Generates a converter that converts a collection of {@link String} values to {@code requiredType}.
      *
-     * @param requiredType required type
-     *
-     * @return converter
+     * @param requiredType target type
+     * @return converter or {@code null} if we don't know how to convert it
      */
-    public static Function<Object, Object> converter(Class<?> requiredType) {
-        return converter((Type) requiredType);
-    }
-
-    /**
-     * Gets a converter of given required type for converting an {@link Object} value to the required type if
-     * necessary.
-     *
-     * @param requiredType required type
-     *
-     * @return converter
-     */
-    public static Function<Object, Object> converter(Type requiredType) {
-        final Class<?> requiredClass = getRequiredClass(requiredType);
-        if (requiredClass == null) {
-            // we don't know how to convert
-            // maybe this type is a custom implementation of java.lang.reflect.Type.
-            return o -> o;
-        }
-        if (requiredClass.isAssignableFrom(String.class)) {
-            return new Delegate(requiredClass, Object::toString);
-        }
-        return new Delegate(requiredClass, new Default(requiredType));
-    }
-
-    private static Class<?> getRequiredClass(Type requiredType) {
-        if (requiredType == null) {
+    public static Function<Collection<String>, Object> strs2ObjectConverter(Type requiredType) {
+        Checks.checkNotNull(requiredType, "requiredType");
+        final Class<?> requiredClass = forRawType(requiredType);
+        final Function<Collection<String>, Object> strs2Object = strs2ObjectConverter(requiredClass, requiredType);
+        if (strs2Object == null) {
             return null;
         }
-        Class<?> requiredClass = null;
-        if (requiredType instanceof Class<?>) {
-            requiredClass = (Class<?>) requiredType;
-        } else if (requiredType instanceof ParameterizedType) {
-            requiredClass = (Class<?>) ((ParameterizedType) requiredType).getRawType();
-        }
-        return requiredClass;
+        return p -> {
+            if (p == null) {
+                return null;
+            }
+            return strs2Object.apply(p);
+        };
     }
 
-    private static class Delegate implements Function<Object, Object> {
-
-        private final Class<?> requiredClass;
-        private final Function<Object, Object> delegate;
-
-        private Delegate(Class<?> requiredClass,
-                         Function<Object, Object> delegate) {
-            this.requiredClass = requiredClass;
-            this.delegate = delegate;
+    private static Function<Collection<String>, Object> strs2ObjectConverter(Class<?> requiredClass,
+                                                                             Type requiredType) {
+        Function<Collection<String>, Object> converter;
+        if (requiredClass.isArray() && (converter = Strs2ArrayConverter.of(requiredClass)) != null) {
+            return converter;
         }
-
-        @Override
-        public Object apply(Object value) {
-            // just return itself if it is exactly same type of the required type.
-            if (value == null || requiredClass.isInstance(value)) {
-                return value;
-            }
-            return delegate.apply(value);
+        if (Collection.class.isAssignableFrom(requiredClass)
+                && (converter = Strs2CollectionConverter.of(requiredClass, requiredType)) != null) {
+            return converter;
         }
+        // we don't know how to convert it
+        return null;
     }
 
     /**
-     * Default converter
+     * Converts a collection of {@link String} values to an array.
      */
-    private static class Default implements Function<Object, Object> {
+    private static class Strs2ArrayConverter implements Function<Collection<String>, Object> {
 
-        private final Function<String, Object> strConverter;
+        private final Class<?> elementType;
+        private final Function<String, Object> elementConverter;
 
-        private Default(Type requiredType) {
-            this.strConverter = stringValueConverter(requiredType);
+        private Strs2ArrayConverter(Class<?> elementType, Function<String, Object> elementConverter) {
+            this.elementType = elementType;
+            this.elementConverter = elementConverter;
+        }
+
+        private static Strs2ArrayConverter of(Class<?> requiredClass) {
+            final Class<?> elementType = requiredClass.getComponentType();
+            Function<String, Object> elementConverter = getStr2ObjectConverter(elementType, null);
+            if (elementConverter == null) {
+                // we don't know how to convert the elements
+                return null;
+            }
+            return new Strs2ArrayConverter(elementType, elementConverter);
         }
 
         @Override
-        public Object apply(Object value) {
-            if (value instanceof String) {
-                return strConverter.apply((String) value);
+        public Object apply(Collection<String> value) {
+            final Object array = Array.newInstance(elementType, value.size());
+
+            int i = 0;
+            for (String v : value) {
+                // convert to target type and fill in the array.
+                Array.set(array, i++, elementConverter.apply(v));
             }
-            return value;
+            return array;
         }
     }
 
     /**
      * Converts {@link String} value to an array.
      */
-    private static class ArrayConverter implements Function<String, Object> {
+    private static class Str2ArrayConverter implements Function<String, Object> {
 
-        private final Class<?> elementType;
-        private final Function<String, Object> elementConverter;
+        private final Strs2ArrayConverter strList2ArrayConverter;
 
-        private ArrayConverter(Class<?> requiredClass) {
-            this.elementType = requiredClass.getComponentType();
-            Function<String, Object> converter;
-            if ((converter = STRING_CONVERTER_MAP.get(elementType)) == null) {
-                // ignore the unsupported types
-                converter = v -> v;
+        private Str2ArrayConverter(Strs2ArrayConverter strList2ArrayConverter) {
+            this.strList2ArrayConverter = strList2ArrayConverter;
+        }
+
+        private static Str2ArrayConverter of(Class<?> requiredClass) {
+            Strs2ArrayConverter strList2ArrayConverter = Strs2ArrayConverter.of(requiredClass);
+            if (strList2ArrayConverter == null) {
+                return null;
             }
-            this.elementConverter = converter;
+            return new Str2ArrayConverter(strList2ArrayConverter);
         }
 
         @Override
         public Object apply(String value) {
-            final List<String> tmp = extractStringFields(value);
-            final Object array = Array.newInstance(elementType, tmp.size());
-            for (int i = 0, size = tmp.size(); i < size; i++) {
-                // convert to target type and fill in the array.
-                Array.set(array, i, elementConverter.apply(tmp.get(i)));
-            }
-            return array;
+            return strList2ArrayConverter.apply(extractStringFields(value));
+        }
+    }
 
+    /**
+     * Converts a collection of {@link String} values to an implementation of {@link Collection} who's type will be
+     * dependent on the given required class.
+     */
+    @SuppressWarnings("rawtypes")
+    private static class Strs2CollectionConverter implements Function<Collection<String>, Object> {
+
+        private final IntFunction<Collection> collectionGenerator;
+        private final Function<String, Object> elementConverter;
+
+        private Strs2CollectionConverter(IntFunction<Collection> collectionGenerator,
+                                         Function<String, Object> elementConverter) {
+            this.collectionGenerator = collectionGenerator;
+            this.elementConverter = elementConverter;
+        }
+
+        private static Strs2CollectionConverter of(Class<?> requiredClass, Type requiredType) {
+
+            IntFunction<Collection> collectionGenerator = collectionGenerator(requiredClass);
+            if (collectionGenerator == null) {
+                // we don't know how to generate this type of collection
+                return null;
+            }
+
+            Class<?> elementType = null;
+            if (requiredType != null) {
+                elementType = ClassUtils.retrieveFirstGenericType(requiredType).orElse(null);
+            }
+
+            if (elementType == null) {
+                elementType = Object.class;
+            }
+
+            Function<String, Object> elementConverter = getStr2ObjectConverter(elementType, null);
+            if (elementConverter == null) {
+                // we don't know how to convert the elements
+                return null;
+            }
+            return new Strs2CollectionConverter(collectionGenerator, elementConverter);
+        }
+
+        @SuppressWarnings("unchecked")
+        @Override
+        public Object apply(Collection<String> value) {
+            final Collection collection = collectionGenerator.apply(value.size());
+            for (String v : value) {
+                // convert to target type and fill in the collection.
+                collection.add(elementConverter.apply(v));
+            }
+            return collection;
         }
     }
 
@@ -350,35 +333,92 @@ public final class ConverterUtils {
      * Converts {@link String} value to an implementation of {@link Collection} who's type will be dependent on the
      * given required class.
      */
-    private static class CollectionConverter implements Function<String, Object> {
+    private static class Str2CollectionConverter implements Function<String, Object> {
 
-        private final Class<?> elementType;
-        private final Class<?> requiredClass;
-        private final Function<String, Object> elementConverter;
+        private final Strs2CollectionConverter strs2CollectionConverter;
 
-        private CollectionConverter(Type requiredType, Class<?> requiredClass) {
-            this.requiredClass = requiredClass;
-            this.elementType = ClassUtils.retrieveFirstGenericType(requiredType).orElse(Object.class);
-            final Function<String, Object> converter;
-            if (Object.class.equals(elementType) || elementType.isAssignableFrom(String.class)
-                    || (converter = STRING_CONVERTER_MAP.get(elementType)) == null) {
-                this.elementConverter = o -> o;
-            } else {
-                this.elementConverter = converter;
+        private Str2CollectionConverter(Strs2CollectionConverter strs2CollectionConverter) {
+            this.strs2CollectionConverter = strs2CollectionConverter;
+        }
+
+        private static Str2CollectionConverter of(Class<?> requiredClass, Type requiredType) {
+            Strs2CollectionConverter strs2CollectionConverter =
+                    Strs2CollectionConverter.of(requiredClass, requiredType);
+            if (strs2CollectionConverter == null) {
+                return null;
             }
+            return new Str2CollectionConverter(strs2CollectionConverter);
         }
 
         @Override
         public Object apply(String value) {
-            final List<String> tmp = extractStringFields(value);
-            final Collection<Object> collection = createCollection(requiredClass,
-                    elementType, tmp.size());
-            for (String v : tmp) {
-                // convert to target type and fill in the collection.
-                collection.add(elementConverter.apply(v));
-            }
-            return collection;
+            return strs2CollectionConverter.apply(extractStringFields(value));
         }
+    }
+
+    private static Function<String, Object> getStr2ObjectConverter(Class<?> requiredClass, Type requiredType) {
+        Function<String, Object> converter = STRING_CONVERTER_MAP.get(requiredClass);
+        if (converter != null) {
+            return converter;
+        }
+
+        if (requiredClass.isArray() && (converter = Str2ArrayConverter.of(requiredClass)) != null) {
+            return converter;
+        }
+
+        if (Collection.class.isAssignableFrom(requiredClass)
+                && (converter = Str2CollectionConverter.of(requiredClass, requiredType)) != null) {
+            return converter;
+        }
+
+        // have a constructor that accepts a single String argument.
+        Constructor<?> constructor = getSingleStringParameterConstructor(requiredClass);
+        if (constructor != null) {
+            return v -> {
+                try {
+                    ReflectionUtils.makeConstructorAccessible(constructor);
+                    return constructor.newInstance(v);
+                } catch (Exception e) {
+                    throw new IllegalStateException("Unexpected converter error.", e);
+                }
+            };
+        }
+
+        // Have a static method named valueOf() or fromString() that accepts a single String argument
+        Method m = getValueOfOrFromStringMethod(requiredClass);
+        if (m != null) {
+            return v -> {
+                try {
+                    ReflectionUtils.makeMethodAccessible(m);
+                    return m.invoke(null, v);
+                } catch (Exception e) {
+                    throw new IllegalStateException("Unexpected converter error.", e);
+                }
+            };
+        }
+
+        // we don't know how to convert it
+        return null;
+    }
+
+    @SuppressWarnings("unchecked")
+    private static <T> Class<T> forRawType(Type requiredType) {
+        Class<T> requiredClass = null;
+        if (requiredType instanceof Class<?>) {
+            requiredClass = (Class<T>) requiredType;
+        } else if (requiredType instanceof ParameterizedType) {
+            requiredClass = (Class<T>) ((ParameterizedType) requiredType).getRawType();
+        }
+        return requiredClass;
+    }
+
+    private static List<String> extractStringFields(String value) {
+        StringTokenizer tokenizer = new StringTokenizer(value, ARRAY_SEPARATOR_STR);
+        List<String> tmp = new LinkedList<>();
+        while (tokenizer.hasMoreElements()) {
+            tmp.add(tokenizer.nextToken().trim());
+        }
+        return tmp;
     }
 
     private static Constructor<?> getSingleStringParameterConstructor(Class<?> requiredClass) {
@@ -420,40 +460,28 @@ public final class ConverterUtils {
                 ? m : null;
     }
 
-    private static List<String> extractStringFields(String value) {
-        StringTokenizer tokenizer = new StringTokenizer(value, ARRAY_SEPARATOR_STR);
-        // maybe it will be better if we use LinkedList ?
-        List<String> tmp = new LinkedList<>();
-        while (tokenizer.hasMoreElements()) {
-            tmp.add(tokenizer.nextToken().trim());
-        }
-        return tmp;
-    }
-
-    @SuppressWarnings("all")
-    private static <E> Collection<E> createCollection(Class<?> type, Class<?> elementType, int capacity) {
+    @SuppressWarnings("rawtypes")
+    private static IntFunction<Collection> collectionGenerator(Class<?> type) {
         if (type.isInterface()) {
             if (Set.class == type || Collection.class == type) {
-                return new LinkedHashSet<>(capacity);
+                return LinkedHashSet::new;
             } else if (List.class == type) {
-                return new ArrayList<>(capacity);
+                return ArrayList::new;
             } else if (SortedSet.class == type || NavigableSet.class == type) {
-                return new TreeSet<>();
+                return c -> new TreeSet<>();
             } else {
-                throw new UnsupportedOperationException("Unsupported Collection interface: " + type.getName());
+                return null;
             }
-        } else if (EnumSet.class.isAssignableFrom(type)) {
-            return (Collection<E>) EnumSet.noneOf(elementType.asSubclass(Enum.class));
         } else if (Collection.class.isAssignableFrom(type)) {
             try {
-                return (Collection<E>) ReflectionUtils.accessibleConstructor(type).newInstance();
-            } catch (Throwable ex) {
-                throw new IllegalArgumentException(
-                        "Could not create collection of '" + type.getName() + "'", ex);
+                final Constructor<?> constructor = ReflectionUtils.accessibleConstructor(type);
+                if (constructor != null) {
+                    return ThrowingIntFunction.rethrow(c -> (Collection) constructor.newInstance());
+                }
+            } catch (Exception ignored) {
             }
-        } else {
-            throw new UnsupportedOperationException("Unsupported Collection interface: " + type.getName());
         }
+        return null;
     }
 
 }

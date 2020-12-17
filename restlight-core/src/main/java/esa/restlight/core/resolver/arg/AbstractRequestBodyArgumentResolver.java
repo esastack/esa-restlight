@@ -42,7 +42,6 @@ public abstract class AbstractRequestBodyArgumentResolver implements ArgumentRes
     private final boolean negotiation;
     private final String paramName;
 
-
     public AbstractRequestBodyArgumentResolver() {
         this(false, null);
     }
@@ -79,7 +78,7 @@ public abstract class AbstractRequestBodyArgumentResolver implements ArgumentRes
         final boolean required;
         final Object defaultValue;
         final Param param;
-        final Function<Object, Object> converter;
+        final Function<String, Object> converter;
 
         private DefaultResolver(List<? extends HttpRequestSerializer> serializers,
                                 Param param,
@@ -89,9 +88,9 @@ public abstract class AbstractRequestBodyArgumentResolver implements ArgumentRes
             // should be not null
             this.required = required;
             this.param = param;
-            this.converter = ConverterUtils.converter(param.genericType());
+            this.converter = ConverterUtils.str2ObjectConverter(param.genericType(), p -> p);
             this.defaultValue =
-                    ConverterUtils.forceConvertStringValue(defaultValue, param.genericType(), param.type());
+                    ConverterUtils.forceConvertStringValue(defaultValue, param.genericType());
         }
 
         @Override

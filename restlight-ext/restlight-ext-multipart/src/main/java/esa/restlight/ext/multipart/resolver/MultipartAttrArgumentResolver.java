@@ -26,6 +26,7 @@ import esa.restlight.ext.multipart.annotation.FormParam;
 import esa.restlight.ext.multipart.core.MultipartConfig;
 
 import java.util.List;
+import java.util.function.Function;
 
 public class MultipartAttrArgumentResolver implements ArgumentResolverFactory {
 
@@ -48,13 +49,16 @@ public class MultipartAttrArgumentResolver implements ArgumentResolverFactory {
 
     private static class Resolver extends AbstractMultipartParamResolver {
 
+        private final Function<String, Object> converter;
+
         Resolver(Param param, MultipartConfig config) {
             super(param, config);
+            this.converter = ConverterUtils.str2ObjectConverter(param.genericType(), p -> p);
         }
 
         @Override
         Object getParamValue(String name, AsyncRequest request) {
-            return request.getAttribute(PREFIX + name);
+            return converter.apply(request.getUncheckedAttribute(PREFIX + name));
         }
 
         @Override

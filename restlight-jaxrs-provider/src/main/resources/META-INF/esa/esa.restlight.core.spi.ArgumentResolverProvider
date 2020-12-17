@@ -1,2 +1,2 @@
 esa.restlight.jaxrs.spi.BeanParamArgumentResolverProvider
-esa.restlight.jaxrs.spi.RequestBodyArgumentResolverProviderTest
+esa.restlight.jaxrs.spi.RequestBodyArgumentResolverProvider
