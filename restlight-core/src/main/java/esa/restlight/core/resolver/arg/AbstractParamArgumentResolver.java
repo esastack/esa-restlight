@@ -22,11 +22,14 @@ import esa.restlight.core.method.Param;
 import esa.restlight.core.resolver.ArgumentResolver;
 import esa.restlight.core.resolver.ArgumentResolverFactory;
 import esa.restlight.core.serialize.HttpRequestSerializer;
+import esa.restlight.core.util.ConverterUtils;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 /**
  * Implementation of {@link ArgumentResolverFactory} for resolving argument that annotated by the RequestParam.
@@ -39,20 +42,20 @@ public abstract class AbstractParamArgumentResolver implements ArgumentResolverF
 
         NameAndValue nameAndValue = createNameAndValue(param);
         if (StringUtils.isEmpty(nameAndValue.name)
-                && Map.class.isAssignableFrom(param.type())) {
+                && Map.class.equals(param.type())) {
             Class<?>[] types = ClassUtils.retrieveGenericTypes(param.genericType());
             if (types.length == 2) {
                 Class<?> valueType = types[1];
-                if (String.class.isAssignableFrom(valueType)) {
+                if (String.class.equals(valueType)) {
                     // Map<String, String>
                     return new SingleValueMapResolver(param, nameAndValue);
-                } else if (List.class.isAssignableFrom(valueType)) {
+                } else if (List.class.equals(valueType)) {
                     // Map<String, List<String>>
                     return new MapResolver(param, nameAndValue);
                 }
             }
         }
-        return new StringResolver(param, nameAndValue);
+        return new StringOrListResolver(param, nameAndValue);
     }
 
     protected abstract NameAndValue createNameAndValue(Param param);
@@ -75,15 +78,27 @@ public abstract class AbstractParamArgumentResolver implements ArgumentResolverF
     /**
      * Implementation for resolving argument type of {@link String}
      */
-    private static class StringResolver extends BaseResolver {
+    private static class StringOrListResolver extends BaseResolver {
 
-        StringResolver(Param param, NameAndValue nav) {
+        private final Function<String, Object> converter;
+        private final Function<Collection<String>, Object> strsConverter;
+
+        StringOrListResolver(Param param, NameAndValue nav) {
             super(param, nav);
+            this.converter = ConverterUtils.str2ObjectConverter(param.genericType(), p -> p);
+            this.strsConverter = ConverterUtils.strs2ObjectConverter(param.genericType());
         }
 
         @Override
         protected Object resolveName(String name, AsyncRequest request) {
-            return request.getParameter(name);
+            final List<String> values = request.getParameters(name);
+            if (values == null || values.isEmpty()) {
+                return null;
+            }
+            if (values.size() > 1 && strsConverter != null) {
+                return strsConverter.apply(values);
+            }
+            return converter.apply(values.get(0));
         }
     }
 
@@ -97,7 +112,7 @@ public abstract class AbstractParamArgumentResolver implements ArgumentResolverF
         }
 
         @Override
-        protected Object resolveName(String name, AsyncRequest request) {
+        protected Map<String, List<String>> resolveName(String name, AsyncRequest request) {
             return request.parameterMap();
         }
     }
@@ -109,7 +124,7 @@ public abstract class AbstractParamArgumentResolver implements ArgumentResolverF
         }
 
         @Override
-        protected Object resolveName(String name, AsyncRequest request) {
+        protected Map<String, String> resolveName(String name, AsyncRequest request) {
             Map<String, List<String>> p = request.parameterMap();
             if (p.isEmpty()) {
                 return Collections.emptyMap();

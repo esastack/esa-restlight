@@ -39,8 +39,6 @@ class RequestBodyArgumentResolverProviderTest {
         final Optional<ArgumentResolverFactory> ret = provider.factoryBean(ctx);
         assertTrue(ret.isPresent());
         assertEquals(RequestBodyArgumentResolver.class, ret.get().getClass());
-
-
     }
 
 }

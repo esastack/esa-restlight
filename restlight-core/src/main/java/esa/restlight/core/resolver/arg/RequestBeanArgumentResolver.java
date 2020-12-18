@@ -31,15 +31,17 @@ import esa.restlight.core.resolver.ArgumentResolver;
 import esa.restlight.core.resolver.ArgumentResolverFactory;
 import esa.restlight.core.resolver.HandlerResolverFactory;
 import esa.restlight.core.serialize.HttpRequestSerializer;
-import esa.restlight.core.util.ConverterUtils;
 import esa.restlight.server.util.LoggerUtils;
 
-import java.lang.reflect.*;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiConsumer;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -242,11 +244,11 @@ public class RequestBeanArgumentResolver implements ArgumentResolverFactory {
         private final BiConsumer<Object, Object> setter;
         private final ArgumentResolver resolver;
 
-        FieldAndSetter(Field field, BiConsumer<Object, Object> setter,
+        FieldAndSetter(Field field,
+                       BiConsumer<Object, Object> setter,
                        ArgumentResolver resolver) {
             this.resolver = resolver;
-            Function<Object, Object> converter = ConverterUtils.converter(field.getGenericType());
-            this.setter = (obj, arg) -> setter.accept(obj, converter.apply(arg));
+            this.setter = setter;
         }
     }
 }

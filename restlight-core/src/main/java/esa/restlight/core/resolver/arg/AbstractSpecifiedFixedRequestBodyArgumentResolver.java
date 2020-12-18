@@ -124,7 +124,7 @@ public abstract class AbstractSpecifiedFixedRequestBodyArgumentResolver implemen
             this.param = param;
             this.required = required;
             this.defaultValue =
-                    ConverterUtils.forceConvertStringValue(defaultValue, param.genericType(), param.type());
+                    ConverterUtils.forceConvertStringValue(defaultValue, param.genericType());
         }
 
         @Override

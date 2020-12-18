@@ -19,193 +19,210 @@ import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-import java.util.HashMap;
-import java.util.Iterator;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
+import java.util.NavigableSet;
 import java.util.Set;
 import java.util.SortedSet;
+import java.util.TreeSet;
+import java.util.concurrent.CopyOnWriteArrayList;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SuppressWarnings("unchecked")
 class ConverterUtilsTest {
 
     @Test
-    void testPrimitives() {
-        String forTest = "10";
-        final int intResult = (int) ConverterUtils.convertIfNecessary(forTest, int.class);
-        assertEquals(10, intResult);
-
-        final Integer integerResult = (Integer) ConverterUtils.convertIfNecessary(forTest, Integer.class);
-        assertEquals(Integer.valueOf(forTest), integerResult);
-
-        final short shortResult = (short) ConverterUtils.convertIfNecessary(forTest, short.class);
-        assertEquals(10, shortResult);
-
-        final Short aShortResult = (Short) ConverterUtils.convertIfNecessary(forTest, Short.class);
-        assertEquals(Short.valueOf(forTest), aShortResult);
-
-        final long longResult = (long) ConverterUtils.convertIfNecessary(forTest, long.class);
-        assertEquals(10L, longResult);
-
-        final Long aLongResult = (Long) ConverterUtils.convertIfNecessary(forTest, Long.class);
-        assertEquals(Long.valueOf(forTest), aLongResult);
-
-        final byte byteResult = (byte) ConverterUtils.convertIfNecessary(forTest, byte.class);
-        assertEquals(10, byteResult);
-
-        final Byte aByteResult = (Byte) ConverterUtils.convertIfNecessary(forTest, Byte.class);
-        assertEquals(Byte.valueOf(forTest), aByteResult);
-
-        final char charResult = (char) ConverterUtils.convertIfNecessary(forTest, char.class);
-        assertEquals(forTest.charAt(0), charResult);
-
-        final Character aCharResult = (Character) ConverterUtils.convertIfNecessary(forTest, Character.class);
-        assertEquals(Character.valueOf(forTest.charAt(0)), aCharResult);
-
-        forTest = "true";
-        final boolean boolResult = (boolean) ConverterUtils.convertIfNecessary(forTest, boolean.class);
-        assertTrue(boolResult);
-
-        final Boolean aBooleanResult = (Boolean) ConverterUtils.convertIfNecessary(forTest, Boolean.class);
-        assertEquals(Boolean.valueOf(forTest), aBooleanResult);
-
-        forTest = "1.11";
-        final double doubleResult = (double) ConverterUtils.convertIfNecessary(forTest, double.class);
-        assertEquals(1.11D, doubleResult, 0.00);
-
-        final Double aDoubleResult = (Double) ConverterUtils.convertIfNecessary(forTest, Double.class);
-        assertEquals(Double.valueOf(forTest), aDoubleResult);
-
-        final float floatResult = (float) ConverterUtils.convertIfNecessary(forTest, float.class);
-        assertEquals(1.11f, floatResult, 0.00);
-
-        final Float aFloatResult = (Float) ConverterUtils.convertIfNecessary(forTest, Float.class);
-        assertEquals(Float.valueOf(forTest), aFloatResult);
-
-        final BigDecimal bigDecimalResult = (BigDecimal) ConverterUtils.converter(BigDecimal.class).apply(forTest);
-        assertEquals(new BigDecimal(forTest), bigDecimalResult);
-
-        forTest = "2019-12-30 19:55:01";
-        final Timestamp timestampResult =
-                (Timestamp) ConverterUtils.stringValueConverter(Timestamp.class).apply(forTest);
-        assertEquals(Timestamp.valueOf(forTest), timestampResult);
-
-    }
-
-
-    @Test
-    void testPrimitiveArray() {
-        final String forTest = "1, 2,34,4";
-        final int[] intArrayResult = (int[]) ConverterUtils.convertIfNecessary(forTest, int[].class);
-        assertArrayEquals(new int[]{1, 2, 34, 4}, intArrayResult);
+    void testConvertString2Primitives() {
+        assertNull(ConverterUtils.str2ObjectConverter(int.class).apply(null));
+        assertTrue((boolean) ConverterUtils.str2ObjectConverter(boolean.class).apply("true"));
+        assertTrue((boolean) ConverterUtils.str2ObjectConverter(Boolean.class).apply("true"));
+        assertEquals((byte) 10, (byte) ConverterUtils.str2ObjectConverter(byte.class).apply("10"));
+        assertEquals((byte) 10, (byte) ConverterUtils.str2ObjectConverter(Byte.class).apply("10"));
+        assertEquals("10".charAt(0), (char) ConverterUtils.str2ObjectConverter(char.class).apply("10"));
+        assertEquals("10".charAt(0), (char) ConverterUtils.str2ObjectConverter(Character.class).apply("10"));
+        assertEquals((short) 10, (short) ConverterUtils.str2ObjectConverter(short.class).apply("10"));
+        assertEquals((short) 10, (short) ConverterUtils.str2ObjectConverter(Short.class).apply("10"));
+        assertEquals(10, (int) ConverterUtils.str2ObjectConverter(int.class).apply("10"));
+        assertEquals(10, (int) ConverterUtils.str2ObjectConverter(Integer.class).apply("10"));
+        assertEquals(10L, (long) ConverterUtils.str2ObjectConverter(long.class).apply("10"));
+        assertEquals(10L, (long) ConverterUtils.str2ObjectConverter(Long.class).apply("10"));
+        assertEquals(10.0D, (double) ConverterUtils.str2ObjectConverter(double.class).apply("10.0"));
+        assertEquals(10.0D, (double) ConverterUtils.str2ObjectConverter(Double.class).apply("10.0"));
+        assertEquals(10.0f, (float) ConverterUtils.str2ObjectConverter(float.class).apply("10.0"));
+        assertEquals(10.0f, (float) ConverterUtils.str2ObjectConverter(Float.class).apply("10.0"));
+        assertNull(ConverterUtils.str2ObjectConverter(void.class).apply("10"));
+        assertNull(ConverterUtils.str2ObjectConverter(Void.class).apply("10"));
     }
 
     @Test
-    void testRefArray() {
-        final String forTest = "a, b,c,d ";
-        final String[] intArrayResult = (String[]) ConverterUtils.convertIfNecessary(forTest, String[].class);
-        assertArrayEquals(new String[]{"a", "b", "c", "d"}, intArrayResult);
+    void testConvertString2Objects() {
+        assertEquals(new BigDecimal("10.0"), ConverterUtils.str2ObjectConverter(BigDecimal.class).apply("10.0"));
+        assertEquals(Timestamp.valueOf("2019-12-30 19:55:01"),
+                ConverterUtils.str2ObjectConverter(Timestamp.class).apply("2019-12-30 19:55:01"));
+
+        final String str = "foo";
+        assertSame(str, ConverterUtils.str2ObjectConverter(String.class).apply(str));
     }
 
     @Test
-    void testCollection() {
-        final String forTest = "1, 2,34,4";
-        final List listResult = (List) ConverterUtils.convertIfNecessary(forTest, List.class);
-        assertNotNull(listResult);
-        assertEquals("1", listResult.get(0));
-        assertEquals("2", listResult.get(1));
-        assertEquals("34", listResult.get(2));
-        assertEquals("4", listResult.get(3));
-    }
-
-    @Test
-    void testRefCollection() throws NoSuchMethodException {
+    void testConvertString2PrimitiveArray() {
         final String forTest = "1, 2,3,4";
-        final List<Integer> listResult = (List<Integer>) ConverterUtils.convertIfNecessary(forTest,
-                this.getClass().getDeclaredMethod("forTestGenericType").getGenericReturnType());
-        assertNotNull(listResult);
-        assertEquals(Integer.valueOf(1), listResult.get(0));
-        assertEquals(Integer.valueOf(2), listResult.get(1));
-        assertEquals(Integer.valueOf(3), listResult.get(2));
-        assertEquals(Integer.valueOf(4), listResult.get(3));
-    }
-
-    List<Integer> forTestGenericType() {
-        return null;
+        assertArrayEquals(new byte[]{1, 2, 3, 4},
+                (byte[]) ConverterUtils.str2ObjectConverter(byte[].class).apply(forTest));
+        assertArrayEquals(new Byte[]{1, 2, 3, 4},
+                (Byte[]) ConverterUtils.str2ObjectConverter(Byte[].class).apply(forTest));
+        assertArrayEquals(new Character[]{"1".charAt(0), "2".charAt(0), "3".charAt(0), "4".charAt(0)},
+                (Character[]) ConverterUtils.str2ObjectConverter(Character[].class).apply(forTest));
+        assertArrayEquals(new char[]{"1".charAt(0), "2".charAt(0), "3".charAt(0), "4".charAt(0)},
+                (char[]) ConverterUtils.str2ObjectConverter(char[].class).apply(forTest));
+        assertArrayEquals(new short[]{1, 2, 3, 4},
+                (short[]) ConverterUtils.str2ObjectConverter(short[].class).apply(forTest));
+        assertArrayEquals(new Short[]{1, 2, 3, 4},
+                (Short[]) ConverterUtils.str2ObjectConverter(Short[].class).apply(forTest));
+        assertArrayEquals(new int[]{1, 2, 3, 4},
+                (int[]) ConverterUtils.str2ObjectConverter(int[].class).apply(forTest));
+        assertArrayEquals(new Integer[]{1, 2, 3, 4},
+                (Integer[]) ConverterUtils.str2ObjectConverter(Integer[].class).apply(forTest));
+        assertArrayEquals(new long[]{1L, 2L, 3L, 4L},
+                (long[]) ConverterUtils.str2ObjectConverter(long[].class).apply(forTest));
+        assertArrayEquals(new Long[]{1L, 2L, 3L, 4L},
+                (Long[]) ConverterUtils.str2ObjectConverter(Long[].class).apply(forTest));
+        assertArrayEquals(new double[]{1D, 2D, 3D, 4D},
+                (double[]) ConverterUtils.str2ObjectConverter(double[].class).apply(forTest));
+        assertArrayEquals(new Double[]{1D, 2D, 3D, 4D},
+                (Double[]) ConverterUtils.str2ObjectConverter(Double[].class).apply(forTest));
+        assertArrayEquals(new float[]{1f, 2f, 3f, 4f},
+                (float[]) ConverterUtils.str2ObjectConverter(float[].class).apply(forTest));
+        assertArrayEquals(new Float[]{1f, 2f, 3f, 4f},
+                (Float[]) ConverterUtils.str2ObjectConverter(Float[].class).apply(forTest));
     }
 
     @Test
-    void testSet() throws NoSuchMethodException {
+    void testConvertString2RefArray() {
+        assertArrayEquals(new String[]{"a", "b", "c", "d"},
+                (String[]) ConverterUtils.str2ObjectConverter(String[].class).apply("a,b, c,d "));
+    }
+
+    @Test
+    void testConvertString2Collection() throws NoSuchMethodException {
         final String forTest = "1, 2,3,4";
-        final Set<Integer> set = (Set<Integer>) ConverterUtils.convertIfNecessary(forTest,
-                this.getClass().getDeclaredMethod("forTestGenericSet").getGenericReturnType());
-        assertNotNull(set);
-        final Iterator<Integer> iterator = set.iterator();
-        assertEquals(Integer.valueOf(1), iterator.next());
-        assertEquals(Integer.valueOf(2), iterator.next());
-        assertEquals(Integer.valueOf(3), iterator.next());
-        assertEquals(Integer.valueOf(4), iterator.next());
-    }
 
-    private Set<Integer> forTestGenericSet() {
-        return null;
-    }
+        final Set<Integer> setResult =
+                (Set<Integer>) ConverterUtils.str2ObjectConverter(Subject.class.getDeclaredMethod("intSet")
+                        .getGenericReturnType()).apply(forTest);
+        assertTrue(setResult instanceof LinkedHashSet);
+        assertArrayEquals(new Integer[]{1, 2, 3, 4}, setResult.toArray(new Integer[0]));
 
-    @Test
-    void testSortedSet() throws NoSuchMethodException {
-        final String forTest = "4,2,1,3";
-        final SortedSet<Integer> set = (SortedSet<Integer>) ConverterUtils.convertIfNecessary(forTest,
-                this.getClass().getDeclaredMethod("forTestGenericSortedSet").getGenericReturnType());
-        assertNotNull(set);
-        final Iterator<Integer> iterator = set.iterator();
-        assertEquals(Integer.valueOf(1), iterator.next());
-        assertEquals(Integer.valueOf(2), iterator.next());
-        assertEquals(Integer.valueOf(3), iterator.next());
-        assertEquals(Integer.valueOf(4), iterator.next());
-    }
+        final Collection<Short> collectionResult =
+                (Collection<Short>) ConverterUtils.str2ObjectConverter(Subject.class.getDeclaredMethod(
+                        "shortCollection")
+                        .getGenericReturnType()).apply(forTest);
+        assertTrue(collectionResult instanceof LinkedHashSet);
+        assertArrayEquals(new Short[]{1, 2, 3, 4}, collectionResult.toArray(new Short[0]));
 
-    private SortedSet<Integer> forTestGenericSortedSet() {
-        return null;
-    }
+        final SortedSet<Integer> sortedSetResult =
+                (SortedSet<Integer>) ConverterUtils.str2ObjectConverter(Subject.class.getDeclaredMethod("intSortedSet")
+                        .getGenericReturnType()).apply(forTest);
+        assertTrue(sortedSetResult instanceof TreeSet);
+        assertArrayEquals(new Integer[]{1, 2, 3, 4}, sortedSetResult.toArray(new Integer[0]));
 
-    @Test
-    void testActualCollection() throws NoSuchMethodException {
-        final String forTest = "1, 2,3,4";
-        final List<Integer> listResult = (List<Integer>) ConverterUtils.convertIfNecessary(forTest,
-                this.getClass().getDeclaredMethod("forTestLinkedListType").getGenericReturnType());
-        assertNotNull(listResult);
-        assertEquals(LinkedList.class, listResult.getClass());
-        assertEquals(Integer.valueOf(1), listResult.get(0));
-        assertEquals(Integer.valueOf(2), listResult.get(1));
-        assertEquals(Integer.valueOf(3), listResult.get(2));
-        assertEquals(Integer.valueOf(4), listResult.get(3));
-    }
+        final NavigableSet<Integer> navigableSetResult =
+                (NavigableSet<Integer>) ConverterUtils.str2ObjectConverter(Subject.class
+                        .getDeclaredMethod("intNavigableSet")
+                        .getGenericReturnType()).apply(forTest);
+        assertTrue(navigableSetResult instanceof TreeSet);
+        assertArrayEquals(new Integer[]{1, 2, 3, 4}, navigableSetResult.toArray(new Integer[0]));
 
-    private LinkedList<Integer> forTestLinkedListType() {
-        return null;
-    }
+        final List<Long> listResult = (List<Long>) ConverterUtils.str2ObjectConverter(Subject.class
+                .getDeclaredMethod("longList")
+                .getGenericReturnType()).apply(forTest);
+        assertTrue(listResult instanceof ArrayList);
+        assertArrayEquals(new Long[]{1L, 2L, 3L, 4L}, listResult.toArray(new Long[0]));
 
-    @Test
-    void testSameType() {
-        final Map<String, String> forTest = new HashMap<>(16);
-        final Object r = ConverterUtils.convertIfNecessary(forTest, Map.class);
-        assertSame(r, forTest);
+
+        final LinkedList<Double> linkedListResult =
+                (LinkedList<Double>) ConverterUtils.str2ObjectConverter(Subject.class
+                        .getDeclaredMethod("doubleLinkedList")
+                        .getGenericReturnType()).apply(forTest);
+        assertArrayEquals(new Double[]{1D, 2D, 3D, 4D}, linkedListResult.toArray(new Double[0]));
+
+        final CopyOnWriteArrayList<String> copyOnWriteArrayListResult =
+                (CopyOnWriteArrayList<String>) ConverterUtils.str2ObjectConverter(CopyOnWriteArrayList.class)
+                        .apply(forTest);
+        assertArrayEquals(new String[]{"1", "2", "3", "4"}, copyOnWriteArrayListResult.toArray(new String[0]));
+
+        assertNull(ConverterUtils.str2ObjectConverter(MyList.class));
     }
 
     @Test
-    void testTypeNotMatch() {
-        final String forTest = "1, 2,3,4";
-        final Object r = ConverterUtils.convertIfNecessary(forTest, Map.class);
-        assertSame(r, forTest);
+    void testConvertStringCollection2PrimitiveArray() {
+        final List<String> forTest = Arrays.asList("1", "2", "3", "4");
+        assertArrayEquals(new byte[]{1, 2, 3, 4},
+                (byte[]) ConverterUtils.strs2ObjectConverter(byte[].class).apply(forTest));
+        assertArrayEquals(new Byte[]{1, 2, 3, 4},
+                (Byte[]) ConverterUtils.strs2ObjectConverter(Byte[].class).apply(forTest));
+        assertArrayEquals(new Character[]{"1".charAt(0), "2".charAt(0), "3".charAt(0), "4".charAt(0)},
+                (Character[]) ConverterUtils.strs2ObjectConverter(Character[].class).apply(forTest));
+        assertArrayEquals(new char[]{"1".charAt(0), "2".charAt(0), "3".charAt(0), "4".charAt(0)},
+                (char[]) ConverterUtils.strs2ObjectConverter(char[].class).apply(forTest));
+        assertArrayEquals(new short[]{1, 2, 3, 4},
+                (short[]) ConverterUtils.strs2ObjectConverter(short[].class).apply(forTest));
+        assertArrayEquals(new Short[]{1, 2, 3, 4},
+                (Short[]) ConverterUtils.strs2ObjectConverter(Short[].class).apply(forTest));
+        assertArrayEquals(new int[]{1, 2, 3, 4},
+                (int[]) ConverterUtils.strs2ObjectConverter(int[].class).apply(forTest));
+        assertArrayEquals(new Integer[]{1, 2, 3, 4},
+                (Integer[]) ConverterUtils.strs2ObjectConverter(Integer[].class).apply(forTest));
+        assertArrayEquals(new long[]{1L, 2L, 3L, 4L},
+                (long[]) ConverterUtils.strs2ObjectConverter(long[].class).apply(forTest));
+        assertArrayEquals(new Long[]{1L, 2L, 3L, 4L},
+                (Long[]) ConverterUtils.strs2ObjectConverter(Long[].class).apply(forTest));
+        assertArrayEquals(new double[]{1D, 2D, 3D, 4D},
+                (double[]) ConverterUtils.strs2ObjectConverter(double[].class).apply(forTest));
+        assertArrayEquals(new Double[]{1D, 2D, 3D, 4D},
+                (Double[]) ConverterUtils.strs2ObjectConverter(Double[].class).apply(forTest));
+        assertArrayEquals(new float[]{1f, 2f, 3f, 4f},
+                (float[]) ConverterUtils.strs2ObjectConverter(float[].class).apply(forTest));
+        assertArrayEquals(new Float[]{1f, 2f, 3f, 4f},
+                (Float[]) ConverterUtils.strs2ObjectConverter(Float[].class).apply(forTest));
+    }
+
+    private static class MyList extends ArrayList {
+        private MyList(Object a) {
+        }
+    }
+
+    private interface Subject {
+        Collection<Short> shortCollection();
+
+        Set<Integer> intSet();
+
+        SortedSet<Integer> intSortedSet();
+
+        NavigableSet<Integer> intNavigableSet();
+
+        List<Long> longList();
+
+        LinkedList<Double> doubleLinkedList();
+
+        Collection<int[]> intArrayCollection();
     }
 
     @Test
     void testConstructor() {
         final String value = "foo";
-        final Object ret = ConverterUtils.convertIfNecessary(value, ConstructorSubject0.class);
+        final Object ret = ConverterUtils.str2ObjectConverter(ConstructorSubject0.class).apply(value);
         assertNotNull(ret);
         assertTrue(ret instanceof ConstructorSubject0);
         assertEquals(value, ((ConstructorSubject0) ret).value);
@@ -213,39 +230,29 @@ class ConverterUtilsTest {
 
     @Test
     void testAbstractConstructor() {
-        final String value = "foo";
-        final Object ret = ConverterUtils.convertIfNecessary(value, ConstructorSubject1.class);
-        assertNotNull(ret);
-        assertEquals(value, ret);
+        assertNull(ConverterUtils.str2ObjectConverter(ConstructorSubject1.class));
     }
 
     @Test
     void testNonePublicConstructor() {
-        final String value = "foo";
-        final Object ret = ConverterUtils.convertIfNecessary(value, ConstructorSubject2.class);
-        assertNotNull(ret);
-        assertEquals(value, ret);
+        assertNull(ConverterUtils.str2ObjectConverter(ConstructorSubject2.class));
     }
 
     @Test
     void testWrongArgConstructor() {
-        final String value = "foo";
-        final Object ret = ConverterUtils.convertIfNecessary(value, ConstructorSubject3.class);
-        assertNotNull(ret);
-        assertEquals(value, ret);
+        assertNull(ConverterUtils.str2ObjectConverter(ConstructorSubject3.class));
     }
 
     @Test
     void testErrorInConstructor() {
-        final String value = "foo";
         assertThrows(IllegalStateException.class,
-                () -> ConverterUtils.convertIfNecessary(value, ConstructorSubject4.class));
+                () -> ConverterUtils.str2ObjectConverter(ConstructorSubject4.class).apply("foo"));
     }
 
     @Test
     void testValueOf() {
         final String value = "foo";
-        final Object ret = ConverterUtils.convertIfNecessary(value, ValueOfSubject0.class);
+        final Object ret = ConverterUtils.str2ObjectConverter(ValueOfSubject0.class).apply(value);
         assertNotNull(ret);
         assertTrue(ret instanceof ValueOfSubject0);
         assertEquals(value, ((ValueOfSubject0) ret).value);
@@ -253,49 +260,36 @@ class ConverterUtilsTest {
 
     @Test
     void testNoneStaticValueOf() {
-        final String value = "foo";
-        final Object ret = ConverterUtils.convertIfNecessary(value, ValueOfSubject1.class);
-        assertNotNull(ret);
-        assertEquals(value, ret);
+        assertNull(ConverterUtils.str2ObjectConverter(ValueOfSubject1.class));
     }
 
     @Test
     void testNonePublicValueOf() {
-        final String value = "foo";
-        final Object ret = ConverterUtils.convertIfNecessary(value, ValueOfSubject2.class);
-        assertNotNull(ret);
-        assertEquals(value, ret);
+        assertNull(ConverterUtils.str2ObjectConverter(ValueOfSubject2.class));
     }
 
     @Test
     void testWrongArgValueOf() {
-        final String value = "foo";
-        final Object ret = ConverterUtils.convertIfNecessary(value, ValueOfSubject3.class);
-        assertNotNull(ret);
-        assertEquals(value, ret);
+        assertNull(ConverterUtils.str2ObjectConverter(ValueOfSubject3.class));
     }
 
     @Test
     void testErrorInValueOf() {
-        final String value = "foo";
         assertThrows(IllegalStateException.class,
-                () -> ConverterUtils.convertIfNecessary(value, ValueOfSubject4.class));
+                () -> ConverterUtils.str2ObjectConverter(ValueOfSubject4.class).apply("foo"));
 
     }
 
     @Test
     void testWrongReturnTypeValueOf() {
-        final String value = "foo";
-        final Object ret = ConverterUtils.convertIfNecessary(value, ValueOfSubject5.class);
-        assertNotNull(ret);
-        assertEquals(value, ret);
+        assertNull(ConverterUtils.str2ObjectConverter(ValueOfSubject5.class));
     }
 
 
     @Test
     void testFromString() {
         final String value = "foo";
-        final Object ret = ConverterUtils.convertIfNecessary(value, FromStringSubject0.class);
+        final Object ret = ConverterUtils.str2ObjectConverter(FromStringSubject0.class).apply(value);
         assertNotNull(ret);
         assertTrue(ret instanceof FromStringSubject0);
         assertEquals(value, ((FromStringSubject0) ret).value);
@@ -303,54 +297,36 @@ class ConverterUtilsTest {
 
     @Test
     void testNoneStaticFromString() {
-        final String value = "foo";
-        final Object ret = ConverterUtils.convertIfNecessary(value, FromStringSubject1.class);
-        assertNotNull(ret);
-        assertEquals(value, ret);
+        assertNull(ConverterUtils.str2ObjectConverter(FromStringSubject1.class));
     }
 
     @Test
     void testNonePublicFromString() {
-        final String value = "foo";
-        final Object ret = ConverterUtils.convertIfNecessary(value, FromStringSubject2.class);
-        assertNotNull(ret);
-        assertEquals(value, ret);
+        assertNull(ConverterUtils.str2ObjectConverter(FromStringSubject2.class));
     }
 
     @Test
     void testWrongArgFromString() {
-        final String value = "foo";
-        final Object ret = ConverterUtils.convertIfNecessary(value, FromStringSubject3.class);
-        assertNotNull(ret);
-        assertEquals(value, ret);
+        assertNull(ConverterUtils.str2ObjectConverter(FromStringSubject3.class));
     }
 
     @Test
     void testErrorFromString() {
         assertThrows(IllegalStateException.class,
-                () -> ConverterUtils.convertIfNecessary("foo", FromStringSubject4.class));
+                () -> ConverterUtils.str2ObjectConverter(FromStringSubject4.class).apply("foo"));
     }
 
     @Test
     void testWrongReturnTypeFromString() {
-        final String value = "foo";
-        final Object ret = ConverterUtils.convertIfNecessary(value, FromStringSubject5.class);
-        assertNotNull(ret);
-        assertEquals(value, ret);
+        assertNull(ConverterUtils.str2ObjectConverter(FromStringSubject5.class));
     }
 
     @Test
-    void testForceConvertStringValue() throws NoSuchMethodException {
+    void testForceConvertStringValue() {
         assertNull(ConverterUtils.forceConvertStringValue(null, Integer.class));
         assertNull(ConverterUtils.forceConvertStringValue("", Integer.class));
-        assertEquals(1, ConverterUtils.forceConvertStringValue("1", Integer.class).intValue());
-        final List<Integer> listResult = ConverterUtils.forceConvertStringValue("1, 2,3",
-                this.getClass().getDeclaredMethod("forTestLinkedListType").getGenericReturnType(), List.class);
-        assertNotNull(listResult);
-        assertEquals(LinkedList.class, listResult.getClass());
-        assertEquals(Integer.valueOf(1), listResult.get(0));
-        assertEquals(Integer.valueOf(2), listResult.get(1));
-        assertEquals(Integer.valueOf(3), listResult.get(2));
+        assertThrows(IllegalArgumentException.class,
+                () -> ConverterUtils.forceConvertStringValue("foo", MyList.class));
     }
 
     @Test

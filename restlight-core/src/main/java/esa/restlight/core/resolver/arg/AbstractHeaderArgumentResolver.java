@@ -20,9 +20,12 @@ import esa.restlight.core.method.Param;
 import esa.restlight.core.resolver.ArgumentResolver;
 import esa.restlight.core.resolver.ArgumentResolverFactory;
 import esa.restlight.core.serialize.HttpRequestSerializer;
+import esa.restlight.core.util.ConverterUtils;
 import io.netty.handler.codec.http.HttpHeaders;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.function.Function;
 
 /**
  * Implementation of {@link ArgumentResolverFactory} for resolving argument that annotated by the RequestHeader.
@@ -32,10 +35,10 @@ public abstract class AbstractHeaderArgumentResolver implements ArgumentResolver
     @Override
     public ArgumentResolver createResolver(Param param,
                                            List<? extends HttpRequestSerializer> serializers) {
-        if (HttpHeaders.class.isAssignableFrom(param.type())) {
+        if (HttpHeaders.class.equals(param.type())) {
             return new HeadersResolver(param);
         }
-        return new StringResolver(param);
+        return new StringOrListResolver(param);
     }
 
     protected abstract NameAndValue createNameAndValue(Param param);
@@ -53,15 +56,31 @@ public abstract class AbstractHeaderArgumentResolver implements ArgumentResolver
 
     }
 
-    private class StringResolver extends BaseResolver {
+    private class StringOrListResolver extends BaseResolver {
 
-        StringResolver(Param param) {
+        private final Function<String, Object> converter;
+        private final Function<Collection<String>, Object> strsConverter;
+
+        StringOrListResolver(Param param) {
             super(param);
+            this.converter = ConverterUtils.str2ObjectConverter(param.genericType(), p -> p);
+            this.strsConverter = ConverterUtils.strs2ObjectConverter(param.genericType());
         }
 
         @Override
         protected Object resolveName(String name, AsyncRequest request) {
-            return request.getHeader(name);
+            if (strsConverter != null) {
+                List<String> values = request.headers().getAll(name);
+                if (values == null || values.isEmpty()) {
+                    return null;
+                } else if (values.size() > 1) {
+                    return strsConverter.apply(values);
+                } else {
+                    return converter.apply(values.get(0));
+                }
+            } else {
+                return converter.apply(request.headers().get(name));
+            }
         }
     }
 
@@ -72,7 +91,7 @@ public abstract class AbstractHeaderArgumentResolver implements ArgumentResolver
         }
 
         @Override
-        protected Object resolveName(String name, AsyncRequest request) {
+        protected HttpHeaders resolveName(String name, AsyncRequest request) {
             return request.headers();
         }
     }

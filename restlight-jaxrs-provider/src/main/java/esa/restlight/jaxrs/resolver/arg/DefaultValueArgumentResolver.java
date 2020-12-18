@@ -31,7 +31,7 @@ public class DefaultValueArgumentResolver implements ArgumentResolverFactory {
                                            List<? extends HttpRequestSerializer> serializers) {
         DefaultValue ann = param.getAnnotation(DefaultValue.class);
         final Object defaultValue =
-                ConverterUtils.forceConvertStringValue(ann.value(), param.genericType(), param.type());
+                ConverterUtils.forceConvertStringValue(ann.value(), param.genericType());
         return (request, response) -> defaultValue;
     }
 

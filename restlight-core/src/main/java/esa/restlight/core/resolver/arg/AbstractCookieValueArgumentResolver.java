@@ -15,15 +15,19 @@
  */
 package esa.restlight.core.resolver.arg;
 
+import esa.commons.ClassUtils;
 import esa.httpserver.core.AsyncRequest;
 import esa.restlight.core.method.Param;
 import esa.restlight.core.resolver.ArgumentResolver;
 import esa.restlight.core.resolver.ArgumentResolverFactory;
 import esa.restlight.core.serialize.HttpRequestSerializer;
+import esa.restlight.core.util.ConverterUtils;
 import io.netty.handler.codec.http.cookie.Cookie;
 
+import javax.jws.Oneway;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Function;
 
 /**
  * Implementation of {@link ArgumentResolverFactory} for resolving argument that annotated by the CookieValue
@@ -33,12 +37,15 @@ public abstract class AbstractCookieValueArgumentResolver implements ArgumentRes
     @Override
     public ArgumentResolver createResolver(Param param,
                                            List<? extends HttpRequestSerializer> serializers) {
-        if (Cookie.class.isAssignableFrom(param.type())) {
+        if (Cookie.class.equals(param.type())) {
             return new CookieResolver(param);
         }
 
-        if (Set.class.isAssignableFrom(param.type())) {
-            return new CookiesResolver(param);
+        if (Set.class.equals(param.type())) {
+            Class<?>[] types = ClassUtils.retrieveGenericTypes(param.genericType());
+            if (types != null && types.length == 1 && types[0].equals(Cookie.class)) {
+                return new CookiesResolver(param);
+            }
         }
         return new StringResolver(param);
     }
@@ -62,14 +69,17 @@ public abstract class AbstractCookieValueArgumentResolver implements ArgumentRes
      */
     private class StringResolver extends BaseResolver {
 
+        private final Function<String, Object> converter;
+
         StringResolver(Param param) {
             super(param);
+            this.converter = ConverterUtils.str2ObjectConverter(param.genericType(), p -> p);
         }
 
         @Override
         protected Object resolveName(String name, AsyncRequest request) {
             Cookie cookie = request.getCookie(name);
-            return cookie == null ? null : cookie.value();
+            return cookie == null ? null : converter.apply(cookie.value());
         }
     }
 
@@ -83,7 +93,7 @@ public abstract class AbstractCookieValueArgumentResolver implements ArgumentRes
         }
 
         @Override
-        protected Object resolveName(String name, AsyncRequest request) {
+        protected Cookie resolveName(String name, AsyncRequest request) {
             return request.getCookie(name);
         }
     }
@@ -98,10 +108,8 @@ public abstract class AbstractCookieValueArgumentResolver implements ArgumentRes
         }
 
         @Override
-        protected Object resolveName(String name, AsyncRequest request) {
+        protected Set<Cookie> resolveName(String name, AsyncRequest request) {
             return request.cookies();
         }
-
-
     }
 }
