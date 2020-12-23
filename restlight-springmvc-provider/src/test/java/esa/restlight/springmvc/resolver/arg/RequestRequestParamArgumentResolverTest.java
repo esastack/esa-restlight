@@ -231,17 +231,17 @@ class RequestRequestParamArgumentResolverTest {
         void defaultAndRequiredParam(@RequestParam(defaultValue = "foo") String foo) {
         }
 
-        void requestParamOfCollection(@RequestParam(defaultValue = "collection") Collection collection) {
+        void requestParamOfCollection(@RequestParam Collection collection) {
         }
 
-        void requestParamOfGenericCollection(@RequestParam(defaultValue = "genericCollection")
+        void requestParamOfGenericCollection(@RequestParam
                                                             Collection<Integer> collection) {
         }
 
-        void requestParamOfArray(@RequestParam(defaultValue = "objects") Object[] objects) {
+        void requestParamOfArray(@RequestParam Object[] objects) {
         }
 
-        void requestParamOfGenericArray(@RequestParam(defaultValue = "ints") int[] ints) {
+        void requestParamOfGenericArray(@RequestParam int[] ints) {
         }
 
         void requestParamOfSingleValueMap(@RequestParam Map<String, String> params) {
