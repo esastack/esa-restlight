@@ -45,8 +45,10 @@ public abstract class AbstractNameAndValueArgumentResolver implements ArgumentRe
     public Object resolve(AsyncRequest request, AsyncResponse response) throws Exception {
         Object arg = this.resolveName(nav.name, request);
         if (isArgumentMissing(arg)) {
-            if (nav.defaultValue == null && nav.required) {
-                throw WebServerException.badRequest("Missing required value: " + nav.name);
+            if (nav.defaultValue == null) {
+                if (nav.required) {
+                    throw WebServerException.badRequest("Missing required value: " + nav.name);
+                }
             } else {
                 arg = nav.defaultValue;
             }
