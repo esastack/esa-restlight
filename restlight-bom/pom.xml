@@ -23,7 +23,7 @@
     <artifactId>restlight-bom</artifactId>
     <packaging>pom</packaging>
     <name>Restlight :: Bom</name>
-    <version>0.1.0-SNAPSHOT</version>
+    <version>0.0.1-SNAPSHOT</version>
 
     <description>
         Restlight :: Bill of Materials
@@ -183,7 +183,7 @@
                 <version>3.0.0-M1</version>
                 <configuration>
                     <useReleaseProfile>false</useReleaseProfile>
-                    <releaseProfiles>release,export-javadoc</releaseProfiles>
+                    <releaseProfiles>release</releaseProfiles>
                     <autoVersionSubmodules>true</autoVersionSubmodules>
                     <allowTimestampedSnapshots>false</allowTimestampedSnapshots>
                     <tagNameFormat>v@{project.version}</tagNameFormat>
