@@ -78,10 +78,11 @@ public abstract class AbstractHandlerExecution<H extends HandlerAdapter> impleme
                     continue;
                 }
                 if (args[i] == null) {
-                    throw WebServerException.badRequest(StringUtils.concat("Could not resolve method parameter at " +
-                                    "index ", String.valueOf(resolvable.param.index()), " in ",
-                            resolvable.param.method() + ": No suitable resolver for argument of type '",
-                            resolvable.param.type().getName(), "'"));
+                    throw WebServerException.badRequest(
+                            StringUtils.concat("Could not resolve method parameter at index ",
+                                    String.valueOf(resolvable.param.index()), " in ",
+                                    resolvable.param.method() + ": No suitable resolver for argument of type '",
+                                    resolvable.param.type().getName(), "'"));
                 }
             }
         }

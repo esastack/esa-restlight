@@ -61,26 +61,6 @@ class AbstractNameAndValueArgumentResolverTest {
     }
 
     @Test
-    void testMissingRequiredStringValue() {
-        final Param param = mock(Param.class);
-        final AbstractNameAndValueArgumentResolver resolver = new AbstractNameAndValueArgumentResolver(param) {
-
-            @Override
-            protected NameAndValue createNameAndValue(Param param) {
-                return new NameAndValue("foo", true, null);
-            }
-
-            @Override
-            protected Object resolveName(String name, AsyncRequest request) throws Exception {
-                return "";
-            }
-        };
-        final MockAsyncRequest request = MockAsyncRequest.aMockRequest().build();
-        final MockAsyncResponse response = MockAsyncResponse.aMockResponse().build();
-        assertThrows(WebServerException.class, () -> resolver.resolve(request, response));
-    }
-
-    @Test
     void testUseDefaultValueIfMissing() throws Exception {
         final Object def = new Object();
         final Param param = mock(Param.class);
