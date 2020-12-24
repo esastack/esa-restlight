@@ -21,7 +21,7 @@
     <artifactId>restlight-bom</artifactId>
     <packaging>pom</packaging>
     <name>Restlight :: Bom</name>
-    <version>0.1.1-SNAPSHOT</version>
+    <version>0.1.0-SNAPSHOT</version>
 
     <description>
         Restlight :: Bill of Materials
