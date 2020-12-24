@@ -45,4 +45,46 @@ Started Restlight server in 1265 millis on 0.0.0.0:8080
 
 curl http://localhost:8080/hello 
 
+## Performance
+
+### Test cases
+
+- We built an echo server by ESA Restlight and used a http client to do the requests for RPS testing with different bytes of payload(16B, 128B, 512B, 1KB, 4KB, 10KB) and different Threading-Models(IO, BIZ).
+- Also we used `spring-boot-starter-web`(2.3.2.RELEASE) to build a server which is same with above for RPS testing.
+
+### Hardware Used
+
+We used the following software for the testing:
+
+- wrk4.1.0
+
+- |        | OS                       | CPU  | Mem(G) |
+  | ------ | ------------------------ | ---- | ------ |
+  | server | centos:6.9-1.2.5(docker) | 4    | 8      |
+  | client | centos:7.6-1.3.0(docker) | 16   | 3      |
+  
+
+### JVM Options
+
+```
+-server -Xms3072m -Xmx3072m -XX:MetaspaceSize=128m -XX:MaxMetaspaceSize=256m -XX:+UseConcMarkSweepGC -XX:+UseCMSInitiatingOccupancyOnly -XX:CMSInitiatingOccupancyFraction=70 -XX:+PrintTenuringDistribution -XX:+PrintGCDateStamps -XX:+PrintGCDetails -Xloggc:logs/gc-${appName}-%t.log -XX:NumberOfGCLogFiles=20 -XX:GCLogFileSize=480M -XX:+UseGCLogFileRotation -XX:HeapDumpPath=.
+```
+
+### Server Options
+
+| Framework  | Options                                                      |
+| ---------- | ------------------------------------------------------------ |
+| Restlight  | restlight.server.port=8080<br/>restlight.server.io-threads=8<br/>restlight.server.core-biz-threads=16<br/>restlight.server.max-biz-threads=16<br/>restlight.server.blocking-queue-length=512 |
+| Spring Web | server.port=8080<br/>server.tomcat.threads.max=32<br/>server.tomcat.accept-count=128 |
+
+
+
+### RPS
+
+|                | 16B       | 128B      | 512B      | 1KB       | 4KB      | 10KB     |
+| -------------- | --------- | --------- | --------- | --------- | -------- | -------- |
+| Restlight(IO)  | 129457.26 | 125344.89 | 125206.74 | 116963.24 | 85749.45 | 49034.57 |
+| Restlight(BIZ) | 101385.44 | 98786.62  | 97622.33  | 96504.81  | 68235.2  | 46460.79 |
+| Spring Web     | 35648.27  | 38294.94  | 37940.3   | 37497.58  | 32098.65 | 22074.94 |
+
 #### See more details in [Reference Doc](https://github.com/esastack/esa-restlight/wiki)
