@@ -44,7 +44,7 @@ public abstract class AbstractNameAndValueArgumentResolver implements ArgumentRe
     @Override
     public Object resolve(AsyncRequest request, AsyncResponse response) throws Exception {
         Object arg = this.resolveName(nav.name, request);
-        if (isArgumentMissing(arg)) {
+        if (arg == null) {
             if (nav.defaultValue == null) {
                 if (nav.required) {
                     throw WebServerException.badRequest("Missing required value: " + nav.name);
@@ -54,10 +54,6 @@ public abstract class AbstractNameAndValueArgumentResolver implements ArgumentRe
             }
         }
         return arg;
-    }
-
-    protected boolean isArgumentMissing(Object arg) {
-        return arg == null || (arg instanceof String && ((String) arg).length() == 0);
     }
 
     protected NameAndValue getNameAndValue(Param param) {
