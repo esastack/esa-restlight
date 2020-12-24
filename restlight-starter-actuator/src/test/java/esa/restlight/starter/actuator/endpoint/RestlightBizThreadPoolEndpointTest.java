@@ -24,6 +24,7 @@ import org.junit.jupiter.api.Test;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -35,7 +36,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 class RestlightBizThreadPoolEndpointTest {
 
     @Test
-    void testMetrics() {
+    void testMetrics() throws InterruptedException {
         final RestlightBizThreadPoolEndpoint endpoint = new RestlightBizThreadPoolEndpoint();
         final AutoRestlightServerOptions ops = new AutoRestlightServerOptions();
         endpoint.config = ops;
@@ -50,23 +51,36 @@ class RestlightBizThreadPoolEndpointTest {
                         TimeUnit.SECONDS,
                         new LinkedBlockingQueue<>(ops.getBlockingQueueLength()));
         endpoint.setRestlightBizExecutor(executor);
+        final CountDownLatch firstTaskLatch = new CountDownLatch(1);
+        executor.execute(firstTaskLatch::countDown);
+        firstTaskLatch.await();
+
+        final CountDownLatch exeLatch = new CountDownLatch(1);
+        final CountDownLatch awaitLatch = new CountDownLatch(1);
         executor.execute(() -> {
+            try {
+                exeLatch.countDown();
+                awaitLatch.await();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         });
 
+        exeLatch.await();
         final ThreadPoolMetric metric = endpoint.threadPoolMetric();
         assertEquals(executor.getCorePoolSize(), metric.getCorePoolSize());
         assertEquals(executor.getMaximumPoolSize(), metric.getMaxPoolSize());
         assertEquals(ops.getBlockingQueueLength(), metric.getQueueLength());
         assertEquals(executor.getKeepAliveTime(TimeUnit.SECONDS), metric.getKeepAliveTimeSeconds());
-        assertEquals(executor.getActiveCount(), metric.getActiveCount());
+        assertEquals(1, metric.getActiveCount());
         assertEquals(executor.getLargestPoolSize(), metric.getLargestPoolSize());
         assertEquals(executor.getQueue().size(), metric.getQueueCount());
-        assertEquals(executor.getCompletedTaskCount(), metric.getCompletedTaskCount());
-
+        assertEquals(1, metric.getCompletedTaskCount());
         endpoint.update(2, 4);
         assertEquals(executor.getCorePoolSize(), 2);
         assertEquals(executor.getMaximumPoolSize(), 4);
 
+        awaitLatch.countDown();
         executor.shutdown();
     }
 
