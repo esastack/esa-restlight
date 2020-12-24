@@ -74,8 +74,8 @@ We used the following software for the testing:
 
 | Framework  | Options                                                      |
 | ---------- | ------------------------------------------------------------ |
-| Restlight  | restlight.server.port=8080<br/>restlight.server.io-threads=8<br/>restlight.server.core-biz-threads=16<br/>restlight.server.max-biz-threads=16<br/>restlight.server.blocking-queue-length=512 |
-| Spring Web | server.port=8080<br/>server.tomcat.threads.max=32<br/>server.tomcat.accept-count=128 |
+| Restlight  | restlight.server.io-threads=8<br/>restlight.server.core-biz-threads=16<br/>restlight.server.max-biz-threads=16<br/>restlight.server.blocking-queue-length=512 |
+| Spring Web | server.tomcat.threads.max=32<br/>server.tomcat.accept-count=128 |
 
 
 
