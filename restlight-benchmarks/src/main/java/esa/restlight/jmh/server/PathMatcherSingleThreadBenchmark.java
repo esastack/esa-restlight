@@ -44,7 +44,7 @@ public class PathMatcherSingleThreadBenchmark {
 
     @Setup
     public void setUp() {
-        this.restlightMatcher = new PathMatcher("pattern");
+        this.restlightMatcher = new PathMatcher(pattern);
         this.springMatcher = new org.springframework.util.AntPathMatcher();
     }
 
