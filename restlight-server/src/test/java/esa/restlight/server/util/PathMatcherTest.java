@@ -17,7 +17,12 @@ package esa.restlight.server.util;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.Map;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
@@ -294,4 +299,51 @@ class PathMatcherTest {
         assertFalse(PathMatcher.isTemplateVarPattern(null));
     }
 
+    @Test
+    void testMatchAndExtractUriTemplateVariables() {
+        assertTrue(new PathMatcher("").matchAndExtractUriTemplateVariables("").isEmpty());
+        assertTrue(new PathMatcher("/foo").matchAndExtractUriTemplateVariables("/foo").isEmpty());
+        assertNull(new PathMatcher("/foo").matchAndExtractUriTemplateVariables("/bar"));
+
+        final Map<String, String> ret1 = new PathMatcher("/foo/{bar}")
+                .matchAndExtractUriTemplateVariables("/foo/baz");
+        assertEquals("baz", ret1.get("bar"));
+
+        final Map<String, String> ret2 = new PathMatcher("/foo/{bar}/{baz}")
+                .matchAndExtractUriTemplateVariables("/foo/abc/def");
+        assertEquals("abc", ret2.get("bar"));
+        assertEquals("def", ret2.get("baz"));
+
+        final Map<String, String> ret3 = new PathMatcher("{symbolicName:[\\w\\.]+}-{version:[\\w\\.]+}.jar")
+                .matchAndExtractUriTemplateVariables("com.example-1.0.0.jar");
+        assertEquals("com.example", ret3.get("symbolicName"));
+        assertEquals("1.0.0", ret3.get("version"));
+
+
+        final Map<String, String> ret4 =
+                new PathMatcher("{symbolicName:[\\p{L}\\.]+}-sources-{version:[\\p{N}\\.]+}.jar")
+                        .matchAndExtractUriTemplateVariables("com.example-sources-1.0.0.jar");
+        assertEquals("com.example", ret4.get("symbolicName"));
+        assertEquals("1.0.0", ret4.get("version"));
+
+        final Map<String, String> ret5 =
+                new PathMatcher("{symbolicName:[\\w\\.]+}-sources-{version:[\\d\\" +
+                        ".]+}-{year:\\d{4}}{month:\\d{2}}{day:\\d{2}}.jar")
+                        .matchAndExtractUriTemplateVariables("com.example-sources-1.0.0-20201229.jar");
+        assertEquals("com.example", ret5.get("symbolicName"));
+        assertEquals("1.0.0", ret5.get("version"));
+        assertEquals("2020", ret5.get("year"));
+        assertEquals("12", ret5.get("month"));
+        assertEquals("29", ret5.get("day"));
+
+        final Map<String, String> ret6 =
+                new PathMatcher("{symbolicName:[\\p{L}\\.]+}-sources-{version:[\\p{N}\\.\\{\\}]+}.jar")
+                        .matchAndExtractUriTemplateVariables("com.example-sources-1.0.0.{12}.jar");
+        assertEquals("com.example", ret6.get("symbolicName"));
+        assertEquals("1.0.0.{12}", ret6.get("version"));
+
+        assertThrows(IllegalArgumentException.class,
+                () -> new PathMatcher("/foo/{id:bar(baz)?}")
+                        .matchAndExtractUriTemplateVariables("/foo/barbaz"));
+    }
 }
