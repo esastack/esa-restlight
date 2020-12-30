@@ -36,6 +36,10 @@ class PathMatcherTest {
         assertFalse(PathMatcher.match("foo", "/foo"));
         assertFalse(PathMatcher.match("/foo", "foo"));
         assertFalse(PathMatcher.match("/foo/", "/foo"));
+        assertFalse(PathMatcher.match("foo", "FOO"));
+
+        assertTrue(new PathMatcher("foo", false).match("foo"));
+        assertTrue(new PathMatcher("foo", false).match("FOO"));
     }
 
     @Test
@@ -100,6 +104,38 @@ class PathMatcherTest {
         assertTrue(PathMatcher.match("", ""));
 
         assertTrue(PathMatcher.match("/{foo}.*", "/testing.bar"));
+
+        assertTrue(PathMatcher.match("/{foo}", "/f"));
+        assertTrue(PathMatcher.match("/{foo}bar", "/bar"));
+        assertTrue(new PathMatcher("/{foo}bar", false).match("/BAR"));
+        assertTrue(PathMatcher.match("/foo{bar}", "/foo"));
+        assertTrue(new PathMatcher("/foo{bar}", false).match("/FOO"));
+        assertTrue(PathMatcher.match("/{foo}bar/{baz}", "/bar/b"));
+        assertTrue(new PathMatcher("/{foo}bar/{baz}", false).match("/BAR/B"));
+        assertTrue(PathMatcher.match("/foo{bar}/{baz}", "/foo/b"));
+        assertTrue(new PathMatcher("/foo{bar}/{baz}", false).match("/FOO/B"));
+        assertTrue(PathMatcher.match("/foo{bar}baz", "/foobbaz"));
+        assertTrue(new PathMatcher("/foo{bar}baz", false).match("/FOObBAZ"));
+        assertTrue(PathMatcher.match("/foo{bar}baz", "/foobaz"));
+        assertTrue(new PathMatcher("/foo{bar}baz", false).match("/FOOBAZ"));
+
+        assertFalse(PathMatcher.match("/{foo}bar", "/BAR"));
+        assertFalse(PathMatcher.match("/{foo}bar", "/ar"));
+        assertFalse(new PathMatcher("/{foo}bar", false).match("/AR"));
+        assertFalse(PathMatcher.match("/{foo}bar", "/aaaaaaar"));
+        assertFalse(new PathMatcher("/{foo}bar", false).match("/AAAAAAAR"));
+        assertFalse(PathMatcher.match("/foo{bar}", "/FOO"));
+        assertFalse(PathMatcher.match("/foo{bar}", "/fo"));
+        assertFalse(new PathMatcher("/foo{bar}", false).match("/FO"));
+        assertFalse(PathMatcher.match("/foo{bar}", "/fffffffo"));
+        assertFalse(new PathMatcher("/foo{bar}", false).match("/FFFFFFFFFO"));
+        assertFalse(PathMatcher.match("/foo{bar}baz", "/FOOBAZ"));
+        assertFalse(PathMatcher.match("/foo{bar}baz", "/foaz"));
+        assertFalse(new PathMatcher("/foo{bar}baz", false).match("/FOAZ"));
+        assertFalse(PathMatcher.match("/foo{bar}baz", "/fooaz"));
+        assertFalse(new PathMatcher("/foo{bar}baz", false).match("/FOOAZ"));
+        assertFalse(PathMatcher.match("/foo{bar}baz", "/fobaz"));
+        assertFalse(new PathMatcher("/foo{bar}baz", false).match("/FOBAZ"));
     }
 
     @Test
@@ -341,6 +377,11 @@ class PathMatcherTest {
                         .matchAndExtractUriTemplateVariables("com.example-sources-1.0.0.{12}.jar");
         assertEquals("com.example", ret6.get("symbolicName"));
         assertEquals("1.0.0.{12}", ret6.get("version"));
+
+        final Map<String, String> ret7 = new PathMatcher("/foo{bar}/{baz}qux")
+                .matchAndExtractUriTemplateVariables("/foo/qux");
+        assertEquals("", ret7.get("bar"));
+        assertEquals("", ret7.get("baz"));
 
         assertThrows(IllegalArgumentException.class,
                 () -> new PathMatcher("/foo/{id:bar(baz)?}")
