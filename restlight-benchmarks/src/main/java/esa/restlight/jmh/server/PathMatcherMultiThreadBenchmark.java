@@ -33,6 +33,9 @@ public class PathMatcherMultiThreadBenchmark {
     private org.springframework.util.PathMatcher springMatcher;
 
     @Param({"/abcd/efgh/ijkl",
+            "/{foo}/efgh/ijkl",
+            "/abcd/e{foo}h/ijkl",
+            "/abcd/e{foo}/{bar}l",
             "/ab??/??gh/i?jkl",
             "/abc*/e*h/*jkl",
             "/ab?d/e?g*/*k*",

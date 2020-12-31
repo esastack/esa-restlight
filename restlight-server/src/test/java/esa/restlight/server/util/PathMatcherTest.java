@@ -36,6 +36,10 @@ class PathMatcherTest {
         assertFalse(PathMatcher.match("foo", "/foo"));
         assertFalse(PathMatcher.match("/foo", "foo"));
         assertFalse(PathMatcher.match("/foo/", "/foo"));
+        assertFalse(PathMatcher.match("foo", "FOO"));
+
+        assertTrue(new PathMatcher("foo", false).match("foo"));
+        assertTrue(new PathMatcher("foo", false).match("FOO"));
     }
 
     @Test
@@ -100,6 +104,38 @@ class PathMatcherTest {
         assertTrue(PathMatcher.match("", ""));
 
         assertTrue(PathMatcher.match("/{foo}.*", "/testing.bar"));
+
+        assertTrue(PathMatcher.match("/{foo}", "/f"));
+        assertTrue(PathMatcher.match("/{foo}bar", "/bar"));
+        assertTrue(new PathMatcher("/{foo}bar", false).match("/BAR"));
+        assertTrue(PathMatcher.match("/foo{bar}", "/foo"));
+        assertTrue(new PathMatcher("/foo{bar}", false).match("/FOO"));
+        assertTrue(PathMatcher.match("/{foo}bar/{baz}", "/bar/b"));
+        assertTrue(new PathMatcher("/{foo}bar/{baz}", false).match("/BAR/B"));
+        assertTrue(PathMatcher.match("/foo{bar}/{baz}", "/foo/b"));
+        assertTrue(new PathMatcher("/foo{bar}/{baz}", false).match("/FOO/B"));
+        assertTrue(PathMatcher.match("/foo{bar}baz", "/foobbaz"));
+        assertTrue(new PathMatcher("/foo{bar}baz", false).match("/FOObBAZ"));
+        assertTrue(PathMatcher.match("/foo{bar}baz", "/foobaz"));
+        assertTrue(new PathMatcher("/foo{bar}baz", false).match("/FOOBAZ"));
+
+        assertFalse(PathMatcher.match("/{foo}bar", "/BAR"));
+        assertFalse(PathMatcher.match("/{foo}bar", "/ar"));
+        assertFalse(new PathMatcher("/{foo}bar", false).match("/AR"));
+        assertFalse(PathMatcher.match("/{foo}bar", "/aaaaaaar"));
+        assertFalse(new PathMatcher("/{foo}bar", false).match("/AAAAAAAR"));
+        assertFalse(PathMatcher.match("/foo{bar}", "/FOO"));
+        assertFalse(PathMatcher.match("/foo{bar}", "/fo"));
+        assertFalse(new PathMatcher("/foo{bar}", false).match("/FO"));
+        assertFalse(PathMatcher.match("/foo{bar}", "/fffffffo"));
+        assertFalse(new PathMatcher("/foo{bar}", false).match("/FFFFFFFFFO"));
+        assertFalse(PathMatcher.match("/foo{bar}baz", "/FOOBAZ"));
+        assertFalse(PathMatcher.match("/foo{bar}baz", "/foaz"));
+        assertFalse(new PathMatcher("/foo{bar}baz", false).match("/FOAZ"));
+        assertFalse(PathMatcher.match("/foo{bar}baz", "/fooaz"));
+        assertFalse(new PathMatcher("/foo{bar}baz", false).match("/FOOAZ"));
+        assertFalse(PathMatcher.match("/foo{bar}baz", "/fobaz"));
+        assertFalse(new PathMatcher("/foo{bar}baz", false).match("/FOBAZ"));
     }
 
     @Test
@@ -305,45 +341,82 @@ class PathMatcherTest {
         assertTrue(new PathMatcher("/foo").matchAndExtractUriTemplateVariables("/foo").isEmpty());
         assertNull(new PathMatcher("/foo").matchAndExtractUriTemplateVariables("/bar"));
 
-        final Map<String, String> ret1 = new PathMatcher("/foo/{bar}")
+        Map<String, String> ret = new PathMatcher("/foo/{bar}")
                 .matchAndExtractUriTemplateVariables("/foo/baz");
-        assertEquals("baz", ret1.get("bar"));
+        assertEquals("baz", ret.get("bar"));
 
-        final Map<String, String> ret2 = new PathMatcher("/foo/{bar}/{baz}")
-                .matchAndExtractUriTemplateVariables("/foo/abc/def");
-        assertEquals("abc", ret2.get("bar"));
-        assertEquals("def", ret2.get("baz"));
+        ret = new PathMatcher("/foo/{bar}", false)
+                .matchAndExtractUriTemplateVariables("/FOO/baz");
+        assertEquals("baz", ret.get("bar"));
 
-        final Map<String, String> ret3 = new PathMatcher("{symbolicName:[\\w\\.]+}-{version:[\\w\\.]+}.jar")
+        ret = new PathMatcher("/{foo}/abc{bar}/{baz}def/gh{qux}ijk")
+                .matchAndExtractUriTemplateVariables("/fff/abc/def/ghijk");
+        assertEquals("fff", ret.get("foo"));
+        assertEquals("", ret.get("bar"));
+        assertEquals("", ret.get("bar"));
+        assertEquals("", ret.get("baz"));
+
+        ret = new PathMatcher("/{foo}/abc{bar}/{baz}def/gh{qux}ijk", false)
+                .matchAndExtractUriTemplateVariables("/fff/ABC/DEF/GHIJK");
+        assertEquals("fff", ret.get("foo"));
+        assertEquals("", ret.get("bar"));
+        assertEquals("", ret.get("bar"));
+        assertEquals("", ret.get("baz"));
+
+        ret = new PathMatcher("{symbolicName:[\\w\\.]+}-{version:[\\w\\.]+}.jar")
                 .matchAndExtractUriTemplateVariables("com.example-1.0.0.jar");
-        assertEquals("com.example", ret3.get("symbolicName"));
-        assertEquals("1.0.0", ret3.get("version"));
+        assertEquals("com.example", ret.get("symbolicName"));
+        assertEquals("1.0.0", ret.get("version"));
 
+        ret = new PathMatcher("{symbolicName:[\\w\\.]+}-{version:[\\w\\.]+}.jar", false)
+                .matchAndExtractUriTemplateVariables("com.example-1.0.0.JAR");
+        assertEquals("com.example", ret.get("symbolicName"));
+        assertEquals("1.0.0", ret.get("version"));
 
-        final Map<String, String> ret4 =
-                new PathMatcher("{symbolicName:[\\p{L}\\.]+}-sources-{version:[\\p{N}\\.]+}.jar")
-                        .matchAndExtractUriTemplateVariables("com.example-sources-1.0.0.jar");
-        assertEquals("com.example", ret4.get("symbolicName"));
-        assertEquals("1.0.0", ret4.get("version"));
+        ret = new PathMatcher("{symbolicName:[\\p{L}\\.]+}-sources-{version:[\\p{N}\\.]+}.jar")
+                .matchAndExtractUriTemplateVariables("com.example-sources-1.0.0.jar");
+        assertEquals("com.example", ret.get("symbolicName"));
+        assertEquals("1.0.0", ret.get("version"));
 
-        final Map<String, String> ret5 =
-                new PathMatcher("{symbolicName:[\\w\\.]+}-sources-{version:[\\d\\" +
-                        ".]+}-{year:\\d{4}}{month:\\d{2}}{day:\\d{2}}.jar")
-                        .matchAndExtractUriTemplateVariables("com.example-sources-1.0.0-20201229.jar");
-        assertEquals("com.example", ret5.get("symbolicName"));
-        assertEquals("1.0.0", ret5.get("version"));
-        assertEquals("2020", ret5.get("year"));
-        assertEquals("12", ret5.get("month"));
-        assertEquals("29", ret5.get("day"));
+        ret = new PathMatcher("{symbolicName:[\\p{L}\\.]+}-sources-{version:[\\p{N}\\.]+}.jar", false)
+                .matchAndExtractUriTemplateVariables("com.example-SOURCES-1.0.0.JAR");
+        assertEquals("com.example", ret.get("symbolicName"));
+        assertEquals("1.0.0", ret.get("version"));
 
-        final Map<String, String> ret6 =
-                new PathMatcher("{symbolicName:[\\p{L}\\.]+}-sources-{version:[\\p{N}\\.\\{\\}]+}.jar")
-                        .matchAndExtractUriTemplateVariables("com.example-sources-1.0.0.{12}.jar");
-        assertEquals("com.example", ret6.get("symbolicName"));
-        assertEquals("1.0.0.{12}", ret6.get("version"));
+        ret = new PathMatcher("{symbolicName:[\\w\\.]+}-sources-{version:[\\d\\" +
+                ".]+}-{year:\\d{4}}{month:\\d{2}}{day:\\d{2}}.jar")
+                .matchAndExtractUriTemplateVariables("com.example-sources-1.0.0-20201229.jar");
+        assertEquals("com.example", ret.get("symbolicName"));
+        assertEquals("1.0.0", ret.get("version"));
+        assertEquals("2020", ret.get("year"));
+        assertEquals("12", ret.get("month"));
+        assertEquals("29", ret.get("day"));
+
+        ret = new PathMatcher("{symbolicName:[\\w\\.]+}-sources-{version:[\\d\\" +
+                ".]+}-{year:\\d{4}}{month:\\d{2}}{day:\\d{2}}.jar", false)
+                .matchAndExtractUriTemplateVariables("com.example-SOURCES-1.0.0-20201229.JAR");
+        assertEquals("com.example", ret.get("symbolicName"));
+        assertEquals("1.0.0", ret.get("version"));
+        assertEquals("2020", ret.get("year"));
+        assertEquals("12", ret.get("month"));
+        assertEquals("29", ret.get("day"));
+
+        ret = new PathMatcher("{symbolicName:[\\p{L}\\.]+}-sources-{version:[\\p{N}\\.\\{\\}]+}.jar")
+                .matchAndExtractUriTemplateVariables("com.example-sources-1.0.0.{12}.jar");
+        assertEquals("com.example", ret.get("symbolicName"));
+        assertEquals("1.0.0.{12}", ret.get("version"));
+
+        ret = new PathMatcher("{symbolicName:[\\p{L}\\.]+}-sources-{version:[\\p{N}\\.\\{\\}]+}.jar", false)
+                .matchAndExtractUriTemplateVariables("com.example-SOURCES-1.0.0.{12}.JAR");
+        assertEquals("com.example", ret.get("symbolicName"));
+        assertEquals("1.0.0.{12}", ret.get("version"));
 
         assertThrows(IllegalArgumentException.class,
                 () -> new PathMatcher("/foo/{id:bar(baz)?}")
                         .matchAndExtractUriTemplateVariables("/foo/barbaz"));
+
+        assertThrows(IllegalArgumentException.class,
+                () -> new PathMatcher("/foo/{id:bar(baz)?}", false)
+                        .matchAndExtractUriTemplateVariables("/foo/BARBAZ"));
     }
 }

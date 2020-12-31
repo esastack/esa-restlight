@@ -18,13 +18,13 @@ package esa.restlight.server.util;
 import esa.commons.StringUtils;
 import io.netty.util.concurrent.FastThreadLocal;
 
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.BiPredicate;
 import java.util.regex.Pattern;
 
 /**
@@ -91,7 +91,6 @@ public class PathMatcher {
      *
      * @param pattern the pattern to match against
      * @param path    the path String to test
-     *
      * @return {@code true} if the given path matched, otherwise {@code false}
      */
     public static boolean match(String pattern, String path) {
@@ -109,7 +108,6 @@ public class PathMatcher {
      * Determines Whether the given pattern is a pattern, such as {@code /fo?/bar}, {@code /f*o/bar}
      *
      * @param pattern path
-     *
      * @return {@code true} if it is a pattern, otherwise {@code false}.
      */
     public static boolean isPattern(String pattern) {
@@ -123,7 +121,6 @@ public class PathMatcher {
      * Determines Whether the given pattern contains a template variable pattern, such as "/{foo}", "/foo/{bar}".
      *
      * @param pattern path
-     *
      * @return {@code true} if it is a template variable pattern, otherwise {@code false}.
      */
     public static boolean isTemplateVarPattern(String pattern) {
@@ -166,7 +163,6 @@ public class PathMatcher {
      *
      * @param pattern pattern, such as '/foo/?ar/q*x'
      * @param subject target path or a pattern.
-     *
      * @return {@code true} if give pattern's semantic certainly includes given subject path, otherwise {@code false}
      */
     public static boolean certainlyIncludes(String pattern, String subject) {
@@ -206,7 +202,6 @@ public class PathMatcher {
      *
      * @param pattern1 pattern1
      * @param pattern2 pattern2
-     *
      * @return {@code true} patterns may intersect potentially, otherwise {@code false}.
      */
     public static boolean isPotentialIntersect(String pattern1, String pattern2) {
@@ -322,10 +317,12 @@ public class PathMatcher {
                 index++;
             }
 
-            if (patternDirs1.length > patternDirs2.length && !patternDirs2[patternDirs2.length - 1].isDoubleWildcards) {
+            if (patternDirs1.length > patternDirs2.length
+                    && !patternDirs2[patternDirs2.length - 1].isDoubleWildcards) {
                 return false;
             }
-            if (patternDirs2.length > patternDirs1.length && !patternDirs1[patternDirs1.length - 1].isDoubleWildcards) {
+            if (patternDirs2.length > patternDirs1.length
+                    && !patternDirs1[patternDirs1.length - 1].isDoubleWildcards) {
                 return false;
             }
         }
@@ -357,12 +354,11 @@ public class PathMatcher {
      *
      * @param pattern1 the first pattern
      * @param pattern2 the second pattern
-     *
      * @return the combination of the two patterns
      */
     public static String combine(String pattern1, String pattern2) {
         if (StringUtils.isEmpty(pattern1) && StringUtils.isEmpty(pattern2)) {
-            return "";
+            return StringUtils.empty();
         }
         if (StringUtils.isEmpty(pattern1)) {
             return pattern2;
@@ -399,7 +395,7 @@ public class PathMatcher {
         String ext1 = pattern1.substring(starDotPos1 + 1);
         int dotPos2 = pattern2.indexOf('.');
         String file2 = (dotPos2 == -1 ? pattern2 : pattern2.substring(0, dotPos2));
-        String ext2 = (dotPos2 == -1 ? "" : pattern2.substring(dotPos2));
+        String ext2 = (dotPos2 == -1 ? StringUtils.empty() : pattern2.substring(dotPos2));
         boolean ext1All = (".*".equals(ext1) || ext1.isEmpty());
         boolean ext2All = (".*".equals(ext2) || ext2.isEmpty());
         if (!ext1All && !ext2All) {
@@ -455,7 +451,6 @@ public class PathMatcher {
      * #pattern} is a template variable pattern.
      *
      * @param path the path String to test
-     *
      * @return a not {@code null} map if the given path matched, otherwise {@code null}.
      */
     public Map<String, String> matchAndExtractUriTemplateVariables(String path) {
@@ -472,7 +467,6 @@ public class PathMatcher {
      * Matches the given path against the given {@link #pattern}.
      *
      * @param path the path String to test
-     *
      * @return {@code true} if the given path matched, otherwise {@code false}.
      */
     public boolean match(String path) {
@@ -486,7 +480,6 @@ public class PathMatcher {
      * then match as well.
      *
      * @param path the path String to test
-     *
      * @return {@code true} if the supplied {@code path} matched, {@code false} if it didn't
      */
     public boolean matchStart(String path) {
@@ -705,17 +698,32 @@ public class PathMatcher {
 
     protected static class Matcher {
 
-        private static final Pattern GLOB_PATTERN = Pattern.compile("\\?|\\*|\\{((?:\\{[^/]+?}|[^/{}]|\\\\[{}])+?)}");
-        private static final String DEFAULT_VARIABLE_PATTERN = "(.*)";
-        private final Pattern pattern;
-        private final List<String> variableNames = new ArrayList<>(4);
+        private static final Pattern GLOB_PATTERN =
+                Pattern.compile("\\?|\\*|\\{((?:\\{[^/]+?}|[^/{}]|\\\\[{}])+?)}");
+        private final BiPredicate<String, Map<String, String>> matcher;
 
         Matcher(String pattern, boolean caseSensitive) {
-            StringBuilder patternBuilder = new StringBuilder();
-            java.util.regex.Matcher matcher = GLOB_PATTERN.matcher(pattern);
+            this.matcher = toMatcher(pattern, caseSensitive);
+        }
+
+        boolean matchStrings(String str) {
+            return matchStrings(str, null);
+        }
+
+        boolean matchStrings(String str, Map<String, String> uriTemplateVariables) {
+            return matcher.test(str, uriTemplateVariables);
+        }
+
+        private static BiPredicate<String, Map<String, String>> toMatcher(String patternStr, boolean caseSensitive) {
+            final StringBuilder patternBuilder = new StringBuilder();
+            final java.util.regex.Matcher matcher = GLOB_PATTERN.matcher(patternStr);
+            final List<String> variableNames = new LinkedList<>();
+            boolean isPathVarOnly = false;
+            int start = 0;
             int end = 0;
             while (matcher.find()) {
-                patternBuilder.append(quote(pattern, end, matcher.start()));
+                isPathVarOnly = false;
+                patternBuilder.append(quote(patternStr, end, start = matcher.start()));
                 String match = matcher.group();
                 if ("?".equals(match)) {
                     patternBuilder.append('.');
@@ -724,55 +732,138 @@ public class PathMatcher {
                 } else if (match.startsWith("{") && match.endsWith("}")) {
                     int colonIdx = match.indexOf(':');
                     if (colonIdx == -1) {
-                        patternBuilder.append(DEFAULT_VARIABLE_PATTERN);
-                        this.variableNames.add(matcher.group(1));
+                        patternBuilder.append("(.*)");
+                        variableNames.add(matcher.group(1));
+                        isPathVarOnly = true;
                     } else {
                         String variablePattern = match.substring(colonIdx + 1, match.length() - 1);
                         patternBuilder.append('(');
                         patternBuilder.append(variablePattern);
                         patternBuilder.append(')');
                         String variableName = match.substring(1, colonIdx);
-                        this.variableNames.add(variableName);
+                        variableNames.add(variableName);
                     }
                 }
                 end = matcher.end();
             }
-            patternBuilder.append(quote(pattern, end, pattern.length()));
-            this.pattern = (caseSensitive ? Pattern.compile(patternBuilder.toString()) :
-                    Pattern.compile(patternBuilder.toString(), Pattern.CASE_INSENSITIVE));
+
+            if (patternBuilder.length() == 0) {
+                return caseSensitive
+                        ? (target, uriTemplateVars) -> patternStr.equals(target)
+                        : (target, uriTemplateVars) -> patternStr.equalsIgnoreCase(target);
+            } else if (isPathVarOnly && variableNames.size() == 1) {
+                final String prefix = start == 0 ? null : patternStr.substring(0, start);
+                final String suffix = end == patternStr.length() ? null : patternStr.substring(end);
+                final String varName = variableNames.get(0);
+                if (prefix == null && suffix == null) {
+                    // /{foo} -> /bar
+                    return (target, uriTemplateVars) -> {
+                        if (uriTemplateVars != null) {
+                            uriTemplateVars.put(varName, target);
+                        }
+                        return true;
+                    };
+                } else if (prefix == null) {
+                    // /{foo}bar -> /fbar
+                    return (target, uriTemplateVars) -> {
+                        if (caseSensitive) {
+                            if (target.endsWith(suffix)) {
+                                if (uriTemplateVars != null) {
+                                    uriTemplateVars.put(varName,
+                                            target.substring(0, target.length() - suffix.length()));
+                                }
+                                return true;
+                            }
+                        } else if (target.length() >= suffix.length()) {
+                            int idx = target.length() - suffix.length();
+                            if (target.substring(idx).equalsIgnoreCase(suffix)) {
+                                if (uriTemplateVars != null) {
+                                    uriTemplateVars.put(varName, target.substring(0, idx));
+                                }
+                                return true;
+                            }
+                        }
+                        return false;
+                    };
+                } else if (suffix == null) {
+                    // /foo{bar} -> /foob
+                    return (target, uriTemplateVars) -> {
+                        if (caseSensitive) {
+                            if (target.startsWith(prefix)) {
+                                if (uriTemplateVars != null) {
+                                    uriTemplateVars.put(varName,
+                                            target.substring(prefix.length()));
+                                }
+                                return true;
+                            }
+                        } else if (target.length() >= prefix.length()) {
+                            if (target.substring(0, prefix.length()).equalsIgnoreCase(prefix)) {
+                                if (uriTemplateVars != null) {
+                                    uriTemplateVars.put(varName, target.substring(prefix.length()));
+                                }
+                                return true;
+                            }
+                        }
+                        return false;
+                    };
+                } else {
+                    // /foo{bar}baz -> /foobbaz
+                    return (target, uriTemplateVars) -> {
+                        if (target.length() >= prefix.length() + suffix.length()) {
+                            if (caseSensitive) {
+                                if (target.startsWith(prefix) && target.endsWith(suffix)) {
+                                    if (uriTemplateVars != null) {
+                                        uriTemplateVars.put(varName, target.substring(prefix.length(),
+                                                target.length() - suffix.length()));
+                                    }
+                                    return true;
+                                }
+                            } else {
+                                int idx = target.length() - suffix.length();
+                                if (target.substring(0, prefix.length()).equalsIgnoreCase(prefix)
+                                        && target.substring(idx).equalsIgnoreCase(suffix)) {
+                                    if (uriTemplateVars != null) {
+                                        uriTemplateVars.put(varName, target.substring(prefix.length(), idx));
+                                    }
+                                    return true;
+                                }
+                            }
+                        }
+                        return false;
+                    };
+                }
+            } else {
+                patternBuilder.append(quote(patternStr, end, patternStr.length()));
+                final Pattern pattern = (caseSensitive ? Pattern.compile(patternBuilder.toString()) :
+                        Pattern.compile(patternBuilder.toString(), Pattern.CASE_INSENSITIVE));
+                final String[] varNames = variableNames.toArray(new String[0]);
+                return (target, uriTemplateVars) -> matchByPattern(target, uriTemplateVars, pattern, varNames);
+            }
         }
 
-        private String quote(String s, int start, int end) {
+        private static String quote(String s, int start, int end) {
             if (start == end) {
-                return "";
+                return StringUtils.empty();
             }
             return Pattern.quote(s.substring(start, end));
         }
 
-        boolean matchStrings(String str) {
-            return matchStrings(str, null);
-        }
-
-        /**
-         * Main entry point.
-         *
-         * @return {@code true} if the string matches against the pattern, or {@code false} otherwise.
-         */
-        boolean matchStrings(String str, Map<String, String> uriTemplateVariables) {
-            java.util.regex.Matcher matcher = this.pattern.matcher(str);
+        private static boolean matchByPattern(String str,
+                                              Map<String, String> uriTemplateVariables,
+                                              Pattern pattern,
+                                              String[] varNames) {
+            java.util.regex.Matcher matcher = pattern.matcher(str);
             if (matcher.matches()) {
                 if (uriTemplateVariables != null) {
-                    // SPR-8455
-                    if (this.variableNames.size() != matcher.groupCount()) {
+                    final int groupCount = matcher.groupCount();
+                    if (varNames.length != groupCount) {
                         throw new IllegalArgumentException("The number of capturing groups in the pattern segment " +
-                                this.pattern + " does not match the number of URI template variables it defines, " +
+                                pattern + " does not match the number of URI template variables it defines, " +
                                 "which can occur if capturing groups are used in a URI template regex. " +
                                 "Use non-capturing groups instead.");
                     }
-                    for (int i = 1; i <= matcher.groupCount(); i++) {
-                        String name = this.variableNames.get(i - 1);
-                        String value = matcher.group(i);
-                        uriTemplateVariables.put(name, value);
+                    for (int i = 1; i <= groupCount; i++) {
+                        uriTemplateVariables.put(varNames[i - 1], matcher.group(i));
                     }
                 }
                 return true;
