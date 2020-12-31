@@ -317,10 +317,12 @@ public class PathMatcher {
                 index++;
             }
 
-            if (patternDirs1.length > patternDirs2.length && !patternDirs2[patternDirs2.length - 1].isDoubleWildcards) {
+            if (patternDirs1.length > patternDirs2.length
+                    && !patternDirs2[patternDirs2.length - 1].isDoubleWildcards) {
                 return false;
             }
-            if (patternDirs2.length > patternDirs1.length && !patternDirs1[patternDirs1.length - 1].isDoubleWildcards) {
+            if (patternDirs2.length > patternDirs1.length
+                    && !patternDirs1[patternDirs1.length - 1].isDoubleWildcards) {
                 return false;
             }
         }
@@ -356,7 +358,7 @@ public class PathMatcher {
      */
     public static String combine(String pattern1, String pattern2) {
         if (StringUtils.isEmpty(pattern1) && StringUtils.isEmpty(pattern2)) {
-            return "";
+            return StringUtils.empty();
         }
         if (StringUtils.isEmpty(pattern1)) {
             return pattern2;
@@ -393,7 +395,7 @@ public class PathMatcher {
         String ext1 = pattern1.substring(starDotPos1 + 1);
         int dotPos2 = pattern2.indexOf('.');
         String file2 = (dotPos2 == -1 ? pattern2 : pattern2.substring(0, dotPos2));
-        String ext2 = (dotPos2 == -1 ? "" : pattern2.substring(dotPos2));
+        String ext2 = (dotPos2 == -1 ? StringUtils.empty() : pattern2.substring(dotPos2));
         boolean ext1All = (".*".equals(ext1) || ext1.isEmpty());
         boolean ext2All = (".*".equals(ext2) || ext2.isEmpty());
         if (!ext1All && !ext2All) {
@@ -696,8 +698,8 @@ public class PathMatcher {
 
     protected static class Matcher {
 
-        private static final Pattern GLOB_PATTERN = Pattern.compile("\\?|\\*|\\{((?:\\{[^/]+?}|[^/{}]|\\\\[{}])+?)}");
-        private static final String DEFAULT_VARIABLE_PATTERN = "(.*)";
+        private static final Pattern GLOB_PATTERN =
+                Pattern.compile("\\?|\\*|\\{((?:\\{[^/]+?}|[^/{}]|\\\\[{}])+?)}");
         private final BiPredicate<String, Map<String, String>> matcher;
 
         Matcher(String pattern, boolean caseSensitive) {
@@ -730,7 +732,7 @@ public class PathMatcher {
                 } else if (match.startsWith("{") && match.endsWith("}")) {
                     int colonIdx = match.indexOf(':');
                     if (colonIdx == -1) {
-                        patternBuilder.append(DEFAULT_VARIABLE_PATTERN);
+                        patternBuilder.append("(.*)");
                         variableNames.add(matcher.group(1));
                         isPathVarOnly = true;
                     } else {
@@ -841,7 +843,7 @@ public class PathMatcher {
 
         private static String quote(String s, int start, int end) {
             if (start == end) {
-                return "";
+                return StringUtils.empty();
             }
             return Pattern.quote(s.substring(start, end));
         }
@@ -853,14 +855,14 @@ public class PathMatcher {
             java.util.regex.Matcher matcher = pattern.matcher(str);
             if (matcher.matches()) {
                 if (uriTemplateVariables != null) {
-                    // SPR-8455
-                    if (varNames.length != matcher.groupCount()) {
+                    final int groupCount = matcher.groupCount();
+                    if (varNames.length != groupCount) {
                         throw new IllegalArgumentException("The number of capturing groups in the pattern segment " +
                                 pattern + " does not match the number of URI template variables it defines, " +
                                 "which can occur if capturing groups are used in a URI template regex. " +
                                 "Use non-capturing groups instead.");
                     }
-                    for (int i = 1; i <= matcher.groupCount(); i++) {
+                    for (int i = 1; i <= groupCount; i++) {
                         uriTemplateVariables.put(varNames[i - 1], matcher.group(i));
                     }
                 }
