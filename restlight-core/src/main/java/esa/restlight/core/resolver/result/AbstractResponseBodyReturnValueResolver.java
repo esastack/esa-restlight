@@ -97,20 +97,24 @@ public abstract class AbstractResponseBodyReturnValueResolver implements ReturnV
             }
 
             HttpResponseSerializer serializer = null;
-            for (MediaType mediaType : mediaTypes) {
-                for (HttpResponseSerializer ser : serializers) {
-                    if (ser.supportsWrite(mediaType, returnValue.getClass())) {
-                        serializer = ser;
-                        break;
+            if (mediaTypes.isEmpty()) {
+                serializer = serializers.get(0);
+            } else {
+                for (MediaType mediaType : mediaTypes) {
+                    for (HttpResponseSerializer ser : serializers) {
+                        if (ser.supportsWrite(mediaType, returnValue.getClass())) {
+                            serializer = ser;
+                            break;
+                        }
                     }
+                }
+                if (serializer == null) {
+                    logger.warn("Failed to find serializer for media type '{}', try to use default serializer.",
+                            mediaTypes);
+                    serializer = serializers.get(0);
                 }
             }
 
-            if (serializer == null) {
-                logger.warn("Failed to find serializer for media type '{}', try to use default serializer.",
-                        mediaTypes);
-                serializer = serializers.get(0);
-            }
             final Object returnValueToWrite = serializer.customResponse(request, response, returnValue);
             return Serializers.serializeBySerializer(serializer, returnValueToWrite, response);
         }
