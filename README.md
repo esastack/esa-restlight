@@ -7,6 +7,20 @@
 
 Restlight is a lightweight and rest-oriented web framework.
 
+## Features
+
+- HTTP1.1/HTTP2/H2C/HTTPS support
+- SpringMVC and JAX-RS annotations support
+- High performance: 2 to 4 times Spring Web
+- Fully asynchronous: Based on `CompletableFuture`
+- Threading Model: Connector thread, IO thread, Biz thread
+- Thread Scheduling: Schedule requests to IO thread pool, Biz thread pool, or any custom thread pool
+- Self-Protection: Connection creation limit, CPU load overload protection
+- Spring Boot Actuator support
+- Extension: Use SPI(enhanced) to extend Restlight
+- Layered architecture: Use Restlight in Spring Boot, Spring, and embedded environment without compatibility issues
+- more...
+
 ## Quick Start
 
 Create a Spring Boot application and add dependency
