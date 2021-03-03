@@ -48,8 +48,6 @@ public class DefaultDispatcherHandler implements DispatcherHandler {
 
     private static final Logger logger =
             LoggerFactory.getLogger(DefaultDispatcherHandler.class);
-    private static final HttpResponseStatus SERVER_BUSY =
-            new HttpResponseStatus(429, "Server busy");
     private final ReadOnlyRouteRegistry registry;
 
     private final LongAdder rejectCount = new LongAdder();
@@ -195,7 +193,7 @@ public class DefaultDispatcherHandler implements DispatcherHandler {
             sendErrorResult(task.request(),
                     task.response(),
                     reason,
-                    SERVER_BUSY);
+                    HttpResponseStatus.TOO_MANY_REQUESTS);
             LoggerUtils.logger().error("Task({}) rejected, {}", task, reason);
         }
         final CompletableFuture<Void> p = task.promise();
