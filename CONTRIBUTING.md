@@ -11,4 +11,4 @@ Hi there! We're thrilled that you'd like to contribute to this project. Your hel
 5. Push to your fork and [submit a pull request][pr]
 6. Pat your self on the back and wait for your pull request to be reviewed and merged.
 
-Thanks for your contributung!
+Thanks for your contributing!
