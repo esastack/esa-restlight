@@ -1,32 +1,43 @@
-# starter
+ESA Restlight is a lightweight and rest-oriented web framework, which supports annotations of SpringMVC and JAX-RS. 
 
-1. [Generate with the same files and folders](https://github.com/rundocs/starter/generate) from this repository
-2. Set up your GitHub Pages to source(`/`)
-3. Now you can view your documentation in your site
+## Why Restlight?
 
-## site.pages
+In microservices, it is generally expected that service is a lightweight application, and the Spring-Web framework we often use is really a good framework that allows us to develop a variety of applications easily, but it is too bloated for applications in microservices, which just need a rest supports and do not need the session, ModelAndview, JSP and so on... Restlight aims to serve as a web framework that helps users to build a high performance and lightweight microservice.
 
-<!-- prettier-ignore-start -->
+## What kind of web application is Restlight suitable for?
 
-| source          | link                                                           |
-| --------------- | -------------------------------------------------------------- |
-{% for page in site.pages -%}
-| {{ page.path }} | [{{ page.url | relative_url }}]({{ page.url | relative_url }}) |
-{% endfor %}
+- Rest application
+- High-performance requirements
+- Middleware
+- HTTP proxy
+- Any application that needs HTTP services
 
-<!-- prettier-ignore-end -->
+## What kind of web application is Restlight not suitable for?
 
-## Documents
+- All in one application
+- Servlet requirements: Restlight does not support servlet standards
 
-https://jekyll-rtd-theme.rundocs.io
+## Env Requirements
 
-## Local debug
+| Name        | Version        |
+| ----------- | -------------- |
+| Java        | JDK8+          |
+| Spring Boot | 2.1.0.RELEASE+ |
 
-```sh
-make
-make server
-```
+## Features
 
-## The license
+- Annotations of SpringMVC and JAX-RS supports
+- High performance
+- Reactive：`CompletableFuture`、`ListenableFuture(Guava)`， `Future(Netty)`
+- Threading-model: Flexible scheduling between IO EventLoopGroup and Biz Schedulers.
+- Http1/Http2/H2c/Https
+- HAProxy
+- Filter
+- Interceptor
+- JSR-303: hibernate-validator
+- Self-protection: Connection creation limit, Cpu Load protection
+- more ...
 
-The theme is available as open source under the terms of the MIT License
+## Release Notes
+
+[Releases](https://github.com/esastack/esa-restlight/releases)
