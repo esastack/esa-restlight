@@ -1,5 +1,5 @@
 ---
-sort: 100
+sort: 1
 ---
 
 # 配合 Restlight for JAX-RS使用

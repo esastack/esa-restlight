@@ -1,5 +1,5 @@
 ---
-sort: 200
+sort: 2
 ---
 
 # 配合 Restlight for SpringMVC使用

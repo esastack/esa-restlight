@@ -1,5 +1,5 @@
 ---
-sort: 200
+sort: 2
 ---
 
 # Threading Model

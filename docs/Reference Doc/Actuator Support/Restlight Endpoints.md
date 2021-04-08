@@ -1,5 +1,5 @@
 ---
-sort: 100
+sort: 2
 ---
 
 # Restlight Endpoint扩展

@@ -1,5 +1,5 @@
 ---
-sort: 600
+sort: 6
 ---
 
 # Spring MVC 支持

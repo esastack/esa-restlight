@@ -1,5 +1,5 @@
 ---
-sort: 800
+sort: 8
 ---
 
 # Restlight Server

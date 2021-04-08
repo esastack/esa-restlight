@@ -1,5 +1,5 @@
 ---
-sort: 900
+sort: 9
 ---
 
 # Restlight Core

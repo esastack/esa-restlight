@@ -1,5 +1,5 @@
 ---
-sort: 1000
+sort: 10
 ---
 
 # Restlight for Spring

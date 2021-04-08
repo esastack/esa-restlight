@@ -1,5 +1,5 @@
 ---
-sort: 300
+sort: 3
 ---
 
 # Restlight Starter

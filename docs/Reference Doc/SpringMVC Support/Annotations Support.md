@@ -1,5 +1,5 @@
 ---
-sort: 100
+sort: 1
 ---
 
 # Spring MVC 注解支持
