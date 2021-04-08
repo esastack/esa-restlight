@@ -56,7 +56,6 @@ public CompletableFuture<Void> doFilter(AsyncRequest request, AsyncResponse resp
 }
 ```
 
-### 注意
 ```warning
 - `doFilter(xxx)`请勿返回`null`
 - 所有方法都将会在IO线程上调用，尽量不要阻塞， 否则将对性能会有较大的影响。

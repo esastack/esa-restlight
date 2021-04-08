@@ -4,13 +4,7 @@ sort: 200
 
 # Threading Model
 
-## `Restlight`线程模型
-
-如果熟悉Java的IO模型，那大多了解过Doug Lea的[《Scalable IO in Java》](http://gee.cs.oswego.edu/dl/cpjslides/nio.pdf), 而Restlight则是类似模型的实现。
-
-### 线程模型
-
-![ThreadingModel](../img/ThreadingModel.png)
+![ThreadingModel](../../img/ThreadingModel.png)
 
 `Restlight`由于是使用`Netty`作为底层HttpServer的实现，因此图中沿用了部分`EventLoop`的概念，线程模型由了`Acceptor`，`IO EventLoopGroup`（IO线程池）以及`Biz ThreadPool`（业务线程池）组成。
 

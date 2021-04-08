@@ -8,9 +8,7 @@ sort: 100
 
 线程调度允许用户根据需要随意制定`Controller`在`IO`线程上执行还是在`Biz`线程上执行还是在自定义线程上运行。
 
-## `Restlight`线程调度
-
-### 使用`@Scheduled`注解进行线程调度
+## 使用`@Scheduled`注解进行线程调度
 
 eg.
 
@@ -47,7 +45,7 @@ public String bizBatching() {
 }
 ```
 
-### 自定义`Scheduler`
+## 自定义`Scheduler`
 
 将`Scheduler`实现注入`Spring`
 

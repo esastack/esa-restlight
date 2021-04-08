@@ -2,7 +2,7 @@
 sort: 1200
 ---
 
-# JSR-349数据校验支持
+# 参数校验
 
 Restlight集成了Hibernate Validator，提供了开箱即用的数据校验功能，通过注解完成对JavaBean、Controller方法参数和返回值的校验， 并支持异常消息国际化 。
 
