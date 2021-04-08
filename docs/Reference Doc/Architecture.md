@@ -1,6 +1,7 @@
 ---
 sort: 1
 ---
+# Architecture
 
 ## 设计原则
 
@@ -64,17 +65,23 @@ sort: 1
 
 在`Restlight Core`基础上支持在`Spring`场景下通过`ApplicationContext`容器自动配置各种内容（`RestlightOptions`, 从容器中自动配置`Filter`, `Controller`, `ControllerAdvice`等）
 
-> 适合原生`Spring`场景
+```tip
+适合`Spring Boot`场景
+```
 
 ### `Restlight Starter`
 
 在`Restlight for Spring`基础上支持在`Spring Boot`场景的自动配置
 
-> 适合`Spring Boot`场景
+```tip
+适合`Spring Boot`场景
+ ```
 
 ### `Restlight Actuator`
 
 在`Restlight Starter`基础上支持在`Spring Boot Actuator`原生各种`Endpoint`s支持以及`Restlight`独有的`Endpoint`s。
 
-> 适合`Spring Boot Actuator`场景
+```tip
+适合`Spring Boot Actuator`场景
+```
 

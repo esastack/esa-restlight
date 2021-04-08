@@ -2,5 +2,5 @@
 sort: 2
 ---
 
-## Contents
+## Reference Doc
 {% include list.liquid all=true %}
