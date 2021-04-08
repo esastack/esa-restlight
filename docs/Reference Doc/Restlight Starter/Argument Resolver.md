@@ -1,6 +1,5 @@
 ---
 sort: 500
-show_sorted: false
 ---
 
 # 参数解析
