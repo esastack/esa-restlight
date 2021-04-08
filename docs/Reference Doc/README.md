@@ -2,5 +2,5 @@
 sort: 2
 ---
 
-## 参考文档
-{% include list.liquid %}
+# 参考文档
+{% include list.liquid all=true %}

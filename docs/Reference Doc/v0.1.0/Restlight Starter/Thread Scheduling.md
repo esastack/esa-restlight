@@ -4,7 +4,7 @@ sort: 1
 
 # Thread-Scheduling
 
-![threadingmodel.png](../../img/ThreadingModel.png)
+![threadingmodel.png](../../../img/ThreadingModel.png)
 
 线程调度允许用户根据需要随意制定`Controller`在`IO`线程上执行还是在`Biz`线程上执行还是在自定义线程上运行。
 

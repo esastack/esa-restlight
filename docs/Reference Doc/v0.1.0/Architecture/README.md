@@ -14,7 +14,7 @@ sort: 1
 ## 功能架构
 **分层架构设计**
 
-![Architecture](../../img/Architecture.png)
+![Architecture](../../../img/Architecture.png)
 
 架构图中`ESA HttpServer`, `Restlight Server`, `Restlight Core`, `Restlight for Spring`, `Restlight Starter`几个模块均可作为一个独立的模块使用， 满足不同场景下的需求。
 
