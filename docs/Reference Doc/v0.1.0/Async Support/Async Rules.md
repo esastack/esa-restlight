@@ -4,8 +4,6 @@ sort: 1
 
 # Restlight 异步保证
 
-## Restlight 异步保证
-
 - **`Restlight`保证在框架层面对所有的`CompletableFuture`处理都不会主动的切换执行的线程**。
 
 
