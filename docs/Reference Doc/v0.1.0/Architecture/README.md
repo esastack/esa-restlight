@@ -1,7 +1,7 @@
 ---
 sort: 1
 ---
-# Architecture
+# 架构
 
 ## 设计原则
 
