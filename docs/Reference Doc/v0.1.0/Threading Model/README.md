@@ -2,7 +2,7 @@
 sort: 2
 ---
 
-# Threading Model
+# 线程模型
 
 ![ThreadingModel](../../../img/ThreadingModel.png)
 

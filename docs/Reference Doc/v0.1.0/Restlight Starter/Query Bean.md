@@ -2,7 +2,7 @@
 sort: 11
 ---
 
-# `@QueryBean`
+# URL参数聚合
 
 支持将Url中的参数与Form表单中的参数（仅当`Content-Type`为`application/x-www-form-urlencoded`时有效）聚合到Bean中。
 

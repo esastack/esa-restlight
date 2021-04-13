@@ -4,6 +4,17 @@ sort: 3
 
 # 拦截器
 
+`Restlight`支持多种拦截器，适用于不同性能/功能场景
+
+- RouteInterceptor
+- MappingInterceptor
+- HandlerInterceptor
+- InterceptorFactory
+
+```tip
+实现对应的拦截器接口并注入Spring即可
+```
+
 ## 拦截器定位
 
 面向`Controller/Route`， 同时支持按需匹配的拦截器
@@ -29,12 +40,11 @@ sort: 3
 
 - `int getOrder()`
 
-  返回当前拦截器的优先级（默认为最低优先级）
+  返回当前拦截器的优先级（默认为最低优先级），我们保证`getOrder`返回值决定拦截器的执行顺序，但是不支持使用`@Order(int)`注解情况下的顺序（虽然有时候看似顺序和`@Order`一致，但那只是巧合）。
 
-**框架在真正执行拦截器调用的时候只会调用上述方法(而不是preHandle(xxx), postHandle(xxx), afterCompletion(xxx))。**
-
-```tip
-我们保证`getOrder`返回值决定拦截器的执行顺序，但是不支持使用`@Order(int)`注解情况下的顺序（虽然有时候看似顺序和`@Order`一致，但那只是巧合）。
+```note
+- 框架在真正执行拦截器调用的时候只会调用上述方法(而不是preHandle(xxx), postHandle(xxx), afterCompletion(xxx))
+- 请勿直接使用此接口，此接口仅仅是拦截器的核心实现类
 ```
 
 ## 拦截器匹配
@@ -325,5 +335,3 @@ public interface InterceptorFactory {
     Optional<Interceptor> create(DeployContext<? extends RestlightOptions> ctx, Route route);
 }
 ```
-
-注入Spring容器即可

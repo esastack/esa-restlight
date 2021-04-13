@@ -2,7 +2,7 @@
 sort: 10
 ---
 
-# `@RequestBean`
+# 请求参数聚合
 
 支持将请求的参数聚合到Bean中
 
