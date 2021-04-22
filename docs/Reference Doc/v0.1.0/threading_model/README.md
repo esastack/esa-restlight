@@ -4,7 +4,7 @@ sort: 2
 
 # 线程模型
 
-![ThreadingModel](../../../img/ThreadingModel.png)
+![ThreadingModel](../../../img/threading_model.png)
 
 `Restlight`由于是使用`Netty`作为底层HttpServer的实现，因此图中沿用了部分`EventLoop`的概念，线程模型由了`Acceptor`，`IO EventLoopGroup`（IO线程池）以及`Biz ThreadPool`（业务线程池）组成。
 

@@ -8,7 +8,7 @@ sort: 11
 
 对应处理链路
 
-![restlightexecution.png](../../../img/Execution.png)
+![restlightexecution.png](../../../img/execution.png)
 
 上述对应着一个请求的完成执行链路， 并且每个链路都支持异步。
 
