@@ -6,8 +6,8 @@ sort: 4
 
 ## Spring MVC异常处理
 
-[Restlight for Spring MVC](../SpringMVC%20Support/)支持使用Spring MVC中的`@ExceptionHandler`, `@ControllerAdvice`等注解，并且对此能力进行了增强
-参考[ExceptionHandler支持](../SpringMVC%20Support/ExceptionHandler.html)
+[Restlight for Spring MVC](../springmvc_support/)支持使用Spring MVC中的`@ExceptionHandler`, `@ControllerAdvice`等注解，并且对此能力进行了增强
+参考[ExceptionHandler支持](../springmvc_support/exception_handler.html)
 
 ```note
 仅在项目引入了`restlight-springmvc-provider`依赖的情况下使用（默认引入）
