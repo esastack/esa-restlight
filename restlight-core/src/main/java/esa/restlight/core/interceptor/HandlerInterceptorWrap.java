@@ -68,14 +68,13 @@ class HandlerInterceptorWrap extends AbstractInterceptorWrap<HandlerInterceptor>
         } else if (certainlyMatchAll(patterns, excludes)) {
             // rule out if excludes will match to these patterns certainly
             return DETACHED;
-        } else if (((excludes == null || excludes.length == 0)
-                || neverIntersect(excludes, patterns))
-                && certainlyMatchAll(patterns, includes)) {
+        } else if ((excludes == null || excludes.length == 0 || neverIntersect(excludes, patterns))
+                && (includes == null || certainlyMatchAll(patterns, includes))) {
             // excludes must be empty, because excludes may contains a pattern that would be matched to the route
             // pattern. eg. route pattern: fo?, includes: fo?, excludes: foo
             // this includes will certainly match to these patterns.
             return ATTACHED;
-        } else if (neverIntersect(includes, patterns)) {
+        } else if (includes != null && (includes.length == 0 || neverIntersect(includes, patterns))) {
             return DETACHED;
         } else {
             // we think it is expensive to match a request to a interceptor while this interceptor
@@ -120,12 +119,12 @@ class HandlerInterceptorWrap extends AbstractInterceptorWrap<HandlerInterceptor>
         if (includes != null && includes.length > 0) {
             for (String include : includes) {
                 if (Arrays.stream(patterns)
-                        .noneMatch(pattern -> PathMatcher.isPotentialIntersect(include, pattern))) {
-                    return true;
+                        .anyMatch(pattern -> PathMatcher.isPotentialIntersect(include, pattern))) {
+                    return false;
                 }
             }
         }
-        return false;
+        return true;
     }
 
     private boolean certainlyMatchAll(String[] patterns, String[] target) {

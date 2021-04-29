@@ -21,7 +21,11 @@ import esa.restlight.core.annotation.Intercepted;
 import esa.restlight.core.config.RestlightOptions;
 import esa.restlight.core.handler.Handler;
 import esa.restlight.core.handler.impl.RouteHandlerImpl;
-import esa.restlight.core.interceptor.*;
+import esa.restlight.core.interceptor.HandlerInterceptor;
+import esa.restlight.core.interceptor.Interceptor;
+import esa.restlight.core.interceptor.InterceptorFactory;
+import esa.restlight.core.interceptor.InterceptorPredicate;
+import esa.restlight.core.interceptor.InternalInterceptor;
 import esa.restlight.core.method.HandlerMethod;
 import esa.restlight.core.mock.MockContext;
 import esa.restlight.server.route.Mapping;
@@ -34,7 +38,11 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class InterceptorUtilsTest {
 
@@ -330,7 +338,7 @@ class InterceptorUtilsTest {
 
         assertNotNull(filtered);
         assertEquals(matches.size(),
-                filtered.values().stream().map(List::size).reduce(0, (l1, l2) -> l1 + l2).intValue());
+                filtered.values().stream().map(List::size).reduce(0, Integer::sum).intValue());
     }
 
     @Test
@@ -405,6 +413,12 @@ class InterceptorUtilsTest {
                 return new String[]{"/f*"};
             }
         });
+        final InterceptorFactory match12 = InterceptorFactory.of(new HandlerInterceptor() {
+            @Override
+            public String[] includes() {
+                return new String[]{"/foo/bar", "/baz"};
+            }
+        });
 
         final InterceptorFactory unMatch1 = InterceptorFactory.of(new HandlerInterceptor() {
             @Override
@@ -421,7 +435,7 @@ class InterceptorUtilsTest {
         final InterceptorFactory unMatch3 = InterceptorFactory.of(new HandlerInterceptor() {
             @Override
             public String[] includes() {
-                return new String[]{"/foo/bar", "/baz"};
+                return new String[]{"/foo/bar", "/baz/qux"};
             }
         });
         final InterceptorFactory unMatch4 = InterceptorFactory.of(new HandlerInterceptor() {
@@ -465,7 +479,8 @@ class InterceptorUtilsTest {
                 match8,
                 match9,
                 match10,
-                match11);
+                match11,
+                match12);
 
         final List<InterceptorFactory> unMatches = Arrays.asList(
                 unMatch1,
@@ -482,7 +497,7 @@ class InterceptorUtilsTest {
 
         assertNotNull(filtered);
         assertEquals(matches.size(),
-                filtered.values().stream().map(List::size).reduce(0, (l1, l2) -> l1 + l2).intValue());
+                filtered.values().stream().map(List::size).reduce(0, Integer::sum).intValue());
 
     }
 
@@ -562,18 +577,6 @@ class InterceptorUtilsTest {
 
             @Override
             public String[] excludes() {
-                return new String[]{"/f??"};
-            }
-        });
-
-        final InterceptorFactory match12 = InterceptorFactory.of(new HandlerInterceptor() {
-            @Override
-            public String[] includes() {
-                return new String[]{"/fo?"};
-            }
-
-            @Override
-            public String[] excludes() {
                 return new String[]{"/foo"};
             }
         });
@@ -636,7 +639,8 @@ class InterceptorUtilsTest {
                 match7,
                 match8,
                 match9,
-                match10);
+                match10,
+                match11);
 
         final List<InterceptorFactory> unMatches = Arrays.asList(
                 unMatch1,
@@ -653,7 +657,180 @@ class InterceptorUtilsTest {
 
         assertNotNull(filtered);
         assertEquals(matches.size(),
-                filtered.values().stream().map(List::size).reduce(0, (l1, l2) -> l1 + l2).intValue());
+                filtered.values().stream().map(List::size).reduce(0, Integer::sum).intValue());
+
+    }
+
+    @Test
+    void testFilterHandlerInterceptor3() throws NoSuchMethodException {
+        final DeployContext<? extends RestlightOptions> ctx = MockContext.mock();
+        final Handler handler = new RouteHandlerImpl(HandlerMethod.of(Subject.class.getDeclaredMethod("method2"),
+                SUBJECT), true, null);
+        final Mapping mapping = Mapping.get("/foo/bar/{p}");
+
+        // RouteInterceptor will always match to request
+        final InterceptorFactory match1 = InterceptorFactory.of(new HandlerInterceptor() {
+        });
+
+        final InterceptorFactory match2 = InterceptorFactory.of(new HandlerInterceptor() {
+            @Override
+            public String[] excludes() {
+                return new String[]{"/foo/bar/baz"};
+            }
+        });
+        final InterceptorFactory match3 = InterceptorFactory.of(new HandlerInterceptor() {
+            @Override
+            public String[] includes() {
+                return new String[]{"/foo/bar/qux"};
+            }
+        });
+        final InterceptorFactory match4 = InterceptorFactory.of(new HandlerInterceptor() {
+            @Override
+            public String[] includes() {
+                return new String[]{"/foo/bar/ba?"};
+            }
+        });
+        final InterceptorFactory match5 = InterceptorFactory.of(new HandlerInterceptor() {
+            @Override
+            public String[] includes() {
+                return new String[]{"/foo/bar/b??"};
+            }
+        });
+        final InterceptorFactory match6 = InterceptorFactory.of(new HandlerInterceptor() {
+            @Override
+            public String[] includes() {
+                return new String[]{"/foo/bar/b*"};
+            }
+        });
+        final InterceptorFactory match7 = InterceptorFactory.of(new HandlerInterceptor() {
+            @Override
+            public String[] includes() {
+                return new String[]{"/**"};
+            }
+        });
+        final InterceptorFactory match8 = InterceptorFactory.of(new HandlerInterceptor() {
+            @Override
+            public String[] excludes() {
+                return new String[]{"/foo/bar/baz"};
+            }
+        });
+
+        final InterceptorFactory match9 = InterceptorFactory.of(new HandlerInterceptor() {
+            @Override
+            public String[] excludes() {
+                return new String[]{"/foo/bar/ba?"};
+            }
+        });
+
+        final InterceptorFactory match10 = InterceptorFactory.of(new HandlerInterceptor() {
+            @Override
+            public String[] excludes() {
+                return new String[]{"/foo/bar/b*"};
+            }
+        });
+
+        final InterceptorFactory match11 = InterceptorFactory.of(new HandlerInterceptor() {
+            @Override
+            public String[] includes() {
+                return new String[]{"/foo/bar/ba?"};
+            }
+
+            @Override
+            public String[] excludes() {
+                return new String[]{"/foo/bar/baz"};
+            }
+        });
+
+        final InterceptorFactory match12 = InterceptorFactory.of(new HandlerInterceptor() {
+            @Override
+            public String[] includes() {
+                return new String[]{"/foo/bar/**"};
+            }
+
+            @Override
+            public String[] excludes() {
+                return new String[]{"/foo/bar/baz"};
+            }
+        });
+
+        final InterceptorFactory match13 = InterceptorFactory.of(new HandlerInterceptor() {
+            @Override
+            public String[] includes() {
+                return new String[]{"/foo/baz/**", "/foo/bar/**"};
+            }
+
+            @Override
+            public String[] excludes() {
+                return new String[]{"/foo/bar/baz"};
+            }
+        });
+
+        final InterceptorFactory unMatch1 = InterceptorFactory.of(new HandlerInterceptor() {
+            @Override
+            public String[] includes() {
+                return new String[0];
+            }
+        });
+        final InterceptorFactory unMatch2 = InterceptorFactory.of(new HandlerInterceptor() {
+            @Override
+            public String[] includes() {
+                return new String[]{"/foo/bar"};
+            }
+        });
+        final InterceptorFactory unMatch3 = InterceptorFactory.of(new HandlerInterceptor() {
+            @Override
+            public String[] includes() {
+                return new String[]{"/foo/bar", "/baz"};
+            }
+        });
+        final InterceptorFactory unMatch4 = InterceptorFactory.of(new HandlerInterceptor() {
+            @Override
+            public String[] includes() {
+                return new String[]{"/foo/b**"};
+            }
+        });
+
+        final InterceptorFactory unMatch5 = InterceptorFactory.of(new HandlerInterceptor() {
+            @Override
+            public String[] includes() {
+                return new String[]{"/foo/bar/**"};
+            }
+
+            @Override
+            public String[] excludes() {
+                return new String[]{"/**"};
+            }
+        });
+
+        final List<InterceptorFactory> matches = Arrays.asList(match1,
+                match2,
+                match3,
+                match4,
+                match5,
+                match6,
+                match7,
+                match8,
+                match9,
+                match10,
+                match11,
+                match12,
+                match13);
+
+        final List<InterceptorFactory> unMatches = Arrays.asList(
+                unMatch1,
+                unMatch2,
+                unMatch3,
+                unMatch4,
+                unMatch5);
+
+        final List<InterceptorFactory> interceptors = new ArrayList<>(matches);
+        interceptors.addAll(unMatches);
+        final MultiValueMap<InterceptorPredicate, Interceptor> filtered =
+                InterceptorUtils.filter(ctx, mapping, handler, interceptors);
+
+        assertNotNull(filtered);
+        assertEquals(matches.size(),
+                filtered.values().stream().map(List::size).reduce(0, Integer::sum).intValue());
 
     }
 
