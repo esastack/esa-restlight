@@ -68,7 +68,7 @@ class HandlerInterceptorWrap extends AbstractInterceptorWrap<HandlerInterceptor>
         } else if (certainlyMatchAll(patterns, excludes)) {
             // rule out if excludes will match to these patterns certainly
             return DETACHED;
-        } else if (((excludes == null || excludes.length == 0) || neverIntersect(excludes, patterns))
+        } else if ((excludes == null || excludes.length == 0 || neverIntersect(excludes, patterns))
                 && (includes == null || certainlyMatchAll(patterns, includes))) {
             // excludes must be empty, because excludes may contains a pattern that would be matched to the route
             // pattern. eg. route pattern: fo?, includes: fo?, excludes: foo
