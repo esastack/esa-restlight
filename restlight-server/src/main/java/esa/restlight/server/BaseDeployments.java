@@ -22,6 +22,7 @@ import esa.commons.spi.SpiLoader;
 import esa.restlight.core.util.Constants;
 import esa.restlight.server.bootstrap.DispatcherHandler;
 import esa.restlight.server.bootstrap.RestlightThreadFactory;
+import esa.restlight.server.config.BizThreadsOptions;
 import esa.restlight.server.config.ServerOptions;
 import esa.restlight.server.handler.RestlightHandler;
 import esa.restlight.server.route.Route;
@@ -85,12 +86,13 @@ public class BaseDeployments<R extends BaseRestlightServer<R, D, O>, D extends B
 
     private void configEmbeddedSchedulers(O options) {
         this.addScheduler(Schedulers.io());
-        final BlockingQueue<Runnable> workQueue = options.getBlockingQueueLength() > 0
-                ? new LinkedBlockingQueue<>(options.getBlockingQueueLength())
+        BizThreadsOptions bizOptions = options.getBizThreads();
+        final BlockingQueue<Runnable> workQueue = bizOptions.getBlockingQueueLength() > 0
+                ? new LinkedBlockingQueue<>(bizOptions.getBlockingQueueLength())
                 : new SynchronousQueue<>();
-        final ThreadPoolExecutor biz = new ThreadPoolExecutor(options.getCoreBizThreads(),
-                options.getMaxBizThreads(),
-                options.getKeepAliveTimeSeconds(),
+        final ThreadPoolExecutor biz = new ThreadPoolExecutor(bizOptions.getCore(),
+                bizOptions.getMax(),
+                bizOptions.getKeepAliveTimeSeconds(),
                 TimeUnit.SECONDS,
                 workQueue,
                 new RestlightThreadFactory("Restlight-Biz"));

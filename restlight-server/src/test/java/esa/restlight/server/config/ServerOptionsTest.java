@@ -24,15 +24,18 @@ class ServerOptionsTest {
 
     @Test
     void testConfigure() {
+        final BizThreadsOptions bizThreads = BizThreadsOptionsConfigure.newOpts()
+                .core(4)
+                .max(5)
+                .blockingQueueLength(6)
+                .keepAliveTimeSeconds(7)
+                .configured();
+
         final ServerOptions options = ServerOptionsConfigure.newOpts()
                 .http2Enable(true)
                 .useNativeTransports(true)
                 .connectorThreads(2)
                 .ioThreads(3)
-                .coreBizThreads(4)
-                .maxBizThreads(5)
-                .blockingQueueLength(6)
-                .keepAliveTimeSeconds(7)
                 .bizTerminationTimeoutSeconds(8)
                 .compress(true)
                 .decompress(true)
@@ -49,16 +52,17 @@ class ServerOptionsTest {
                 .route(null)
                 .ssl(null)
                 .https(null)
+                .bizThreads(bizThreads)
                 .configured();
 
         assertTrue(options.isHttp2Enable());
         assertTrue(options.isUseNativeTransports());
         assertEquals(2, options.getConnectorThreads());
         assertEquals(3, options.getIoThreads());
-        assertEquals(4, options.getCoreBizThreads());
-        assertEquals(5, options.getMaxBizThreads());
-        assertEquals(6, options.getBlockingQueueLength());
-        assertEquals(7, options.getKeepAliveTimeSeconds());
+        assertEquals(4, options.getBizThreads().getCore());
+        assertEquals(5, options.getBizThreads().getMax());
+        assertEquals(6, options.getBizThreads().getBlockingQueueLength());
+        assertEquals(7, options.getBizThreads().getKeepAliveTimeSeconds());
         assertEquals(8, options.getBizTerminationTimeoutSeconds());
         assertTrue(options.isCompress());
         assertTrue(options.isDecompress());
@@ -75,6 +79,15 @@ class ServerOptionsTest {
         assertNull(options.getScheduling());
         assertNull(options.getRoute());
         assertNull(options.getSsl());
+
+        options.setCoreBizThreads(10);
+        options.setMaxBizThreads(20);
+        options.setBlockingQueueLength(30);
+        options.setKeepAliveTimeSeconds(40L);
+        assertEquals(10, options.getCoreBizThreads());
+        assertEquals(20, options.getMaxBizThreads());
+        assertEquals(30, options.getBlockingQueueLength());
+        assertEquals(40L, options.getKeepAliveTimeSeconds());
     }
 
     @Test
@@ -86,10 +99,6 @@ class ServerOptionsTest {
         assertEquals(def.isUseNativeTransports(), options.isUseNativeTransports());
         assertEquals(def.getConnectorThreads(), options.getConnectorThreads());
         assertEquals(def.getIoThreads(), options.getIoThreads());
-        assertEquals(def.getCoreBizThreads(), options.getCoreBizThreads());
-        assertEquals(def.getMaxBizThreads(), options.getMaxBizThreads());
-        assertEquals(def.getBlockingQueueLength(), options.getBlockingQueueLength());
-        assertEquals(def.getKeepAliveTimeSeconds(), options.getKeepAliveTimeSeconds());
         assertEquals(def.getBizTerminationTimeoutSeconds(), options.getBizTerminationTimeoutSeconds());
         assertEquals(def.isCompress(), options.isCompress());
         assertEquals(def.isDecompress(), options.isDecompress());
@@ -105,6 +114,11 @@ class ServerOptionsTest {
         assertNotNull(def.getScheduling());
         assertNotNull(def.getRoute());
         assertNotNull(def.getSsl());
+        assertNotNull(def.getBizThreads());
+        assertEquals(def.getCoreBizThreads(), options.getCoreBizThreads());
+        assertEquals(def.getMaxBizThreads(), options.getMaxBizThreads());
+        assertEquals(def.getBlockingQueueLength(), options.getBlockingQueueLength());
+        assertEquals(def.getKeepAliveTimeSeconds(), options.getKeepAliveTimeSeconds());
     }
 
 }

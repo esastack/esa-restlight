@@ -16,6 +16,7 @@
 package esa.restlight.starter.actuator.autoconfigurer;
 
 import esa.restlight.core.config.RestlightOptions;
+import esa.restlight.server.config.BizThreadsOptionsConfigure;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
@@ -30,10 +31,11 @@ public class ManagementOptions extends RestlightOptions {
 
     public ManagementOptions() {
         setIoThreads(1);
-        setCoreBizThreads(2);
-        setMaxBizThreads(2);
-        setBlockingQueueLength(128);
-        setKeepAliveTimeSeconds(30L);
+        setBizThreads(BizThreadsOptionsConfigure.newOpts()
+                .core(2)
+                .max(2)
+                .blockingQueueLength(128)
+                .keepAliveTimeSeconds(30L).configured());
         setMaxContentLength(8 * 1024 * 1024);
         setMaxHeaderSize(8192);
         setMaxInitialLineLength(8192);
@@ -56,10 +58,7 @@ public class ManagementOptions extends RestlightOptions {
         sb.append(", useNativeTransports=").append(isUseNativeTransports());
         sb.append(", connectorThreads=").append(getConnectorThreads());
         sb.append(", ioThreads=").append(getIoThreads());
-        sb.append(", coreBizThreads=").append(getCoreBizThreads());
-        sb.append(", maxBizThreads=").append(getMaxBizThreads());
-        sb.append(", blockingQueueLength=").append(getBlockingQueueLength());
-        sb.append(", keepAliveTimeSeconds=").append(getKeepAliveTimeSeconds());
+        sb.append(", bizThreads=").append(getBizThreads());
         sb.append(", bizTerminationTimeoutSeconds=").append(getBizTerminationTimeoutSeconds());
         sb.append(", validationMessageFile='").append(getValidationMessageFile()).append('\'');
         sb.append(", contextPath='").append(getContextPath()).append('\'');

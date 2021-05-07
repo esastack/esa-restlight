@@ -16,15 +16,12 @@
 package esa.restlight.core.resolver.arg;
 
 import esa.commons.ObjectUtils;
-import esa.commons.StringUtils;
 import esa.httpserver.core.AsyncRequest;
 import esa.httpserver.core.AsyncResponse;
 import esa.restlight.core.method.Param;
 import esa.restlight.core.resolver.ArgumentResolver;
 import esa.restlight.core.util.ConverterUtils;
 import esa.restlight.server.bootstrap.WebServerException;
-
-import java.util.function.Function;
 
 public abstract class AbstractNameAndValueArgumentResolver implements ArgumentResolver {
 
