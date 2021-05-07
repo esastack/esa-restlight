@@ -28,12 +28,12 @@ public abstract class AbstractServerOptionsConfigure<C extends AbstractServerOpt
     private int connectorThreads = 1;
     private int ioThreads =
             Math.min(Platforms.cpuNum() << 1, 64);
-    private int coreBizThreads =
+    private int bizThreadsCore =
             Math.min(Math.max(64, Platforms.cpuNum() << 2), 128);
-    private int maxBizThreads =
+    private int bizThreadsMax =
             Math.min(Math.max(128, (Platforms.cpuNum() << 2) + (Platforms.cpuNum() << 1)), 256);
-    private int blockingQueueLength = 512;
-    private long keepAliveTimeSeconds = 180L;
+    private int bizThreadsBlockingQueueLength = 512;
+    private long bizThreadsKeepAliveTimeSeconds = 180L;
     private long bizTerminationTimeoutSeconds = 60L;
     private boolean compress;
     private boolean decompress;
@@ -73,23 +73,67 @@ public abstract class AbstractServerOptionsConfigure<C extends AbstractServerOpt
         return self();
     }
 
+    /**
+     * @deprecated use #bizThreadsCore(int)
+     *
+     * @param coreBizThreads core size of biz-threads
+     * @return  self
+     */
+    @Deprecated
     public C coreBizThreads(int coreBizThreads) {
-        this.coreBizThreads = coreBizThreads;
+        return bizThreadsCore(coreBizThreads);
+    }
+
+    public C bizThreadsCore(int coreBizThreads) {
+        this.bizThreadsCore = coreBizThreads;
         return self();
     }
 
+    /**
+     * @deprecated use {@link #bizThreadsMax(int)}
+     *
+     * @param maxBizThreads max size of biz-threads
+     * @return  self
+     */
+    @Deprecated
     public C maxBizThreads(int maxBizThreads) {
-        this.maxBizThreads = maxBizThreads;
+        return bizThreadsMax(maxBizThreads);
+    }
+
+    public C bizThreadsMax(int maxBizThreads) {
+        this.bizThreadsMax = maxBizThreads;
         return self();
     }
 
+    /**
+     * @deprecated use {@link #bizThreadsBlockingQueueLength(int)}
+     *
+     * @param blockingQueueLength   blocking queue length of biz-threads
+     * @return  self
+     */
+    @Deprecated
     public C blockingQueueLength(int blockingQueueLength) {
-        this.blockingQueueLength = blockingQueueLength;
+        return bizThreadsBlockingQueueLength(blockingQueueLength);
+    }
+
+    public C bizThreadsBlockingQueueLength(int blockingQueueLength) {
+        this.bizThreadsBlockingQueueLength = blockingQueueLength;
         return self();
     }
 
+    /**
+     * @deprecated use {@link #bizThreadsKeepAliveTimeSeconds(long)}
+     *
+     * @param keepAliveTimeSeconds  keep alive seconds of biz-threads
+     * @return  self
+     */
+    @Deprecated
     public C keepAliveTimeSeconds(long keepAliveTimeSeconds) {
-        this.keepAliveTimeSeconds = keepAliveTimeSeconds;
+        return bizThreadsKeepAliveTimeSeconds(keepAliveTimeSeconds);
+    }
+
+    public C bizThreadsKeepAliveTimeSeconds(long keepAliveTimeSeconds) {
+        this.bizThreadsKeepAliveTimeSeconds = keepAliveTimeSeconds;
         return self();
     }
 
@@ -187,10 +231,10 @@ public abstract class AbstractServerOptionsConfigure<C extends AbstractServerOpt
         options.setUseNativeTransports(useNativeTransports);
         options.setConnectorThreads(connectorThreads);
         options.setIoThreads(ioThreads);
-        options.setCoreBizThreads(coreBizThreads);
-        options.setMaxBizThreads(maxBizThreads);
-        options.setBlockingQueueLength(blockingQueueLength);
-        options.setKeepAliveTimeSeconds(keepAliveTimeSeconds);
+        options.setBizThreadsCore(bizThreadsCore);
+        options.setBizThreadsMax(bizThreadsMax);
+        options.setBizThreadsBlockingQueueLength(bizThreadsBlockingQueueLength);
+        options.setBizThreadsKeepAliveTimeSeconds(bizThreadsKeepAliveTimeSeconds);
         options.setBizTerminationTimeoutSeconds(bizTerminationTimeoutSeconds);
         options.setCompress(compress);
         options.setDecompress(decompress);

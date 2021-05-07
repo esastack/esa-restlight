@@ -85,12 +85,12 @@ public class BaseDeployments<R extends BaseRestlightServer<R, D, O>, D extends B
 
     private void configEmbeddedSchedulers(O options) {
         this.addScheduler(Schedulers.io());
-        final BlockingQueue<Runnable> workQueue = options.getBlockingQueueLength() > 0
-                ? new LinkedBlockingQueue<>(options.getBlockingQueueLength())
+        final BlockingQueue<Runnable> workQueue = options.getBizThreadsBlockingQueueLength() > 0
+                ? new LinkedBlockingQueue<>(options.getBizThreadsBlockingQueueLength())
                 : new SynchronousQueue<>();
-        final ThreadPoolExecutor biz = new ThreadPoolExecutor(options.getCoreBizThreads(),
-                options.getMaxBizThreads(),
-                options.getKeepAliveTimeSeconds(),
+        final ThreadPoolExecutor biz = new ThreadPoolExecutor(options.getBizThreadsCore(),
+                options.getBizThreadsMax(),
+                options.getBizThreadsKeepAliveTimeSeconds(),
                 TimeUnit.SECONDS,
                 workQueue,
                 new RestlightThreadFactory("Restlight-Biz"));

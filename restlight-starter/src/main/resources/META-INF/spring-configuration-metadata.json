@@ -15,11 +15,22 @@
       "defaultValue": "60L"
     },
     {
-      "name": "restlight.server.blocking-queue-length",
+      "name": "restlight.server.biz-threads-blocking-queue-length",
       "type": "java.lang.Integer",
       "description": "Length of blocking queue",
       "sourceType": "esa.restlight.server.config.ServerOptions",
       "defaultValue": "512"
+    },
+    {
+      "name": "restlight.server.blocking-queue-length",
+      "type": "java.lang.Integer",
+      "description": "Length of blocking queue",
+      "sourceType": "esa.restlight.server.config.ServerOptions",
+      "defaultValue": "512",
+      "deprecated": true,
+      "deprecation": {
+        "reason": "deprecated"
+      }
     },
     {
       "name": "restlight.server.compress",
@@ -43,11 +54,22 @@
       "defaultValue": ""
     },
     {
-      "name": "restlight.server.core-biz-threads",
+      "name": "restlight.server.biz-threads-core",
       "type": "java.lang.Integer",
       "description": "Thread num of cor biz thread pool",
       "sourceType": "esa.restlight.server.config.ServerOptions",
       "defaultValue": "cpu * 4 (must between 64 and 128)"
+    },
+    {
+      "name": "restlight.server.core-biz-threads",
+      "type": "java.lang.Integer",
+      "description": "Thread num of cor biz thread pool",
+      "sourceType": "esa.restlight.server.config.ServerOptions",
+      "defaultValue": "cpu * 4 (must between 64 and 128)",
+      "deprecated": true,
+      "deprecation": {
+        "reason": "deprecated"
+      }
     },
     {
       "name": "restlight.server.decompress",
@@ -95,11 +117,22 @@
       "defaultValue": "true"
     },
     {
-      "name": "restlight.server.keep-alive-time-seconds",
+      "name": "restlight.server.biz-threads-keep-alive-time-seconds",
       "type": "java.lang.Long",
       "description": "Keepalive time of max biz thread pool",
       "sourceType": "esa.restlight.server.config.ServerOptions",
       "defaultValue": "180L"
+    },
+    {
+      "name": "restlight.server.keep-alive-time-seconds",
+      "type": "java.lang.Long",
+      "description": "Keepalive time of max biz thread pool",
+      "sourceType": "esa.restlight.server.config.ServerOptions",
+      "defaultValue": "180L",
+      "deprecated": true,
+      "deprecation": {
+        "reason": "deprecated"
+      }
     },
     {
       "name": "restlight.server.logging",
@@ -109,11 +142,22 @@
       "defaultValue": "none"
     },
     {
-      "name": "restlight.server.max-biz-threads",
+      "name": "restlight.server.biz-threads-max",
       "type": "java.lang.Integer",
       "description": "Thread num of max biz thread pool",
       "sourceType": "esa.restlight.server.config.ServerOptions",
       "defaultValue": "cpu * 6 (must between 128 and 256)"
+    },
+    {
+      "name": "restlight.server.max-biz-threads",
+      "type": "java.lang.Integer",
+      "description": "Thread num of max biz thread pool",
+      "sourceType": "esa.restlight.server.config.ServerOptions",
+      "defaultValue": "cpu * 6 (must between 128 and 256)",
+      "deprecated": true,
+      "deprecation": {
+        "reason": "deprecated"
+      }
     },
     {
       "name": "restlight.server.max-content-length",

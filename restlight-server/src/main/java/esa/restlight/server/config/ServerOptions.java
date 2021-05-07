@@ -49,24 +49,24 @@ public class ServerOptions implements Serializable {
     /**
      * core biz thread count, cpu * 4 (must between 32 and 128)
      */
-    private int coreBizThreads =
+    private int bizThreadsCore =
             Math.min(Math.max(64, Platforms.cpuNum() << 2), 128);
 
     /**
      * maximum biz thread count, cpu * 6 (must between 128 and 256)
      */
-    private int maxBizThreads =
+    private int bizThreadsMax =
             Math.min(Math.max(128, (Platforms.cpuNum() << 2) + (Platforms.cpuNum() << 1)), 256);
 
     /**
      * maximum waiting queue length
      */
-    private int blockingQueueLength = 512;
+    private int bizThreadsBlockingQueueLength = 512;
 
     /**
      * thread pool keepAlive time(default to 180s)
      */
-    private long keepAliveTimeSeconds = 180L;
+    private long bizThreadsKeepAliveTimeSeconds = 180L;
 
     /**
      * Max time to wait for the biz thread to terminate(default to 60s)
@@ -165,36 +165,116 @@ public class ServerOptions implements Serializable {
         this.ioThreads = ioThreads;
     }
 
+    /**
+     * @deprecated use {@link #getBizThreadsCore()}
+     *
+     * @return  biz biz-threads count
+     */
+    @Deprecated
     public int getCoreBizThreads() {
-        return coreBizThreads;
+        return getBizThreadsCore();
     }
 
+    /**
+     * @deprecated use {@link #setBizThreadsCore(int)}
+     *
+     * @param coreBizThreads core size of biz-threads
+     */
+    @Deprecated
     public void setCoreBizThreads(int coreBizThreads) {
-        this.coreBizThreads = coreBizThreads;
+        setBizThreadsCore(coreBizThreads);
     }
 
+    /**
+     * @deprecated use {@link #getBizThreadsMax()}
+     *
+     * @return  max biz-threads count
+     */
+    @Deprecated
     public int getMaxBizThreads() {
-        return maxBizThreads;
+        return getBizThreadsMax();
     }
 
+    /**
+     * @deprecated use {@link #setBizThreadsMax(int)}
+     *
+     * @param maxBizThreads max size of biz-threads
+     */
+    @Deprecated
     public void setMaxBizThreads(int maxBizThreads) {
-        this.maxBizThreads = maxBizThreads;
+        setBizThreadsMax(maxBizThreads);
     }
 
+    /**
+     * @deprecated use {@link #getBizThreadsBlockingQueueLength()}
+     *
+     * @return  blocking queue size of biz-threads
+     */
+    @Deprecated
     public int getBlockingQueueLength() {
-        return blockingQueueLength;
+        return getBizThreadsBlockingQueueLength();
     }
 
+    /**
+     * @deprecated use {@link #setBizThreadsBlockingQueueLength(int)}
+     *
+     * @param blockingQueueLength blocking queue size of biz-threads
+     */
+    @Deprecated
     public void setBlockingQueueLength(int blockingQueueLength) {
-        this.blockingQueueLength = blockingQueueLength;
+        setBizThreadsBlockingQueueLength(blockingQueueLength);
     }
 
+    /**
+     * @deprecated use {@link #getBizThreadsKeepAliveTimeSeconds()}
+     *
+     * @return  keep alive time of biz-threads
+     */
+    @Deprecated
     public long getKeepAliveTimeSeconds() {
-        return keepAliveTimeSeconds;
+        return getBizThreadsKeepAliveTimeSeconds();
     }
 
+    /**
+     * @deprecated use {@link #setBizThreadsKeepAliveTimeSeconds(long)}
+     *
+     * @param keepAliveTimeSeconds  keep alive time of biz-threads
+     */
+    @Deprecated
     public void setKeepAliveTimeSeconds(long keepAliveTimeSeconds) {
-        this.keepAliveTimeSeconds = keepAliveTimeSeconds;
+        setBizThreadsKeepAliveTimeSeconds(keepAliveTimeSeconds);
+    }
+
+    public int getBizThreadsCore() {
+        return bizThreadsCore;
+    }
+
+    public void setBizThreadsCore(int bizThreadsCore) {
+        this.bizThreadsCore = bizThreadsCore;
+    }
+
+    public int getBizThreadsMax() {
+        return bizThreadsMax;
+    }
+
+    public void setBizThreadsMax(int bizThreadsMax) {
+        this.bizThreadsMax = bizThreadsMax;
+    }
+
+    public int getBizThreadsBlockingQueueLength() {
+        return bizThreadsBlockingQueueLength;
+    }
+
+    public void setBizThreadsBlockingQueueLength(int bizThreadsBlockingQueueLength) {
+        this.bizThreadsBlockingQueueLength = bizThreadsBlockingQueueLength;
+    }
+
+    public long getBizThreadsKeepAliveTimeSeconds() {
+        return bizThreadsKeepAliveTimeSeconds;
+    }
+
+    public void setBizThreadsKeepAliveTimeSeconds(long bizThreadsKeepAliveTimeSeconds) {
+        this.bizThreadsKeepAliveTimeSeconds = bizThreadsKeepAliveTimeSeconds;
     }
 
     public long getBizTerminationTimeoutSeconds() {

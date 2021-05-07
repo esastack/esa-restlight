@@ -53,7 +53,7 @@ public class RestlightBizThreadPoolBinder implements RestlightBizExecutorAware, 
         if (bizExecutor instanceof ThreadPoolExecutor) {
             ThreadPoolExecutor executor = (ThreadPoolExecutor) bizExecutor;
             createBizThreadPoolGauge(restlightBizThread, registry, executor);
-            Gauge.builder(restlightBizThread, config, AutoRestlightServerOptions::getBlockingQueueLength)
+            Gauge.builder(restlightBizThread, config, AutoRestlightServerOptions::getBizThreadsBlockingQueueLength)
                     .tag(CATEGORY, "biz")
                     .tag("id", "queue.length")
                     .register(registry);

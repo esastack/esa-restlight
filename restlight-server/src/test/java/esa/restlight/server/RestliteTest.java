@@ -89,9 +89,9 @@ class RestliteTest {
         assertTrue(biz instanceof ExecutorScheduler);
         assertTrue(((ExecutorScheduler) biz).executor() instanceof ThreadPoolExecutor);
         final ThreadPoolExecutor bizPool = (ThreadPoolExecutor) ((ExecutorScheduler) biz).executor();
-        assertEquals(ops.getCoreBizThreads(), bizPool.getCorePoolSize());
-        assertEquals(ops.getMaxBizThreads(), bizPool.getMaximumPoolSize());
-        assertEquals(ops.getKeepAliveTimeSeconds(), bizPool.getKeepAliveTime(TimeUnit.SECONDS));
+        assertEquals(ops.getBizThreadsCore(), bizPool.getCorePoolSize());
+        assertEquals(ops.getBizThreadsMax(), bizPool.getMaximumPoolSize());
+        assertEquals(ops.getBizThreadsKeepAliveTimeSeconds(), bizPool.getKeepAliveTime(TimeUnit.SECONDS));
         final Scheduler customScheduler = ctx.schedulers().get("custom");
         assertTrue(customScheduler instanceof ExecutorScheduler);
         assertEquals(custom, ((ExecutorScheduler) customScheduler).executor());
