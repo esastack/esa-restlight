@@ -18,11 +18,7 @@ package esa.restlight.server.config;
 import io.netty.handler.logging.LogLevel;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 class ServerOptionsTest {
 
@@ -83,6 +79,15 @@ class ServerOptionsTest {
         assertNull(options.getScheduling());
         assertNull(options.getRoute());
         assertNull(options.getSsl());
+
+        options.setCoreBizThreads(10);
+        options.setMaxBizThreads(20);
+        options.setBlockingQueueLength(30);
+        options.setKeepAliveTimeSeconds(40L);
+        assertEquals(10, options.getCoreBizThreads());
+        assertEquals(20, options.getMaxBizThreads());
+        assertEquals(30, options.getBlockingQueueLength());
+        assertEquals(40L, options.getKeepAliveTimeSeconds());
     }
 
     @Test
@@ -110,6 +115,10 @@ class ServerOptionsTest {
         assertNotNull(def.getRoute());
         assertNotNull(def.getSsl());
         assertNotNull(def.getBizThreads());
+        assertEquals(def.getCoreBizThreads(), options.getCoreBizThreads());
+        assertEquals(def.getMaxBizThreads(), options.getMaxBizThreads());
+        assertEquals(def.getBlockingQueueLength(), options.getBlockingQueueLength());
+        assertEquals(def.getKeepAliveTimeSeconds(), options.getKeepAliveTimeSeconds());
     }
 
 }
