@@ -51,7 +51,7 @@ public class RestlightBizThreadPoolEndpoint implements RestlightBizExecutorAware
             ThreadPoolMetric metric = new ThreadPoolMetric();
             metric.setCorePoolSize(executor.getCorePoolSize());
             metric.setMaxPoolSize(executor.getMaximumPoolSize());
-            metric.setQueueLength(config.getBizThreadsBlockingQueueLength());
+            metric.setQueueLength(config.getBizThreads().getBlockingQueueLength());
             metric.setKeepAliveTimeSeconds(executor.getKeepAliveTime(TimeUnit.SECONDS));
             metric.setActiveCount(executor.getActiveCount());
             metric.setPoolSize(executor.getPoolSize());

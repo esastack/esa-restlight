@@ -34,7 +34,11 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import static esa.restlight.server.route.Mapping.get;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class RestliteTest {
 
@@ -89,9 +93,9 @@ class RestliteTest {
         assertTrue(biz instanceof ExecutorScheduler);
         assertTrue(((ExecutorScheduler) biz).executor() instanceof ThreadPoolExecutor);
         final ThreadPoolExecutor bizPool = (ThreadPoolExecutor) ((ExecutorScheduler) biz).executor();
-        assertEquals(ops.getBizThreadsCore(), bizPool.getCorePoolSize());
-        assertEquals(ops.getBizThreadsMax(), bizPool.getMaximumPoolSize());
-        assertEquals(ops.getBizThreadsKeepAliveTimeSeconds(), bizPool.getKeepAliveTime(TimeUnit.SECONDS));
+        assertEquals(ops.getBizThreads().getCore(), bizPool.getCorePoolSize());
+        assertEquals(ops.getBizThreads().getMax(), bizPool.getMaximumPoolSize());
+        assertEquals(ops.getBizThreads().getKeepAliveTimeSeconds(), bizPool.getKeepAliveTime(TimeUnit.SECONDS));
         final Scheduler customScheduler = ctx.schedulers().get("custom");
         assertTrue(customScheduler instanceof ExecutorScheduler);
         assertEquals(custom, ((ExecutorScheduler) customScheduler).executor());

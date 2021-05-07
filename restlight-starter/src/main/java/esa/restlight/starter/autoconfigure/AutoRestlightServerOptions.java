@@ -80,10 +80,7 @@ public class AutoRestlightServerOptions extends RestlightOptions {
         sb.append(", useNativeTransports=").append(isUseNativeTransports());
         sb.append(", connectorThreads=").append(getConnectorThreads());
         sb.append(", ioThreads=").append(getIoThreads());
-        sb.append(", bizThreadsCore=").append(getBizThreadsCore());
-        sb.append(", bizThreadsMax=").append(getBizThreadsMax());
-        sb.append(", bizThreadsBlockingQueueLength=").append(getBizThreadsBlockingQueueLength());
-        sb.append(", bizThreadsKeepAliveTimeSeconds=").append(getBizThreadsKeepAliveTimeSeconds());
+        sb.append(", bizThreads=").append(getBizThreads());
         sb.append(", bizTerminationTimeoutSeconds=").append(getBizTerminationTimeoutSeconds());
         sb.append(", validationMessageFile='").append(getValidationMessageFile()).append('\'');
         sb.append(", contextPath='").append(getContextPath()).append('\'');

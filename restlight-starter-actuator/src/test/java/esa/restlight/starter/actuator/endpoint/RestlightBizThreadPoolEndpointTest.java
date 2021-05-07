@@ -49,7 +49,7 @@ class RestlightBizThreadPoolEndpointTest {
                         2,
                         60L,
                         TimeUnit.SECONDS,
-                        new LinkedBlockingQueue<>(ops.getBizThreadsBlockingQueueLength()));
+                        new LinkedBlockingQueue<>(ops.getBizThreads().getBlockingQueueLength()));
         endpoint.setRestlightBizExecutor(executor);
         final CountDownLatch firstTaskLatch = new CountDownLatch(1);
         executor.execute(firstTaskLatch::countDown);
@@ -70,7 +70,7 @@ class RestlightBizThreadPoolEndpointTest {
         final ThreadPoolMetric metric = endpoint.threadPoolMetric();
         assertEquals(executor.getCorePoolSize(), metric.getCorePoolSize());
         assertEquals(executor.getMaximumPoolSize(), metric.getMaxPoolSize());
-        assertEquals(ops.getBizThreadsBlockingQueueLength(), metric.getQueueLength());
+        assertEquals(ops.getBizThreads().getBlockingQueueLength(), metric.getQueueLength());
         assertEquals(executor.getKeepAliveTime(TimeUnit.SECONDS), metric.getKeepAliveTimeSeconds());
         assertEquals(1, metric.getActiveCount());
         assertEquals(executor.getLargestPoolSize(), metric.getLargestPoolSize());
@@ -99,7 +99,7 @@ class RestlightBizThreadPoolEndpointTest {
                         2,
                         60L,
                         TimeUnit.SECONDS,
-                        new LinkedBlockingQueue<>(ops.getBizThreadsBlockingQueueLength()));
+                        new LinkedBlockingQueue<>(ops.getBizThreads().getBlockingQueueLength()));
         endpoint.setRestlightBizExecutor(executor);
 
         String[] metrics = registry.scrape().split("\\n");
@@ -107,7 +107,8 @@ class RestlightBizThreadPoolEndpointTest {
         getMetric(metricsMap, metrics);
         assertEquals(executor.getCorePoolSize(), (int) Double.parseDouble(metricsMap.get("core.pool.size")));
         assertEquals(executor.getMaximumPoolSize(), (int) Double.parseDouble(metricsMap.get("max.pool.size")));
-        assertEquals(ops.getBizThreadsBlockingQueueLength(), (int) Double.parseDouble(metricsMap.get("queue.length")));
+        assertEquals(ops.getBizThreads().getBlockingQueueLength(),
+                (int) Double.parseDouble(metricsMap.get("queue.length")));
         assertEquals(executor.getKeepAliveTime(TimeUnit.SECONDS),
                 (long) Double.parseDouble(metricsMap.get("keep.alive.time.seconds")));
         assertEquals(executor.getActiveCount(), (int) Double.parseDouble(metricsMap.get("active.count")));

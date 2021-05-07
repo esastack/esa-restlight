@@ -28,12 +28,7 @@ public abstract class AbstractServerOptionsConfigure<C extends AbstractServerOpt
     private int connectorThreads = 1;
     private int ioThreads =
             Math.min(Platforms.cpuNum() << 1, 64);
-    private int bizThreadsCore =
-            Math.min(Math.max(64, Platforms.cpuNum() << 2), 128);
-    private int bizThreadsMax =
-            Math.min(Math.max(128, (Platforms.cpuNum() << 2) + (Platforms.cpuNum() << 1)), 256);
-    private int bizThreadsBlockingQueueLength = 512;
-    private long bizThreadsKeepAliveTimeSeconds = 180L;
+
     private long bizTerminationTimeoutSeconds = 60L;
     private boolean compress;
     private boolean decompress;
@@ -52,6 +47,8 @@ public abstract class AbstractServerOptionsConfigure<C extends AbstractServerOpt
             = SchedulingOptionsConfigure.defaultOpts();
     private RouteOptions route
             = RouteOptionsConfigure.defaultOpts();
+    private BizThreadsOptions bizThreads
+            = BizThreadsOptionsConfigure.defaultOpts();
 
     public C http2Enable(boolean http2Enable) {
         this.http2Enable = http2Enable;
@@ -74,71 +71,60 @@ public abstract class AbstractServerOptionsConfigure<C extends AbstractServerOpt
     }
 
     /**
-     * @deprecated use #bizThreadsCore(int)
+     * @deprecated use {@link BizThreadsOptions#setCore(int)}
      *
      * @param coreBizThreads core size of biz-threads
      * @return  self
      */
     @Deprecated
     public C coreBizThreads(int coreBizThreads) {
-        return bizThreadsCore(coreBizThreads);
-    }
-
-    public C bizThreadsCore(int coreBizThreads) {
-        this.bizThreadsCore = coreBizThreads;
+        bizThreads.setCore(coreBizThreads);
         return self();
     }
 
     /**
-     * @deprecated use {@link #bizThreadsMax(int)}
+     * @deprecated use {@link BizThreadsOptions#setMax(int)}
      *
      * @param maxBizThreads max size of biz-threads
      * @return  self
      */
     @Deprecated
     public C maxBizThreads(int maxBizThreads) {
-        return bizThreadsMax(maxBizThreads);
-    }
-
-    public C bizThreadsMax(int maxBizThreads) {
-        this.bizThreadsMax = maxBizThreads;
+        bizThreads.setMax(maxBizThreads);
         return self();
     }
 
     /**
-     * @deprecated use {@link #bizThreadsBlockingQueueLength(int)}
+     * @deprecated use {@link BizThreadsOptions#setBlockingQueueLength(int)}
      *
      * @param blockingQueueLength   blocking queue length of biz-threads
      * @return  self
      */
     @Deprecated
     public C blockingQueueLength(int blockingQueueLength) {
-        return bizThreadsBlockingQueueLength(blockingQueueLength);
-    }
-
-    public C bizThreadsBlockingQueueLength(int blockingQueueLength) {
-        this.bizThreadsBlockingQueueLength = blockingQueueLength;
+        bizThreads.setBlockingQueueLength(blockingQueueLength);
         return self();
     }
 
     /**
-     * @deprecated use {@link #bizThreadsKeepAliveTimeSeconds(long)}
+     * @deprecated use {@link BizThreadsOptions#setKeepAliveTimeSeconds(long)}
      *
      * @param keepAliveTimeSeconds  keep alive seconds of biz-threads
      * @return  self
      */
     @Deprecated
     public C keepAliveTimeSeconds(long keepAliveTimeSeconds) {
-        return bizThreadsKeepAliveTimeSeconds(keepAliveTimeSeconds);
-    }
-
-    public C bizThreadsKeepAliveTimeSeconds(long keepAliveTimeSeconds) {
-        this.bizThreadsKeepAliveTimeSeconds = keepAliveTimeSeconds;
+        bizThreads.setKeepAliveTimeSeconds(keepAliveTimeSeconds);
         return self();
     }
 
     public C bizTerminationTimeoutSeconds(long bizTerminationTimeoutSeconds) {
         this.bizTerminationTimeoutSeconds = bizTerminationTimeoutSeconds;
+        return self();
+    }
+
+    public C bizThreads(BizThreadsOptions bizThreads) {
+        this.bizThreads = bizThreads;
         return self();
     }
 
@@ -231,10 +217,6 @@ public abstract class AbstractServerOptionsConfigure<C extends AbstractServerOpt
         options.setUseNativeTransports(useNativeTransports);
         options.setConnectorThreads(connectorThreads);
         options.setIoThreads(ioThreads);
-        options.setBizThreadsCore(bizThreadsCore);
-        options.setBizThreadsMax(bizThreadsMax);
-        options.setBizThreadsBlockingQueueLength(bizThreadsBlockingQueueLength);
-        options.setBizThreadsKeepAliveTimeSeconds(bizThreadsKeepAliveTimeSeconds);
         options.setBizTerminationTimeoutSeconds(bizTerminationTimeoutSeconds);
         options.setCompress(compress);
         options.setDecompress(decompress);
@@ -250,6 +232,7 @@ public abstract class AbstractServerOptionsConfigure<C extends AbstractServerOpt
         options.setSsl(ssl);
         options.setScheduling(scheduling);
         options.setRoute(route);
+        options.setBizThreads(bizThreads);
         return options;
     }
 

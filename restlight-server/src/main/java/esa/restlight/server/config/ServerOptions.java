@@ -47,28 +47,6 @@ public class ServerOptions implements Serializable {
             Math.min(Platforms.cpuNum() << 1, 64);
 
     /**
-     * core biz thread count, cpu * 4 (must between 32 and 128)
-     */
-    private int bizThreadsCore =
-            Math.min(Math.max(64, Platforms.cpuNum() << 2), 128);
-
-    /**
-     * maximum biz thread count, cpu * 6 (must between 128 and 256)
-     */
-    private int bizThreadsMax =
-            Math.min(Math.max(128, (Platforms.cpuNum() << 2) + (Platforms.cpuNum() << 1)), 256);
-
-    /**
-     * maximum waiting queue length
-     */
-    private int bizThreadsBlockingQueueLength = 512;
-
-    /**
-     * thread pool keepAlive time(default to 180s)
-     */
-    private long bizThreadsKeepAliveTimeSeconds = 180L;
-
-    /**
      * Max time to wait for the biz thread to terminate(default to 60s)
      */
     private long bizTerminationTimeoutSeconds = 60L;
@@ -133,6 +111,9 @@ public class ServerOptions implements Serializable {
     private RouteOptions route
             = RouteOptionsConfigure.defaultOpts();
 
+    private BizThreadsOptions bizThreads =
+            BizThreadsOptionsConfigure.defaultOpts();
+
     public boolean isHttp2Enable() {
         return http2Enable;
     }
@@ -166,115 +147,91 @@ public class ServerOptions implements Serializable {
     }
 
     /**
-     * @deprecated use {@link #getBizThreadsCore()}
+     * @deprecated use {@link BizThreadsOptions#getCore()}
      *
      * @return  biz biz-threads count
      */
     @Deprecated
     public int getCoreBizThreads() {
-        return getBizThreadsCore();
+        return getBizThreads().getCore();
     }
 
     /**
-     * @deprecated use {@link #setBizThreadsCore(int)}
+     * @deprecated use {@link BizThreadsOptions#setCore(int)}
      *
      * @param coreBizThreads core size of biz-threads
      */
     @Deprecated
     public void setCoreBizThreads(int coreBizThreads) {
-        setBizThreadsCore(coreBizThreads);
+        getBizThreads().setCore(coreBizThreads);
     }
 
     /**
-     * @deprecated use {@link #getBizThreadsMax()}
+     * @deprecated use {@link BizThreadsOptions#getMax()}
      *
      * @return  max biz-threads count
      */
     @Deprecated
     public int getMaxBizThreads() {
-        return getBizThreadsMax();
+        return getBizThreads().getMax();
     }
 
     /**
-     * @deprecated use {@link #setBizThreadsMax(int)}
+     * @deprecated use {@link BizThreadsOptions#setMax(int)}
      *
      * @param maxBizThreads max size of biz-threads
      */
     @Deprecated
     public void setMaxBizThreads(int maxBizThreads) {
-        setBizThreadsMax(maxBizThreads);
+        getBizThreads().setMax(maxBizThreads);
     }
 
     /**
-     * @deprecated use {@link #getBizThreadsBlockingQueueLength()}
+     * @deprecated use {@link BizThreadsOptions#getBlockingQueueLength()}
      *
      * @return  blocking queue size of biz-threads
      */
     @Deprecated
     public int getBlockingQueueLength() {
-        return getBizThreadsBlockingQueueLength();
+        return getBizThreads().getBlockingQueueLength();
     }
 
     /**
-     * @deprecated use {@link #setBizThreadsBlockingQueueLength(int)}
+     * @deprecated use {@link BizThreadsOptions#setBlockingQueueLength(int)}
      *
      * @param blockingQueueLength blocking queue size of biz-threads
      */
     @Deprecated
     public void setBlockingQueueLength(int blockingQueueLength) {
-        setBizThreadsBlockingQueueLength(blockingQueueLength);
+        getBizThreads().setBlockingQueueLength(blockingQueueLength);
     }
 
     /**
-     * @deprecated use {@link #getBizThreadsKeepAliveTimeSeconds()}
+     * @deprecated use {@link BizThreadsOptions#getKeepAliveTimeSeconds()}
      *
      * @return  keep alive time of biz-threads
      */
     @Deprecated
     public long getKeepAliveTimeSeconds() {
-        return getBizThreadsKeepAliveTimeSeconds();
+        return getBizThreads().getKeepAliveTimeSeconds();
     }
 
     /**
-     * @deprecated use {@link #setBizThreadsKeepAliveTimeSeconds(long)}
+     * @deprecated use {@link BizThreadsOptions#setKeepAliveTimeSeconds(long)}
      *
      * @param keepAliveTimeSeconds  keep alive time of biz-threads
      */
     @Deprecated
     public void setKeepAliveTimeSeconds(long keepAliveTimeSeconds) {
-        setBizThreadsKeepAliveTimeSeconds(keepAliveTimeSeconds);
+        getBizThreads().setKeepAliveTimeSeconds(keepAliveTimeSeconds);
     }
 
-    public int getBizThreadsCore() {
-        return bizThreadsCore;
+    public void setBizThreads(BizThreadsOptions bizThreads) {
+        this.bizThreads = bizThreads;
     }
 
-    public void setBizThreadsCore(int bizThreadsCore) {
-        this.bizThreadsCore = bizThreadsCore;
-    }
-
-    public int getBizThreadsMax() {
-        return bizThreadsMax;
-    }
-
-    public void setBizThreadsMax(int bizThreadsMax) {
-        this.bizThreadsMax = bizThreadsMax;
-    }
-
-    public int getBizThreadsBlockingQueueLength() {
-        return bizThreadsBlockingQueueLength;
-    }
-
-    public void setBizThreadsBlockingQueueLength(int bizThreadsBlockingQueueLength) {
-        this.bizThreadsBlockingQueueLength = bizThreadsBlockingQueueLength;
-    }
-
-    public long getBizThreadsKeepAliveTimeSeconds() {
-        return bizThreadsKeepAliveTimeSeconds;
-    }
-
-    public void setBizThreadsKeepAliveTimeSeconds(long bizThreadsKeepAliveTimeSeconds) {
-        this.bizThreadsKeepAliveTimeSeconds = bizThreadsKeepAliveTimeSeconds;
+    public BizThreadsOptions getBizThreads() {
+        return bizThreads;
     }
 
     public long getBizTerminationTimeoutSeconds() {

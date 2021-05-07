@@ -18,21 +18,28 @@ package esa.restlight.server.config;
 import io.netty.handler.logging.LogLevel;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ServerOptionsTest {
 
     @Test
     void testConfigure() {
+        final BizThreadsOptions bizThreads = BizThreadsOptionsConfigure.newOpts()
+                .core(4)
+                .max(5)
+                .blockingQueueLength(6)
+                .keepAliveTimeSeconds(7)
+                .configured();
+
         final ServerOptions options = ServerOptionsConfigure.newOpts()
                 .http2Enable(true)
                 .useNativeTransports(true)
                 .connectorThreads(2)
                 .ioThreads(3)
-                .coreBizThreads(4)
-                .maxBizThreads(5)
-                .blockingQueueLength(6)
-                .keepAliveTimeSeconds(7)
                 .bizTerminationTimeoutSeconds(8)
                 .compress(true)
                 .decompress(true)
@@ -49,16 +56,17 @@ class ServerOptionsTest {
                 .route(null)
                 .ssl(null)
                 .https(null)
+                .bizThreads(bizThreads)
                 .configured();
 
         assertTrue(options.isHttp2Enable());
         assertTrue(options.isUseNativeTransports());
         assertEquals(2, options.getConnectorThreads());
         assertEquals(3, options.getIoThreads());
-        assertEquals(4, options.getBizThreadsCore());
-        assertEquals(5, options.getBizThreadsMax());
-        assertEquals(6, options.getBizThreadsBlockingQueueLength());
-        assertEquals(7, options.getBizThreadsKeepAliveTimeSeconds());
+        assertEquals(4, options.getBizThreads().getCore());
+        assertEquals(5, options.getBizThreads().getMax());
+        assertEquals(6, options.getBizThreads().getBlockingQueueLength());
+        assertEquals(7, options.getBizThreads().getKeepAliveTimeSeconds());
         assertEquals(8, options.getBizTerminationTimeoutSeconds());
         assertTrue(options.isCompress());
         assertTrue(options.isDecompress());
@@ -86,10 +94,6 @@ class ServerOptionsTest {
         assertEquals(def.isUseNativeTransports(), options.isUseNativeTransports());
         assertEquals(def.getConnectorThreads(), options.getConnectorThreads());
         assertEquals(def.getIoThreads(), options.getIoThreads());
-        assertEquals(def.getBizThreadsCore(), options.getBizThreadsCore());
-        assertEquals(def.getBizThreadsMax(), options.getBizThreadsMax());
-        assertEquals(def.getBizThreadsBlockingQueueLength(), options.getBizThreadsBlockingQueueLength());
-        assertEquals(def.getBizThreadsKeepAliveTimeSeconds(), options.getBizThreadsKeepAliveTimeSeconds());
         assertEquals(def.getBizTerminationTimeoutSeconds(), options.getBizTerminationTimeoutSeconds());
         assertEquals(def.isCompress(), options.isCompress());
         assertEquals(def.isDecompress(), options.isDecompress());
@@ -105,6 +109,7 @@ class ServerOptionsTest {
         assertNotNull(def.getScheduling());
         assertNotNull(def.getRoute());
         assertNotNull(def.getSsl());
+        assertNotNull(def.getBizThreads());
     }
 
 }
