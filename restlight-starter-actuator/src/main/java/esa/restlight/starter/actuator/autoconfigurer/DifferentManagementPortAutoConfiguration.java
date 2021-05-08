@@ -71,7 +71,7 @@ public class DifferentManagementPortAutoConfiguration {
         return Mark.JAX_RS;
     }
 
-    @Bean(destroyMethod = "shutdown")
+    @Bean(destroyMethod = "")
     @ConditionalOnMissingBean
     @ConditionalOnEnableServer
     @ConditionalOnBean(Mark.class)
@@ -81,7 +81,6 @@ public class DifferentManagementPortAutoConfiguration {
                                                            WebEndpointProperties endpointProperties,
                                                            ManagementOptions options,
                                                            Mark mark) {
-
         return new ManagementServerStarter(options, mark.provider(endpointsSupplier, endpointProperties),
                 managementProps);
     }
