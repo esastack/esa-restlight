@@ -127,8 +127,8 @@ public class ManagementServerStarter extends AbstractDelegatedRestlightServer
         try {
             this.shutdown();
         } catch (Throwable ex) {
-            LoggerUtils.logger().error("Failed to shutdown Restlight server {}",
-                    NetworkUtils.parseAddress(address()), ex);
+            LoggerUtils.logger().error("Failed to shutdown {} server {}",
+                    serverName(), NetworkUtils.parseAddress(address()), ex);
         }
     }
 
