@@ -32,7 +32,7 @@ import org.springframework.context.annotation.Primary;
 @ConditionalOnEnableServer
 public class RestlightServerAutoConfigurer {
 
-    @Bean(destroyMethod = "shutdown")
+    @Bean(destroyMethod = "")
     @Primary
     @Qualifier(Constants.SERVER)
     public ServerStarter defaultServerStarter(AutoRestlightServerOptions options) {
