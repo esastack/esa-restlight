@@ -41,12 +41,22 @@ public class FastJsonSerializer implements JsonSerializer {
     }
 
     @Override
-    public <T> T deSerialize(byte[] data, Type type) {
+    public <T> T deserialize(byte[] data, Type type) {
         return JSON.parseObject(data, type);
     }
 
     @Override
-    public <T> T deSerialize(HttpInputStream inputStream, Type type) throws Exception {
+    public <T> T deserialize(HttpInputStream inputStream, Type type) throws Exception {
         return JSON.parseObject(inputStream, type);
+    }
+
+    @Override
+    public <T> T deSerialize(byte[] data, Type type) {
+        return deserialize(data, type);
+    }
+
+    @Override
+    public <T> T deSerialize(HttpInputStream inputStream, Type type) throws Exception {
+        return deserialize(inputStream, type);
     }
 }

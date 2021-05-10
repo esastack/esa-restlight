@@ -21,7 +21,10 @@ import esa.restlight.test.mock.MockAsyncResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class ProtoBufSerializerTest {
 
@@ -54,6 +57,23 @@ class ProtoBufSerializerTest {
         final byte[] serialize = new byte[response.getSentData().readableBytes()];
         response.getSentData().readBytes(serialize);
         assertArrayEquals(serialize, pojoBytes);
+    }
+
+    @Test
+    void deserialize() throws Exception {
+        final PojoProtobuf.Pojo pojoReduction = protoBufSerializer.deserialize(pojoBytes, PojoProtobuf.Pojo.class);
+        assertEquals(pojo.getName(), pojoReduction.getName());
+        assertEquals(pojo.getAge(), pojoReduction.getAge());
+    }
+
+    @Test
+    void testDeserialize() throws Exception {
+        final MockAsyncRequest.Builder builder = MockAsyncRequest.aMockRequest();
+        final MockAsyncRequest request = builder.withBody(pojoBytes).build();
+        final PojoProtobuf.Pojo pojoReduction = protoBufSerializer.deserialize(request.inputStream(),
+                PojoProtobuf.Pojo.class);
+        assertEquals(pojo.getName(), pojoReduction.getName());
+        assertEquals(pojo.getAge(), pojoReduction.getAge());
     }
 
     @Test

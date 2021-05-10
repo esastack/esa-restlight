@@ -140,9 +140,9 @@ public abstract class AbstractRequestBodyArgumentResolver implements ArgumentRes
                                                  Param param,
                                                  HttpRequestSerializer serializer) throws Exception {
             if (serializer.preferStream()) {
-                return serializer.deSerialize(request.inputStream(), param.genericType());
+                return serializer.deserialize(request.inputStream(), param.genericType());
             }
-            return serializer.deSerialize(request.body(), param.genericType());
+            return serializer.deserialize(request.body(), param.genericType());
         }
     }
 

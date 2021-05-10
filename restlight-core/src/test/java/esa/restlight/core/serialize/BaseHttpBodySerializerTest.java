@@ -98,6 +98,14 @@ class BaseHttpBodySerializerTest {
     }
 
     @Test
+    void deserialize() throws Exception {
+        final Pojo pojoReduction = baseHttpBodySerializer.deserialize(pojoBytes, Pojo.class);
+        assertNull(baseHttpBodySerializer.deserialize((byte[]) null, Pojo.class));
+        assertNull(baseHttpBodySerializer.deserialize(new byte[]{}, Pojo.class));
+        assertEquals(pojo, pojoReduction);
+    }
+
+    @Test
     void deSerialize() throws Exception {
         final Pojo pojoReduction = baseHttpBodySerializer.deSerialize(pojoBytes, Pojo.class);
         assertNull(baseHttpBodySerializer.deSerialize((byte[]) null, Pojo.class));
@@ -111,6 +119,14 @@ class BaseHttpBodySerializerTest {
         final MockAsyncResponse response = new MockAsyncResponse();
         baseHttpBodySerializer.serialize(pojo, response.outputStream());
         assertEquals(pojoString, response.getSentData().toString(StandardCharsets.UTF_8));
+    }
+
+    @Test
+    void testDeserialize() throws Exception {
+        final MockAsyncRequest.Builder builder = MockAsyncRequest.aMockRequest();
+        final MockAsyncRequest request = builder.withBody(pojoBytes).build();
+        final Pojo pojoReduction = serializer.deserialize(request.inputStream(), Pojo.class);
+        assertEquals(pojo, pojoReduction);
     }
 
     @Test

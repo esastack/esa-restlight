@@ -25,7 +25,9 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -61,6 +63,18 @@ class JacksonSerializerTest {
         final MockAsyncResponse response = new MockAsyncResponse();
         defaultJacksonSerializer.serialize(pojo, response.outputStream());
         assertEquals(pojoString, response.getSentData().toString(StandardCharsets.UTF_8));
+    }
+
+    @Test
+    void deserialize() throws IOException {
+        assertEquals(pojo, defaultJacksonSerializer.deserialize(pojoBytes, Pojo.class));
+    }
+
+    @Test
+    void testDeserialize() throws Exception {
+        final MockAsyncRequest.Builder builder = MockAsyncRequest.aMockRequest();
+        final MockAsyncRequest request = builder.withBody(pojoBytes).build();
+        assertEquals(pojo, defaultJacksonSerializer.deserialize(request.inputStream(), Pojo.class));
     }
 
     @Test

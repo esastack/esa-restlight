@@ -50,13 +50,24 @@ public class GsonSerializer implements JsonSerializer {
     }
 
     @Override
-    public <T> T deSerialize(byte[] data, Type type) {
+    public <T> T deserialize(byte[] data, Type type) {
         return gson.fromJson(new String(data, StandardCharsets.UTF_8), type);
+    }
+
+    @Override
+    public <T> T deserialize(HttpInputStream inputStream, Type type) throws Exception {
+
+        return gson.fromJson(inputStream.readString(StandardCharsets.UTF_8), type);
+    }
+
+    @Override
+    public <T> T deSerialize(byte[] data, Type type) {
+        return deserialize(data, type);
     }
 
     @Override
     public <T> T deSerialize(HttpInputStream inputStream, Type type) throws Exception {
 
-        return gson.fromJson(inputStream.readString(StandardCharsets.UTF_8), type);
+        return deserialize(inputStream, type);
     }
 }

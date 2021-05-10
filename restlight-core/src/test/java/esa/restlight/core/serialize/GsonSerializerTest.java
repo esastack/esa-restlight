@@ -58,6 +58,18 @@ class GsonSerializerTest {
     }
 
     @Test
+    void deserialize() {
+        assertEquals(gsonSerializer.deserialize(pojoBytes, Pojo.class), pojo);
+    }
+
+    @Test
+    void testDeserialize() throws Exception {
+        final MockAsyncRequest.Builder builder = MockAsyncRequest.aMockRequest();
+        final MockAsyncRequest request = builder.withBody(pojoBytes).build();
+        assertEquals(pojo, gsonSerializer.deserialize(request.inputStream(), Pojo.class));
+    }
+
+    @Test
     void deSerialize() {
         assertEquals(gsonSerializer.deSerialize(pojoBytes, Pojo.class), pojo);
     }

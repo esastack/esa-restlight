@@ -25,7 +25,22 @@ import java.lang.reflect.Type;
 public interface RxSerializer {
 
     /**
-     * deSerialize the data from byte array to the object
+     * deserialize the data from byte array to the object
+     *
+     * @deprecated use {@link #deserialize(byte[], Type)}
+     * @param data data
+     * @param type data type
+     * @param <T>  generic type
+     * @return decoded value
+     * @throws Exception error
+     */
+    @Deprecated
+    default <T> T deSerialize(byte[] data, Type type) throws Exception {
+        return null;
+    }
+
+    /**
+     * deserialize the data from byte array to the object
      *
      * @param data data
      * @param type data type
@@ -33,11 +48,27 @@ public interface RxSerializer {
      * @return decoded value
      * @throws Exception error
      */
-    <T> T deSerialize(byte[] data, Type type) throws Exception;
-
+    default <T> T deserialize(byte[] data, Type type) throws Exception {
+        return deSerialize(data, type);
+    }
 
     /**
-     * deSerialize the data from byte array to the object
+     * deserialize the data from byte array to the object
+     *
+     * @deprecated use {@link #deserialize(HttpInputStream, Type)}
+     * @param inputStream inputStream
+     * @param type        data type
+     * @param <T>         generic type
+     * @return decoded value
+     * @throws Exception error
+     */
+    @Deprecated
+    default <T> T deSerialize(HttpInputStream inputStream, Type type) throws Exception {
+        return null;
+    }
+
+    /**
+     * deserialize the data from byte array to the object
      *
      * @param inputStream inputStream
      * @param type        data type
@@ -45,6 +76,8 @@ public interface RxSerializer {
      * @return decoded value
      * @throws Exception error
      */
-    <T> T deSerialize(HttpInputStream inputStream, Type type) throws Exception;
+    default <T> T deserialize(HttpInputStream inputStream, Type type) throws Exception {
+        return deSerialize(inputStream, type);
+    }
 
 }

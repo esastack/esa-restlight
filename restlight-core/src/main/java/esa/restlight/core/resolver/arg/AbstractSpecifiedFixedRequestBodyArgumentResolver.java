@@ -131,9 +131,9 @@ public abstract class AbstractSpecifiedFixedRequestBodyArgumentResolver implemen
         public Object resolve(AsyncRequest request, AsyncResponse response) throws Exception {
             Object resolved;
             if (serializer.preferStream()) {
-                resolved = serializer.deSerialize(request.inputStream(), param.genericType());
+                resolved = serializer.deserialize(request.inputStream(), param.genericType());
             } else {
-                resolved = serializer.deSerialize(request.body(), param.genericType());
+                resolved = serializer.deserialize(request.body(), param.genericType());
             }
             return checkRequired(resolved);
         }

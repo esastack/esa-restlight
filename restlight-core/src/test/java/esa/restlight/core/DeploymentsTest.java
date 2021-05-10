@@ -189,6 +189,16 @@ class DeploymentsTest {
         }
 
         @Override
+        public <T> T deserialize(byte[] data, Type type) throws Exception {
+            return null;
+        }
+
+        @Override
+        public <T> T deserialize(HttpInputStream inputStream, Type type) throws Exception {
+            return null;
+        }
+
+        @Override
         public <T> T deSerialize(byte[] data, Type type) throws Exception {
             return null;
         }

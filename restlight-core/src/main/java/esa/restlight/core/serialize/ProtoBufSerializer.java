@@ -68,7 +68,7 @@ public class ProtoBufSerializer implements Serializer {
 
     @SuppressWarnings("unchecked")
     @Override
-    public <T> T deSerialize(byte[] data, Type type) throws Exception {
+    public <T> T deserialize(byte[] data, Type type) throws Exception {
         Message.Builder builder = getMessageBuilder((Class<? extends Message>) type);
         builder.mergeFrom(data, extensionRegistry);
         return (T) builder.build();
@@ -76,10 +76,22 @@ public class ProtoBufSerializer implements Serializer {
 
     @SuppressWarnings("unchecked")
     @Override
-    public <T> T deSerialize(HttpInputStream inputStream, Type type) throws Exception {
+    public <T> T deserialize(HttpInputStream inputStream, Type type) throws Exception {
         Message.Builder builder = getMessageBuilder((Class<? extends Message>) type);
         builder.mergeFrom(inputStream, extensionRegistry);
         return (T) builder.build();
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T> T deSerialize(byte[] data, Type type) throws Exception {
+        return deserialize(data, type);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T> T deSerialize(HttpInputStream inputStream, Type type) throws Exception {
+        return deserialize(inputStream, type);
     }
 
     private Message.Builder getMessageBuilder(Class<? extends Message> clazz) throws Exception {

@@ -87,18 +87,28 @@ public class ProtoBufHttpBodySerializer implements HttpBodySerializer {
     }
 
     @Override
-    public <T> T deSerialize(byte[] data, Type type) throws Exception {
+    public <T> T deserialize(byte[] data, Type type) throws Exception {
         if (data == null || data.length == 0) {
             return null;
         }
-        return serializer.deSerialize(data, type);
+        return serializer.deserialize(data, type);
+    }
+
+    @Override
+    public <T> T deserialize(HttpInputStream inputStream, Type type) throws Exception {
+        if (inputStream.available() == 0) {
+            return null;
+        }
+        return serializer.deserialize(inputStream, type);
+    }
+
+    @Override
+    public <T> T deSerialize(byte[] data, Type type) throws Exception {
+        return deserialize(data, type);
     }
 
     @Override
     public <T> T deSerialize(HttpInputStream inputStream, Type type) throws Exception {
-        if (inputStream.available() == 0) {
-            return null;
-        }
-        return serializer.deSerialize(inputStream, type);
+        return deserialize(inputStream, type);
     }
 }
