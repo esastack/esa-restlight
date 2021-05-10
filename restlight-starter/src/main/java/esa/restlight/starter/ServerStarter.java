@@ -159,7 +159,7 @@ public class ServerStarter extends AbstractDelegatedRestlightServer
         try {
             this.shutdown();
         } catch (Throwable ex) {
-            LoggerUtils.logger().error("Failed to shutdown {} server {}",
+            LoggerUtils.logger().error("Failed to shutdown [{}] server: {}",
                     serverName(), NetworkUtils.parseAddress(address()), ex);
         }
     }
