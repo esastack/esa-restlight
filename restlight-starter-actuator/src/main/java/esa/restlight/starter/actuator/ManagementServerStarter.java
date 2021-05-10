@@ -16,6 +16,7 @@
 package esa.restlight.starter.actuator;
 
 import esa.commons.Checks;
+import esa.commons.NetworkUtils;
 import esa.commons.StringUtils;
 import esa.commons.TimeCounter;
 import esa.commons.logging.Logger;
@@ -26,6 +27,7 @@ import esa.restlight.core.util.Constants;
 import esa.restlight.core.util.OrderedComparator;
 import esa.restlight.server.bootstrap.AbstractDelegatedRestlightServer;
 import esa.restlight.server.bootstrap.RestlightServer;
+import esa.restlight.server.util.LoggerUtils;
 import esa.restlight.starter.actuator.autoconfigurer.ManagementConfigure;
 import esa.restlight.starter.actuator.autoconfigurer.ManagementOptions;
 import org.springframework.beans.BeansException;
@@ -34,9 +36,13 @@ import org.springframework.beans.factory.SmartInitializingSingleton;
 import org.springframework.boot.actuate.autoconfigure.web.server.ManagementServerProperties;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.context.ApplicationListener;
+import org.springframework.context.event.ContextClosedEvent;
+import org.springframework.context.support.AbstractApplicationContext;
 
 public class ManagementServerStarter extends AbstractDelegatedRestlightServer
-        implements SmartInitializingSingleton, RestlightServer, ApplicationContextAware {
+        implements SmartInitializingSingleton, RestlightServer, ApplicationContextAware,
+        ApplicationListener<ContextClosedEvent> {
 
     private static final Logger logger =
             LoggerFactory.getLogger(ManagementServerStarter.class);
@@ -106,6 +112,24 @@ public class ManagementServerStarter extends AbstractDelegatedRestlightServer
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         this.context = applicationContext;
+    }
+
+    /**
+     * Designed to guarantee the {@link RestlightServer#shutdown()} executes before destroying spring beans
+     * during {@link AbstractApplicationContext#close()}.
+     *
+     * See https://github.com/esastack/esa-restlight/issues/38.
+     *
+     * @param event event
+     */
+    @Override
+    public void onApplicationEvent(ContextClosedEvent event) {
+        try {
+            this.shutdown();
+        } catch (Throwable ex) {
+            LoggerUtils.logger().error("Failed to shutdown Restlight server binding on: {}",
+                    NetworkUtils.parseAddress(address()), ex);
+        }
     }
 
     @Override

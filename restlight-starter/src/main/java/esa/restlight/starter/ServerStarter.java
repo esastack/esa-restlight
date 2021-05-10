@@ -24,6 +24,7 @@ import esa.restlight.core.util.OrderedComparator;
 import esa.restlight.server.bootstrap.AbstractDelegatedRestlightServer;
 import esa.restlight.server.bootstrap.RestlightServer;
 import esa.restlight.server.bootstrap.RestlightThread;
+import esa.restlight.server.util.LoggerUtils;
 import esa.restlight.spring.Restlight4Spring;
 import esa.restlight.starter.autoconfigure.AutoRestlightServerOptions;
 import esa.restlight.starter.autoconfigure.RestlightConfigure;
@@ -33,12 +34,16 @@ import org.springframework.beans.factory.BeanCreationException;
 import org.springframework.beans.factory.SmartInitializingSingleton;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.context.ApplicationListener;
+import org.springframework.context.event.ContextClosedEvent;
+import org.springframework.context.support.AbstractApplicationContext;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
 public class ServerStarter extends AbstractDelegatedRestlightServer
-        implements SmartInitializingSingleton, RestlightServer, ApplicationContextAware {
+        implements SmartInitializingSingleton, RestlightServer, ApplicationContextAware,
+        ApplicationListener<ContextClosedEvent> {
 
     private static final Logger logger =
             LoggerFactory.getLogger(ServerStarter.class);
@@ -139,5 +144,23 @@ public class ServerStarter extends AbstractDelegatedRestlightServer
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         this.context = applicationContext;
+    }
+
+    /**
+     * Designed to guarantee the {@link RestlightServer#shutdown()} executes before destroying spring beans
+     * during {@link AbstractApplicationContext#close()}.
+     *
+     * See https://github.com/esastack/esa-restlight/issues/38.
+     *
+     * @param event event
+     */
+    @Override
+    public void onApplicationEvent(ContextClosedEvent event) {
+        try {
+            this.shutdown();
+        } catch (Throwable ex) {
+            LoggerUtils.logger().error("Failed to shutdown Restlight server binding on: {}",
+                    NetworkUtils.parseAddress(address()), ex);
+        }
     }
 }

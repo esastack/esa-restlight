@@ -26,8 +26,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 
-import java.util.List;
-
 @Configuration
 @ConditionalOnClass({RestlightServer.class})
 @EnableConfigurationProperties(AutoRestlightServerOptions.class)
@@ -39,10 +37,5 @@ public class RestlightServerAutoConfigurer {
     @Qualifier(Constants.SERVER)
     public ServerStarter defaultServerStarter(AutoRestlightServerOptions options) {
         return new ServerStarter(options);
-    }
-
-    @Bean
-    public RestlightGracefulShutdown restlightGracefulShutdown(List<RestlightServer> servers) {
-        return new RestlightGracefulShutdown(servers);
     }
 }
