@@ -147,8 +147,8 @@ public class ServerStarter extends AbstractDelegatedRestlightServer
     }
 
     /**
-     * Designed to guarantee the {@link RestlightServer#shutdown()} executes before destroying spring beans
-     * during {@link AbstractApplicationContext#close()}.
+     * Guarantee the {@link RestlightServer#shutdown()} will be executed before spring beans are
+     * destroyed during {@link AbstractApplicationContext#close()}.
      *
      * See https://github.com/esastack/esa-restlight/issues/38.
      *
@@ -159,7 +159,7 @@ public class ServerStarter extends AbstractDelegatedRestlightServer
         try {
             this.shutdown();
         } catch (Throwable ex) {
-            LoggerUtils.logger().error("Failed to shutdown Restlight server binding on: {}",
+            LoggerUtils.logger().error("Failed to shutdown Restlight server {}",
                     NetworkUtils.parseAddress(address()), ex);
         }
     }
