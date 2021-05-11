@@ -30,9 +30,13 @@ import org.junit.jupiter.api.Test;
 
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.QueryParam;
+import java.util.Collection;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class QueryParamArgumentResolverTest {
 
@@ -73,6 +77,26 @@ class QueryParamArgumentResolverTest {
                 .build();
         final Object resolved = createResolverAndResolve(request, "defaultValue");
         assertEquals("default", resolved);
+    }
+
+    @Test
+    void testDefaultCollectionValue() throws Exception {
+        final AsyncRequest request = MockAsyncRequest
+                .aMockRequest()
+                .build();
+        final Object resolved = createResolverAndResolve(request, "defaultCollectionValue");
+        assertNotNull(resolved);
+        assertTrue(((Collection) resolved).isEmpty());
+    }
+
+    @Test
+    void testDefaultArrayValue() throws Exception {
+        final AsyncRequest request = MockAsyncRequest
+                .aMockRequest()
+                .build();
+        final Object resolved = createResolverAndResolve(request, "defaultArrayValue");
+        assertNotNull(resolved);
+        assertEquals(0, ((String[]) resolved).length);
     }
 
     @Test
@@ -124,6 +148,12 @@ class QueryParamArgumentResolverTest {
 
 
         public void defaultValue(@DefaultValue("default") @QueryParam("foo") String foo) {
+        }
+
+        public void defaultCollectionValue(@QueryParam("foo") @DefaultValue("") Collection<String> foo) {
+        }
+
+        public void defaultArrayValue(@QueryParam("foo") @DefaultValue("") String[] foo) {
         }
 
         public void constructor(@QueryParam("foo") ConstructorSubject foo) {

@@ -30,6 +30,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.web.bind.annotation.RequestHeader;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 
@@ -110,6 +111,26 @@ class RequestHeaderArgumentResolverTest {
     }
 
     @Test
+    void testDefaultCollectionValue() throws Exception {
+        final AsyncRequest request = MockAsyncRequest
+                .aMockRequest()
+                .build();
+        final Object resolved = createResolverAndResolve(request, "defaultCollectionValue");
+        assertNotNull(resolved);
+        assertTrue(((Collection) resolved).isEmpty());
+    }
+
+    @Test
+    void testDefaultArrayValue() throws Exception {
+        final AsyncRequest request = MockAsyncRequest
+                .aMockRequest()
+                .build();
+        final Object resolved = createResolverAndResolve(request, "defaultArrayValue");
+        assertNotNull(resolved);
+        assertEquals(0, ((String[]) resolved).length);
+    }
+
+    @Test
     void testDefaultAndRequiredHeader() throws Exception {
         final AsyncRequest request = MockAsyncRequest
                 .aMockRequest()
@@ -150,6 +171,12 @@ class RequestHeaderArgumentResolverTest {
         }
 
         public void defaultHeader(@RequestHeader(required = false, defaultValue = "foo") String foo) {
+        }
+
+        public void defaultCollectionValue(@RequestHeader(value = "foo", defaultValue = "") Collection<String> foo) {
+        }
+
+        public void defaultArrayValue(@RequestHeader(value = "foo", defaultValue = "") String[] foo) {
         }
 
         public void defaultAndRequiredHeader(@RequestHeader(defaultValue = "foo") String foo) {

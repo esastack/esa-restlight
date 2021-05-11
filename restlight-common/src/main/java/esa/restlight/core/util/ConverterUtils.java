@@ -32,18 +32,7 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedHashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.NavigableSet;
-import java.util.Set;
-import java.util.SortedSet;
-import java.util.StringTokenizer;
-import java.util.TreeSet;
+import java.util.*;
 import java.util.function.Function;
 import java.util.function.IntFunction;
 
@@ -136,20 +125,35 @@ public final class ConverterUtils {
      * @return converted instance.
      * @throws IllegalArgumentException if failed to convert.
      */
-    @SuppressWarnings("unchecked")
     public static <T> T forceConvertStringValue(String value, Type requiredType) {
         Checks.checkNotNull(requiredType, "requiredType");
-        if (StringUtils.isEmpty(value)) {
-            return null;
-        } else {
-            Function<String, Object> converter = ConverterUtils.str2ObjectConverter(requiredType);
-            if (converter == null) {
-                throw new IllegalArgumentException("Could not convert given value '"
-                        + value
-                        + "'to target type '" + requiredType + "'");
-            }
-            return (T) converter.apply(value);
+        if (StringUtils.isNotEmpty(value)) {
+            return doForceConvertStringValue(value, requiredType);
         }
+
+        final Class<?> requiredClass = forRawType(requiredType);
+        if (requiredClass == null) {
+            return null;
+        }
+
+        // convert null and empty string value to empty array or collection.
+        // See https://github.com/esastack/esa-restlight/issues/43
+        if (requiredClass.isArray() || Collection.class.isAssignableFrom(requiredClass)) {
+            return doForceConvertStringValue(value, requiredType);
+        }
+
+        return null;
+    }
+
+    @SuppressWarnings("unchecked")
+    private static <T> T doForceConvertStringValue(String value, Type requiredType) {
+        Function<String, Object> converter = ConverterUtils.str2ObjectConverter(requiredType);
+        if (converter == null) {
+            throw new IllegalArgumentException("Could not convert given value '"
+                    + value
+                    + "'to target type '" + requiredType + "'");
+        }
+        return (T) converter.apply(value);
     }
 
     /**

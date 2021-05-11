@@ -100,6 +100,26 @@ class RequestRequestParamArgumentResolverTest {
     }
 
     @Test
+    void testDefaultCollectionValue() throws Exception {
+        final AsyncRequest request = MockAsyncRequest
+                .aMockRequest()
+                .build();
+        final Object resolved = createResolverAndResolve(request, "defaultCollectionValue");
+        assertNotNull(resolved);
+        assertTrue(((Collection) resolved).isEmpty());
+    }
+
+    @Test
+    void testDefaultArrayValue() throws Exception {
+        final AsyncRequest request = MockAsyncRequest
+                .aMockRequest()
+                .build();
+        final Object resolved = createResolverAndResolve(request, "defaultArrayValue");
+        assertNotNull(resolved);
+        assertEquals(0, ((String[]) resolved).length);
+    }
+
+    @Test
     void testDefaultAndRequiredParam() throws Exception {
         final AsyncRequest request = MockAsyncRequest
                 .aMockRequest()
@@ -226,6 +246,12 @@ class RequestRequestParamArgumentResolverTest {
         }
 
         void defaultParam(@RequestParam(required = false, defaultValue = "foo") String foo) {
+        }
+
+        public void defaultCollectionValue(@RequestParam(value = "foo", defaultValue = "") Collection<String> foo) {
+        }
+
+        public void defaultArrayValue(@RequestParam(value = "foo", defaultValue = "") String[] foo) {
         }
 
         void defaultAndRequiredParam(@RequestParam(defaultValue = "foo") String foo) {

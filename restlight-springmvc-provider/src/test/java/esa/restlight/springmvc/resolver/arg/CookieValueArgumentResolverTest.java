@@ -30,6 +30,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.web.bind.annotation.CookieValue;
 
+import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 
@@ -118,6 +119,26 @@ class CookieValueArgumentResolverTest {
     }
 
     @Test
+    void testDefaultCollectionValue() throws Exception {
+        final AsyncRequest request = MockAsyncRequest
+                .aMockRequest()
+                .build();
+        final Object resolved = createResolverAndResolve(request, "defaultCollectionValue");
+        assertNotNull(resolved);
+        assertTrue(((Collection) resolved).isEmpty());
+    }
+
+    @Test
+    void testDefaultArrayValue() throws Exception {
+        final AsyncRequest request = MockAsyncRequest
+                .aMockRequest()
+                .build();
+        final Object resolved = createResolverAndResolve(request, "defaultArrayValue");
+        assertNotNull(resolved);
+        assertEquals(0, ((String[]) resolved).length);
+    }
+
+    @Test
     void testDefaultAndRequiredHeader() throws Exception {
         final AsyncRequest request = MockAsyncRequest
                 .aMockRequest()
@@ -165,6 +186,12 @@ class CookieValueArgumentResolverTest {
         }
 
         public void cookieObjectsValue(@CookieValue Set<Cookie> foo) {
+        }
+
+        public void defaultCollectionValue(@CookieValue(value = "foo", defaultValue = "") Collection<String> foo) {
+        }
+
+        public void defaultArrayValue(@CookieValue(value = "foo", defaultValue = "") String[] foo) {
         }
 
     }

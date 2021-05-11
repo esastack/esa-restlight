@@ -30,9 +30,12 @@ import org.junit.jupiter.api.Test;
 
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.QueryParam;
+import java.util.Collection;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class DefaultValueArgumentResolverTest {
 
@@ -97,6 +100,28 @@ class DefaultValueArgumentResolverTest {
         assertEquals("default", ((FromStringSubject) resolved).getValue());
     }
 
+    @Test
+    void testDefaultCollectionValue() throws Exception {
+        final AsyncRequest request = MockAsyncRequest
+                .aMockRequest()
+                .withParameter("foo", "")
+                .build();
+        final Object resolved = createResolverAndResolve(request, "defaultCollectionValue");
+        assertTrue(resolved instanceof Collection);
+        assertTrue(((Collection) resolved).isEmpty());
+    }
+
+    @Test
+    void testDefaultArrayValue() throws Exception {
+        final AsyncRequest request = MockAsyncRequest
+                .aMockRequest()
+                .withParameter("foo", "")
+                .build();
+        final Object resolved = createResolverAndResolve(request, "defaultArrayValue");
+        assertTrue(resolved instanceof String[]);
+        assertEquals(0, ((String[]) resolved).length);
+    }
+
     private static Object createResolverAndResolve(AsyncRequest request, String method) throws Exception {
         final MethodParam parameter = handlerMethods.get(method).parameters()[0];
         assertTrue(resolverFactory.supports(parameter));
@@ -121,6 +146,12 @@ class DefaultValueArgumentResolverTest {
         }
 
         public void fromString(@DefaultValue("default") FromStringSubject foo) {
+        }
+
+        public void defaultCollectionValue(@DefaultValue("") Collection<String> foo) {
+        }
+
+        public void defaultArrayValue(@DefaultValue("") String[] foo) {
         }
     }
 }

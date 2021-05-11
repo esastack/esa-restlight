@@ -19,25 +19,10 @@ import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.LinkedHashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.NavigableSet;
-import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SuppressWarnings("unchecked")
 class ConverterUtilsTest {
@@ -327,6 +312,8 @@ class ConverterUtilsTest {
         assertNull(ConverterUtils.forceConvertStringValue("", Integer.class));
         assertThrows(IllegalArgumentException.class,
                 () -> ConverterUtils.forceConvertStringValue("foo", MyList.class));
+        assertNotNull(ConverterUtils.forceConvertStringValue("", Collection.class));
+        assertNotNull(ConverterUtils.forceConvertStringValue("", String[].class));
     }
 
     @Test

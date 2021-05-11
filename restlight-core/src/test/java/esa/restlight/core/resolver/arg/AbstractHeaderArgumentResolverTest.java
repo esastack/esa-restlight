@@ -4,12 +4,10 @@ import esa.restlight.core.method.Param;
 import esa.restlight.test.mock.MockAsyncRequest;
 import esa.restlight.test.mock.MockAsyncResponse;
 import io.netty.handler.codec.http.HttpHeaders;
-import io.netty.handler.codec.http.cookie.Cookie;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -18,7 +16,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @SuppressWarnings({"unchecked", "rawtypes"})
-public class AbstractHeaderArgumentResolverTest {
+class AbstractHeaderArgumentResolverTest {
 
     @Test
     void testResolveStringValue() throws Exception {

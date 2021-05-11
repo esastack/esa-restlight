@@ -30,9 +30,13 @@ import org.junit.jupiter.api.Test;
 
 import javax.ws.rs.CookieParam;
 import javax.ws.rs.DefaultValue;
+import java.util.Collection;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class CookieParamArgumentResolverTest {
 
@@ -73,6 +77,26 @@ class CookieParamArgumentResolverTest {
                 .build();
         final Object resolved = createResolverAndResolve(request, "defaultCookieValue");
         assertEquals("bar", resolved);
+    }
+
+    @Test
+    void testDefaultCollectionValue() throws Exception {
+        final AsyncRequest request = MockAsyncRequest
+                .aMockRequest()
+                .build();
+        final Object resolved = createResolverAndResolve(request, "defaultCollectionValue");
+        assertNotNull(resolved);
+        assertTrue(((Collection) resolved).isEmpty());
+    }
+
+    @Test
+    void testDefaultArrayValue() throws Exception {
+        final AsyncRequest request = MockAsyncRequest
+                .aMockRequest()
+                .build();
+        final Object resolved = createResolverAndResolve(request, "defaultArrayValue");
+        assertNotNull(resolved);
+        assertEquals(0, ((String[]) resolved).length);
     }
 
     @Test
@@ -146,6 +170,12 @@ class CookieParamArgumentResolverTest {
         }
 
         public void fromString(@CookieParam("foo") FromStringSubject foo) {
+        }
+
+        public void defaultCollectionValue(@CookieParam("foo") @DefaultValue("") Collection<String> foo) {
+        }
+
+        public void defaultArrayValue(@CookieParam("foo") @DefaultValue("") String[] foo) {
         }
     }
 }
