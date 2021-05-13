@@ -35,7 +35,8 @@ public class CookieParamArgumentResolver extends AbstractCookieValueArgumentReso
         assert cookieParam != null;
         return new NameAndValue(cookieParam.value(),
                 false,
-                JaxrsMappingUtils.extractDefaultValue(parameter));
+                JaxrsMappingUtils.extractDefaultValue(parameter),
+                JaxrsMappingUtils.hasDefaultValue(parameter));
     }
 
     @Override

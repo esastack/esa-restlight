@@ -19,10 +19,27 @@ import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.NavigableSet;
+import java.util.Optional;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SuppressWarnings("unchecked")
 class ConverterUtilsTest {
@@ -48,6 +65,24 @@ class ConverterUtilsTest {
         assertEquals(10.0f, (float) ConverterUtils.str2ObjectConverter(Float.class).apply("10.0"));
         assertNull(ConverterUtils.str2ObjectConverter(void.class).apply("10"));
         assertNull(ConverterUtils.str2ObjectConverter(Void.class).apply("10"));
+    }
+
+    @Test
+    void testConvertString2Wrappers() {
+        assertNull(ConverterUtils.str2ObjectConverter(Byte.class).apply(""));
+        assertNull(ConverterUtils.str2ObjectConverter(Character.class).apply(""));
+        assertNull(ConverterUtils.str2ObjectConverter(Boolean.class).apply(""));
+        assertNull(ConverterUtils.str2ObjectConverter(Short.class).apply(""));
+        assertNull(ConverterUtils.str2ObjectConverter(Integer.class).apply(""));
+        assertNull(ConverterUtils.str2ObjectConverter(Long.class).apply(""));
+        assertNull(ConverterUtils.str2ObjectConverter(Double.class).apply(""));
+        assertNull(ConverterUtils.str2ObjectConverter(Float.class).apply(""));
+        assertNull(ConverterUtils.str2ObjectConverter(Void.class).apply(""));
+        assertNull(ConverterUtils.str2ObjectConverter(BigDecimal.class).apply(""));
+        assertThrows(IllegalArgumentException.class,
+                () -> ConverterUtils.str2ObjectConverter(Timestamp.class).apply(""));
+        assertNull(ConverterUtils.str2ObjectConverter(String.class).apply(null));
+        assertNull(ConverterUtils.str2ObjectConverter(Object.class).apply(null));
     }
 
     @Test
@@ -151,6 +186,41 @@ class ConverterUtilsTest {
     }
 
     @Test
+    void testConvertString2Optional() throws NoSuchMethodException {
+        final Optional<String> optional0 = (Optional<String>)
+                ConverterUtils.str2ObjectConverter(Subject.class.getDeclaredMethod("optionalString")
+                .getGenericReturnType()).apply(null);
+        assertFalse(optional0.isPresent());
+
+        final Optional<Long> optional1 = (Optional<Long>)
+                ConverterUtils.str2ObjectConverter(Subject.class.getDeclaredMethod("optionalLong")
+                        .getGenericReturnType()).apply(null);
+        assertFalse(optional1.isPresent());
+
+        final Optional<String[]> optional2 = (Optional<String[]>)
+                ConverterUtils.str2ObjectConverter(Subject.class.getDeclaredMethod("optionalArray")
+                        .getGenericReturnType()).apply(null);
+        assertFalse(optional2.isPresent());
+
+        final Optional<String[]> optional3 = (Optional<String[]>)
+                ConverterUtils.str2ObjectConverter(Subject.class.getDeclaredMethod("optionalArray")
+                        .getGenericReturnType()).apply("");
+        assertTrue(optional3.isPresent());
+        assertEquals(0, optional3.get().length);
+
+        final Optional<Collection<String>> optional4 = (Optional<Collection<String>>)
+                ConverterUtils.str2ObjectConverter(Subject.class.getDeclaredMethod("optionalCollection")
+                        .getGenericReturnType()).apply(null);
+        assertFalse(optional4.isPresent());
+
+        final Optional<Collection<String>> optional5 = (Optional<Collection<String>>)
+                ConverterUtils.str2ObjectConverter(Subject.class.getDeclaredMethod("optionalCollection")
+                        .getGenericReturnType()).apply("");
+        assertTrue(optional5.isPresent());
+        assertTrue(optional5.get().isEmpty());
+    }
+
+    @Test
     void testConvertStringCollection2PrimitiveArray() {
         final List<String> forTest = Arrays.asList("1", "2", "3", "4");
         assertArrayEquals(new byte[]{1, 2, 3, 4},
@@ -202,6 +272,14 @@ class ConverterUtilsTest {
         LinkedList<Double> doubleLinkedList();
 
         Collection<int[]> intArrayCollection();
+
+        Optional<String> optionalString();
+
+        Optional<Long> optionalLong();
+
+        Optional<String[]> optionalArray();
+
+        Optional<Collection<String>> optionalCollection();
     }
 
     @Test
@@ -312,6 +390,9 @@ class ConverterUtilsTest {
         assertNull(ConverterUtils.forceConvertStringValue("", Integer.class));
         assertThrows(IllegalArgumentException.class,
                 () -> ConverterUtils.forceConvertStringValue("foo", MyList.class));
+
+        assertNull(ConverterUtils.forceConvertStringValue(null, Collection.class));
+        assertNull(ConverterUtils.forceConvertStringValue(null, String[].class));
         assertNotNull(ConverterUtils.forceConvertStringValue("", Collection.class));
         assertNotNull(ConverterUtils.forceConvertStringValue("", String[].class));
     }

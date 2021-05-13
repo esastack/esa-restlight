@@ -32,6 +32,7 @@ import javax.ws.rs.DefaultValue;
 import javax.ws.rs.QueryParam;
 import java.util.Collection;
 import java.util.Map;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -122,6 +123,18 @@ class DefaultValueArgumentResolverTest {
         assertEquals(0, ((String[]) resolved).length);
     }
 
+    @SuppressWarnings("unchecked")
+    @Test
+    void testDefaultOptionalValue() throws Exception {
+        final AsyncRequest request = MockAsyncRequest
+                .aMockRequest()
+                .withParameter("foo", "")
+                .build();
+        final Optional<Integer> resolved = (Optional<Integer>)
+                createResolverAndResolve(request, "defaultOptionalValue");
+        assertFalse(resolved.isPresent());
+    }
+
     private static Object createResolverAndResolve(AsyncRequest request, String method) throws Exception {
         final MethodParam parameter = handlerMethods.get(method).parameters()[0];
         assertTrue(resolverFactory.supports(parameter));
@@ -152,6 +165,9 @@ class DefaultValueArgumentResolverTest {
         }
 
         public void defaultArrayValue(@DefaultValue("") String[] foo) {
+        }
+
+        public void defaultOptionalValue(@DefaultValue("") Optional<Integer> foo) {
         }
     }
 }

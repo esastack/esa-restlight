@@ -36,8 +36,10 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import java.util.Collection;
 import java.util.Map;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -122,6 +124,18 @@ class PathParamArgumentResolverTest {
         assertEquals(0, ((String[]) resolved).length);
     }
 
+    @SuppressWarnings("unchecked")
+    @Test
+    void testDefaultOptionalValue() throws Exception {
+        final AsyncRequest request = MockAsyncRequest
+                .aMockRequest()
+                .withUri("/")
+                .build();
+        final Optional<String> resolved =
+                (Optional<String>) createResolverAndResolve(request, "defaultOptionalValue");
+        assertFalse(resolved.isPresent());
+    }
+
     @Test
     void testConstructor() throws Exception {
         final AsyncRequest request = MockAsyncRequest
@@ -193,6 +207,11 @@ class PathParamArgumentResolverTest {
         @GET
         @Path("/{foo}")
         public void defaultArrayValue(@PathParam("foo") @DefaultValue("") String[] foo) {
+        }
+
+        @GET
+        @Path("/{foo}")
+        public void defaultOptionalValue(@PathParam("foo") Optional<String> foo) {
         }
 
         @GET

@@ -34,8 +34,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 @SuppressWarnings("unchecked")
@@ -207,6 +213,18 @@ class MatrixVariableArgumentResolverTest {
         assertEquals(0, ((String[]) resolved).length);
     }
 
+    @SuppressWarnings("unchecked")
+    @Test
+    void testDefaultOptionalValue() throws Exception {
+        final AsyncRequest request = MockAsyncRequest
+                .aMockRequest()
+                .withUri("/foo10")
+                .build();
+        final Optional<String> resolved =
+                (Optional<String>) createResolverAndResolve(request, "defaultOptionalValue", 0);
+        assertFalse(resolved.isPresent());
+    }
+
     private static Object createResolverAndResolve(AsyncRequest request, String method, int index) throws Exception {
         final MethodParam parameter = handlerMethods.get(method).parameters()[index];
         assertTrue(resolverFactory.supports(parameter));
@@ -258,6 +276,10 @@ class MatrixVariableArgumentResolverTest {
 
         @RequestMapping("/foo9/{foo}")
         public void defaultCollectionValue(@MatrixVariable(value = "a", defaultValue = "") Collection foo) {
+        }
+
+        @RequestMapping("/foo10/{foo}")
+        public void defaultOptionalValue(@MatrixVariable(value = "a") Optional<String> foo) {
         }
     }
 

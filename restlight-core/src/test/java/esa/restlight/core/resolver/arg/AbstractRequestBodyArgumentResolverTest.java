@@ -28,8 +28,8 @@ class AbstractRequestBodyArgumentResolverTest {
         when(param.genericType()).thenReturn(int.class);
         final AbstractRequestBodyArgumentResolver resolver = new AbstractRequestBodyArgumentResolver() {
             @Override
-            protected boolean required(Param param) {
-                return true;
+            protected NameAndValue createNameAndValue(Param param) {
+                return new NameAndValue("X", true);
             }
         };
         final MockAsyncRequest request = MockAsyncRequest.aMockRequest()
@@ -49,8 +49,8 @@ class AbstractRequestBodyArgumentResolverTest {
         when(param.genericType()).thenReturn(int.class);
         final AbstractRequestBodyArgumentResolver resolver = new AbstractRequestBodyArgumentResolver() {
             @Override
-            protected boolean required(Param param) {
-                return true;
+            protected NameAndValue createNameAndValue(Param param) {
+                return new NameAndValue("X", true);
             }
         };
         final MockAsyncRequest request = MockAsyncRequest.aMockRequest()
@@ -69,8 +69,8 @@ class AbstractRequestBodyArgumentResolverTest {
         when(param.genericType()).thenReturn(Subject.class);
         final AbstractRequestBodyArgumentResolver resolver = new AbstractRequestBodyArgumentResolver() {
             @Override
-            protected boolean required(Param param) {
-                return true;
+            protected NameAndValue createNameAndValue(Param param) {
+                return new NameAndValue("X", true);
             }
         };
         final MockAsyncRequest request = MockAsyncRequest.aMockRequest()
@@ -91,8 +91,8 @@ class AbstractRequestBodyArgumentResolverTest {
         when(param.genericType()).thenReturn(Subject.class);
         final AbstractRequestBodyArgumentResolver resolver = new AbstractRequestBodyArgumentResolver() {
             @Override
-            protected boolean required(Param param) {
-                return true;
+            protected NameAndValue createNameAndValue(Param param) {
+                return new NameAndValue("X", true);
             }
         };
         final MockAsyncRequest request = MockAsyncRequest.aMockRequest()
@@ -112,8 +112,8 @@ class AbstractRequestBodyArgumentResolverTest {
         final AbstractRequestBodyArgumentResolver resolver =
                 new AbstractRequestBodyArgumentResolver(true, "neg") {
                     @Override
-                    protected boolean required(Param param) {
-                        return true;
+                    protected NameAndValue createNameAndValue(Param param) {
+                        return new NameAndValue("X", true);
                     }
                 };
         final MockAsyncRequest request = MockAsyncRequest.aMockRequest()

@@ -35,7 +35,8 @@ public class PathParamArgumentResolver extends AbstractPathVariableArgumentResol
                 parameter.getAnnotation(PathParam.class);
         assert pathParam != null;
         return new NameAndValue(pathParam.value(), false,
-                JaxrsMappingUtils.extractDefaultValue(parameter));
+                JaxrsMappingUtils.extractDefaultValue(parameter),
+                JaxrsMappingUtils.hasDefaultValue(parameter));
     }
 
     @Override

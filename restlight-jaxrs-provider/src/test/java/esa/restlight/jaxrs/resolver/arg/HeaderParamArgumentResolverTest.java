@@ -32,8 +32,10 @@ import javax.ws.rs.DefaultValue;
 import javax.ws.rs.HeaderParam;
 import java.util.Collection;
 import java.util.Map;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -99,8 +101,19 @@ class HeaderParamArgumentResolverTest {
         assertEquals(0, ((String[]) resolved).length);
     }
 
+    @SuppressWarnings("unchecked")
     @Test
-    public void testDefaultNull() throws Exception {
+    void testDefaultOptionalValue() throws Exception {
+        final AsyncRequest request = MockAsyncRequest
+                .aMockRequest()
+                .build();
+        final Optional<String> resolved =
+                (Optional<String>) createResolverAndResolve(request, "defaultOptionalValue");
+        assertFalse(resolved.isPresent());
+    }
+
+    @Test
+    void testDefaultNull() throws Exception {
         final AsyncRequest request = MockAsyncRequest
                 .aMockRequest()
                 .build();
@@ -164,6 +177,9 @@ class HeaderParamArgumentResolverTest {
         }
 
         public void defaultArrayValue(@HeaderParam("foo") @DefaultValue("") String[] foo) {
+        }
+
+        public void defaultOptionalValue(@HeaderParam("foo") Optional<String> foo) {
         }
 
         public void primitive(@HeaderParam("foo") int foo) {

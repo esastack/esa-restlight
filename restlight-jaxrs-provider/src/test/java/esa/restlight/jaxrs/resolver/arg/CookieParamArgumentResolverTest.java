@@ -32,8 +32,10 @@ import javax.ws.rs.CookieParam;
 import javax.ws.rs.DefaultValue;
 import java.util.Collection;
 import java.util.Map;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -97,6 +99,17 @@ class CookieParamArgumentResolverTest {
         final Object resolved = createResolverAndResolve(request, "defaultArrayValue");
         assertNotNull(resolved);
         assertEquals(0, ((String[]) resolved).length);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    void testDefaultOptionalValue() throws Exception {
+        final AsyncRequest request = MockAsyncRequest
+                .aMockRequest()
+                .build();
+        final Optional<String> resolved =
+                (Optional<String>) createResolverAndResolve(request, "defaultOptionalValue");
+        assertFalse(resolved.isPresent());
     }
 
     @Test
@@ -176,6 +189,9 @@ class CookieParamArgumentResolverTest {
         }
 
         public void defaultArrayValue(@CookieParam("foo") @DefaultValue("") String[] foo) {
+        }
+
+        public void defaultOptionalValue(@CookieParam("foo") Optional<String> foo) {
         }
     }
 }

@@ -32,9 +32,15 @@ import org.springframework.web.bind.annotation.CookieValue;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 class CookieValueArgumentResolverTest {
@@ -138,6 +144,17 @@ class CookieValueArgumentResolverTest {
         assertEquals(0, ((String[]) resolved).length);
     }
 
+    @SuppressWarnings("unchecked")
+    @Test
+    void testDefaultOptionalValue() throws Exception {
+        final AsyncRequest request = MockAsyncRequest
+                .aMockRequest()
+                .build();
+        final Optional<String> resolved =
+                (Optional<String>) createResolverAndResolve(request, "defaultOptionalValue");
+        assertFalse(resolved.isPresent());
+    }
+
     @Test
     void testDefaultAndRequiredHeader() throws Exception {
         final AsyncRequest request = MockAsyncRequest
@@ -192,6 +209,10 @@ class CookieValueArgumentResolverTest {
         }
 
         public void defaultArrayValue(@CookieValue(value = "foo", defaultValue = "") String[] foo) {
+        }
+
+        public void defaultOptionalValue(@CookieValue(value = "foo") Optional<String> foo) {
+
         }
 
     }

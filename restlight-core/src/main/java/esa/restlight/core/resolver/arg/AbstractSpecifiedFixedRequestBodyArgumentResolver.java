@@ -17,15 +17,12 @@ package esa.restlight.core.resolver.arg;
 
 import esa.commons.reflect.AnnotationUtils;
 import esa.httpserver.core.AsyncRequest;
-import esa.httpserver.core.AsyncResponse;
 import esa.restlight.core.annotation.RequestSerializer;
 import esa.restlight.core.annotation.Serializer;
 import esa.restlight.core.method.Param;
 import esa.restlight.core.resolver.ArgumentResolver;
 import esa.restlight.core.resolver.ArgumentResolverFactory;
 import esa.restlight.core.serialize.HttpRequestSerializer;
-import esa.restlight.core.util.ConverterUtils;
-import esa.restlight.server.bootstrap.WebServerException;
 
 import java.lang.reflect.Modifier;
 import java.util.List;
@@ -57,11 +54,14 @@ public abstract class AbstractSpecifiedFixedRequestBodyArgumentResolver implemen
         return param.isMethodParam() && param.methodParam().method().getParameterCount() == 1;
     }
 
-    protected abstract boolean required(Param param);
-
-    protected String defaultValue(Param param) {
-        return null;
-    }
+    /**
+     * Create an instance of {@link NameAndValue} for the parameter.
+     *
+     * @param param parameter
+     *
+     * @return name and value
+     */
+    protected abstract NameAndValue createNameAndValue(Param param);
 
     @Override
     public ArgumentResolver createResolver(Param param,
@@ -75,7 +75,7 @@ public abstract class AbstractSpecifiedFixedRequestBodyArgumentResolver implemen
                 .orElseThrow(() -> new IllegalArgumentException("Could not findFor RequestBody serializer. " +
                         "target type:" + target.getName()));
 
-        return new Resolver(serializer, param, required(param), defaultValue(param));
+        return new Resolver(serializer, param);
     }
 
     private Class<? extends HttpRequestSerializer> findSpecifiedSerializer(Param param) {
@@ -109,40 +109,30 @@ public abstract class AbstractSpecifiedFixedRequestBodyArgumentResolver implemen
         return target;
     }
 
-    public static class Resolver implements ArgumentResolver {
+    public class Resolver extends AbstractNameAndValueArgumentResolver {
 
         private final HttpRequestSerializer serializer;
-        private final Param param;
-        private final boolean required;
-        final Object defaultValue;
 
         private Resolver(HttpRequestSerializer serializer,
-                         Param param,
-                         boolean required,
-                         String defaultValue) {
+                         Param param) {
+            super(param);
             this.serializer = serializer;
-            this.param = param;
-            this.required = required;
-            this.defaultValue =
-                    ConverterUtils.forceConvertStringValue(defaultValue, param.genericType());
         }
 
         @Override
-        public Object resolve(AsyncRequest request, AsyncResponse response) throws Exception {
+        protected NameAndValue createNameAndValue(Param param) {
+            return AbstractSpecifiedFixedRequestBodyArgumentResolver.this.createNameAndValue(param);
+        }
+
+        @Override
+        protected Object resolveName(String name, AsyncRequest request) throws Exception {
             Object resolved;
             if (serializer.preferStream()) {
                 resolved = serializer.deSerialize(request.inputStream(), param.genericType());
             } else {
                 resolved = serializer.deSerialize(request.body(), param.genericType());
             }
-            return checkRequired(resolved);
-        }
-
-        private Object checkRequired(Object arg) {
-            if (arg == null && required) {
-                throw WebServerException.badRequest("Missing required value: " + param.name());
-            }
-            return arg;
+            return resolved;
         }
     }
 

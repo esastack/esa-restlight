@@ -33,8 +33,15 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 @SuppressWarnings("unchecked")
@@ -117,6 +124,17 @@ class RequestRequestParamArgumentResolverTest {
         final Object resolved = createResolverAndResolve(request, "defaultArrayValue");
         assertNotNull(resolved);
         assertEquals(0, ((String[]) resolved).length);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    void testDefaultOptionalValue() throws Exception {
+        final AsyncRequest request = MockAsyncRequest
+                .aMockRequest()
+                .build();
+        final Optional<String> resolved =
+                (Optional<String>) createResolverAndResolve(request, "defaultOptionalValue");
+        assertFalse(resolved.isPresent());
     }
 
     @Test
@@ -252,6 +270,9 @@ class RequestRequestParamArgumentResolverTest {
         }
 
         public void defaultArrayValue(@RequestParam(value = "foo", defaultValue = "") String[] foo) {
+        }
+
+        public void defaultOptionalValue(@RequestParam(value = "foo") Optional<String> foo) {
         }
 
         void defaultAndRequiredParam(@RequestParam(defaultValue = "foo") String foo) {

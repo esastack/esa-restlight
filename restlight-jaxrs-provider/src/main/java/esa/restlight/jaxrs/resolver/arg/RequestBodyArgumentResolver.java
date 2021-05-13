@@ -17,6 +17,7 @@ package esa.restlight.jaxrs.resolver.arg;
 
 import esa.restlight.core.method.Param;
 import esa.restlight.core.resolver.arg.AbstractRequestBodyArgumentResolver;
+import esa.restlight.core.resolver.arg.NameAndValue;
 import esa.restlight.jaxrs.util.JaxrsMappingUtils;
 
 public class RequestBodyArgumentResolver extends AbstractRequestBodyArgumentResolver {
@@ -37,13 +38,9 @@ public class RequestBodyArgumentResolver extends AbstractRequestBodyArgumentReso
     }
 
     @Override
-    protected boolean required(Param param) {
-        return false;
-    }
-
-    @Override
-    protected String defaultValue(Param param) {
-        return JaxrsMappingUtils.extractDefaultValue(param);
+    protected NameAndValue createNameAndValue(Param param) {
+        return new NameAndValue(param.name(), false, JaxrsMappingUtils.extractDefaultValue(param),
+                JaxrsMappingUtils.hasDefaultValue(param));
     }
 
     @Override

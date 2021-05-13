@@ -37,8 +37,10 @@ import javax.ws.rs.Path;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -139,6 +141,18 @@ class MatrixParamArgumentResolverTest {
         assertEquals(0, ((String[]) resolved).length);
     }
 
+    @SuppressWarnings("unchecked")
+    @Test
+    void testDefaultOptionalValue() throws Exception {
+        final AsyncRequest request = MockAsyncRequest
+                .aMockRequest()
+                .withUri("/foo")
+                .build();
+        final Optional<String> resolved =
+                (Optional<String>) createResolverAndResolve(request, "defaultOptionalValue", 0);
+        assertFalse(resolved.isPresent());
+    }
+
     @Test
     void testConstructorValue() throws Exception {
         final AsyncRequest request = MockAsyncRequest
@@ -225,6 +239,12 @@ class MatrixParamArgumentResolverTest {
         public void defaultCollectionValue(@DefaultValue("")
                                            @MatrixParam("a") Collection foo) {
         }
+
+        @Path("/{foo}")
+        @GET
+        public void defaultOptionalValue(@MatrixParam("a") Optional<String> foo) {
+        }
+
 
         @Path("/{foo}")
         @GET

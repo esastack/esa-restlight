@@ -23,16 +23,20 @@ public class NameAndValue {
     public final String name;
     public final boolean required;
     public final Object defaultValue;
+    public final boolean hasDefaultValue;
 
-    public NameAndValue(String name, boolean required, Object defaultValue) {
+    public NameAndValue(String name, boolean required, Object defaultValue, boolean hasDefaultValue) {
         this.name = name;
         this.required = required;
         this.defaultValue = defaultValue;
+        this.hasDefaultValue = hasDefaultValue;
+    }
+
+    public NameAndValue(String name, boolean required, Object defaultValue) {
+        this(name, required, defaultValue, defaultValue != null);
     }
 
     public NameAndValue(String name, boolean required) {
-        this.name = name;
-        this.required = required;
-        this.defaultValue = null;
+        this(name, required, null);
     }
 }

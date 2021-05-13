@@ -33,8 +33,14 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
+import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 class RequestHeaderArgumentResolverTest {
@@ -130,6 +136,17 @@ class RequestHeaderArgumentResolverTest {
         assertEquals(0, ((String[]) resolved).length);
     }
 
+    @SuppressWarnings("unchecked")
+    @Test
+    void testDefaultOptionalValue() throws Exception {
+        final AsyncRequest request = MockAsyncRequest
+                .aMockRequest()
+                .build();
+        final Optional<String> resolved =
+                (Optional<String>) createResolverAndResolve(request, "defaultOptionalValue");
+        assertFalse(resolved.isPresent());
+    }
+
     @Test
     void testDefaultAndRequiredHeader() throws Exception {
         final AsyncRequest request = MockAsyncRequest
@@ -177,6 +194,9 @@ class RequestHeaderArgumentResolverTest {
         }
 
         public void defaultArrayValue(@RequestHeader(value = "foo", defaultValue = "") String[] foo) {
+        }
+
+        public void defaultOptionalValue(@RequestHeader(value = "foo") Optional<String> foo) {
         }
 
         public void defaultAndRequiredHeader(@RequestHeader(defaultValue = "foo") String foo) {
