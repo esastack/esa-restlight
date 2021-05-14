@@ -41,8 +41,7 @@ public class FormParamArgumentResolver extends AbstractParamArgumentResolver {
         assert formParam != null;
         return new NameAndValue(formParam.value(),
                 false,
-                JaxrsMappingUtils.extractDefaultValue(parameter),
-                JaxrsMappingUtils.hasDefaultValue(parameter));
+                JaxrsMappingUtils.extractDefaultValue(parameter));
     }
 
     @Override

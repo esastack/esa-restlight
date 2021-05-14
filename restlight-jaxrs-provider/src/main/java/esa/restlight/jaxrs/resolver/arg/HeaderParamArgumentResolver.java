@@ -40,8 +40,7 @@ public class HeaderParamArgumentResolver extends AbstractHeaderArgumentResolver 
         assert headerParam != null;
         return new NameAndValue(headerParam.value(),
                 false,
-                JaxrsMappingUtils.extractDefaultValue(param),
-                JaxrsMappingUtils.hasDefaultValue(param));
+                JaxrsMappingUtils.extractDefaultValue(param));
     }
 
     @Override

@@ -39,8 +39,7 @@ public class RequestBodyArgumentResolver extends AbstractRequestBodyArgumentReso
 
     @Override
     protected NameAndValue createNameAndValue(Param param) {
-        return new NameAndValue(param.name(), false, JaxrsMappingUtils.extractDefaultValue(param),
-                JaxrsMappingUtils.hasDefaultValue(param));
+        return new NameAndValue(param.name(), false, JaxrsMappingUtils.extractDefaultValue(param));
     }
 
     @Override

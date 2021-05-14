@@ -34,8 +34,7 @@ public class MatrixParamArgumentResolver extends AbstractMatrixArgumentResolver 
                 parameter.getAnnotation(MatrixParam.class);
         assert matrixParam != null;
         return new NameAndValue(matrixParam.value(), false,
-                JaxrsMappingUtils.extractDefaultValue(parameter),
-                JaxrsMappingUtils.hasDefaultValue(parameter));
+                JaxrsMappingUtils.extractDefaultValue(parameter));
     }
 
     @Override

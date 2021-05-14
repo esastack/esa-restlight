@@ -65,36 +65,36 @@ public final class ConverterUtils {
 
     static {
         STRING_CONVERTER_MAP.put(Byte.class, v -> StringUtils.isEmpty(v) ? null : Byte.valueOf(v));
-        STRING_CONVERTER_MAP.put(byte.class, Byte::parseByte);
+        STRING_CONVERTER_MAP.put(byte.class, v -> v == null ? null : Byte.parseByte(v));
 
         STRING_CONVERTER_MAP.put(Character.class, v -> StringUtils.isEmpty(v)
-                ? null : v.length() > 0 ? v.charAt(0) : v);
-        STRING_CONVERTER_MAP.put(char.class, v -> v.length() >= 1 ? v.charAt(0) : v);
+                ? null : v.charAt(0));
+        STRING_CONVERTER_MAP.put(char.class, v -> v == null ? null : v.length() >= 1 ? v.charAt(0) : v);
 
         STRING_CONVERTER_MAP.put(Boolean.class, v -> StringUtils.isEmpty(v)
                 ? null : (Boolean.parseBoolean(v) || "1".equals(v)) ? Boolean.TRUE : Boolean.FALSE);
-        STRING_CONVERTER_MAP.put(boolean.class, v -> (Boolean.parseBoolean(v) || "1".equals(v)));
+        STRING_CONVERTER_MAP.put(boolean.class, v -> v == null ? null : (Boolean.parseBoolean(v) || "1".equals(v)));
 
         STRING_CONVERTER_MAP.put(Short.class, v -> StringUtils.isEmpty(v) ? null : Short.valueOf(v));
-        STRING_CONVERTER_MAP.put(short.class, Short::parseShort);
+        STRING_CONVERTER_MAP.put(short.class, v -> v == null ? null : Short.parseShort(v));
 
         STRING_CONVERTER_MAP.put(Integer.class, v -> StringUtils.isEmpty(v) ? null : Integer.valueOf(v));
-        STRING_CONVERTER_MAP.put(int.class, Integer::parseInt);
+        STRING_CONVERTER_MAP.put(int.class, v -> v == null ? null : Integer.parseInt(v));
 
         STRING_CONVERTER_MAP.put(Long.class, v -> StringUtils.isEmpty(v) ? null : Long.valueOf(v));
-        STRING_CONVERTER_MAP.put(long.class, Long::parseLong);
+        STRING_CONVERTER_MAP.put(long.class, v -> v == null ? null : Long.parseLong(v));
 
         STRING_CONVERTER_MAP.put(Double.class, v -> StringUtils.isEmpty(v) ? null : Double.valueOf(v));
-        STRING_CONVERTER_MAP.put(double.class, Double::parseDouble);
+        STRING_CONVERTER_MAP.put(double.class, v -> v == null ? null : Double.parseDouble(v));
 
         STRING_CONVERTER_MAP.put(Float.class, v -> StringUtils.isEmpty(v) ? null : Float.valueOf(v));
-        STRING_CONVERTER_MAP.put(float.class, Float::parseFloat);
+        STRING_CONVERTER_MAP.put(float.class, v -> v == null ? null : Float.parseFloat(v));
 
         STRING_CONVERTER_MAP.put(Void.class, v -> null);
         STRING_CONVERTER_MAP.put(void.class, v -> null);
 
         STRING_CONVERTER_MAP.put(BigDecimal.class, v -> StringUtils.isEmpty(v)
-                ? null : BigDecimal.valueOf(Double.parseDouble(v)));
+                ? null : new BigDecimal(v));
 
         // convert a empty string to a null is not supported
         STRING_CONVERTER_MAP.put(Timestamp.class, Timestamp::valueOf);
@@ -173,12 +173,7 @@ public final class ConverterUtils {
         if (str2Object == null) {
             return def;
         }
-        return p -> {
-            if (p == null) {
-                return null2ObjectConverter(requiredClass);
-            }
-            return str2Object.apply(p);
-        };
+        return str2Object;
     }
 
     /**
@@ -194,19 +189,8 @@ public final class ConverterUtils {
         if (strs2Object == null) {
             return null;
         }
-        return p -> {
-            if (p == null) {
-                return null2ObjectConverter(requiredClass);
-            }
-            return strs2Object.apply(p);
-        };
-    }
 
-    private static Object null2ObjectConverter(Class<?> requiredType) {
-        if (Optional.class.isAssignableFrom(requiredType)) {
-            return Optional.empty();
-        }
-        return null;
+        return strs2Object;
     }
 
     private static Function<Collection<String>, Object> strs2ObjectConverter(Class<?> requiredClass,
@@ -256,7 +240,7 @@ public final class ConverterUtils {
 
         @Override
         public Object apply(String s) {
-            return Optional.ofNullable(elementConverter.apply(s));
+            return s == null ? Optional.empty() : Optional.ofNullable(elementConverter.apply(s));
         }
     }
 
@@ -285,6 +269,9 @@ public final class ConverterUtils {
 
         @Override
         public Object apply(Collection<String> value) {
+            if (value == null) {
+                return null;
+            }
             final Object array = Array.newInstance(elementType, value.size());
 
             int i = 0;
@@ -317,7 +304,7 @@ public final class ConverterUtils {
 
         @Override
         public Object apply(String value) {
-            return strList2ArrayConverter.apply(extractStringFields(value));
+            return value == null ? null : strList2ArrayConverter.apply(extractStringFields(value));
         }
     }
 
@@ -357,6 +344,9 @@ public final class ConverterUtils {
         @SuppressWarnings("unchecked")
         @Override
         public Object apply(Collection<String> value) {
+            if (value == null) {
+                return null;
+            }
             final Collection collection = collectionGenerator.apply(value.size());
             for (String v : value) {
                 // convert to target type and fill in the collection.
@@ -389,7 +379,7 @@ public final class ConverterUtils {
 
         @Override
         public Object apply(String value) {
-            return strs2CollectionConverter.apply(extractStringFields(value));
+            return value == null ? null : strs2CollectionConverter.apply(extractStringFields(value));
         }
     }
 

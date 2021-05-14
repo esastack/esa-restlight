@@ -46,10 +46,6 @@ public final class JaxrsMappingUtils {
     private JaxrsMappingUtils() {
     }
 
-    public static boolean hasDefaultValue(Param param) {
-        return param != null && param.getAnnotation(DefaultValue.class) != null;
-    }
-
     /**
      * Extracts the default value from given {@link MethodParam} which may be annotated by the JAX-RS annotation {@link
      * DefaultValue}.

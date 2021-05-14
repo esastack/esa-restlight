@@ -41,8 +41,7 @@ public class QueryParamArgumentResolver extends AbstractParamArgumentResolver {
         assert queryParam != null;
         return new NameAndValue(queryParam.value(),
                 false,
-                JaxrsMappingUtils.extractDefaultValue(parameter),
-                JaxrsMappingUtils.hasDefaultValue(parameter));
+                JaxrsMappingUtils.extractDefaultValue(parameter));
     }
 
     @Override

@@ -93,17 +93,20 @@ public abstract class AbstractNameAndValueArgumentResolver implements ArgumentRe
                                 "] not available, and parameter name information not found in class file either.");
             }
         }
-        Object defaultValue = null;
-        boolean hasDefaultValue = false;
+        Object defaultValue;
+        boolean hasDefaultValue;
         if (nav.hasDefaultValue) {
             defaultValue = nav.defaultValue;
             hasDefaultValue = true;
         } else if (!nav.required && (useObjectDefaultValueIfRequired(param, nav))) {
             defaultValue = defaultValue(param.type());
             hasDefaultValue = true;
-        } else if (Optional.class.isAssignableFrom(param.type())) {
+        } else if (Optional.class.equals(param.type())) {
             defaultValue = Optional.empty();
             hasDefaultValue = true;
+        } else {
+            hasDefaultValue = false;
+            defaultValue = null;
         }
 
         if (defaultValue instanceof String && !param.type().isInstance(defaultValue)) {
@@ -114,7 +117,7 @@ public abstract class AbstractNameAndValueArgumentResolver implements ArgumentRe
     }
 
     private static Object defaultValue(Class<?> type) {
-        if (Optional.class.isAssignableFrom(type)) {
+        if (Optional.class.equals(type)) {
             return Optional.empty();
         }
 
