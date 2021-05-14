@@ -31,10 +31,14 @@ import org.junit.jupiter.api.Test;
 import org.springframework.web.bind.annotation.MatrixVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -176,6 +180,51 @@ class MatrixVariableArgumentResolverTest {
         assertTrue(resolved.get("s").contains("23"));
     }
 
+    @Test
+    void testDefaultValue() throws Exception {
+        final AsyncRequest request = MockAsyncRequest
+                .aMockRequest()
+                .withUri("/foo7")
+                .build();
+
+        final Object resolved = createResolverAndResolve(request, "defaultValue", 0);
+        assertEquals("default", resolved);
+    }
+
+    @Test
+    void testDefaultCollectionValue() throws Exception {
+        final AsyncRequest request = MockAsyncRequest
+                .aMockRequest()
+                .withUri("/foo9")
+                .build();
+        final Object resolved = createResolverAndResolve(request, "defaultCollectionValue", 0);
+        assertNotNull(resolved);
+        assertTrue(((Collection) resolved).isEmpty());
+    }
+
+    @Test
+    void testDefaultArrayValue() throws Exception {
+        final AsyncRequest request = MockAsyncRequest
+                .aMockRequest()
+                .withUri("/foo8")
+                .build();
+        final Object resolved = createResolverAndResolve(request, "defaultArrayValue", 0);
+        assertNotNull(resolved);
+        assertEquals(0, ((String[]) resolved).length);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    void testDefaultOptionalValue() throws Exception {
+        final AsyncRequest request = MockAsyncRequest
+                .aMockRequest()
+                .withUri("/foo10")
+                .build();
+        final Optional<String> resolved =
+                (Optional<String>) createResolverAndResolve(request, "defaultOptionalValue", 0);
+        assertFalse(resolved.isPresent());
+    }
+
     private static Object createResolverAndResolve(AsyncRequest request, String method, int index) throws Exception {
         final MethodParam parameter = handlerMethods.get(method).parameters()[index];
         assertTrue(resolverFactory.supports(parameter));
@@ -215,6 +264,22 @@ class MatrixVariableArgumentResolverTest {
 
         @RequestMapping("/foo6/{foo1}/foo2/{foo3}")
         public void matrixVariableListMap(@MatrixVariable Map<String, List<String>> multiValueVariables) {
+        }
+
+        @RequestMapping("/foo7/{foo}")
+        public void defaultValue(@MatrixVariable(value = "a", defaultValue = "default") String foo) {
+        }
+
+        @RequestMapping("/foo8/{foo}")
+        public void defaultArrayValue(@MatrixVariable(value = "a", defaultValue = "") String[] foo) {
+        }
+
+        @RequestMapping("/foo9/{foo}")
+        public void defaultCollectionValue(@MatrixVariable(value = "a", defaultValue = "") Collection foo) {
+        }
+
+        @RequestMapping("/foo10/{foo}")
+        public void defaultOptionalValue(@MatrixVariable(value = "a") Optional<String> foo) {
         }
     }
 

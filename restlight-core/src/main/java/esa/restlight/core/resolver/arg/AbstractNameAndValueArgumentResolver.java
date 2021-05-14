@@ -23,6 +23,8 @@ import esa.restlight.core.resolver.ArgumentResolver;
 import esa.restlight.core.util.ConverterUtils;
 import esa.restlight.server.bootstrap.WebServerException;
 
+import java.util.Optional;
+
 public abstract class AbstractNameAndValueArgumentResolver implements ArgumentResolver {
 
     protected final Param param;
@@ -42,12 +44,10 @@ public abstract class AbstractNameAndValueArgumentResolver implements ArgumentRe
     public Object resolve(AsyncRequest request, AsyncResponse response) throws Exception {
         Object arg = this.resolveName(nav.name, request);
         if (arg == null) {
-            if (nav.defaultValue == null) {
-                if (nav.required) {
-                    throw WebServerException.badRequest("Missing required value: " + nav.name);
-                }
-            } else {
+            if (nav.hasDefaultValue) {
                 arg = nav.defaultValue;
+            } else if (nav.required) {
+                throw WebServerException.badRequest("Missing required value: " + nav.name);
             }
         }
         return arg;
@@ -93,15 +93,34 @@ public abstract class AbstractNameAndValueArgumentResolver implements ArgumentRe
                                 "] not available, and parameter name information not found in class file either.");
             }
         }
-        Object defaultValue = null;
-        if (nav.defaultValue != null) {
+        Object defaultValue;
+        boolean hasDefaultValue;
+        if (nav.hasDefaultValue) {
             defaultValue = nav.defaultValue;
+            hasDefaultValue = true;
         } else if (!nav.required && (useObjectDefaultValueIfRequired(param, nav))) {
-            defaultValue = ObjectUtils.defaultValue(param.type());
+            defaultValue = defaultValue(param.type());
+            hasDefaultValue = true;
+        } else if (Optional.class.equals(param.type())) {
+            defaultValue = Optional.empty();
+            hasDefaultValue = true;
+        } else {
+            hasDefaultValue = false;
+            defaultValue = null;
         }
+
         if (defaultValue instanceof String && !param.type().isInstance(defaultValue)) {
             defaultValue = ConverterUtils.forceConvertStringValue((String) defaultValue, param.genericType());
+            hasDefaultValue = true;
         }
-        return new NameAndValue(name, nav.required, defaultValue);
+        return new NameAndValue(name, nav.required, defaultValue, hasDefaultValue);
+    }
+
+    private static Object defaultValue(Class<?> type) {
+        if (Optional.class.equals(type)) {
+            return Optional.empty();
+        }
+
+        return ObjectUtils.defaultValue(type);
     }
 }

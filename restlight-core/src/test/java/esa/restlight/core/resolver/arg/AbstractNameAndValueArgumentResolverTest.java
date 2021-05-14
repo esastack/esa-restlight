@@ -13,16 +13,18 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.nullable;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 class AbstractNameAndValueArgumentResolverTest {
 
+    @SuppressWarnings("unchecked")
     @Test
     void testResolveValue() throws Exception {
         final Object value = new Object();
         final Param param = mock(Param.class);
+        when(param.type()).thenReturn((Class) String.class);
+
         final AbstractNameAndValueArgumentResolver resolver = new AbstractNameAndValueArgumentResolver(param) {
 
             @Override
@@ -40,9 +42,11 @@ class AbstractNameAndValueArgumentResolverTest {
         assertSame(value, resolver.resolve(request, response));
     }
 
+    @SuppressWarnings("unchecked")
     @Test
     void testMissingRequiredValue() {
         final Param param = mock(Param.class);
+        when(param.type()).thenReturn((Class) String.class);
         final AbstractNameAndValueArgumentResolver resolver = new AbstractNameAndValueArgumentResolver(param) {
 
             @Override
@@ -81,9 +85,12 @@ class AbstractNameAndValueArgumentResolverTest {
         assertSame(def, resolver.resolve(request, response));
     }
 
+    @SuppressWarnings("unchecked")
     @Test
     void testMissingNoneRequiredStringValue() throws Exception {
         final Param param = mock(Param.class);
+        when(param.type()).thenReturn((Class) String.class);
+
         final AbstractNameAndValueArgumentResolver resolver = new AbstractNameAndValueArgumentResolver(param) {
 
             @Override
@@ -101,10 +108,13 @@ class AbstractNameAndValueArgumentResolverTest {
         assertEquals("", resolver.resolve(request, response));
     }
 
+    @SuppressWarnings("unchecked")
     @Test
     void testUpdateNameByParamName() throws Exception {
         final Param param = mock(Param.class);
         when(param.name()).thenReturn("foo");
+        when(param.type()).thenReturn((Class) String.class);
+
         final AtomicReference<String> nameRef = new AtomicReference<>();
         final AbstractNameAndValueArgumentResolver resolver = new AbstractNameAndValueArgumentResolver(param) {
 

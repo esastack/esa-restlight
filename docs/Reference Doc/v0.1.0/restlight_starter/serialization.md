@@ -116,7 +116,7 @@ spring.gson.date-format=yyyy-MM-dd HH:mm:ss
 ```
 
 Restlight同样支持该标准，其作用逻辑如下图所示：
-![序列化器兼容springboot逻辑图.png](img/SerializationOfSpringBoot.png)
+![序列化器兼容springboot逻辑图.png](../../../img/serialization_of_springboot.png)
 如图所示，配置文件中Jackson和Gson相关内容要想生效，需要满足如下条件：
 > 1. 用户没有手动定制HttpJsonBodySerializerAdapter
 > 2. 用户没有手动注入Jackson或者Gson序列化器(FastJsonHttpBodySerializer和GsonJsonHttpBodySerializer)

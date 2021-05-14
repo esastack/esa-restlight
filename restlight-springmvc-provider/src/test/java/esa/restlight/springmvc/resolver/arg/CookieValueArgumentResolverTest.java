@@ -30,10 +30,17 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.web.bind.annotation.CookieValue;
 
+import java.util.Collection;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 class CookieValueArgumentResolverTest {
@@ -118,6 +125,37 @@ class CookieValueArgumentResolverTest {
     }
 
     @Test
+    void testDefaultCollectionValue() throws Exception {
+        final AsyncRequest request = MockAsyncRequest
+                .aMockRequest()
+                .build();
+        final Object resolved = createResolverAndResolve(request, "defaultCollectionValue");
+        assertNotNull(resolved);
+        assertTrue(((Collection) resolved).isEmpty());
+    }
+
+    @Test
+    void testDefaultArrayValue() throws Exception {
+        final AsyncRequest request = MockAsyncRequest
+                .aMockRequest()
+                .build();
+        final Object resolved = createResolverAndResolve(request, "defaultArrayValue");
+        assertNotNull(resolved);
+        assertEquals(0, ((String[]) resolved).length);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    void testDefaultOptionalValue() throws Exception {
+        final AsyncRequest request = MockAsyncRequest
+                .aMockRequest()
+                .build();
+        final Optional<String> resolved =
+                (Optional<String>) createResolverAndResolve(request, "defaultOptionalValue");
+        assertFalse(resolved.isPresent());
+    }
+
+    @Test
     void testDefaultAndRequiredHeader() throws Exception {
         final AsyncRequest request = MockAsyncRequest
                 .aMockRequest()
@@ -165,6 +203,16 @@ class CookieValueArgumentResolverTest {
         }
 
         public void cookieObjectsValue(@CookieValue Set<Cookie> foo) {
+        }
+
+        public void defaultCollectionValue(@CookieValue(value = "foo", defaultValue = "") Collection<String> foo) {
+        }
+
+        public void defaultArrayValue(@CookieValue(value = "foo", defaultValue = "") String[] foo) {
+        }
+
+        public void defaultOptionalValue(@CookieValue(value = "foo") Optional<String> foo) {
+
         }
 
     }

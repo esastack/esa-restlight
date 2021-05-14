@@ -20,6 +20,7 @@ import esa.restlight.core.annotation.Serializer;
 import esa.restlight.core.method.Param;
 import esa.restlight.core.resolver.ArgumentResolverFactory;
 import esa.restlight.core.resolver.arg.AbstractSpecifiedFixedRequestBodyArgumentResolver;
+import esa.restlight.core.resolver.arg.NameAndValue;
 import esa.restlight.springmvc.annotation.shaded.RequestBody0;
 
 /**
@@ -34,9 +35,10 @@ public class SpecifiedFixedRequestBodyArgumentResolver extends AbstractSpecified
     }
 
     @Override
-    protected boolean required(Param param) {
-        return param.hasAnnotation(RequestBody0.shadedClass())
-                && RequestBody0.fromShade(param.getAnnotation(RequestBody0.shadedClass())).required();
+    protected NameAndValue createNameAndValue(Param param) {
+        return new NameAndValue(param.name(), param.hasAnnotation(RequestBody0.shadedClass())
+                && RequestBody0.fromShade(param.getAnnotation(RequestBody0.shadedClass())).required(),
+                null);
     }
 
     @Override

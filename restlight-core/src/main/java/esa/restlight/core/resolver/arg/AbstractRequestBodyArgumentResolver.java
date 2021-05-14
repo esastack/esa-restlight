@@ -17,7 +17,6 @@ package esa.restlight.core.resolver.arg;
 
 import esa.commons.StringUtils;
 import esa.httpserver.core.AsyncRequest;
-import esa.httpserver.core.AsyncResponse;
 import esa.restlight.core.method.Param;
 import esa.restlight.core.resolver.ArgumentResolver;
 import esa.restlight.core.resolver.ArgumentResolverFactory;
@@ -62,48 +61,47 @@ public abstract class AbstractRequestBodyArgumentResolver implements ArgumentRes
     public ArgumentResolver createResolver(Param param,
                                            List<? extends HttpRequestSerializer> serializers) {
         return negotiation
-                ? new NegotiationResolver(serializers, param, paramName, required(param), defaultValue(param))
-                : new DefaultResolver(serializers, param, required(param), defaultValue(param));
+                ? new NegotiationResolver(serializers, param, paramName)
+                : new DefaultResolver(serializers, param);
     }
 
-    protected abstract boolean required(Param param);
+    /**
+     * Create an instance of {@link NameAndValue} for the parameter.
+     *
+     * @param param parameter
+     *
+     * @return name and value
+     */
+    protected abstract NameAndValue createNameAndValue(Param param);
 
-    protected String defaultValue(Param param) {
-        return null;
-    }
-
-    private static class DefaultResolver implements ArgumentResolver {
+    private class DefaultResolver extends AbstractNameAndValueArgumentResolver {
 
         private final List<? extends HttpRequestSerializer> serializers;
-        final boolean required;
-        final Object defaultValue;
-        final Param param;
         final Function<String, Object> converter;
 
         private DefaultResolver(List<? extends HttpRequestSerializer> serializers,
-                                Param param,
-                                boolean required,
-                                String defaultValue) {
+                                Param param) {
+            super(param);
             this.serializers = serializers;
-            // should be not null
-            this.required = required;
-            this.param = param;
             this.converter = ConverterUtils.str2ObjectConverter(param.genericType(), p -> p);
-            this.defaultValue =
-                    ConverterUtils.forceConvertStringValue(defaultValue, param.genericType());
         }
 
         @Override
-        public Object resolve(AsyncRequest request, AsyncResponse response) throws Exception {
+        protected NameAndValue createNameAndValue(Param param) {
+            return AbstractRequestBodyArgumentResolver.this.createNameAndValue(param);
+        }
+
+        @Override
+        protected Object resolveName(String name, AsyncRequest request) throws Exception {
             MediaType contentType = getMediaType(request);
             //convert argument if content-type is text/plain or missing.
             if (contentType == null || MediaType.TEXT_PLAIN.isCompatibleWith(contentType)) {
                 //ignore empty body.
                 if (request.byteBufBody().readableBytes() == 0) {
-                    return checkRequired(null);
+                    return null;
                 }
-                return checkRequired(converter.apply(request.byteBufBody()
-                        .toString(StandardCharsets.UTF_8)));
+                return converter.apply(request.byteBufBody()
+                        .toString(StandardCharsets.UTF_8));
             }
 
             //search serializer to resolve argument
@@ -111,7 +109,7 @@ public abstract class AbstractRequestBodyArgumentResolver implements ArgumentRes
                 if (!serializer.supportsRead(contentType, param.genericType())) {
                     continue;
                 }
-                return checkRequired(readArgFromWithSerializer(request, param, serializer));
+                return readArgFromWithSerializer(request, param, serializer);
             }
             throw new WebServerException(HttpResponseStatus.UNSUPPORTED_MEDIA_TYPE,
                     "Unsupported media type:" + contentType.toString());
@@ -121,19 +119,6 @@ public abstract class AbstractRequestBodyArgumentResolver implements ArgumentRes
             String contentTypeStr = request.getHeader(HttpHeaderNames.CONTENT_TYPE);
             return StringUtils.isEmpty(contentTypeStr) ? null :
                     MediaType.valueOf(contentTypeStr);
-        }
-
-        private Object checkRequired(Object arg) {
-            if (arg == null) {
-                if (defaultValue == null) {
-                    if (required) {
-                        throw WebServerException.badRequest("Missing required value: " + param.name());
-                    }
-                } else {
-                    return defaultValue;
-                }
-            }
-            return arg;
         }
 
         private Object readArgFromWithSerializer(AsyncRequest request,
@@ -151,16 +136,14 @@ public abstract class AbstractRequestBodyArgumentResolver implements ArgumentRes
         return 0;
     }
 
-    private static class NegotiationResolver extends DefaultResolver {
+    private class NegotiationResolver extends DefaultResolver {
 
         private final String paramName;
 
         private NegotiationResolver(List<? extends HttpRequestSerializer> serializers,
                                     Param param,
-                                    String paramName,
-                                    boolean required,
-                                    String defaultValue) {
-            super(serializers, param, required, defaultValue);
+                                    String paramName) {
+            super(serializers, param);
             this.paramName = paramName;
         }
 

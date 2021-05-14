@@ -33,8 +33,15 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 @SuppressWarnings("unchecked")
@@ -97,6 +104,37 @@ class RequestRequestParamArgumentResolverTest {
                 .build();
         final Object resolved = createResolverAndResolve(request, "defaultParam");
         assertEquals("foo", resolved);
+    }
+
+    @Test
+    void testDefaultCollectionValue() throws Exception {
+        final AsyncRequest request = MockAsyncRequest
+                .aMockRequest()
+                .build();
+        final Object resolved = createResolverAndResolve(request, "defaultCollectionValue");
+        assertNotNull(resolved);
+        assertTrue(((Collection) resolved).isEmpty());
+    }
+
+    @Test
+    void testDefaultArrayValue() throws Exception {
+        final AsyncRequest request = MockAsyncRequest
+                .aMockRequest()
+                .build();
+        final Object resolved = createResolverAndResolve(request, "defaultArrayValue");
+        assertNotNull(resolved);
+        assertEquals(0, ((String[]) resolved).length);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    void testDefaultOptionalValue() throws Exception {
+        final AsyncRequest request = MockAsyncRequest
+                .aMockRequest()
+                .build();
+        final Optional<String> resolved =
+                (Optional<String>) createResolverAndResolve(request, "defaultOptionalValue");
+        assertFalse(resolved.isPresent());
     }
 
     @Test
@@ -226,6 +264,15 @@ class RequestRequestParamArgumentResolverTest {
         }
 
         void defaultParam(@RequestParam(required = false, defaultValue = "foo") String foo) {
+        }
+
+        public void defaultCollectionValue(@RequestParam(value = "foo", defaultValue = "") Collection<String> foo) {
+        }
+
+        public void defaultArrayValue(@RequestParam(value = "foo", defaultValue = "") String[] foo) {
+        }
+
+        public void defaultOptionalValue(@RequestParam(value = "foo") Optional<String> foo) {
         }
 
         void defaultAndRequiredParam(@RequestParam(defaultValue = "foo") String foo) {

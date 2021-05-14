@@ -34,9 +34,15 @@ import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import java.util.Collection;
 import java.util.Map;
+import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class PathParamArgumentResolverTest {
 
@@ -94,6 +100,40 @@ class PathParamArgumentResolverTest {
 
         final Object resolved = createResolverAndResolve(request, "defaultValue");
         assertEquals("default", resolved);
+    }
+
+    @Test
+    void testDefaultCollectionValue() throws Exception {
+        final AsyncRequest request = MockAsyncRequest
+                .aMockRequest()
+                .withUri("/")
+                .build();
+        final Object resolved = createResolverAndResolve(request, "defaultCollectionValue");
+        assertNotNull(resolved);
+        assertTrue(((Collection) resolved).isEmpty());
+    }
+
+    @Test
+    void testDefaultArrayValue() throws Exception {
+        final AsyncRequest request = MockAsyncRequest
+                .aMockRequest()
+                .withUri("/")
+                .build();
+        final Object resolved = createResolverAndResolve(request, "defaultArrayValue");
+        assertNotNull(resolved);
+        assertEquals(0, ((String[]) resolved).length);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    void testDefaultOptionalValue() throws Exception {
+        final AsyncRequest request = MockAsyncRequest
+                .aMockRequest()
+                .withUri("/")
+                .build();
+        final Optional<String> resolved =
+                (Optional<String>) createResolverAndResolve(request, "defaultOptionalValue");
+        assertFalse(resolved.isPresent());
     }
 
     @Test
@@ -157,6 +197,21 @@ class PathParamArgumentResolverTest {
         @Path("/{foo}")
         public void defaultValue(@DefaultValue("default")
                                  @PathParam("foo") String foo) {
+        }
+
+        @GET
+        @Path("/{foo}")
+        public void defaultCollectionValue(@PathParam("foo") @DefaultValue("") Collection<String> foo) {
+        }
+
+        @GET
+        @Path("/{foo}")
+        public void defaultArrayValue(@PathParam("foo") @DefaultValue("") String[] foo) {
+        }
+
+        @GET
+        @Path("/{foo}")
+        public void defaultOptionalValue(@PathParam("foo") Optional<String> foo) {
         }
 
         @GET
