@@ -69,7 +69,7 @@ public final class ConverterUtils {
 
         STRING_CONVERTER_MAP.put(Character.class, v -> StringUtils.isEmpty(v)
                 ? null : v.charAt(0));
-        STRING_CONVERTER_MAP.put(char.class, v -> v == null ? null : v.length() >= 1 ? v.charAt(0) : v);
+        STRING_CONVERTER_MAP.put(char.class, v -> v == null ? null : v.length() > 0 ? v.charAt(0) : v);
 
         STRING_CONVERTER_MAP.put(Boolean.class, v -> StringUtils.isEmpty(v)
                 ? null : (Boolean.parseBoolean(v) || "1".equals(v)) ? Boolean.TRUE : Boolean.FALSE);
