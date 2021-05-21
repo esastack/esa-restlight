@@ -488,12 +488,6 @@ class ScheduledRestlightHandlerTest {
         }
 
         @Override
-        public void handleUnexpectedError(AsyncRequest request, AsyncResponse response, Throwable error,
-                                          CompletableFuture<Void> promise) {
-
-        }
-
-        @Override
         public void handleRejectedWork(RequestTask task, String errorMsg) {
         }
 
@@ -528,12 +522,6 @@ class ScheduledRestlightHandlerTest {
                             Route route) {
             response.sendResult(204);
             promise.complete(null);
-        }
-
-        @Override
-        public void handleUnexpectedError(AsyncRequest request, AsyncResponse response, Throwable error,
-                                          CompletableFuture<Void> promise) {
-
         }
 
         @Override

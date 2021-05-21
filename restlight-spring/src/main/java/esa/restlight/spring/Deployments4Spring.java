@@ -55,7 +55,6 @@ import esa.restlight.spring.spi.ControllerLocator;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.context.ApplicationContext;
 
-import javax.validation.Validator;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -87,7 +86,6 @@ public class Deployments4Spring<R extends AbstractRestlight4Spring<R, D, O>, D e
         configureSerializers(context);
         configureExceptionResolvers(context);
         configureInterceptors(context);
-        configureValidator(context);
     }
 
     private void configureSchedulers(ApplicationContext context) {
@@ -243,11 +241,6 @@ public class Deployments4Spring<R extends AbstractRestlight4Spring<R, D, O>, D e
         addRouteInterceptors(beansOfType(context, RouteInterceptor.class).values());
         addInterceptors(beansOfType(context, Interceptor.class).values());
         addInterceptorFactories(beansOfType(context, InterceptorFactory.class).values());
-    }
-
-    private void configureValidator(ApplicationContext context) {
-        // auto inject validator
-        beanOfType(context, Validator.class).ifPresent(this::validator);
     }
 
     private void configureExceptionResolvers(ApplicationContext context) {

@@ -16,24 +16,20 @@
 package esa.restlight.server.bootstrap;
 
 import esa.commons.Checks;
-import esa.commons.StringUtils;
 import esa.commons.annotation.Internal;
 import esa.commons.logging.Logger;
 import esa.commons.logging.LoggerFactory;
 import esa.httpserver.core.AsyncRequest;
 import esa.httpserver.core.AsyncResponse;
-import esa.restlight.core.util.MediaType;
 import esa.restlight.server.route.CompletionHandler;
 import esa.restlight.server.route.ExceptionHandler;
 import esa.restlight.server.route.ReadOnlyRouteRegistry;
 import esa.restlight.server.route.Route;
 import esa.restlight.server.route.RouteExecution;
 import esa.restlight.server.schedule.RequestTask;
-import esa.restlight.server.util.ErrorDetail;
 import esa.restlight.server.util.Futures;
 import esa.restlight.server.util.LoggerUtils;
 import esa.restlight.server.util.PromiseUtils;
-import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpResponseStatus;
 
 import java.util.List;
@@ -49,12 +45,15 @@ public class DefaultDispatcherHandler implements DispatcherHandler {
     private static final Logger logger =
             LoggerFactory.getLogger(DefaultDispatcherHandler.class);
     private final ReadOnlyRouteRegistry registry;
+    private final DispatcherExceptionHandler exHandler;
 
     private final LongAdder rejectCount = new LongAdder();
 
-    public DefaultDispatcherHandler(ReadOnlyRouteRegistry registry) {
+    public DefaultDispatcherHandler(ReadOnlyRouteRegistry registry, DispatcherExceptionHandler exHandler) {
         Checks.checkNotNull(registry, "registry");
+        Checks.checkNotNull(exHandler, "exceptionHandler");
         this.registry = registry;
+        this.exHandler = exHandler;
     }
 
 
@@ -67,15 +66,6 @@ public class DefaultDispatcherHandler implements DispatcherHandler {
     public Route route(AsyncRequest request,
                        AsyncResponse response) {
         return registry.route(request);
-    }
-
-    @Override
-    public void handleUnexpectedError(AsyncRequest request,
-                                      AsyncResponse response,
-                                      Throwable error,
-                                      CompletableFuture<Void> promise) {
-        sendError(request, response, error);
-        PromiseUtils.setSuccess(promise);
     }
 
     @Override
@@ -124,24 +114,14 @@ public class DefaultDispatcherHandler implements DispatcherHandler {
                          CompletableFuture<Void> promise,
                          Throwable dispatchException,
                          RouteExecution execution) {
-        //clean up response.
-        if (!response.isCommitted()) {
-            if (dispatchException != null) {
-                logger.error("Error occurred when doing request(url={}, method={})",
-                        request.path(), request.method(), dispatchException);
-                if (handleUserDispatchException(request, response, dispatchException)) {
-                    // already resolved by custom response
-                    // set dispatchException to null to avoid error handling in next phase.
-                    dispatchException = null;
-                } else {
-                    sendError(request, response, dispatchException);
-                }
-            } else {
-                response.sendResult();
-            }
-        } else if (dispatchException != null) {
-            logger.error("Error occurred when doing request(url={}, method={})",
-                    request.path(), request.method(), dispatchException);
+        final ExceptionHandleResult result = exHandler.handleException(request, response, dispatchException);
+        final Throwable remained;
+        if (result == null) {
+            remained = dispatchException;
+        } else if (result.handled) {
+            remained = null;
+        } else {
+            remained = result.remained;
         }
 
         if (execution == null) {
@@ -157,7 +137,7 @@ public class DefaultDispatcherHandler implements DispatcherHandler {
                 return;
             }
 
-            completionHandler.onComplete(request, response, dispatchException)
+            completionHandler.onComplete(request, response, remained)
                     .whenComplete((r, t) -> {
                         if (t != null) {
                             logger.error("Error while triggering afterCompletion() for request(url={},method={})",
@@ -181,16 +161,10 @@ public class DefaultDispatcherHandler implements DispatcherHandler {
         PromiseUtils.setSuccess(promise);
     }
 
-    protected boolean handleUserDispatchException(AsyncRequest request,
-                                                  AsyncResponse response,
-                                                  Throwable dispatchException) {
-        return false;
-    }
-
     @Override
     public void handleRejectedWork(RequestTask task, String reason) {
         if (!task.response().isCommitted()) {
-            sendErrorResult(task.request(),
+            DefaultDispatcherExceptionHandler.sendErrorResult(task.request(),
                     task.response(),
                     reason,
                     HttpResponseStatus.TOO_MANY_REQUESTS);
@@ -209,7 +183,7 @@ public class DefaultDispatcherHandler implements DispatcherHandler {
         for (RequestTask task : unfinishedWorkList) {
             response = task.response();
             if (!response.isCommitted()) {
-                sendErrorResult(task.request(),
+                DefaultDispatcherExceptionHandler.sendErrorResult(task.request(),
                         task.response(),
                         "The request was not processed correctly before the server was shutdown",
                         HttpResponseStatus.SERVICE_UNAVAILABLE);
@@ -224,48 +198,5 @@ public class DefaultDispatcherHandler implements DispatcherHandler {
     @Override
     public long rejectCount() {
         return this.rejectCount.sum();
-    }
-
-    protected void sendError(AsyncRequest request,
-                             AsyncResponse response,
-                             Throwable ex) {
-
-        final HttpResponseStatus status;
-        if (ex instanceof WebServerException) {
-            //400 bad request
-            status = ((WebServerException) ex).status();
-
-        } else {
-            //default to 500
-            status = HttpResponseStatus.INTERNAL_SERVER_ERROR;
-        }
-
-        sendErrorResult(request, response, ex, status);
-    }
-
-    protected void sendErrorResult(AsyncRequest request,
-                                   AsyncResponse response,
-                                   Throwable ex,
-                                   HttpResponseStatus status) {
-        final byte[] errorInfo = ErrorDetail.buildError(request.path(),
-                !StringUtils.isEmpty(ex.getMessage())
-                        ? ex.getMessage()
-                        : status.reasonPhrase(),
-                status.reasonPhrase(),
-                status.code());
-        response.setHeader(HttpHeaderNames.CONTENT_TYPE, MediaType.TEXT_PLAIN.value());
-        response.sendResult(status.code(), errorInfo);
-    }
-
-    protected void sendErrorResult(AsyncRequest request,
-                                   AsyncResponse response,
-                                   String msg,
-                                   HttpResponseStatus status) {
-        final byte[] errorInfo = ErrorDetail.buildError(request.path(),
-                msg,
-                status.reasonPhrase(),
-                status.code());
-        response.setHeader(HttpHeaderNames.CONTENT_TYPE, MediaType.TEXT_PLAIN.value());
-        response.sendResult(status.code(), errorInfo);
     }
 }

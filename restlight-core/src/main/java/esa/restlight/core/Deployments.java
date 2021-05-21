@@ -31,7 +31,17 @@ import esa.restlight.core.interceptor.Interceptor;
 import esa.restlight.core.interceptor.InterceptorFactory;
 import esa.restlight.core.interceptor.MappingInterceptor;
 import esa.restlight.core.interceptor.RouteInterceptor;
-import esa.restlight.core.resolver.*;
+import esa.restlight.core.resolver.ArgumentResolverAdapter;
+import esa.restlight.core.resolver.ArgumentResolverAdviceAdapter;
+import esa.restlight.core.resolver.ArgumentResolverAdviceFactory;
+import esa.restlight.core.resolver.ArgumentResolverFactory;
+import esa.restlight.core.resolver.ExceptionResolver;
+import esa.restlight.core.resolver.HandlerResolverFactory;
+import esa.restlight.core.resolver.HandlerResolverFactoryImpl;
+import esa.restlight.core.resolver.ReturnValueResolverAdapter;
+import esa.restlight.core.resolver.ReturnValueResolverAdviceAdapter;
+import esa.restlight.core.resolver.ReturnValueResolverAdviceFactory;
+import esa.restlight.core.resolver.ReturnValueResolverFactory;
 import esa.restlight.core.resolver.exception.DefaultExceptionMapper;
 import esa.restlight.core.resolver.exception.DefaultExceptionResolverFactory;
 import esa.restlight.core.resolver.exception.ExceptionResolverFactory;
@@ -55,11 +65,7 @@ import esa.restlight.server.bootstrap.WebServerException;
 import esa.restlight.server.handler.RestlightHandler;
 import esa.restlight.server.route.RouteRegistry;
 import esa.restlight.server.util.LoggerUtils;
-import org.hibernate.validator.messageinterpolation.ResourceBundleMessageInterpolator;
-import org.hibernate.validator.resourceloading.PlatformResourceBundleLocator;
 
-import javax.validation.Validation;
-import javax.validation.Validator;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Collections;
@@ -92,8 +98,6 @@ public class Deployments<R extends AbstractRestlight<R, D, O>, D extends Deploym
     private final List<InterceptorFactory> interceptors = new LinkedList<>();
     private final Map<Class<? extends Throwable>, ExceptionResolver<Throwable>> exceptionResolvers
             = new LinkedHashMap<>();
-
-    private Validator validator;
 
     protected Deployments(R restlight, O options) {
         super(restlight, options);
@@ -640,20 +644,6 @@ public class Deployments<R extends AbstractRestlight<R, D, O>, D extends Deploym
         return self();
     }
 
-    /**
-     * Sets validator for bean validation.
-     *
-     * @param validator validator
-     *
-     * @return this deployments
-     */
-    public D validator(Validator validator) {
-        checkImmutable();
-        Checks.checkNotNull(validator, "validator");
-        this.validator = validator;
-        return self();
-    }
-
     @Override
     protected RestlightHandler doGetRestlightHandler() {
         // set context components into context before initializing.
@@ -661,7 +651,6 @@ public class Deployments<R extends AbstractRestlight<R, D, O>, D extends Deploym
         ctx().setControllers(Collections.unmodifiableList(controllers));
         OrderedComparator.sort(advices);
         ctx().setAdvices(Collections.unmodifiableList(advices));
-        setValidator();
         ctx().setExceptionMappers(exceptionResolvers.isEmpty()
                 ? Collections.emptyList()
                 : Collections.singletonList(new DefaultExceptionMapper(exceptionResolvers)));
@@ -680,20 +669,6 @@ public class Deployments<R extends AbstractRestlight<R, D, O>, D extends Deploym
         OrderedComparator.sort(interceptors);
         ctx().setInterceptors(Collections.unmodifiableList(interceptors));
         return super.doGetRestlightHandler();
-    }
-
-    private void setValidator() {
-        if (this.validator != null) {
-            ctx().setValidator(validator);
-        }
-        if (StringUtils.isEmpty(ctx().options().getValidationMessageFile())) {
-            ctx().setValidator(Validation.buildDefaultValidatorFactory().getValidator());
-        } else {
-            ctx().setValidator(Validation.byDefaultProvider().configure()
-                    .messageInterpolator(new ResourceBundleMessageInterpolator(
-                            new PlatformResourceBundleLocator(ctx().options().getValidationMessageFile())))
-                    .buildValidatorFactory().getValidator());
-        }
     }
 
     @Override

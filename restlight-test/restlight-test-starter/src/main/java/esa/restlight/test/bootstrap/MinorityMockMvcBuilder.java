@@ -29,8 +29,6 @@ import esa.restlight.core.serialize.JacksonSerializer;
 import esa.restlight.test.context.DefaultMockMvc;
 import esa.restlight.test.context.MockMvc;
 
-import javax.validation.Validation;
-import javax.validation.Validator;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -43,7 +41,6 @@ public class MinorityMockMvcBuilder implements MockMvcBuilder {
         Checks.checkNotNull(controllers, "Controllers must not be null!");
         this.deployments = Restlight4SpringMvcTest.forServer(RestlightOptionsConfigure.defaultOpts())
                 .deployments();
-        deployments.validator(Validation.buildDefaultValidatorFactory().getValidator());
         deployments.addSerializers(Collections.singletonList(
                 new JacksonHttpBodySerializer(JacksonSerializer.getDefaultMapper())));
         deployments.addControllers(instantiateIfNecessary(controllers));
@@ -52,13 +49,6 @@ public class MinorityMockMvcBuilder implements MockMvcBuilder {
     public MinorityMockMvcBuilder controllerAdvices(Object... controllerAdvices) {
         if (controllerAdvices != null) {
             deployments.addControllerAdvices(instantiateIfNecessary(controllerAdvices));
-        }
-        return this;
-    }
-
-    public MinorityMockMvcBuilder validator(Validator validator) {
-        if (validator != null) {
-            deployments.validator(validator);
         }
         return this;
     }

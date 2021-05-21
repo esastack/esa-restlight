@@ -59,19 +59,6 @@
             <artifactId>protobuf-java</artifactId>
             <optional>true</optional>
         </dependency>
-        <!--Support jsr303-->
-        <dependency>
-            <groupId>org.glassfish</groupId>
-            <artifactId>javax.el</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.hibernate.validator</groupId>
-            <artifactId>hibernate-validator</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.hibernate.validator</groupId>
-            <artifactId>hibernate-validator-annotation-processor</artifactId>
-        </dependency>
         <!-- test scope -->
         <dependency>
             <groupId>${project.groupId}</groupId>

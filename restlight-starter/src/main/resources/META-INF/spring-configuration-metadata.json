@@ -381,7 +381,11 @@
       "type": "java.lang.String",
       "description": "Validation message file name(file name must end of .properties)",
       "sourceType": "esa.restlight.core.config.RestlightOptions",
-      "defaultValue": ""
+      "defaultValue": "",
+      "deprecated": true,
+      "deprecation": {
+        "reason": "unused"
+      }
     },
     {
       "name": "restlight.server.warm-up",

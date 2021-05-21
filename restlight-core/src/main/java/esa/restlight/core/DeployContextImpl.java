@@ -25,7 +25,6 @@ import esa.restlight.core.resolver.exception.ExceptionMapper;
 import esa.restlight.core.resolver.exception.ExceptionResolverFactory;
 import esa.restlight.server.ServerDeployContextImpl;
 
-import javax.validation.Validator;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,7 +37,6 @@ public class DeployContextImpl<O extends RestlightOptions>
     private volatile List<Object> advices;
     private volatile List<InterceptorFactory> interceptors;
     private volatile HandlerResolverFactory resolverFactory;
-    private volatile Validator validator;
     private volatile HandlerAdvicesFactory handlerAdvicesFactory;
     private volatile RouteHandlerLocator routeHandlerLocator;
     private volatile MappingLocator mappingLocator;
@@ -66,11 +64,6 @@ public class DeployContextImpl<O extends RestlightOptions>
     @Override
     public Optional<HandlerResolverFactory> resolverFactory() {
         return Optional.ofNullable(resolverFactory);
-    }
-
-    @Override
-    public Optional<Validator> validator() {
-        return Optional.ofNullable(validator);
     }
 
     @Override
@@ -108,10 +101,6 @@ public class DeployContextImpl<O extends RestlightOptions>
 
     void setExceptionMappers(List<ExceptionMapper> exceptionMappers) {
         this.exceptionMappers = exceptionMappers;
-    }
-
-    void setValidator(Validator validator) {
-        this.validator = validator;
     }
 
     void setResolverFactory(HandlerResolverFactory resolverFactory) {

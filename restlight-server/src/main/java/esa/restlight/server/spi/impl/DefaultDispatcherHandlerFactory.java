@@ -27,6 +27,7 @@ import esa.restlight.server.spi.DispatcherHandlerFactory;
 public class DefaultDispatcherHandlerFactory implements DispatcherHandlerFactory {
     @Override
     public DispatcherHandler dispatcherHandler(ServerDeployContext<? extends ServerOptions> context) {
-        return new DefaultDispatcherHandler(context.routeRegistry().orElse(null));
+        return new DefaultDispatcherHandler(context.routeRegistry().orElse(null),
+                context.dispatcherExceptionHandler().orElse(null));
     }
 }

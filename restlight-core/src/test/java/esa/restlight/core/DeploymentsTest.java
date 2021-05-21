@@ -25,7 +25,12 @@ import esa.restlight.core.handler.impl.HandlerAdvicesFactoryImpl;
 import esa.restlight.core.interceptor.HandlerInterceptor;
 import esa.restlight.core.method.InvocableMethod;
 import esa.restlight.core.method.Param;
-import esa.restlight.core.resolver.*;
+import esa.restlight.core.resolver.ArgumentResolver;
+import esa.restlight.core.resolver.ArgumentResolverAdapter;
+import esa.restlight.core.resolver.ArgumentResolverFactory;
+import esa.restlight.core.resolver.ReturnValueResolver;
+import esa.restlight.core.resolver.ReturnValueResolverAdapter;
+import esa.restlight.core.resolver.ReturnValueResolverFactory;
 import esa.restlight.core.serialize.HttpRequestSerializer;
 import esa.restlight.core.serialize.HttpResponseSerializer;
 import esa.restlight.core.util.MediaType;
@@ -41,7 +46,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.Executor;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class DeploymentsTest {
 
@@ -54,7 +61,6 @@ class DeploymentsTest {
         assertFalse(ctx.resolverFactory().isPresent());
         assertFalse(ctx.routeHandlerLocator().isPresent());
         assertFalse(ctx.exceptionResolverFactory().isPresent());
-        assertFalse(ctx.validator().isPresent());
         assertFalse(ctx.exceptionMappers().isPresent());
         assertFalse(ctx.mappingLocator().isPresent());
         assertFalse(ctx.handlerAdvicesFactory().isPresent());
@@ -105,7 +111,6 @@ class DeploymentsTest {
 
         assertFalse(ctx.routeHandlerLocator().isPresent());
         assertTrue(ctx.exceptionResolverFactory().isPresent());
-        assertTrue(ctx.validator().isPresent());
         assertTrue(ctx.exceptionMappers().isPresent());
         assertEquals(1, ctx.exceptionMappers().get().size());
         assertFalse(ctx.mappingLocator().isPresent());

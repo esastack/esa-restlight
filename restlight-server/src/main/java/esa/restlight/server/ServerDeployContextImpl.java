@@ -17,6 +17,7 @@ package esa.restlight.server;
 
 import esa.commons.Checks;
 import esa.restlight.server.bootstrap.DispatcherHandler;
+import esa.restlight.server.bootstrap.DispatcherExceptionHandler;
 import esa.restlight.server.config.ServerOptions;
 import esa.restlight.server.route.ReadOnlyRouteRegistry;
 import esa.restlight.server.schedule.Scheduler;
@@ -36,6 +37,7 @@ public class ServerDeployContextImpl<O extends ServerOptions> implements ServerD
     private final Map<String, Scheduler> schedulers = new HashMap<>(16);
     private volatile ReadOnlyRouteRegistry registry;
     private volatile DispatcherHandler dispatcherHandler;
+    private volatile DispatcherExceptionHandler exHandler;
 
     protected ServerDeployContextImpl(String name, O options) {
         Checks.checkNotNull(options, "name");
@@ -70,6 +72,11 @@ public class ServerDeployContextImpl<O extends ServerOptions> implements ServerD
     }
 
     @Override
+    public Optional<DispatcherExceptionHandler> dispatcherExceptionHandler() {
+        return Optional.of(exHandler);
+    }
+
+    @Override
     public void attribute(String key, Object value) {
         attributes.put(key, value);
     }
@@ -94,5 +101,9 @@ public class ServerDeployContextImpl<O extends ServerOptions> implements ServerD
 
     void setDispatcherHandler(DispatcherHandler dispatcherHandler) {
         this.dispatcherHandler = dispatcherHandler;
+    }
+
+    void setExHandler(DispatcherExceptionHandler exHandler) {
+        this.exHandler = exHandler;
     }
 }

@@ -1,0 +1,11 @@
+{
+  "properties": [
+    {
+      "sourceType": "esa.restlight.ext.validator.starter.autoconfigurer.ValidationProperties",
+      "name": "restlight.server.ext.validation.message-file",
+      "type": "java.lang.String",
+      "defaultValue": "",
+      "description": "Validation message file name(file name must end of .properties)"
+    }
+  ]
+}

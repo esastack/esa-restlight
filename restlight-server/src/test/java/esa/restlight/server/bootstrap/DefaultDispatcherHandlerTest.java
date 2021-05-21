@@ -33,16 +33,26 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.same;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 class DefaultDispatcherHandlerTest {
 
     @Test
     void testRoute() {
         final RouteRegistry registry = mock(RouteRegistry.class);
-        final DefaultDispatcherHandler dispatcher = new DefaultDispatcherHandler(registry);
+        final DefaultDispatcherHandler dispatcher = new DefaultDispatcherHandler(registry,
+                new DefaultDispatcherExceptionHandler());
 
         final Route r = Route.route();
         when(registry.route(any())).thenReturn(r);
@@ -57,34 +67,10 @@ class DefaultDispatcherHandlerTest {
     }
 
     @Test
-    void testHandleUnexpectedError() {
-        final RouteRegistry registry = mock(RouteRegistry.class);
-        final DefaultDispatcherHandler dispatcher = new DefaultDispatcherHandler(registry);
-
-        final AsyncRequest request = MockAsyncRequest.aMockRequest().build();
-        final MockAsyncResponse response = MockAsyncResponse.aMockResponse().build();
-        final CompletableFuture<Void> cf = new CompletableFuture<>();
-        dispatcher.handleUnexpectedError(request, response, new IllegalStateException("foo"), cf);
-        assertTrue(cf.isDone());
-        cf.join();
-        assertEquals(HttpResponseStatus.INTERNAL_SERVER_ERROR.code(), response.status());
-        assertNotNull(response.getSentData().toString(StandardCharsets.UTF_8));
-
-        final AsyncRequest request1 = MockAsyncRequest.aMockRequest().build();
-        final MockAsyncResponse response1 = MockAsyncResponse.aMockResponse().build();
-        final CompletableFuture<Void> cf1 = new CompletableFuture<>();
-        dispatcher.handleUnexpectedError(request1, response1, WebServerException.BAD_REQUEST, cf1);
-        assertTrue(cf1.isDone());
-        cf1.join();
-        assertTrue(response1.isCommitted());
-        assertEquals(HttpResponseStatus.BAD_REQUEST.code(), response1.status());
-        assertNotNull(response1.getSentData().toString(StandardCharsets.UTF_8));
-    }
-
-    @Test
     void testHandleRejectWork() {
         final RouteRegistry registry = mock(RouteRegistry.class);
-        final DefaultDispatcherHandler dispatcher = new DefaultDispatcherHandler(registry);
+        final DefaultDispatcherHandler dispatcher = new DefaultDispatcherHandler(registry,
+                new DefaultDispatcherExceptionHandler());
 
 
         final AsyncRequest request = MockAsyncRequest.aMockRequest().build();
@@ -127,7 +113,8 @@ class DefaultDispatcherHandlerTest {
     @Test
     void testHandleUnfinishedWork() {
         final RouteRegistry registry = mock(RouteRegistry.class);
-        final DefaultDispatcherHandler dispatcher = new DefaultDispatcherHandler(registry);
+        final DefaultDispatcherHandler dispatcher = new DefaultDispatcherHandler(registry,
+                new DefaultDispatcherExceptionHandler());
 
         final RequestTask task1 = mock(RequestTask.class);
         when(task1.request()).thenReturn(MockAsyncRequest.aMockRequest().build());
@@ -151,7 +138,8 @@ class DefaultDispatcherHandlerTest {
     @Test
     void testServiceWithErrorInToExecution() {
         final RouteRegistry registry = mock(RouteRegistry.class);
-        final DefaultDispatcherHandler dispatcher = new DefaultDispatcherHandler(registry);
+        final DefaultDispatcherHandler dispatcher = new DefaultDispatcherHandler(registry,
+                new DefaultDispatcherExceptionHandler());
 
         final AsyncRequest request = MockAsyncRequest.aMockRequest().build();
         final MockAsyncResponse response = MockAsyncResponse.aMockResponse().build();
@@ -169,7 +157,8 @@ class DefaultDispatcherHandlerTest {
     @Test
     void testNormalService() {
         final RouteRegistry registry = mock(RouteRegistry.class);
-        final DefaultDispatcherHandler dispatcher = new DefaultDispatcherHandler(registry);
+        final DefaultDispatcherHandler dispatcher = new DefaultDispatcherHandler(registry,
+                new DefaultDispatcherExceptionHandler());
 
         final AsyncRequest request = MockAsyncRequest.aMockRequest().build();
         final MockAsyncResponse response = MockAsyncResponse.aMockResponse().build();
@@ -191,7 +180,8 @@ class DefaultDispatcherHandlerTest {
     @Test
     void testServiceOnException() {
         final RouteRegistry registry = mock(RouteRegistry.class);
-        final DefaultDispatcherHandler dispatcher = new DefaultDispatcherHandler(registry);
+        final DefaultDispatcherHandler dispatcher = new DefaultDispatcherHandler(registry,
+                new DefaultDispatcherExceptionHandler());
 
         final AsyncRequest request = MockAsyncRequest.aMockRequest().build();
         final MockAsyncResponse response = MockAsyncResponse.aMockResponse().build();
@@ -227,7 +217,8 @@ class DefaultDispatcherHandlerTest {
     @Test
     void testServiceEndWith200WhenExceptionHandled() {
         final RouteRegistry registry = mock(RouteRegistry.class);
-        final DefaultDispatcherHandler dispatcher = new DefaultDispatcherHandler(registry);
+        final DefaultDispatcherHandler dispatcher = new DefaultDispatcherHandler(registry,
+                new DefaultDispatcherExceptionHandler());
 
         final AsyncRequest request = MockAsyncRequest.aMockRequest().build();
         final MockAsyncResponse response = MockAsyncResponse.aMockResponse().build();
@@ -262,7 +253,8 @@ class DefaultDispatcherHandlerTest {
     @Test
     void testServiceOnHandleAsyncError() {
         final RouteRegistry registry = mock(RouteRegistry.class);
-        final DefaultDispatcherHandler dispatcher = new DefaultDispatcherHandler(registry);
+        final DefaultDispatcherHandler dispatcher = new DefaultDispatcherHandler(registry,
+                new DefaultDispatcherExceptionHandler());
 
         final AsyncRequest request = MockAsyncRequest.aMockRequest().build();
         final MockAsyncResponse response = MockAsyncResponse.aMockResponse().build();
