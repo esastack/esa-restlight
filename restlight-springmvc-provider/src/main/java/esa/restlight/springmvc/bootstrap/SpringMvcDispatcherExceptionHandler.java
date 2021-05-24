@@ -16,11 +16,12 @@
 package esa.restlight.springmvc.bootstrap;
 
 import esa.commons.annotation.Internal;
+import esa.commons.logging.Logger;
+import esa.commons.logging.LoggerFactory;
 import esa.httpserver.core.AsyncRequest;
 import esa.httpserver.core.AsyncResponse;
 import esa.restlight.core.util.MediaType;
-import esa.restlight.server.bootstrap.AbstractDispatcherExceptionHandler;
-import esa.restlight.server.bootstrap.ExceptionHandleStatus;
+import esa.restlight.server.bootstrap.DispatcherExceptionHandler;
 import esa.restlight.springmvc.util.ResponseStatusUtils;
 import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpResponseStatus;
@@ -28,7 +29,10 @@ import io.netty.handler.codec.http.HttpResponseStatus;
 import java.nio.charset.StandardCharsets;
 
 @Internal
-public class SpringMvcDispatcherExceptionHandler extends AbstractDispatcherExceptionHandler {
+public class SpringMvcDispatcherExceptionHandler implements DispatcherExceptionHandler {
+
+    private static final Logger logger =
+            LoggerFactory.getLogger(SpringMvcDispatcherExceptionHandler.class);
 
     @Override
     public ExceptionHandleStatus handleException(AsyncRequest request, AsyncResponse response, Throwable throwable) {
@@ -39,6 +43,10 @@ public class SpringMvcDispatcherExceptionHandler extends AbstractDispatcherExcep
 
         response.setHeader(HttpHeaderNames.CONTENT_TYPE, MediaType.TEXT_PLAIN.value());
         response.sendResult(status.code(), status.reasonPhrase().getBytes(StandardCharsets.UTF_8));
+
+        logger.error("Error occurred when doing request(url={}, method={})",
+                request.path(), request.method(), throwable);
+
         return ExceptionHandleStatus.HANDLED_CLEAN;
     }
 

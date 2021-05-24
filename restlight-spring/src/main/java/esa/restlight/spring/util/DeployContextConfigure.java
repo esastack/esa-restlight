@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package esa.restlight.spring;
+package esa.restlight.spring.util;
 
 import esa.restlight.core.Restlight;
 import esa.restlight.core.config.RestlightOptions;
@@ -32,7 +32,7 @@ public interface DeployContextConfigure extends Ordered {
      *
      * @param context   context
      */
-    void accept(ServerDeployContext<RestlightOptions> context);
+    void accept(ServerDeployContext<? extends RestlightOptions> context);
         
 }
 

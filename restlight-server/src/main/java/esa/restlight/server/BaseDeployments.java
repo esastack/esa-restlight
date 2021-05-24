@@ -257,9 +257,9 @@ public class BaseDeployments<R extends BaseRestlightServer<R, D, O>, D extends B
                         false);
         Checks.checkNotEmptyState(exHandlerFactories, "exHandlerFactories");
         final List<DispatcherExceptionHandler> exceptionHandlers = new ArrayList<>(3);
-        exHandlerFactories.forEach(factory -> exceptionHandlers.add(factory.exceptionHandler(ctx)));
+        exHandlerFactories.forEach(factory -> factory.exceptionHandler(ctx).ifPresent(exceptionHandlers::add));
         OrderedComparator.sort(exceptionHandlers);
-        ctx().addDispatcherExceptionHandlers(exceptionHandlers);
+        ctx().setDispatcherExceptionHandlers(exceptionHandlers);
 
         // load DispatcherHandler by spi
         List<DispatcherHandlerFactory> handlerFactories = SpiLoader.cached(DispatcherHandlerFactory.class)

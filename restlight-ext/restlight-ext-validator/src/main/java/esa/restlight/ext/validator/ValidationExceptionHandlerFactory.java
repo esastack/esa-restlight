@@ -15,6 +15,7 @@
  */
 package esa.restlight.ext.validator;
 
+import esa.commons.annotation.Internal;
 import esa.commons.spi.Feature;
 import esa.restlight.core.util.Constants;
 import esa.restlight.server.ServerDeployContext;
@@ -22,12 +23,15 @@ import esa.restlight.server.bootstrap.DispatcherExceptionHandler;
 import esa.restlight.server.config.ServerOptions;
 import esa.restlight.server.spi.DispatcherExceptionHandlerFactory;
 
+import java.util.Optional;
+
 @Feature(tags = Constants.INTERNAL)
+@Internal
 public class ValidationExceptionHandlerFactory implements DispatcherExceptionHandlerFactory {
 
     @Override
-    public DispatcherExceptionHandler exceptionHandler(ServerDeployContext<? extends ServerOptions> ctx) {
-        return new ValidationExceptionHandler();
+    public Optional<DispatcherExceptionHandler> exceptionHandler(ServerDeployContext<? extends ServerOptions> ctx) {
+        return Optional.of(new ValidationExceptionHandler());
     }
 
 }

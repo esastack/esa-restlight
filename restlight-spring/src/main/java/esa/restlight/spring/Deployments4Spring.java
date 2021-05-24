@@ -53,6 +53,7 @@ import esa.restlight.server.spi.RequestTaskHookFactory;
 import esa.restlight.spring.serialize.GsonHttpBodySerializerAdapter;
 import esa.restlight.spring.spi.AdviceLocator;
 import esa.restlight.spring.spi.ControllerLocator;
+import esa.restlight.spring.util.DeployContextConfigure;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.context.ApplicationContext;
 

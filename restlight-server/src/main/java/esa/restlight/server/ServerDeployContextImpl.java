@@ -22,7 +22,6 @@ import esa.restlight.server.config.ServerOptions;
 import esa.restlight.server.route.ReadOnlyRouteRegistry;
 import esa.restlight.server.schedule.Scheduler;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -39,7 +38,7 @@ public class ServerDeployContextImpl<O extends ServerOptions> implements ServerD
     private final Map<String, Scheduler> schedulers = new HashMap<>(16);
     private volatile ReadOnlyRouteRegistry registry;
     private volatile DispatcherHandler dispatcherHandler;
-    private final List<DispatcherExceptionHandler> dispatcherExceptionHandlers = new ArrayList<>(3);
+    private volatile List<DispatcherExceptionHandler> dispatcherExceptionHandlers;
 
     protected ServerDeployContextImpl(String name, O options) {
         Checks.checkNotNull(options, "name");
@@ -105,7 +104,7 @@ public class ServerDeployContextImpl<O extends ServerOptions> implements ServerD
         this.dispatcherHandler = dispatcherHandler;
     }
 
-    void addDispatcherExceptionHandlers(List<DispatcherExceptionHandler> dispatcherExceptionHandlers) {
-        this.dispatcherExceptionHandlers.addAll(dispatcherExceptionHandlers);
+    void setDispatcherExceptionHandlers(List<DispatcherExceptionHandler> dispatcherExceptionHandlers) {
+        this.dispatcherExceptionHandlers = dispatcherExceptionHandlers;
     }
 }

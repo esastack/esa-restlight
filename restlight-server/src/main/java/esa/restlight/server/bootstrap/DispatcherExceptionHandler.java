@@ -40,5 +40,55 @@ public interface DispatcherExceptionHandler extends Ordered {
     ExceptionHandleStatus handleException(AsyncRequest request,
                                           AsyncResponse response,
                                           Throwable throwable);
+
+
+    /**
+     * The {@link #handled} which represents the exception has been handled successfully and the {@link #retained}
+     * which means the exception should been continue to be used after
+     * {@link DispatcherExceptionHandler#handleException(AsyncRequest, AsyncResponse, Throwable)}ing are both
+     * necessary as the handle result.
+     */
+    enum ExceptionHandleStatus {
+
+        /**
+         * The exception has been handled and shouldn't been continue to be used.
+         */
+        HANDLED_CLEAN(true, false),
+
+        /**
+         * The exception has been handled and is allowed to be continue used.
+         */
+        HANDLED_RETAINED(true, true),
+
+        /**
+         * The exception hasn't been handled and is allowed to be continue used.
+         */
+        UNHANDLED_RETAINED(false, true);
+
+        /**
+         * Whether the exception has been handled successfully or not.
+         */
+        private final boolean handled;
+
+        /**
+         * Whether the exception should been continue to be used after handling.
+         */
+        private final boolean retained;
+
+        ExceptionHandleStatus(boolean handled, boolean retained) {
+            this.handled = handled;
+            this.retained = retained;
+        }
+
+        public boolean handled() {
+            return this.handled;
+        }
+
+        public boolean retained() {
+            return this.retained;
+        }
+
+    }
+
 }
 

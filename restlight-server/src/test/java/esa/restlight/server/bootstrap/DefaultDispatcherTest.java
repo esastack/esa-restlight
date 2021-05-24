@@ -45,14 +45,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class DefaultDispatcherTest {
 
-    private final List<DispatcherExceptionHandler> dispatcherExceptionHandlers = Collections.singletonList(
-            new DefaultDispatcherExceptionHandler());
-
     @Test
     void testEmptyRouteRegistry() {
         final RouteRegistry registry = new SimpleRouteRegistry();
         final DispatcherHandler dispatcher = new DefaultDispatcherHandler(registry,
-                dispatcherExceptionHandlers);
+                exceptionHandlers());
         assertTrue(dispatcher.routes().isEmpty());
         final AsyncRequest req = MockAsyncRequest.aMockRequest().withUri("/foo").build();
         final AsyncResponse res = MockAsyncResponse.aMockResponse().build();
@@ -65,7 +62,7 @@ class DefaultDispatcherTest {
         registry.registerRoute(route(get("/foo")));
         registry.registerRoute(route(post("/bar")));
         final DispatcherHandler dispatcher = new DefaultDispatcherHandler(registry,
-                dispatcherExceptionHandlers);
+                exceptionHandlers());
         assertEquals(2, dispatcher.routes().size());
         assertNotNull(dispatcher.route(MockAsyncRequest.aMockRequest().withUri("/foo").build(),
                 MockAsyncResponse.aMockResponse().build()));
@@ -83,7 +80,7 @@ class DefaultDispatcherTest {
     void testService() {
         final RouteRegistry registry = new SimpleRouteRegistry();
         final DispatcherHandler dispatcher = new DefaultDispatcherHandler(registry,
-                dispatcherExceptionHandlers);
+                exceptionHandlers());
         final Req task = new Req();
         dispatcher.service(task.req, task.res, task.promise, Route.route());
         task.promise.join();
@@ -96,7 +93,7 @@ class DefaultDispatcherTest {
     void testServiceWithException() {
         final RouteRegistry registry = new SimpleRouteRegistry();
         final DispatcherHandler dispatcher = new DefaultDispatcherHandler(registry,
-                dispatcherExceptionHandlers);
+                exceptionHandlers());
         final Req task = new Req();
         dispatcher.service(task.req, task.res, task.promise, Route.route()
                 .handle(() -> ExceptionUtils.throwException(new RuntimeException("a"))));
@@ -110,7 +107,7 @@ class DefaultDispatcherTest {
     void testServiceWithExceptionAndHandler() {
         final RouteRegistry registry = new SimpleRouteRegistry();
         final DispatcherHandler dispatcher = new DefaultDispatcherHandler(registry,
-                dispatcherExceptionHandlers);
+                exceptionHandlers());
         final Req task = new Req();
         final AtomicBoolean complete = new AtomicBoolean(false);
         dispatcher.service(task.req, task.res, task.promise, Route.route()
@@ -128,7 +125,7 @@ class DefaultDispatcherTest {
     void testHandleRejected() {
         final RouteRegistry registry = new SimpleRouteRegistry();
         final DispatcherHandler dispatcher = new DefaultDispatcherHandler(registry,
-                dispatcherExceptionHandlers);
+                exceptionHandlers());
         Req task = new Req();
         dispatcher.handleRejectedWork(task, "error");
         assertEquals(429, task.res.status());
@@ -140,7 +137,7 @@ class DefaultDispatcherTest {
     void testHandleUnfinished() {
         final RouteRegistry registry = new SimpleRouteRegistry();
         final DispatcherHandler dispatcher = new DefaultDispatcherHandler(registry,
-                dispatcherExceptionHandlers);
+                exceptionHandlers());
         final List<RequestTask> tasks = Arrays.asList(new Req(), new Req());
         dispatcher.handleUnfinishedWorks(tasks);
         tasks.forEach(t -> {
@@ -180,6 +177,10 @@ class DefaultDispatcherTest {
         @Override
         public void run() {
         }
+    }
+
+    private List<DispatcherExceptionHandler> exceptionHandlers() {
+        return Collections.singletonList(new DefaultDispatcherExceptionHandler());
     }
 
 }

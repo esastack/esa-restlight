@@ -15,11 +15,14 @@
  */
 package esa.restlight.server.spi;
 
+import esa.commons.annotation.Internal;
 import esa.commons.spi.SPI;
 import esa.restlight.server.ServerDeployContext;
 import esa.restlight.server.bootstrap.DispatcherExceptionHandler;
 import esa.restlight.server.config.ServerOptions;
 import esa.restlight.server.route.ExceptionHandler;
+
+import java.util.Optional;
 
 /**
  * DispatcherExceptionHandlerFactory is used to produce an instance of {@link DispatcherExceptionHandler}
@@ -28,6 +31,7 @@ import esa.restlight.server.route.ExceptionHandler;
  * @see DispatcherExceptionHandler
  */
 @SPI
+@Internal
 public interface DispatcherExceptionHandlerFactory {
 
     /**
@@ -37,7 +41,7 @@ public interface DispatcherExceptionHandlerFactory {
      *
      * @return handler
      */
-    DispatcherExceptionHandler exceptionHandler(ServerDeployContext<? extends ServerOptions> ctx);
+    Optional<DispatcherExceptionHandler> exceptionHandler(ServerDeployContext<? extends ServerOptions> ctx);
 
 }
 

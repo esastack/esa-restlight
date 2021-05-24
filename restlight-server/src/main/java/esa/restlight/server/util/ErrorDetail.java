@@ -15,6 +15,13 @@
  */
 package esa.restlight.server.util;
 
+import esa.commons.StringUtils;
+import esa.httpserver.core.AsyncRequest;
+import esa.httpserver.core.AsyncResponse;
+import esa.restlight.core.util.MediaType;
+import io.netty.handler.codec.http.HttpHeaderNames;
+import io.netty.handler.codec.http.HttpResponseStatus;
+
 import java.nio.charset.StandardCharsets;
 
 public class ErrorDetail<T> {
@@ -76,5 +83,25 @@ public class ErrorDetail<T> {
 
     public byte[] toBytes() {
         return this.toString().getBytes(StandardCharsets.UTF_8);
+    }
+
+    public static void sendErrorResult(AsyncRequest request,
+                                       AsyncResponse response,
+                                       Throwable ex,
+                                       HttpResponseStatus status) {
+        final String msg = StringUtils.isNotEmpty(ex.getMessage()) ? ex.getMessage() : status.reasonPhrase();
+        sendErrorResult(request, response, msg, status);
+    }
+
+    public static void sendErrorResult(AsyncRequest request,
+                                       AsyncResponse response,
+                                       String msg,
+                                       HttpResponseStatus status) {
+        final byte[] errorInfo = ErrorDetail.buildError(request.path(),
+                msg,
+                status.reasonPhrase(),
+                status.code());
+        response.setHeader(HttpHeaderNames.CONTENT_TYPE, MediaType.TEXT_PLAIN.value());
+        response.sendResult(status.code(), errorInfo);
     }
 }

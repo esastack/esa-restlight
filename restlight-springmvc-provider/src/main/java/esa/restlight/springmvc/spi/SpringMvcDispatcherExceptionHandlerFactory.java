@@ -15,6 +15,7 @@
  */
 package esa.restlight.springmvc.spi;
 
+import esa.commons.annotation.Internal;
 import esa.commons.spi.Feature;
 import esa.restlight.core.util.Constants;
 import esa.restlight.server.ServerDeployContext;
@@ -23,12 +24,15 @@ import esa.restlight.server.config.ServerOptions;
 import esa.restlight.server.spi.DispatcherExceptionHandlerFactory;
 import esa.restlight.springmvc.bootstrap.SpringMvcDispatcherExceptionHandler;
 
+import java.util.Optional;
+
 @Feature(tags = Constants.INTERNAL)
+@Internal
 public class SpringMvcDispatcherExceptionHandlerFactory implements DispatcherExceptionHandlerFactory {
 
     @Override
-    public DispatcherExceptionHandler exceptionHandler(ServerDeployContext<? extends ServerOptions> ctx) {
-        return new SpringMvcDispatcherExceptionHandler();
+    public Optional<DispatcherExceptionHandler> exceptionHandler(ServerDeployContext<? extends ServerOptions> ctx) {
+        return Optional.of(new SpringMvcDispatcherExceptionHandler());
     }
 
 }

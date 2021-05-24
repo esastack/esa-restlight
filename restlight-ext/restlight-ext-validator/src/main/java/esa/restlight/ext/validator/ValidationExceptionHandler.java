@@ -18,8 +18,7 @@ package esa.restlight.ext.validator;
 import esa.commons.annotation.Internal;
 import esa.httpserver.core.AsyncRequest;
 import esa.httpserver.core.AsyncResponse;
-import esa.restlight.server.bootstrap.AbstractDispatcherExceptionHandler;
-import esa.restlight.server.bootstrap.ExceptionHandleStatus;
+import esa.restlight.server.bootstrap.DispatcherExceptionHandler;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.util.internal.InternalThreadLocalMap;
 
@@ -27,8 +26,10 @@ import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import java.util.Set;
 
+import static esa.restlight.server.util.ErrorDetail.sendErrorResult;
+
 @Internal
-public class ValidationExceptionHandler extends AbstractDispatcherExceptionHandler {
+public class ValidationExceptionHandler implements DispatcherExceptionHandler {
 
     @Override
     public ExceptionHandleStatus handleException(AsyncRequest request, AsyncResponse response, Throwable throwable) {

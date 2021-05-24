@@ -27,6 +27,7 @@ import esa.restlight.server.route.ReadOnlyRouteRegistry;
 import esa.restlight.server.route.Route;
 import esa.restlight.server.route.RouteExecution;
 import esa.restlight.server.schedule.RequestTask;
+import esa.restlight.server.util.ErrorDetail;
 import esa.restlight.server.util.Futures;
 import esa.restlight.server.util.LoggerUtils;
 import esa.restlight.server.util.PromiseUtils;
@@ -117,13 +118,15 @@ public class DefaultDispatcherHandler implements DispatcherHandler {
         //clean up response.
         if (!response.isCommitted()) {
             if (dispatchException != null) {
-                logger.error("Error occurred when doing request(url={}, method={})",
-                        request.path(), request.method(), dispatchException);
 
-                ExceptionHandleStatus handleStatus = null;
+                DispatcherExceptionHandler.ExceptionHandleStatus handleStatus = null;
                 for (DispatcherExceptionHandler exceptionHandler : dispatcherExceptionHandlers) {
-                    handleStatus = exceptionHandler.handleException(request, response, dispatchException);
-                    if (handleStatus.handled()) {
+                    try {
+                        handleStatus = exceptionHandler.handleException(request, response, dispatchException);
+                    } catch (Throwable th) {
+                        logger.error("Failed to handle throwable [{}]", dispatchException.getMessage(), th);
+                    }
+                    if (handleStatus != null && handleStatus.handled()) {
                         break;
                     }
                 }
@@ -134,7 +137,9 @@ public class DefaultDispatcherHandler implements DispatcherHandler {
             } else {
                 response.sendResult();
             }
-        } else if (dispatchException != null) {
+        }
+
+        if (dispatchException != null) {
             logger.error("Error occurred when doing request(url={}, method={})",
                     request.path(), request.method(), dispatchException);
         }
@@ -179,7 +184,7 @@ public class DefaultDispatcherHandler implements DispatcherHandler {
     @Override
     public void handleRejectedWork(RequestTask task, String reason) {
         if (!task.response().isCommitted()) {
-            DefaultDispatcherExceptionHandler.sendErrorResult(task.request(),
+            ErrorDetail.sendErrorResult(task.request(),
                     task.response(),
                     reason,
                     HttpResponseStatus.TOO_MANY_REQUESTS);
@@ -198,7 +203,7 @@ public class DefaultDispatcherHandler implements DispatcherHandler {
         for (RequestTask task : unfinishedWorkList) {
             response = task.response();
             if (!response.isCommitted()) {
-                DefaultDispatcherExceptionHandler.sendErrorResult(task.request(),
+                ErrorDetail.sendErrorResult(task.request(),
                         task.response(),
                         "The request was not processed correctly before the server was shutdown",
                         HttpResponseStatus.SERVICE_UNAVAILABLE);

@@ -16,11 +16,8 @@
 package esa.restlight.ext.validator;
 
 import esa.commons.StringUtils;
-import esa.commons.annotation.Internal;
-import esa.commons.spi.Feature;
 import esa.restlight.core.DeployContext;
 import esa.restlight.core.config.RestlightOptions;
-import esa.restlight.core.util.Constants;
 import esa.restlight.ext.validator.core.ValidationOptions;
 import org.hibernate.validator.messageinterpolation.ResourceBundleMessageInterpolator;
 import org.hibernate.validator.resourceloading.PlatformResourceBundleLocator;
@@ -29,33 +26,21 @@ import javax.validation.Validation;
 import javax.validation.Validator;
 import java.util.Optional;
 
-import static esa.restlight.ext.validator.BeanValidationHandlerAdviceFactory.VALIDATION;
-
-@Feature(tags = Constants.INTERNAL)
-@Internal
 public class DefaultValidatorFactory implements ValidatorFactory {
 
-    private volatile Validator instance;
-    private final Object lock = new Object();
+    public static final String VALIDATION_OPTIONS = "$bean-validation-options";
 
     @Override
     public Optional<Validator> validator(DeployContext<? extends RestlightOptions> ctx) {
-        if (instance == null) {
-            synchronized (lock) {
-                if (instance == null) {
-                    final ValidationOptions options = ctx.uncheckedAttribute(VALIDATION);
-                    if (options == null || StringUtils.isEmpty(options.getMessageFile())) {
-                        instance = Validation.buildDefaultValidatorFactory().getValidator();
-                    } else {
-                        instance = Validation.byDefaultProvider().configure()
-                                .messageInterpolator(new ResourceBundleMessageInterpolator(
-                                        new PlatformResourceBundleLocator(options.getMessageFile())))
-                                .buildValidatorFactory().getValidator();
-                    }
-                }
-            }
+        final ValidationOptions options = ctx.removeUncheckedAttribute(VALIDATION_OPTIONS);
+        if (options == null || StringUtils.isEmpty(options.getMessageFile())) {
+            return Optional.of(Validation.buildDefaultValidatorFactory().getValidator());
+        } else {
+            return Optional.of(Validation.byDefaultProvider().configure()
+                    .messageInterpolator(new ResourceBundleMessageInterpolator(
+                            new PlatformResourceBundleLocator(options.getMessageFile())))
+                    .buildValidatorFactory().getValidator());
         }
-        return Optional.of(instance);
     }
 }
 

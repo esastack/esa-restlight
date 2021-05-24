@@ -18,13 +18,13 @@ package esa.restlight.ext.validator.starter.autoconfigurer;
 import esa.commons.StringUtils;
 import esa.restlight.core.util.Ordered;
 import esa.restlight.ext.validator.core.ValidationOptions;
-import esa.restlight.spring.DeployContextConfigure;
+import esa.restlight.spring.util.DeployContextConfigure;
 import org.springframework.boot.autoconfigure.AutoConfigureOrder;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import static esa.restlight.ext.validator.BeanValidationHandlerAdviceFactory.VALIDATION;
+import static esa.restlight.ext.validator.DefaultValidatorFactory.VALIDATION_OPTIONS;
 
 @Configuration
 @AutoConfigureOrder(Ordered.HIGHEST_PRECEDENCE)
@@ -38,7 +38,7 @@ public class ValidatorAutoConfiguration {
             if (StringUtils.isEmpty(messageFile)) {
                 options.setMessageFile(context.options().getValidationMessageFile());
             }
-            context.attribute(VALIDATION, options);
+            context.attribute(VALIDATION_OPTIONS, options);
         };
     }
 

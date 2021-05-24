@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 OPPO ESA Stack Project
+ * Copyright 2021 OPPO ESA Stack Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,6 @@
  */
 package esa.restlight.ext.validator;
 
-import esa.commons.StringUtils;
 import esa.commons.annotation.Internal;
 import esa.commons.spi.Feature;
 import esa.commons.spi.SpiLoader;
@@ -29,7 +28,6 @@ import esa.restlight.core.util.Constants;
 import javax.validation.Validator;
 import javax.validation.metadata.MethodDescriptor;
 import java.lang.reflect.Method;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,26 +35,23 @@ import java.util.Optional;
 @Internal
 public class BeanValidationHandlerAdviceFactory implements HandlerAdviceFactory {
 
-    private volatile Optional<ValidatorFactory> instance;
-    private final Object lock = new Object();
-
-    public static final String VALIDATION = "$validation";
+    private static final String VALIDATION_VALIDATOR = "$bean-validation-validator";
 
     @Override
     public Optional<HandlerAdvice> handlerAdvice(DeployContext<? extends RestlightOptions> ctx, Handler handler) {
-        final Optional<ValidatorFactory> factory = getOrCreate(ctx);
-        if (!factory.isPresent()) {
-            return Optional.empty();
+        Optional<Validator> validator = ctx.uncheckedAttribute(VALIDATION_VALIDATOR);
+        if (validator == null) {
+            validator = doCreate(ctx);
+            ctx.attribute(VALIDATION_VALIDATOR, validator);
         }
 
-        final Validator validator = factory.get().validator(ctx).orElse(null);
-        if (validator == null) {
+        if (!validator.isPresent()) {
             return Optional.empty();
         }
 
         final Method method = handler.handler().method();
         final MethodDescriptor descriptor =
-                validator.getConstraintsForClass(handler.handler().beanType())
+                validator.get().getConstraintsForClass(handler.handler().beanType())
                         .getConstraintsForMethod(method.getName(), method.getParameterTypes());
 
         if (descriptor == null) {
@@ -66,7 +61,7 @@ public class BeanValidationHandlerAdviceFactory implements HandlerAdviceFactory 
         final boolean validateParams = descriptor.hasConstrainedParameters();
         final boolean validateReturnValue = descriptor.hasConstrainedReturnValue();
         if (validateParams || validateReturnValue) {
-            return Optional.of(new BeanValidationHandlerAdvice(validator,
+            return Optional.of(new BeanValidationHandlerAdvice(validator.get(),
                     handler.handler().object(),
                     handler.handler().method(),
                     validateParams,
@@ -75,24 +70,14 @@ public class BeanValidationHandlerAdviceFactory implements HandlerAdviceFactory 
         return Optional.empty();
     }
 
-    private Optional<ValidatorFactory> getOrCreate(DeployContext<? extends RestlightOptions> ctx) {
-        if (instance == null) {
-            synchronized (lock) {
-                if (instance == null) {
-                    List<ValidatorFactory> factories =
-                            SpiLoader.cached(ValidatorFactory.class)
-                                    .getByFeature(ctx.name(),
-                                            true,
-                                            Collections.singletonMap(Constants.INTERNAL, StringUtils.empty()),
-                                            false);
-                    if (factories.isEmpty()) {
-                        instance = Optional.empty();
-                    } else {
-                        instance = Optional.of(factories.iterator().next());
-                    }
-                }
-            }
+    private Optional<Validator> doCreate(DeployContext<? extends RestlightOptions> ctx) {
+        final List<ValidatorFactory> factories =
+                SpiLoader.cached(ValidatorFactory.class)
+                        .getByGroup(ctx.name(), true);
+        if (factories.isEmpty()) {
+            return Optional.empty();
+        } else {
+            return factories.iterator().next().validator(ctx);
         }
-        return instance;
     }
 }
