@@ -21,6 +21,7 @@ import esa.commons.spi.Feature;
 import esa.restlight.core.DeployContext;
 import esa.restlight.core.config.RestlightOptions;
 import esa.restlight.core.util.Constants;
+import esa.restlight.ext.validator.core.ValidationOptions;
 import org.hibernate.validator.messageinterpolation.ResourceBundleMessageInterpolator;
 import org.hibernate.validator.resourceloading.PlatformResourceBundleLocator;
 
@@ -34,30 +35,27 @@ import static esa.restlight.ext.validator.BeanValidationHandlerAdviceFactory.VAL
 @Internal
 public class DefaultValidatorFactory implements ValidatorFactory {
 
-    private Validator instance;
+    private volatile Validator instance;
+    private final Object lock = new Object();
 
     @Override
     public Optional<Validator> validator(DeployContext<? extends RestlightOptions> ctx) {
-        if (instance != null) {
-            return Optional.of(instance);
-        } else {
-            instance = doCreate(ctx);
-            return Optional.ofNullable(instance);
+        if (instance == null) {
+            synchronized (lock) {
+                if (instance == null) {
+                    final ValidationOptions options = ctx.uncheckedAttribute(VALIDATION);
+                    if (options == null || StringUtils.isEmpty(options.getMessageFile())) {
+                        instance = Validation.buildDefaultValidatorFactory().getValidator();
+                    } else {
+                        instance = Validation.byDefaultProvider().configure()
+                                .messageInterpolator(new ResourceBundleMessageInterpolator(
+                                        new PlatformResourceBundleLocator(options.getMessageFile())))
+                                .buildValidatorFactory().getValidator();
+                    }
+                }
+            }
         }
+        return Optional.of(instance);
     }
-
-    protected Validator doCreate(DeployContext<? extends RestlightOptions> ctx) {
-        final String messageFile = ctx.options()
-                .extOption(VALIDATION + ".message-file").orElse(null);
-        if (StringUtils.isEmpty(messageFile)) {
-            return Validation.buildDefaultValidatorFactory().getValidator();
-        } else {
-            return Validation.byDefaultProvider().configure()
-                    .messageInterpolator(new ResourceBundleMessageInterpolator(
-                            new PlatformResourceBundleLocator(messageFile)))
-                    .buildValidatorFactory().getValidator();
-        }
-    }
-
 }
 

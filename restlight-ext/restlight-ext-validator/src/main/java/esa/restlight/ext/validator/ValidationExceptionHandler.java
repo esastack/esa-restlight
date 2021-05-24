@@ -15,9 +15,11 @@
  */
 package esa.restlight.ext.validator;
 
+import esa.commons.annotation.Internal;
 import esa.httpserver.core.AsyncRequest;
 import esa.httpserver.core.AsyncResponse;
-import esa.restlight.server.bootstrap.DefaultDispatcherExceptionHandler;
+import esa.restlight.server.bootstrap.AbstractDispatcherExceptionHandler;
+import esa.restlight.server.bootstrap.ExceptionHandleStatus;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.util.internal.InternalThreadLocalMap;
 
@@ -25,14 +27,15 @@ import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import java.util.Set;
 
-public class ValidationExceptionHandler extends DefaultDispatcherExceptionHandler {
+@Internal
+public class ValidationExceptionHandler extends AbstractDispatcherExceptionHandler {
 
     @Override
-    protected void sendError(AsyncRequest request, AsyncResponse response, Throwable ex) {
-        if (ex instanceof ConstraintViolationException) {
+    public ExceptionHandleStatus handleException(AsyncRequest request, AsyncResponse response, Throwable throwable) {
+        if (throwable instanceof ConstraintViolationException) {
             //400 bad request
 
-            ConstraintViolationException error = (ConstraintViolationException) ex;
+            ConstraintViolationException error = (ConstraintViolationException) throwable;
             Set<ConstraintViolation<?>> cs = error.getConstraintViolations();
             if (cs == null || cs.isEmpty()) {
                 sendErrorResult(request, response, error, HttpResponseStatus.BAD_REQUEST);
@@ -48,9 +51,15 @@ public class ValidationExceptionHandler extends DefaultDispatcherExceptionHandle
 
                 sendErrorResult(request, response, sb.toString(), HttpResponseStatus.BAD_REQUEST);
             }
-        } else {
-            super.sendError(request, response, ex);
+            return ExceptionHandleStatus.HANDLED_RETAINED;
         }
+
+        return ExceptionHandleStatus.UNHANDLED_RETAINED;
+    }
+
+    @Override
+    public int getOrder() {
+        return -100;
     }
 }
 

@@ -37,7 +37,7 @@ public interface DispatcherExceptionHandlerFactory {
      *
      * @return handler
      */
-    DispatcherExceptionHandler exHandler(ServerDeployContext<? extends ServerOptions> ctx);
+    DispatcherExceptionHandler exceptionHandler(ServerDeployContext<? extends ServerOptions> ctx);
 
 }
 

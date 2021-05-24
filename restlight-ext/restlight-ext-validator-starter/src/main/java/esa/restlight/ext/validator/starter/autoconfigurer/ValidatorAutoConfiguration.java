@@ -16,10 +16,10 @@
 package esa.restlight.ext.validator.starter.autoconfigurer;
 
 import esa.commons.StringUtils;
-import esa.restlight.core.config.RestlightOptions;
 import esa.restlight.core.util.Ordered;
+import esa.restlight.ext.validator.core.ValidationOptions;
+import esa.restlight.spring.DeployContextConfigure;
 import org.springframework.boot.autoconfigure.AutoConfigureOrder;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -32,23 +32,14 @@ import static esa.restlight.ext.validator.BeanValidationHandlerAdviceFactory.VAL
 public class ValidatorAutoConfiguration {
 
     @Bean
-    @ConditionalOnMissingBean
-    public ValidationConfigure validatorConfigure(RestlightOptions options, ValidationProperties properties) {
-        final ValidationConfigure configure = new ValidationConfigure();
-        configure.config(options, properties);
-        return configure;
-    }
-
-    private static class ValidationConfigure {
-
-        private void config(RestlightOptions options, ValidationProperties properties) {
-            String messageFile = properties.getMessageFile();
+    public DeployContextConfigure deployContextConfigure(ValidationOptions options) {
+        return context -> {
+            String messageFile = options.getMessageFile();
             if (StringUtils.isEmpty(messageFile)) {
-                messageFile = options.getValidationMessageFile();
+                options.setMessageFile(context.options().getValidationMessageFile());
             }
-            options.extOption(VALIDATION + ".message-file", messageFile);
-        }
-
+            context.attribute(VALIDATION, options);
+        };
     }
 
 }

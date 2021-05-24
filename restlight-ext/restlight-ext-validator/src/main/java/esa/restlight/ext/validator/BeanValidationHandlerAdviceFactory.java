@@ -37,46 +37,61 @@ import java.util.Optional;
 @Internal
 public class BeanValidationHandlerAdviceFactory implements HandlerAdviceFactory {
 
-    private ValidatorFactory instance;
+    private volatile Optional<ValidatorFactory> instance;
+    private final Object lock = new Object();
 
-    public static final String VALIDATION = "validation";
+    public static final String VALIDATION = "$validation";
 
     @Override
     public Optional<HandlerAdvice> handlerAdvice(DeployContext<? extends RestlightOptions> ctx, Handler handler) {
-        final ValidatorFactory factory = getOrCreate(ctx);
-        if (factory == null) {
+        final Optional<ValidatorFactory> factory = getOrCreate(ctx);
+        if (!factory.isPresent()) {
             return Optional.empty();
         }
 
-        final Validator validator = factory.validator(ctx).orElse(null);
-        if (validator != null && isValidated(validator,
-                handler.handler().beanType(), handler.handler().method())) {
-            return Optional.of(new BeanValidationHandlerAdvice(validator,
-                    handler.handler().object(),
-                    handler.handler().method()));
+        final Validator validator = factory.get().validator(ctx).orElse(null);
+        if (validator == null) {
+            return Optional.empty();
         }
 
+        final Method method = handler.handler().method();
+        final MethodDescriptor descriptor =
+                validator.getConstraintsForClass(handler.handler().beanType())
+                        .getConstraintsForMethod(method.getName(), method.getParameterTypes());
+
+        if (descriptor == null) {
+            return Optional.empty();
+        }
+
+        final boolean validateParams = descriptor.hasConstrainedParameters();
+        final boolean validateReturnValue = descriptor.hasConstrainedReturnValue();
+        if (validateParams || validateReturnValue) {
+            return Optional.of(new BeanValidationHandlerAdvice(validator,
+                    handler.handler().object(),
+                    handler.handler().method(),
+                    validateParams,
+                    validateReturnValue));
+        }
         return Optional.empty();
     }
 
-    protected boolean isValidated(Validator validator, Class<?> clazz, Method method) {
-        final MethodDescriptor descriptor =
-                validator.getConstraintsForClass(clazz).getConstraintsForMethod(method.getName(),
-                        method.getParameterTypes());
-        return descriptor != null && (descriptor.hasConstrainedReturnValue()
-                || descriptor.hasConstrainedParameters());
-    }
-
-    protected ValidatorFactory getOrCreate(DeployContext<? extends RestlightOptions> ctx) {
+    private Optional<ValidatorFactory> getOrCreate(DeployContext<? extends RestlightOptions> ctx) {
         if (instance == null) {
-            // load ValidatorFactory by spi
-            List<ValidatorFactory> validatorFactories =
-                    SpiLoader.cached(ValidatorFactory.class)
-                            .getByFeature(ctx.name(),
-                                    true,
-                                    Collections.singletonMap(Constants.INTERNAL, StringUtils.empty()),
-                                    false);
-            instance = validatorFactories.iterator().next();
+            synchronized (lock) {
+                if (instance == null) {
+                    List<ValidatorFactory> factories =
+                            SpiLoader.cached(ValidatorFactory.class)
+                                    .getByFeature(ctx.name(),
+                                            true,
+                                            Collections.singletonMap(Constants.INTERNAL, StringUtils.empty()),
+                                            false);
+                    if (factories.isEmpty()) {
+                        instance = Optional.empty();
+                    } else {
+                        instance = Optional.of(factories.iterator().next());
+                    }
+                }
+            }
         }
         return instance;
     }

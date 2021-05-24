@@ -48,11 +48,14 @@ import static org.mockito.Mockito.when;
 
 class DefaultDispatcherHandlerTest {
 
+    private final List<DispatcherExceptionHandler> dispatcherExceptionHandlers = Collections.singletonList(
+            new DefaultDispatcherExceptionHandler());
+
     @Test
     void testRoute() {
         final RouteRegistry registry = mock(RouteRegistry.class);
         final DefaultDispatcherHandler dispatcher = new DefaultDispatcherHandler(registry,
-                new DefaultDispatcherExceptionHandler());
+                dispatcherExceptionHandlers);
 
         final Route r = Route.route();
         when(registry.route(any())).thenReturn(r);
@@ -70,7 +73,7 @@ class DefaultDispatcherHandlerTest {
     void testHandleRejectWork() {
         final RouteRegistry registry = mock(RouteRegistry.class);
         final DefaultDispatcherHandler dispatcher = new DefaultDispatcherHandler(registry,
-                new DefaultDispatcherExceptionHandler());
+                dispatcherExceptionHandlers);
 
 
         final AsyncRequest request = MockAsyncRequest.aMockRequest().build();
@@ -114,7 +117,7 @@ class DefaultDispatcherHandlerTest {
     void testHandleUnfinishedWork() {
         final RouteRegistry registry = mock(RouteRegistry.class);
         final DefaultDispatcherHandler dispatcher = new DefaultDispatcherHandler(registry,
-                new DefaultDispatcherExceptionHandler());
+                dispatcherExceptionHandlers);
 
         final RequestTask task1 = mock(RequestTask.class);
         when(task1.request()).thenReturn(MockAsyncRequest.aMockRequest().build());
@@ -139,7 +142,7 @@ class DefaultDispatcherHandlerTest {
     void testServiceWithErrorInToExecution() {
         final RouteRegistry registry = mock(RouteRegistry.class);
         final DefaultDispatcherHandler dispatcher = new DefaultDispatcherHandler(registry,
-                new DefaultDispatcherExceptionHandler());
+                dispatcherExceptionHandlers);
 
         final AsyncRequest request = MockAsyncRequest.aMockRequest().build();
         final MockAsyncResponse response = MockAsyncResponse.aMockResponse().build();
@@ -158,7 +161,7 @@ class DefaultDispatcherHandlerTest {
     void testNormalService() {
         final RouteRegistry registry = mock(RouteRegistry.class);
         final DefaultDispatcherHandler dispatcher = new DefaultDispatcherHandler(registry,
-                new DefaultDispatcherExceptionHandler());
+                dispatcherExceptionHandlers);
 
         final AsyncRequest request = MockAsyncRequest.aMockRequest().build();
         final MockAsyncResponse response = MockAsyncResponse.aMockResponse().build();
@@ -181,7 +184,7 @@ class DefaultDispatcherHandlerTest {
     void testServiceOnException() {
         final RouteRegistry registry = mock(RouteRegistry.class);
         final DefaultDispatcherHandler dispatcher = new DefaultDispatcherHandler(registry,
-                new DefaultDispatcherExceptionHandler());
+                dispatcherExceptionHandlers);
 
         final AsyncRequest request = MockAsyncRequest.aMockRequest().build();
         final MockAsyncResponse response = MockAsyncResponse.aMockResponse().build();
@@ -218,7 +221,7 @@ class DefaultDispatcherHandlerTest {
     void testServiceEndWith200WhenExceptionHandled() {
         final RouteRegistry registry = mock(RouteRegistry.class);
         final DefaultDispatcherHandler dispatcher = new DefaultDispatcherHandler(registry,
-                new DefaultDispatcherExceptionHandler());
+                dispatcherExceptionHandlers);
 
         final AsyncRequest request = MockAsyncRequest.aMockRequest().build();
         final MockAsyncResponse response = MockAsyncResponse.aMockResponse().build();
@@ -254,7 +257,7 @@ class DefaultDispatcherHandlerTest {
     void testServiceOnHandleAsyncError() {
         final RouteRegistry registry = mock(RouteRegistry.class);
         final DefaultDispatcherHandler dispatcher = new DefaultDispatcherHandler(registry,
-                new DefaultDispatcherExceptionHandler());
+                dispatcherExceptionHandlers);
 
         final AsyncRequest request = MockAsyncRequest.aMockRequest().build();
         final MockAsyncResponse response = MockAsyncResponse.aMockResponse().build();

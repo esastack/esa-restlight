@@ -33,8 +33,8 @@ import esa.restlight.core.serialize.JacksonHttpBodySerializer;
 import esa.restlight.core.util.Constants;
 import esa.restlight.jaxrs.ResolverUtils;
 import esa.restlight.jaxrs.util.JaxrsMappingUtils;
-import esa.restlight.server.bootstrap.DispatcherHandler;
 import esa.restlight.server.bootstrap.DispatcherExceptionHandler;
+import esa.restlight.server.bootstrap.DispatcherHandler;
 import esa.restlight.server.route.ReadOnlyRouteRegistry;
 import esa.restlight.server.route.predicate.PatternsPredicate;
 import esa.restlight.server.schedule.Scheduler;
@@ -218,7 +218,7 @@ class BeanParamArgumentResolverTest {
         }
 
         @Override
-        public Optional<DispatcherExceptionHandler> dispatcherExceptionHandler() {
+        public Optional<List<DispatcherExceptionHandler>> dispatcherExceptionHandlers() {
             return Optional.empty();
         }
 

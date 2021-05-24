@@ -22,11 +22,11 @@ import esa.restlight.server.bootstrap.DispatcherExceptionHandler;
 import esa.restlight.server.config.ServerOptions;
 import esa.restlight.server.spi.DispatcherExceptionHandlerFactory;
 
-@Feature(tags = Constants.INTERNAL, order = -200)
+@Feature(tags = Constants.INTERNAL)
 public class ValidationExceptionHandlerFactory implements DispatcherExceptionHandlerFactory {
 
     @Override
-    public DispatcherExceptionHandler exHandler(ServerDeployContext<? extends ServerOptions> ctx) {
+    public DispatcherExceptionHandler exceptionHandler(ServerDeployContext<? extends ServerOptions> ctx) {
         return new ValidationExceptionHandler();
     }
 

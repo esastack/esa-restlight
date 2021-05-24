@@ -21,6 +21,7 @@ import esa.restlight.server.config.ServerOptions;
 import esa.restlight.server.route.ReadOnlyRouteRegistry;
 import esa.restlight.server.schedule.Scheduler;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -76,7 +77,7 @@ public interface ServerDeployContext<O extends ServerOptions> {
      *
      * @return optional value
      */
-    Optional<DispatcherExceptionHandler> dispatcherExceptionHandler();
+    Optional<List<DispatcherExceptionHandler>> dispatcherExceptionHandlers();
 
     /**
      * Stores an attribute in this context.

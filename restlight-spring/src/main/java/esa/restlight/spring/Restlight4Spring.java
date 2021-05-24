@@ -16,8 +16,10 @@
 package esa.restlight.spring;
 
 import esa.commons.Checks;
+import esa.restlight.core.DeployContext;
 import esa.restlight.core.config.RestlightOptions;
 import esa.restlight.core.config.RestlightOptionsConfigure;
+import esa.restlight.server.util.LoggerUtils;
 import org.springframework.context.ApplicationContext;
 
 import static esa.restlight.spring.util.SpringContextUtils.getBean;
@@ -79,6 +81,19 @@ public class Restlight4Spring extends AbstractRestlight4Spring<Restlight4Spring,
      */
     public static Restlight4Spring forServer(ApplicationContext context, RestlightOptions options) {
         return new Restlight4Spring(context, options);
+    }
+
+    @Override
+    protected void preStart() {
+        DeployContext<RestlightOptions> context = deployments().deployContext();
+        deployments().contextConfigures.forEach(c -> {
+            try {
+                c.accept(context);
+            } catch (Throwable th) {
+                LoggerUtils.logger().error("Failed to configure deploy context", th);
+            }
+        });
+        super.preStart();
     }
 
     @Override

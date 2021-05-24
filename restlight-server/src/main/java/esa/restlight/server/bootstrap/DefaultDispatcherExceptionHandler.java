@@ -1,3 +1,4 @@
+
 /*
  * Copyright 2021 OPPO ESA Stack Project
  *
@@ -15,91 +16,35 @@
  */
 package esa.restlight.server.bootstrap;
 
-import esa.commons.StringUtils;
-import esa.commons.logging.Logger;
-import esa.commons.logging.LoggerFactory;
+import esa.commons.annotation.Internal;
 import esa.httpserver.core.AsyncRequest;
 import esa.httpserver.core.AsyncResponse;
-import esa.restlight.core.util.MediaType;
-import esa.restlight.server.util.ErrorDetail;
-import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpResponseStatus;
 
-import java.nio.charset.StandardCharsets;
-
-public class DefaultDispatcherExceptionHandler implements DispatcherExceptionHandler {
-
-    private static final Logger logger =
-            LoggerFactory.getLogger(DispatcherExceptionHandler.class);
+@Internal
+public class DefaultDispatcherExceptionHandler extends AbstractDispatcherExceptionHandler {
 
     @Override
-    public ExceptionHandleResult handleException(AsyncRequest request,
+    public ExceptionHandleStatus handleException(AsyncRequest request,
                                                  AsyncResponse response,
                                                  Throwable throwable) {
-        //clean up response.
-        if (!response.isCommitted()) {
-            if (throwable != null) {
-                logger.error("Error occurred when doing request(url={}, method={})",
-                        request.path(), request.method(), throwable);
-                HttpResponseStatus status = toCustomStatus(request, response, throwable);
-                if (status == null) {
-                    sendError(request, response, throwable);
-                } else {
-                    response.setHeader(HttpHeaderNames.CONTENT_TYPE, MediaType.TEXT_PLAIN.value());
-                    response.sendResult(status.code(), status.reasonPhrase().getBytes(StandardCharsets.UTF_8));
-                    return ExceptionHandleResult.handled();
-                }
-            } else {
-                response.sendResult();
-            }
-        } else if (throwable != null) {
-            logger.error("Error occurred when doing request(url={}, method={})",
-                    request.path(), request.method(), throwable);
-        }
-
-        return ExceptionHandleResult.remained(throwable);
-    }
-
-    protected HttpResponseStatus toCustomStatus(AsyncRequest request,
-                                                AsyncResponse response,
-                                                Throwable throwable) {
-        return null;
-    }
-
-    protected void sendError(AsyncRequest request,
-                             AsyncResponse response,
-                             Throwable ex) {
         final HttpResponseStatus status;
-        if (ex instanceof WebServerException) {
+        if (throwable instanceof WebServerException) {
             //400 bad request
-            status = ((WebServerException) ex).status();
+            status = ((WebServerException) throwable).status();
 
         } else {
             //default to 500
             status = HttpResponseStatus.INTERNAL_SERVER_ERROR;
         }
 
-        sendErrorResult(request, response, ex, status);
+        sendErrorResult(request, response, throwable, status);
+        return ExceptionHandleStatus.HANDLED_RETAINED;
     }
 
-    protected static void sendErrorResult(AsyncRequest request,
-                                          AsyncResponse response,
-                                          Throwable ex,
-                                          HttpResponseStatus status) {
-        final String msg = StringUtils.isNotEmpty(ex.getMessage()) ? ex.getMessage() : status.reasonPhrase();
-        sendErrorResult(request, response, msg, status);
-    }
-
-    protected static void sendErrorResult(AsyncRequest request,
-                                          AsyncResponse response,
-                                          String msg,
-                                          HttpResponseStatus status) {
-        final byte[] errorInfo = ErrorDetail.buildError(request.path(),
-                msg,
-                status.reasonPhrase(),
-                status.code());
-        response.setHeader(HttpHeaderNames.CONTENT_TYPE, MediaType.TEXT_PLAIN.value());
-        response.sendResult(status.code(), errorInfo);
+    @Override
+    public int getOrder() {
+        return 0;
     }
 }
 

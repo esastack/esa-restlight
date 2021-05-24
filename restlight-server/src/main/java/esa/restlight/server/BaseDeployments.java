@@ -20,6 +20,7 @@ import esa.commons.StringUtils;
 import esa.commons.annotation.Beta;
 import esa.commons.spi.SpiLoader;
 import esa.restlight.core.util.Constants;
+import esa.restlight.core.util.OrderedComparator;
 import esa.restlight.server.bootstrap.DispatcherExceptionHandler;
 import esa.restlight.server.bootstrap.DispatcherHandler;
 import esa.restlight.server.bootstrap.RestlightThreadFactory;
@@ -41,6 +42,7 @@ import esa.restlight.server.spi.DispatcherHandlerFactory;
 import esa.restlight.server.spi.RequestTaskHookFactory;
 import esa.restlight.server.util.LoggerUtils;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -254,9 +256,10 @@ public class BaseDeployments<R extends BaseRestlightServer<R, D, O>, D extends B
                         Collections.singletonMap(Constants.INTERNAL, StringUtils.empty()),
                         false);
         Checks.checkNotEmptyState(exHandlerFactories, "exHandlerFactories");
-        final DispatcherExceptionHandler exHandler =
-                exHandlerFactories.iterator().next().exHandler(ctx);
-        ctx().setExHandler(exHandler);
+        final List<DispatcherExceptionHandler> exceptionHandlers = new ArrayList<>(3);
+        exHandlerFactories.forEach(factory -> exceptionHandlers.add(factory.exceptionHandler(ctx)));
+        OrderedComparator.sort(exceptionHandlers);
+        ctx().addDispatcherExceptionHandlers(exceptionHandlers);
 
         // load DispatcherHandler by spi
         List<DispatcherHandlerFactory> handlerFactories = SpiLoader.cached(DispatcherHandlerFactory.class)

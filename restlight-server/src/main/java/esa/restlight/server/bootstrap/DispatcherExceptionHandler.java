@@ -18,6 +18,7 @@ package esa.restlight.server.bootstrap;
 import esa.commons.annotation.Internal;
 import esa.httpserver.core.AsyncRequest;
 import esa.httpserver.core.AsyncResponse;
+import esa.restlight.core.util.Ordered;
 import esa.restlight.server.route.ExceptionHandler;
 
 /**
@@ -26,7 +27,7 @@ import esa.restlight.server.route.ExceptionHandler;
  * during {@link ExceptionHandler#handleException(AsyncRequest, AsyncResponse, Throwable)}.
  */
 @Internal
-public interface DispatcherExceptionHandler {
+public interface DispatcherExceptionHandler extends Ordered {
 
     /**
      * Handles the exception and gets the result.
@@ -34,9 +35,9 @@ public interface DispatcherExceptionHandler {
      * @param request   request
      * @param response  response
      * @param throwable throwable
-     * @return  result
+     * @return  the {@link ExceptionHandleStatus} which represents the handle result.
      */
-    ExceptionHandleResult handleException(AsyncRequest request,
+    ExceptionHandleStatus handleException(AsyncRequest request,
                                           AsyncResponse response,
                                           Throwable throwable);
 }

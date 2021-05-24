@@ -16,14 +16,16 @@
 package esa.restlight.server;
 
 import esa.commons.Checks;
-import esa.restlight.server.bootstrap.DispatcherHandler;
 import esa.restlight.server.bootstrap.DispatcherExceptionHandler;
+import esa.restlight.server.bootstrap.DispatcherHandler;
 import esa.restlight.server.config.ServerOptions;
 import esa.restlight.server.route.ReadOnlyRouteRegistry;
 import esa.restlight.server.schedule.Scheduler;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
@@ -37,7 +39,7 @@ public class ServerDeployContextImpl<O extends ServerOptions> implements ServerD
     private final Map<String, Scheduler> schedulers = new HashMap<>(16);
     private volatile ReadOnlyRouteRegistry registry;
     private volatile DispatcherHandler dispatcherHandler;
-    private volatile DispatcherExceptionHandler exHandler;
+    private final List<DispatcherExceptionHandler> dispatcherExceptionHandlers = new ArrayList<>(3);
 
     protected ServerDeployContextImpl(String name, O options) {
         Checks.checkNotNull(options, "name");
@@ -72,8 +74,8 @@ public class ServerDeployContextImpl<O extends ServerOptions> implements ServerD
     }
 
     @Override
-    public Optional<DispatcherExceptionHandler> dispatcherExceptionHandler() {
-        return Optional.of(exHandler);
+    public Optional<List<DispatcherExceptionHandler>> dispatcherExceptionHandlers() {
+        return Optional.of(Collections.unmodifiableList(dispatcherExceptionHandlers));
     }
 
     @Override
@@ -103,7 +105,7 @@ public class ServerDeployContextImpl<O extends ServerOptions> implements ServerD
         this.dispatcherHandler = dispatcherHandler;
     }
 
-    void setExHandler(DispatcherExceptionHandler exHandler) {
-        this.exHandler = exHandler;
+    void addDispatcherExceptionHandlers(List<DispatcherExceptionHandler> dispatcherExceptionHandlers) {
+        this.dispatcherExceptionHandlers.addAll(dispatcherExceptionHandlers);
     }
 }

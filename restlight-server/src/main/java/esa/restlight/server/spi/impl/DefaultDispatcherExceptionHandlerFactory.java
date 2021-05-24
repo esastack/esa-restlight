@@ -27,7 +27,7 @@ import esa.restlight.server.spi.DispatcherExceptionHandlerFactory;
 public class DefaultDispatcherExceptionHandlerFactory implements DispatcherExceptionHandlerFactory {
 
     @Override
-    public DispatcherExceptionHandler exHandler(ServerDeployContext<? extends ServerOptions> ctx) {
+    public DispatcherExceptionHandler exceptionHandler(ServerDeployContext<? extends ServerOptions> ctx) {
         return new DefaultDispatcherExceptionHandler();
     }
 }

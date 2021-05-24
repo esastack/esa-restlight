@@ -13,22 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package esa.restlight.ext.validator.starter;
+package esa.restlight.spring;
 
-import esa.commons.spi.Feature;
-import esa.restlight.core.util.Constants;
+import esa.restlight.core.Restlight;
+import esa.restlight.core.config.RestlightOptions;
+import esa.restlight.core.util.Ordered;
 import esa.restlight.server.ServerDeployContext;
-import esa.restlight.server.bootstrap.DispatcherExceptionHandler;
-import esa.restlight.server.config.ServerOptions;
-import esa.restlight.server.spi.DispatcherExceptionHandlerFactory;
 
-@Feature(tags = Constants.INTERNAL, order = -300)
-public class SpringMvcValidationExceptionHandlerFactory implements DispatcherExceptionHandlerFactory {
+/**
+ * DeployContextConfigure allows user to modify the {@link ServerDeployContext} or change the options in {@link
+ * RestlightOptions} before {@link Restlight#start()}ing.
+ */
+@FunctionalInterface
+public interface DeployContextConfigure extends Ordered {
 
-    @Override
-    public DispatcherExceptionHandler exHandler(ServerDeployContext<? extends ServerOptions> ctx) {
-        return new SpringMvcValidationExceptionHandler();
-    }
-
+    /**
+     * accept {@link ServerDeployContext} and do some modification before starting server.
+     *
+     * @param context   context
+     */
+    void accept(ServerDeployContext<RestlightOptions> context);
+        
 }
 

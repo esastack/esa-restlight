@@ -45,17 +45,17 @@ public class DefaultDispatcherHandler implements DispatcherHandler {
     private static final Logger logger =
             LoggerFactory.getLogger(DefaultDispatcherHandler.class);
     private final ReadOnlyRouteRegistry registry;
-    private final DispatcherExceptionHandler exHandler;
+    private final List<DispatcherExceptionHandler> dispatcherExceptionHandlers;
 
     private final LongAdder rejectCount = new LongAdder();
 
-    public DefaultDispatcherHandler(ReadOnlyRouteRegistry registry, DispatcherExceptionHandler exHandler) {
+    public DefaultDispatcherHandler(ReadOnlyRouteRegistry registry,
+                                    List<DispatcherExceptionHandler> dispatcherExceptionHandlers) {
         Checks.checkNotNull(registry, "registry");
-        Checks.checkNotNull(exHandler, "exceptionHandler");
+        Checks.checkNotEmptyState(dispatcherExceptionHandlers, "dispatcherExceptionHandlers");
         this.registry = registry;
-        this.exHandler = exHandler;
+        this.dispatcherExceptionHandlers = dispatcherExceptionHandlers;
     }
-
 
     @Override
     public List<Route> routes() {
@@ -114,14 +114,29 @@ public class DefaultDispatcherHandler implements DispatcherHandler {
                          CompletableFuture<Void> promise,
                          Throwable dispatchException,
                          RouteExecution execution) {
-        final ExceptionHandleResult result = exHandler.handleException(request, response, dispatchException);
-        final Throwable remained;
-        if (result == null) {
-            remained = dispatchException;
-        } else if (result.handled) {
-            remained = null;
-        } else {
-            remained = result.remained;
+        //clean up response.
+        if (!response.isCommitted()) {
+            if (dispatchException != null) {
+                logger.error("Error occurred when doing request(url={}, method={})",
+                        request.path(), request.method(), dispatchException);
+
+                ExceptionHandleStatus handleStatus = null;
+                for (DispatcherExceptionHandler exceptionHandler : dispatcherExceptionHandlers) {
+                    handleStatus = exceptionHandler.handleException(request, response, dispatchException);
+                    if (handleStatus.handled()) {
+                        break;
+                    }
+                }
+
+                if (handleStatus != null && !handleStatus.retained()) {
+                    dispatchException = null;
+                }
+            } else {
+                response.sendResult();
+            }
+        } else if (dispatchException != null) {
+            logger.error("Error occurred when doing request(url={}, method={})",
+                    request.path(), request.method(), dispatchException);
         }
 
         if (execution == null) {
@@ -137,7 +152,7 @@ public class DefaultDispatcherHandler implements DispatcherHandler {
                 return;
             }
 
-            completionHandler.onComplete(request, response, remained)
+            completionHandler.onComplete(request, response, dispatchException)
                     .whenComplete((r, t) -> {
                         if (t != null) {
                             logger.error("Error while triggering afterCompletion() for request(url={},method={})",

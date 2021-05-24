@@ -25,11 +25,10 @@ import esa.restlight.core.handler.HandlerInvoker;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import javax.validation.Validator;
-import javax.validation.metadata.MethodDescriptor;
 import java.lang.reflect.Method;
 import java.util.Set;
 
-public class BeanValidationHandlerAdvice implements HandlerAdvice {
+class BeanValidationHandlerAdvice implements HandlerAdvice {
 
     private final Validator validator;
     private final Object object;
@@ -38,19 +37,20 @@ public class BeanValidationHandlerAdvice implements HandlerAdvice {
     private final boolean validateReturnValue;
     private final Class<?>[] groups;
 
-    public BeanValidationHandlerAdvice(Validator validator, Object object, Method method) {
+    BeanValidationHandlerAdvice(Validator validator,
+                                Object object,
+                                Method method,
+                                boolean validateParams,
+                                boolean validateReturnValue) {
         this.validator = validator;
         this.method = method;
         this.object = object;
-        MethodDescriptor methodDescriptor =
-                validator.getConstraintsForClass(object.getClass()).getConstraintsForMethod(method.getName(),
-                        method.getParameterTypes());
-        this.validateParams = methodDescriptor != null && methodDescriptor.hasConstrainedParameters();
-        this.validateReturnValue = methodDescriptor != null && methodDescriptor.hasConstrainedReturnValue();
+        this.validateParams = validateParams;
+        this.validateReturnValue = validateReturnValue;
         this.groups = getValidGroup(method);
     }
 
-    protected Class<?>[] getValidGroup(Method method) {
+    private Class<?>[] getValidGroup(Method method) {
         esa.restlight.ext.validator.core.ValidGroup group =
                 AnnotationUtils.findAnnotation(method, esa.restlight.ext.validator.core.ValidGroup.class);
         if (group != null) {

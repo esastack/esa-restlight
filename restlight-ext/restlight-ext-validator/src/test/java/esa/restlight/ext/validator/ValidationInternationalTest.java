@@ -33,6 +33,7 @@ import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import javax.validation.Validation;
 import javax.validation.Validator;
+import javax.validation.metadata.MethodDescriptor;
 import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -61,8 +62,15 @@ class ValidationInternationalTest {
                     final InvocableMethod handlerMethod = HandlerMethod.of(BeanSubject.class, method,
                             new BeanSubject());
                     HandlerInvoker invoker = new HandlerInvokerImpl(handlerMethod);
+
+                    final MethodDescriptor descriptor =
+                            validator.getConstraintsForClass(handlerMethod.beanType())
+                                    .getConstraintsForMethod(method.getName(), method.getParameterTypes());
                     invoker = LinkedHandlerInvoker.immutable(new BeanValidationHandlerAdvice[]{
-                            new BeanValidationHandlerAdvice(validator, subject, method)}, invoker);
+                            new BeanValidationHandlerAdvice(validator, subject, method,
+                                    descriptor != null && descriptor.hasConstrainedParameters(),
+                                    descriptor != null && descriptor.hasConstrainedReturnValue())},
+                            invoker);
                     handlerMethodAdapters.put(method.getName(),
                             new RouteHandlerImpl(HandlerMethod.of(method, subject),
                                     null, invoker, true, null));

@@ -23,11 +23,11 @@ import esa.restlight.server.config.ServerOptions;
 import esa.restlight.server.spi.DispatcherExceptionHandlerFactory;
 import esa.restlight.springmvc.bootstrap.SpringMvcDispatcherExceptionHandler;
 
-@Feature(tags = Constants.INTERNAL, order = -100)
+@Feature(tags = Constants.INTERNAL)
 public class SpringMvcDispatcherExceptionHandlerFactory implements DispatcherExceptionHandlerFactory {
 
     @Override
-    public DispatcherExceptionHandler exHandler(ServerDeployContext<? extends ServerOptions> ctx) {
+    public DispatcherExceptionHandler exceptionHandler(ServerDeployContext<? extends ServerOptions> ctx) {
         return new SpringMvcDispatcherExceptionHandler();
     }
 
