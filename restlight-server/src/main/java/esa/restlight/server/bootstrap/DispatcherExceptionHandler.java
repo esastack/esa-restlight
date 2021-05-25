@@ -35,11 +35,11 @@ public interface DispatcherExceptionHandler extends Ordered {
      * @param request   request
      * @param response  response
      * @param throwable throwable
-     * @return  the {@link ExceptionHandleStatus} which represents the handle result.
+     * @return  the {@link HandleStatus} which represents the handle result.
      */
-    ExceptionHandleStatus handleException(AsyncRequest request,
-                                          AsyncResponse response,
-                                          Throwable throwable);
+    HandleStatus handleException(AsyncRequest request,
+                                 AsyncResponse response,
+                                 Throwable throwable);
 
 
     /**
@@ -48,7 +48,7 @@ public interface DispatcherExceptionHandler extends Ordered {
      * {@link DispatcherExceptionHandler#handleException(AsyncRequest, AsyncResponse, Throwable)}ing are both
      * necessary as the handle result.
      */
-    enum ExceptionHandleStatus {
+    enum HandleStatus {
 
         /**
          * The exception has been handled and shouldn't been continue to be used.
@@ -75,7 +75,7 @@ public interface DispatcherExceptionHandler extends Ordered {
          */
         private final boolean retained;
 
-        ExceptionHandleStatus(boolean handled, boolean retained) {
+        HandleStatus(boolean handled, boolean retained) {
             this.handled = handled;
             this.retained = retained;
         }

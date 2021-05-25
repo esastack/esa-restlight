@@ -119,7 +119,7 @@ public class DefaultDispatcherHandler implements DispatcherHandler {
         if (!response.isCommitted()) {
             if (dispatchException != null) {
 
-                DispatcherExceptionHandler.ExceptionHandleStatus handleStatus = null;
+                DispatcherExceptionHandler.HandleStatus handleStatus = null;
                 for (DispatcherExceptionHandler exceptionHandler : dispatcherExceptionHandlers) {
                     try {
                         handleStatus = exceptionHandler.handleException(request, response, dispatchException);

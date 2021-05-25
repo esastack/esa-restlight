@@ -42,5 +42,10 @@ public class DefaultValidatorFactory implements ValidatorFactory {
                     .buildValidatorFactory().getValidator());
         }
     }
+
+    @Override
+    public int getOrder() {
+        return LOWEST_PRECEDENCE;
+    }
 }
 

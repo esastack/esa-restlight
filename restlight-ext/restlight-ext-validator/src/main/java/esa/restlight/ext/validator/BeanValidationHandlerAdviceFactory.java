@@ -24,6 +24,7 @@ import esa.restlight.core.handler.Handler;
 import esa.restlight.core.handler.HandlerAdvice;
 import esa.restlight.core.spi.HandlerAdviceFactory;
 import esa.restlight.core.util.Constants;
+import esa.restlight.core.util.OrderedComparator;
 
 import javax.validation.Validator;
 import javax.validation.metadata.MethodDescriptor;
@@ -77,7 +78,16 @@ public class BeanValidationHandlerAdviceFactory implements HandlerAdviceFactory 
         if (factories.isEmpty()) {
             return Optional.empty();
         } else {
-            return factories.iterator().next().validator(ctx);
+            OrderedComparator.sort(factories);
+
+            Optional<Validator> validator;
+            for (ValidatorFactory factory : factories) {
+                validator = factory.validator(ctx);
+                if (validator.isPresent()) {
+                    return validator;
+                }
+            }
+            return Optional.empty();
         }
     }
 }

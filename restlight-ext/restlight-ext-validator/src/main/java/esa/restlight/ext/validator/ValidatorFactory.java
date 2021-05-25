@@ -18,6 +18,7 @@ package esa.restlight.ext.validator;
 import esa.commons.spi.SPI;
 import esa.restlight.core.DeployContext;
 import esa.restlight.core.config.RestlightOptions;
+import esa.restlight.core.util.Ordered;
 
 import javax.validation.Validator;
 import java.util.Optional;
@@ -26,7 +27,7 @@ import java.util.Optional;
  * The factory to create {@link Validator}.
  */
 @SPI
-public interface ValidatorFactory {
+public interface ValidatorFactory extends Ordered {
 
     /**
      * Creates a {@link Validator} by given {@link DeployContext}.

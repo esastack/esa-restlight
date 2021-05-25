@@ -32,7 +32,7 @@ import static esa.restlight.server.util.ErrorDetail.sendErrorResult;
 public class ValidationExceptionHandler implements DispatcherExceptionHandler {
 
     @Override
-    public ExceptionHandleStatus handleException(AsyncRequest request, AsyncResponse response, Throwable throwable) {
+    public HandleStatus handleException(AsyncRequest request, AsyncResponse response, Throwable throwable) {
         if (throwable instanceof ConstraintViolationException) {
             //400 bad request
 
@@ -43,19 +43,19 @@ public class ValidationExceptionHandler implements DispatcherExceptionHandler {
             } else {
 
                 final StringBuilder sb = InternalThreadLocalMap.get().stringBuilder();
-                for (ConstraintViolation c : cs) {
+                for (ConstraintViolation<?> c : cs) {
                     sb.append("{property='").append(c.getPropertyPath()).append('\'');
                     sb.append(",invalidValue='").append(c.getInvalidValue()).append('\'');
-                    sb.append(",message='").append(c.getMessage()).append("\'}");
+                    sb.append(",message='").append(c.getMessage()).append("'}");
                 }
                 sb.append('}');
 
                 sendErrorResult(request, response, sb.toString(), HttpResponseStatus.BAD_REQUEST);
             }
-            return ExceptionHandleStatus.HANDLED_RETAINED;
+            return HandleStatus.HANDLED_RETAINED;
         }
 
-        return ExceptionHandleStatus.UNHANDLED_RETAINED;
+        return HandleStatus.UNHANDLED_RETAINED;
     }
 
     @Override

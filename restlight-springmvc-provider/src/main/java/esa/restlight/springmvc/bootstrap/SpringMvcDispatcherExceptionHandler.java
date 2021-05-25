@@ -35,10 +35,10 @@ public class SpringMvcDispatcherExceptionHandler implements DispatcherExceptionH
             LoggerFactory.getLogger(SpringMvcDispatcherExceptionHandler.class);
 
     @Override
-    public ExceptionHandleStatus handleException(AsyncRequest request, AsyncResponse response, Throwable throwable) {
+    public HandleStatus handleException(AsyncRequest request, AsyncResponse response, Throwable throwable) {
         final HttpResponseStatus status = ResponseStatusUtils.getCustomResponse(throwable);
         if (status == null) {
-            return ExceptionHandleStatus.UNHANDLED_RETAINED;
+            return HandleStatus.UNHANDLED_RETAINED;
         }
 
         response.setHeader(HttpHeaderNames.CONTENT_TYPE, MediaType.TEXT_PLAIN.value());
@@ -47,7 +47,7 @@ public class SpringMvcDispatcherExceptionHandler implements DispatcherExceptionH
         logger.error("Error occurred when doing request(url={}, method={})",
                 request.path(), request.method(), throwable);
 
-        return ExceptionHandleStatus.HANDLED_CLEAN;
+        return HandleStatus.HANDLED_CLEAN;
     }
 
     @Override

@@ -27,9 +27,9 @@ import static esa.restlight.server.util.ErrorDetail.sendErrorResult;
 public class DefaultDispatcherExceptionHandler implements DispatcherExceptionHandler {
 
     @Override
-    public ExceptionHandleStatus handleException(AsyncRequest request,
-                                                 AsyncResponse response,
-                                                 Throwable throwable) {
+    public HandleStatus handleException(AsyncRequest request,
+                                        AsyncResponse response,
+                                        Throwable throwable) {
         final HttpResponseStatus status;
         if (throwable instanceof WebServerException) {
             //400 bad request
@@ -41,7 +41,7 @@ public class DefaultDispatcherExceptionHandler implements DispatcherExceptionHan
         }
 
         sendErrorResult(request, response, throwable, status);
-        return ExceptionHandleStatus.HANDLED_RETAINED;
+        return HandleStatus.HANDLED_RETAINED;
     }
 
     @Override
