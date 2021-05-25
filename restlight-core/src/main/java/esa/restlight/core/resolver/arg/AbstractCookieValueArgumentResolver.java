@@ -24,7 +24,6 @@ import esa.restlight.core.serialize.HttpRequestSerializer;
 import esa.restlight.core.util.ConverterUtils;
 import io.netty.handler.codec.http.cookie.Cookie;
 
-import javax.jws.Oneway;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
