@@ -65,19 +65,6 @@ public interface DispatcherHandler {
                  Route route);
 
     /**
-     * Handle for unexpected error.
-     *
-     * @param request  request
-     * @param response response
-     * @param error    error
-     * @param promise  promise
-     */
-    void handleUnexpectedError(AsyncRequest request,
-                               AsyncResponse response,
-                               Throwable error,
-                               CompletableFuture<Void> promise);
-
-    /**
      * Handle the biz task rejected.
      *
      * @param task   task

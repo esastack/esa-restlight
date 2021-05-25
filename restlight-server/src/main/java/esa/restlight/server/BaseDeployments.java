@@ -20,6 +20,8 @@ import esa.commons.StringUtils;
 import esa.commons.annotation.Beta;
 import esa.commons.spi.SpiLoader;
 import esa.restlight.core.util.Constants;
+import esa.restlight.core.util.OrderedComparator;
+import esa.restlight.server.bootstrap.DispatcherExceptionHandler;
 import esa.restlight.server.bootstrap.DispatcherHandler;
 import esa.restlight.server.bootstrap.RestlightThreadFactory;
 import esa.restlight.server.config.BizThreadsOptions;
@@ -35,10 +37,12 @@ import esa.restlight.server.schedule.RequestTaskHook;
 import esa.restlight.server.schedule.ScheduledRestlightHandler;
 import esa.restlight.server.schedule.Scheduler;
 import esa.restlight.server.schedule.Schedulers;
+import esa.restlight.server.spi.DispatcherExceptionHandlerFactory;
 import esa.restlight.server.spi.DispatcherHandlerFactory;
 import esa.restlight.server.spi.RequestTaskHookFactory;
 import esa.restlight.server.util.LoggerUtils;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -243,16 +247,29 @@ public class BaseDeployments<R extends BaseRestlightServer<R, D, O>, D extends B
         // register routes
         registerRoutes(routeRegistry);
         ctx().setRegistry(routeRegistry.toReadOnly());
-        // load DispatcherHandler by spi
-        List<DispatcherHandlerFactory> factories = SpiLoader.cached(DispatcherHandlerFactory.class)
+
+        // load DispatcherExceptionHandler by spi
+        List<DispatcherExceptionHandlerFactory> exHandlerFactories =
+                SpiLoader.cached(DispatcherExceptionHandlerFactory.class)
                 .getByFeature(restlight.name(),
                         true,
                         Collections.singletonMap(Constants.INTERNAL, StringUtils.empty()),
                         false);
-        Checks.checkNotEmptyState(factories, "factories");
-        final DispatcherHandler dispatcherHandler =
-                factories.iterator().next().dispatcherHandler(ctx());
+        Checks.checkNotEmptyState(exHandlerFactories, "exHandlerFactories");
+        final List<DispatcherExceptionHandler> exceptionHandlers = new ArrayList<>(3);
+        exHandlerFactories.forEach(factory -> factory.exceptionHandler(ctx).ifPresent(exceptionHandlers::add));
+        OrderedComparator.sort(exceptionHandlers);
+        ctx().setDispatcherExceptionHandlers(exceptionHandlers);
 
+        // load DispatcherHandler by spi
+        List<DispatcherHandlerFactory> handlerFactories = SpiLoader.cached(DispatcherHandlerFactory.class)
+                .getByFeature(restlight.name(),
+                        true,
+                        Collections.singletonMap(Constants.INTERNAL, StringUtils.empty()),
+                        false);
+        Checks.checkNotEmptyState(handlerFactories, "handlerFactories");
+        final DispatcherHandler dispatcherHandler =
+                handlerFactories.iterator().next().dispatcherHandler(ctx());
         ctx().setDispatcherHandler(dispatcherHandler);
 
         // load RequestTaskHookFactory by spi

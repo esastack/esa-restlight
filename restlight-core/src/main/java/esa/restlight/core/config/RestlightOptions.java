@@ -26,15 +26,18 @@ public class RestlightOptions extends ServerOptions {
     private static final long serialVersionUID = 832630904487958795L;
 
     private String contextPath;
+    @Deprecated
     private String validationMessageFile;
     private SerializesOptions serialize
             = SerializesOptionsConfigure.defaultOpts();
     private Map<String, String> ext = new LinkedHashMap<>();
 
+    @Deprecated
     public String getValidationMessageFile() {
         return validationMessageFile;
     }
 
+    @Deprecated
     public void setValidationMessageFile(String validationMessageFile) {
         this.validationMessageFile = validationMessageFile;
     }

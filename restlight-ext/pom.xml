@@ -34,5 +34,7 @@
         <module>restlight-ext-filter-starter</module>
         <module>restlight-ext-all</module>
         <module>restlight-ext-starter</module>
+        <module>restlight-ext-validator</module>
+        <module>restlight-ext-validator-starter</module>
     </modules>
 </project>

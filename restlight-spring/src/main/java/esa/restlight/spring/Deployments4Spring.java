@@ -45,6 +45,7 @@ import esa.restlight.core.spi.ArgumentResolverProvider;
 import esa.restlight.core.spi.ReturnValueResolverProvider;
 import esa.restlight.core.spi.impl.JacksonDefaultSerializerFactory;
 import esa.restlight.core.util.Constants;
+import esa.restlight.core.util.OrderedComparator;
 import esa.restlight.server.route.Route;
 import esa.restlight.server.schedule.RequestTaskHook;
 import esa.restlight.server.schedule.Scheduler;
@@ -52,14 +53,16 @@ import esa.restlight.server.spi.RequestTaskHookFactory;
 import esa.restlight.spring.serialize.GsonHttpBodySerializerAdapter;
 import esa.restlight.spring.spi.AdviceLocator;
 import esa.restlight.spring.spi.ControllerLocator;
+import esa.restlight.spring.util.DeployContextConfigure;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.context.ApplicationContext;
 
-import javax.validation.Validator;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -71,12 +74,15 @@ public class Deployments4Spring<R extends AbstractRestlight4Spring<R, D, O>, D e
         O extends RestlightOptions>
         extends Deployments<R, D, O> {
 
+    final List<DeployContextConfigure> contextConfigures = new LinkedList<>();
+
     protected Deployments4Spring(R restlight, ApplicationContext context, O options) {
         super(restlight, options);
         autoConfigureFromSpringContext(context);
     }
 
     void autoConfigureFromSpringContext(ApplicationContext context) {
+        configureContextConfigures(context);
         configureSchedulers(context);
         configureRequestTaskHooks(context);
         configureRoutes(context);
@@ -87,7 +93,14 @@ public class Deployments4Spring<R extends AbstractRestlight4Spring<R, D, O>, D e
         configureSerializers(context);
         configureExceptionResolvers(context);
         configureInterceptors(context);
-        configureValidator(context);
+    }
+
+    private void configureContextConfigures(ApplicationContext context) {
+        Map<String, DeployContextConfigure> configures = beansOfType(context, DeployContextConfigure.class);
+        if (!configures.isEmpty()) {
+            contextConfigures.addAll(configures.values());
+            OrderedComparator.sort(contextConfigures);
+        }
     }
 
     private void configureSchedulers(ApplicationContext context) {
@@ -243,11 +256,6 @@ public class Deployments4Spring<R extends AbstractRestlight4Spring<R, D, O>, D e
         addRouteInterceptors(beansOfType(context, RouteInterceptor.class).values());
         addInterceptors(beansOfType(context, Interceptor.class).values());
         addInterceptorFactories(beansOfType(context, InterceptorFactory.class).values());
-    }
-
-    private void configureValidator(ApplicationContext context) {
-        // auto inject validator
-        beanOfType(context, Validator.class).ifPresent(this::validator);
     }
 
     private void configureExceptionResolvers(ApplicationContext context) {

@@ -33,6 +33,7 @@ import esa.restlight.core.serialize.JacksonHttpBodySerializer;
 import esa.restlight.core.util.Constants;
 import esa.restlight.jaxrs.ResolverUtils;
 import esa.restlight.jaxrs.util.JaxrsMappingUtils;
+import esa.restlight.server.bootstrap.DispatcherExceptionHandler;
 import esa.restlight.server.bootstrap.DispatcherHandler;
 import esa.restlight.server.route.ReadOnlyRouteRegistry;
 import esa.restlight.server.route.predicate.PatternsPredicate;
@@ -42,11 +43,23 @@ import esa.restlight.test.mock.MockAsyncResponse;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import javax.validation.Validator;
-import javax.ws.rs.*;
-import java.util.*;
+import javax.ws.rs.BeanParam;
+import javax.ws.rs.CookieParam;
+import javax.ws.rs.GET;
+import javax.ws.rs.HeaderParam;
+import javax.ws.rs.MatrixParam;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.QueryParam;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class BeanParamArgumentResolverTest {
 
@@ -136,11 +149,6 @@ class BeanParamArgumentResolverTest {
         }
 
         @Override
-        public Optional<Validator> validator() {
-            return Optional.empty();
-        }
-
-        @Override
         public Optional<HandlerResolverFactory> resolverFactory() {
             return Optional.of(new HandlerResolverFactoryImpl(
                     Collections.singletonList(new JacksonHttpBodySerializer()),
@@ -207,6 +215,11 @@ class BeanParamArgumentResolverTest {
         @Override
         public void attribute(String key, Object value) {
 
+        }
+
+        @Override
+        public Optional<List<DispatcherExceptionHandler>> dispatcherExceptionHandlers() {
+            return Optional.empty();
         }
 
         @Override

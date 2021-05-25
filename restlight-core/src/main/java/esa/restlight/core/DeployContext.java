@@ -25,7 +25,6 @@ import esa.restlight.core.resolver.exception.ExceptionMapper;
 import esa.restlight.core.resolver.exception.ExceptionResolverFactory;
 import esa.restlight.server.ServerDeployContext;
 
-import javax.validation.Validator;
 import java.util.List;
 import java.util.Optional;
 
@@ -67,13 +66,6 @@ public interface DeployContext<O extends RestlightOptions> extends ServerDeployC
      * @return optional value
      */
     Optional<List<ExceptionMapper>> exceptionMappers();
-
-    /**
-     * Gets the {@link Validator}. It should be instantiate before server is about to starting and initializing.
-     *
-     * @return optional value
-     */
-    Optional<Validator> validator();
 
     /**
      * Gets the instance of {@link HandlerResolverFactory}. It should be instantiate when server is about to starting

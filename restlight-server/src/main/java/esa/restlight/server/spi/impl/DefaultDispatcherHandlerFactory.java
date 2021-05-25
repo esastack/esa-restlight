@@ -23,10 +23,13 @@ import esa.restlight.server.bootstrap.DispatcherHandler;
 import esa.restlight.server.config.ServerOptions;
 import esa.restlight.server.spi.DispatcherHandlerFactory;
 
+import java.util.Collections;
+
 @Feature(tags = Constants.INTERNAL)
 public class DefaultDispatcherHandlerFactory implements DispatcherHandlerFactory {
     @Override
     public DispatcherHandler dispatcherHandler(ServerDeployContext<? extends ServerOptions> context) {
-        return new DefaultDispatcherHandler(context.routeRegistry().orElse(null));
+        return new DefaultDispatcherHandler(context.routeRegistry().orElse(null),
+                context.dispatcherExceptionHandlers().orElse(Collections.emptyList()));
     }
 }

@@ -16,6 +16,7 @@
 package esa.restlight.server;
 
 import esa.commons.Checks;
+import esa.restlight.server.bootstrap.DispatcherExceptionHandler;
 import esa.restlight.server.bootstrap.DispatcherHandler;
 import esa.restlight.server.config.ServerOptions;
 import esa.restlight.server.route.ReadOnlyRouteRegistry;
@@ -23,6 +24,7 @@ import esa.restlight.server.schedule.Scheduler;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
@@ -36,6 +38,7 @@ public class ServerDeployContextImpl<O extends ServerOptions> implements ServerD
     private final Map<String, Scheduler> schedulers = new HashMap<>(16);
     private volatile ReadOnlyRouteRegistry registry;
     private volatile DispatcherHandler dispatcherHandler;
+    private volatile List<DispatcherExceptionHandler> dispatcherExceptionHandlers;
 
     protected ServerDeployContextImpl(String name, O options) {
         Checks.checkNotNull(options, "name");
@@ -70,6 +73,11 @@ public class ServerDeployContextImpl<O extends ServerOptions> implements ServerD
     }
 
     @Override
+    public Optional<List<DispatcherExceptionHandler>> dispatcherExceptionHandlers() {
+        return Optional.of(Collections.unmodifiableList(dispatcherExceptionHandlers));
+    }
+
+    @Override
     public void attribute(String key, Object value) {
         attributes.put(key, value);
     }
@@ -94,5 +102,9 @@ public class ServerDeployContextImpl<O extends ServerOptions> implements ServerD
 
     void setDispatcherHandler(DispatcherHandler dispatcherHandler) {
         this.dispatcherHandler = dispatcherHandler;
+    }
+
+    void setDispatcherExceptionHandlers(List<DispatcherExceptionHandler> dispatcherExceptionHandlers) {
+        this.dispatcherExceptionHandlers = dispatcherExceptionHandlers;
     }
 }

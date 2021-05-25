@@ -15,11 +15,13 @@
  */
 package esa.restlight.server;
 
+import esa.restlight.server.bootstrap.DispatcherExceptionHandler;
 import esa.restlight.server.bootstrap.DispatcherHandler;
 import esa.restlight.server.config.ServerOptions;
 import esa.restlight.server.route.ReadOnlyRouteRegistry;
 import esa.restlight.server.schedule.Scheduler;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -68,6 +70,14 @@ public interface ServerDeployContext<O extends ServerOptions> {
      * @return optional value
      */
     Optional<DispatcherHandler> dispatcherHandler();
+
+    /**
+     * Gets the instance of {@link DispatcherExceptionHandler}. It should be instantiate when server is
+     * about to starting and initializing.
+     *
+     * @return optional value
+     */
+    Optional<List<DispatcherExceptionHandler>> dispatcherExceptionHandlers();
 
     /**
      * Stores an attribute in this context.
