@@ -14,7 +14,8 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>io.esastack</groupId>
@@ -122,12 +123,12 @@
         <encoding>UTF-8</encoding>
         <project.build.sourceEncoding>${encoding}</project.build.sourceEncoding>
         <project.reporting.outputEncoding>${encoding}</project.reporting.outputEncoding>
-        <esa-commons.version>0.1.0</esa-commons.version>
+        <esa-commons.version>0.1.1</esa-commons.version>
         <esa-httpserver.version>0.1.0</esa-httpserver.version>
         <guava.version>29.0-jre</guava.version>
         <spring-boot.version>2.1.2.RELEASE</spring-boot.version>
         <spring-core.version>5.1.4.RELEASE</spring-core.version>
-        <netty4.version>4.1.52.Final</netty4.version>
+        <netty4.version>4.1.56.Final</netty4.version>
         <netty-tcnative.version>2.0.34.Final</netty-tcnative.version>
         <jzlib.version>1.1.3</jzlib.version>
         <fastjson.version>1.2.73</fastjson.version>
@@ -192,6 +193,23 @@
                 <groupId>io.esastack</groupId>
                 <artifactId>commons</artifactId>
                 <version>${esa-commons.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.esastack</groupId>
+                <artifactId>commons-http</artifactId>
+                <version>${esa-commons.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.esastack</groupId>
+                <artifactId>commons-netty-http</artifactId>
+                <version>${esa-commons.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.netty</groupId>
+                <artifactId>netty-bom</artifactId>
+                <version>${netty4.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
             </dependency>
             <dependency>
                 <groupId>io.netty</groupId>
@@ -386,7 +404,7 @@
             </plugin>
         </plugins>
     </build>
-  
+
     <repositories>
         <repository>
             <id>ossrh</id>
