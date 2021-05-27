@@ -25,6 +25,10 @@ Restlight is a lightweight and rest-oriented web framework.
 
 Create a Spring Boot application and add dependency
 
+> **Note：`netty` 4.1.52.Final and `tcnative` 2.0.34.Final are directly dependent on.**
+
+> **Note: Please make sure the version of `tcnative` matches the version of `netty`.**
+ 
 ```xml
 <dependency>
     <groupId>io.esastack</groupId>

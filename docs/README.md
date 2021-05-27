@@ -23,6 +23,8 @@ In microservices, it is generally expected that service is a lightweight applica
 | ----------- | -------------- |
 | Java        | JDK8+          |
 | Spring Boot | 2.1.0.RELEASE+ |
+| Netty       | 4.1.52.Final+  |
+| Tcnative    | 2.0.34.Final+ and matches with Netty|
 
 ## Features
 
