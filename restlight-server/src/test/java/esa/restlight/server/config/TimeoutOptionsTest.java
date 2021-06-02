@@ -20,24 +20,24 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 
-class FailFastOptionsTest {
+class TimeoutOptionsTest {
 
     @Test
     void testConfigure() {
-        final FailFastOptions options = FailFastOptionsConfigure.newOpts()
-                .timeoutMillis(100L)
-                .timeoutType(FailFastOptions.TimeoutType.TTFB)
+        final TimeoutOptions options = TimeoutOptionsConfigure.newOpts()
+                .millisTime(100L)
+                .type(TimeoutOptions.Type.TTFB)
                 .configured();
 
-        assertEquals(100L, options.getTimeoutMillis());
-        assertSame(FailFastOptions.TimeoutType.TTFB, options.getTimeoutType());
+        assertEquals(100L, options.getMillisTime());
+        assertSame(TimeoutOptions.Type.TTFB, options.getType());
     }
 
     @Test
     void testDefaultOpts() {
-        final FailFastOptions options = FailFastOptionsConfigure.defaultOpts();
-        assertEquals(-1L, options.getTimeoutMillis());
-        assertSame(FailFastOptions.TimeoutType.QUEUED, options.getTimeoutType());
+        final TimeoutOptions options = TimeoutOptionsConfigure.defaultOpts();
+        assertEquals(-1L, options.getMillisTime());
+        assertSame(TimeoutOptions.Type.QUEUED, options.getType());
     }
 
 }

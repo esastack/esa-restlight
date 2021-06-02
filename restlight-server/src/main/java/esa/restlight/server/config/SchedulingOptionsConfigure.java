@@ -25,7 +25,7 @@ public final class SchedulingOptionsConfigure {
     private String defaultScheduler
             = Schedulers.BIZ;
 
-    private Map<String, FailFastOptions> failFastOptions = new HashMap<>(1);
+    private Map<String, TimeoutOptions> timeout = new HashMap<>(1);
 
     private SchedulingOptionsConfigure() {
     }
@@ -43,15 +43,15 @@ public final class SchedulingOptionsConfigure {
         return this;
     }
 
-    public SchedulingOptionsConfigure failFastOptions(Map<String, FailFastOptions> failFastOptions) {
-        this.failFastOptions = failFastOptions;
+    public SchedulingOptionsConfigure timeout(Map<String, TimeoutOptions> timeout) {
+        this.timeout = timeout;
         return this;
     }
 
     public SchedulingOptions configured() {
         SchedulingOptions schedulingOptions = new SchedulingOptions();
         schedulingOptions.setDefaultScheduler(defaultScheduler);
-        schedulingOptions.setFailFastOptions(failFastOptions);
+        schedulingOptions.setTimeout(timeout);
         return schedulingOptions;
     }
 }

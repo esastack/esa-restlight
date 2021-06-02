@@ -17,40 +17,40 @@ package esa.restlight.server.config;
 
 import java.io.Serializable;
 
-public class FailFastOptions implements Serializable {
+public class TimeoutOptions implements Serializable {
 
     private static final long serialVersionUID = 5509354808610167580L;
 
-    public enum TimeoutType {
+    public enum Type {
         TTFB,
 
         QUEUED
     }
 
-    private long timeoutMillis = -1L;
-    private TimeoutType timeoutType = TimeoutType.QUEUED;
+    private long millisTime = -1L;
+    private Type type = Type.QUEUED;
 
-    public long getTimeoutMillis() {
-        return timeoutMillis;
+    public long getMillisTime() {
+        return millisTime;
     }
 
-    public void setTimeoutMillis(long timeoutMillis) {
-        this.timeoutMillis = timeoutMillis;
+    public void setMillisTime(long millisTime) {
+        this.millisTime = millisTime;
     }
 
-    public TimeoutType getTimeoutType() {
-        return timeoutType;
+    public Type getType() {
+        return type;
     }
 
-    public void setTimeoutType(TimeoutType timeoutType) {
-        this.timeoutType = timeoutType;
+    public void setType(Type type) {
+        this.type = type;
     }
 
     @Override
     public String toString() {
-        final StringBuilder sb = new StringBuilder("FailFastOptions{");
-        sb.append("timeoutMillis=").append(timeoutMillis);
-        sb.append(", timeoutType='").append(timeoutType).append('\'');
+        final StringBuilder sb = new StringBuilder("TimeoutOptions{");
+        sb.append("millisTime=").append(millisTime);
+        sb.append(", type=").append(type);
         sb.append('}');
         return sb.toString();
     }

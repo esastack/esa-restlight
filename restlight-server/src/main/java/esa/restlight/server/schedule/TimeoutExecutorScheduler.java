@@ -15,22 +15,40 @@
  */
 package esa.restlight.server.schedule;
 
-import esa.restlight.server.config.FailFastOptions;
+import esa.commons.Checks;
 
 import java.util.concurrent.Executor;
 
-public class FailFastExecutorScheduler extends FailFastScheduler implements ExecutorScheduler {
+class TimeoutExecutorScheduler implements ExecutorScheduler {
 
-    private final ExecutorScheduler scheduler;
+    private final TimeoutScheduler scheduler;
+    private final Executor executor;
 
-    public FailFastExecutorScheduler(ExecutorScheduler scheduler, FailFastOptions failFastOptions) {
-        super(scheduler, failFastOptions);
+    TimeoutExecutorScheduler(TimeoutScheduler scheduler, Executor executor) {
+        Checks.checkNotNull(scheduler, "scheduler");
+        Checks.checkNotNull(executor, "executor");
         this.scheduler = scheduler;
+        this.executor = executor;
+    }
+
+    @Override
+    public String name() {
+        return scheduler.name();
+    }
+
+    @Override
+    public void schedule(Runnable cmd) {
+        scheduler.schedule(cmd);
+    }
+
+    @Override
+    public void shutdown() {
+        scheduler.shutdown();
     }
 
     @Override
     public Executor executor() {
-        return scheduler.executor();
+        return executor;
     }
 }
 

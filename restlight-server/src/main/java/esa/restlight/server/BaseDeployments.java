@@ -25,16 +25,14 @@ import esa.restlight.server.bootstrap.DispatcherExceptionHandler;
 import esa.restlight.server.bootstrap.DispatcherHandler;
 import esa.restlight.server.bootstrap.RestlightThreadFactory;
 import esa.restlight.server.config.BizThreadsOptions;
-import esa.restlight.server.config.FailFastOptions;
 import esa.restlight.server.config.ServerOptions;
+import esa.restlight.server.config.TimeoutOptions;
 import esa.restlight.server.handler.RestlightHandler;
 import esa.restlight.server.route.Route;
 import esa.restlight.server.route.RouteRegistry;
 import esa.restlight.server.route.impl.CachedRouteRegistry;
 import esa.restlight.server.route.impl.SimpleRouteRegistry;
 import esa.restlight.server.schedule.ExecutorScheduler;
-import esa.restlight.server.schedule.FailFastExecutorScheduler;
-import esa.restlight.server.schedule.FailFastScheduler;
 import esa.restlight.server.schedule.RequestTask;
 import esa.restlight.server.schedule.RequestTaskHook;
 import esa.restlight.server.schedule.ScheduledRestlightHandler;
@@ -213,17 +211,9 @@ public class BaseDeployments<R extends BaseRestlightServer<R, D, O>, D extends B
             }
         }
 
-        // config by failFast options
-        FailFastOptions failFastOption;
-        if (scheduler instanceof FailFastScheduler
-                || (failFastOption = ctx().options().getScheduling().getFailFastOptions()
-                .get(scheduler.name())) == null) {
-            return scheduler;
-        } else {
-            return scheduler instanceof ExecutorScheduler
-                    ? new FailFastExecutorScheduler((ExecutorScheduler) scheduler, failFastOption)
-                    : new FailFastScheduler(scheduler, failFastOption);
-        }
+        // config by timeout options
+        TimeoutOptions timeoutOptions = ctx().options().getScheduling().getTimeout().get(scheduler.name());
+        return Schedulers.wrapped(scheduler, timeoutOptions);
     }
 
     public ServerDeployContext<O> deployContext() {

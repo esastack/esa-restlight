@@ -21,32 +21,29 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class SchedulingOptionsTest {
 
     @Test
     void testConfigure() {
-        final Map<String, FailFastOptions> failFastOptions = new HashMap<>(1);
-        failFastOptions.put("A", FailFastOptionsConfigure.defaultOpts());
+        final Map<String, TimeoutOptions> timeoutOptions = new HashMap<>(1);
+        timeoutOptions.put("A", TimeoutOptionsConfigure.defaultOpts());
 
         final SchedulingOptions options = SchedulingOptionsConfigure.newOpts()
                 .defaultScheduler("foo")
-                .failFastOptions(failFastOptions)
+                .timeout(timeoutOptions)
                 .configured();
 
         assertEquals("foo", options.getDefaultScheduler());
-        assertEquals(1, options.getFailFastOptions().size());
-        assertThrows(UnsupportedOperationException.class,
-                () -> options.getFailFastOptions().put("A", FailFastOptionsConfigure.defaultOpts()));
+        assertEquals(1, options.getTimeout().size());
     }
 
     @Test
     void testDefaultOpts() {
         assertEquals(new SchedulingOptions().getDefaultScheduler(),
                 SchedulingOptionsConfigure.defaultOpts().getDefaultScheduler());
-        assertTrue(new SchedulingOptions().getFailFastOptions().isEmpty());
+        assertTrue(new SchedulingOptions().getTimeout().isEmpty());
     }
 
 }

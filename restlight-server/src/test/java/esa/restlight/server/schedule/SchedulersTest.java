@@ -15,7 +15,8 @@
  */
 package esa.restlight.server.schedule;
 
-import esa.restlight.server.config.FailFastOptionsConfigure;
+import esa.restlight.server.config.TimeoutOptions;
+import esa.restlight.server.config.TimeoutOptionsConfigure;
 import org.junit.jupiter.api.Test;
 
 import java.util.concurrent.ExecutorService;
@@ -25,6 +26,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class SchedulersTest {
@@ -78,21 +81,86 @@ class SchedulersTest {
     }
 
     @Test
-    void testFromWithFailFast() {
+    void testWrapped() {
         final String name = "foo";
         final ExecutorService e = Executors.newCachedThreadPool();
-        final ExecutorScheduler scheduler = Schedulers.fromExecutor(name, e, null);
-        assertNotNull(scheduler);
-        assertEquals(name, scheduler.name());
-        assertEquals(e, scheduler.executor());
-        assertFalse(scheduler instanceof FailFastScheduler);
-        scheduler.shutdown();
-        assertTrue(e.isShutdown());
+        final ExecutorScheduler scheduler0 = Schedulers.fromExecutor(name, e);
+        final Scheduler wrapped0 = Schedulers.wrapped(scheduler0, null);
+        assertNotNull(wrapped0);
+        assertSame(scheduler0, wrapped0);
 
-        final ExecutorScheduler scheduler1 = Schedulers.fromExecutor("another", e,
-                FailFastOptionsConfigure.newOpts().timeoutMillis(1000L).configured());
-        assertNotNull(scheduler1);
-        assertTrue(scheduler1 instanceof FailFastScheduler);
+        final ExecutorScheduler scheduler1 = Schedulers.fromExecutor(name, e);
+        final Scheduler wrapped1 = Schedulers.wrapped(scheduler1, TimeoutOptionsConfigure.defaultOpts());
+        assertNotNull(wrapped1);
+        assertSame(scheduler1, wrapped1);
+
+        final ExecutorScheduler scheduler2 = Schedulers.fromExecutor(name, e);
+        final Scheduler wrapped2 = Schedulers.wrapped(scheduler2, TimeoutOptionsConfigure
+                .newOpts().type(null).configured());
+        assertNotNull(wrapped2);
+        assertSame(scheduler2, wrapped2);
+
+        // wraps to TimeoutExecutorScheduler
+        final ExecutorScheduler scheduler3 = Schedulers.fromExecutor(name, e);
+        final Scheduler wrapped3 = Schedulers.wrapped(scheduler3, TimeoutOptionsConfigure.newOpts()
+                .millisTime(100L).type(TimeoutOptions.Type.TTFB).configured());
+        assertNotNull(wrapped3);
+        assertNotSame(scheduler3, wrapped3);
+        assertTrue(wrapped3 instanceof TimeoutExecutorScheduler);
+
+        // wraps to TTFBTimeoutScheduler
+        final Scheduler scheduler4 = new Scheduler() {
+            @Override
+            public String name() {
+                return null;
+            }
+
+            @Override
+            public void schedule(Runnable cmd) {
+
+            }
+
+            @Override
+            public void shutdown() {
+
+            }
+        };
+        final Scheduler wrapped4 = Schedulers.wrapped(scheduler4, TimeoutOptionsConfigure.newOpts()
+                .millisTime(100L).type(TimeoutOptions.Type.TTFB).configured());
+        assertNotNull(wrapped4);
+        assertNotSame(scheduler4, wrapped4);
+        assertTrue(wrapped4 instanceof TTFBTimeoutScheduler);
+
+        // wraps to TimeoutExecutorScheduler
+        final ExecutorScheduler scheduler5 = Schedulers.fromExecutor(name, e);
+        final Scheduler wrapped5 = Schedulers.wrapped(scheduler3, TimeoutOptionsConfigure.newOpts()
+                .millisTime(100L).configured());
+        assertNotNull(wrapped5);
+        assertNotSame(scheduler5, wrapped5);
+        assertTrue(wrapped5 instanceof TimeoutExecutorScheduler);
+
+        // wraps to TTFBTimeoutScheduler
+        final Scheduler scheduler6 = new Scheduler() {
+            @Override
+            public String name() {
+                return null;
+            }
+
+            @Override
+            public void schedule(Runnable cmd) {
+
+            }
+
+            @Override
+            public void shutdown() {
+
+            }
+        };
+        final Scheduler wrapped6 = Schedulers.wrapped(scheduler4, TimeoutOptionsConfigure.newOpts()
+                .millisTime(100L).configured());
+        assertNotNull(wrapped6);
+        assertNotSame(scheduler6, wrapped6);
+        assertTrue(wrapped6 instanceof TimeoutScheduler);
     }
 
 }

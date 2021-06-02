@@ -224,9 +224,9 @@
       "defaultValue": "'BIZ'"
     },
     {
-      "name": "restlight.server.scheduling.fail-fast-options",
-      "type": "java.util.Map<java.lang.String,esa.restlight.server.config.FailFastOptions>",
-      "description": "FailFast options map.",
+      "name": "restlight.server.scheduling.timeout",
+      "type": "java.util.Map<java.lang.String,esa.restlight.server.config.TimeoutOptions>",
+      "description": "Timeout options map.",
       "sourceType": "esa.restlight.server.config.SchedulingOptions"
     },
     {

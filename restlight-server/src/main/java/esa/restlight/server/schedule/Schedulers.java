@@ -16,7 +16,7 @@
 package esa.restlight.server.schedule;
 
 import esa.commons.concurrent.DirectExecutor;
-import esa.restlight.server.config.FailFastOptions;
+import esa.restlight.server.config.TimeoutOptions;
 
 import java.util.concurrent.Executor;
 
@@ -81,19 +81,26 @@ public final class Schedulers {
     }
 
     /**
-     * Creates an instance of {@link Scheduler} by given {@code name}, {@code executor} and {@code failFastOptions}.
+     * Wraps the given {@code scheduler} by {@code timeoutOptions}.
      *
-     * @param name  name
-     * @param executor  executor
-     * @param failFastOptions   failFast options
+     * @param scheduler scheduler
+     * @param timeoutOptions    timeout options
      * @return  scheduler
      */
-    public static ExecutorScheduler fromExecutor(String name, Executor executor, FailFastOptions failFastOptions) {
-        ExecutorScheduler scheduler = fromExecutor(name, executor);
-        if (failFastOptions == null) {
+    public static Scheduler wrapped(Scheduler scheduler, TimeoutOptions timeoutOptions) {
+        if (timeoutOptions != null && timeoutOptions.getMillisTime() > 0L && timeoutOptions.getType() != null) {
+            TimeoutScheduler wrapped;
+            if (TimeoutOptions.Type.TTFB == timeoutOptions.getType()) {
+                wrapped = new TTFBTimeoutScheduler(scheduler, timeoutOptions);
+            } else {
+                wrapped = new TimeoutScheduler(scheduler, timeoutOptions);
+            }
+            return scheduler instanceof ExecutorScheduler
+                    ? new TimeoutExecutorScheduler(wrapped, ((ExecutorScheduler) scheduler).executor())
+                    : wrapped;
+        } else {
             return scheduler;
         }
-        return new FailFastExecutorScheduler(scheduler, failFastOptions);
     }
 
     static boolean isIo(Scheduler scheduler) {

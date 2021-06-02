@@ -264,9 +264,9 @@
       "description": "Default Scheduled.Strategy if controller's @Scheduling is missing."
     },
     {
-      "name": "management.server.restlight.scheduling.fail-fast-options",
-      "type": "java.util.Map<java.lang.String,esa.restlight.server.config.FailFastOptions>",
-      "description": "FailFast options map.",
+      "name": "management.server.restlight.scheduling.time-out",
+      "type": "java.util.Map<java.lang.String,esa.restlight.server.config.TimeoutOptions>",
+      "description": "TimeoutOptions options map.",
       "sourceType": "esa.restlight.server.config.SchedulingOptions"
     },
     {

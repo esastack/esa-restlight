@@ -18,9 +18,8 @@ package esa.restlight.server.schedule;
 import esa.commons.Checks;
 import esa.httpserver.core.AsyncRequest;
 import esa.httpserver.core.AsyncResponse;
-import esa.httpserver.utils.Constants;
 import esa.restlight.core.util.MediaType;
-import esa.restlight.server.config.FailFastOptions;
+import esa.restlight.server.config.TimeoutOptions;
 import esa.restlight.server.util.ErrorDetail;
 import esa.restlight.server.util.LoggerUtils;
 import esa.restlight.server.util.PromiseUtils;
@@ -29,37 +28,23 @@ import io.netty.handler.codec.http.HttpResponseStatus;
 
 import java.util.concurrent.CompletableFuture;
 
-public class FailFastScheduler implements Scheduler {
+class TimeoutScheduler implements Scheduler {
 
     private final Scheduler scheduler;
     private final long timeoutMillis;
-    private final boolean ttfb;
-    private final boolean allowed;
 
-    public FailFastScheduler(Scheduler scheduler, FailFastOptions failFastOptions) {
+    TimeoutScheduler(Scheduler scheduler, TimeoutOptions timeoutOptions) {
         Checks.checkNotNull(scheduler, "scheduler");
-        Checks.checkNotNull(failFastOptions, "failFastOptions");
+        Checks.checkNotNull(timeoutOptions, "timeoutOptions");
         this.scheduler = scheduler;
-        this.timeoutMillis = failFastOptions.getTimeoutMillis();
-        this.ttfb = FailFastOptions.TimeoutType.TTFB == failFastOptions.getTimeoutType();
-        this.allowed = timeoutMillis > 0L;
+        this.timeoutMillis = timeoutOptions.getMillisTime();
     }
 
     @Override
     public void schedule(Runnable command) {
-        if (command instanceof RequestTask && allowed) {
-            long startTime;
-            if (ttfb) {
-                startTime = ((RequestTask) command).request().getUncheckedAttribute(Constants.TTFB.toString());
-            } else {
-                startTime = System.currentTimeMillis();
-            }
-
-            // make sure startTime is an positive number.
-            if (startTime <= 0L) {
-                startTime = System.currentTimeMillis();
-            }
-            scheduler.schedule(new FailFastRequestTask(((RequestTask) command), startTime, timeoutMillis));
+        if (command instanceof RequestTask) {
+            schedule0(new TimeoutRequestTask(((RequestTask) command), name(),
+                    getStartTime((RequestTask) command), timeoutMillis));
         } else {
             scheduler.schedule(command);
         }
@@ -75,15 +60,24 @@ public class FailFastScheduler implements Scheduler {
         scheduler.shutdown();
     }
 
-    private static final class FailFastRequestTask implements RequestTask {
+    long getStartTime(RequestTask task) {
+        return System.currentTimeMillis();
+    }
 
+    void schedule0(TimeoutRequestTask task) {
+        scheduler.schedule(task);
+    }
+
+    static final class TimeoutRequestTask implements RequestTask {
+
+        final long startTime;
+        final String schedulerName;
+        final long timeout;
         private final RequestTask delegate;
-        private final long startTime;
-        private final long timeout;
 
-        private FailFastRequestTask(RequestTask delegate, long startTime, long timeout) {
-            Checks.checkNotNull(delegate, "delegate");
+        private TimeoutRequestTask(RequestTask delegate, String schedulerName, long startTime, long timeout) {
             this.delegate = delegate;
+            this.schedulerName = schedulerName;
             this.startTime = startTime;
             this.timeout = timeout;
         }
@@ -109,25 +103,26 @@ public class FailFastScheduler implements Scheduler {
             if ((actualCost = System.currentTimeMillis() - startTime) < timeout) {
                 delegate.run();
             } else {
-                failFast(delegate, timeout);
-                LoggerUtils.logger().warn("Request(url = {}, method={}) has been rejected before submitting" +
-                                " request task: Out of failFast({}ms), actual costs: {}ms",
+                failFast();
+                LoggerUtils.logger().warn("Request(url = {}, method={}) has been rejected before execution: " +
+                                "Out of scheduler({}) timeout ({}ms), actual costs: {}ms",
                         delegate.request().path(),
                         delegate.request().rawMethod(),
+                        schedulerName,
                         timeout,
                         actualCost);
             }
         }
 
-        private static void failFast(RequestTask requestTask, long timeout) {
-            final byte[] errorInfo = ErrorDetail.buildErrorMsg(requestTask.request().path(),
-                    "Out of Request failFast(" + timeout + ")ms",
+        void failFast() {
+            final byte[] errorInfo = ErrorDetail.buildErrorMsg(delegate.request().path(),
+                    "Out of scheduler(" + schedulerName + ") timeout(" + timeout + ")ms",
                     HttpResponseStatus.INTERNAL_SERVER_ERROR.reasonPhrase(),
                     HttpResponseStatus.INTERNAL_SERVER_ERROR.code());
 
-            requestTask.response().setHeader(HttpHeaderNames.CONTENT_TYPE, MediaType.TEXT_PLAIN.value());
-            requestTask.response().sendResult(HttpResponseStatus.INTERNAL_SERVER_ERROR.code(), errorInfo);
-            PromiseUtils.setSuccess(requestTask.promise());
+            delegate.response().setHeader(HttpHeaderNames.CONTENT_TYPE, MediaType.TEXT_PLAIN.value());
+            delegate.response().sendResult(HttpResponseStatus.INTERNAL_SERVER_ERROR.code(), errorInfo);
+            PromiseUtils.setSuccess(delegate.promise());
         }
 
     }
