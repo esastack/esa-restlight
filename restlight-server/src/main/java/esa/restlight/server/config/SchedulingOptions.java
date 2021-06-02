@@ -18,6 +18,8 @@ package esa.restlight.server.config;
 import esa.restlight.server.schedule.Schedulers;
 
 import java.io.Serializable;
+import java.util.Collections;
+import java.util.Map;
 
 public class SchedulingOptions implements Serializable {
 
@@ -25,6 +27,8 @@ public class SchedulingOptions implements Serializable {
 
     private String defaultScheduler
             = Schedulers.BIZ;
+
+    private Map<String, FailFastOptions> failFastOptions;
 
     public String getDefaultScheduler() {
         return defaultScheduler;
@@ -34,10 +38,22 @@ public class SchedulingOptions implements Serializable {
         this.defaultScheduler = defaultScheduler;
     }
 
+    public Map<String, FailFastOptions> getFailFastOptions() {
+        if (failFastOptions == null) {
+            return Collections.emptyMap();
+        }
+        return Collections.unmodifiableMap(failFastOptions);
+    }
+
+    public void setFailFastOptions(Map<String, FailFastOptions> failFastOptions) {
+        this.failFastOptions = failFastOptions;
+    }
+
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("SchedulingOptions{");
-        sb.append("defaultScheduler=").append(defaultScheduler);
+        sb.append("defaultScheduler='").append(defaultScheduler).append('\'');
+        sb.append(", failFastOptions=").append(failFastOptions);
         sb.append('}');
         return sb.toString();
     }

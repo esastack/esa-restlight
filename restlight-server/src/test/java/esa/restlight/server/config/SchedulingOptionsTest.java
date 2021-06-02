@@ -17,23 +17,36 @@ package esa.restlight.server.config;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class SchedulingOptionsTest {
 
     @Test
     void testConfigure() {
+        final Map<String, FailFastOptions> failFastOptions = new HashMap<>(1);
+        failFastOptions.put("A", FailFastOptionsConfigure.defaultOpts());
+
         final SchedulingOptions options = SchedulingOptionsConfigure.newOpts()
                 .defaultScheduler("foo")
+                .failFastOptions(failFastOptions)
                 .configured();
 
         assertEquals("foo", options.getDefaultScheduler());
+        assertEquals(1, options.getFailFastOptions().size());
+        assertThrows(UnsupportedOperationException.class,
+                () -> options.getFailFastOptions().put("A", FailFastOptionsConfigure.defaultOpts()));
     }
 
     @Test
     void testDefaultOpts() {
         assertEquals(new SchedulingOptions().getDefaultScheduler(),
                 SchedulingOptionsConfigure.defaultOpts().getDefaultScheduler());
+        assertTrue(new SchedulingOptions().getFailFastOptions().isEmpty());
     }
 
 }

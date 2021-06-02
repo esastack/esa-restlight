@@ -17,10 +17,15 @@ package esa.restlight.server.config;
 
 import esa.restlight.server.schedule.Schedulers;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public final class SchedulingOptionsConfigure {
 
     private String defaultScheduler
             = Schedulers.BIZ;
+
+    private Map<String, FailFastOptions> failFastOptions = new HashMap<>(1);
 
     private SchedulingOptionsConfigure() {
     }
@@ -38,10 +43,15 @@ public final class SchedulingOptionsConfigure {
         return this;
     }
 
+    public SchedulingOptionsConfigure failFastOptions(Map<String, FailFastOptions> failFastOptions) {
+        this.failFastOptions = failFastOptions;
+        return this;
+    }
 
     public SchedulingOptions configured() {
         SchedulingOptions schedulingOptions = new SchedulingOptions();
         schedulingOptions.setDefaultScheduler(defaultScheduler);
+        schedulingOptions.setFailFastOptions(failFastOptions);
         return schedulingOptions;
     }
 }

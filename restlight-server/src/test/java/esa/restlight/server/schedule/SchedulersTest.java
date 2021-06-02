@@ -15,12 +15,17 @@
  */
 package esa.restlight.server.schedule;
 
+import esa.restlight.server.config.FailFastOptionsConfigure;
 import org.junit.jupiter.api.Test;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class SchedulersTest {
 
@@ -51,6 +56,43 @@ class SchedulersTest {
         assertEquals(scheduler.hashCode(), scheduler2.hashCode());
         assertEquals(scheduler.toString(), scheduler2.toString());
         assertNotEquals(scheduler, scheduler1);
+    }
+
+    @Test
+    void testFrom() {
+        final String name = "foo";
+        final ExecutorService e = Executors.newCachedThreadPool();
+        final ExecutorScheduler scheduler = Schedulers.fromExecutor(name, e);
+        assertNotNull(scheduler);
+        assertEquals(name, scheduler.name());
+        assertEquals(e, scheduler.executor());
+        scheduler.shutdown();
+        assertTrue(e.isShutdown());
+
+        final ExecutorScheduler scheduler1 = Schedulers.fromExecutor("another", e);
+        final ExecutorScheduler scheduler2 = Schedulers.fromExecutor(name, Executors.newCachedThreadPool());
+        assertEquals(scheduler, scheduler2);
+        assertEquals(scheduler.hashCode(), scheduler2.hashCode());
+        assertEquals(scheduler.toString(), scheduler2.toString());
+        assertNotEquals(scheduler, scheduler1);
+    }
+
+    @Test
+    void testFromWithFailFast() {
+        final String name = "foo";
+        final ExecutorService e = Executors.newCachedThreadPool();
+        final ExecutorScheduler scheduler = Schedulers.fromExecutor(name, e, null);
+        assertNotNull(scheduler);
+        assertEquals(name, scheduler.name());
+        assertEquals(e, scheduler.executor());
+        assertFalse(scheduler instanceof FailFastScheduler);
+        scheduler.shutdown();
+        assertTrue(e.isShutdown());
+
+        final ExecutorScheduler scheduler1 = Schedulers.fromExecutor("another", e,
+                FailFastOptionsConfigure.newOpts().timeoutMillis(1000L).configured());
+        assertNotNull(scheduler1);
+        assertTrue(scheduler1 instanceof FailFastScheduler);
     }
 
 }

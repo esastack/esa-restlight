@@ -25,6 +25,7 @@ import esa.restlight.server.bootstrap.DispatcherExceptionHandler;
 import esa.restlight.server.bootstrap.DispatcherHandler;
 import esa.restlight.server.bootstrap.RestlightThreadFactory;
 import esa.restlight.server.config.BizThreadsOptions;
+import esa.restlight.server.config.FailFastOptions;
 import esa.restlight.server.config.ServerOptions;
 import esa.restlight.server.handler.RestlightHandler;
 import esa.restlight.server.route.Route;
@@ -32,6 +33,8 @@ import esa.restlight.server.route.RouteRegistry;
 import esa.restlight.server.route.impl.CachedRouteRegistry;
 import esa.restlight.server.route.impl.SimpleRouteRegistry;
 import esa.restlight.server.schedule.ExecutorScheduler;
+import esa.restlight.server.schedule.FailFastExecutorScheduler;
+import esa.restlight.server.schedule.FailFastScheduler;
 import esa.restlight.server.schedule.RequestTask;
 import esa.restlight.server.schedule.RequestTaskHook;
 import esa.restlight.server.schedule.ScheduledRestlightHandler;
@@ -157,8 +160,8 @@ public class BaseDeployments<R extends BaseRestlightServer<R, D, O>, D extends B
     public D addScheduler(Scheduler scheduler) {
         checkImmutable();
         Checks.checkNotNull(scheduler, "scheduler");
-        configExecutor(scheduler);
-        ctx().mutableSchedulers().putIfAbsent(scheduler.name(), scheduler);
+        Scheduler configured = configExecutor(scheduler);
+        ctx().mutableSchedulers().putIfAbsent(configured.name(), configured);
         return self();
     }
 
@@ -192,7 +195,7 @@ public class BaseDeployments<R extends BaseRestlightServer<R, D, O>, D extends B
         return self();
     }
 
-    private void configExecutor(Scheduler scheduler) {
+    private Scheduler configExecutor(Scheduler scheduler) {
         if (scheduler instanceof ExecutorScheduler) {
             Executor e = ((ExecutorScheduler) scheduler).executor();
             if (e instanceof ThreadPoolExecutor) {
@@ -208,6 +211,18 @@ public class BaseDeployments<R extends BaseRestlightServer<R, D, O>, D extends B
                 // replace reject handler to restlight embedded BizRejectedHandler whatever what reject handler it is.
                 pool.setRejectedExecutionHandler(new BizRejectedHandler(scheduler.name()));
             }
+        }
+
+        // config by failFast options
+        FailFastOptions failFastOption;
+        if (scheduler instanceof FailFastScheduler
+                || (failFastOption = ctx().options().getScheduling().getFailFastOptions()
+                .get(scheduler.name())) == null) {
+            return scheduler;
+        } else {
+            return scheduler instanceof ExecutorScheduler
+                    ? new FailFastExecutorScheduler((ExecutorScheduler) scheduler, failFastOption)
+                    : new FailFastScheduler(scheduler, failFastOption);
         }
     }
 

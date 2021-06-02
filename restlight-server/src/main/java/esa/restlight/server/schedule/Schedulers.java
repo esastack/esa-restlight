@@ -16,6 +16,7 @@
 package esa.restlight.server.schedule;
 
 import esa.commons.concurrent.DirectExecutor;
+import esa.restlight.server.config.FailFastOptions;
 
 import java.util.concurrent.Executor;
 
@@ -30,8 +31,8 @@ public final class Schedulers {
      */
     public static final String BIZ = "BIZ";
 
-    private static Scheduler IO_SCHEDULER = fromExecutor(IO, DirectExecutor.INSTANCE);
-    private static Scheduler BIZ_SCHEDULER = fromExecutor(BIZ, r -> {
+    private static final Scheduler IO_SCHEDULER = fromExecutor(IO, DirectExecutor.INSTANCE);
+    private static final Scheduler BIZ_SCHEDULER = fromExecutor(BIZ, r -> {
     });
 
     /**
@@ -64,11 +65,11 @@ public final class Schedulers {
      * @return {@code true} if given scheduler is biz scheduler, otherwise {@code false}.
      */
     public static boolean isBiz(Scheduler scheduler) {
-        return scheduler == biz() || BIZ.equals(scheduler.name());
+        return BIZ.equals(scheduler.name());
     }
 
     /**
-     * Creates an instance of {@link Scheduler} by give {@code name} and {@code executor}.
+     * Creates an instance of {@link Scheduler} by given {@code name} and {@code executor}.
      *
      * @param name     name of scheduler
      * @param executor underlying executor
@@ -79,8 +80,24 @@ public final class Schedulers {
         return new ExecutorSchedulerImpl(name, executor);
     }
 
+    /**
+     * Creates an instance of {@link Scheduler} by given {@code name}, {@code executor} and {@code failFastOptions}.
+     *
+     * @param name  name
+     * @param executor  executor
+     * @param failFastOptions   failFast options
+     * @return  scheduler
+     */
+    public static ExecutorScheduler fromExecutor(String name, Executor executor, FailFastOptions failFastOptions) {
+        ExecutorScheduler scheduler = fromExecutor(name, executor);
+        if (failFastOptions == null) {
+            return scheduler;
+        }
+        return new FailFastExecutorScheduler(scheduler, failFastOptions);
+    }
+
     static boolean isIo(Scheduler scheduler) {
-        return scheduler == io();
+        return IO.equals(scheduler.name());
     }
 
     private Schedulers() {
