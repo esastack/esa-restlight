@@ -26,6 +26,7 @@ import esa.restlight.server.util.PromiseUtils;
 import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpResponseStatus;
 
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
 class TimeoutScheduler implements Scheduler {
@@ -58,6 +59,28 @@ class TimeoutScheduler implements Scheduler {
     @Override
     public void shutdown() {
         scheduler.shutdown();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        TimeoutScheduler that = (TimeoutScheduler) o;
+        return Objects.equals(name(), that.name());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name());
+    }
+
+    @Override
+    public String toString() {
+        return "TimeoutScheduler{name='" + name() + "'}";
     }
 
     long getStartTime(RequestTask task) {
