@@ -103,7 +103,7 @@ class SchedulersTest {
         // wraps to TimeoutExecutorScheduler
         final ExecutorScheduler scheduler3 = Schedulers.fromExecutor(name, e);
         final Scheduler wrapped3 = Schedulers.wrapped(scheduler3, TimeoutOptionsConfigure.newOpts()
-                .millisTime(100L).type(TimeoutOptions.Type.TTFB).configured());
+                .timeMillis(100L).type(TimeoutOptions.Type.TTFB).configured());
         assertNotNull(wrapped3);
         assertNotSame(scheduler3, wrapped3);
         assertTrue(wrapped3 instanceof TimeoutExecutorScheduler);
@@ -126,7 +126,7 @@ class SchedulersTest {
             }
         };
         final Scheduler wrapped4 = Schedulers.wrapped(scheduler4, TimeoutOptionsConfigure.newOpts()
-                .millisTime(100L).type(TimeoutOptions.Type.TTFB).configured());
+                .timeMillis(100L).type(TimeoutOptions.Type.TTFB).configured());
         assertNotNull(wrapped4);
         assertNotSame(scheduler4, wrapped4);
         assertTrue(wrapped4 instanceof TTFBTimeoutScheduler);
@@ -134,7 +134,7 @@ class SchedulersTest {
         // wraps to TimeoutExecutorScheduler
         final ExecutorScheduler scheduler5 = Schedulers.fromExecutor(name, e);
         final Scheduler wrapped5 = Schedulers.wrapped(scheduler3, TimeoutOptionsConfigure.newOpts()
-                .millisTime(100L).configured());
+                .timeMillis(100L).configured());
         assertNotNull(wrapped5);
         assertNotSame(scheduler5, wrapped5);
         assertTrue(wrapped5 instanceof TimeoutExecutorScheduler);
@@ -157,7 +157,7 @@ class SchedulersTest {
             }
         };
         final Scheduler wrapped6 = Schedulers.wrapped(scheduler4, TimeoutOptionsConfigure.newOpts()
-                .millisTime(100L).configured());
+                .timeMillis(100L).configured());
         assertNotNull(wrapped6);
         assertNotSame(scheduler6, wrapped6);
         assertTrue(wrapped6 instanceof TimeoutScheduler);

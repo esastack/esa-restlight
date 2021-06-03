@@ -60,7 +60,7 @@ class TTFBTimeoutSchedulerTest {
         // actualCost < timeoutMillis
         final TimeoutScheduler scheduler0 = new TTFBTimeoutScheduler(Schedulers.io(),
                 TimeoutOptionsConfigure.newOpts()
-                        .millisTime(5L)
+                        .timeMillis(5L)
                         .type(TimeoutOptions.Type.TTFB)
                         .configured());
         final AsyncResponse response0 = MockAsyncResponse.aMockResponse().build();
@@ -89,7 +89,7 @@ class TTFBTimeoutSchedulerTest {
                 MockAsyncResponse.aMockResponse().build(), new CompletableFuture<>(), runnable1);
         final TimeoutScheduler scheduler1 = new TTFBTimeoutScheduler(Schedulers.io(),
                 TimeoutOptionsConfigure.newOpts()
-                        .millisTime(5L)
+                        .timeMillis(5L)
                         .type(TimeoutOptions.Type.TTFB)
                         .configured());
 

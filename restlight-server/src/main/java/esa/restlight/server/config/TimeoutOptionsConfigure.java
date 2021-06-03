@@ -17,7 +17,7 @@ package esa.restlight.server.config;
 
 public class TimeoutOptionsConfigure {
 
-    private long millisTime = -1L;
+    private long timeMillis = -1L;
     private TimeoutOptions.Type type = TimeoutOptions.Type.QUEUED;
 
     private TimeoutOptionsConfigure() {
@@ -31,8 +31,8 @@ public class TimeoutOptionsConfigure {
         return newOpts().configured();
     }
 
-    public TimeoutOptionsConfigure millisTime(long timeoutMillis) {
-        this.millisTime = timeoutMillis;
+    public TimeoutOptionsConfigure timeMillis(long timeoutMillis) {
+        this.timeMillis = timeoutMillis;
         return this;
     }
 
@@ -44,7 +44,7 @@ public class TimeoutOptionsConfigure {
     public TimeoutOptions configured() {
         TimeoutOptions timeoutOptions = new TimeoutOptions();
         timeoutOptions.setType(type);
-        timeoutOptions.setMillisTime(millisTime);
+        timeoutOptions.setTimeMillis(timeMillis);
         return timeoutOptions;
     }
 

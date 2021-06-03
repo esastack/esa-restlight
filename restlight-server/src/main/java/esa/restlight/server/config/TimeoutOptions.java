@@ -27,15 +27,15 @@ public class TimeoutOptions implements Serializable {
         QUEUED
     }
 
-    private long millisTime = -1L;
+    private long timeMillis = -1L;
     private Type type = Type.QUEUED;
 
-    public long getMillisTime() {
-        return millisTime;
+    public long getTimeMillis() {
+        return timeMillis;
     }
 
-    public void setMillisTime(long millisTime) {
-        this.millisTime = millisTime;
+    public void setTimeMillis(long timeMillis) {
+        this.timeMillis = timeMillis;
     }
 
     public Type getType() {
@@ -49,7 +49,7 @@ public class TimeoutOptions implements Serializable {
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("TimeoutOptions{");
-        sb.append("millisTime=").append(millisTime);
+        sb.append("timeMillis=").append(timeMillis);
         sb.append(", type=").append(type);
         sb.append('}');
         return sb.toString();

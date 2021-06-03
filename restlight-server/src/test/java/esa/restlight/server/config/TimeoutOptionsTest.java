@@ -25,18 +25,18 @@ class TimeoutOptionsTest {
     @Test
     void testConfigure() {
         final TimeoutOptions options = TimeoutOptionsConfigure.newOpts()
-                .millisTime(100L)
+                .timeMillis(100L)
                 .type(TimeoutOptions.Type.TTFB)
                 .configured();
 
-        assertEquals(100L, options.getMillisTime());
+        assertEquals(100L, options.getTimeMillis());
         assertSame(TimeoutOptions.Type.TTFB, options.getType());
     }
 
     @Test
     void testDefaultOpts() {
         final TimeoutOptions options = TimeoutOptionsConfigure.defaultOpts();
-        assertEquals(-1L, options.getMillisTime());
+        assertEquals(-1L, options.getTimeMillis());
         assertSame(TimeoutOptions.Type.QUEUED, options.getType());
     }
 

@@ -55,7 +55,7 @@ class TimeoutSchedulerTest {
 
         // actualCost < timeoutMillis
         final TimeoutScheduler scheduler0 = new TimeoutScheduler(Schedulers.io(),
-                TimeoutOptionsConfigure.newOpts().millisTime(5L).configured());
+                TimeoutOptionsConfigure.newOpts().timeMillis(5L).configured());
         final AsyncResponse response0 = MockAsyncResponse.aMockResponse().build();
         final Runnable runnable0 = () -> {
             flag.set(true);
@@ -96,7 +96,7 @@ class TimeoutSchedulerTest {
             public void shutdown() {
 
             }
-        }, TimeoutOptionsConfigure.newOpts().millisTime(5L).configured());
+        }, TimeoutOptionsConfigure.newOpts().timeMillis(5L).configured());
 
         scheduler1.schedule(task1);
         assertFalse(flag.get());

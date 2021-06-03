@@ -88,7 +88,7 @@ public final class Schedulers {
      * @return  scheduler
      */
     public static Scheduler wrapped(Scheduler scheduler, TimeoutOptions timeoutOptions) {
-        if (timeoutOptions != null && timeoutOptions.getMillisTime() > 0L && timeoutOptions.getType() != null) {
+        if (timeoutOptions != null && timeoutOptions.getTimeMillis() > 0L && timeoutOptions.getType() != null) {
             TimeoutScheduler wrapped;
             if (TimeoutOptions.Type.TTFB == timeoutOptions.getType()) {
                 wrapped = new TTFBTimeoutScheduler(scheduler, timeoutOptions);

@@ -17,7 +17,7 @@ package esa.restlight.server.config;
 
 import esa.restlight.server.schedule.Schedulers;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public final class SchedulingOptionsConfigure {
@@ -25,7 +25,7 @@ public final class SchedulingOptionsConfigure {
     private String defaultScheduler
             = Schedulers.BIZ;
 
-    private Map<String, TimeoutOptions> timeout = new HashMap<>(1);
+    private Map<String, TimeoutOptions> timeout = new LinkedHashMap<>(1);
 
     private SchedulingOptionsConfigure() {
     }

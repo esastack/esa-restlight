@@ -38,7 +38,7 @@ class TimeoutScheduler implements Scheduler {
         Checks.checkNotNull(scheduler, "scheduler");
         Checks.checkNotNull(timeoutOptions, "timeoutOptions");
         this.scheduler = scheduler;
-        this.timeoutMillis = timeoutOptions.getMillisTime();
+        this.timeoutMillis = timeoutOptions.getTimeMillis();
     }
 
     @Override
