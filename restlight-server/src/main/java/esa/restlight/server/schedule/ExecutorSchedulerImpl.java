@@ -74,6 +74,6 @@ class ExecutorSchedulerImpl implements ExecutorScheduler {
 
     @Override
     public String toString() {
-        return "ExecutorScheduler{name='" + name + "\'}";
+        return "ExecutorScheduler{name='" + name + "'}";
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 OPPO ESA Stack Project
+ * Copyright 2021 OPPO ESA Stack Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,33 +17,28 @@ package esa.restlight.server.config;
 
 import org.junit.jupiter.api.Test;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
-class SchedulingOptionsTest {
+class TimeoutOptionsTest {
 
     @Test
     void testConfigure() {
-        final Map<String, TimeoutOptions> timeoutOptions = new HashMap<>(1);
-        timeoutOptions.put("A", TimeoutOptionsConfigure.defaultOpts());
-
-        final SchedulingOptions options = SchedulingOptionsConfigure.newOpts()
-                .defaultScheduler("foo")
-                .timeout(timeoutOptions)
+        final TimeoutOptions options = TimeoutOptionsConfigure.newOpts()
+                .timeMillis(100L)
+                .type(TimeoutOptions.Type.TTFB)
                 .configured();
 
-        assertEquals("foo", options.getDefaultScheduler());
-        assertEquals(1, options.getTimeout().size());
+        assertEquals(100L, options.getTimeMillis());
+        assertSame(TimeoutOptions.Type.TTFB, options.getType());
     }
 
     @Test
     void testDefaultOpts() {
-        assertEquals(new SchedulingOptions().getDefaultScheduler(),
-                SchedulingOptionsConfigure.defaultOpts().getDefaultScheduler());
-        assertTrue(new SchedulingOptions().getTimeout().isEmpty());
+        final TimeoutOptions options = TimeoutOptionsConfigure.defaultOpts();
+        assertEquals(-1L, options.getTimeMillis());
+        assertSame(TimeoutOptions.Type.QUEUED, options.getType());
     }
 
 }
+

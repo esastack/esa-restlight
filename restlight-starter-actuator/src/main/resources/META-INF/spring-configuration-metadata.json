@@ -259,9 +259,15 @@
     {
       "sourceType": "esa.restlight.server.config.SchedulingOptions",
       "name": "management.server.restlight.scheduling.default-strategy",
-      "type": "esa.management.server.restlight.schedule.Scheduling$Strategy",
+      "type": "esa.management.server.restlight.schedule.SchedulingStrategy",
       "defaultValue": "null",
       "description": "Default Scheduled.Strategy if controller's @Scheduling is missing."
+    },
+    {
+      "name": "management.server.restlight.scheduling.time-out",
+      "type": "java.util.Map<java.lang.String,esa.restlight.server.config.TimeoutOptions>",
+      "description": "TimeoutOptions options map.",
+      "sourceType": "esa.restlight.server.config.SchedulingOptions"
     },
     {
       "sourceType": "esa.restlight.server.config.SchedulingOptions",

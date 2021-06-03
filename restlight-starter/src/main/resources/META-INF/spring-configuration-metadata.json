@@ -224,6 +224,12 @@
       "defaultValue": "'BIZ'"
     },
     {
+      "name": "restlight.server.scheduling.timeout",
+      "type": "java.util.Map<java.lang.String,esa.restlight.server.config.TimeoutOptions>",
+      "description": "Timeout options map.",
+      "sourceType": "esa.restlight.server.config.SchedulingOptions"
+    },
+    {
       "name": "restlight.server.serialize",
       "type": "esa.restlight.core.config.SerializesOptions",
       "sourceType": "esa.restlight.starter.autoconfigure.AutoRestlightServerOptions"

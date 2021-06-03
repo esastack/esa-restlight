@@ -26,6 +26,7 @@ import esa.restlight.server.bootstrap.DispatcherHandler;
 import esa.restlight.server.bootstrap.RestlightThreadFactory;
 import esa.restlight.server.config.BizThreadsOptions;
 import esa.restlight.server.config.ServerOptions;
+import esa.restlight.server.config.TimeoutOptions;
 import esa.restlight.server.handler.RestlightHandler;
 import esa.restlight.server.route.Route;
 import esa.restlight.server.route.RouteRegistry;
@@ -157,8 +158,8 @@ public class BaseDeployments<R extends BaseRestlightServer<R, D, O>, D extends B
     public D addScheduler(Scheduler scheduler) {
         checkImmutable();
         Checks.checkNotNull(scheduler, "scheduler");
-        configExecutor(scheduler);
-        ctx().mutableSchedulers().putIfAbsent(scheduler.name(), scheduler);
+        Scheduler configured = configExecutor(scheduler);
+        ctx().mutableSchedulers().putIfAbsent(configured.name(), configured);
         return self();
     }
 
@@ -192,7 +193,7 @@ public class BaseDeployments<R extends BaseRestlightServer<R, D, O>, D extends B
         return self();
     }
 
-    private void configExecutor(Scheduler scheduler) {
+    private Scheduler configExecutor(Scheduler scheduler) {
         if (scheduler instanceof ExecutorScheduler) {
             Executor e = ((ExecutorScheduler) scheduler).executor();
             if (e instanceof ThreadPoolExecutor) {
@@ -209,6 +210,10 @@ public class BaseDeployments<R extends BaseRestlightServer<R, D, O>, D extends B
                 pool.setRejectedExecutionHandler(new BizRejectedHandler(scheduler.name()));
             }
         }
+
+        // config by timeout options
+        TimeoutOptions timeoutOptions = ctx().options().getScheduling().getTimeout().get(scheduler.name());
+        return Schedulers.wrapped(scheduler, timeoutOptions);
     }
 
     public ServerDeployContext<O> deployContext() {

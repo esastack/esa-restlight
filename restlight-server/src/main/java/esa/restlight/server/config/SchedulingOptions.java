@@ -18,6 +18,8 @@ package esa.restlight.server.config;
 import esa.restlight.server.schedule.Schedulers;
 
 import java.io.Serializable;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class SchedulingOptions implements Serializable {
 
@@ -25,6 +27,8 @@ public class SchedulingOptions implements Serializable {
 
     private String defaultScheduler
             = Schedulers.BIZ;
+
+    private Map<String, TimeoutOptions> timeout = new LinkedHashMap<>(1);
 
     public String getDefaultScheduler() {
         return defaultScheduler;
@@ -34,10 +38,19 @@ public class SchedulingOptions implements Serializable {
         this.defaultScheduler = defaultScheduler;
     }
 
+    public Map<String, TimeoutOptions> getTimeout() {
+        return timeout;
+    }
+
+    public void setTimeout(Map<String, TimeoutOptions> timeout) {
+        this.timeout = timeout;
+    }
+
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("SchedulingOptions{");
-        sb.append("defaultScheduler=").append(defaultScheduler);
+        sb.append("defaultScheduler='").append(defaultScheduler).append('\'');
+        sb.append(", timeout=").append(timeout);
         sb.append('}');
         return sb.toString();
     }
