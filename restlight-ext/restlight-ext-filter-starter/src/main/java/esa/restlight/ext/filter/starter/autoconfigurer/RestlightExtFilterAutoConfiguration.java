@@ -15,7 +15,6 @@
  */
 package esa.restlight.ext.filter.starter.autoconfigurer;
 
-import esa.restlight.core.config.RestlightOptions;
 import esa.restlight.core.util.Ordered;
 import esa.restlight.ext.filter.accesslog.AccessLogFilter;
 import esa.restlight.ext.filter.connectionlimit.ConnectionLimitFilter;
@@ -24,6 +23,7 @@ import esa.restlight.ext.filter.cpuload.CpuLoadProtectionFilter;
 import esa.restlight.ext.filter.ipwhitelist.IpWhiteListFilter;
 import esa.restlight.ext.filter.xss.XssFilter;
 import esa.restlight.starter.ServerStarter;
+import esa.restlight.starter.autoconfigure.AutoRestlightServerOptions;
 import org.springframework.boot.autoconfigure.AutoConfigureOrder;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -72,7 +72,7 @@ public class RestlightExtFilterAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean
     @ConditionalOnProperty(prefix = EXT + "access-log", name = "enable", havingValue = "true")
-    public esa.restlight.ext.filter.AccessLogFilter oldAccessLogFilter(RestlightOptions options) {
+    public esa.restlight.ext.filter.AccessLogFilter oldAccessLogFilter(AutoRestlightServerOptions options) {
         // check again
         if (options.extOption("access-log.enable")
                 .map(Boolean::parseBoolean).orElse(Boolean.FALSE)) {
@@ -88,7 +88,7 @@ public class RestlightExtFilterAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean
     @ConditionalOnProperty(prefix = AccessLogProperties.PREFIX, name = "enable", havingValue = "true")
-    public AccessLogFilter accessLogFilter(RestlightOptions options, AccessLogProperties props) {
+    public AccessLogFilter accessLogFilter(AutoRestlightServerOptions options, AccessLogProperties props) {
         // check again
         if (options.extOption("accesslog.enable")
                 .map(Boolean::parseBoolean).orElse(Boolean.FALSE)) {
