@@ -17,23 +17,14 @@ package esa.restlight.server.schedule;
 
 import esa.commons.Checks;
 
-import java.util.concurrent.Executor;
-
-class TimeoutExecutorScheduler implements ExecutorScheduler {
+class TimeoutExecutorScheduler extends ExecutorSchedulerImpl {
 
     private final TimeoutScheduler scheduler;
-    private final Executor executor;
 
-    TimeoutExecutorScheduler(TimeoutScheduler scheduler, Executor executor) {
+    TimeoutExecutorScheduler(ExecutorScheduler executor, TimeoutScheduler scheduler) {
+        super(executor.name(), executor.executor());
         Checks.checkNotNull(scheduler, "scheduler");
-        Checks.checkNotNull(executor, "executor");
         this.scheduler = scheduler;
-        this.executor = executor;
-    }
-
-    @Override
-    public String name() {
-        return scheduler.name();
     }
 
     @Override
@@ -41,14 +32,5 @@ class TimeoutExecutorScheduler implements ExecutorScheduler {
         scheduler.schedule(cmd);
     }
 
-    @Override
-    public void shutdown() {
-        scheduler.shutdown();
-    }
-
-    @Override
-    public Executor executor() {
-        return executor;
-    }
 }
 

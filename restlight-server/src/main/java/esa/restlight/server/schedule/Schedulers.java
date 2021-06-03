@@ -96,7 +96,7 @@ public final class Schedulers {
                 wrapped = new TimeoutScheduler(scheduler, timeoutOptions);
             }
             return scheduler instanceof ExecutorScheduler
-                    ? new TimeoutExecutorScheduler(wrapped, ((ExecutorScheduler) scheduler).executor())
+                    ? new TimeoutExecutorScheduler((ExecutorScheduler) scheduler, wrapped)
                     : wrapped;
         } else {
             return scheduler;
