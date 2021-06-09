@@ -54,8 +54,8 @@ public abstract class AbstractMatrixArgumentResolver implements ArgumentResolver
 
         private final Function<String, Object> converter;
         private String pathVar;
-        private boolean isMatrixVariableMap;
-        private boolean isSingleValueMap;
+        private boolean matrixVariableMap;
+        private boolean singleValueMap;
 
         protected Resolver(Param param) {
             super(param);
@@ -68,13 +68,13 @@ public abstract class AbstractMatrixArgumentResolver implements ArgumentResolver
             Map<String, MultiValueMap<String, String>> pathParameters =
                     PathVariableUtils.getMatrixVariables(request);
 
-            if (pathParameters == null || pathParameters.isEmpty()) {
-                return isMatrixVariableMap ? Collections.EMPTY_MAP : null;
+            if (pathParameters.isEmpty()) {
+                return matrixVariableMap ? Collections.emptyMap() : null;
             }
 
             List<String> paramValues = null;
             // Handle matrixVariableMap
-            if (isMatrixVariableMap) {
+            if (matrixVariableMap) {
                 return getMatrixVariableMap(pathParameters);
             }
 
@@ -113,8 +113,8 @@ public abstract class AbstractMatrixArgumentResolver implements ArgumentResolver
         @Override
         protected NameAndValue createNameAndValue(Param param) {
             NameAndValue nav = AbstractMatrixArgumentResolver.this.createNameAndValue(param);
-            this.isMatrixVariableMap = isMatrixVariableMap(param, nav.name);
-            this.isSingleValueMap = isSingleValueMap(param);
+            this.matrixVariableMap = isMatrixVariableMap(param, nav.name);
+            this.singleValueMap = isSingleValueMap(param);
             this.pathVar = AbstractMatrixArgumentResolver.this.getPathVar(param);
             return nav;
         }
@@ -138,9 +138,8 @@ public abstract class AbstractMatrixArgumentResolver implements ArgumentResolver
                 }
             }
 
-            return isSingleValueMap ? map.toSingleValueMap() : map;
+            return singleValueMap ? map.toSingleValueMap() : map;
         }
-
 
     }
 

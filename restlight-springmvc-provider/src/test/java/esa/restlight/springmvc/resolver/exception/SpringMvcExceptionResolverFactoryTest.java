@@ -15,15 +15,26 @@
  */
 package esa.restlight.springmvc.resolver.exception;
 
+import esa.httpserver.core.AsyncRequest;
 import esa.httpserver.core.AsyncResponse;
+import esa.restlight.core.handler.HandlerAdvice;
 import esa.restlight.core.handler.impl.HandlerImpl;
+import esa.restlight.core.handler.locate.AbstractRouteHandlerLocator;
 import esa.restlight.core.handler.locate.HandlerLocator;
 import esa.restlight.core.method.HandlerMethod;
+import esa.restlight.core.method.InvocableMethod;
 import esa.restlight.core.resolver.ExceptionResolver;
+import esa.restlight.core.resolver.HandlerResolverFactory;
+import esa.restlight.core.resolver.HandlerResolverFactoryImpl;
+import esa.restlight.core.resolver.ReturnValueResolverAdapter;
+import esa.restlight.core.resolver.exception.ExceptionMapper;
+import esa.restlight.core.serialize.FastJsonHttpBodySerializer;
+import esa.restlight.server.schedule.Schedulers;
 import esa.restlight.springmvc.MockUtils;
 import esa.restlight.springmvc.annotation.shaded.ExceptionHandler0;
 import esa.restlight.test.mock.MockAsyncRequest;
 import esa.restlight.test.mock.MockAsyncResponse;
+import io.netty.handler.codec.http.HttpResponseStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -32,6 +43,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.Collections;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -181,6 +193,71 @@ class SpringMvcExceptionResolverFactoryTest {
                 MockUtils.mockResolverFactory()));
     }
 
+    @Test
+    void testCreateMappersFromController() {
+        final HandlerResolverFactoryImpl handlerResolverFactory = newHandlerResolverFactory();
+        final HandlerLocator locator = newHandlerLocator();
+        final SpringMvcExceptionResolverFactoryImpl factory = new SpringMvcExceptionResolverFactoryImpl(
+                locator, handlerResolverFactory);
+
+        final ControllerExceptionMapping controller = new ControllerExceptionMapping();
+        List<ExceptionMapper> mappers = factory.createMappersFromController(controller,
+                locator, handlerResolverFactory);
+        assertEquals(1, mappers.size());
+        assertNotNull(mappers.get(0).mapTo(NullPointerException.class));
+        assertNotNull(mappers.get(0).mapTo(IllegalArgumentException.class));
+        assertNull(mappers.get(0).mapTo(RuntimeException.class));
+    }
+
+    @Test
+    void testCreateMappersFromControllerAdvice() {
+        final HandlerResolverFactoryImpl handlerResolverFactory = newHandlerResolverFactory();
+        final HandlerLocator locator = newHandlerLocator();
+        final SpringMvcExceptionResolverFactoryImpl factory = new SpringMvcExceptionResolverFactoryImpl(
+                locator, handlerResolverFactory);
+
+        final ControllerAdviceExceptionMapping controller = new ControllerAdviceExceptionMapping();
+        List<ExceptionMapper> mappers = factory.createMappersFromControllerAdvice(controller,
+                false, locator, handlerResolverFactory);
+        assertEquals(1, mappers.size());
+        assertNotNull(mappers.get(0).mapTo(NullPointerException.class));
+        assertNotNull(mappers.get(0).mapTo(IllegalArgumentException.class));
+        assertNull(mappers.get(0).mapTo(RuntimeException.class));
+    }
+
+    private static HandlerResolverFactoryImpl newHandlerResolverFactory() {
+        return new HandlerResolverFactoryImpl(Collections
+                .singleton(new FastJsonHttpBodySerializer()),
+                Collections.singleton(new FastJsonHttpBodySerializer()),
+                Collections.emptyList(),
+                Collections.emptyList(),
+                Collections.emptyList(),
+                Collections.emptyList(),
+                Collections.singleton(new ReturnValueResolverAdapter() {
+                    @Override
+                    public byte[] resolve(Object returnValue, AsyncRequest request, AsyncResponse response) {
+                        return new byte[0];
+                    }
+
+                    @Override
+                    public boolean supports(InvocableMethod invocableMethod) {
+                        return true;
+                    }
+                }),
+                Collections.emptyList(),
+                Collections.emptyList(),
+                Collections.emptyList());
+    }
+
+    private static HandlerLocator newHandlerLocator() {
+        return new AbstractRouteHandlerLocator(Schedulers.BIZ,
+                (handler) -> new HandlerAdvice[0]) {
+            @Override
+            protected HttpResponseStatus getCustomResponse(InvocableMethod handlerMethod) {
+                return null;
+            }
+        };
+    }
 
     // *****        exception handlers defined in controller    *****
 
@@ -275,6 +352,14 @@ class SpringMvcExceptionResolverFactoryTest {
         public void method() {
 
         }
+    }
+
+    private static class SpringMvcExceptionResolverFactoryImpl extends SpringMvcExceptionResolverFactory {
+
+        private SpringMvcExceptionResolverFactoryImpl(HandlerLocator locator, HandlerResolverFactory factory) {
+            super(Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), locator, factory);
+        }
+
     }
 
 }
