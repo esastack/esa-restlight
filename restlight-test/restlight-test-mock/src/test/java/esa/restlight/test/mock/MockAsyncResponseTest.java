@@ -15,11 +15,12 @@
  */
 package esa.restlight.test.mock;
 
-import esa.commons.StringUtils;
 import esa.commons.http.MimeMappings;
 import esa.httpserver.core.HttpOutputStream;
 import io.netty.buffer.Unpooled;
+import io.netty.buffer.UnpooledByteBufAllocator;
 import io.netty.handler.codec.http.HttpHeaderNames;
+import io.netty.handler.codec.http.cookie.DefaultCookie;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -27,9 +28,15 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.concurrent.atomic.AtomicBoolean;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assumptions.assumeTrue;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class MockAsyncResponseTest {
 
@@ -70,6 +77,40 @@ class MockAsyncResponseTest {
 
         assertTrue(response.headerNames().contains(seq));
         assertTrue(response.containsHeader(seq));
+    }
+
+    @Test
+    void testOperateTrailer() {
+        final MockAsyncResponse response = MockAsyncResponse.aMockResponse().build();
+        response.addTrailer("t1", "v1");
+        response.setTrailer("t2", "v2");
+        response.setTrailers("t3", Collections.singletonList("v3"));
+
+        assertEquals(3, response.trailers().size());
+        response.addTrailer("", "xx");
+        response.setTrailer("", "xx");
+        response.setTrailers("", Collections.singletonList("xx"));
+
+        response.addTrailer("x", null);
+        response.setTrailer("x", null);
+        response.setTrailers("x", null);
+        assertEquals(3, response.trailers().size());
+
+        assertFalse(response.isKeepAlive());
+        response.setBufferSize(1);
+        assertEquals(1, response.bufferSize());
+
+        assertEquals(UnpooledByteBufAllocator.DEFAULT, response.alloc());
+    }
+
+    @Test
+    void testOperateCookie() {
+        final MockAsyncResponse response = MockAsyncResponse.aMockResponse().build();
+        response.addCookie(new DefaultCookie("c1", "v1"));
+        response.addCookie("c2", "v2");
+
+        final Collection<String> cookies = response.getHeaders(HttpHeaderNames.SET_COOKIE);
+        assertEquals(2, cookies.size());
     }
 
     @Test
@@ -164,5 +205,39 @@ class MockAsyncResponseTest {
         response.outputStream().writeUTF("abc");
         response.outputStream().close();
         assertEquals("abc", response.getSentData().toString(StandardCharsets.UTF_8));
+    }
+
+    @Test
+    void testOpsAfterCommitted() {
+        final MockAsyncResponse response = MockAsyncResponse.aMockResponse().build();
+        // end response
+        response.sendResult(200);
+        response.addHeader("a", "b");
+        response.setHeader("x", "y");
+        response.setHeaders("m", Collections.singletonList("n"));
+        response.setIntHeader("int1", 1);
+        response.addIntHeader("int2", 2);
+        response.setShortHeader("short1", (short) 1);
+        response.addShortHeader("short2", (short) 2);
+
+        response.addTrailer("t1", "v1");
+        response.setTrailer("t2", "v2");
+        response.setTrailers("t3", Collections.singletonList("v3"));
+        assertTrue(response.headerNames().isEmpty());
+        assertTrue(response.trailers().isEmpty());
+    }
+
+    @Test
+    void testCallEndListener() {
+        final AtomicBoolean end0 = new AtomicBoolean();
+        final AtomicBoolean end1 = new AtomicBoolean();
+
+        final MockAsyncResponse response = MockAsyncResponse.aMockResponse()
+                .withEndListener(rsp -> end0.set(true))
+                .withEndListeners(Collections.singletonList(rsp -> end1.set(true)))
+                .build();
+        response.callEndListener();
+        assertTrue(end0.get());
+        assertTrue(end1.get());
     }
 }

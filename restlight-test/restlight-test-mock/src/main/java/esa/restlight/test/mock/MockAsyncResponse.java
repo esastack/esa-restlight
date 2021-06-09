@@ -22,6 +22,7 @@ import esa.commons.http.MimeMappings;
 import esa.commons.io.IOUtils;
 import esa.commons.logging.Logger;
 import esa.commons.logging.LoggerFactory;
+import esa.commons.netty.http.Http1HeadersAdaptor;
 import esa.httpserver.core.AsyncResponse;
 import esa.httpserver.core.HttpOutputStream;
 import io.netty.buffer.ByteBuf;
@@ -335,6 +336,10 @@ public class MockAsyncResponse implements AsyncResponse {
         endListeners.add(listener);
     }
 
+    public esa.commons.http.HttpHeaders trailers() {
+        return new Http1HeadersAdaptor(this.trailingHeaders);
+    }
+
     private void checkCommitted() {
         if (isCommitted()) {
             throw new IllegalStateException("Already committed.");
@@ -379,7 +384,9 @@ public class MockAsyncResponse implements AsyncResponse {
 
         public Builder withEndListeners(List<Consumer<AsyncResponse>> endListeners) {
             Checks.checkNotNull(endListeners, "endListeners");
-            this.endListeners = endListeners;
+            for (Consumer<AsyncResponse> listener : endListeners) {
+                withEndListener(listener);
+            }
             return this;
         }
 
