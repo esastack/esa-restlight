@@ -45,10 +45,6 @@ public abstract class AbstractResponseBodyReturnValueResolver implements ReturnV
     private final boolean negotiation;
     private final String parameterName;
 
-    public AbstractResponseBodyReturnValueResolver() {
-        this(false, null);
-    }
-
     public AbstractResponseBodyReturnValueResolver(boolean negotiation, String parameterName) {
         this.negotiation = negotiation;
         this.parameterName = StringUtils.nonEmptyOrElse(parameterName,
@@ -80,7 +76,7 @@ public abstract class AbstractResponseBodyReturnValueResolver implements ReturnV
 
         private final List<? extends HttpResponseSerializer> serializers;
 
-        private DefaultResolver(List<? extends HttpResponseSerializer> serializers, boolean detect) {
+        DefaultResolver(List<? extends HttpResponseSerializer> serializers, boolean detect) {
             super(detect);
             this.serializers = serializers;
         }
@@ -124,7 +120,7 @@ public abstract class AbstractResponseBodyReturnValueResolver implements ReturnV
 
         private final String parameterName;
 
-        private NegotiationResolver(List<? extends HttpResponseSerializer> serializers,
+        NegotiationResolver(List<? extends HttpResponseSerializer> serializers,
                                     String parameterName, boolean isAnyType) {
             super(serializers, isAnyType);
             this.parameterName = parameterName;
