@@ -44,28 +44,5 @@ class AutoRestlightServerOptionsTest {
         assertEquals(warmUp, options.getWarmUp());
     }
 
-    @Test
-    void testToString() {
-        assertEquals("Options{host=null, port=8080, unixDomainSocketFile=null," +
-                " http2Enable=false, useNativeTransports=false, connectorThreads=1," +
-                " ioThreads=16, bizThreads=BizThreadsOptions{core=64, max=128," +
-                " blockingQueueLength=512, keepAliveTimeSeconds=180}," +
-                " bizTerminationTimeoutSeconds=60, validationMessageFile='null'," +
-                " contextPath='null', serialize=SerializesOptions{request=" +
-                "SerializeOptions{negotiation=false, negotiationParam='format'}," +
-                " response=SerializeOptions{negotiation=false, negotiationParam='format'}}," +
-                " compress=false, decompress=false, maxContentLength=4194304," +
-                " maxInitialLineLength=4096, maxHeaderSize=8192, soBacklog=128," +
-                " writeBufferHighWaterMark=-1, writeBufferLowWaterMark=-1," +
-                " idleTimeSeconds=60, keepAliveEnable=true," +
-                " scheduling=SchedulingOptions{defaultScheduler='BIZ', timeout={}}," +
-                " route=RouteOptions{useCachedRouting=true, cacheRatio=10, computeRate=1}," +
-                " ssl=SslOptions{enable=false, clientAuth=null, ciphers=[], enabledProtocols=[]," +
-                " certChainPath='null', keyPath='null', keyPassword='null', trustCertsPath='null'," +
-                " sessionTimeout=0, sessionCacheSize=0, handshakeTimeoutMillis=0}," +
-                " warmUp=WarmUpOptions{enable=false, delay=0}, printBanner=true, ext={}}",
-                new AutoRestlightServerOptions().toString());
-    }
-
 }
 
