@@ -17,12 +17,16 @@ package esa.restlight.core.annotation;
 
 import esa.restlight.core.serialize.HttpBodySerializer;
 
-import java.lang.annotation.*;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  * Indicates that the request/response content(header, body...) of the annotated interface('s) should be
  * serialize/deserialize by the
- * given implementation of {@link HttpBodySerializer} if necessary(maybe there'e no need to deserialize such as a
+ * given implementation of {@link HttpBodySerializer} if necessary(maybe there's no need to deserialize such as a
  * parameter in the url.).
  *
  * It could be used to associate with the @RequestBody/@ResponseBody(if in spring environment).
@@ -30,7 +34,7 @@ import java.lang.annotation.*;
  * {@link Serializer} could be annotated on the parameter, method and the class, and also the priority of the
  * 3 places will be method(highest) &gt; class(lowest).
  */
-@Target({ElementType.TYPE, ElementType.METHOD})
+@Target({ElementType.TYPE, ElementType.METHOD, ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface Serializer {

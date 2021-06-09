@@ -109,12 +109,11 @@ public abstract class AbstractSpecifiedFixedRequestBodyArgumentResolver implemen
         return target;
     }
 
-    public class Resolver extends AbstractNameAndValueArgumentResolver {
+    class Resolver extends AbstractNameAndValueArgumentResolver {
 
         private final HttpRequestSerializer serializer;
 
-        private Resolver(HttpRequestSerializer serializer,
-                         Param param) {
+        Resolver(HttpRequestSerializer serializer, Param param) {
             super(param);
             this.serializer = serializer;
         }

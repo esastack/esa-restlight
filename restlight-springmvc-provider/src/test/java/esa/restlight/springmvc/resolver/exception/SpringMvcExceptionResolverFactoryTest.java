@@ -197,7 +197,7 @@ class SpringMvcExceptionResolverFactoryTest {
     void testCreateMappersFromController() {
         final HandlerResolverFactoryImpl handlerResolverFactory = newHandlerResolverFactory();
         final HandlerLocator locator = newHandlerLocator();
-        final SpringMvcExceptionResolverFactoryImpl factory = new SpringMvcExceptionResolverFactoryImpl(
+        final SpringMvcExceptionResolverFactory factory = newExceptionResolverFactory(
                 locator, handlerResolverFactory);
 
         final ControllerExceptionMapping controller = new ControllerExceptionMapping();
@@ -213,7 +213,7 @@ class SpringMvcExceptionResolverFactoryTest {
     void testCreateMappersFromControllerAdvice() {
         final HandlerResolverFactoryImpl handlerResolverFactory = newHandlerResolverFactory();
         final HandlerLocator locator = newHandlerLocator();
-        final SpringMvcExceptionResolverFactoryImpl factory = new SpringMvcExceptionResolverFactoryImpl(
+        final SpringMvcExceptionResolverFactory factory = newExceptionResolverFactory(
                 locator, handlerResolverFactory);
 
         final ControllerAdviceExceptionMapping controller = new ControllerAdviceExceptionMapping();
@@ -257,6 +257,13 @@ class SpringMvcExceptionResolverFactoryTest {
                 return null;
             }
         };
+    }
+
+    private static SpringMvcExceptionResolverFactory newExceptionResolverFactory(HandlerLocator locator,
+                                                                                 HandlerResolverFactory factory) {
+        return new SpringMvcExceptionResolverFactory(Collections.emptyList(),
+                Collections.emptyList(), Collections.emptyList(),
+                locator, factory);
     }
 
     // *****        exception handlers defined in controller    *****
@@ -352,14 +359,6 @@ class SpringMvcExceptionResolverFactoryTest {
         public void method() {
 
         }
-    }
-
-    private static class SpringMvcExceptionResolverFactoryImpl extends SpringMvcExceptionResolverFactory {
-
-        private SpringMvcExceptionResolverFactoryImpl(HandlerLocator locator, HandlerResolverFactory factory) {
-            super(Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), locator, factory);
-        }
-
     }
 
 }

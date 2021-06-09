@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package esa.restlight.core.resolver.resullt;
+package esa.restlight.core.resolver.result;
 
 import esa.commons.ClassUtils;
 import esa.httpserver.core.AsyncRequest;
@@ -21,7 +21,6 @@ import esa.httpserver.core.AsyncResponse;
 import esa.restlight.core.method.HandlerMethod;
 import esa.restlight.core.method.InvocableMethod;
 import esa.restlight.core.resolver.ReturnValueResolver;
-import esa.restlight.core.resolver.result.SimpleReturnValueResolver;
 import esa.restlight.core.serialize.FastJsonHttpBodySerializer;
 import esa.restlight.core.serialize.Serializers;
 import esa.restlight.core.util.MediaType;
