@@ -37,7 +37,13 @@ import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -73,28 +79,54 @@ class AsyncRequestImplTest {
         when(mock.query()).thenReturn("a=1");
         assertEquals("a=1", req.query());
 
+        when(mock.version()).thenReturn(HttpVersion.HTTP_1_1);
+        assertEquals("HTTP/1.1", req.getProtocol());
+
+        assertFalse(req.hasAttribute("name0"));
+        req.setAttribute("name0", "value1");
+        assertTrue(req.hasAttribute("name0"));
+
+        when(mock.scheme()).thenReturn("https");
+        assertEquals("https", req.scheme());
+
+        when(mock.path()).thenReturn("/abc");
+        assertEquals("/abc", req.getRequestURI());
+
+        when(mock.uri()).thenReturn("/def");
+        assertEquals("/def", req.getURIAndQueryString());
+
+        assertEquals("POST", req.getMethod());
+
         assertEquals(io.netty.handler.codec.http.HttpMethod.POST, req.method());
         assertEquals("POST", req.rawMethod());
 
         assertSame(body, req.byteBufBody());
+        assertSame(body, req.getBodyByteBuf());
         assertEquals("abc", new String(req.body(), StandardCharsets.UTF_8));
+        assertEquals("abc", new String(req.getBody(), StandardCharsets.UTF_8));
         assertEquals(3, req.contentLength());
+        assertEquals(3, req.getContentLength());
 
         final HttpInputStream in = req.inputStream();
+        assertSame(in, req.getInputStream());
         assertSame(in, req.inputStream());
         assertTrue(in instanceof ByteBufHttpInputStream);
         assertEquals("abc", IOUtils.toString(in, StandardCharsets.UTF_8));
 
         when(mock.remoteAddress()).thenReturn(new InetSocketAddress("127.0.0.1", 8080));
         assertEquals("127.0.0.1", req.remoteAddr());
+        assertEquals("127.0.0.1", req.getRemoteAddr());
         assertEquals(8080, req.remotePort());
 
         when(mock.tcpSourceAddress()).thenReturn(new InetSocketAddress("127.0.0.2", 8080));
         assertEquals("127.0.0.2", req.tcpSourceAddr());
+        assertEquals("127.0.0.2", req.getTcpSourceAddr());
 
         when(mock.localAddress()).thenReturn(new InetSocketAddress("127.0.0.1", 1234));
         assertEquals("127.0.0.1", req.localAddr());
+        assertEquals("127.0.0.1", req.getLocalAddr());
         assertEquals(1234, req.localPort());
+        assertEquals(1234, req.getLocalPort());
 
         final LinkedMultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("a", "1");
@@ -180,6 +212,7 @@ class AsyncRequestImplTest {
         assertEquals("2", req.getCookie("b").value());
 
         assertSame(cookies, req.cookies());
+        assertSame(cookies, req.getCookies());
     }
 
     @Test
@@ -329,6 +362,15 @@ class AsyncRequestImplTest {
         assertEquals((short) 2, req.getShortHeader(AsciiString.of("b")));
         assertEquals(4, req.headerSize());
         assertEquals(4, req.getHeaderSize());
+
+        req.setHeader("x", "y");
+        req.setHeader((CharSequence) "y", "z");
+        req.addHeader("m", "n");
+        req.addHeader((CharSequence) "m0", "n");
+        assertEquals("y", req.getHeader("x"));
+        assertEquals("z", req.getHeader("y"));
+        assertEquals("n", req.getHeader("m"));
+        assertEquals("n", req.getHeader("m0"));
     }
 
     private static void verifyTrailers(AsyncRequestImpl req) {

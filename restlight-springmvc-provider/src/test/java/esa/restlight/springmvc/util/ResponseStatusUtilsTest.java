@@ -15,7 +15,7 @@
  */
 package esa.restlight.springmvc.util;
 
-import esa.restlight.springmvc.annotation.shaded.CookieValue0;
+import esa.restlight.springmvc.annotation.shaded.ResponseStatus0;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -31,7 +31,7 @@ class ResponseStatusUtilsTest {
 
     @BeforeAll
     static void setUp() {
-        assumeTrue(CookieValue0.shadedClass().getName().startsWith("org.springframework"));
+        assumeTrue(ResponseStatus0.shadedClass().getName().startsWith("org.springframework"));
     }
 
     @Test

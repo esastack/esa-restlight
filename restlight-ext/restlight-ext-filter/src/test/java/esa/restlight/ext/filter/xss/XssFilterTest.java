@@ -28,6 +28,9 @@ import java.util.concurrent.atomic.AtomicReference;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 
 class XssFilterTest {
 
@@ -100,5 +103,83 @@ class XssFilterTest {
         assertArrayEquals(names, req.get().parameterMap().get("name").toArray(namesForCompare));
         assertArrayEquals(script, req.get().parameterMap().get("script").toArray(scriptForCompare));
         assertArrayEquals(foos, req.get().parameterMap().get("foo").toArray(foosForCompare));
+    }
+
+    @Test
+    void testDelegate() {
+        final AsyncRequest delegate = mock(AsyncRequest.class);
+        final XssFilter.FilterWrapper filter = new XssFilter.FilterWrapper(delegate);
+
+        verify(delegate, never()).httpVersion();
+        filter.httpVersion();
+        verify(delegate).httpVersion();
+
+        verify(delegate, never()).scheme();
+        filter.scheme();
+        verify(delegate).scheme();
+
+        verify(delegate, never()).method();
+        filter.method();
+        verify(delegate).method();
+
+        verify(delegate, never()).inputStream();
+        filter.inputStream();
+        verify(delegate).inputStream();
+
+        verify(delegate, never()).byteBufBody();
+        filter.byteBufBody();
+        verify(delegate).byteBufBody();
+
+        verify(delegate, never()).remoteAddr();
+        filter.remoteAddr();
+        verify(delegate).remoteAddr();
+
+        verify(delegate, never()).tcpSourceAddr();
+        filter.tcpSourceAddr();
+        verify(delegate).tcpSourceAddr();
+
+        verify(delegate, never()).remotePort();
+        filter.remotePort();
+        verify(delegate).remotePort();
+
+        verify(delegate, never()).localAddr();
+        filter.localAddr();
+        verify(delegate).localAddr();
+
+        verify(delegate, never()).localPort();
+        filter.localPort();
+        verify(delegate).localPort();
+
+        verify(delegate, never()).headers();
+        filter.headers();
+        verify(delegate).headers();
+
+        verify(delegate, never()).trailers();
+        filter.trailers();
+        verify(delegate).trailers();
+
+        verify(delegate, never()).cookies();
+        filter.cookies();
+        verify(delegate).cookies();
+
+        verify(delegate, never()).getAttribute("a");
+        filter.getAttribute("a");
+        verify(delegate).getAttribute("a");
+
+        verify(delegate, never()).setAttribute("a", "b");
+        filter.setAttribute("a", "b");
+        verify(delegate).setAttribute("a", "b");
+
+        verify(delegate, never()).removeAttribute("a");
+        filter.removeAttribute("a");
+        verify(delegate).removeAttribute("a");
+
+        verify(delegate, never()).attributeNames();
+        filter.attributeNames();
+        verify(delegate).attributeNames();
+
+        verify(delegate, never()).alloc();
+        filter.alloc();
+        verify(delegate).alloc();
     }
 }

@@ -19,16 +19,25 @@ import esa.commons.NetworkUtils;
 import esa.restlight.core.util.RestlightVer;
 import esa.restlight.server.config.ServerOptions;
 import esa.restlight.server.config.ServerOptionsConfigure;
+import esa.restlight.server.config.SslOptionsConfigure;
 import esa.restlight.server.handler.RestlightHandler;
 import esa.restlight.server.schedule.ExecutorScheduler;
 import esa.restlight.server.schedule.Schedulers;
+import esa.restlight.server.util.Futures;
+import io.netty.buffer.UnpooledByteBufAllocator;
+import io.netty.channel.ChannelOption;
+import io.netty.handler.codec.http.HttpServerCodec;
 import org.junit.jupiter.api.Test;
 
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.util.Collections;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -40,15 +49,44 @@ class NettyRestlightServerTest {
                 .ioThreads(1)
                 .coreBizThreads(0)
                 .maxBizThreads(1)
+                .ssl(SslOptionsConfigure.newOpts()
+                        .ciphers(Collections.singletonList("xx"))
+                        .enabledProtocols(Collections.singletonList("xx"))
+                        .certChainPath("/abc")
+                        .keyPath("/xyz")
+                        .keyPassword("mn")
+                        .trustCertsPath("xxx")
+                        .sessionTimeout(180L)
+                        .sessionCacheSize(64L)
+                        .handshakeTimeoutMillis(3000L)
+                        .configured())
                 .configured();
 
 
         final SocketAddress address = new InetSocketAddress(NetworkUtils.selectRandomPort());
         final RestlightHandler handler = mock(RestlightHandler.class);
 
+        final int randomPort = NetworkUtils.selectRandomPort();
         final RestlightServer server = RestlightServerBootstrap.from(handler, options)
                 .daemon(true)
+                .withAddress(randomPort)
+                .withDomainSocketAddress("/abc")
+                .withAddress("127.0.0.1", randomPort)
                 .withAddress(address)
+                .withFilter((request, response, chain) -> Futures.completedFuture())
+                .withFilters(null)
+                .withFilters(Collections.emptyList())
+                .withFilters(Collections.singleton((request, response, chain) -> Futures.completedFuture()))
+                .withOption(ChannelOption.AUTO_CLOSE, true)
+                .withOptions(null)
+                .withOptions(Collections.emptyMap())
+                .withOptions(Collections.singletonMap(ChannelOption.ALLOCATOR, UnpooledByteBufAllocator.DEFAULT))
+                .withChildOption(ChannelOption.AUTO_CLOSE, true)
+                .withChildOptions(null)
+                .withChildOptions(Collections.emptyMap())
+                .withChildOptions(Collections.singletonMap(ChannelOption.ALLOCATOR, UnpooledByteBufAllocator.DEFAULT))
+                .withChannelHandler(new HttpServerCodec())
+                .withChannelHandlers(Collections.singletonList(new HttpServerCodec()))
                 .forServer();
 
         assertEquals(address, server.address());

@@ -30,12 +30,8 @@ class AliasUtils {
         return getFromValueAlias(attr, alias, EMPTY_STRING_ARRAY, attributeName);
     }
 
-    static String getStringFromValueAlias(String attr, String alias, String attributeName) {
-        return getFromValueAlias(attr, alias, EMPTY, attributeName);
-    }
-
     static String getNamedStringFromValueAlias(String attr, String alias) {
-        return getStringFromValueAlias(attr, alias, "name");
+        return getFromValueAlias(attr, alias, EMPTY, "name");
     }
 
     static <T> T getFromValueAlias(T attr, T alias, T defaultValue, String attributeName) {

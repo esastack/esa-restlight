@@ -95,6 +95,13 @@ class DeploymentsTest {
                                 MockBean.class.getMethod("list"), pojo),
                                 false,
                                 Schedulers.BIZ))))
+                .addHandlerMappings(Collections.singletonList(new HandlerMappingImpl(Mapping.mapping(),
+                        new RouteHandlerImpl(new HandlerMethodImpl(MockBean.class,
+                                MockBean.class.getMethod("hello"), pojo),
+                                false,
+                                Schedulers.BIZ))))
+                .addHandlerMappings(null)
+                .addHandlerMappings(Collections.emptyList())
                 .addHandlerMappingProvider(ctx0 -> {
                     try {
                         return Collections.singleton(new HandlerMappingImpl(Mapping.mapping(),
@@ -117,39 +124,67 @@ class DeploymentsTest {
                         return Collections.emptyList();
                     }
                 }))
+                .addHandlerMappingProviders(null)
+                .addHandlerMappingProviders(Collections.emptyList())
                 .addArgumentResolverAdvice(new ArgAdvice())
                 .addArgumentResolverAdvice(new ArgAdviceFactory())
                 .addReturnValueResolverAdvice(new RetAdvice())
                 .addReturnValueResolverAdvice(new RetAdviceFactory())
                 .addController(new A())
                 .addControllers(Arrays.asList(new B(), new C()))
+                .addControllers(null)
+                .addControllers(Collections.emptyList())
                 .addControllerAdvice(new A())
                 .addControllerAdvices(Arrays.asList(new B(), new C()))
+                .addControllerAdvices(null)
+                .addControllerAdvices(Collections.emptyList())
                 .addInterceptor(() -> request -> true)
                 .addInterceptors(Arrays.asList(() -> request -> true, () -> request -> true))
+                .addInterceptors(null)
+                .addInterceptors(Collections.emptyList())
                 .addRouteInterceptor((ctx1, route) -> true)
                 .addRouteInterceptors(Arrays.asList((ctx1, route) -> true, (ctx1, route) -> true))
+                .addRouteInterceptors(null)
+                .addRouteInterceptors(Collections.emptyList())
                 .addMappingInterceptor(request -> true)
                 .addMappingInterceptors(Arrays.asList(request -> true, request -> true))
+                .addMappingInterceptors(null)
+                .addMappingInterceptors(Collections.emptyList())
                 .addHandlerInterceptor(new HandlerInterceptor() {
                 })
                 .addHandlerInterceptors(Arrays.asList(new HandlerInterceptor() {
                 }, new HandlerInterceptor() {
                 }))
+                .addHandlerInterceptors(null)
+                .addHandlerInterceptors(Collections.emptyList())
                 .addInterceptorFactory((ctx12, route) -> Optional.empty())
                 .addInterceptorFactories(Arrays.asList((ctx12, route) -> Optional.of(() -> request -> true),
                         (ctx12, route) -> Optional.of(() -> request -> true)))
+                .addInterceptorFactories(null)
+                .addInterceptorFactories(Collections.emptyList())
                 .addExceptionResolver(RuntimeException.class, (request, response, e) -> Futures.completedFuture())
                 .addArgumentResolver(new Arg())
                 .addArgumentResolver(new ArgFactory())
                 .addArgumentResolvers(Arrays.asList(new ArgFactory(), new ArgFactory()))
+                .addArgumentResolverAdvices(null)
+                .addArgumentResolverAdvices(Collections.emptyList())
+                .addArgumentResolvers(null)
+                .addArgumentResolvers(Collections.emptyList())
                 .addReturnValueResolver(new Ret())
                 .addReturnValueResolver(new RetFactory())
                 .addReturnValueResolvers(Arrays.asList(new RetFactory(), new RetFactory()))
+                .addReturnValueResolvers(null)
+                .addReturnValueResolvers(Collections.emptyList())
+                .addReturnValueResolverAdvices(null)
+                .addReturnValueResolverAdvices(Collections.emptyList())
                 .addRequestSerializer(new Rx())
                 .addRequestSerializers(Arrays.asList(new Rx(), new Rx()))
+                .addRequestSerializers(null)
+                .addRequestSerializers(Collections.emptyList())
                 .addResponseSerializer(new Tx())
                 .addResponseSerializers(Arrays.asList(new Tx(), new Tx()))
+                .addResponseSerializers(null)
+                .addResponseSerializers(Collections.emptyList())
                 .addSerializer(new RxBody())
                 .addSerializers(Collections.singleton(new TxBody()))
                 .server()
@@ -179,7 +214,7 @@ class DeploymentsTest {
 
         assertTrue(ctx.routeRegistry().isPresent());
         final ReadOnlyRouteRegistry registry = ctx.routeRegistry().get();
-        assertEquals(4, registry.routes().size());
+        assertEquals(5, registry.routes().size());
     }
 
     private static class A {
@@ -192,6 +227,10 @@ class DeploymentsTest {
     }
 
     private static class MockBean {
+
+        public String hello() {
+            return "";
+        }
 
         public String index() {
             return "";

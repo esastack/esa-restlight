@@ -31,6 +31,7 @@ import esa.restlight.core.resolver.exception.ExceptionMapper;
 import esa.restlight.core.serialize.FastJsonHttpBodySerializer;
 import esa.restlight.server.schedule.Schedulers;
 import esa.restlight.springmvc.MockUtils;
+import esa.restlight.springmvc.annotation.shaded.ControllerAdvice0;
 import esa.restlight.springmvc.annotation.shaded.ExceptionHandler0;
 import esa.restlight.test.mock.MockAsyncRequest;
 import esa.restlight.test.mock.MockAsyncResponse;
@@ -59,6 +60,7 @@ class SpringMvcExceptionResolverFactoryTest {
 
     @BeforeAll
     static void setUp() {
+        assumeTrue(ControllerAdvice0.shadedClass().getName().startsWith("org.springframework"));
         assumeTrue(ExceptionHandler0.shadedClass().getName().startsWith("org.springframework"));
         handlerLocator = MockUtils.mockRouteHandlerLocator();
     }

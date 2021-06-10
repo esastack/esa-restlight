@@ -16,18 +16,24 @@
 package esa.restlight.server;
 
 import esa.restlight.server.bootstrap.RestlightServer;
+import esa.restlight.server.config.RouteOptionsConfigure;
 import esa.restlight.server.config.SchedulingOptionsConfigure;
 import esa.restlight.server.config.ServerOptions;
 import esa.restlight.server.config.ServerOptionsConfigure;
 import esa.restlight.server.handler.RestlightHandler;
 import esa.restlight.server.route.Route;
 import esa.restlight.server.schedule.ExecutorScheduler;
+import esa.restlight.server.schedule.RequestTaskHook;
 import esa.restlight.server.schedule.Scheduler;
 import esa.restlight.server.schedule.Schedulers;
+import esa.restlight.server.spi.RequestTaskHookFactory;
+import io.netty.util.concurrent.GlobalEventExecutor;
 import org.junit.jupiter.api.Test;
 
 import java.net.SocketAddress;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Optional;
 import java.util.concurrent.Executor;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -65,6 +71,7 @@ class RestliteTest {
                         .scheduling(SchedulingOptionsConfigure.newOpts()
                                 .defaultScheduler("custom")
                                 .configured())
+                        .route(RouteOptionsConfigure.newOpts().useCachedRouting(true).computeRate(20).configured())
                         .configured();
         final Route r1 = Route.route(get("/foo")).schedule(Schedulers.io());
         final Route r2 = Route.route(get("/bar")).schedule(Schedulers.biz());
@@ -77,8 +84,13 @@ class RestliteTest {
         final Restlite restlite = Restlite0.forServer(ops)
                 .deployments()
                 .addScheduler(Schedulers.fromExecutor("custom", custom))
+                .addSchedulers(Collections.singleton(Schedulers.fromExecutor("custom0",
+                        GlobalEventExecutor.INSTANCE)))
                 .addRoute(r1)
                 .addRoutes(Arrays.asList(r2, r3))
+                .addRequestTaskHook((RequestTaskHook) task -> null)
+                .addRequestTaskHook((RequestTaskHookFactory) ctx -> Optional.empty())
+                .addRequestTaskHooks(Collections.singletonList(ctx -> Optional.empty()))
                 .server();
         restlite.start();
         final ServerDeployContext<ServerOptions> ctx = restlite.deployments().deployContext();
@@ -87,7 +99,7 @@ class RestliteTest {
         assertTrue(ctx.routeRegistry().isPresent());
         assertNotNull(ctx.routeRegistry().get().routes());
         assertEquals(3, ctx.routeRegistry().get().routes().size());
-        assertEquals(3, ctx.schedulers().size());
+        assertEquals(4, ctx.schedulers().size());
         assertEquals(Schedulers.io(), ctx.schedulers().get(Schedulers.IO));
         final Scheduler biz = ctx.schedulers().get(Schedulers.BIZ);
         assertTrue(biz instanceof ExecutorScheduler);
