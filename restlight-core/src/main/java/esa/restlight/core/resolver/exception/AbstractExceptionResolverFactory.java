@@ -26,7 +26,6 @@ import java.util.List;
 public abstract class AbstractExceptionResolverFactory extends DefaultExceptionResolverFactory
         implements ExceptionResolverFactory {
 
-
     public AbstractExceptionResolverFactory(List<ExceptionMapper> mappers,
                                             Collection<?> controllerBeans,
                                             Collection<?> adviceBeans,
