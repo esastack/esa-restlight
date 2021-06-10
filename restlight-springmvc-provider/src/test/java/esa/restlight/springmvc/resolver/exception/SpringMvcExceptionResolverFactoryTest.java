@@ -31,8 +31,6 @@ import esa.restlight.core.resolver.exception.ExceptionMapper;
 import esa.restlight.core.serialize.FastJsonHttpBodySerializer;
 import esa.restlight.server.schedule.Schedulers;
 import esa.restlight.springmvc.MockUtils;
-import esa.restlight.springmvc.annotation.shaded.ControllerAdvice0;
-import esa.restlight.springmvc.annotation.shaded.ExceptionHandler0;
 import esa.restlight.test.mock.MockAsyncRequest;
 import esa.restlight.test.mock.MockAsyncResponse;
 import io.netty.handler.codec.http.HttpResponseStatus;
@@ -50,7 +48,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 class SpringMvcExceptionResolverFactoryTest {
 
@@ -60,8 +57,6 @@ class SpringMvcExceptionResolverFactoryTest {
 
     @BeforeAll
     static void setUp() {
-        assumeTrue(ControllerAdvice0.shadedClass().getName().startsWith("org.springframework"));
-        assumeTrue(ExceptionHandler0.shadedClass().getName().startsWith("org.springframework"));
         handlerLocator = MockUtils.mockRouteHandlerLocator();
     }
 

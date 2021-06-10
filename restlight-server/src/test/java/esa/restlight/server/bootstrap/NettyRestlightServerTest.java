@@ -50,6 +50,7 @@ class NettyRestlightServerTest {
                 .coreBizThreads(0)
                 .maxBizThreads(1)
                 .ssl(SslOptionsConfigure.newOpts()
+                        .enable(true)
                         .ciphers(Collections.singletonList("xx"))
                         .enabledProtocols(Collections.singletonList("xx"))
                         .certChainPath("/abc")
