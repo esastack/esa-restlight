@@ -22,6 +22,7 @@ import esa.restlight.core.handler.locate.RouteHandlerLocator;
 import esa.restlight.core.method.InvocableMethod;
 import esa.restlight.springmvc.annotation.shaded.RequestMapping0;
 import io.netty.handler.codec.http.HttpResponseStatus;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -34,6 +35,12 @@ import static org.mockito.Mockito.when;
 
 class SpringMvcRouteHandlerLocatorFactoryTest {
 
+    @BeforeAll
+    static void setUp() {
+        assumeTrue(RequestMapping0.shadedClass().getName().startsWith("org.springframework"));
+    }
+
+    @SuppressWarnings("unchecked")
     @Test
     void testLocator() throws NoSuchMethodException {
         final SpringMvcRouteHandlerLocatorFactory factory = new SpringMvcRouteHandlerLocatorFactory();
@@ -51,7 +58,6 @@ class SpringMvcRouteHandlerLocatorFactoryTest {
         final HttpResponseStatus ret = ((SpringMvcRouteHandlerLocatorFactory.HandlerLocator) locator)
                 .getCustomResponse(method);
 
-        assumeTrue(RequestMapping0.shadedClass().getName().startsWith("org.springframework"));
         assertNotNull(ret);
         assertEquals(HttpResponseStatus.NOT_FOUND.code(), ret.code());
         assertEquals("foo", ret.reasonPhrase());
