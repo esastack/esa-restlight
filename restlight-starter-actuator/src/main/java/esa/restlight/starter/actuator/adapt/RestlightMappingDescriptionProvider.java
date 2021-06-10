@@ -88,7 +88,7 @@ public class RestlightMappingDescriptionProvider implements MappingDescriptionPr
         this.deployContext = ctx;
     }
 
-    private static class MappingResult implements Serializable {
+    static class MappingResult implements Serializable {
 
         private static final long serialVersionUID = 4155179740279359L;
 
@@ -96,7 +96,7 @@ public class RestlightMappingDescriptionProvider implements MappingDescriptionPr
         private String bean;
         private String method;
 
-        MappingResult(String path, String bean, String method) {
+        private MappingResult(String path, String bean, String method) {
             this.path = path;
             this.bean = bean;
             this.method = method;

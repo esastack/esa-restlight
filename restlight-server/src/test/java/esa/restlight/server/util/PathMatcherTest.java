@@ -419,4 +419,19 @@ class PathMatcherTest {
                 () -> new PathMatcher("/foo/{id:bar(baz)?}", false)
                         .matchAndExtractUriTemplateVariables("/foo/BARBAZ"));
     }
+
+    @Test
+    void testCombine() {
+        assertEquals("", PathMatcher.combine(null, null));
+        assertEquals("/hotels", PathMatcher.combine("/hotels", null));
+        assertEquals("/hotels", PathMatcher.combine(null, "/hotels"));
+        assertEquals("/hotels/bookings", PathMatcher.combine("/hotels", "/bookings"));
+        assertEquals("/hotels/bookings", PathMatcher.combine("/hotels/*", "/bookings"));
+        assertEquals("/hotels/;/bookings", PathMatcher.combine("/hotels/;", "/bookings"));
+        assertEquals("/hotels/{hotel}", PathMatcher.combine("/hotels", "{hotel}"));
+        assertEquals("/hotels/;/{hotel}", PathMatcher.combine("/hotels/;", "{hotel}"));
+        assertEquals("/hotels.html", PathMatcher.combine("/*.html", "/hotels.html"));
+        assertEquals("/hotels.html", PathMatcher.combine("/*.html", "/hotels"));
+        assertThrows(IllegalArgumentException.class, () -> PathMatcher.combine("/*.html", "/*.txt"));
+    }
 }

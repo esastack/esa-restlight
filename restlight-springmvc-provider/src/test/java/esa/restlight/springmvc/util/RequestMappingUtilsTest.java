@@ -18,21 +18,31 @@ package esa.restlight.springmvc.util;
 import esa.restlight.core.method.HttpMethod;
 import esa.restlight.core.util.Constants;
 import esa.restlight.server.route.Mapping;
-import esa.restlight.springmvc.annotation.shaded.CookieValue0;
+import esa.restlight.springmvc.annotation.shaded.RequestMapping0;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 class RequestMappingUtilsTest {
 
     @BeforeAll
     static void setUp() {
-        assumeTrue(CookieValue0.shadedClass().getName().startsWith("org.springframework"));
+        assumeTrue(RequestMapping0.shadedClass().getName().startsWith("org.springframework"));
     }
 
     @Test

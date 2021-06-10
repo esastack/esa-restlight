@@ -35,7 +35,7 @@ import esa.restlight.springmvc.annotation.shaded.ExceptionHandler0;
 import esa.restlight.test.mock.MockAsyncRequest;
 import esa.restlight.test.mock.MockAsyncResponse;
 import io.netty.handler.codec.http.HttpResponseStatus;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -55,10 +55,10 @@ class SpringMvcExceptionResolverFactoryTest {
 
     private static final String NAME = "name";
 
-    private HandlerLocator handlerLocator;
+    private static HandlerLocator handlerLocator;
 
-    @BeforeEach
-    void setUp() {
+    @BeforeAll
+    static void setUp() {
         assumeTrue(ExceptionHandler0.shadedClass().getName().startsWith("org.springframework"));
         handlerLocator = MockUtils.mockRouteHandlerLocator();
     }
