@@ -15,7 +15,9 @@
  */
 package esa.restlight.springmvc.util;
 
+import esa.restlight.springmvc.annotation.shaded.ResponseStatus0;
 import io.netty.handler.codec.http.HttpResponseStatus;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -23,8 +25,14 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 class ResponseStatusUtilsTest {
+
+    @BeforeAll
+    static void setUp() {
+        assumeTrue(ResponseStatus0.shadedClass().getName().startsWith("org.springframework"));
+    }
 
     @Test
     void testGetCustomResponseFromMethod() throws NoSuchMethodException {
@@ -61,18 +69,18 @@ class ResponseStatusUtilsTest {
     }
 
     @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR, reason = "foo")
-    static class Subject {
+    private static class Subject {
 
-        void method1() {
+        public void method1() {
         }
 
         @ResponseStatus(value = HttpStatus.BAD_GATEWAY, reason = "bar")
-        void method2() {
+        public void method2() {
         }
     }
 
     @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR, reason = "foo")
-    static class Error extends Throwable {
+    private static class Error extends Throwable {
 
         private static final long serialVersionUID = 3429313721015902895L;
     }

@@ -22,10 +22,25 @@ on:
         default: ''
 
 jobs:
-  build:
-
+  test:
     runs-on: ubuntu-latest
-
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up JDK 1.8
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+      - name: Clean and Test
+        if: github.event.inputs.profiles == ''
+        run: mvn clean test
+      - name: Upload coverage to Codecov
+        if: github.event_name == 'push'
+        uses: codecov/codecov-action@v1.0.15
+        with:
+          token: ${{secrets.CODECOV_TOKEN}}
+  package:
+    needs: test
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
     - name: Set up JDK 1.8
@@ -38,8 +53,3 @@ jobs:
     - name: Clean and Package With Profiles
       if: github.event.inputs.profiles != ''
       run: mvn -P ${{ github.event.inputs.profiles }} clean package
-    - name: Upload coverage to Codecov
-      if: github.event_name == 'push'
-      uses: codecov/codecov-action@v1.0.15
-      with:
-          token: ${{secrets.CODECOV_TOKEN}}

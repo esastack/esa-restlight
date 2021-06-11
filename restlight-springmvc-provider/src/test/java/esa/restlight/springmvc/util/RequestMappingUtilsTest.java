@@ -18,6 +18,8 @@ package esa.restlight.springmvc.util;
 import esa.restlight.core.method.HttpMethod;
 import esa.restlight.core.util.Constants;
 import esa.restlight.server.route.Mapping;
+import esa.restlight.springmvc.annotation.shaded.RequestMapping0;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,8 +36,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 class RequestMappingUtilsTest {
+
+    @BeforeAll
+    static void setUp() {
+        assumeTrue(RequestMapping0.shadedClass().getName().startsWith("org.springframework"));
+    }
 
     @Test
     void testNormaliseDefaultValue() {
@@ -151,7 +159,7 @@ class RequestMappingUtilsTest {
         assertArrayEquals(new String[]{"b/1"}, mapping.get().produces());
     }
 
-    static class Subject {
+    private static class Subject {
         @RequestMapping(name = "foo",
                 path = "path",
                 method = RequestMethod.GET,
