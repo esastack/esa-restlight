@@ -159,7 +159,7 @@ class RequestMappingUtilsTest {
         assertArrayEquals(new String[]{"b/1"}, mapping.get().produces());
     }
 
-    static class Subject {
+    private static class Subject {
         @RequestMapping(name = "foo",
                 path = "path",
                 method = RequestMethod.GET,

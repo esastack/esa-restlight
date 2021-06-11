@@ -69,18 +69,18 @@ class ResponseStatusUtilsTest {
     }
 
     @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR, reason = "foo")
-    static class Subject {
+    private static class Subject {
 
-        void method1() {
+        public void method1() {
         }
 
         @ResponseStatus(value = HttpStatus.BAD_GATEWAY, reason = "bar")
-        void method2() {
+        public void method2() {
         }
     }
 
     @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR, reason = "foo")
-    static class Error extends Throwable {
+    private static class Error extends Throwable {
 
         private static final long serialVersionUID = 3429313721015902895L;
     }
