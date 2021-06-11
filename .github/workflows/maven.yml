@@ -49,7 +49,7 @@ jobs:
         java-version: 1.8
     - name: Clean and Package
       if: github.event.inputs.profiles == ''
-      run: mvn clean package
+      run: mvn clean package -Dmaven.test.skip=true
     - name: Clean and Package With Profiles
       if: github.event.inputs.profiles != ''
       run: mvn -P ${{ github.event.inputs.profiles }} clean package
