@@ -188,7 +188,8 @@ public class DefaultDispatcherHandler implements DispatcherHandler {
                     task.response(),
                     reason,
                     HttpResponseStatus.TOO_MANY_REQUESTS);
-            LoggerUtils.logger().error("Task({}) rejected, {}", task, reason);
+            LoggerUtils.logger().error("RequestTask(url={}, method={}) rejected, {}", task.request().path(),
+                    task.request().method(), reason);
         }
         final CompletableFuture<Void> p = task.promise();
         if (!p.isDone()) {
