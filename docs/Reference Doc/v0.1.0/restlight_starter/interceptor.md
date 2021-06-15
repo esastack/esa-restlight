@@ -14,6 +14,10 @@ sort: 3
 ```tip
 实现对应的拦截器接口并注入Spring即可
 ```
+```note
+- 在Interceptor#preHandle0()和Interceptor#postHandle0()中直接通过throw抛出的异常将不会被
+异常处理器处理，如果需要被正常处理，请使用CompletableFuture.completeExceptionally()封装异常
+```
 
 ## 拦截器定位
 
