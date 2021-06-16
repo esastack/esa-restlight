@@ -7,7 +7,7 @@ sort: 15
 Restlight 支持根据请求任务的排队时间快速失败。具体地，从接收到首字节（TTFB）或请求任务进入线程池开始排队时开始计时，
 如果请求任务真正执行时的时间与起始时间的差值大于指定值（timeout），那么直接结束当前请求（返回500）。
 
-使用时，需要配置timeout与起始计时时间（首字节时间或者开始排队时间，默认后者），示例如下：
+使用时，需要配置timeout与起始时间（首字节时间或者开始排队时间，默认后者），示例如下：
 ```properties
 restlight.server.scheduling.timeout.BIZ.type=QUEUED
 restlight.server.scheduling.timeout.BIZ.time-millis=30
