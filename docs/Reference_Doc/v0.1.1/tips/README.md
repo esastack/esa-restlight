@@ -1,6 +1,6 @@
 ---
-sort: 1
+sort: 12
 ---
 
-# V0.1.0
+# 使用注意
 {% include list.liquid all=true %}
