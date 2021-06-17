@@ -19,7 +19,7 @@
     <parent>
         <groupId>io.esastack</groupId>
         <artifactId>restlight-ext</artifactId>
-        <version>0.1.1-SNAPSHOT</version>
+        <version>0.1.1</version>
     </parent>
     <artifactId>restlight-ext-filter-starter</artifactId>
     <name>Restlight :: Ext :: Filter Starter</name>

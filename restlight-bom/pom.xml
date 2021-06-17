@@ -21,7 +21,7 @@
     <artifactId>restlight-bom</artifactId>
     <packaging>pom</packaging>
     <name>Restlight :: Bom</name>
-    <version>0.1.1-SNAPSHOT</version>
+    <version>0.1.1</version>
 
     <description>
         Restlight :: Bill of Materials
@@ -39,7 +39,7 @@
         <url>https://github.com/esastack/esa-restlight</url>
         <connection>scm:git:git://github.com/esastack/esa-restlight.git</connection>
         <developerConnection>scm:git:ssh://git@github.com/esastack/esa-restlight.git</developerConnection>
-        <tag>HEAD</tag>
+        <tag>v0.1.1</tag>
     </scm>
 
     <developers>
