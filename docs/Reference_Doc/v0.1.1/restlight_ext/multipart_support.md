@@ -24,7 +24,7 @@ public class FileSupportController
     // 上传单个文件
     @RequestMapping("/upload")
     public String fileUpload(@UploadFile MultipartFile multipartFile) throws IOException {
-        File temp = new File("D:\\" + multipartFile.getOriginalFilename());
+        File temp = new File("D:\\" + multipartFile.originalFilename());
         multipartFile.transferTo(temp);
         return "SUCCESS";
     }
@@ -33,7 +33,7 @@ public class FileSupportController
     @RequestMapping("/uploads")
     public String fileUploads(@UploadFile List<MultipartFile> files) throws IOException {
         for (MultipartFile file : files) {
-            File temp = new File("D:\\" + file.getOriginalFilename());
+            File temp = new File("D:\\" + file.originalFilename());
             file.transferTo(temp);
         }
         return "SUCCESS";
