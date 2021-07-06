@@ -61,7 +61,7 @@ import java.util.stream.Collectors;
 public class BaseDeployments<R extends BaseRestlightServer<R, D, O>, D extends BaseDeployments<R, D, O>,
         O extends ServerOptions> {
 
-    private static final Class<? extends RejectedExecutionHandler> JDK_DEFAULT_REJECT_HANDLER;
+    private static final Class<? extends RejectedExecutionHandler> JDK_DEFAULT_REJECT_HANDLER = ThreadPoolExecutor.AbortPolicy.class;
 
     /**
      * Hold the reference of {@link R}
@@ -71,17 +71,6 @@ public class BaseDeployments<R extends BaseRestlightServer<R, D, O>, D extends B
     private final List<RequestTaskHookFactory> requestTaskHooks = new LinkedList<>();
     private final ServerDeployContext<O> ctx;
     private RestlightHandler handler;
-
-    static {
-        final ThreadPoolExecutor e = new ThreadPoolExecutor(0,
-                1,
-                0L,
-                TimeUnit.SECONDS,
-                new LinkedBlockingQueue<>(),
-                new RestlightThreadFactory("useless"));
-        JDK_DEFAULT_REJECT_HANDLER = e.getRejectedExecutionHandler().getClass();
-        e.shutdownNow();
-    }
 
     protected BaseDeployments(R restlight, O options) {
         this.restlight = restlight;
