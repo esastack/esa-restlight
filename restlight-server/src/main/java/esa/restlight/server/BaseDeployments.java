@@ -73,11 +73,19 @@ public class BaseDeployments<R extends BaseRestlightServer<R, D, O>, D extends B
     private RestlightHandler handler;
 
     static {
-        Class<? extends RejectedExecutionHandler> defaultHandlerClass = ThreadPoolExecutor.AbortPolicy.class;
+        Class<? extends RejectedExecutionHandler> defaultHandlerClass;
         try {
             defaultHandlerClass = (Class<? extends RejectedExecutionHandler>) ThreadPoolExecutor.class.getDeclaredField("defaultHandler").getType();
         } catch (NoSuchFieldException e) {
-            LoggerUtils.logger().error("Could not find the field named defaultHandler in ThreadPoolExecutor, JDK_DEFAULT_REJECT_HANDLER will be set to ThreadPoolExecutor$AbortPolicy.class", e);
+            LoggerUtils.logger().debug("Could not find the field named defaultHandler in ThreadPoolExecutor", e);
+            final ThreadPoolExecutor executor = new ThreadPoolExecutor(0,
+                    1,
+                    0L,
+                    TimeUnit.SECONDS,
+                    new LinkedBlockingQueue<>(),
+                    new RestlightThreadFactory("useless"));
+            defaultHandlerClass = executor.getRejectedExecutionHandler().getClass();
+            executor.shutdownNow();
         }
         JDK_DEFAULT_REJECT_HANDLER = defaultHandlerClass;
     }
