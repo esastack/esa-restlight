@@ -69,6 +69,7 @@ public abstract class BaseRestlightServer<R extends BaseRestlightServer<R, D, O>
     }
 
     public R name(String name) {
+        checkImmutable();
         Checks.checkNotEmptyArg(name, "name");
         this.name = name;
         return self();
@@ -175,6 +176,7 @@ public abstract class BaseRestlightServer<R extends BaseRestlightServer<R, D, O>
 
     @Beta
     public R channelHandler(ChannelHandler channelHandler) {
+        checkImmutable();
         if (channelHandler != null) {
             this.channelHandlers.add(channelHandler);
         }
@@ -183,6 +185,7 @@ public abstract class BaseRestlightServer<R extends BaseRestlightServer<R, D, O>
 
     @Beta
     public R channelHandlers(ChannelHandler... channelHandlers) {
+        checkImmutable();
         if (channelHandlers == null || channelHandlers.length == 0) {
             return self();
         }
@@ -191,6 +194,7 @@ public abstract class BaseRestlightServer<R extends BaseRestlightServer<R, D, O>
 
     @Beta
     public R channelHandlers(Collection<? extends ChannelHandler> channelHandlers) {
+        checkImmutable();
         if (channelHandlers != null && !channelHandlers.isEmpty()) {
             this.channelHandlers.addAll(channelHandlers);
         }
