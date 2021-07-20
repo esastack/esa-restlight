@@ -78,8 +78,8 @@ public class BaseDeployments<R extends BaseRestlightServer<R, D, O>, D extends B
             defaultHandlerClass = (Class<? extends RejectedExecutionHandler>)
                     ThreadPoolExecutor.class.getDeclaredField("defaultHandler").getType();
         } catch (NoSuchFieldException e) {
-            LoggerUtils.logger().debug("Could not find the field named defaultHandler" +
-                    " in ThreadPoolExecutor", e);
+            LoggerUtils.logger().debug("Could not find the field named 'defaultHandler'" +
+                    " in java.util.concurrent.ThreadPoolExecutor", e);
             final ThreadPoolExecutor executor = new ThreadPoolExecutor(0,
                     1,
                     0L,
