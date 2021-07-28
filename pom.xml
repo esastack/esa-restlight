@@ -123,6 +123,7 @@
         <project.build.sourceEncoding>${encoding}</project.build.sourceEncoding>
         <project.reporting.outputEncoding>${encoding}</project.reporting.outputEncoding>
         <esa-commons.version>0.1.1</esa-commons.version>
+        <esa-commons-build.version>1.0</esa-commons-build.version>
         <esa-httpserver.version>0.1.0</esa-httpserver.version>
         <guava.version>29.0-jre</guava.version>
         <spring-boot.version>2.1.2.RELEASE</spring-boot.version>
@@ -342,7 +343,7 @@
                         <id>check-style</id>
                         <configuration>
                             <skip>false</skip>
-                            <configLocation>esa/commons/checkstyle.xml</configLocation>
+                            <configLocation>io/esastack/commons/checkstyle.xml</configLocation>
                             <encoding>${encoding}</encoding>
                             <consoleOutput>true</consoleOutput>
                             <logViolationsToConsole>true</logViolationsToConsole>
@@ -372,7 +373,7 @@
                     <dependency>
                         <groupId>io.esastack</groupId>
                         <artifactId>commons-build</artifactId>
-                        <version>${esa-commons.version}</version>
+                        <version>${esa-commons-build.version}</version>
                     </dependency>
                 </dependencies>
             </plugin>
