@@ -34,6 +34,7 @@ import esa.restlight.server.bootstrap.WebServerException;
 import io.netty.util.internal.InternalThreadLocalMap;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Implementation of {@link ArgumentResolverFactory} for resolving argument that annotated by the ResponseBody.
@@ -102,6 +103,9 @@ public abstract class AbstractResponseBodyReturnValueResolver implements ReturnV
                             serializer = ser;
                             break;
                         }
+                    }
+                    if (Objects.nonNull(serializer)) {
+                        break;
                     }
                 }
                 if (serializer == null) {
