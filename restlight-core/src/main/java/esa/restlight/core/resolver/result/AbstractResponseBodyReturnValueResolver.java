@@ -97,15 +97,13 @@ public abstract class AbstractResponseBodyReturnValueResolver implements ReturnV
             if (mediaTypes.isEmpty()) {
                 serializer = serializers.get(0);
             } else {
+                outerloop:
                 for (MediaType mediaType : mediaTypes) {
                     for (HttpResponseSerializer ser : serializers) {
                         if (ser.supportsWrite(mediaType, returnValue.getClass())) {
                             serializer = ser;
-                            break;
+                            break outerloop;
                         }
-                    }
-                    if (Objects.nonNull(serializer)) {
-                        break;
                     }
                 }
                 if (serializer == null) {
@@ -125,7 +123,7 @@ public abstract class AbstractResponseBodyReturnValueResolver implements ReturnV
         private final String parameterName;
 
         NegotiationResolver(List<? extends HttpResponseSerializer> serializers,
-                                    String parameterName, boolean isAnyType) {
+                            String parameterName, boolean isAnyType) {
             super(serializers, isAnyType);
             this.parameterName = parameterName;
         }
