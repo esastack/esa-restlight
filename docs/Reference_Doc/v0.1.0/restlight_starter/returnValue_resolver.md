@@ -183,43 +183,43 @@ public @interface Suffix {
 
 ```java
 @Bean
-    public ReturnValueResolverFactory resolver() {
-        return new ReturnValueResolverFactory() {
-            @Override
-            public boolean supports(InvocableMethod invocableMethod) {
-                // 当方法上有此注解时生效
-                return String.class.equals(invocableMethod.getMethod().getReturnType()) && parameter.hasMethodAnnotation(CustomHeader.class);
-            }
-            
-            public ReturnValueResolver createResolver(InvocableMethod invocableMethod,
-                                                      List<? extends HttpResponseSerializer> serializers) {
-                return new Resovler(invocableMethod);
-            }
-            
-        };
-    }
-
-    /**
-     * 实际ArgumentResolver实现
-     */
-    private static class Resolver implements ReturnValueResolver {
-
-        private final String suffix;
-
-        private Resolver(InvocableMethod invocableMethod) {
-            // 获取前缀
-            Suffix anno = invocableMethod.getMethodAnnotation(Suffix.class);
-            this.suffix = anno.value();
-        }
-
+public ReturnValueResolverFactory resolver() {
+    return new ReturnValueResolverFactory() {
         @Override
-        public byte[] resolve(Object returnValue,
-                   AsyncRequest request,
-                   AsyncReponse response) {
-            // 拼接
-            return suffix + String.valueOf(returnValue);
+        public boolean supports(InvocableMethod invocableMethod) {
+            // 当方法上有此注解时生效
+            return String.class.equals(invocableMethod.getMethod().getReturnType()) && parameter.hasMethodAnnotation(CustomHeader.class);
         }
+        
+        public ReturnValueResolver createResolver(InvocableMethod invocableMethod,
+                                                  List<? extends HttpResponseSerializer> serializers) {
+            return new Resovler(invocableMethod);
+        }
+        
+    };
+}
+
+/**
+ * 实际ArgumentResolver实现
+ */
+private static class Resolver implements ReturnValueResolver {
+
+    private final String suffix;
+
+    private Resolver(InvocableMethod invocableMethod) {
+        // 获取前缀
+        Suffix anno = invocableMethod.getMethodAnnotation(Suffix.class);
+        this.suffix = anno.value();
     }
+
+    @Override
+    public byte[] resolve(Object returnValue,
+               AsyncRequest request,
+               AsyncReponse response) {
+        // 拼接
+        return suffix + String.valueOf(returnValue);
+    }
+}
 ```
 controller使用
 

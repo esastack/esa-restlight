@@ -156,7 +156,7 @@ public InterceptorFactory interceptor() {
                                                      AsyncResponse response,
                                                      Object handler) {
             // biz logic
-            return CompletableFuture.completedFuture(null);
+            return CompletableFuture.completedFuture(true);
         }
 
 
@@ -217,7 +217,7 @@ public RouteInterceptor interceptor() {
                                                      AsyncResponse response,
                                                      Object handler) {
             // biz logic
-            return CompletableFuture.completedFuture(null);
+            return CompletableFuture.completedFuture(true);
         }
 
         @Override
@@ -253,7 +253,7 @@ public MappingInterceptor interceptor() {
                                                      AsyncResponse response,
                                                      Object handler) {
             // biz logic
-            return CompletableFuture.completedFuture(null);
+            return CompletableFuture.completedFuture(true);
         }
         
         @Override
@@ -305,7 +305,7 @@ public HandlerInterceptor interceptor() {
                                                      AsyncResponse response,
                                                      Object handler) {
             // biz logic
-            return CompletableFuture.completedFuture(null);
+            return CompletableFuture.completedFuture(true);
         }
 
         @Override

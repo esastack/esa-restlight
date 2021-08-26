@@ -177,44 +177,44 @@ public @interface CustomHeader {
 
 ```java
 @Bean
-    public ArgumentResolverFactory resolver() {
-        return new ArgumentResolverFactory() {
-            @Override
-            public boolean supports(MethodParameter parameter) {
-                // 当方法上有此注解时生效
-                return parameter.hasParameterAnnotation(CustomHeader.class);
-            }
-
-            @Override
-            ArgumentResolver createResolver(MethodParameter parameter,
-                                            List<? extends HttpRequestSerializer> serializers) {
-                return new Resolver(parameter);
-            }
-        };
-    }
-
-    /**
-     * 实际ArgumentResolver实现
-     */
-    private static class Resolver implements ArgumentResolver {
-
-        private final String headerName;
-
-        private Resolver(MethodParameter parameter) {
-            CustomHeader anno = parameter.getParameterAnnotation(CustomHeader.class);
-            if (anno.value().length() == 0) {
-                throw new IllegalArgumentException("Name of header must not be empty.");
-            }
-            // 初始化时组装好需要的参数
-            this.headerName = "x-custom" + anno.value();
+public ArgumentResolverFactory resolver() {
+    return new ArgumentResolverFactory() {
+        @Override
+        public boolean supports(MethodParameter parameter) {
+            // 当方法上有此注解时生效
+            return parameter.hasParameterAnnotation(CustomHeader.class);
         }
 
         @Override
-        public Object resolve(AsyncRequest request) {
-            // 运行时直接获取Header
-            return request.getHeader(headerName);
+        ArgumentResolver createResolver(MethodParameter parameter,
+                                        List<? extends HttpRequestSerializer> serializers) {
+            return new Resolver(parameter);
         }
+    };
+}
+
+/**
+ * 实际ArgumentResolver实现
+ */
+private static class Resolver implements ArgumentResolver {
+
+    private final String headerName;
+
+    private Resolver(MethodParameter parameter) {
+        CustomHeader anno = parameter.getParameterAnnotation(CustomHeader.class);
+        if (anno.value().length() == 0) {
+            throw new IllegalArgumentException("Name of header must not be empty.");
+        }
+        // 初始化时组装好需要的参数
+        this.headerName = "x-custom" + anno.value();
     }
+
+    @Override
+    public Object resolve(AsyncRequest request) {
+        // 运行时直接获取Header
+        return request.getHeader(headerName);
+    }
+}
 ```
 controller使用
 

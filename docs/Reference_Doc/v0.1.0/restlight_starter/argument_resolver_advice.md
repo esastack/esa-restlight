@@ -25,9 +25,11 @@ public interface ArgumentResolverAdvice {
 
 ## 自定义`ArgumentResolverAdvice`
 
-与`ArgumentResovler`相同， `ArgumentResolverAdvice`自定应时同样需要使用`ArgumentResolverAdviceAdapter`接口以及`ArgumentResolverAdviceFactory`接口
+与`ArgumentResovler`相同， `ArgumentResolverAdvice`自定应时同样需要实现`ArgumentResolverAdviceAdapter`或`ArgumentResolverAdviceFactory`接口
 
-### 方式1：自定义 `ArgumentResolverAdviceAdapter`
+### 方式1：实现 `ArgumentResolverAdviceAdapter`
+
+接口定义
 
 ```java
 public interface ArgumentResolverAdviceAdapter
@@ -49,7 +51,9 @@ public interface ArgumentResolverAdviceAdapter
 }
 ```
 
-### 方式2：自定义`ArgumentResolverAdviceFactory`
+### 方式2：实现`ArgumentResolverAdviceFactory`
+
+接口定义
 
 ```java
 public interface ArgumentResolverAdviceFactory extends ArgumentResolverPredicate, Ordered {
