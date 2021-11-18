@@ -69,6 +69,7 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static io.esastack.restlight.jaxrs.util.JaxrsUtils.ascendingOrdered;
@@ -131,9 +132,18 @@ public class JaxrsExtensionsHandler implements ExtensionsHandler {
                             " caused by the existed context-path:[{}]", annPath, contextPath);
                 }
             }
-            handleableExtensions.addAll(application.proxied().getClasses());
-            handleableExtensions.addAll(application.proxied().getSingletons());
-            application.proxied().getProperties().forEach(configuration::setProperty);
+            Set<Class<?>> classes = application.proxied().getClasses();
+            if (classes != null) {
+                handleableExtensions.addAll(classes);
+            }
+            Set<Object> singletons = application.proxied().getSingletons();
+            if (singletons != null) {
+                handleableExtensions.addAll(singletons);
+            }
+            Map<String, Object> properties = application.proxied().getProperties();
+            if (properties != null) {
+                properties.forEach(configuration::setProperty);
+            }
             deployments.addContextResolver(new ApplicationResolverAdapter(application.proxied()));
         }
 
@@ -300,5 +310,6 @@ public class JaxrsExtensionsHandler implements ExtensionsHandler {
                 .findNameBindings(ClassUtils.getUserType(target));
         return targetNameBindings.isEmpty() || appNameBindings.containsAll(targetNameBindings);
     }
+
 }
 
