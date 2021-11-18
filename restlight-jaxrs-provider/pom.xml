@@ -19,13 +19,14 @@
     <parent>
         <groupId>io.esastack</groupId>
         <artifactId>restlight-parent</artifactId>
-        <version>0.1.2-SNAPSHOT</version>
+        <version>1.0.0-SNAPSHOT</version>
     </parent>
     <artifactId>restlight-jaxrs-provider</artifactId>
     <name>Restlight :: Jaxrs Provider</name>
 
     <properties>
-        <jaxrs-api.version>2.1</jaxrs-api.version>
+        <jaxrs-api.version>3.0.0</jaxrs-api.version>
+        <javax.annotation.version>1.3.2</javax.annotation.version>
     </properties>
 
     <dependencies>
@@ -36,8 +37,8 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>javax.ws.rs</groupId>
-            <artifactId>javax.ws.rs-api</artifactId>
+            <groupId>jakarta.ws.rs</groupId>
+            <artifactId>jakarta.ws.rs-api</artifactId>
             <version>${jaxrs-api.version}</version>
         </dependency>
         <!-- only for restlight-spring env please do not use it in your code -->
@@ -73,6 +74,12 @@
             <groupId>com.google.protobuf</groupId>
             <artifactId>protobuf-java</artifactId>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.annotation</groupId>
+            <artifactId>javax.annotation-api</artifactId>
+            <version>${javax.annotation.version}</version>
+            <optional>true</optional>
         </dependency>
     </dependencies>
 

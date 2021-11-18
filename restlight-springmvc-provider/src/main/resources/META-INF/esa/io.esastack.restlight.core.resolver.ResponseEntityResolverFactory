@@ -1,0 +1,2 @@
+io.esastack.restlight.springmvc.resolver.rspentity.FixedResponseEntityResolverFactory
+io.esastack.restlight.springmvc.resolver.rspentity.ResponseStatusEntityResolverFactory

@@ -1,7 +1,7 @@
 # Auto Configure
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-esa.restlight.starter.actuator.autoconfigurer.RestlightWebEndpointAutoConfiguration,\
-esa.restlight.starter.actuator.autoconfigurer.RestlightOnlyEndpointAutoConfiguration,\
-esa.restlight.starter.actuator.autoconfigurer.SameManagementPortAutoConfiguration,\
-esa.restlight.starter.actuator.autoconfigurer.DifferentManagementPortAutoConfiguration,\
-esa.restlight.starter.actuator.autoconfigurer.MeterAutoConfiguration
+io.esastack.restlight.starter.actuator.autoconfigurer.RestlightWebEndpointAutoConfiguration,\
+io.esastack.restlight.starter.actuator.autoconfigurer.RestlightOnlyEndpointAutoConfiguration,\
+io.esastack.restlight.starter.actuator.autoconfigurer.SameManagementPortAutoConfiguration,\
+io.esastack.restlight.starter.actuator.autoconfigurer.DifferentManagementPortAutoConfiguration,\
+io.esastack.restlight.starter.actuator.autoconfigurer.MeterAutoConfiguration

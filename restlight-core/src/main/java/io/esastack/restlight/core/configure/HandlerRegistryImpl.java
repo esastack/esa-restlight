@@ -1,0 +1,220 @@
+/*
+ * Copyright 2021 OPPO ESA Stack Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package io.esastack.restlight.core.configure;
+
+import esa.commons.Checks;
+import esa.commons.ClassUtils;
+import esa.commons.ObjectUtils;
+import io.esastack.restlight.core.DeployContext;
+import io.esastack.restlight.core.config.RestlightOptions;
+import io.esastack.restlight.core.handler.HandlerMapping;
+import io.esastack.restlight.core.method.HandlerMethodImpl;
+import io.esastack.restlight.core.util.DeployContextUtils;
+import io.esastack.restlight.core.util.RouteUtils;
+import io.esastack.restlight.server.route.Route;
+import io.esastack.restlight.server.route.RouteRegistry;
+
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.stream.Collectors;
+
+public class HandlerRegistryImpl implements HandlerRegistry, Handlers {
+
+    private final Set<Class<?>> classes = new CopyOnWriteArraySet<>();
+    private final Set<Object> singletons = new CopyOnWriteArraySet<>();
+    private final List<HandlerMapping> mappings = new CopyOnWriteArrayList<>();
+    private final DeployContext<? extends RestlightOptions> context;
+    private final RouteRegistry registry;
+
+    public HandlerRegistryImpl(DeployContext<? extends RestlightOptions> context) {
+        Checks.checkNotNull(context, "context");
+        Checks.checkState(context.routeRegistry().isPresent(), "route registry is null.");
+        this.context = context;
+        this.registry = context.routeRegistry().get();
+    }
+
+    @Override
+    public List<HandlerMapping> mappings() {
+        return Collections.unmodifiableList(mappings);
+    }
+
+    @Override
+    public void addHandler(Object handler) {
+        Checks.checkNotNull(handler, "handler");
+        addHandlers(Collections.singleton(handler));
+    }
+
+    @Override
+    public void addHandlers(Collection<Object> handlers) {
+        if (handlers != null && !handlers.isEmpty()) {
+            List<HandlerMapping> mappings = new LinkedList<>();
+            handlers.forEach(handler -> {
+                Class<?> userType = ClassUtils.getUserType(handler);
+                ClassUtils.doWithUserDeclaredMethods(userType,
+                        method -> {
+                            DeployContext<?> deployContext = DeployContextUtils.buildHandlers(context,
+                                    HandlerMethodImpl.of(userType, method));
+                            Optional<HandlerMapping> mapping = RouteUtils
+                                    .extractHandlerMapping(deployContext,
+                                            ObjectUtils.instantiateBeanIfNecessary(handler),
+                                            userType, method);
+                            if (mapping.isPresent()) {
+                                Optional<Route> route = RouteUtils.extractRoute(deployContext, mapping.get());
+                                if (route.isPresent()) {
+                                    mappings.add(mapping.get());
+                                    registry.register(route.get());
+                                }
+                            }
+                        },
+                        method -> !method.isBridge());
+            });
+            this.singletons.addAll(handlers);
+            this.mappings.addAll(mappings);
+        }
+    }
+
+    @Override
+    public void addHandler(Class<?> clazz, boolean singleton) {
+        Checks.checkNotNull(clazz, "clazz");
+        addHandlers(Collections.singleton(clazz), singleton);
+    }
+
+    @Override
+    public void addHandlers(Collection<Class<?>> classes, boolean singleton) {
+        if (classes != null && !classes.isEmpty()) {
+            if (singleton) {
+                addHandlers(classes.stream().map(ObjectUtils::instantiateBeanIfNecessary)
+                        .collect(Collectors.toList()));
+            } else {
+                List<HandlerMapping> mappings = new LinkedList<>();
+                classes.forEach(clazz -> {
+                    Class<?> userType = ClassUtils.getUserType(clazz);
+                    ClassUtils.doWithUserDeclaredMethods(userType,
+                            method -> {
+                                DeployContext<?> deployContext = DeployContextUtils.buildHandlers(context,
+                                        HandlerMethodImpl.of(userType, method));
+                                Optional<HandlerMapping> mapping = RouteUtils
+                                        .extractHandlerMapping(deployContext, null, userType, method);
+                                if (mapping.isPresent()) {
+                                    Optional<Route> route = RouteUtils.extractRoute(deployContext, mapping.get());
+                                    if (route.isPresent()) {
+                                        mappings.add(mapping.get());
+                                        registry.register(route.get());
+                                    }
+                                }
+                            },
+                            method -> !method.isBridge());
+                });
+                this.mappings.addAll(mappings);
+                this.classes.addAll(classes);
+            }
+        }
+    }
+
+    @Override
+    public void removeHandler(Object handler) {
+        Checks.checkNotNull(handler, "handler");
+        removeHandlers(Collections.singleton(handler));
+    }
+
+    @Override
+    public void removeHandlers(Collection<Object> handlers) {
+        if (handlers != null && !handlers.isEmpty()) {
+            List<Object> removableHandlers = new LinkedList<>();
+            Set<Class<?>> removableClasses = new HashSet<>();
+            Set<Object> removableSingletons = new HashSet<>();
+            for (Object handler : handlers) {
+                for (Class<?> clazz : classes) {
+                    if (clazz.equals(handler)) {
+                        removableHandlers.add(clazz);
+                        removableClasses.add(clazz);
+                    }
+                }
+
+                Class<?> userType = ClassUtils.getUserType(handler);
+                for (Object singleton : singletons) {
+                    if (singleton.equals(handler) || singleton.equals(userType)) {
+                        removableHandlers.add(singleton);
+                        removableSingletons.add(singleton);
+                    }
+                }
+            }
+
+            List<HandlerMapping> removableMappings = new LinkedList<>();
+            removableHandlers.forEach(removable -> {
+                Class<?> userType = ClassUtils.getUserType(removable);
+                ClassUtils.doWithUserDeclaredMethods(userType,
+                        method -> {
+                            DeployContext<?> deployContext = DeployContextUtils.buildHandlers(context,
+                                    HandlerMethodImpl.of(userType, method));
+                            Optional<HandlerMapping> mapping = RouteUtils
+                                    .extractHandlerMapping(deployContext, null, userType, method);
+                            if (mapping.isPresent()) {
+                                // deRegister by mapping
+                                registry.deRegister(Route.route(mapping.get().mapping()));
+                                for (HandlerMapping mp : mappings) {
+                                    if (mp.mapping().equals(mapping.get().mapping())) {
+                                        removableMappings.add(mp);
+                                    }
+                                }
+                            }
+                        },
+                        method -> !method.isBridge());
+            });
+            this.mappings.removeAll(removableMappings);
+            this.singletons.removeAll(removableSingletons);
+            this.classes.removeAll(removableClasses);
+        }
+    }
+
+    @Override
+    public void addHandlerMapping(HandlerMapping mapping) {
+        Checks.checkNotNull(mapping, "mapping");
+        addHandlerMappings(Collections.singletonList(mapping));
+    }
+
+    @Override
+    public void addHandlerMappings(Collection<HandlerMapping> mappings) {
+        if (mappings != null && !mappings.isEmpty()) {
+            List<HandlerMapping> mps = new LinkedList<>();
+            mappings.forEach(mapping -> RouteUtils.extractRoute(context, mapping)
+                    .ifPresent(route -> {
+                        mps.add(mapping);
+                        registry.register(route);
+                    }));
+            mappings.addAll(mps);
+        }
+    }
+
+    @Override
+    public Set<Class<?>> getClasses() {
+        return Collections.unmodifiableSet(classes);
+    }
+
+    @Override
+    public Set<Object> getSingletons() {
+        return Collections.unmodifiableSet(singletons);
+    }
+
+}
+

@@ -1,0 +1,3 @@
+io.esastack.restlight.core.spi.impl.QueryBeanParamResolverProvider
+io.esastack.restlight.core.spi.impl.RequestBeanParamResolverProvider
+io.esastack.restlight.core.spi.impl.HandlersParamResolverProvider

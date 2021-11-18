@@ -14,12 +14,13 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>io.esastack</groupId>
     <artifactId>restlight-parent</artifactId>
-    <version>0.1.2-SNAPSHOT</version>
+    <version>1.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>Restlight</name>
@@ -124,7 +125,8 @@
         <project.reporting.outputEncoding>${encoding}</project.reporting.outputEncoding>
         <esa-commons.version>0.1.1</esa-commons.version>
         <esa-commons-build.version>1.0</esa-commons-build.version>
-        <esa-httpserver.version>0.1.0</esa-httpserver.version>
+        <esa-commons.net.version>0.0.1-SNAPSHOT</esa-commons.net.version>
+        <esa-httpserver.version>0.1.1-SNAPSHOT</esa-httpserver.version>
         <guava.version>29.0-jre</guava.version>
         <spring-boot.version>2.1.2.RELEASE</spring-boot.version>
         <spring-core.version>5.1.4.RELEASE</spring-core.version>
@@ -152,6 +154,16 @@
             <artifactId>mockito-core</artifactId>
             <version>${mockito.version}</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.esastack</groupId>
+            <artifactId>commons-net-core</artifactId>
+            <version>${esa-commons.net.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.esastack</groupId>
+            <artifactId>commons-net-netty</artifactId>
+            <version>${esa-commons.net.version}</version>
         </dependency>
     </dependencies>
 
@@ -192,16 +204,6 @@
             <dependency>
                 <groupId>io.esastack</groupId>
                 <artifactId>commons</artifactId>
-                <version>${esa-commons.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.esastack</groupId>
-                <artifactId>commons-http</artifactId>
-                <version>${esa-commons.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.esastack</groupId>
-                <artifactId>commons-netty-http</artifactId>
                 <version>${esa-commons.version}</version>
             </dependency>
             <dependency>

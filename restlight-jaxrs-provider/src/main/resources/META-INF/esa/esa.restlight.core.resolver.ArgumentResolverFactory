@@ -1,8 +1,0 @@
-esa.restlight.jaxrs.resolver.arg.CookieParamArgumentResolver
-esa.restlight.jaxrs.resolver.arg.HeaderParamArgumentResolver
-esa.restlight.jaxrs.resolver.arg.MatrixParamArgumentResolver
-esa.restlight.jaxrs.resolver.arg.PathParamArgumentResolver
-esa.restlight.jaxrs.resolver.arg.QueryParamArgumentResolver
-esa.restlight.jaxrs.resolver.arg.FormParamArgumentResolver
-esa.restlight.jaxrs.resolver.arg.DefaultValueArgumentResolver
-esa.restlight.jaxrs.resolver.arg.SpecifiedFixedRequestBodyArgumentResolver

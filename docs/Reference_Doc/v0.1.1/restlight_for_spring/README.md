@@ -4,7 +4,7 @@ sort: 10
 
 # Restlight for Spring
 
-`esa.restlight.spring.Restlight4Spring`为`Restlight`架构中的`Restlight for Srping`模块的入口类， 在`Restlight Core` 基础上增强了自动配置功能
+`Restlight4Spring`为`Restlight`架构中的`Restlight for Srping`模块的入口类， 在`Restlight Core` 基础上增强了自动配置功能
 
 - `Route`自动配置
 - `Filter`自动配置

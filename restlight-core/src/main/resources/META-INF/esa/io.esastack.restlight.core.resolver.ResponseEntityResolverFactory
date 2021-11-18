@@ -1,0 +1,4 @@
+io.esastack.restlight.core.resolver.rspentity.ByteArrayEntityResolverFactory
+io.esastack.restlight.core.resolver.rspentity.ByteBufEntityResolverFactory
+io.esastack.restlight.core.resolver.rspentity.CharSequenceEntityResolverFactory
+io.esastack.restlight.core.resolver.rspentity.PrimitiveEntityResolverFactory

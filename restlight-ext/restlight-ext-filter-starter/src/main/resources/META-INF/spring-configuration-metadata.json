@@ -1,69 +1,69 @@
 {
   "properties": [
     {
-      "sourceType": "esa.restlight.ext.filter.ipwhitelist.IpWhiteListOptions",
+      "sourceType": "io.esastack.restlight.ext.filter.ipwhitelist.IpWhiteListOptions",
       "name": "restlight.server.ext.whitelist.enable",
       "type": "java.lang.Boolean",
       "defaultValue": "false",
       "description": "Is enable the whitelist."
     },
     {
-      "sourceType": "esa.restlight.ext.filter.ipwhitelist.IpWhiteListOptions",
+      "sourceType": "io.esastack.restlight.ext.filter.ipwhitelist.IpWhiteListOptions",
       "name": "restlight.server.ext.whitelist.ips",
       "type": "java.lang.String",
       "description": "Direct ips or regex starts with 'regex:'."
     },
     {
-      "sourceType": "esa.restlight.ext.filter.ipwhitelist.IpWhiteListOptions",
+      "sourceType": "io.esastack.restlight.ext.filter.ipwhitelist.IpWhiteListOptions",
       "name": "restlight.server.ext.whitelist.cache-size",
       "type": "java.lang.Integer",
       "defaultValue": "1024",
       "description": "Max size of the ip cache."
     },
     {
-      "sourceType": "esa.restlight.ext.filter.ipwhitelist.IpWhiteListOptions",
+      "sourceType": "io.esastack.restlight.ext.filter.ipwhitelist.IpWhiteListOptions",
       "name": "restlight.server.ext.whitelist.expire",
       "type": "java.lang.Integer",
       "defaultValue": "60000",
       "description": "Expire mills time of the ip cache."
     },
     {
-      "sourceType": "esa.restlight.ext.filter.connectionlimit.ConnectionLimitOptions",
+      "sourceType": "io.esastack.restlight.ext.filter.connectionlimit.ConnectionLimitOptions",
       "name": "restlight.server.ext.connection-creation-limit.max-per-second",
       "type": "java.lang.Integer",
       "defaultValue": "20000",
       "description": "Max http connection creation per second."
     },
     {
-      "sourceType": "esa.restlight.ext.filter.connectionlimit.ConnectionLimitOptions",
+      "sourceType": "io.esastack.restlight.ext.filter.connectionlimit.ConnectionLimitOptions",
       "name": "restlight.server.ext.connection-creation-limit.enable",
       "type": "java.lang.Boolean",
       "defaultValue": "false",
       "description": "Is max http connection creation limit enable."
     },
     {
-      "sourceType": "esa.restlight.ext.filter.cpuload.CpuLoadProtectionOptions",
+      "sourceType": "io.esastack.restlight.ext.filter.cpuload.CpuLoadProtectionOptions",
       "name": "restlight.server.ext.cpu-load-protection.enable",
       "type": "java.lang.Boolean",
       "defaultValue": "false",
       "description": "Is protection of cpu load enable."
     },
     {
-      "sourceType": "esa.restlight.ext.filter.cpuload.CpuLoadProtectionOptions",
+      "sourceType": "io.esastack.restlight.ext.filter.cpuload.CpuLoadProtectionOptions",
       "name": "restlight.server.ext.cpu-load-protection.threshold",
       "type": "java.lang.Double",
       "defaultValue": "80.0D",
       "description": "Threshold of the cpu load(discard connection if over than this value)."
     },
     {
-      "sourceType": "esa.restlight.ext.filter.cpuload.CpuLoadProtectionOptions",
+      "sourceType": "io.esastack.restlight.ext.filter.cpuload.CpuLoadProtectionOptions",
       "name": "restlight.server.ext.cpu-load-protection.initial-discard-rate",
       "type": "java.lang.Double",
       "defaultValue": "10.0D",
       "description": "Initial probability used to discard the connection."
     },
     {
-      "sourceType": "esa.restlight.ext.filter.cpuload.CpuLoadProtectionOptions",
+      "sourceType": "io.esastack.restlight.ext.filter.cpuload.CpuLoadProtectionOptions",
       "name": "restlight.server.ext.cpu-load-protection.max-discard-rate",
       "type": "java.lang.Double",
       "defaultValue": "80.0D",
@@ -80,7 +80,7 @@
       }
     },
     {
-      "sourceType": "esa.restlight.ext.filter.config.AccessLogOptions",
+      "sourceType": "io.esastack.restlight.ext.filter.config.AccessLogOptions",
       "name": "restlight.server.ext.access-log.full-uri",
       "type": "java.lang.Boolean",
       "defaultValue": "false",
@@ -97,49 +97,49 @@
       "description": "Is enable the access log."
     },
     {
-      "sourceType": "esa.restlight.ext.filter.accesslog.AccessLogOptions",
+      "sourceType": "io.esastack.restlight.ext.filter.accesslog.AccessLogOptions",
       "name": "restlight.server.ext.accesslog.directory",
       "type": "java.lang.String",
       "defaultValue": "logs",
       "description": "Log file directory"
     },
     {
-      "sourceType": "esa.restlight.ext.filter.accesslog.AccessLogOptions",
+      "sourceType": "io.esastack.restlight.ext.filter.accesslog.AccessLogOptions",
       "name": "restlight.server.ext.accesslog.file-name",
       "type": "java.lang.String",
       "defaultValue": "access.log",
       "description": "Log file name"
     },
     {
-      "sourceType": "esa.restlight.ext.filter.accesslog.AccessLogOptions",
+      "sourceType": "io.esastack.restlight.ext.filter.accesslog.AccessLogOptions",
       "name": "restlight.server.ext.accesslog.charset",
       "type": "java.lang.String",
       "defaultValue": "default",
       "description": "charset of log messages"
     },
     {
-      "sourceType": "esa.restlight.ext.filter.accesslog.AccessLogOptions",
+      "sourceType": "io.esastack.restlight.ext.filter.accesslog.AccessLogOptions",
       "name": "restlight.server.ext.accesslog.rolling",
       "type": "java.lang.Boolean",
       "defaultValue": "true",
       "description": "is rolling file enable"
     },
     {
-      "sourceType": "esa.restlight.ext.filter.accesslog.AccessLogOptions",
+      "sourceType": "io.esastack.restlight.ext.filter.accesslog.AccessLogOptions",
       "name": "restlight.server.ext.accesslog.date-pattern",
       "type": "java.lang.String",
       "defaultValue": "yyyy-MM-dd",
       "description": "date pattern of history files"
     },
     {
-      "sourceType": "esa.restlight.ext.filter.accesslog.AccessLogOptions",
+      "sourceType": "io.esastack.restlight.ext.filter.accesslog.AccessLogOptions",
       "name": "restlight.server.ext.accesslog.max-history",
       "type": "java.lang.Integer",
       "defaultValue": "10",
       "description": "max num of history files"
     },
     {
-      "sourceType": "esa.restlight.ext.filter.accesslog.AccessLogOptions",
+      "sourceType": "io.esastack.restlight.ext.filter.accesslog.AccessLogOptions",
       "name": "restlight.server.ext.accesslog.full-uri",
       "type": "java.lang.Boolean",
       "defaultValue": "false",
@@ -152,23 +152,23 @@
       "description": "Is enable intercept xss and it's based on filter parameter & header of request."
     },
     {
-      "sourceType": "esa.restlight.ext.filter.xss.XssOptions",
+      "sourceType": "io.esastack.restlight.ext.filter.xss.XssOptions",
       "name": "restlight.server.ext.xss.mode",
-      "type": "esa.restlight.ext.filter.xss.XssMode",
+      "type": "io.esastack.restlight.ext.filter.xss.XssMode",
       "defaultValue": "ESCAPE",
       "description": "Escape or filter"
     },
     {
-      "sourceType": "esa.restlight.ext.filter.starter.autoconfigurer.CorsProperties",
+      "sourceType": "io.esastack.restlight.ext.filter.starter.autoconfigurer.CorsProperties",
       "name": "restlight.server.ext.cors.enable",
       "type": "java.lang.Boolean",
       "defaultValue": "false",
       "description": "Is cross origin source sharing enable"
     },
     {
-      "sourceType": "esa.restlight.ext.filter.starter.autoconfigurer.CorsProperties",
+      "sourceType": "io.esastack.restlight.ext.filter.starter.autoconfigurer.CorsProperties",
       "name": "restlight.server.ext.cors.rules",
-      "type": "java.util.List<esa.restlight.ext.filter.cors.CorsOptions>",
+      "type": "java.util.List<io.esastack.restlight.ext.filter.cors.CorsOptions>",
       "defaultValue": "default to permit all",
       "description": "Rules of cors"
     }
