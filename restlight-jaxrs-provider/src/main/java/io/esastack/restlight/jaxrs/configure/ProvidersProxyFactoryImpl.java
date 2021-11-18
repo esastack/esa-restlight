@@ -165,7 +165,7 @@ public class ProvidersProxyFactoryImpl implements ProvidersProxyFactory {
         for (Class<?> clazz : classes) {
             if (target.isAssignableFrom(clazz)) {
                 values.put(clazz, new ProxyComponent<>(clazz, (T) ExtensionHandlerProxy.newProxy(target,
-                        new LazyInstantiateHandler(target, deployContext))));
+                        new LazyInstantiateHandler(clazz, deployContext))));
             }
         }
         return values;

@@ -179,10 +179,13 @@ public class JaxrsExtensionsHandler implements ExtensionsHandler {
     }
 
     private void convertThenAddProviders(List<Class<? extends Annotation>> appNameBindings) {
-        FeatureContext context = new FeatureContextImpl(new ConfigurableImpl(configuration));
-        for (ProxyComponent<Feature> feature : factory.features()) {
-            if (feature.proxied().configure(context)) {
-                configuration.addEnabledFeature(feature.underlying());
+        Collection<ProxyComponent<Feature>> features = factory.features();
+        if (!features.isEmpty()) {
+            FeatureContext context = new FeatureContextImpl(new ConfigurableImpl(configuration));
+            for (ProxyComponent<Feature> feature : features) {
+                if (feature.proxied().configure(context)) {
+                    configuration.addEnabledFeature(feature.underlying());
+                }
             }
         }
 

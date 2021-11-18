@@ -45,7 +45,7 @@ public interface ProvidersProxyFactory {
      * Obtains an immutable collection of {@link MessageBodyReader}s, which are proxied to instantiate and inject
      * fields and properties when the reader is firstly invoked.
      *
-     * @return  readers
+     * @return  immutable readers, which must not be {@code null}.
      */
     Collection<ProxyComponent<MessageBodyReader<?>>> messageBodyReaders();
 
@@ -53,7 +53,7 @@ public interface ProvidersProxyFactory {
      * Obtains an immutable collection of {@link MessageBodyWriter}s, which are proxied to instantiate and inject
      * fields and properties when the writer is firstly invoked.
      *
-     * @return  writers
+     * @return  immutable writers, which must not be {@code null}.
      */
     Collection<ProxyComponent<MessageBodyWriter<?>>> messageBodyWriters();
 
@@ -61,7 +61,7 @@ public interface ProvidersProxyFactory {
      * Obtains an immutable collection of {@link ExceptionMapper}s, which are proxied to instantiate and inject
      * fields and properties when the mapper is firstly invoked.
      *
-     * @return  mappers
+     * @return  immutable mappers, which must not be {@code null}.
      */
     Map<Class<Throwable>, ProxyComponent<ExceptionMapper<Throwable>>> exceptionMappers();
 
@@ -69,7 +69,7 @@ public interface ProvidersProxyFactory {
      * Obtains an immutable collection of {@link ContextResolver}s, which are proxied to instantiate and inject
      * fields and properties when the resolver is firstly invoked.
      *
-     * @return  resolvers
+     * @return  immutable resolvers, which must not be {@code null}.
      */
     Map<Class<?>, ProxyComponent<ContextResolver<?>>> contextResolvers();
 
@@ -77,7 +77,7 @@ public interface ProvidersProxyFactory {
      * Obtains an immutable collection of {@link Feature}s, which are proxied to instantiate and inject
      * fields and properties when the feature is firstly invoked.
      *
-     * @return  features
+     * @return  immutable features, which must not be {@code null}.
      */
     Collection<ProxyComponent<Feature>> features();
 
@@ -85,7 +85,7 @@ public interface ProvidersProxyFactory {
      * Obtains an immutable collection of {@link ParamConverterProvider}s, which are proxied to instantiate and inject
      * fields and properties when the provider is firstly invoked.
      *
-     * @return  providers
+     * @return  immutable providers, which must not be {@code null}.
      */
     Collection<ProxyComponent<ParamConverterProvider>> paramConverterProviders();
 
@@ -93,7 +93,7 @@ public interface ProvidersProxyFactory {
      * Obtains an immutable collection of {@link DynamicFeature}s, which are proxied to instantiate and inject
      * fields and properties when the dynamic feature is firstly invoked.
      *
-     * @return  features
+     * @return  immutable features, which must not be {@code null}.
      */
     Collection<ProxyComponent<DynamicFeature>> dynamicFeatures();
 
@@ -101,7 +101,7 @@ public interface ProvidersProxyFactory {
      * Obtains an immutable collection of {@link ReaderInterceptor}s, which are proxied to instantiate and inject
      * fields and properties when the interceptor is firstly invoked.
      *
-     * @return  interceptors
+     * @return  immutable interceptors, which must not be {@code null}.
      */
     Collection<ProxyComponent<ReaderInterceptor>> readerInterceptors();
 
@@ -109,7 +109,7 @@ public interface ProvidersProxyFactory {
      * Obtains an immutable collection of {@link WriterInterceptor}s, which are proxied to instantiate and inject
      * fields and properties when the interceptor is firstly invoked.
      *
-     * @return  interceptors
+     * @return  immutable interceptors, which must not be {@code null}.
      */
     Collection<ProxyComponent<WriterInterceptor>> writerInterceptors();
 
@@ -117,7 +117,7 @@ public interface ProvidersProxyFactory {
      * Obtains an immutable collection of {@link ContainerRequestFilter}s, which are proxied to instantiate and inject
      * fields and properties when the filter is firstly invoked.
      *
-     * @return  filters
+     * @return  immutable filters, which must not be {@code null}.
      */
     Collection<ProxyComponent<ContainerRequestFilter>> requestFilters();
 
@@ -125,7 +125,7 @@ public interface ProvidersProxyFactory {
      * Obtains an immutable collection of {@link ContainerResponseFilter}s, which are proxied to instantiate and inject
      * fields and properties when the filter is firstly invoked.
      *
-     * @return  filters
+     * @return  immutable filters, which must not be {@code null}.
      */
     Collection<ProxyComponent<ContainerResponseFilter>> responseFilters();
 

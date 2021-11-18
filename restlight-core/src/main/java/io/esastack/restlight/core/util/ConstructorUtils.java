@@ -43,7 +43,7 @@ public class ConstructorUtils {
             return constructors;
         }
 
-        for (Constructor<?> constructor : clazz.getDeclaredConstructors()) {
+        for (Constructor<?> constructor : clazz.getConstructors()) {
             if (!Modifier.isPublic(constructor.getModifiers())) {
                 continue;
             }

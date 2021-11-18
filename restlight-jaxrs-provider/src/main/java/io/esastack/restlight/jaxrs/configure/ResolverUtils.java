@@ -40,10 +40,8 @@ final class ResolverUtils {
                                                                                        HandlerResolverFactory
                                                                                                factory) {
         List<ResolvableParam<ConstructorParam, ContextResolver>> params = new LinkedList<>();
-        int size = constructor.getParameterCount();
-        int index = 0;
-        while (index++ <= size) {
-            ConstructorParam param = new ConstructorParamImpl(constructor, index);
+        for (int i = 0; i < constructor.getParameterCount(); i++) {
+            ConstructorParam param = new ConstructorParamImpl(constructor, i);
             if (predicate.isResolvable(param)) {
                 params.add(new ResolvableParam<>(param, factory.getContextResolver(param)));
             }
