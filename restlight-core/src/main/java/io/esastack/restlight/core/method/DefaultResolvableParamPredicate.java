@@ -24,7 +24,7 @@ import io.esastack.restlight.core.util.Constants;
 public class DefaultResolvableParamPredicate implements ResolvableParamPredicate {
 
     @Override
-    public boolean isResolvable(Param param) {
+    public boolean test(Param param) {
         return param.isMethodParam();
     }
 

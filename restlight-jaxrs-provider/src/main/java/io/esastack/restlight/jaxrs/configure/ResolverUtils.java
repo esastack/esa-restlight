@@ -42,7 +42,7 @@ final class ResolverUtils {
         List<ResolvableParam<ConstructorParam, ContextResolver>> params = new LinkedList<>();
         for (int i = 0; i < constructor.getParameterCount(); i++) {
             ConstructorParam param = new ConstructorParamImpl(constructor, i);
-            if (predicate.isResolvable(param)) {
+            if (predicate.test(param)) {
                 params.add(new ResolvableParam<>(param, factory.getContextResolver(param)));
             }
         }
@@ -60,7 +60,7 @@ final class ResolverUtils {
                 .filter(ReflectionUtils::isSetter)
                 .forEach(m -> {
                     MethodParam param = new MethodParamImpl(m, 0);
-                    if (predicate.isResolvable(param)) {
+                    if (predicate.test(param)) {
                         params.add(new ResolvableParam<>(param, factory.getContextResolver(param)));
                     }
                 });
@@ -75,7 +75,7 @@ final class ResolverUtils {
         ReflectionUtils.getAllDeclaredFields(clazz)
                 .forEach(f -> {
                     FieldParam param = new FieldParamImpl(f);
-                    if (predicate.isResolvable(param)) {
+                    if (predicate.test(param)) {
                         params.add(new ResolvableParam<>(param, factory.getContextResolver(param)));
                     }
                 });

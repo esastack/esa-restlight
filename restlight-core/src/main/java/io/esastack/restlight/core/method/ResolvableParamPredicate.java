@@ -17,19 +17,29 @@ package io.esastack.restlight.core.method;
 
 import esa.commons.annotation.Internal;
 import esa.commons.spi.SPI;
+import io.esastack.restlight.core.resolver.ContextResolver;
+import io.esastack.restlight.core.resolver.ParamResolver;
 
+/**
+ * Generally speaking, not all {@link Param}s are expected to resolved by {@link ParamResolver}
+ * or {@link ContextResolver}, such as a field which has the initial value when declaring it. In this case, we
+ * shouldn't try to bind a resolver with. And this interface is designed to test whether the given {@link Param}
+ * should be resolved by custom resolver.
+ *
+ * !NOTE: This is only used internally.
+ */
 @Internal
 @SPI
 @FunctionalInterface
 public interface ResolvableParamPredicate {
 
     /**
-     * Whether the given {@code param} should be resolved or not automatically.
+     * Whether the given {@code param} should be resolved by custom resolvers or not.
      *
      * @param param param
-     * @return      true or false
+     * @return      {@code true} when the param should be resolved by custom resolvers, otherwise {@code false}.
      */
-    boolean isResolvable(Param param);
+    boolean test(Param param);
 
 }
 

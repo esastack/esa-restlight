@@ -146,13 +146,13 @@ public class RouteHandlerMethodAdapter extends HandlerMethodAdapter<RouteHandler
     @SuppressWarnings("unchecked")
     private ResolvableParam<ConstructorParam, ResolverWrap>[] mergeParamResolversOfCons(Constructor<?> constructor,
                                                                                         ResolvableParamPredicate
-                                                                                                predicate,
+                                                                                                resolvable,
                                                                                         HandlerResolverFactory
                                                                                                 factory) {
         List<ResolvableParam<ConstructorParam, ResolverWrap>> resolvers = new LinkedList<>();
         for (int i = 0; i < constructor.getParameterCount(); i++) {
             ConstructorParam param = new ConstructorParamImpl(constructor, i);
-            if (!predicate.isResolvable(param)) {
+            if (!resolvable.test(param)) {
                 continue;
             }
             resolvers.add(getResolverWrap(param, factory));
@@ -163,7 +163,7 @@ public class RouteHandlerMethodAdapter extends HandlerMethodAdapter<RouteHandler
     @SuppressWarnings("unchecked")
     private ResolvableParam<MethodParam, ResolverWrap>[] mergeParamResolversOfSetter(Class<?> clazz,
                                                                                      ResolvableParamPredicate
-                                                                                             predicate,
+                                                                                             resolvable,
                                                                                      HandlerResolverFactory
                                                                                              factory) {
         List<ResolvableParam<MethodParam, ResolverWrap>> resolvers = new LinkedList<>();
@@ -171,7 +171,7 @@ public class RouteHandlerMethodAdapter extends HandlerMethodAdapter<RouteHandler
                 .filter(ReflectionUtils::isSetter)
                 .forEach(m -> {
                     MethodParam param = new MethodParamImpl(m, 0);
-                    if (predicate.isResolvable(param)) {
+                    if (resolvable.test(param)) {
                         resolvers.add(getResolverWrap(param, factory));
                     }
                 });
@@ -180,14 +180,14 @@ public class RouteHandlerMethodAdapter extends HandlerMethodAdapter<RouteHandler
 
     @SuppressWarnings("unchecked")
     private ResolvableParam<FieldParam, ResolverWrap>[] mergeParamResolversOfField(Class<?> clazz,
-                                                                                   ResolvableParamPredicate predicate,
+                                                                                   ResolvableParamPredicate resolvable,
                                                                                    HandlerResolverFactory
                                                                                            factory) {
         List<ResolvableParam<FieldParam, ResolverWrap>> resolvers = new LinkedList<>();
         ReflectionUtils.getAllDeclaredFields(clazz)
                 .forEach(f -> {
                     FieldParam param = new FieldParamImpl(f);
-                    if (predicate.isResolvable(param)) {
+                    if (resolvable.test(param)) {
                         resolvers.add(getResolverWrap(param, factory));
                     }
                 });

@@ -94,12 +94,12 @@ public class HandlerMethodAdapter<H extends HandlerMethod> implements HandlerMet
     @SuppressWarnings("unchecked")
     private ResolvableParam<MethodParam, ResolverWrap>[] mergeResolversOfMethod(HandlerMethod handlerMethod,
                                                                                 ResolvableParamPredicate
-                                                                                        paramPredicate,
+                                                                                        resolvable,
                                                                                 HandlerResolverFactory factory) {
         MethodParam[] params = handlerMethod.parameters();
         List<ResolvableParam<MethodParam, ResolverWrap>> resolvers = new LinkedList<>();
         for (MethodParam param : params) {
-            if (paramPredicate.isResolvable(param)) {
+            if (resolvable.test(param)) {
                 resolvers.add(getResolverWrap(param, factory));
             }
         }

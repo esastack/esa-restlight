@@ -26,18 +26,17 @@ import java.util.List;
 
 public class ConstructorUtils {
 
-    public static Constructor<?> extractResolvable(Class<?> clazz, ResolvableParamPredicate predicate) {
+    public static Constructor<?> extractResolvable(Class<?> clazz, ResolvableParamPredicate resolvable) {
         Constructor<?> matched = null;
-        for (Constructor<?> constructor : extractAllResolvable(clazz, predicate)) {
-            if (matched == null
-                    || constructor.getParameterCount() > matched.getParameterCount()) {
+        for (Constructor<?> constructor : extractAllResolvable(clazz, resolvable)) {
+            if (matched == null || constructor.getParameterCount() > matched.getParameterCount()) {
                 matched = constructor;
             }
         }
         return matched;
     }
 
-    public static List<Constructor<?>> extractAllResolvable(Class<?> clazz, ResolvableParamPredicate predicate) {
+    public static List<Constructor<?>> extractAllResolvable(Class<?> clazz, ResolvableParamPredicate resolvable) {
         List<Constructor<?>> constructors = new LinkedList<>();
         if (clazz.isInterface()) {
             return constructors;
@@ -47,7 +46,7 @@ public class ConstructorUtils {
             if (!Modifier.isPublic(constructor.getModifiers())) {
                 continue;
             }
-            if (isResolvable(constructor, predicate)) {
+            if (isResolvable(constructor, resolvable)) {
                 constructors.add(constructor);
             }
         }
@@ -55,10 +54,10 @@ public class ConstructorUtils {
         return constructors;
     }
 
-    private static boolean isResolvable(Constructor<?> constructor, ResolvableParamPredicate predicate) {
+    private static boolean isResolvable(Constructor<?> constructor, ResolvableParamPredicate resolvable) {
         for (int i = 0; i < constructor.getParameterCount(); i++) {
             ConstructorParam param = new ConstructorParamImpl(constructor, i);
-            if (!predicate.isResolvable(param)) {
+            if (!resolvable.test(param)) {
                 return false;
             }
         }

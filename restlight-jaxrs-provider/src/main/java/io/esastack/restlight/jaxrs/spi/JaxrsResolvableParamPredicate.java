@@ -17,8 +17,8 @@ package io.esastack.restlight.jaxrs.spi;
 
 import esa.commons.annotation.Internal;
 import esa.commons.spi.Feature;
-import io.esastack.restlight.core.method.ResolvableParamPredicate;
 import io.esastack.restlight.core.method.Param;
+import io.esastack.restlight.core.method.ResolvableParamPredicate;
 import io.esastack.restlight.core.util.Constants;
 import jakarta.ws.rs.core.Context;
 
@@ -27,7 +27,7 @@ import jakarta.ws.rs.core.Context;
 public class JaxrsResolvableParamPredicate implements ResolvableParamPredicate {
 
     @Override
-    public boolean isResolvable(Param param) {
+    public boolean test(Param param) {
         if (param.isMethodParam()) {
             return true;
         }

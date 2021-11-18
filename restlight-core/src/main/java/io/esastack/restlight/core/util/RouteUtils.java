@@ -225,7 +225,7 @@ public class RouteUtils {
         }
         return param -> {
             for (ResolvableParamPredicate predicate : paramPredicates) {
-                if (predicate.isResolvable(param)) {
+                if (predicate.test(param)) {
                     return true;
                 }
             }
