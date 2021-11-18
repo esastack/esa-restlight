@@ -280,7 +280,11 @@ public class HandlerResolverFactoryImpl implements HandlerResolverFactory {
     @Override
     public List<RequestEntityResolver> getRequestEntityResolvers(Param param) {
         List<RequestEntityResolver> resolvers = new ArrayList<>();
-        requestEntityResolvers.forEach(factory -> factory.createResolver(param, rxSerializers));
+        requestEntityResolvers.forEach(factory -> {
+            if (factory.supports(param)) {
+                resolvers.add(factory.createResolver(param, rxSerializers));
+            }
+        });
         return sortForUnmodifiableList(resolvers);
     }
 
