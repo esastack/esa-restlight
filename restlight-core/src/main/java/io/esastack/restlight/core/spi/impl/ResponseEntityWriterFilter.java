@@ -17,7 +17,7 @@ package io.esastack.restlight.core.spi.impl;
 
 import esa.commons.Checks;
 import io.esastack.restlight.core.context.FilterContext;
-import io.esastack.restlight.core.handler.impl.HandlerMethodValueResolver;
+import io.esastack.restlight.core.handler.impl.HandlerMethodResolver;
 import io.esastack.restlight.core.method.HandlerMethod;
 import io.esastack.restlight.core.resolver.HandlerResolverFactory;
 import io.esastack.restlight.core.resolver.ResponseEntity;
@@ -45,7 +45,7 @@ public class ResponseEntityWriterFilter implements Filter {
     public CompletableFuture<Void> doFilter(FilterContext context, FilterChain<FilterContext> chain) {
         return chain.doFilter(context).thenApply(v -> {
             if (!context.response().isCommitted()) {
-                HandlerMethod method = context.getUncheckedAttribute(HandlerMethodValueResolver.HANDLER_METHOD);
+                HandlerMethod method = context.getUncheckedAttribute(HandlerMethodResolver.HANDLER_METHOD);
                 ResponseEntity entity = new ResponseEntityImpl(method, context.response());
                 ResponseEntityResolverContext rspCtx = new ResponseEntityResolverContextImpl(context,
                         entity, resolverFactory.getResponseEntityResolvers(),

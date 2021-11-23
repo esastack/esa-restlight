@@ -39,15 +39,15 @@ import io.esastack.restlight.server.util.Futures;
 import java.lang.reflect.Type;
 import java.util.concurrent.CompletableFuture;
 
-public class HandlerLocatorValueResolver implements HandlerValueResolver {
+public class HandlerLocatorResolver implements HandlerValueResolver {
 
     private final DeployContext<? extends RestlightOptions> deployContext;
     private final HandlerMapping handlerMapping;
     private final RouterRegistries registries;
 
-    public HandlerLocatorValueResolver(DeployContext<? extends RestlightOptions> deployContext,
-                                       HandlerMapping handlerMapping,
-                                       RouterRegistries registries) {
+    public HandlerLocatorResolver(DeployContext<? extends RestlightOptions> deployContext,
+                                  HandlerMapping handlerMapping,
+                                  RouterRegistries registries) {
         Checks.checkNotNull(deployContext, "deployContext");
         Checks.checkNotNull(handlerMapping, "handlerMapping");
         Checks.checkNotNull(registries, "registries");

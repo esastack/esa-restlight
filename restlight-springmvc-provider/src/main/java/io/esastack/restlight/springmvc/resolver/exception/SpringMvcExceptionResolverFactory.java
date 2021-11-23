@@ -24,7 +24,7 @@ import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.core.handler.impl.HandlerContext;
 import io.esastack.restlight.core.handler.impl.HandlerImpl;
 import io.esastack.restlight.core.handler.impl.HandlerMethodAdapter;
-import io.esastack.restlight.core.handler.impl.HandlerMethodValueResolver;
+import io.esastack.restlight.core.handler.impl.HandlerMethodResolver;
 import io.esastack.restlight.core.handler.locate.HandlerMethodLocator;
 import io.esastack.restlight.core.resolver.ExceptionResolver;
 import io.esastack.restlight.core.resolver.HandlerResolverFactory;
@@ -121,7 +121,7 @@ public class SpringMvcExceptionResolverFactory extends AbstractExceptionResolver
                 ExceptionResolver<Throwable> resolver =
                         new ExecutionExceptionResolver(new HandlerMethodAdapter<>(
                                 new HandlerContext<>(context), handler.handlerMethod()),
-                                new HandlerMethodValueResolver(handler),
+                                new HandlerMethodResolver(handler),
                                 new HandlerImpl(handler.handlerMethod(), bean));
                 addExceptionMapping(mappings, exceptionType, resolver);
             });

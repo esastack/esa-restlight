@@ -22,7 +22,7 @@ import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.core.handler.HandlerMapping;
 import io.esastack.restlight.core.handler.HandlerValueResolver;
 import io.esastack.restlight.core.handler.RouterRegistries;
-import io.esastack.restlight.core.handler.impl.HandlerLocatorValueResolver;
+import io.esastack.restlight.core.handler.impl.HandlerLocatorResolver;
 import io.esastack.restlight.core.handler.locate.HandlerValueResolverLocator;
 import io.esastack.restlight.core.spi.HandlerValueResolverLocatorFactory;
 import io.esastack.restlight.core.util.Constants;
@@ -34,14 +34,14 @@ import java.util.function.Function;
 
 @Internal
 @Feature(tags = Constants.INTERNAL)
-public class HandlerLocatorValueResolverFactory implements HandlerValueResolverLocatorFactory {
+public class HandlerLocatorResolverFactory implements HandlerValueResolverLocatorFactory {
 
     @Override
     public HandlerValueResolverLocator resolver(DeployContext<? extends RestlightOptions> ctx) {
-        return new HandlerLocatorValueResolverLocator(ctx);
+        return new HandlerLocatorResolverLocator(ctx);
     }
 
-    private static class HandlerLocatorValueResolverLocator implements HandlerValueResolverLocator {
+    private static class HandlerLocatorResolverLocator implements HandlerValueResolverLocator {
 
         private final DeployContext<? extends RestlightOptions> context;
         private final RouterRegistries registries = new RouterRegistries() {
@@ -54,14 +54,14 @@ public class HandlerLocatorValueResolverFactory implements HandlerValueResolverL
             }
         };
 
-        private HandlerLocatorValueResolverLocator(DeployContext<? extends RestlightOptions> context) {
+        private HandlerLocatorResolverLocator(DeployContext<? extends RestlightOptions> context) {
             this.context = context;
         }
 
         @Override
         public Optional<HandlerValueResolver> getHandlerValueResolver(HandlerMapping mapping) {
             if (mapping.methodInfo().isLocator()) {
-                return Optional.of(new HandlerLocatorValueResolver(context, mapping, registries));
+                return Optional.of(new HandlerLocatorResolver(context, mapping, registries));
             } else {
                 return Optional.empty();
             }

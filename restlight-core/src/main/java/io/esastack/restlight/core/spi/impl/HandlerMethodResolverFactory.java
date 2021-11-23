@@ -21,7 +21,7 @@ import io.esastack.restlight.core.DeployContext;
 import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.core.handler.HandlerMapping;
 import io.esastack.restlight.core.handler.HandlerValueResolver;
-import io.esastack.restlight.core.handler.impl.HandlerMethodValueResolver;
+import io.esastack.restlight.core.handler.impl.HandlerMethodResolver;
 import io.esastack.restlight.core.handler.locate.HandlerValueResolverLocator;
 import io.esastack.restlight.core.spi.HandlerValueResolverLocatorFactory;
 import io.esastack.restlight.core.util.Constants;
@@ -30,21 +30,21 @@ import java.util.Optional;
 
 @Internal
 @Feature(tags = Constants.INTERNAL)
-public class HandlerMethodValueResolverFactory implements HandlerValueResolverLocatorFactory {
+public class HandlerMethodResolverFactory implements HandlerValueResolverLocatorFactory {
 
     @Override
     public HandlerValueResolverLocator resolver(DeployContext<? extends RestlightOptions> ctx) {
-        return new HandlerMethodValueResolverLocator();
+        return new HandlerMethodResolverLocator();
     }
 
-    private static class HandlerMethodValueResolverLocator implements HandlerValueResolverLocator {
+    private static class HandlerMethodResolverLocator implements HandlerValueResolverLocator {
 
         @Override
         public Optional<HandlerValueResolver> getHandlerValueResolver(HandlerMapping mapping) {
             if (mapping.methodInfo().isLocator()) {
                 return Optional.empty();
             }
-            return Optional.of(new HandlerMethodValueResolver(mapping.methodInfo()));
+            return Optional.of(new HandlerMethodResolver(mapping.methodInfo()));
         }
 
         @Override

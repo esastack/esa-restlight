@@ -25,13 +25,13 @@ import io.netty.handler.codec.http.HttpResponseStatus;
 
 import java.util.concurrent.CompletableFuture;
 
-public class HandlerMethodValueResolver implements HandlerValueResolver {
+public class HandlerMethodResolver implements HandlerValueResolver {
 
     public static final String HANDLER_METHOD = "$internal.handler.method";
 
     private final HandlerMethodInfo methodInfo;
 
-    public HandlerMethodValueResolver(HandlerMethodInfo methodInfo) {
+    public HandlerMethodResolver(HandlerMethodInfo methodInfo) {
         Checks.checkNotNull(methodInfo, "methodInfo");
         this.methodInfo = methodInfo;
     }
