@@ -41,14 +41,14 @@ import java.util.Map;
 
 public class ProvidersProxyFactoryImpl implements ProvidersProxyFactory {
 
-    private final DeployContext<? extends RestlightOptions> deployContext;
+    private final DeployContext<? extends RestlightOptions> context;
     private final ConfigurationImpl configuration;
 
-    public ProvidersProxyFactoryImpl(DeployContext<? extends RestlightOptions> deployContext,
+    public ProvidersProxyFactoryImpl(DeployContext<? extends RestlightOptions> context,
                                      ConfigurationImpl configuration) {
-        Checks.checkNotNull(deployContext, "deployContext");
+        Checks.checkNotNull(context, "context");
         Checks.checkNotNull(configuration, "configuration");
-        this.deployContext = deployContext;
+        this.context = context;
         this.configuration = configuration;
     }
 
@@ -165,7 +165,7 @@ public class ProvidersProxyFactoryImpl implements ProvidersProxyFactory {
         for (Class<?> clazz : classes) {
             if (target.isAssignableFrom(clazz)) {
                 values.put(clazz, new ProxyComponent<>(clazz, (T) ExtensionHandlerProxy.newProxy(target,
-                        new LazyInstantiateHandler(clazz, deployContext))));
+                        new LazyInstantiateHandler(clazz, context))));
             }
         }
         return values;
@@ -178,7 +178,7 @@ public class ProvidersProxyFactoryImpl implements ProvidersProxyFactory {
             Class<?> userType = ClassUtils.getUserType(instance);
             if (target.isAssignableFrom(userType)) {
                 values.put(userType, new ProxyComponent<>(instance, (T) ExtensionHandlerProxy.newProxy(target,
-                        new LazyInjectHandler(instance, deployContext))));
+                        new LazyInjectHandler(instance, context))));
             }
         }
         return values;

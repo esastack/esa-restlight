@@ -15,7 +15,6 @@
  */
 package io.esastack.restlight.jaxrs.impl.core;
 
-import io.esastack.restlight.jaxrs.configure.Applications;
 import jakarta.ws.rs.core.CacheControl;
 import jakarta.ws.rs.core.EntityTag;
 import jakarta.ws.rs.core.HttpHeaders;
@@ -25,7 +24,6 @@ import jakarta.ws.rs.core.MultivaluedHashMap;
 import jakarta.ws.rs.core.MultivaluedMap;
 import jakarta.ws.rs.core.NewCookie;
 import jakarta.ws.rs.core.Response;
-import jakarta.ws.rs.core.UriBuilder;
 import jakarta.ws.rs.core.Variant;
 
 import java.lang.annotation.Annotation;
@@ -42,8 +40,6 @@ import java.util.Set;
  * This class is designed as non-thread safe.
  */
 public class ResponseBuilderImpl extends Response.ResponseBuilder {
-
-    private static final URI baseUri = Applications.baseUri();
 
     private final MultivaluedMap<String, Object> headers = new MultivaluedHashMap<>();
 
@@ -231,16 +227,7 @@ public class ResponseBuilderImpl extends Response.ResponseBuilder {
         if (location == null) {
             return setHeader(HttpHeaders.LOCATION, null);
         } else {
-            if (location.isAbsolute()) {
-                return setHeader(HttpHeaders.LOCATION, UriBuilder
-                        .fromUri(baseUri)
-                        .path(location.getRawPath())
-                        .replaceQuery(location.getRawQuery())
-                        .fragment(location.getRawFragment())
-                        .build());
-            } else {
-                return setHeader(HttpHeaders.LOCATION, location);
-            }
+            return setHeader(HttpHeaders.LOCATION, location);
         }
     }
 

@@ -57,18 +57,18 @@ import static io.esastack.restlight.jaxrs.util.JaxrsUtils.descendingOrder;
 
 public class DynamicFeatureAdapter implements HandlerConfigure {
 
-    private final DeployContext<? extends RestlightOptions> deployContext;
+    private final DeployContext<? extends RestlightOptions> context;
     private final List<Class<? extends Annotation>> appNameBindings;
     private final List<DynamicFeature> features;
     private final ConfigurationImpl parent;
 
-    public DynamicFeatureAdapter(DeployContext<? extends RestlightOptions> deployContext,
+    public DynamicFeatureAdapter(DeployContext<? extends RestlightOptions> context,
                                  List<Class<? extends Annotation>> appNameBindings,
                                  List<DynamicFeature> features,
                                  ConfigurationImpl parent) {
         Checks.checkNotNull(parent, "parent");
-        Checks.checkNotNull(deployContext, "deployContext");
-        this.deployContext = deployContext;
+        Checks.checkNotNull(context, "context");
+        this.context = context;
         this.appNameBindings = appNameBindings;
         this.features = features == null || features.isEmpty() ? Collections.emptyList()
                 : Collections.unmodifiableList(features);
@@ -86,7 +86,7 @@ public class DynamicFeatureAdapter implements HandlerConfigure {
             feature.configure(resourceInfo, context);
         }
 
-        ProvidersProxyFactoryExt providers = new ProvidersProxyFactoryExtImpl(deployContext, current);
+        ProvidersProxyFactoryExt providers = new ProvidersProxyFactoryExtImpl(this.context, current);
         // handle features
         for (ProxyComponent<Feature> feature : providers.featuresAddedDynamically()) {
             if (feature.proxied().configure(context)) {
@@ -133,8 +133,8 @@ public class DynamicFeatureAdapter implements HandlerConfigure {
         if (all.isEmpty()) {
             return Collections.emptyList();
         }
-        List<Class<? extends Annotation>> methodAnnotations = JaxrsUtils.findNameBindings(method.method(),
-                true);
+        List<Class<? extends Annotation>> methodAnnotations = JaxrsUtils
+                .findNameBindings(method.method(), true);
         List<OrderComponent<T>> bound = new LinkedList<>();
         for (ProxyComponent<T> component : all) {
             // NOTE: follow specification description, filers or interceptors added by DynamicFeature is

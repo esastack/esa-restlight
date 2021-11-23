@@ -16,7 +16,6 @@
 package io.esastack.restlight.jaxrs.impl;
 
 import io.esastack.httpserver.core.RequestContext;
-import io.esastack.restlight.jaxrs.configure.Applications;
 import io.esastack.restlight.jaxrs.impl.container.AbstractContainerRequestContext;
 import io.esastack.restlight.jaxrs.impl.container.PostMatchContainerRequestContext;
 import io.esastack.restlight.jaxrs.impl.container.PreMatchContainerRequestContext;
@@ -35,8 +34,6 @@ import java.net.URI;
 import java.util.concurrent.CompletableFuture;
 
 public final class JaxrsContextUtils {
-
-    private static final URI baseUri = Applications.baseUri();
 
     private static final String REQUEST_KEY = "$jakarta.request";
     private static final String RESPONSE_KEY = "$jakarta.response";
@@ -58,7 +55,7 @@ public final class JaxrsContextUtils {
     public static UriInfoImpl getUriInfo(RequestContext context) {
         UriInfoImpl uriInfo = context.getUncheckedAttribute(URI_KEY);
         if (uriInfo == null) {
-            uriInfo = new UriInfoImpl(baseUri, context);
+            uriInfo = new UriInfoImpl(extractURI(context), context);
             context.setAttribute(URI_KEY, uriInfo);
         }
         return uriInfo;
@@ -115,6 +112,15 @@ public final class JaxrsContextUtils {
 
     public static CompletableFuture<Object> getAsyncResponse(RequestContext context) {
         return context.getUncheckedAttribute(ASYNC_RESPONSE_KEY);
+    }
+
+    public static URI extractURI(RequestContext context) {
+        String sb = context.request().scheme() +
+                "://" +
+                context.request().localAddr() +
+                ":" +
+                context.request().localPort();
+        return URI.create(sb);
     }
 
     private JaxrsContextUtils() {

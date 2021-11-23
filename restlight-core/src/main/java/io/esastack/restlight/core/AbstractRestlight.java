@@ -15,19 +15,11 @@
  */
 package io.esastack.restlight.core;
 
-import esa.commons.StringUtils;
-import esa.commons.spi.SpiLoader;
 import io.esastack.restlight.core.config.RestlightOptions;
-import io.esastack.restlight.core.configure.RestlightServerEventListener;
 import io.esastack.restlight.core.context.FilterContext;
 import io.esastack.restlight.core.context.RequestContext;
-import io.esastack.restlight.core.util.Constants;
 import io.esastack.restlight.server.BaseRestlightServer;
 import io.esastack.restlight.server.bootstrap.RestlightServer;
-import io.esastack.restlight.server.util.LoggerUtils;
-
-import java.util.Collections;
-import java.util.List;
 
 /**
  * Abstract implementation for a Restlight server bootstrap. This class allows to set some server-level configurations
@@ -42,44 +34,8 @@ public abstract class AbstractRestlight<R extends AbstractRestlight<R, D, O>,
         D extends Deployments<R, D, O>, O extends RestlightOptions> extends BaseRestlightServer<R, D, O,
         RequestContext, FilterContext> implements RestlightServer {
 
-    private List<RestlightServerEventListener> listeners;
-
     protected AbstractRestlight(O options) {
         super(options);
-    }
-
-    @Override
-    protected void preStart() {
-        super.preStart();
-        this.listeners = SpiLoader.cached(RestlightServerEventListener.class)
-                .getByFeature(name(),
-                        true,
-                        Collections.singletonMap(Constants.INTERNAL, StringUtils.empty()),
-                        false);
-        if (!this.listeners.isEmpty()) {
-            for (RestlightServerEventListener listener : listeners) {
-                try {
-                    listener.preStart(name());
-                } catch (Throwable th) {
-                    LoggerUtils.logger().error("Error occurred when executing RestlightServer#preStart()");
-                }
-            }
-        }
-    }
-
-    @Override
-    protected void postStart(RestlightServer server) {
-        super.postStart(server);
-        if (listeners != null && !listeners.isEmpty()) {
-            RestlightOptions options = deployments().server().options;
-            for (RestlightServerEventListener listener : listeners) {
-                try {
-                    listener.postStart(options, server);
-                } catch (Throwable th) {
-                    LoggerUtils.logger().error("Error occurred when executing RestlightServer#preStart()");
-                }
-            }
-        }
     }
 
 }
