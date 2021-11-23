@@ -21,16 +21,17 @@ import io.esastack.restlight.core.DeployContext;
 import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.core.method.Param;
 import io.esastack.restlight.core.resolver.ContextResolverAdapter;
+import io.esastack.restlight.jaxrs.configure.ProxyComponent;
 
 public class JaxrsContextResolverAdapter implements ContextResolverAdapter {
 
     private final jakarta.ws.rs.ext.ContextResolver<?> delegating;
     private final Class<?> targetClass;
 
-    public JaxrsContextResolverAdapter(jakarta.ws.rs.ext.ContextResolver<?> delegating) {
+    public JaxrsContextResolverAdapter(ProxyComponent<jakarta.ws.rs.ext.ContextResolver<?>> delegating) {
         Checks.checkNotNull(delegating, "delegating");
-        this.delegating = delegating;
-        this.targetClass = ClassUtils.getRawType(ClassUtils.getUserType(delegating));
+        this.delegating = delegating.proxied();
+        this.targetClass = ClassUtils.getRawType(ClassUtils.getUserType(delegating.underlying()));
     }
 
     @Override
