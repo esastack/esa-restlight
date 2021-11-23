@@ -29,12 +29,12 @@ import java.util.List;
 
 public class HandlerAdvicesFactoryImpl implements HandlerAdvicesFactory {
 
-    private final DeployContext<? extends RestlightOptions> deployContext;
+    private final DeployContext<? extends RestlightOptions> context;
     private final Collection<? extends HandlerAdviceFactory> factories;
 
-    public HandlerAdvicesFactoryImpl(DeployContext<? extends RestlightOptions> deployContext,
+    public HandlerAdvicesFactoryImpl(DeployContext<? extends RestlightOptions> context,
                                      Collection<? extends HandlerAdviceFactory> factories) {
-        this.deployContext = deployContext;
+        this.context = context;
         this.factories = factories;
     }
 
@@ -43,7 +43,7 @@ public class HandlerAdvicesFactoryImpl implements HandlerAdvicesFactory {
         List<HandlerAdvice> advices = new LinkedList<>();
         if (factories != null && !factories.isEmpty()) {
             for (HandlerAdviceFactory factory : factories) {
-                factory.handlerAdvice(deployContext, handler).ifPresent(advices::add);
+                factory.handlerAdvice(context, handler).ifPresent(advices::add);
             }
         }
         OrderedComparator.sort(advices);

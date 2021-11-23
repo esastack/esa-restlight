@@ -24,14 +24,17 @@ import io.esastack.restlight.core.DeployContext;
 import io.esastack.restlight.core.annotation.Scheduled;
 import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.core.handler.Handler;
+import io.esastack.restlight.core.handler.HandlerContexts;
+import io.esastack.restlight.core.handler.HandlerFactory;
 import io.esastack.restlight.core.handler.HandlerMapping;
 import io.esastack.restlight.core.handler.HandlerValueResolver;
-import io.esastack.restlight.core.handler.RouteHandler;
 import io.esastack.restlight.core.handler.RouteMethodInfo;
+import io.esastack.restlight.core.handler.impl.HandlerContext;
 import io.esastack.restlight.core.handler.impl.HandlerMappingImpl;
-import io.esastack.restlight.core.handler.impl.InvocableRouteMethodAdapter;
+import io.esastack.restlight.core.handler.impl.PrototypeRouteMethod;
 import io.esastack.restlight.core.handler.impl.RouteHandlerImpl;
 import io.esastack.restlight.core.handler.impl.RouteHandlerMethodAdapter;
+import io.esastack.restlight.core.handler.impl.SingletonRouteMethod;
 import io.esastack.restlight.core.handler.locate.CompositeHandlerValueResolverLocator;
 import io.esastack.restlight.core.handler.locate.CompositeMappingLocator;
 import io.esastack.restlight.core.handler.locate.CompositeRouteMethodLocator;
@@ -40,7 +43,6 @@ import io.esastack.restlight.core.handler.locate.MappingLocator;
 import io.esastack.restlight.core.handler.locate.RouteMethodLocator;
 import io.esastack.restlight.core.method.HandlerMethod;
 import io.esastack.restlight.core.method.ResolvableParamPredicate;
-import io.esastack.restlight.core.resolver.HandlerResolverFactory;
 import io.esastack.restlight.core.resolver.exception.ExceptionResolverFactory;
 import io.esastack.restlight.core.spi.HandlerValueResolverLocatorFactory;
 import io.esastack.restlight.core.spi.MappingLocatorFactory;
@@ -117,12 +119,12 @@ public class RouteUtils {
         return Optional.empty();
     }
 
-    public static Optional<HandlerMapping> extractHandlerMapping(DeployContext<? extends RestlightOptions> context,
+    public static Optional<HandlerMapping> extractHandlerMapping(HandlerContext<? extends RestlightOptions> context,
                                                                  Object bean, Class<?> userType, Method method) {
         return extractHandlerMapping(context, null, bean, userType, method);
     }
 
-    public static Optional<HandlerMapping> extractHandlerMapping(DeployContext<? extends RestlightOptions> context,
+    public static Optional<HandlerMapping> extractHandlerMapping(HandlerContext<? extends RestlightOptions> context,
                                                                  HandlerMapping parent,
                                                                  Object bean, Class<?> userType, Method method) {
         final Optional<MappingLocator> mappingLocator;
@@ -146,10 +148,10 @@ public class RouteUtils {
         return Optional.empty();
     }
 
-    public static Optional<Route> extractRoute(DeployContext<? extends RestlightOptions> context,
+    public static Optional<Route> extractRoute(HandlerContext<? extends RestlightOptions> context,
                                                HandlerMapping mapping) {
         if (!context.handlerResolverLocator().isPresent() || !context.resolverFactory().isPresent()
-                || !context.exceptionResolverFactory().isPresent()) {
+                || !context.exceptionResolverFactory().isPresent() || !context.handlerFactory().isPresent()) {
             return Optional.empty();
         }
         final Optional<HandlerValueResolver> handlerResolver = context.handlerResolverLocator().get()
@@ -162,7 +164,7 @@ public class RouteUtils {
                     handlerMethod.method().toString());
             return Optional.empty();
         }
-        final HandlerResolverFactory handlerFactory = context.resolverFactory().get();
+
         final ExceptionResolverFactory exceptionResolver = context.exceptionResolverFactory().get();
         final RouteMethodInfo methodInfo = mapping.methodInfo();
         final boolean singleton = mapping.bean().isPresent();
@@ -171,27 +173,22 @@ public class RouteUtils {
         final RouteHandlerMethodAdapter routeMethod;
         if (singleton) {
             handler = new RouteHandlerImpl(methodInfo.handlerMethod(), mapping.bean().get());
-            routeMethod = new InvocableRouteMethodAdapter(
-                    context,
-                    mapping,
-                    (RouteHandler) handler,
-                    handlerFactory,
-                    handlerResolver.get(),
+            routeMethod = new SingletonRouteMethod(mapping, context, handlerResolver.get(),
                     filter(context, mapping.mapping(), handler,
-                            context.interceptors().orElse(Collections.emptyList())),
+                    context.interceptors().orElse(Collections.emptyList())),
                     exceptionResolver.createResolver(methodInfo.handlerMethod()));
         } else {
             handler = methodInfo.handlerMethod();
-            routeMethod = new RouteHandlerMethodAdapter(
-                    mapping,
-                    context.paramPredicate().orElse(null),
-                    handlerFactory,
-                    handlerResolver.get(),
-                    filter(context, mapping.mapping(), handler,
+            routeMethod = new PrototypeRouteMethod(mapping, context, handlerResolver.get(),
+                    filter(context, mapping.mapping(), methodInfo.handlerMethod(),
                             context.interceptors().orElse(Collections.emptyList())),
                     exceptionResolver.createResolver(methodInfo.handlerMethod()));
         }
 
+        HandlerFactory factory = context.handlerFactory().get();
+        if (factory instanceof HandlerContexts) {
+            ((HandlerContexts) factory).addContext(methodInfo.handlerMethod(), context);
+        }
         final Scheduler scheduler = context.schedulers().get(methodInfo.handlerMethod().scheduler());
         Checks.checkNotNull(scheduler,
                 "Could not find any scheduler named '" + methodInfo.handlerMethod().scheduler() + "'");
@@ -204,7 +201,7 @@ public class RouteUtils {
                     @Override
                     public <CTX extends RequestContext> RouteExecution<CTX> create(CTX ctx) {
                         @SuppressWarnings("unchecked")
-                        RouteExecution<CTX> execution = (RouteExecution<CTX>) routeMethod.toExecution(context,
+                        RouteExecution<CTX> execution = (RouteExecution<CTX>) routeMethod.toExecution(
                                 (io.esastack.restlight.core.context.RequestContext) ctx);
                         return execution;
                     }

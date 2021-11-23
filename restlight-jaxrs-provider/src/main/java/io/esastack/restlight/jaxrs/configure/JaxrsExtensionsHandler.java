@@ -41,6 +41,7 @@ import io.esastack.restlight.jaxrs.impl.core.ConfigurationImpl;
 import io.esastack.restlight.jaxrs.impl.core.FeatureContextImpl;
 import io.esastack.restlight.jaxrs.impl.ext.ProvidersImpl;
 import io.esastack.restlight.jaxrs.resolver.context.ApplicationResolverAdapter;
+import io.esastack.restlight.jaxrs.resolver.param.ResourceContextParamResolver;
 import io.esastack.restlight.jaxrs.util.JaxrsUtils;
 import io.esastack.restlight.server.util.LoggerUtils;
 import jakarta.ws.rs.ApplicationPath;
@@ -146,6 +147,7 @@ public class JaxrsExtensionsHandler implements ExtensionsHandler {
             }
             deployments.addContextResolver(new ApplicationResolverAdapter(application.proxied()));
         }
+        deployments.addParamResolver(new ResourceContextParamResolver(deployments.deployContext()));
 
         for (Object extension : handleableExtensions) {
             final Class<?> userType = ClassUtils.getUserType(extension);

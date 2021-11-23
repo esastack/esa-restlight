@@ -20,6 +20,7 @@ import io.esastack.restlight.core.configure.HandlerConfigure;
 import io.esastack.restlight.core.configure.HandlerRegistry;
 import io.esastack.restlight.core.configure.Handlers;
 import io.esastack.restlight.core.handler.HandlerAdvicesFactory;
+import io.esastack.restlight.core.handler.HandlerFactory;
 import io.esastack.restlight.core.handler.locate.HandlerValueResolverLocator;
 import io.esastack.restlight.core.handler.locate.MappingLocator;
 import io.esastack.restlight.core.handler.locate.RouteMethodLocator;
@@ -36,6 +37,7 @@ import java.util.Optional;
 public class DeployContextImpl<O extends RestlightOptions> extends ServerDeployContextImpl<O>
         implements DeployContext<O> {
 
+    private volatile HandlerFactory handlerFactory;
     private volatile ResolvableParamPredicate paramPredicate;
     private volatile List<ExceptionMapper> exceptionMappers;
     private volatile List<Object> singletonControllers;
@@ -137,6 +139,11 @@ public class DeployContextImpl<O extends RestlightOptions> extends ServerDeployC
         return Optional.ofNullable(handlers);
     }
 
+    @Override
+    public Optional<HandlerFactory> handlerFactory() {
+        return Optional.ofNullable(handlerFactory);
+    }
+
     void setSingletonControllers(List<Object> controllers) {
         this.singletonControllers = controllers;
     }
@@ -199,5 +206,9 @@ public class DeployContextImpl<O extends RestlightOptions> extends ServerDeployC
 
     void setHandlers(Handlers handlers) {
         this.handlers = handlers;
+    }
+
+    void setHandlerFactory(HandlerFactory handlerFactory) {
+        this.handlerFactory = handlerFactory;
     }
 }

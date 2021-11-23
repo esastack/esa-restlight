@@ -13,24 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.esastack.restlight.jaxrs.configure;
+package io.esastack.restlight.core.spi;
 
-import esa.commons.ClassUtils;
+import esa.commons.annotation.Internal;
+import esa.commons.spi.SPI;
 import io.esastack.restlight.core.DeployContext;
 import io.esastack.restlight.core.config.RestlightOptions;
+import io.esastack.restlight.core.handler.HandlerFactory;
+import io.esastack.restlight.core.util.Ordered;
 
-class LazyInjectHandler extends LazyInstantiateHandler {
+import java.util.Optional;
 
-    private final Object target;
+@FunctionalInterface
+@SPI
+@Internal
+public interface HandlerFactoryProvider extends Ordered {
 
-    LazyInjectHandler(Object target, DeployContext<? extends RestlightOptions> deployContext) {
-        super(ClassUtils.getUserType(target), deployContext);
-        this.target = target;
-    }
+    /**
+     * Produces a an optional instance of {@link HandlerFactory}.
+     *
+     * @param ctx deploy context
+     *
+     * @return Optional value of {@link HandlerFactory}.
+     */
+    Optional<HandlerFactory> factoryBean(DeployContext<? extends RestlightOptions> ctx);
 
-    @Override
-    protected Object getInstance() {
-        return target;
-    }
 }
 

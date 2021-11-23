@@ -16,6 +16,7 @@
 package io.esastack.restlight.core.handler.impl;
 
 import esa.commons.Checks;
+import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.core.method.HandlerMethod;
 import io.esastack.restlight.core.method.MethodParam;
 import io.esastack.restlight.core.method.Param;
@@ -41,19 +42,22 @@ import java.util.List;
  */
 public class HandlerMethodAdapter<H extends HandlerMethod> implements HandlerMethod {
 
+    private final HandlerContext<? extends RestlightOptions> context;
     private final H handlerMethod;
     private final ResolvableParam<MethodParam, ResolverWrap>[] methodParamResolvers;
     private final boolean concurrent;
 
-    public HandlerMethodAdapter(H handlerMethod,
-                                ResolvableParamPredicate paramPredicate,
-                                HandlerResolverFactory resolverFactory) {
+    public HandlerMethodAdapter(HandlerContext<? extends RestlightOptions> context,
+                                H handlerMethod) {
+        Checks.checkNotNull(context, "context");
         Checks.checkNotNull(handlerMethod, "handlerMethod");
-        Checks.checkNotNull(paramPredicate, "paramPredicate");
-        Checks.checkNotNull(resolverFactory, "resolverFactory");
         this.handlerMethod = handlerMethod;
         this.concurrent = RouteUtils.isConcurrent(handlerMethod);
-        this.methodParamResolvers = mergeResolversOfMethod(handlerMethod, paramPredicate, resolverFactory);
+        this.context = context;
+        assert context.paramPredicate().isPresent();
+        assert context.resolverFactory().isPresent();
+        this.methodParamResolvers = mergeResolversOfMethod(handlerMethod, context.paramPredicate().get(),
+                context.resolverFactory().get());
     }
 
     @Override
@@ -130,6 +134,10 @@ public class HandlerMethodAdapter<H extends HandlerMethod> implements HandlerMet
 
     ResolvableParam<MethodParam, ResolverWrap>[] paramResolvers() {
         return methodParamResolvers;
+    }
+
+    HandlerContext<? extends RestlightOptions> context() {
+        return this.context;
     }
 
     boolean isConcurrent() {

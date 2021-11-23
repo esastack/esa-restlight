@@ -17,9 +17,7 @@ package io.esastack.restlight.core.handler.impl;
 
 import esa.commons.Checks;
 import esa.commons.collection.MultiValueMap;
-import esa.commons.reflect.ReflectionUtils;
 import io.esastack.httpserver.core.HttpRequest;
-import io.esastack.restlight.core.DeployContext;
 import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.handler.HandlerMapping;
@@ -28,77 +26,57 @@ import io.esastack.restlight.core.handler.RouteFilter;
 import io.esastack.restlight.core.interceptor.Interceptor;
 import io.esastack.restlight.core.interceptor.InterceptorPredicate;
 import io.esastack.restlight.core.interceptor.InternalInterceptor;
-import io.esastack.restlight.core.method.ConstructorParam;
-import io.esastack.restlight.core.method.ConstructorParamImpl;
-import io.esastack.restlight.core.method.FieldParam;
-import io.esastack.restlight.core.method.FieldParamImpl;
 import io.esastack.restlight.core.method.HandlerMethod;
-import io.esastack.restlight.core.method.MethodParam;
-import io.esastack.restlight.core.method.MethodParamImpl;
-import io.esastack.restlight.core.method.ResolvableParam;
-import io.esastack.restlight.core.method.ResolvableParamPredicate;
 import io.esastack.restlight.core.method.RouteHandlerMethod;
 import io.esastack.restlight.core.resolver.ExceptionResolver;
 import io.esastack.restlight.core.resolver.HandlerResolverFactory;
-import io.esastack.restlight.core.util.ConstructorUtils;
 import io.esastack.restlight.core.util.Ordered;
 import io.esastack.restlight.core.util.OrderedComparator;
 import io.esastack.restlight.server.route.RouteExecution;
 import io.esastack.restlight.server.route.predicate.RequestPredicate;
 import io.netty.util.concurrent.FastThreadLocal;
 
-import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 
 /**
  * An adapter of {@link RouteHandlerMethod} which is allowed to handle request with {@link Interceptor}('s) and {@link
  * ExceptionResolver}('s).
  */
-public class RouteHandlerMethodAdapter extends HandlerMethodAdapter<RouteHandlerMethod> {
+public abstract class RouteHandlerMethodAdapter extends HandlerMethodAdapter<RouteHandlerMethod> {
 
     private final HandlerMapping mapping;
     private final List<RouteFilter> filters;
     private final HandlerValueResolver handlerResolver;
     private final ExceptionResolver<Throwable> exceptionResolver;
     private final Matcher interceptorMatcher;
-    private final Constructor<?> constructor;
-    private final ResolvableParam<ConstructorParam, ResolverWrap>[] consParamResolvers;
-    private final ResolvableParam<MethodParam, ResolverWrap>[] setterParamResolvers;
-    private final ResolvableParam<FieldParam, ResolverWrap>[] fieldParamResolvers;
 
-    public RouteHandlerMethodAdapter(HandlerMapping mapping,
-                                     ResolvableParamPredicate paramPredicate,
-                                     HandlerResolverFactory handlerFactory,
-                                     HandlerValueResolver handlerResolver,
-                                     MultiValueMap<InterceptorPredicate, Interceptor> interceptors,
-                                     ExceptionResolver<Throwable> exceptionResolver) {
-        super(mapping.methodInfo().handlerMethod(), paramPredicate, handlerFactory);
+    RouteHandlerMethodAdapter(HandlerMapping mapping,
+                              HandlerContext<? extends RestlightOptions> context,
+                              HandlerValueResolver handlerResolver,
+                              MultiValueMap<InterceptorPredicate, Interceptor> interceptors,
+                              ExceptionResolver<Throwable> exceptionResolver) {
+        super(context, mapping.methodInfo().handlerMethod());
         Checks.checkNotNull(handlerResolver, "handlerResolver");
+        assert context.resolverFactory().isPresent();
         this.mapping = mapping;
-        this.filters = getMatchingFilters(handlerFactory, handlerMethod());
+        this.filters = getMatchingFilters(context.resolverFactory().get(), handlerMethod());
         this.interceptorMatcher = maybeMatchable(interceptors);
         this.exceptionResolver = exceptionResolver;
-        this.constructor = Objects.requireNonNull(ConstructorUtils.extractResolvable(mapping.methodInfo()
-                        .handlerMethod().beanType(), paramPredicate));
         this.handlerResolver = handlerResolver;
-        this.consParamResolvers = mergeParamResolversOfCons(constructor, paramPredicate, handlerFactory);
-        this.setterParamResolvers = mergeParamResolversOfSetter(mapping.methodInfo().handlerMethod().beanType(),
-                paramPredicate, handlerFactory);
-        this.fieldParamResolvers = mergeParamResolversOfField(mapping.methodInfo().handlerMethod().beanType(),
-                paramPredicate, handlerFactory);
     }
 
-    public RouteExecution<RequestContext> toExecution(DeployContext<? extends RestlightOptions> ctx,
-                                                      RequestContext context) {
-        return new RouteExecutionImpl(mapping, new PrototypeRouteHandler(ctx, this,
-                handlerResolver, getMatchingInterceptors(context.request())), filters, exceptionResolver);
-    }
+    /**
+     * Builds a {@link RouteExecution} to handle the given {@link RequestContext}.
+     *
+     * @param context   context
+     * @return  execution
+     */
+    public abstract RouteExecution<RequestContext> toExecution(RequestContext context);
 
     List<RouteFilter> getMatchingFilters(HandlerResolverFactory handlerFactory, HandlerMethod method) {
         return handlerFactory.getRouteFilters(method);
@@ -115,22 +93,6 @@ public class RouteHandlerMethodAdapter extends HandlerMethodAdapter<RouteHandler
         return this.exceptionResolver;
     }
 
-    Constructor<?> constructor() {
-        return constructor;
-    }
-
-    ResolvableParam<ConstructorParam, ResolverWrap>[] consParams() {
-        return consParamResolvers;
-    }
-
-    ResolvableParam<MethodParam, ResolverWrap>[] setterParams() {
-        return setterParamResolvers;
-    }
-
-    ResolvableParam<FieldParam, ResolverWrap>[] fieldParams() {
-        return fieldParamResolvers;
-    }
-
     HandlerValueResolver handlerResolver() {
         return handlerResolver;
     }
@@ -141,57 +103,6 @@ public class RouteHandlerMethodAdapter extends HandlerMethodAdapter<RouteHandler
 
     List<RouteFilter> filters() {
         return filters;
-    }
-
-    @SuppressWarnings("unchecked")
-    private ResolvableParam<ConstructorParam, ResolverWrap>[] mergeParamResolversOfCons(Constructor<?> constructor,
-                                                                                        ResolvableParamPredicate
-                                                                                                resolvable,
-                                                                                        HandlerResolverFactory
-                                                                                                factory) {
-        List<ResolvableParam<ConstructorParam, ResolverWrap>> resolvers = new LinkedList<>();
-        for (int i = 0; i < constructor.getParameterCount(); i++) {
-            ConstructorParam param = new ConstructorParamImpl(constructor, i);
-            if (!resolvable.test(param)) {
-                continue;
-            }
-            resolvers.add(getResolverWrap(param, factory));
-        }
-        return resolvers.toArray(new ResolvableParam[0]);
-    }
-
-    @SuppressWarnings("unchecked")
-    private ResolvableParam<MethodParam, ResolverWrap>[] mergeParamResolversOfSetter(Class<?> clazz,
-                                                                                     ResolvableParamPredicate
-                                                                                             resolvable,
-                                                                                     HandlerResolverFactory
-                                                                                             factory) {
-        List<ResolvableParam<MethodParam, ResolverWrap>> resolvers = new LinkedList<>();
-        ReflectionUtils.getAllDeclaredMethods(clazz).stream()
-                .filter(ReflectionUtils::isSetter)
-                .forEach(m -> {
-                    MethodParam param = new MethodParamImpl(m, 0);
-                    if (resolvable.test(param)) {
-                        resolvers.add(getResolverWrap(param, factory));
-                    }
-                });
-        return resolvers.toArray(new ResolvableParam[0]);
-    }
-
-    @SuppressWarnings("unchecked")
-    private ResolvableParam<FieldParam, ResolverWrap>[] mergeParamResolversOfField(Class<?> clazz,
-                                                                                   ResolvableParamPredicate resolvable,
-                                                                                   HandlerResolverFactory
-                                                                                           factory) {
-        List<ResolvableParam<FieldParam, ResolverWrap>> resolvers = new LinkedList<>();
-        ReflectionUtils.getAllDeclaredFields(clazz)
-                .forEach(f -> {
-                    FieldParam param = new FieldParamImpl(f);
-                    if (resolvable.test(param)) {
-                        resolvers.add(getResolverWrap(param, factory));
-                    }
-                });
-        return resolvers.toArray(new ResolvableParam[0]);
     }
 
     /**

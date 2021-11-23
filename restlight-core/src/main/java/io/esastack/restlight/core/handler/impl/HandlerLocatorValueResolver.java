@@ -25,7 +25,6 @@ import io.esastack.restlight.core.handler.HandlerMapping;
 import io.esastack.restlight.core.handler.HandlerValueResolver;
 import io.esastack.restlight.core.handler.RouterRegistries;
 import io.esastack.restlight.core.method.HandlerMethodImpl;
-import io.esastack.restlight.core.util.DeployContextUtils;
 import io.esastack.restlight.core.util.RouteUtils;
 import io.esastack.restlight.server.bootstrap.DispatcherHandlerImpl;
 import io.esastack.restlight.server.bootstrap.WebServerException;
@@ -70,8 +69,8 @@ public class HandlerLocatorValueResolver implements HandlerValueResolver {
             final AbstractRouteRegistry registry = new SimpleRouteRegistry();
             ClassUtils.doWithUserDeclaredMethods(userType,
                     method -> {
-                        DeployContext<?> ctx = DeployContextUtils.buildHandlers(
-                                lookupParentRecursively(deployContext), HandlerMethodImpl.of(userType, method));
+                        HandlerContext<?> ctx = HandlerContext.build(lookupParentRecursively(deployContext),
+                                HandlerMethodImpl.of(userType, method));
                         RouteUtils.extractHandlerMapping(ctx, handlerMapping,
                                 extractBean(value), userType, method)
                                 .flatMap(mapping -> RouteUtils.extractRoute(ctx, mapping))

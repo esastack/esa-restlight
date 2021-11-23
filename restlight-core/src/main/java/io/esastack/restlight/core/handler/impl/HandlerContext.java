@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.esastack.restlight.core.util;
+package io.esastack.restlight.core.handler.impl;
 
 import io.esastack.httpserver.core.Attributes;
 import io.esastack.httpserver.core.AttributesImpl;
@@ -35,10 +35,14 @@ import java.util.Optional;
 import static io.esastack.restlight.core.resolver.HandlerResolverFactoryImpl.buildConfiguration;
 import static io.esastack.restlight.core.resolver.HandlerResolverFactoryImpl.getHandlerResolverFactory;
 
-public final class DeployContextUtils {
+public class HandlerContext<O extends RestlightOptions> extends DelegatingDeployContext<O> {
 
-    public static <C extends RestlightOptions> DeployContext<C> buildHandlers(DeployContext<C> ctx,
-                                                                              HandlerMethod method) {
+    public HandlerContext(DeployContext<O> underlying) {
+        super(underlying);
+    }
+
+    public static <C extends RestlightOptions> HandlerContext<C> build(DeployContext<C> ctx,
+                                                                       HandlerMethod method) {
         Attributes attributes = new AttributesImpl();
         for (String name : ctx.attributeNames()) {
             attributes.setAttribute(name, ctx.attribute(name));
@@ -52,7 +56,7 @@ public final class DeployContextUtils {
             }
         }
         HandlerResolverFactory resolverFactory = getHandlerResolverFactory(ctx.resolverFactory().get(), configuration);
-        return new DelegatingDeployContext<C>(ctx) {
+        return new HandlerContext<C>(ctx) {
             @Override
             public Optional<HandlerResolverFactory> resolverFactory() {
                 return Optional.of(resolverFactory);
@@ -79,9 +83,5 @@ public final class DeployContextUtils {
             }
         };
     }
-
-    private DeployContextUtils() {
-    }
-
 }
 

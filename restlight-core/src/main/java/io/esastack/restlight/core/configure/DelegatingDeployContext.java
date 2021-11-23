@@ -20,6 +20,7 @@ import io.esastack.httpserver.core.RequestContext;
 import io.esastack.restlight.core.DeployContext;
 import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.core.handler.HandlerAdvicesFactory;
+import io.esastack.restlight.core.handler.HandlerFactory;
 import io.esastack.restlight.core.handler.locate.HandlerValueResolverLocator;
 import io.esastack.restlight.core.handler.locate.MappingLocator;
 import io.esastack.restlight.core.handler.locate.RouteMethodLocator;
@@ -149,6 +150,11 @@ public class DelegatingDeployContext<O extends RestlightOptions> implements Depl
     @Override
     public Optional<Handlers> handlers() {
         return underlying.handlers();
+    }
+
+    @Override
+    public Optional<HandlerFactory> handlerFactory() {
+        return underlying.handlerFactory();
     }
 
     @Override

@@ -83,6 +83,7 @@ import io.esastack.restlight.core.spi.Filter;
 import io.esastack.restlight.core.spi.FilterFactory;
 import io.esastack.restlight.core.spi.FutureTransferFactory;
 import io.esastack.restlight.core.spi.HandlerAdviceFactory;
+import io.esastack.restlight.core.spi.HandlerFactoryProvider;
 import io.esastack.restlight.core.spi.MethodAdviceFactory;
 import io.esastack.restlight.core.spi.ParamResolverAdviceProvider;
 import io.esastack.restlight.core.spi.ParamResolverProvider;
@@ -1105,7 +1106,7 @@ public abstract class Deployments<R extends AbstractRestlight<R, D, O>, D extend
         ctx().setHandlerResolverLocator(handlerResolverLocator);
 
         // ExceptionResolverFactory
-        final ExceptionResolverFactory exceptionResolverFactory;
+        ExceptionResolverFactory exceptionResolverFactory;
         List<ExceptionResolverFactoryProvider> providers = SpiLoader.cached(ExceptionResolverFactoryProvider.class)
                 .getByFeature(restlight.name(),
                         true,
@@ -1122,6 +1123,17 @@ public abstract class Deployments<R extends AbstractRestlight<R, D, O>, D extend
         HandlerRegistryImpl handlerRegistry = new HandlerRegistryImpl(ctx());
         ctx().setHandlerRegistry(handlerRegistry);
         ctx().setHandlers(handlerRegistry);
+
+        List<HandlerFactoryProvider> handlerFactories = SpiLoader.cached(HandlerFactoryProvider.class)
+                .getByFeature(restlight.name(),
+                        true,
+                        Collections.singletonMap(Constants.INTERNAL, StringUtils.empty()),
+                        false);
+        OrderedComparator.sort(handlerFactories);
+        handlerFactories.stream().map(provider -> provider.factoryBean(ctx()))
+                .filter(Optional::isPresent)
+                .findFirst()
+                .ifPresent(f -> ctx().setHandlerFactory(f.orElse(null)));
 
         // load and set HandlerConfigures
         handlerConfigures.addAll(SpiLoader.cached(HandlerConfigure.class)

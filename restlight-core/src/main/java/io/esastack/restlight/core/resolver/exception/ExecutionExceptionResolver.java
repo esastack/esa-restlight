@@ -16,8 +16,6 @@
 package io.esastack.restlight.core.resolver.exception;
 
 import esa.commons.Checks;
-import io.esastack.restlight.core.DeployContext;
-import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.handler.Handler;
 import io.esastack.restlight.core.handler.HandlerValueResolver;
@@ -32,20 +30,16 @@ import java.util.concurrent.CompletableFuture;
 
 public class ExecutionExceptionResolver implements ExceptionResolver<Throwable> {
 
-    private final DeployContext<? extends RestlightOptions> deployContext;
     private final HandlerMethodAdapter<HandlerMethod> handlerMethod;
     private final HandlerValueResolver handlerResolver;
     private final Handler handler;
 
-    public ExecutionExceptionResolver(DeployContext<? extends RestlightOptions> deployContext,
-                                      HandlerMethodAdapter<HandlerMethod> handlerMethod,
+    public ExecutionExceptionResolver(HandlerMethodAdapter<HandlerMethod> handlerMethod,
                                       HandlerValueResolver handlerResolver,
                                       Handler handler) {
-        Checks.checkNotNull(deployContext, "deployContext");
         Checks.checkNotNull(handlerMethod, "handlerMethod");
         Checks.checkNotNull(handlerResolver, "handlerResolver");
         Checks.checkNotNull(handler, "handler");
-        this.deployContext = deployContext;
         this.handlerMethod = handlerMethod;
         this.handlerResolver = handlerResolver;
         this.handler = handler;
@@ -55,8 +49,8 @@ public class ExecutionExceptionResolver implements ExceptionResolver<Throwable> 
     public CompletableFuture<Void> handleException(RequestContext context,
                                                    Throwable ex) {
         try {
-            final ExecutionImpl execution = new ExecutionImpl(new ExceptionHandlerExecution(deployContext,
-                    handlerMethod, handlerResolver, handler, ex));
+            final ExecutionImpl execution = new ExecutionImpl(new ExceptionHandlerExecution(handlerResolver,
+                    handler, handlerMethod, ex));
             final CompletableFuture<Void> future = execution.executionHandler().handle(context);
             if (execution.completionHandler() == null) {
                 return future;

@@ -19,8 +19,6 @@ import esa.commons.Checks;
 import esa.commons.StringUtils;
 import esa.commons.logging.Logger;
 import esa.commons.logging.LoggerFactory;
-import io.esastack.restlight.core.DeployContext;
-import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.core.context.HttpResponse;
 import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.handler.FutureTransfer;
@@ -29,6 +27,7 @@ import io.esastack.restlight.core.handler.HandlerValueResolver;
 import io.esastack.restlight.core.method.HandlerMethod;
 import io.esastack.restlight.core.method.MethodParam;
 import io.esastack.restlight.core.method.ResolvableParam;
+import io.esastack.restlight.core.resolver.HandlerResolverFactory;
 import io.esastack.restlight.server.bootstrap.WebServerException;
 import io.esastack.restlight.server.route.ExecutionHandler;
 import io.esastack.restlight.server.route.Mapping;
@@ -48,30 +47,26 @@ abstract class AbstractExecutionHandler<H extends HandlerMethodAdapter> implemen
 
     private static final Logger logger = LoggerFactory.getLogger(AbstractExecutionHandler.class);
 
-    private final DeployContext<? extends RestlightOptions> deployContext;
     private final FutureTransfer transfer;
     private final HandlerValueResolver handlerResolver;
     private final H handlerMethod;
 
-    AbstractExecutionHandler(DeployContext<? extends RestlightOptions> deployContext,
-                             H handlerMethod,
-                             HandlerValueResolver handlerResolver) {
-        Checks.checkNotNull(deployContext, "deployContext");
-        Checks.checkNotNull(handlerMethod, "handlerMethod");
+    AbstractExecutionHandler(HandlerValueResolver handlerResolver,
+                             H handlerMethod) {
         Checks.checkNotNull(handlerResolver, "handlerResolver");
-        assert deployContext.resolverFactory().isPresent();
-        this.handlerMethod = handlerMethod;
-        this.transfer = Checks.checkNotNull(deployContext.resolverFactory().get().getFutureTransfer(
-                handlerMethod.handlerMethod()), "transfer");
-        this.deployContext = deployContext;
+        Checks.checkNotNull(handlerMethod, "handlerMethod");
+        assert handlerMethod.context().resolverFactory().isPresent();
         this.handlerResolver = handlerResolver;
+        this.transfer = ((HandlerResolverFactory) handlerMethod.context().resolverFactory().get())
+                .getFutureTransfer(handlerMethod.handlerMethod());
+        this.handlerMethod = handlerMethod;
     }
 
     @Override
     public CompletableFuture<Void> handle(RequestContext context) {
         try {
-            final Object object = resolveBean(deployContext, handlerMethod.handlerMethod(), context);
-            final Object[] args = resolveMethodParams(context);
+            final Object object = resolveBean(handlerMethod.handlerMethod(), context);
+            final Object[] args = resolveArgs(context);
             return invoke(context, object, args)
                     .thenCompose(current -> resolveReturnValue(object, context));
         } catch (Throwable th) {
@@ -79,32 +74,26 @@ abstract class AbstractExecutionHandler<H extends HandlerMethodAdapter> implemen
         }
     }
 
-    H handlerMethod() {
-        return handlerMethod;
-    }
-
-    DeployContext<? extends RestlightOptions> deployContext() {
-        return deployContext;
-    }
-
-    CompletableFuture<Void> resolveReturnValue(Object value, RequestContext context) {
-        return handlerResolver.handle(value, context);
-    }
-
     /**
      * Resolves the handler object by given {@link RequestContext} and {@link Object}.
      *
-     * @param deployContext     deploy context
      * @param handler   handler
      * @param context   context
      * @return  resolved object
      */
-    protected abstract Object resolveBean(DeployContext<? extends RestlightOptions> deployContext,
-                                          HandlerMethod handler,
-                                          RequestContext context);
+    protected abstract Object resolveBean(HandlerMethod handler, RequestContext context);
+
+    /**
+     * Builds a {@link HandlerInvoker} to handle the {@link RequestContext} by given {@code handler} and {@code bean}.
+     *
+     * @param handlerMethod   handler method
+     * @param instance        current instance
+     * @return                handler invoker
+     */
+    protected abstract HandlerInvoker getInvoker(HandlerMethod handlerMethod, Object instance);
 
     @SuppressWarnings("unchecked")
-    protected Object[] resolveMethodParams(RequestContext context) {
+    protected Object[] resolveArgs(RequestContext context) {
         final ResolvableParam<MethodParam, ResolverWrap>[] params = handlerMethod.paramResolvers();
         final Object[] args = new Object[params.length];
         //resolve parameters one by one
@@ -117,7 +106,7 @@ abstract class AbstractExecutionHandler<H extends HandlerMethodAdapter> implemen
                 if (resolvable.resolver() != null) {
                     //it may return a null value
                     try {
-                        args[i] = resolvable.resolver().resolve(deployContext, param, context);
+                        args[i] = resolvable.resolver().resolve(handlerMethod.context(), param, context);
                     } catch (Exception e) {
                         //wrap exception
                         throw WebServerException.wrap(e);
@@ -165,14 +154,13 @@ abstract class AbstractExecutionHandler<H extends HandlerMethodAdapter> implemen
         return future;
     }
 
-    /**
-     * Builds a {@link HandlerInvoker} to handle the {@link RequestContext} by given {@code handler} and {@code bean}.
-     *
-     * @param handlerMethod   handler method
-     * @param bean            bean
-     * @return                handler invoker
-     */
-    protected abstract HandlerInvoker getInvoker(HandlerMethod handlerMethod, Object bean);
+    H handlerMethod() {
+        return handlerMethod;
+    }
+
+    CompletableFuture<Void> resolveReturnValue(Object value, RequestContext context) {
+        return handlerResolver.handle(value, context);
+    }
 
     private String getDetailedMessage(String text) {
         return StringUtils.concat(text, "\n", handlerMethod.toString());

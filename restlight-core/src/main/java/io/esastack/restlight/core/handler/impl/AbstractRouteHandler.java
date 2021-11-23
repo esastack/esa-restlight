@@ -15,8 +15,6 @@
  */
 package io.esastack.restlight.core.handler.impl;
 
-import io.esastack.restlight.core.DeployContext;
-import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.handler.HandlerValueResolver;
 import io.esastack.restlight.core.interceptor.InternalInterceptor;
@@ -37,11 +35,10 @@ abstract class AbstractRouteHandler extends AbstractExecutionHandler<RouteHandle
     volatile int interceptorIndex = -1;
     volatile Object bean;
 
-    AbstractRouteHandler(DeployContext<? extends RestlightOptions> deployContext,
+    AbstractRouteHandler(HandlerValueResolver handlerResolver,
                          RouteHandlerMethodAdapter handlerMethod,
-                         HandlerValueResolver handlerResolver,
                          List<InternalInterceptor> interceptors) {
-        super(deployContext, handlerMethod, handlerResolver);
+        super(handlerResolver, handlerMethod);
         this.interceptors = interceptors;
         this.interceptorAbsent = interceptors == null || interceptors.isEmpty();
     }
@@ -49,7 +46,7 @@ abstract class AbstractRouteHandler extends AbstractExecutionHandler<RouteHandle
     @Override
     public CompletableFuture<Void> handle(RequestContext context) {
         try {
-            final Object bean = resolveBean(deployContext(), handlerMethod(), context);
+            final Object bean = resolveBean(handlerMethod(), context);
             this.bean = new RouteHandlerImpl(handlerMethod().handlerMethod(), bean);
             return applyPreHandle(context, this.bean)
                     .thenApply(allowed -> {
@@ -57,7 +54,7 @@ abstract class AbstractRouteHandler extends AbstractExecutionHandler<RouteHandle
                             // break the CompletionStage
                             throw EXECUTION_NOT_ALLOWED;
                         } else {
-                            return resolveMethodParams(context);
+                            return resolveArgs(context);
                         }
                     })
                     // invoke route
