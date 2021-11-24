@@ -18,6 +18,7 @@ package io.esastack.restlight.springmvc.spi.core;
 import esa.commons.annotation.Internal;
 import esa.commons.logging.Logger;
 import esa.commons.logging.LoggerFactory;
+import esa.commons.spi.Feature;
 import io.esastack.commons.net.http.MediaTypeUtil;
 import io.esastack.httpserver.core.HttpRequest;
 import io.esastack.restlight.core.DeployContext;
@@ -26,6 +27,7 @@ import io.esastack.restlight.core.context.HttpResponse;
 import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.spi.ExceptionHandler;
 import io.esastack.restlight.core.spi.ExceptionHandlerFactory;
+import io.esastack.restlight.core.util.Constants;
 import io.esastack.restlight.server.bootstrap.ExceptionHandlerChain;
 import io.esastack.restlight.server.util.Futures;
 import io.esastack.restlight.springmvc.util.ResponseStatusUtils;
@@ -37,6 +39,7 @@ import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 @Internal
+@Feature(tags = Constants.INTERNAL)
 public class SpringMvcExceptionHandlerFactory implements ExceptionHandlerFactory {
 
     @Override

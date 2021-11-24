@@ -26,6 +26,7 @@ import java.util.concurrent.CompletableFuture;
  * This {@link InternalExceptionHandler} is designed to handle given {@link InternalExceptionHandler}.
  */
 @Internal
+@FunctionalInterface
 public interface InternalExceptionHandler<CTX extends RequestContext> extends Ordered {
 
     /**

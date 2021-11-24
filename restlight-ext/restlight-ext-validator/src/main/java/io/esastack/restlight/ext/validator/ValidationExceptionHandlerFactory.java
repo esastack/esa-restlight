@@ -16,11 +16,13 @@
 package io.esastack.restlight.ext.validator;
 
 import esa.commons.annotation.Internal;
+import esa.commons.spi.Feature;
 import io.esastack.restlight.core.DeployContext;
 import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.spi.ExceptionHandler;
 import io.esastack.restlight.core.spi.ExceptionHandlerFactory;
+import io.esastack.restlight.core.util.Constants;
 import io.esastack.restlight.server.bootstrap.ExceptionHandlerChain;
 import io.esastack.restlight.server.util.Futures;
 import io.netty.handler.codec.http.HttpResponseStatus;
@@ -35,6 +37,7 @@ import java.util.concurrent.CompletableFuture;
 import static io.esastack.restlight.server.util.ErrorDetail.sendErrorResult;
 
 @Internal
+@Feature(tags = Constants.INTERNAL)
 public class ValidationExceptionHandlerFactory implements ExceptionHandlerFactory {
 
     @Override

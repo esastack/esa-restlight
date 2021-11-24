@@ -16,9 +16,12 @@
 package io.esastack.restlight.server.spi.impl;
 
 import esa.commons.StringUtils;
+import esa.commons.annotation.Internal;
+import esa.commons.spi.Feature;
 import io.esastack.commons.net.http.MediaTypeUtil;
 import io.esastack.httpserver.core.HttpResponse;
 import io.esastack.httpserver.core.RequestContext;
+import io.esastack.restlight.core.util.Constants;
 import io.esastack.restlight.core.util.Ordered;
 import io.esastack.restlight.server.bootstrap.ExceptionHandlerChain;
 import io.esastack.restlight.server.route.RouteFailureException;
@@ -30,6 +33,8 @@ import io.netty.handler.codec.http.HttpResponseStatus;
 
 import java.util.concurrent.CompletableFuture;
 
+@Internal
+@Feature(tags = Constants.INTERNAL)
 public class RouteFailureExceptionHandler implements ExceptionHandler {
 
     @Override

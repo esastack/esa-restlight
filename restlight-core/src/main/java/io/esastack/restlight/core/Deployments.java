@@ -196,12 +196,24 @@ public abstract class Deployments<R extends AbstractRestlight<R, D, O>, D extend
     protected List<InternalExceptionHandler<RequestContext>> exceptionHandlersBySpi() {
         final List<InternalExceptionHandler<RequestContext>> handlers = new LinkedList<>();
         SpiLoader.cached(io.esastack.restlight.server.spi.ExceptionHandler.class)
-                .getByGroup(restlight.name(), true).forEach(h ->
-                handlers.add((context, th, next) -> h.handle(context, th,
+                .getByFeature(restlight.name(),
+                        true,
+                        Collections.singletonMap(Constants.INTERNAL, StringUtils.empty()),
+                        false)
+                .forEach(h -> handlers.add((context, th, next) -> h.handle(context, th,
                         (ctx, t) -> next.handle(context, th))));
+
         handlers.addAll(SpiLoader.cached(ExceptionHandler.class)
-                .getByGroup(restlight.name(), true));
-        SpiLoader.cached(ExceptionHandlerFactory.class).getByGroup(restlight.name(), true)
+                .getByFeature(restlight.name(),
+                        true,
+                        Collections.singletonMap(Constants.INTERNAL, StringUtils.empty()),
+                        false));
+
+        SpiLoader.cached(ExceptionHandlerFactory.class)
+                .getByFeature(restlight.name(),
+                        true,
+                        Collections.singletonMap(Constants.INTERNAL, StringUtils.empty()),
+                        false)
                 .forEach(factory -> factory.handler(ctx()).ifPresent(handlers::add));
         return handlers;
     }

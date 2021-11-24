@@ -15,6 +15,7 @@
  */
 package io.esastack.restlight.core.configure;
 
+import esa.commons.annotation.Internal;
 import io.esastack.restlight.core.DeployContext;
 import io.esastack.restlight.core.Deployments;
 import io.esastack.restlight.core.Restlight;
@@ -130,6 +131,7 @@ public class MiniConfigurableDeployments {
      * @param handler    exception handler
      * @return this deployments
      */
+    @Internal
     public MiniConfigurableDeployments addExceptionHandler(ExceptionHandler handler) {
         deployments.addExceptionHandler(handler);
         return self();
@@ -141,6 +143,7 @@ public class MiniConfigurableDeployments {
      * @param handlers    exception handlers
      * @return this deployments
      */
+    @Internal
     public MiniConfigurableDeployments addExceptionHandlers(Collection<? extends ExceptionHandler> handlers) {
         deployments.addExceptionHandlers(handlers);
         return self();

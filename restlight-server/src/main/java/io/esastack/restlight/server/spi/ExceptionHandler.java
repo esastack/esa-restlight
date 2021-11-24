@@ -15,11 +15,14 @@
  */
 package io.esastack.restlight.server.spi;
 
+import esa.commons.annotation.Internal;
 import esa.commons.spi.SPI;
 import io.esastack.httpserver.core.RequestContext;
 import io.esastack.restlight.server.internal.InternalExceptionHandler;
 
 @SPI
+@Internal
+@FunctionalInterface
 public interface ExceptionHandler extends InternalExceptionHandler<RequestContext> {
 }
 

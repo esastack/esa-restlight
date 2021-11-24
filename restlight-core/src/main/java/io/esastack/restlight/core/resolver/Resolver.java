@@ -15,6 +15,11 @@
  */
 package io.esastack.restlight.core.resolver;
 
+import io.esastack.restlight.core.method.Param;
+
+/**
+ * This is a marker interface which is used to identity the implementation can be used to resolve a {@link Param}.
+ */
 public interface Resolver {
 }
 

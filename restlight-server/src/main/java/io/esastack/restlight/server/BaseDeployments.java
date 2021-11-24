@@ -18,11 +18,13 @@ package io.esastack.restlight.server;
 import esa.commons.Checks;
 import esa.commons.StringUtils;
 import esa.commons.annotation.Beta;
+import esa.commons.annotation.Internal;
 import esa.commons.spi.SpiLoader;
 import io.esastack.httpserver.core.AttributesImpl;
 import io.esastack.httpserver.core.RequestContext;
 import io.esastack.httpserver.impl.HttResponseImpl;
 import io.esastack.httpserver.impl.HttpRequestImpl;
+import io.esastack.restlight.core.util.Constants;
 import io.esastack.restlight.core.util.OrderedComparator;
 import io.esastack.restlight.server.bootstrap.DispatcherHandler;
 import io.esastack.restlight.server.bootstrap.DispatcherHandlerImpl;
@@ -65,6 +67,7 @@ import io.esastack.restlight.server.util.LoggerUtils;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -251,6 +254,7 @@ public abstract class BaseDeployments<R extends BaseRestlightServer<R, D, O, CTX
         return self();
     }
 
+    @Internal
     public D addExceptionHandler(InternalExceptionHandler<CTX> handler) {
         checkImmutable();
         Checks.checkNotNull(handler, "handler");
@@ -258,6 +262,7 @@ public abstract class BaseDeployments<R extends BaseRestlightServer<R, D, O, CTX
         return self();
     }
 
+    @Internal
     public D addExceptionHandlers(Collection<? extends InternalExceptionHandler<CTX>> handlers) {
         checkImmutable();
         if (handlers != null && !handlers.isEmpty()) {
@@ -507,7 +512,10 @@ public abstract class BaseDeployments<R extends BaseRestlightServer<R, D, O, CTX
         @Override
         protected List<InternalExceptionHandler<RequestContext>> exceptionHandlersBySpi() {
             return new ArrayList<>(SpiLoader.cached(ExceptionHandler.class)
-                    .getByGroup(restlight.name(), true));
+                    .getByFeature(restlight.name(),
+                            true,
+                            Collections.singletonMap(Constants.INTERNAL, StringUtils.empty()),
+                            false));
         }
 
         @Override
