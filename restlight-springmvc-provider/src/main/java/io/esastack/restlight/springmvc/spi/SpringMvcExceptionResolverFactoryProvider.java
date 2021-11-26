@@ -15,6 +15,7 @@
  */
 package io.esastack.restlight.springmvc.spi;
 
+import esa.commons.annotation.Internal;
 import esa.commons.spi.Feature;
 import io.esastack.restlight.core.DeployContext;
 import io.esastack.restlight.core.config.RestlightOptions;
@@ -23,6 +24,7 @@ import io.esastack.restlight.core.spi.ExceptionResolverFactoryProvider;
 import io.esastack.restlight.core.util.Constants;
 import io.esastack.restlight.springmvc.resolver.exception.SpringMvcExceptionResolverFactory;
 
+@Internal
 @Feature(tags = Constants.INTERNAL)
 public class SpringMvcExceptionResolverFactoryProvider implements ExceptionResolverFactoryProvider {
 

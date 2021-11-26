@@ -197,7 +197,7 @@ public class Deployments4Spring<R extends AbstractRestlight4Spring<R, D, O>, D e
         if (!awareness.isEmpty()) {
             factories.addAll(awareness.values()
                     .stream()
-                    .map(aware -> (RouteRegistryAwareFactory) ctx -> aware)
+                    .map(aware -> (RouteRegistryAwareFactory) ctx -> Optional.of(aware))
                     .collect(Collectors.toList()));
         }
         factories.addAll(beansOfType(context, RouteRegistryAwareFactory.class).values());

@@ -1048,7 +1048,11 @@ public abstract class Deployments<R extends AbstractRestlight<R, D, O>, D extend
 
         // load then add RouteRegistryAware by spi
         SpiLoader.cached(RouteRegistryAwareFactory.class).getByGroup(restlight.name(), true)
-                .stream().map(factory -> factory.createAware(ctx())).forEach(this::addRouteRegistryAware);
+                .stream()
+                .map(factory -> factory.createAware(ctx()))
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .forEach(this::addRouteRegistryAware);
 
         return super.doGetRestlightHandler();
     }

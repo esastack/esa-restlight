@@ -19,6 +19,8 @@ import esa.commons.spi.SPI;
 import io.esastack.restlight.server.ServerDeployContext;
 import io.esastack.restlight.server.config.ServerOptions;
 
+import java.util.Optional;
+
 @FunctionalInterface
 @SPI
 public interface RouteRegistryAwareFactory {
@@ -29,7 +31,7 @@ public interface RouteRegistryAwareFactory {
      * @param deployContext deploy context
      * @return              registry aware
      */
-    RouteRegistryAware createAware(ServerDeployContext<? extends ServerOptions> deployContext);
+    Optional<RouteRegistryAware> createAware(ServerDeployContext<? extends ServerOptions> deployContext);
 
 }
 

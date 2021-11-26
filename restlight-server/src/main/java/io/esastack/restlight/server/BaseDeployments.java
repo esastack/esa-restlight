@@ -289,7 +289,7 @@ public abstract class BaseDeployments<R extends BaseRestlightServer<R, D, O, CTX
     public D addRouteRegistryAware(RouteRegistryAware aware) {
         checkImmutable();
         Checks.checkNotNull(aware, "aware");
-        return addRouteRegistryAware((RouteRegistryAwareFactory) deployContext -> aware);
+        return addRouteRegistryAware((RouteRegistryAwareFactory) deployContext -> Optional.of(aware));
     }
 
     public D addRouteRegistryAware(RouteRegistryAwareFactory aware) {
@@ -430,12 +430,13 @@ public abstract class BaseDeployments<R extends BaseRestlightServer<R, D, O, CTX
 
         // load RouteRegistryAware by spi
         this.registryAwareness.addAll(SpiLoader.cached(RouteRegistryAware.class).getAll()
-                .stream().map(aware -> (RouteRegistryAwareFactory) deployContext -> aware)
+                .stream().map(aware -> (RouteRegistryAwareFactory) deployContext -> Optional.of(aware))
                 .collect(Collectors.toList()));
         this.registryAwareness.addAll(SpiLoader.cached(RouteRegistryAwareFactory.class).getAll());
-        this.registryAwareness.forEach(factory -> {
-            factory.createAware(deployContext).setRegistry(routeRegistry);
-        });
+        this.registryAwareness.stream().map(factory -> factory.createAware(deployContext))
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .forEach(aware -> aware.setRegistry(routeRegistry));
 
         // init ExceptionHandlerChain
         this.exceptionHandlers.addAll(exceptionHandlersBySpi());

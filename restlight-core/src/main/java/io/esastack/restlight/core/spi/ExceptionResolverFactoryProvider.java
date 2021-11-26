@@ -15,6 +15,7 @@
  */
 package io.esastack.restlight.core.spi;
 
+import esa.commons.annotation.Internal;
 import esa.commons.spi.SPI;
 import io.esastack.restlight.core.DeployContext;
 import io.esastack.restlight.core.config.RestlightOptions;
@@ -25,6 +26,7 @@ import io.esastack.restlight.core.resolver.exception.ExceptionResolverFactory;
  * io.esastack.restlight.core.resolver.ExceptionResolver} for every handler.
  */
 @SPI
+@Internal
 public interface ExceptionResolverFactoryProvider {
 
     /**
