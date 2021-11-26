@@ -20,6 +20,7 @@ import esa.commons.concurrent.DirectExecutor;
 import io.esastack.restlight.core.AbstractRestlight;
 import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.core.spi.Filter;
+import io.esastack.restlight.core.spi.FilterFactory;
 import io.esastack.restlight.server.bootstrap.RestlightServer;
 import io.esastack.restlight.spring.util.RestlightBizExecutorAware;
 import io.esastack.restlight.spring.util.RestlightDeployContextAware;
@@ -27,6 +28,7 @@ import io.esastack.restlight.spring.util.RestlightIoExecutorAware;
 import io.esastack.restlight.spring.util.RestlightServerAware;
 import org.springframework.context.ApplicationContext;
 
+import java.util.Optional;
 import java.util.concurrent.Executor;
 
 public abstract class AbstractRestlight4Spring<R extends AbstractRestlight4Spring<R, D, O>,
@@ -48,6 +50,13 @@ public abstract class AbstractRestlight4Spring<R extends AbstractRestlight4Sprin
     private void autoConfigureFromSpringContext(ApplicationContext context) {
         // auto inject filter
         context.getBeansOfType(Filter.class).values().forEach(this::addFilter);
+        context.getBeansOfType(FilterFactory.class).values().forEach(factory -> {
+            Optional<Filter> filter = factory.filter(deployments().deployContext());
+            filter.ifPresent(this::addFilter);
+        });
+
+        context.getBeansOfType(io.esastack.restlight.server.spi.Filter.class).values()
+                .forEach(f -> this.addFilter((c, next) -> f.doFilter(c, ctx -> next.doFilter(c))));
     }
 
     public R enableServerAware(boolean enable) {

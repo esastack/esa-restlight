@@ -13,21 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.esastack.restlight.core.spi.impl;
+package io.esastack.restlight.core.handler;
 
-import io.esastack.restlight.core.DeployContext;
-import io.esastack.restlight.core.config.RestlightOptions;
-import io.esastack.restlight.core.spi.Filter;
-import io.esastack.restlight.core.spi.FilterFactory;
+import io.esastack.restlight.core.method.HandlerMethod;
 
-import java.util.Optional;
+public interface HandlerPredicate {
 
-public class ResponseEntityWriterFilterFactory implements FilterFactory {
-
-    @Override
-    public Optional<Filter> filter(DeployContext<? extends RestlightOptions> ctx) {
-        return Optional.of(new ResponseEntityWriterFilter(ctx));
-    }
+    /**
+     * Judge whether should apply current component to resolve the {@link HandlerMethod}.
+     *
+     * @param handlerMethod handler method.
+     *
+     * @return true or false.
+     */
+    boolean supports(HandlerMethod handlerMethod);
 
 }
 

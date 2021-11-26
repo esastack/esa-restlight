@@ -15,18 +15,8 @@
  */
 package io.esastack.restlight.core.resolver;
 
-import io.esastack.restlight.core.method.HandlerMethod;
+import io.esastack.restlight.core.handler.HandlerPredicate;
 
-public interface HttpEntityAdvicePredicate {
-
-    /**
-     * Judge whether should apply current component to resolve the {@link HandlerMethod}.
-     *
-     * @param handlerMethod handler method.
-     *
-     * @return true or false.
-     */
-    boolean supports(HandlerMethod handlerMethod);
-
+public interface HttpEntityAdvicePredicate extends HandlerPredicate {
 }
 

@@ -63,6 +63,7 @@ import io.esastack.restlight.server.spi.ExceptionHandler;
 import io.esastack.restlight.server.spi.Filter;
 import io.esastack.restlight.server.spi.RequestTaskHookFactory;
 import io.esastack.restlight.server.spi.RouteRegistryAware;
+import io.esastack.restlight.server.spi.RouteRegistryAwareFactory;
 import io.esastack.restlight.server.util.LoggerUtils;
 
 import java.util.ArrayList;
@@ -93,10 +94,10 @@ public abstract class BaseDeployments<R extends BaseRestlightServer<R, D, O, CTX
     private final List<Route> routes = new LinkedList<>();
     private final List<InternalFilter<FCTX>> filters = new LinkedList<>();
     private final List<InternalExceptionHandler<CTX>> exceptionHandlers = new LinkedList<>();
-    private final List<ConnectionHandler> connectionHandlers = new LinkedList<>();
-    private final List<DisConnectionHandler> disConnectionHandlers = new LinkedList<>();
+    private final List<ConnectionHandlerFactory> connectionHandlers = new LinkedList<>();
+    private final List<DisConnectionHandlerFactory> disConnectionHandlers = new LinkedList<>();
     private final List<RequestTaskHookFactory> requestTaskHooks = new LinkedList<>();
-    private final List<RouteRegistryAware> registryAwareness = new LinkedList<>();
+    private final List<RouteRegistryAwareFactory> registryAwareness = new LinkedList<>();
     private final ServerDeployContext<O> deployContext;
 
     ExceptionHandlerChain<CTX> exceptionHandler;
@@ -212,14 +213,21 @@ public abstract class BaseDeployments<R extends BaseRestlightServer<R, D, O, CTX
     public D addConnectionHandler(ConnectionHandler handler) {
         checkImmutable();
         Checks.checkNotNull(handler, "handler");
-        this.connectionHandlers.add(handler);
-        return self();
+        return addConnectionHandler(ctx -> {
+            return Optional.of(handler);
+        });
     }
 
-    public D addConnectionHandlers(Collection<? extends ConnectionHandler> handlers) {
+    public D addConnectionHandler(ConnectionHandlerFactory handler) {
+        checkImmutable();
+        Checks.checkNotNull(handler, "handler");
+        return addConnectionHandlers(Collections.singletonList(handler));
+    }
+
+    public D addConnectionHandlers(Collection<? extends ConnectionHandlerFactory> handlers) {
         checkImmutable();
         if (handlers != null && !handlers.isEmpty()) {
-            handlers.forEach(this::addConnectionHandler);
+            this.connectionHandlers.addAll(handlers);
         }
         return self();
     }
@@ -227,14 +235,21 @@ public abstract class BaseDeployments<R extends BaseRestlightServer<R, D, O, CTX
     public D addDisConnectionHandler(DisConnectionHandler handler) {
         checkImmutable();
         Checks.checkNotNull(handler, "handler");
-        this.disConnectionHandlers.add(handler);
-        return self();
+        return addDisConnectionHandler(ctx -> {
+            return Optional.of(handler);
+        });
     }
 
-    public D addDisConnectionHandlers(Collection<? extends DisConnectionHandler> handlers) {
+    public D addDisConnectionHandler(DisConnectionHandlerFactory handler) {
+        checkImmutable();
+        Checks.checkNotNull(handler, "handler");
+        return addDisConnectionHandlers(Collections.singletonList(handler));
+    }
+
+    public D addDisConnectionHandlers(Collection<? extends DisConnectionHandlerFactory> handlers) {
         checkImmutable();
         if (handlers != null && !handlers.isEmpty()) {
-            handlers.forEach(this::addDisConnectionHandler);
+            this.disConnectionHandlers.addAll(handlers);
         }
         return self();
     }
@@ -274,11 +289,16 @@ public abstract class BaseDeployments<R extends BaseRestlightServer<R, D, O, CTX
     public D addRouteRegistryAware(RouteRegistryAware aware) {
         checkImmutable();
         Checks.checkNotNull(aware, "aware");
-        this.registryAwareness.add(aware);
-        return self();
+        return addRouteRegistryAware((RouteRegistryAwareFactory) deployContext -> aware);
     }
 
-    public D addRouteRegistryAwareness(Collection<? extends RouteRegistryAware> awareness) {
+    public D addRouteRegistryAware(RouteRegistryAwareFactory aware) {
+        checkImmutable();
+        Checks.checkNotNull(aware, "aware");
+        return addRouteRegistryAwareness(Collections.singletonList(aware));
+    }
+
+    public D addRouteRegistryAwareness(Collection<? extends RouteRegistryAwareFactory> awareness) {
         checkImmutable();
         if (awareness != null && !awareness.isEmpty()) {
             awareness.forEach(this::addRouteRegistryAware);
@@ -409,9 +429,13 @@ public abstract class BaseDeployments<R extends BaseRestlightServer<R, D, O, CTX
         ctx().setDispatcherHandler(dispatcher);
 
         // load RouteRegistryAware by spi
-        this.registryAwareness.forEach(aware -> aware.setRegistry(routeRegistry));
-        SpiLoader.cached(RouteRegistryAware.class).getAll()
-                .forEach(aware -> aware.setRegistry(routeRegistry));
+        this.registryAwareness.addAll(SpiLoader.cached(RouteRegistryAware.class).getAll()
+                .stream().map(aware -> (RouteRegistryAwareFactory) deployContext -> aware)
+                .collect(Collectors.toList()));
+        this.registryAwareness.addAll(SpiLoader.cached(RouteRegistryAwareFactory.class).getAll());
+        this.registryAwareness.forEach(factory -> {
+            factory.createAware(deployContext).setRegistry(routeRegistry);
+        });
 
         // init ExceptionHandlerChain
         this.exceptionHandlers.addAll(exceptionHandlersBySpi());
@@ -450,8 +474,16 @@ public abstract class BaseDeployments<R extends BaseRestlightServer<R, D, O, CTX
                         .filter(Optional::isPresent)
                         .map(Optional::get)
                         .collect(Collectors.toList()),
-                connectionHandlers,
-                disConnectionHandlers
+                connectionHandlers.stream()
+                        .map(factory -> factory.handler(deployContext))
+                        .filter(Optional::isPresent)
+                        .map(Optional::get)
+                        .collect(Collectors.toList()),
+                disConnectionHandlers.stream()
+                        .map(factory -> factory.handler(deployContext))
+                        .filter(Optional::isPresent)
+                        .map(Optional::get)
+                        .collect(Collectors.toList())
         );
     }
 

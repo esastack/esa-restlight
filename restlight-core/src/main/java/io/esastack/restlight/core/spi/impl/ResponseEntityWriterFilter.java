@@ -16,6 +16,8 @@
 package io.esastack.restlight.core.spi.impl;
 
 import esa.commons.Checks;
+import io.esastack.restlight.core.DeployContext;
+import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.core.context.FilterContext;
 import io.esastack.restlight.core.handler.impl.HandlerMethodResolver;
 import io.esastack.restlight.core.method.HandlerMethod;
@@ -34,15 +36,18 @@ import java.util.concurrent.CompletableFuture;
 
 public class ResponseEntityWriterFilter implements Filter {
 
-    private final HandlerResolverFactory resolverFactory;
+    private final DeployContext<? extends RestlightOptions> ctx;
 
-    public ResponseEntityWriterFilter(HandlerResolverFactory resolverFactory) {
-        Checks.checkNotNull(resolverFactory, "resolverFactory");
-        this.resolverFactory = resolverFactory;
+    private HandlerResolverFactory resolverFactory;
+
+    public ResponseEntityWriterFilter(DeployContext<? extends RestlightOptions> ctx) {
+        Checks.checkNotNull(ctx, "ctx");
+        this.ctx = ctx;
     }
 
     @Override
     public CompletableFuture<Void> doFilter(FilterContext context, FilterChain<FilterContext> chain) {
+        HandlerResolverFactory resolverFactory = getResolverFactory();
         return chain.doFilter(context).thenApply(v -> {
             if (!context.response().isCommitted()) {
                 HandlerMethod method = context.getUncheckedAttribute(HandlerMethodResolver.HANDLER_METHOD);
@@ -65,6 +70,14 @@ public class ResponseEntityWriterFilter implements Filter {
     @Override
     public int getOrder() {
         return Ordered.HIGHEST_PRECEDENCE;
+    }
+
+    private HandlerResolverFactory getResolverFactory() {
+        if (resolverFactory == null) {
+            assert ctx.resolverFactory().isPresent();
+            resolverFactory = ctx.resolverFactory().get();
+        }
+        return resolverFactory;
     }
 }
 

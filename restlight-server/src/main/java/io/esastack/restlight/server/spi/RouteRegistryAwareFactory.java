@@ -13,24 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.esastack.restlight.core.spi;
+package io.esastack.restlight.server.spi;
 
 import esa.commons.spi.SPI;
-import io.esastack.restlight.core.DeployContext;
-import io.esastack.restlight.core.config.RestlightOptions;
-import io.esastack.restlight.server.spi.RouteRegistryAware;
+import io.esastack.restlight.server.ServerDeployContext;
+import io.esastack.restlight.server.config.ServerOptions;
 
 @FunctionalInterface
 @SPI
 public interface RouteRegistryAwareFactory {
 
     /**
-     * Creates an instance of {@link RouteRegistryAware} by given {@link DeployContext}.
+     * Creates an instance of {@link RouteRegistryAware} by given {@link ServerDeployContext}.
      *
      * @param deployContext deploy context
      * @return              registry aware
      */
-    RouteRegistryAware createAware(DeployContext<? extends RestlightOptions> deployContext);
+    RouteRegistryAware createAware(ServerDeployContext<? extends ServerOptions> deployContext);
 
 }
 

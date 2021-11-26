@@ -22,37 +22,61 @@ import esa.commons.spi.Feature;
 import esa.commons.spi.SpiLoader;
 import io.esastack.restlight.core.Deployments;
 import io.esastack.restlight.core.config.RestlightOptions;
+import io.esastack.restlight.core.configure.HandlerConfigure;
 import io.esastack.restlight.core.handler.HandlerMapping;
 import io.esastack.restlight.core.handler.HandlerMappingProvider;
+import io.esastack.restlight.core.handler.RouteFilterAdapter;
 import io.esastack.restlight.core.interceptor.HandlerInterceptor;
 import io.esastack.restlight.core.interceptor.Interceptor;
 import io.esastack.restlight.core.interceptor.InterceptorFactory;
 import io.esastack.restlight.core.interceptor.MappingInterceptor;
 import io.esastack.restlight.core.interceptor.RouteInterceptor;
+import io.esastack.restlight.core.resolver.ContextResolverAdapter;
+import io.esastack.restlight.core.resolver.ContextResolverFactory;
 import io.esastack.restlight.core.resolver.ExceptionResolver;
+import io.esastack.restlight.core.resolver.ParamConverterAdapter;
+import io.esastack.restlight.core.resolver.ParamConverterFactory;
 import io.esastack.restlight.core.resolver.ParamResolverAdapter;
 import io.esastack.restlight.core.resolver.ParamResolverAdviceAdapter;
 import io.esastack.restlight.core.resolver.ParamResolverAdviceFactory;
 import io.esastack.restlight.core.resolver.ParamResolverFactory;
-import io.esastack.restlight.core.resolver.ResponseEntityResolver;
+import io.esastack.restlight.core.resolver.RequestEntityResolverAdapter;
+import io.esastack.restlight.core.resolver.RequestEntityResolverAdviceAdapter;
+import io.esastack.restlight.core.resolver.RequestEntityResolverAdviceFactory;
+import io.esastack.restlight.core.resolver.RequestEntityResolverFactory;
 import io.esastack.restlight.core.resolver.ResponseEntityResolverAdviceAdapter;
 import io.esastack.restlight.core.resolver.ResponseEntityResolverAdviceFactory;
 import io.esastack.restlight.core.resolver.ResponseEntityResolverFactory;
 import io.esastack.restlight.core.serialize.GsonHttpBodySerializer;
 import io.esastack.restlight.core.serialize.HttpRequestSerializer;
 import io.esastack.restlight.core.serialize.HttpResponseSerializer;
+import io.esastack.restlight.core.spi.ContextResolverProvider;
+import io.esastack.restlight.core.spi.FilterFactory;
+import io.esastack.restlight.core.spi.ParamResolverAdviceProvider;
 import io.esastack.restlight.core.spi.ParamResolverProvider;
+import io.esastack.restlight.core.spi.RequestEntityResolverAdviceProvider;
+import io.esastack.restlight.core.spi.RequestEntityResolverProvider;
+import io.esastack.restlight.core.spi.ResponseEntityResolverAdviceProvider;
 import io.esastack.restlight.core.spi.ResponseEntityResolverProvider;
+import io.esastack.restlight.core.spi.RouteFilterFactory;
 import io.esastack.restlight.core.spi.impl.JacksonDefaultSerializerFactory;
 import io.esastack.restlight.core.util.Constants;
 import io.esastack.restlight.core.util.OrderedComparator;
+import io.esastack.restlight.server.handler.ConnectionHandler;
+import io.esastack.restlight.server.handler.DisConnectionHandler;
 import io.esastack.restlight.server.route.Route;
 import io.esastack.restlight.server.schedule.RequestTaskHook;
 import io.esastack.restlight.server.schedule.Scheduler;
+import io.esastack.restlight.server.spi.ConnectionHandlerFactory;
+import io.esastack.restlight.server.spi.DisConnectionHandlerFactory;
+import io.esastack.restlight.server.spi.Filter;
 import io.esastack.restlight.server.spi.RequestTaskHookFactory;
+import io.esastack.restlight.server.spi.RouteRegistryAware;
+import io.esastack.restlight.server.spi.RouteRegistryAwareFactory;
 import io.esastack.restlight.spring.serialize.GsonHttpBodySerializerAdapter;
 import io.esastack.restlight.spring.spi.AdviceLocator;
 import io.esastack.restlight.spring.spi.ControllerLocator;
+import io.esastack.restlight.spring.spi.ExtensionLocator;
 import io.esastack.restlight.spring.util.DeployContextConfigure;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.context.ApplicationContext;
@@ -66,6 +90,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * This Deployments will auto-configure itself from the {@link ApplicationContext}.
@@ -82,17 +107,31 @@ public class Deployments4Spring<R extends AbstractRestlight4Spring<R, D, O>, D e
     }
 
     void autoConfigureFromSpringContext(ApplicationContext context) {
+        // configures of BaseDeployments
         configureContextConfigures(context);
-        configureSchedulers(context);
-        configureRequestTaskHooks(context);
         configureRoutes(context);
+        configureSchedulers(context);
+        configureConnectionHandler(context);
+        configureDisConnectionHandler(context);
+        configureFilters(context);
+        configureRouteRegistryAwareness(context);
+        configureRequestTaskHooks(context);
+
+        // configures of Deployments
+        configureRouteFilter(context);
+        configureExtensions(context);
+        configureHandlerConfigure(context);
         configureMappings(context);
         configureController(context);
-        configureAdvices(context);
-        configureResolvers(context);
+        configureControllerAdvices(context);
+        configureInterceptors(context);
+        configureParamConverter(context);
+        configureParamResolversAndAdvices(context);
+        configureContextResolvers(context);
+        configureRequestEntityResolversAndAdvices(context);
+        configureResponseEntityResolversAndAdvices(context);
         configureSerializers(context);
         configureExceptionResolvers(context);
-        configureInterceptors(context);
     }
 
     private void configureContextConfigures(ApplicationContext context) {
@@ -110,6 +149,61 @@ public class Deployments4Spring<R extends AbstractRestlight4Spring<R, D, O>, D e
         }
     }
 
+    private void configureConnectionHandler(ApplicationContext context) {
+        List<ConnectionHandlerFactory> factories = new LinkedList<>();
+        Map<String, ConnectionHandler> handlers = beansOfType(context, ConnectionHandler.class);
+        if (!handlers.isEmpty()) {
+            factories.addAll(handlers.values()
+                    .stream()
+                    .map(handler -> (ConnectionHandlerFactory) ctx -> Optional.of(handler))
+                    .collect(Collectors.toList()));
+        }
+        factories.addAll(beansOfType(context, ConnectionHandlerFactory.class).values());
+        this.addConnectionHandlers(factories);
+    }
+
+    private void configureDisConnectionHandler(ApplicationContext context) {
+        List<DisConnectionHandlerFactory> factories = new LinkedList<>();
+        Map<String, DisConnectionHandler> handlers = beansOfType(context, DisConnectionHandler.class);
+        if (!handlers.isEmpty()) {
+            factories.addAll(handlers.values()
+                    .stream()
+                    .map(handler -> (DisConnectionHandlerFactory) ctx -> Optional.of(handler))
+                    .collect(Collectors.toList()));
+        }
+        factories.addAll(beansOfType(context, DisConnectionHandlerFactory.class).values());
+        this.addDisConnectionHandlers(factories);
+    }
+
+    private void configureFilters(ApplicationContext context) {
+        Map<String, Filter> filters = beansOfType(context, Filter.class);
+        if (!filters.isEmpty()) {
+            filters.values().forEach(filter -> this.addFilter(
+                    (c, next) -> filter.doFilter(c, ctx -> next.doFilter(c))));
+        }
+        beansOfType(context, io.esastack.restlight.core.spi.Filter.class).values()
+                .forEach(this::addFilter);
+        this.addFilters(beansOfType(context, FilterFactory.class).values()
+                .stream()
+                .map(factory -> factory.filter(deployContext()))
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .collect(Collectors.toList()));
+    }
+
+    private void configureRouteRegistryAwareness(ApplicationContext context) {
+        List<RouteRegistryAwareFactory> factories = new LinkedList<>();
+        Map<String, RouteRegistryAware> awareness = beansOfType(context, RouteRegistryAware.class);
+        if (!awareness.isEmpty()) {
+            factories.addAll(awareness.values()
+                    .stream()
+                    .map(aware -> (RouteRegistryAwareFactory) ctx -> aware)
+                    .collect(Collectors.toList()));
+        }
+        factories.addAll(beansOfType(context, RouteRegistryAwareFactory.class).values());
+        this.addRouteRegistryAwareness(factories);
+    }
+
     private void configureRequestTaskHooks(ApplicationContext context) {
         Collection<RequestTaskHookFactory> factories = beansOfType(context, RequestTaskHookFactory.class).values();
         if (!factories.isEmpty()) {
@@ -124,6 +218,28 @@ public class Deployments4Spring<R extends AbstractRestlight4Spring<R, D, O>, D e
 
     private void configureRoutes(ApplicationContext context) {
         beanOfType(context, Route.class).ifPresent(this::addRoute);
+    }
+
+    private void configureRouteFilter(ApplicationContext context) {
+        beansOfType(context, RouteFilterAdapter.class).values().forEach(this::addRouteFilter);
+        this.addRouteFilters(beansOfType(context, RouteFilterFactory.class).values());
+    }
+
+    private void configureExtensions(ApplicationContext context) {
+        Collection<ExtensionLocator> locators = SpiLoader.cached(ExtensionLocator.class)
+                .getByFeature(restlight.name(),
+                        true,
+                        Collections.singletonMap(Constants.INTERNAL, StringUtils.empty()),
+                        false);
+        if (!locators.isEmpty()) {
+            Set<Object> controllers = new LinkedHashSet<>();
+            locators.forEach(l -> controllers.addAll(l.getExtensions(context, ctx())));
+            this.addExtensions(controllers);
+        }
+    }
+
+    private void configureHandlerConfigure(ApplicationContext context) {
+        this.addHandlerConfigures(beansOfType(context, HandlerConfigure.class).values());
     }
 
     private void configureMappings(ApplicationContext context) {
@@ -154,7 +270,7 @@ public class Deployments4Spring<R extends AbstractRestlight4Spring<R, D, O>, D e
         }
     }
 
-    private void configureAdvices(ApplicationContext context) {
+    private void configureControllerAdvices(ApplicationContext context) {
         Collection<AdviceLocator> adviceLocators = SpiLoader.cached(AdviceLocator.class)
                 .getByFeature(restlight.name(),
                         true,
@@ -167,14 +283,18 @@ public class Deployments4Spring<R extends AbstractRestlight4Spring<R, D, O>, D e
         }
     }
 
-    private void configureResolvers(ApplicationContext context) {
-        // auto inject argument resolver
+    private void configureParamConverter(ApplicationContext context) {
+        beansOfType(context, ParamConverterAdapter.class).values().forEach(this::addParamConverter);
+        this.addParamConverters(beansOfType(context, ParamConverterFactory.class).values());
+    }
+
+    private void configureParamResolversAndAdvices(ApplicationContext context) {
+        // auto inject param resolvers
         beansOfType(context, ParamResolverAdapter.class)
                 .values()
                 .forEach(this::addParamResolver);
-        beansOfType(context, ParamResolverFactory.class)
-                .values()
-                .forEach(this::addParamResolver);
+        this.addParamResolvers(beansOfType(context, ParamResolverFactory.class)
+                .values());
         beansOfType(context, ParamResolverProvider.class)
                 .values()
                 .stream()
@@ -182,32 +302,86 @@ public class Deployments4Spring<R extends AbstractRestlight4Spring<R, D, O>, D e
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .forEach(this::addParamResolver);
-        // auto inject return value resolver
-        beansOfType(context, ResponseEntityResolver.class)
+
+        // auto inject param resolver advices
+        beansOfType(context, ParamResolverAdviceAdapter.class)
                 .values()
-                .forEach(this::addResponseEntityResolver);
-        beansOfType(context, ResponseEntityResolverFactory.class)
+                .forEach(this::addParamResolverAdvice);
+        this.addParamResolverAdvices(beansOfType(context, ParamResolverAdviceFactory.class).values());
+        beansOfType(context, ParamResolverAdviceProvider.class)
                 .values()
-                .forEach(this::addResponseEntityResolver);
-        beansOfType(context, ResponseEntityResolverProvider.class).values()
+                .stream()
+                .map(p -> p.factoryBean(ctx()))
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .forEach(this::addParamResolverAdvice);
+    }
+
+    private void configureContextResolvers(ApplicationContext context) {
+        // auto inject context resolvers
+        beansOfType(context, ContextResolverAdapter.class)
+                .values()
+                .forEach(this::addContextResolver);
+        this.addContextResolvers(beansOfType(context, ContextResolverFactory.class).values());
+        beansOfType(context, ContextResolverProvider.class)
+                .values()
+                .stream()
+                .map(p -> p.factoryBean(ctx()))
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .forEach(this::addContextResolver);
+    }
+
+    private void configureRequestEntityResolversAndAdvices(ApplicationContext context) {
+        // auto inject request entity resolvers
+        beansOfType(context, RequestEntityResolverAdapter.class)
+                .values()
+                .forEach(this::addRequestEntityResolver);
+        this.addRequestEntityResolvers(beansOfType(context, RequestEntityResolverFactory.class).values());
+        beansOfType(context, RequestEntityResolverProvider.class)
+                .values()
+                .stream()
+                .map(p -> p.factoryBean(ctx()))
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .forEach(this::addRequestEntityResolver);
+
+        // auto inject request entity resolver advices.
+        beansOfType(context, RequestEntityResolverAdviceAdapter.class)
+                .values()
+                .forEach(this::addRequestEntityResolverAdvice);
+        this.addRequestEntityResolverAdvices(beansOfType(context, RequestEntityResolverAdviceFactory.class).values());
+        beansOfType(context, RequestEntityResolverAdviceProvider.class)
+                .values()
+                .stream()
+                .map(p -> p.factoryBean(ctx()))
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .forEach(this::addRequestEntityResolverAdvice);
+    }
+
+    private void configureResponseEntityResolversAndAdvices(ApplicationContext context) {
+        // auto inject response entity resolvers
+        this.addResponseEntityResolvers(beansOfType(context, ResponseEntityResolverFactory.class).values());
+        beansOfType(context, ResponseEntityResolverProvider.class)
+                .values()
                 .stream()
                 .map(p -> p.factoryBean(ctx()))
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .forEach(this::addResponseEntityResolver);
-        // auto inject argument resolver advice
-        beansOfType(context, ParamResolverAdviceAdapter.class)
-                .values()
-                .forEach(this::addParamResolverAdvice);
-        beansOfType(context, ParamResolverAdviceFactory.class)
-                .values()
-                .forEach(this::addParamResolverAdvice);
-        // auto inject return value resolver advice
+
+        // auto inject response entity resolver advices.
         beansOfType(context, ResponseEntityResolverAdviceAdapter.class)
                 .values()
                 .forEach(this::addResponseEntityResolverAdvice);
-        beansOfType(context, ResponseEntityResolverAdviceFactory.class)
+        this.addResponseEntityResolverAdvices(beansOfType(context, ResponseEntityResolverAdviceFactory.class).values());
+        beansOfType(context, ResponseEntityResolverAdviceProvider.class)
                 .values()
+                .stream()
+                .map(p -> p.factoryBean(ctx()))
+                .filter(Optional::isPresent)
+                .map(Optional::get)
                 .forEach(this::addResponseEntityResolverAdvice);
     }
 

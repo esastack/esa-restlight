@@ -40,6 +40,7 @@ import io.esastack.restlight.core.context.impl.HttpResponseImpl;
 import io.esastack.restlight.core.context.impl.RequestContextImpl;
 import io.esastack.restlight.core.handler.HandlerMapping;
 import io.esastack.restlight.core.handler.HandlerMappingProvider;
+import io.esastack.restlight.core.handler.RouteFilterAdapter;
 import io.esastack.restlight.core.handler.impl.HandlerAdvicesFactoryImpl;
 import io.esastack.restlight.core.handler.locate.HandlerValueResolverLocator;
 import io.esastack.restlight.core.handler.locate.MappingLocator;
@@ -92,7 +93,6 @@ import io.esastack.restlight.core.spi.RequestEntityResolverProvider;
 import io.esastack.restlight.core.spi.ResponseEntityResolverAdviceProvider;
 import io.esastack.restlight.core.spi.ResponseEntityResolverProvider;
 import io.esastack.restlight.core.spi.RouteFilterFactory;
-import io.esastack.restlight.core.spi.RouteRegistryAwareFactory;
 import io.esastack.restlight.core.util.Constants;
 import io.esastack.restlight.core.util.OrderedComparator;
 import io.esastack.restlight.core.util.RouteUtils;
@@ -106,6 +106,7 @@ import io.esastack.restlight.server.internal.InternalExceptionHandler;
 import io.esastack.restlight.server.internal.InternalFilter;
 import io.esastack.restlight.server.internal.RequestContextFactory;
 import io.esastack.restlight.server.route.RouteRegistry;
+import io.esastack.restlight.server.spi.RouteRegistryAwareFactory;
 import io.esastack.restlight.server.util.LoggerUtils;
 
 import java.lang.reflect.Method;
@@ -238,6 +239,12 @@ public abstract class Deployments<R extends AbstractRestlight<R, D, O>, D extend
                     " the restlight!");
         }
         return ctx().handlerRegistry().orElse(null);
+    }
+
+    public D addRouteFilter(RouteFilterAdapter filter) {
+        checkImmutable();
+        Checks.checkNotNull(filter, "filter");
+        return addRouteFilter(RouteFilterFactory.singleton(filter));
     }
 
     public D addRouteFilter(RouteFilterFactory filter) {

@@ -18,8 +18,9 @@ package io.esastack.restlight.jaxrs.adapter;
 import esa.commons.Checks;
 import io.esastack.restlight.core.context.RouteContext;
 import io.esastack.restlight.core.handler.HandlerMapping;
-import io.esastack.restlight.core.handler.RouteFilter;
+import io.esastack.restlight.core.handler.RouteFilterAdapter;
 import io.esastack.restlight.core.handler.RouteFilterChain;
+import io.esastack.restlight.core.method.HandlerMethod;
 import io.esastack.restlight.core.util.Ordered;
 import io.esastack.restlight.jaxrs.impl.JaxrsContextUtils;
 import io.esastack.restlight.jaxrs.impl.container.ContainerResponseContextImpl;
@@ -32,7 +33,7 @@ import jakarta.ws.rs.container.ContainerResponseFilter;
 
 import java.util.concurrent.CompletableFuture;
 
-public class JaxrsResponseFiltersAdapter implements RouteFilter {
+public class JaxrsResponseFiltersAdapter implements RouteFilterAdapter {
 
     private final ContainerResponseFilter[] filters;
 
@@ -60,6 +61,11 @@ public class JaxrsResponseFiltersAdapter implements RouteFilter {
             RuntimeDelegateUtils.addMetadataToNetty(rsp, context.response(), true);
             return Futures.completedFuture();
         });
+    }
+
+    @Override
+    public boolean supports(HandlerMethod handlerMethod) {
+        return true;
     }
 
     @Override

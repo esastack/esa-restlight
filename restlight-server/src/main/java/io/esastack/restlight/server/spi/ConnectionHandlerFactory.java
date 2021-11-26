@@ -26,6 +26,7 @@ import java.util.Optional;
  * The factory to create an {@link ConnectionHandler}.
  */
 @SPI
+@FunctionalInterface
 public interface ConnectionHandlerFactory {
 
     /**

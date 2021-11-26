@@ -23,6 +23,7 @@ import io.esastack.restlight.core.configure.ConfigurableHandler;
 import io.esastack.restlight.core.configure.HandlerConfigure;
 import io.esastack.restlight.core.method.HandlerMethod;
 import io.esastack.restlight.core.resolver.ContextResolverFactory;
+import io.esastack.restlight.core.spi.RouteFilterFactory;
 import io.esastack.restlight.jaxrs.configure.OrderComponent;
 import io.esastack.restlight.jaxrs.configure.ProvidersProxyFactory;
 import io.esastack.restlight.jaxrs.configure.ProvidersProxyFactoryImpl;
@@ -50,7 +51,6 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import static io.esastack.restlight.jaxrs.util.JaxrsUtils.ascendingOrdered;
 import static io.esastack.restlight.jaxrs.util.JaxrsUtils.descendingOrder;
@@ -113,14 +113,15 @@ public class DynamicFeatureAdapter implements HandlerConfigure {
 
         // handle bound postMatch ContainerRequestFilters (only apply to resource method)
         if (JaxrsMappingUtils.getMethod(handlerMethod.method()) != null) {
-            configurable.addRouteFilter((method) -> Optional.of(new PostMatchRequestFiltersAdapter(ascendingOrdered(
-                    filterByNameBindings(handlerMethod, current, providers.requestFilters(), true))
+            configurable.addRouteFilter(RouteFilterFactory.singleton(
+                    new PostMatchRequestFiltersAdapter(ascendingOrdered(filterByNameBindings(handlerMethod,
+                            current, providers.requestFilters(), true))
                     .toArray(new ContainerRequestFilter[0]))));
         }
 
         // handle bound ContainerResponseFilters (only apply to resource method)
         if (JaxrsMappingUtils.getMethod(handlerMethod.method()) != null) {
-            configurable.addRouteFilter((method) -> Optional.of(new JaxrsResponseFiltersAdapter(descendingOrder(
+            configurable.addRouteFilter(RouteFilterFactory.singleton(new JaxrsResponseFiltersAdapter(descendingOrder(
                     filterByNameBindings(handlerMethod, current, providers.responseFilters(), false))
                     .toArray(new ContainerResponseFilter[0]))));
         }

@@ -13,21 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.esastack.restlight.core.spi.impl;
+package io.esastack.restlight.core.handler;
 
-import io.esastack.restlight.core.DeployContext;
-import io.esastack.restlight.core.config.RestlightOptions;
-import io.esastack.restlight.core.spi.Filter;
-import io.esastack.restlight.core.spi.FilterFactory;
+import io.esastack.restlight.core.util.Ordered;
 
-import java.util.Optional;
-
-public class ResponseEntityWriterFilterFactory implements FilterFactory {
-
-    @Override
-    public Optional<Filter> filter(DeployContext<? extends RestlightOptions> ctx) {
-        return Optional.of(new ResponseEntityWriterFilter(ctx));
-    }
-
+public interface RouteFilterAdapter extends RouteFilter, HandlerPredicate, Ordered {
 }
 

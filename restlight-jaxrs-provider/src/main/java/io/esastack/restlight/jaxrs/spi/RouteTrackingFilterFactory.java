@@ -29,5 +29,9 @@ public class RouteTrackingFilterFactory implements RouteFilterFactory {
         return Optional.of(RouteTracking.singleton());
     }
 
+    @Override
+    public boolean supports(HandlerMethod handlerMethod) {
+        return true;
+    }
 }
 

@@ -15,16 +15,30 @@
  */
 package io.esastack.restlight.core.spi;
 
+import esa.commons.Checks;
 import esa.commons.spi.SPI;
+import io.esastack.restlight.core.handler.HandlerPredicate;
 import io.esastack.restlight.core.handler.RouteFilter;
+import io.esastack.restlight.core.handler.RouteFilterAdapter;
 import io.esastack.restlight.core.method.HandlerMethod;
 import io.esastack.restlight.server.route.Route;
 
 import java.util.Optional;
 
 @SPI
-@FunctionalInterface
-public interface RouteFilterFactory {
+public interface RouteFilterFactory extends HandlerPredicate {
+
+    /**
+     * Converts given {@link RouteFilterAdapter} to {@link RouteFilterFactory} which
+     * always use the given {@link RouteFilterAdapter} as the result of
+     * {@link #create(HandlerMethod)}
+     *
+     * @param resolver resolver
+     * @return of factory bean
+     */
+    static RouteFilterFactory singleton(RouteFilterAdapter resolver) {
+        return new Singleton(resolver);
+    }
 
     /**
      * Creates an instance of {@link RouteFilter} for given {@link Route}.
@@ -34,5 +48,24 @@ public interface RouteFilterFactory {
      */
     Optional<RouteFilter> create(HandlerMethod method);
 
+    class Singleton implements RouteFilterFactory {
+
+        private final RouteFilterAdapter filter;
+
+        Singleton(RouteFilterAdapter filter) {
+            Checks.checkNotNull(filter, "filter");
+            this.filter = filter;
+        }
+
+        @Override
+        public boolean supports(HandlerMethod handlerMethod) {
+            return filter.supports(handlerMethod);
+        }
+
+        @Override
+        public Optional<RouteFilter> create(HandlerMethod method) {
+            return Optional.of(filter);
+        }
+    }
 }
 
