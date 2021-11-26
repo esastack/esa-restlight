@@ -15,10 +15,11 @@
  */
 package io.esastack.restlight.core.resolver;
 
+import io.esastack.restlight.core.handler.HandlerPredicate;
 import io.esastack.restlight.core.util.Ordered;
 
 public interface RequestEntityResolverAdviceAdapter extends RequestEntityResolverAdvice,
-        HttpEntityAdvicePredicate, Ordered {
+        HandlerPredicate, Ordered {
 
     @Override
     default Object aroundRead(RequestEntityResolverContext context) throws Exception {

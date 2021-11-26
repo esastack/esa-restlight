@@ -16,9 +16,10 @@
 package io.esastack.restlight.core.resolver;
 
 import esa.commons.Checks;
+import io.esastack.restlight.core.handler.HandlerPredicate;
 import io.esastack.restlight.core.method.HandlerMethod;
 
-public interface RequestEntityResolverAdviceFactory extends HttpEntityAdvicePredicate {
+public interface RequestEntityResolverAdviceFactory extends HandlerPredicate {
 
     /**
      * Converts given {@link RequestEntityResolverAdviceAdapter} to {@link RequestEntityResolverAdviceFactory} which
