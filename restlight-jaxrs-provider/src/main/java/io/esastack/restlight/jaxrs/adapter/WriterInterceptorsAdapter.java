@@ -16,6 +16,7 @@
 package io.esastack.restlight.jaxrs.adapter;
 
 import esa.commons.Checks;
+import io.esastack.restlight.core.handler.impl.RouteHandlerMethodAdapter;
 import io.esastack.restlight.core.method.HandlerMethod;
 import io.esastack.restlight.core.resolver.ResponseEntityResolverAdviceAdapter;
 import io.esastack.restlight.core.resolver.ResponseEntityResolverContext;
@@ -28,28 +29,33 @@ import jakarta.ws.rs.ext.WriterInterceptor;
 public class WriterInterceptorsAdapter implements ResponseEntityResolverAdviceAdapter {
 
     private final WriterInterceptor[] interceptors;
-    private final boolean alsoApplyWhenNotRouted;
+    private final boolean onlyActiveWhenMatched;
 
-    public WriterInterceptorsAdapter(WriterInterceptor[] interceptors, boolean alsoApplyWhenNotRouted) {
+    public WriterInterceptorsAdapter(WriterInterceptor[] interceptors, boolean onlyActiveWhenMatched) {
         Checks.checkNotNull(interceptors, "interceptors");
         this.interceptors = interceptors;
-        this.alsoApplyWhenNotRouted = alsoApplyWhenNotRouted;
+        this.onlyActiveWhenMatched = onlyActiveWhenMatched;
     }
 
     @Override
     public void aroundWrite(ResponseEntityResolverContext context) throws Exception {
-        MultivaluedMap<String, Object> headers = new MultivaluedHashMap<>();
-        RuntimeDelegateUtils.addHeadersToMap(context.context().response().headers(), headers);
-        try {
-            new WriterInterceptorContextImpl(context, headers, interceptors).proceed();
-        } finally {
-            RuntimeDelegateUtils.addHeadersFromMap(context.context().response().headers(), headers, true);
+        boolean hasMatched = context.context().getUncheckedAttribute(RouteHandlerMethodAdapter.METHOD_MATCHED);
+        if (onlyActiveWhenMatched && hasMatched || !onlyActiveWhenMatched && !hasMatched) {
+            MultivaluedMap<String, Object> headers = new MultivaluedHashMap<>();
+            RuntimeDelegateUtils.addHeadersToMap(context.context().response().headers(), headers);
+            try {
+                new WriterInterceptorContextImpl(context, headers, interceptors).proceed();
+            } finally {
+                RuntimeDelegateUtils.addHeadersFromMap(context.context().response().headers(), headers, true);
+            }
+        } else {
+            context.proceed();
         }
     }
 
     @Override
     public boolean supports(HandlerMethod handlerMethod) {
-        return alsoApplyWhenNotRouted && handlerMethod != null;
+        return true;
     }
 }
 

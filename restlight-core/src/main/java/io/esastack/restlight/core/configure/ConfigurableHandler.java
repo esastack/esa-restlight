@@ -16,236 +16,119 @@
 package io.esastack.restlight.core.configure;
 
 import io.esastack.httpserver.core.Attributes;
+import io.esastack.restlight.core.handler.RouteFilter;
+import io.esastack.restlight.core.method.HandlerMethod;
+import io.esastack.restlight.core.resolver.ContextResolver;
 import io.esastack.restlight.core.resolver.ContextResolverAdapter;
-import io.esastack.restlight.core.resolver.ContextResolverFactory;
-import io.esastack.restlight.core.resolver.HandlerResolverFactory;
+import io.esastack.restlight.core.resolver.ParamResolver;
 import io.esastack.restlight.core.resolver.ParamResolverAdapter;
+import io.esastack.restlight.core.resolver.ParamResolverAdvice;
 import io.esastack.restlight.core.resolver.ParamResolverAdviceAdapter;
-import io.esastack.restlight.core.resolver.ParamResolverAdviceFactory;
-import io.esastack.restlight.core.resolver.ParamResolverFactory;
+import io.esastack.restlight.core.resolver.RequestEntityResolver;
 import io.esastack.restlight.core.resolver.RequestEntityResolverAdapter;
-import io.esastack.restlight.core.resolver.RequestEntityResolverAdviceAdapter;
-import io.esastack.restlight.core.resolver.RequestEntityResolverAdviceFactory;
-import io.esastack.restlight.core.resolver.RequestEntityResolverFactory;
+import io.esastack.restlight.core.resolver.RequestEntityResolverAdvice;
 import io.esastack.restlight.core.resolver.ResponseEntityResolver;
-import io.esastack.restlight.core.resolver.ResponseEntityResolverAdviceAdapter;
-import io.esastack.restlight.core.resolver.ResponseEntityResolverAdviceFactory;
-import io.esastack.restlight.core.resolver.ResponseEntityResolverFactory;
-import io.esastack.restlight.core.spi.RouteFilterFactory;
+import io.esastack.restlight.core.resolver.ResponseEntityResolverAdvice;
 
 import java.util.Collection;
 
 public interface ConfigurableHandler extends Attributes {
 
     /**
-     * Adds {@link RouteFilterFactory}.
+     * Add {@link RouteFilter}s.
      *
-     * @param filter    route filter factory
+     * @param filters    route filters corresponding with specified {@link HandlerMethod}.
      * @return this configurable handler
      */
-    ConfigurableHandler addRouteFilter(RouteFilterFactory filter);
+    ConfigurableHandler addRouteFilters(Collection<? extends RouteFilter> filters);
 
     /**
-     * Adds {@link RouteFilterFactory}s.
+     * Add {@link ParamResolver}s.
      *
-     * @param filters    route filter factories
-     * @return this configurable handler
+     * @param resolvers resolvers corresponding with specified {@link HandlerMethod}.
+     * @return this configurable
      */
-    ConfigurableHandler addRouteFilters(Collection<? extends RouteFilterFactory> filters);
+    ConfigurableHandler addParamResolvers(Collection<? extends ParamResolver> resolvers);
 
     /**
-     * Adds {@link ParamResolverAdapter} which will be registered in the {@link HandlerResolverFactory}
+     * Add {@link ParamResolverAdapter}s.
      *
-     * @param resolver resolver
-     *
+     * @param resolver resolver corresponding with specified {@link HandlerMethod}.
      * @return this configurable
      */
     ConfigurableHandler addParamResolver(ParamResolverAdapter resolver);
 
     /**
-     * Adds {@link ParamResolverFactory} which will be registered in the {@link HandlerResolverFactory}
+     * Add {@link ParamResolverAdvice}.
      *
-     * @param resolver resolver
-     *
+     * @param advices advices corresponding with specified {@link HandlerMethod}.
      * @return this configurable
      */
-    ConfigurableHandler addParamResolver(ParamResolverFactory resolver);
+    ConfigurableHandler addParamResolverAdvices(Collection<? extends ParamResolverAdvice> advices);
 
     /**
-     * Adds {@link ParamResolverFactory}s which will be registered in the {@link HandlerResolverFactory}
+     * Add {@link ParamResolverAdviceAdapter}.
      *
-     * @param resolvers resolvers
-     *
-     * @return this configurable
-     */
-    ConfigurableHandler addParamResolvers(Collection<? extends ParamResolverFactory> resolvers);
-
-    /**
-     * Adds {@link ParamResolverFactory} which will be registered in the {@link HandlerResolverFactory}
-     *
-     * @param advice advice
-     *
+     * @param advice advice corresponding with specified {@link HandlerMethod}.
      * @return this configurable
      */
     ConfigurableHandler addParamResolverAdvice(ParamResolverAdviceAdapter advice);
 
     /**
-     * Adds {@link ParamResolverAdviceFactory} which will be registered in the {@link HandlerResolverFactory}
+     * Add {@link ContextResolver}s.
      *
-     * @param advice advice
-     *
+     * @param resolvers resolvers corresponding with specified {@link HandlerMethod}.
      * @return this configurable
      */
-    ConfigurableHandler addParamResolverAdvice(ParamResolverAdviceFactory advice);
+    ConfigurableHandler addContextResolvers(Collection<? extends ContextResolver> resolvers);
 
     /**
-     * Adds {@link ParamResolverAdviceFactory}s which will be registered in the {@link HandlerResolverFactory}
+     * Add {@link ContextResolverAdapter}s.
      *
-     * @param advices advices
-     *
-     * @return this configurable
-     */
-    ConfigurableHandler addParamResolverAdvices(Collection<? extends ParamResolverAdviceFactory>
-                                                                       advices);
-
-    /**
-     * Adds {@link ContextResolverAdapter} which will be registered in the {@link HandlerResolverFactory}
-     *
-     * @param resolver resolver
-     *
+     * @param resolver resolver corresponding with specified {@link HandlerMethod}.
      * @return this configurable
      */
     ConfigurableHandler addContextResolver(ContextResolverAdapter resolver);
 
     /**
-     * Adds {@link ParamResolverFactory} which will be registered in the {@link HandlerResolverFactory}
+     * Add {@link RequestEntityResolver}s.
      *
-     * @param resolver resolver
-     *
+     * @param resolvers resolvers corresponding with specified {@link HandlerMethod}.
      * @return this configurable
      */
-    ConfigurableHandler addContextResolver(ContextResolverFactory resolver);
+    ConfigurableHandler addRequestEntityResolvers(Collection<? extends RequestEntityResolver> resolvers);
 
     /**
-     * Adds {@link ParamResolverFactory}s which will be registered in the {@link HandlerResolverFactory}
+     * Add {@link RequestEntityResolverAdapter}.
      *
-     * @param resolvers resolvers
-     *
-     * @return this configurable
-     */
-    ConfigurableHandler addContextResolvers(Collection<? extends ContextResolverFactory> resolvers);
-
-    /**
-     * Adds {@link RequestEntityResolverAdapter} which will be registered in the {@link HandlerResolverFactory}
-     *
-     * @param resolver resolver
-     *
+     * @param resolver resolver corresponding with specified {@link HandlerMethod}.
      * @return this configurable
      */
     ConfigurableHandler addRequestEntityResolver(RequestEntityResolverAdapter resolver);
 
     /**
-     * Adds {@link RequestEntityResolverFactory} which will be registered in the {@link HandlerResolverFactory}
+     * Add {@link RequestEntityResolverAdvice}s.
      *
-     * @param resolver resolver
-     *
+     * @param advices advices corresponding with specified {@link HandlerMethod}.
      * @return this configurable
      */
-    ConfigurableHandler addRequestEntityResolver(RequestEntityResolverFactory resolver);
+    ConfigurableHandler addRequestEntityResolverAdvices(Collection<? extends RequestEntityResolverAdvice> advices);
 
     /**
-     * Adds {@link RequestEntityResolverFactory}s which will be registered in the {@link HandlerResolverFactory}
+     * Add {@link ResponseEntityResolver}s.
      *
-     * @param resolvers resolvers
-     *
+     * @param resolvers resolvers corresponding with specified {@link HandlerMethod}.
      * @return this configurable
      */
-    ConfigurableHandler addRequestEntityResolvers(Collection<? extends RequestEntityResolverFactory>
-                                                                         resolvers);
+    ConfigurableHandler addResponseEntityResolvers(Collection<? extends ResponseEntityResolver> resolvers);
 
     /**
-     * Adds {@link RequestEntityResolverAdviceAdapter} which will be registered in the {@link HandlerResolverFactory}
+     * Add {@link ResponseEntityResolverAdvice}s.
      *
-     * @param advice advice
-     *
+     * @param advices advices corresponding with specified {@link HandlerMethod}.
      * @return this configurable
      */
-    ConfigurableHandler addRequestEntityResolverAdvice(RequestEntityResolverAdviceAdapter advice);
-
-    /**
-     * Adds {@link RequestEntityResolverAdviceFactory} which will be registered in the {@link HandlerResolverFactory}
-     *
-     * @param advice advice
-     *
-     * @return this configurable
-     */
-    ConfigurableHandler addRequestEntityResolverAdvice(RequestEntityResolverAdviceFactory advice);
-
-    /**
-     * Adds {@link RequestEntityResolverAdviceFactory}s which will be registered in the {@link HandlerResolverFactory}
-     *
-     * @param advices resolvers
-     *
-     * @return this configurable
-     */
-    ConfigurableHandler addRequestEntityResolverAdvices(
-            Collection<? extends RequestEntityResolverAdviceFactory> advices);
-
-    /**
-     * Adds {@link ResponseEntityResolver}s which will be registered in the {@link HandlerResolverFactory}
-     *
-     * @param resolver resolver
-     *
-     * @return this configurable
-     */
-    ConfigurableHandler addResponseEntityResolver(ResponseEntityResolver resolver);
-
-    /**
-     * Adds {@link ResponseEntityResolverFactory} which will be registered in the {@link HandlerResolverFactory}
-     *
-     * @param resolver resolver
-     *
-     * @return this configurable
-     */
-    ConfigurableHandler addResponseEntityResolver(ResponseEntityResolverFactory resolver);
-
-    /**
-     * Adds {@link ResponseEntityResolverFactory}s which will be registered in the {@link HandlerResolverFactory}
-     *
-     * @param resolvers resolvers
-     *
-     * @return this configurable
-     */
-    ConfigurableHandler addResponseEntityResolvers(Collection<? extends ResponseEntityResolverFactory>
-                                                                          resolvers);
-
-    /**
-     * Adds {@link ResponseEntityResolverAdviceAdapter} which will be registered in the {@link HandlerResolverFactory}
-     *
-     * @param advice advice
-     *
-     * @return this configurable
-     */
-    ConfigurableHandler addResponseEntityResolverAdvice(ResponseEntityResolverAdviceAdapter advice);
-
-    /**
-     * Adds {@link ResponseEntityResolverAdviceAdapter} which will be registered in the {@link HandlerResolverFactory}
-     *
-     * @param advice advice
-     *
-     * @return this configurable
-     */
-    ConfigurableHandler addResponseEntityResolverAdvice(ResponseEntityResolverAdviceFactory advice);
-
-    /**
-     * Adds {@link ResponseEntityResolverAdviceFactory}s which will be registered in the {@link HandlerResolverFactory}
-     *
-     * @param advices resolvers
-     *
-     * @return this configurable
-     */
-    ConfigurableHandler addResponseEntityResolverAdvices(
-            Collection<? extends ResponseEntityResolverAdviceFactory> advices);
+    ConfigurableHandler addResponseEntityResolverAdvices(Collection<? extends ResponseEntityResolverAdvice> advices);
 
 }
 

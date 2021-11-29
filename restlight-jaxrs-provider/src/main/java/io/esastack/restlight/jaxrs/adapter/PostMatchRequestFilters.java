@@ -18,9 +18,8 @@ package io.esastack.restlight.jaxrs.adapter;
 import esa.commons.Checks;
 import io.esastack.restlight.core.context.RouteContext;
 import io.esastack.restlight.core.handler.HandlerMapping;
-import io.esastack.restlight.core.handler.RouteFilterAdapter;
+import io.esastack.restlight.core.handler.RouteFilter;
 import io.esastack.restlight.core.handler.RouteFilterChain;
-import io.esastack.restlight.core.method.HandlerMethod;
 import io.esastack.restlight.core.util.Ordered;
 import io.esastack.restlight.jaxrs.impl.JaxrsContextUtils;
 import io.esastack.restlight.jaxrs.impl.container.AbstractContainerRequestContext;
@@ -29,18 +28,13 @@ import jakarta.ws.rs.container.ContainerRequestFilter;
 
 import java.util.concurrent.CompletableFuture;
 
-public class PostMatchRequestFiltersAdapter implements RouteFilterAdapter {
+public class PostMatchRequestFilters implements RouteFilter {
 
     private final ContainerRequestFilter[] filters;
 
-    public PostMatchRequestFiltersAdapter(ContainerRequestFilter[] filters) {
+    public PostMatchRequestFilters(ContainerRequestFilter[] filters) {
         Checks.checkNotNull(filters, "filters");
         this.filters = filters;
-    }
-
-    @Override
-    public boolean supports(HandlerMethod handlerMethod) {
-        return true;
     }
 
     @Override

@@ -256,7 +256,7 @@ public class JaxrsExtensionsHandler implements ExtensionsHandler {
         }
         if (!readInterceptors.isEmpty()) {
             deployments.addRequestEntityResolverAdvice(new ReaderInterceptorsAdapter(ascendingOrdered(
-                    readInterceptors).toArray(new ReaderInterceptor[0]), true));
+                    readInterceptors).toArray(new ReaderInterceptor[0]), false));
         }
 
         // convert WriterInterceptors which can apply to all methods(even if it's null).
@@ -269,7 +269,7 @@ public class JaxrsExtensionsHandler implements ExtensionsHandler {
         }
         if (!writerInterceptors.isEmpty()) {
             deployments.addResponseEntityResolverAdvice(new WriterInterceptorsAdapter(ascendingOrdered(
-                    writerInterceptors).toArray(new WriterInterceptor[0]), true));
+                    writerInterceptors).toArray(new WriterInterceptor[0]), false));
         }
     }
 

@@ -49,7 +49,7 @@ public class HandlerContext<O extends RestlightOptions> extends DelegatingDeploy
         }
         assert ctx.resolverFactory().isPresent();
         HandlerConfiguration configuration = buildConfiguration(ctx.resolverFactory().get(), attributes);
-        ConfigurableHandler configurable = new ConfigurableHandlerImpl(configuration);
+        ConfigurableHandler configurable = new ConfigurableHandlerImpl(method, configuration);
         if (ctx.handlerConfigures().isPresent()) {
             for (HandlerConfigure configure : ctx.handlerConfigures().get()) {
                 configure.configure(method, configurable);

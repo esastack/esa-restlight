@@ -16,6 +16,7 @@
 package io.esastack.restlight.jaxrs.adapter;
 
 import esa.commons.Checks;
+import io.esastack.restlight.core.handler.impl.RouteHandlerMethodAdapter;
 import io.esastack.restlight.core.method.HandlerMethod;
 import io.esastack.restlight.core.resolver.RequestEntityResolverAdviceAdapter;
 import io.esastack.restlight.core.resolver.RequestEntityResolverContext;
@@ -25,22 +26,27 @@ import jakarta.ws.rs.ext.ReaderInterceptor;
 public class ReaderInterceptorsAdapter implements RequestEntityResolverAdviceAdapter {
 
     private final ReaderInterceptor[] interceptors;
-    private final boolean alsoApplyWhenNotRouted;
+    private final boolean onlyActiveWhenMatched;
 
-    public ReaderInterceptorsAdapter(ReaderInterceptor[] interceptors, boolean alsoApplyWhenNotRouted) {
+    public ReaderInterceptorsAdapter(ReaderInterceptor[] interceptors, boolean onlyActiveWhenMatched) {
         Checks.checkNotNull(interceptors, "interceptors");
         this.interceptors = interceptors;
-        this.alsoApplyWhenNotRouted = alsoApplyWhenNotRouted;
+        this.onlyActiveWhenMatched = onlyActiveWhenMatched;
     }
 
     @Override
     public Object aroundRead(RequestEntityResolverContext context) throws Exception {
-        return new ReaderInterceptorContextImpl(context, interceptors).proceed();
+        boolean hasMatched = context.context().getUncheckedAttribute(RouteHandlerMethodAdapter.METHOD_MATCHED);
+        if ((onlyActiveWhenMatched && hasMatched) || (!onlyActiveWhenMatched && !hasMatched)) {
+            return new ReaderInterceptorContextImpl(context, interceptors).proceed();
+        } else {
+            return context.proceed();
+        }
     }
 
     @Override
     public boolean supports(HandlerMethod handlerMethod) {
-        return alsoApplyWhenNotRouted && handlerMethod != null;
+        return true;
     }
 }
 

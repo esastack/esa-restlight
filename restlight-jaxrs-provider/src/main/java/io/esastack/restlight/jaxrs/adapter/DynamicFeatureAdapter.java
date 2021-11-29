@@ -22,8 +22,7 @@ import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.core.configure.ConfigurableHandler;
 import io.esastack.restlight.core.configure.HandlerConfigure;
 import io.esastack.restlight.core.method.HandlerMethod;
-import io.esastack.restlight.core.resolver.ContextResolverFactory;
-import io.esastack.restlight.core.spi.RouteFilterFactory;
+import io.esastack.restlight.core.resolver.ContextResolverAdapter;
 import io.esastack.restlight.jaxrs.configure.OrderComponent;
 import io.esastack.restlight.jaxrs.configure.ProvidersProxyFactory;
 import io.esastack.restlight.jaxrs.configure.ProvidersProxyFactoryImpl;
@@ -95,33 +94,34 @@ public class DynamicFeatureAdapter implements HandlerConfigure {
         }
 
         // add context resolver
-        List<ContextResolverFactory> resolvers = new LinkedList<>();
-        resolvers.add(ContextResolverFactory.singleton(new ConfigurationResolverAdapter(current)));
-        resolvers.add(ContextResolverFactory.singleton(new ProvidersResolverAdapter(
-                new ProvidersImpl(providers))));
+        List<ContextResolverAdapter> resolvers = new LinkedList<>();
+        resolvers.add(new ConfigurationResolverAdapter(current));
+        resolvers.add(new ProvidersResolverAdapter(new ProvidersImpl(providers)));
         configurable.addContextResolvers(resolvers);
 
-        // handle bound ReaderInterceptors
-        configurable.addRequestEntityResolverAdvice(new ReaderInterceptorsAdapter(ascendingOrdered(
-                filterByNameBindings(handlerMethod, current, providers.readerInterceptors(), false))
-                .toArray(new ReaderInterceptor[0]), false));
+        // bound ReaderInterceptors(only be active when handler method has matched)
+        configurable.addRequestEntityResolverAdvices(Collections.singleton(
+                new ReaderInterceptorsAdapter(ascendingOrdered(filterByNameBindings(handlerMethod,
+                        current, providers.readerInterceptors(), false))
+                .toArray(new ReaderInterceptor[0]), true)));
 
-        // handle bound WriterInterceptors
-        configurable.addResponseEntityResolverAdvice(new WriterInterceptorsAdapter(ascendingOrdered(
-                filterByNameBindings(handlerMethod, current, providers.writerInterceptors(), false))
-                .toArray(new WriterInterceptor[0]), false));
+        // bound WriterInterceptors(only be active when handler method has matched)
+        configurable.addResponseEntityResolverAdvices(Collections.singleton(
+                new WriterInterceptorsAdapter(ascendingOrdered(filterByNameBindings(handlerMethod,
+                        current, providers.writerInterceptors(), false))
+                .toArray(new WriterInterceptor[0]), true)));
 
         // handle bound postMatch ContainerRequestFilters (only apply to resource method)
         if (JaxrsMappingUtils.getMethod(handlerMethod.method()) != null) {
-            configurable.addRouteFilter(RouteFilterFactory.singleton(
-                    new PostMatchRequestFiltersAdapter(ascendingOrdered(filterByNameBindings(handlerMethod,
-                            current, providers.requestFilters(), true))
+            configurable.addRouteFilters(Collections.singleton(new PostMatchRequestFilters(
+                    ascendingOrdered(filterByNameBindings(handlerMethod, current, providers.requestFilters(),
+                            true))
                     .toArray(new ContainerRequestFilter[0]))));
         }
 
         // handle bound ContainerResponseFilters (only apply to resource method)
         if (JaxrsMappingUtils.getMethod(handlerMethod.method()) != null) {
-            configurable.addRouteFilter(RouteFilterFactory.singleton(new JaxrsResponseFiltersAdapter(descendingOrder(
+            configurable.addRouteFilters(Collections.singleton(new JaxrsResponseFilters(descendingOrder(
                     filterByNameBindings(handlerMethod, current, providers.responseFilters(), false))
                     .toArray(new ContainerResponseFilter[0]))));
         }

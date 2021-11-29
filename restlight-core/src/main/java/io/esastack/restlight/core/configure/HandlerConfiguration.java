@@ -106,12 +106,6 @@ public class HandlerConfiguration extends AttributesProxy implements Attributes 
         }
     }
 
-    void addParamConverters(Collection<? extends ParamConverterFactory> converters) {
-        if (converters != null) {
-            this.paramConverters.addAll(converters);
-        }
-    }
-
     void addParamResolvers(Collection<? extends ParamResolverFactory> resolvers) {
         if (resolvers != null) {
             this.paramResolvers.addAll(resolvers);
