@@ -18,11 +18,23 @@ package io.esastack.restlight.core.util;
 import esa.commons.Primitives;
 import esa.commons.StringUtils;
 import io.esastack.httpserver.core.HttpResponse;
+import io.esastack.restlight.core.context.RequestContext;
+import io.esastack.restlight.core.method.HandlerMethod;
 import io.esastack.restlight.core.resolver.ResponseEntity;
 import io.esastack.restlight.core.serialize.Serializers;
 import io.esastack.restlight.server.util.LoggerUtils;
 
 public final class ResponseEntityUtils {
+
+    private static final String HANDLED_METHOD = "$internal.handled.method";
+
+    public static void setHandledMethod(RequestContext context, HandlerMethod method) {
+        context.setAttribute(HANDLED_METHOD, method);
+    }
+
+    public static HandlerMethod getHandledMethod(RequestContext context) {
+        return context.getUncheckedAttribute(HANDLED_METHOD);
+    }
 
     public static void writeTo(ResponseEntity entity, byte[] data, HttpResponse response) {
         if (!response.isCommitted()) {

@@ -16,10 +16,10 @@
 package io.esastack.restlight.jaxrs.adapter;
 
 import esa.commons.Checks;
-import io.esastack.restlight.core.handler.impl.RouteHandlerMethodAdapter;
 import io.esastack.restlight.core.method.HandlerMethod;
 import io.esastack.restlight.core.resolver.RequestEntityResolverAdviceAdapter;
 import io.esastack.restlight.core.resolver.RequestEntityResolverContext;
+import io.esastack.restlight.jaxrs.configure.RouteTracking;
 import io.esastack.restlight.jaxrs.impl.ext.ReaderInterceptorContextImpl;
 import jakarta.ws.rs.ext.ReaderInterceptor;
 
@@ -36,7 +36,7 @@ public class ReaderInterceptorsAdapter implements RequestEntityResolverAdviceAda
 
     @Override
     public Object aroundRead(RequestEntityResolverContext context) throws Exception {
-        boolean hasMatched = context.context().getUncheckedAttribute(RouteHandlerMethodAdapter.METHOD_MATCHED);
+        boolean hasMatched = RouteTracking.isMethodMatched(context.context());
         if ((onlyActiveWhenMatched && hasMatched) || (!onlyActiveWhenMatched && !hasMatched)) {
             return new ReaderInterceptorContextImpl(context, interceptors).proceed();
         } else {

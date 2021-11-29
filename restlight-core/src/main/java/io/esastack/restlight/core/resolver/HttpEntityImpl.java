@@ -15,7 +15,6 @@
  */
 package io.esastack.restlight.core.resolver;
 
-import esa.commons.Checks;
 import esa.commons.StringUtils;
 import io.esastack.commons.net.http.MediaType;
 import io.esastack.commons.net.http.MediaTypeUtil;
@@ -38,7 +37,6 @@ public class HttpEntityImpl implements HttpEntity {
     private MediaType mediaType;
 
     public HttpEntityImpl(HandlerMethod handler, MediaType mediaType) {
-        Checks.checkNotNull(handler, "handler");
         this.mediaType = mediaType;
         this.handler = handler;
     }
@@ -70,7 +68,7 @@ public class HttpEntityImpl implements HttpEntity {
 
     @Override
     public Optional<HandlerMethod> handler() {
-        return Optional.of(handler);
+        return Optional.ofNullable(handler);
     }
 
     @Override

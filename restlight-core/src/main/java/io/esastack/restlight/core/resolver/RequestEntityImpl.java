@@ -35,6 +35,7 @@ public class RequestEntityImpl extends HttpEntityImpl implements RequestEntity {
 
     public RequestEntityImpl(HandlerMethod handler, Param param, HttpRequest request) {
         super(handler, request.contentType());
+        Checks.checkNotNull(handler, "handler");
         Checks.checkNotNull(param, "param");
         Checks.checkNotNull(request, "request");
         this.request = request;

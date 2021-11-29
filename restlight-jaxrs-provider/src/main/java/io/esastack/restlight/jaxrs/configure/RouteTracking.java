@@ -28,7 +28,8 @@ import java.util.concurrent.CompletableFuture;
 
 public class RouteTracking implements RouteFilter {
 
-    private static final String ROUTE_TRACKING_KEY = "$$jakarta.route.tracking";
+    private static final String ROUTE_TRACKING_KEY = "$jakarta.route.tracking";
+    private static final String HANDLER_METHOD_MATCHED = "$jakarta.handler.matched";
 
     private static final RouteTracking SINGLETON = new RouteTracking();
 
@@ -41,6 +42,9 @@ public class RouteTracking implements RouteFilter {
 
     @Override
     public CompletableFuture<Void> routed(HandlerMapping mapping, RouteContext context, RouteFilterChain next) {
+        if (!mapping.methodInfo().isLocator()) {
+            context.setAttribute(HANDLER_METHOD_MATCHED, true);
+        }
         List<HandlerMapping> mappings = context.getUncheckedAttribute(ROUTE_TRACKING_KEY);
         if (mappings == null) {
             mappings = new LinkedList<>();
@@ -57,6 +61,10 @@ public class RouteTracking implements RouteFilter {
         } else {
             return Collections.unmodifiableList(mappings);
         }
+    }
+
+    public static boolean isMethodMatched(RequestContext context) {
+        return context.getUncheckedAttribute(HANDLER_METHOD_MATCHED);
     }
 
 }

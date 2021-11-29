@@ -16,10 +16,10 @@
 package io.esastack.restlight.jaxrs.adapter;
 
 import esa.commons.Checks;
-import io.esastack.restlight.core.handler.impl.RouteHandlerMethodAdapter;
 import io.esastack.restlight.core.method.HandlerMethod;
 import io.esastack.restlight.core.resolver.ResponseEntityResolverAdviceAdapter;
 import io.esastack.restlight.core.resolver.ResponseEntityResolverContext;
+import io.esastack.restlight.jaxrs.configure.RouteTracking;
 import io.esastack.restlight.jaxrs.impl.ext.WriterInterceptorContextImpl;
 import io.esastack.restlight.jaxrs.util.RuntimeDelegateUtils;
 import jakarta.ws.rs.core.MultivaluedHashMap;
@@ -39,7 +39,7 @@ public class WriterInterceptorsAdapter implements ResponseEntityResolverAdviceAd
 
     @Override
     public void aroundWrite(ResponseEntityResolverContext context) throws Exception {
-        boolean hasMatched = context.context().getUncheckedAttribute(RouteHandlerMethodAdapter.METHOD_MATCHED);
+        boolean hasMatched = RouteTracking.isMethodMatched(context.context());
         if (onlyActiveWhenMatched && hasMatched || !onlyActiveWhenMatched && !hasMatched) {
             MultivaluedMap<String, Object> headers = new MultivaluedHashMap<>();
             RuntimeDelegateUtils.addHeadersToMap(context.context().response().headers(), headers);

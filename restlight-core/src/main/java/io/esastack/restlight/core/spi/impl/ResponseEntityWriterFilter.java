@@ -19,7 +19,6 @@ import esa.commons.Checks;
 import io.esastack.restlight.core.DeployContext;
 import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.core.context.FilterContext;
-import io.esastack.restlight.core.handler.impl.HandlerMethodResolver;
 import io.esastack.restlight.core.method.HandlerMethod;
 import io.esastack.restlight.core.resolver.HandlerResolverFactory;
 import io.esastack.restlight.core.resolver.ResponseEntity;
@@ -29,6 +28,7 @@ import io.esastack.restlight.core.resolver.ResponseEntityResolverContext;
 import io.esastack.restlight.core.resolver.ResponseEntityResolverContextImpl;
 import io.esastack.restlight.core.spi.Filter;
 import io.esastack.restlight.core.util.Ordered;
+import io.esastack.restlight.core.util.ResponseEntityUtils;
 import io.esastack.restlight.server.bootstrap.WebServerException;
 import io.esastack.restlight.server.handler.FilterChain;
 
@@ -50,7 +50,7 @@ public class ResponseEntityWriterFilter implements Filter {
         HandlerResolverFactory resolverFactory = getResolverFactory();
         return chain.doFilter(context).thenApply(v -> {
             if (!context.response().isCommitted()) {
-                HandlerMethod method = context.getUncheckedAttribute(HandlerMethodResolver.HANDLER_METHOD);
+                HandlerMethod method = ResponseEntityUtils.getHandledMethod(context);
                 ResponseEntity entity = new ResponseEntityImpl(method, context.response());
                 ResponseEntityResolverContext rspCtx = new ResponseEntityResolverContextImpl(context,
                         entity, resolverFactory.getResponseEntityResolvers(),

@@ -20,14 +20,13 @@ import io.esastack.restlight.core.context.HttpResponse;
 import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.handler.HandlerMethodInfo;
 import io.esastack.restlight.core.handler.HandlerValueResolver;
+import io.esastack.restlight.core.util.ResponseEntityUtils;
 import io.esastack.restlight.server.util.Futures;
 import io.netty.handler.codec.http.HttpResponseStatus;
 
 import java.util.concurrent.CompletableFuture;
 
 public class HandlerMethodResolver implements HandlerValueResolver {
-
-    public static final String HANDLER_METHOD = "$internal.handler.method";
 
     private final HandlerMethodInfo methodInfo;
 
@@ -44,7 +43,7 @@ public class HandlerMethodResolver implements HandlerValueResolver {
             response.setStatus(status.code());
         }
         context.response().entity(value);
-        context.setAttribute(HANDLER_METHOD, methodInfo.handlerMethod());
+        ResponseEntityUtils.setHandledMethod(context, methodInfo.handlerMethod());
         return Futures.completedFuture();
     }
 

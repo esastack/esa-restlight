@@ -49,14 +49,11 @@ import java.util.Set;
  */
 public abstract class RouteHandlerMethodAdapter extends HandlerMethodAdapter<RouteHandlerMethod> {
 
-    public static final String METHOD_MATCHED = "$internal.method.matched";
-
     private final HandlerMapping mapping;
     private final List<RouteFilter> filters;
     private final HandlerValueResolver handlerResolver;
     private final ExceptionResolver<Throwable> exceptionResolver;
     private final Matcher interceptorMatcher;
-    private final boolean locator;
 
     RouteHandlerMethodAdapter(HandlerMapping mapping,
                               HandlerContext<? extends RestlightOptions> context,
@@ -67,18 +64,10 @@ public abstract class RouteHandlerMethodAdapter extends HandlerMethodAdapter<Rou
         Checks.checkNotNull(handlerResolver, "handlerResolver");
         assert context.resolverFactory().isPresent();
         this.mapping = mapping;
-        this.locator = mapping.methodInfo().isLocator();
         this.filters = getMatchingFilters(context.resolverFactory().get(), handlerMethod());
         this.interceptorMatcher = maybeMatchable(interceptors);
         this.exceptionResolver = exceptionResolver;
         this.handlerResolver = handlerResolver;
-    }
-
-    public RouteExecution<RequestContext> toExecution(RequestContext context) {
-        if (!locator) {
-            context.setAttribute(METHOD_MATCHED, true);
-        }
-        return toExecution0(context);
     }
 
     /**
@@ -87,7 +76,7 @@ public abstract class RouteHandlerMethodAdapter extends HandlerMethodAdapter<Rou
      * @param context   context
      * @return  execution
      */
-    abstract RouteExecution<RequestContext> toExecution0(RequestContext context);
+    public abstract RouteExecution<RequestContext> toExecution(RequestContext context);
 
     List<RouteFilter> getMatchingFilters(HandlerResolverFactory handlerFactory, HandlerMethod method) {
         return handlerFactory.getRouteFilters(method);

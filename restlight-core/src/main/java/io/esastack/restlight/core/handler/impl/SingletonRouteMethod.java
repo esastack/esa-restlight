@@ -49,7 +49,7 @@ public class SingletonRouteMethod extends RouteHandlerMethodAdapter {
     }
 
     @Override
-    RouteExecution<RequestContext> toExecution0(RequestContext context) {
+    public RouteExecution<RequestContext> toExecution(RequestContext context) {
         return new RouteExecutionImpl(mapping(), new SingletonRouteHandler(handlerResolver(), this,
                 getMatchingInterceptors(context.request()), singleton), filters(), exceptionResolver());
     }

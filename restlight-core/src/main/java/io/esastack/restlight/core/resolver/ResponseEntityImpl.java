@@ -16,6 +16,7 @@
 package io.esastack.restlight.core.resolver;
 
 import esa.commons.Checks;
+import esa.commons.ClassUtils;
 import io.esastack.commons.net.http.HttpHeaderNames;
 import io.esastack.restlight.core.context.HttpResponse;
 import io.esastack.restlight.core.method.HandlerMethod;
@@ -28,9 +29,9 @@ public class ResponseEntityImpl extends HttpEntityImpl implements ResponseEntity
         super(handler, parseMediaType(response.getHeader(HttpHeaderNames.CONTENT_TYPE)));
         Checks.checkNotNull(response, "response");
         this.response = response;
-        this.type = handler.method().getReturnType();
-        this.genericType = handler.method().getGenericReturnType();
-        this.annotations = handler.method().getAnnotations();
+        this.type = handler == null ? ClassUtils.getUserType(response.entity()) : handler.method().getReturnType();
+        this.genericType = handler == null ? null : handler.method().getGenericReturnType();
+        this.annotations = handler == null ? null : handler.method().getAnnotations();
     }
 
     @Override
