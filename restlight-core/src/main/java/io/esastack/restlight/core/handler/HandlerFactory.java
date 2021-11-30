@@ -112,7 +112,7 @@ public interface HandlerFactory {
     default Object instantiateThenInit(Class<?> clazz, Method method, RequestContext context) {
         Object instance = instantiate(clazz, method, context);
         if (instance != null) {
-            doInit(clazz, method, context);
+            doInit(instance, method, context);
         }
         return instance;
     }

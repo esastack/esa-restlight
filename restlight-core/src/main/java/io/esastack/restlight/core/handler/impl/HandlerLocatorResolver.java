@@ -76,7 +76,7 @@ public class HandlerLocatorResolver implements HandlerValueResolver {
                                 .flatMap(mapping -> RouteUtils.extractRoute(ctx, mapping))
                                 .ifPresent(registry::register);
                     },
-                    method -> !method.isBridge());
+                    RouteUtils::isHandlerMethod);
             return registry;
         });
 

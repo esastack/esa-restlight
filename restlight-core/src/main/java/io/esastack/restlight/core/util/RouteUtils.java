@@ -59,6 +59,7 @@ import io.esastack.restlight.server.util.MappingUtils;
 import io.netty.util.concurrent.Future;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -69,6 +70,10 @@ import java.util.stream.Collectors;
 import static io.esastack.restlight.core.util.InterceptorUtils.filter;
 
 public class RouteUtils {
+
+    public static boolean isHandlerMethod(Method method) {
+        return Modifier.isPublic(method.getModifiers()) && !method.isBridge();
+    }
 
     public static boolean isConcurrent(HandlerMethod handler) {
         Class<?> type = handler.method().getReturnType();

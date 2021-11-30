@@ -86,7 +86,7 @@ public class HandlerRegistryImpl implements HandlerRegistry, Handlers {
                                 }
                             }
                         },
-                        method -> !method.isBridge());
+                        RouteUtils::isHandlerMethod);
             });
             this.singletons.addAll(handlers);
             this.mappings.addAll(mappings);
@@ -123,7 +123,7 @@ public class HandlerRegistryImpl implements HandlerRegistry, Handlers {
                                     }
                                 }
                             },
-                            method -> !method.isBridge());
+                            RouteUtils::isHandlerMethod);
                 });
                 this.mappings.addAll(mappings);
                 this.classes.addAll(classes);
@@ -178,7 +178,7 @@ public class HandlerRegistryImpl implements HandlerRegistry, Handlers {
                                 }
                             }
                         },
-                        method -> !method.isBridge());
+                        RouteUtils::isHandlerMethod);
             });
             this.mappings.removeAll(removableMappings);
             this.singletons.removeAll(removableSingletons);

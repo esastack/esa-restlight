@@ -48,7 +48,7 @@ public class RouteTracking implements RouteFilter {
         List<HandlerMapping> mappings = context.getUncheckedAttribute(ROUTE_TRACKING_KEY);
         if (mappings == null) {
             mappings = new LinkedList<>();
-            context.setAttribute(ROUTE_TRACKING_KEY, mapping);
+            context.setAttribute(ROUTE_TRACKING_KEY, mappings);
         }
         mappings.add(mapping);
         return next.doNext(mapping, context);

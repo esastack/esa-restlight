@@ -18,13 +18,9 @@ package io.esastack.restlight.core.configure;
 import io.esastack.httpserver.core.Attributes;
 import io.esastack.restlight.core.handler.RouteFilter;
 import io.esastack.restlight.core.method.HandlerMethod;
-import io.esastack.restlight.core.resolver.ContextResolver;
 import io.esastack.restlight.core.resolver.ContextResolverAdapter;
-import io.esastack.restlight.core.resolver.ParamResolver;
 import io.esastack.restlight.core.resolver.ParamResolverAdapter;
-import io.esastack.restlight.core.resolver.ParamResolverAdvice;
 import io.esastack.restlight.core.resolver.ParamResolverAdviceAdapter;
-import io.esastack.restlight.core.resolver.RequestEntityResolver;
 import io.esastack.restlight.core.resolver.RequestEntityResolverAdapter;
 import io.esastack.restlight.core.resolver.RequestEntityResolverAdvice;
 import io.esastack.restlight.core.resolver.ResponseEntityResolver;
@@ -43,28 +39,12 @@ public interface ConfigurableHandler extends Attributes {
     ConfigurableHandler addRouteFilters(Collection<? extends RouteFilter> filters);
 
     /**
-     * Add {@link ParamResolver}s.
-     *
-     * @param resolvers resolvers corresponding with specified {@link HandlerMethod}.
-     * @return this configurable
-     */
-    ConfigurableHandler addParamResolvers(Collection<? extends ParamResolver> resolvers);
-
-    /**
      * Add {@link ParamResolverAdapter}s.
      *
      * @param resolver resolver corresponding with specified {@link HandlerMethod}.
      * @return this configurable
      */
     ConfigurableHandler addParamResolver(ParamResolverAdapter resolver);
-
-    /**
-     * Add {@link ParamResolverAdvice}.
-     *
-     * @param advices advices corresponding with specified {@link HandlerMethod}.
-     * @return this configurable
-     */
-    ConfigurableHandler addParamResolverAdvices(Collection<? extends ParamResolverAdvice> advices);
 
     /**
      * Add {@link ParamResolverAdviceAdapter}.
@@ -75,28 +55,12 @@ public interface ConfigurableHandler extends Attributes {
     ConfigurableHandler addParamResolverAdvice(ParamResolverAdviceAdapter advice);
 
     /**
-     * Add {@link ContextResolver}s.
-     *
-     * @param resolvers resolvers corresponding with specified {@link HandlerMethod}.
-     * @return this configurable
-     */
-    ConfigurableHandler addContextResolvers(Collection<? extends ContextResolver> resolvers);
-
-    /**
      * Add {@link ContextResolverAdapter}s.
      *
      * @param resolver resolver corresponding with specified {@link HandlerMethod}.
      * @return this configurable
      */
     ConfigurableHandler addContextResolver(ContextResolverAdapter resolver);
-
-    /**
-     * Add {@link RequestEntityResolver}s.
-     *
-     * @param resolvers resolvers corresponding with specified {@link HandlerMethod}.
-     * @return this configurable
-     */
-    ConfigurableHandler addRequestEntityResolvers(Collection<? extends RequestEntityResolver> resolvers);
 
     /**
      * Add {@link RequestEntityResolverAdapter}.

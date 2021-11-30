@@ -19,18 +19,12 @@ import esa.commons.Checks;
 import io.esastack.httpserver.impl.AttributesProxy;
 import io.esastack.restlight.core.handler.RouteFilter;
 import io.esastack.restlight.core.method.HandlerMethod;
-import io.esastack.restlight.core.method.MethodParam;
-import io.esastack.restlight.core.method.Param;
-import io.esastack.restlight.core.resolver.ContextResolver;
 import io.esastack.restlight.core.resolver.ContextResolverAdapter;
 import io.esastack.restlight.core.resolver.ContextResolverFactory;
-import io.esastack.restlight.core.resolver.ParamResolver;
 import io.esastack.restlight.core.resolver.ParamResolverAdapter;
-import io.esastack.restlight.core.resolver.ParamResolverAdvice;
 import io.esastack.restlight.core.resolver.ParamResolverAdviceAdapter;
 import io.esastack.restlight.core.resolver.ParamResolverAdviceFactory;
 import io.esastack.restlight.core.resolver.ParamResolverFactory;
-import io.esastack.restlight.core.resolver.RequestEntityResolver;
 import io.esastack.restlight.core.resolver.RequestEntityResolverAdapter;
 import io.esastack.restlight.core.resolver.RequestEntityResolverAdvice;
 import io.esastack.restlight.core.resolver.RequestEntityResolverAdviceFactory;
@@ -40,12 +34,10 @@ import io.esastack.restlight.core.resolver.ResponseEntityResolver;
 import io.esastack.restlight.core.resolver.ResponseEntityResolverAdvice;
 import io.esastack.restlight.core.resolver.ResponseEntityResolverAdviceFactory;
 import io.esastack.restlight.core.resolver.ResponseEntityResolverFactory;
-import io.esastack.restlight.core.serialize.HttpRequestSerializer;
 import io.esastack.restlight.core.spi.RouteFilterFactory;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -93,74 +85,11 @@ public class ConfigurableHandlerImpl extends AttributesProxy implements Configur
     }
 
     @Override
-    public ConfigurableHandler addParamResolvers(Collection<? extends ParamResolver> resolvers) {
-        if (resolvers == null || resolvers.isEmpty()) {
-            return this;
-        }
-
-        configuration.addParamResolvers(resolvers.stream().map(r -> new ParamResolverFactory() {
-            @Override
-            public boolean supports(Param param) {
-                return ConfigurableHandlerImpl.this.supports(param);
-            }
-
-            @Override
-            public ParamResolver createResolver(Param param, List<? extends HttpRequestSerializer> serializers) {
-                return r;
-            }
-        }).collect(Collectors.toList()));
-
-        return this;
-    }
-
-    @Override
     public ConfigurableHandler addParamResolverAdvice(ParamResolverAdviceAdapter advice) {
         if (advice == null) {
             return this;
         }
         configuration.addParamResolverAdvices(Collections.singleton(ParamResolverAdviceFactory.singleton(advice)));
-        return this;
-    }
-
-    @Override
-    public ConfigurableHandler addParamResolverAdvices(Collection<? extends ParamResolverAdvice> advices) {
-        if (advices == null || advices.isEmpty()) {
-            return this;
-        }
-
-        configuration.addParamResolverAdvices(advices.stream().map(advice -> new ParamResolverAdviceFactory() {
-            @Override
-            public boolean supports(Param param) {
-                return ConfigurableHandlerImpl.this.supports(param);
-            }
-
-            @Override
-            public ParamResolverAdvice createResolverAdvice(Param param, ParamResolver resolver) {
-                return advice;
-            }
-        }).collect(Collectors.toList()));
-
-        return this;
-    }
-
-    @Override
-    public ConfigurableHandler addContextResolvers(Collection<? extends ContextResolver> resolvers) {
-        if (resolvers == null || resolvers.isEmpty()) {
-            return this;
-        }
-
-        configuration.addContextResolvers(resolvers.stream().map(resolver -> new ContextResolverFactory() {
-            @Override
-            public boolean supports(Param param) {
-                return ConfigurableHandlerImpl.this.supports(param);
-            }
-
-            @Override
-            public ContextResolver createResolver(Param param) {
-                return resolver;
-            }
-        }).collect(Collectors.toList()));
-
         return this;
     }
 
@@ -180,28 +109,6 @@ public class ConfigurableHandlerImpl extends AttributesProxy implements Configur
         }
         configuration.addRequestEntityResolvers(Collections.singletonList(
                 RequestEntityResolverFactory.singleton(resolver)));
-        return this;
-    }
-
-    @Override
-    public ConfigurableHandler addRequestEntityResolvers(Collection<? extends RequestEntityResolver> resolvers) {
-        if (resolvers == null || resolvers.isEmpty()) {
-            return this;
-        }
-
-        configuration.addRequestEntityResolvers(resolvers.stream().map(resolver -> new RequestEntityResolverFactory() {
-            @Override
-            public RequestEntityResolver createResolver(Param param,
-                                                        List<? extends HttpRequestSerializer> serializers) {
-                return resolver;
-            }
-
-            @Override
-            public boolean supports(Param param) {
-                return ConfigurableHandlerImpl.this.supports(param);
-            }
-        }).collect(Collectors.toList()));
-
         return this;
     }
 
@@ -261,14 +168,6 @@ public class ConfigurableHandlerImpl extends AttributesProxy implements Configur
                 }).collect(Collectors.toList()));
 
         return this;
-    }
-
-    private boolean supports(Param param) {
-        if (!param.isMethodParam()) {
-            return false;
-        }
-        MethodParam mParam = param.methodParam();
-        return mParam.type().equals(method.beanType()) && mParam.method().equals(method.method());
     }
 
 }

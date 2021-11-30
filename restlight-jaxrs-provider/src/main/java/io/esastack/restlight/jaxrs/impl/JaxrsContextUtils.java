@@ -15,7 +15,11 @@
  */
 package io.esastack.restlight.jaxrs.impl;
 
+import esa.commons.reflect.AnnotationUtils;
+import esa.commons.reflect.ReflectionUtils;
 import io.esastack.httpserver.core.RequestContext;
+import io.esastack.restlight.core.method.MethodParam;
+import io.esastack.restlight.core.method.Param;
 import io.esastack.restlight.jaxrs.impl.container.AbstractContainerRequestContext;
 import io.esastack.restlight.jaxrs.impl.container.PostMatchContainerRequestContext;
 import io.esastack.restlight.jaxrs.impl.container.PreMatchContainerRequestContext;
@@ -24,6 +28,7 @@ import io.esastack.restlight.jaxrs.impl.core.RequestImpl;
 import io.esastack.restlight.jaxrs.impl.core.ResponseImpl;
 import io.esastack.restlight.jaxrs.impl.core.UriInfoImpl;
 import io.esastack.restlight.server.context.FilterContext;
+import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.Request;
 import jakarta.ws.rs.core.Response;
@@ -42,6 +47,13 @@ public final class JaxrsContextUtils {
     private static final String SECURITY_CONTEXT_KEY = "$jakarta.security.context";
     private static final String REQUEST_CONTEXT_KEY = "$jakarta.request.context";
     private static final String ASYNC_RESPONSE_KEY = "$jakarta.async.response";
+
+    public static boolean hasContextAnnotation(Param param) {
+        if (param == null) {
+            return false;
+        }
+        return param.hasAnnotation(Context.class) || isSetterParam(param);
+    }
 
     public static Request getRequest(RequestContext context) {
         Request request = context.getUncheckedAttribute(REQUEST_KEY);
@@ -121,6 +133,20 @@ public final class JaxrsContextUtils {
                 ":" +
                 context.request().localPort();
         return URI.create(sb);
+    }
+
+    private static boolean isSetterParam(Param param) {
+        if (!param.isMethodParam()) {
+            return false;
+        }
+        MethodParam mParam = param.methodParam();
+        if (!ReflectionUtils.isSetter(mParam.method())) {
+            return false;
+        }
+        if (mParam.method().getParameterCount() != 1) {
+            return false;
+        }
+        return AnnotationUtils.hasAnnotation(mParam.method(), Context.class);
     }
 
     private JaxrsContextUtils() {

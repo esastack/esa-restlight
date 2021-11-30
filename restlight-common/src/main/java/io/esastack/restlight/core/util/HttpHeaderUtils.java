@@ -79,10 +79,16 @@ public final class HttpHeaderUtils {
     }
 
     public static String parseToEncoding(String target) {
+        if (StringUtils.isEmpty(target)) {
+            return null;
+        }
         return target.split(";")[0].trim();
     }
 
     public static Locale parseToLanguage(String target) {
+        if (StringUtils.isEmpty(target)) {
+            return null;
+        }
         String language = target.split(";")[0].trim();
         String[] values = language.split("-");
         if (values.length == 1) {

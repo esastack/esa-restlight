@@ -232,7 +232,7 @@ public final class JaxrsUtils {
     }
 
     private static void getComponentsRecursively(Class<?> clazz, List<Class<?>> classes) {
-        if (clazz.equals(Object.class)) {
+        if (clazz == null || clazz.equals(Object.class)) {
             return;
         }
 

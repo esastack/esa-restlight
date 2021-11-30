@@ -112,7 +112,7 @@ public class HandlerFactoryImpl implements HandlerFactory, HandlerContexts {
 
     @Override
     public void addContext(HandlerMethod handlerMethod, HandlerContext<? extends RestlightOptions> context) {
-        this.contexts.putIfAbsent(handlerMethod, context);
+        this.contexts.putIfAbsent(HandlerMethodImpl.of(handlerMethod.beanType(), handlerMethod.method()), context);
     }
 
     @Override

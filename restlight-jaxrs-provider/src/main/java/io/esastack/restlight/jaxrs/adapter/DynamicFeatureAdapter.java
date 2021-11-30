@@ -22,7 +22,6 @@ import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.core.configure.ConfigurableHandler;
 import io.esastack.restlight.core.configure.HandlerConfigure;
 import io.esastack.restlight.core.method.HandlerMethod;
-import io.esastack.restlight.core.resolver.ContextResolverAdapter;
 import io.esastack.restlight.jaxrs.configure.OrderComponent;
 import io.esastack.restlight.jaxrs.configure.ProvidersProxyFactory;
 import io.esastack.restlight.jaxrs.configure.ProvidersProxyFactoryImpl;
@@ -93,11 +92,9 @@ public class DynamicFeatureAdapter implements HandlerConfigure {
             }
         }
 
-        // add context resolver
-        List<ContextResolverAdapter> resolvers = new LinkedList<>();
-        resolvers.add(new ConfigurationResolverAdapter(current));
-        resolvers.add(new ProvidersResolverAdapter(new ProvidersImpl(providers)));
-        configurable.addContextResolvers(resolvers);
+        // add context resolvers
+        configurable.addContextResolver(new ConfigurationResolverAdapter(current));
+        configurable.addContextResolver(new ProvidersResolverAdapter(new ProvidersImpl(providers)));
 
         // bound ReaderInterceptors(only be active when handler method has matched)
         configurable.addRequestEntityResolverAdvices(Collections.singleton(
