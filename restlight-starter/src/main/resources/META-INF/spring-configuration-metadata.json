@@ -2,8 +2,8 @@
   "groups": [
     {
       "name": "restlight.server",
-      "type": "esa.restlight.starter.autoconfigure.AutoRestlightServerOptions",
-      "sourceType": "esa.restlight.starter.autoconfigure.AutoRestlightServerOptions"
+      "type": "io.esastack.restlight.starter.autoconfigure.AutoRestlightServerOptions",
+      "sourceType": "io.esastack.restlight.starter.autoconfigure.AutoRestlightServerOptions"
     }
   ],
   "properties": [
@@ -50,7 +50,7 @@
       "name": "restlight.server.context-path",
       "type": "java.lang.String",
       "description": "Global context path",
-      "sourceType": "esa.restlight.core.config.RestlightOptions",
+      "sourceType": "io.esastack.restlight.core.config.RestlightOptions",
       "defaultValue": ""
     },
     {
@@ -81,12 +81,12 @@
     {
       "name": "restlight.server.ext",
       "type": "java.util.Map<java.lang.String,java.lang.String>",
-      "sourceType": "esa.restlight.starter.autoconfigure.AutoRestlightServerOptions"
+      "sourceType": "io.esastack.restlight.starter.autoconfigure.AutoRestlightServerOptions"
     },
     {
       "name": "restlight.server.host",
       "type": "java.lang.String",
-      "sourceType": "esa.restlight.starter.autoconfigure.AutoRestlightServerOptions"
+      "sourceType": "io.esastack.restlight.starter.autoconfigure.AutoRestlightServerOptions"
     },
     {
       "name": "restlight.server.http2-enable",
@@ -183,19 +183,19 @@
     {
       "name": "restlight.server.port",
       "type": "java.lang.Integer",
-      "sourceType": "esa.restlight.starter.autoconfigure.AutoRestlightServerOptions",
+      "sourceType": "io.esastack.restlight.starter.autoconfigure.AutoRestlightServerOptions",
       "defaultValue": 8080
     },
     {
       "name": "restlight.server.print-banner",
       "type": "java.lang.Boolean",
-      "sourceType": "esa.restlight.starter.autoconfigure.AutoRestlightServerOptions",
+      "sourceType": "io.esastack.restlight.starter.autoconfigure.AutoRestlightServerOptions",
       "defaultValue": true
     },
     {
       "name": "restlight.server.route",
       "type": "esa.restlight.server.config.RouteOptions",
-      "sourceType": "esa.restlight.starter.autoconfigure.AutoRestlightServerOptions"
+      "sourceType": "io.esastack.restlight.starter.autoconfigure.AutoRestlightServerOptions"
     },
     {
       "name": "restlight.server.route.compute-rate",
@@ -214,7 +214,7 @@
     {
       "name": "restlight.server.scheduling",
       "type": "esa.restlight.server.config.SchedulingOptions",
-      "sourceType": "esa.restlight.starter.autoconfigure.AutoRestlightServerOptions"
+      "sourceType": "io.esastack.restlight.starter.autoconfigure.AutoRestlightServerOptions"
     },
     {
       "name": "restlight.server.scheduling.default-scheduler",
@@ -231,35 +231,35 @@
     },
     {
       "name": "restlight.server.serialize",
-      "type": "esa.restlight.core.config.SerializesOptions",
-      "sourceType": "esa.restlight.starter.autoconfigure.AutoRestlightServerOptions"
+      "type": "io.esastack.restlight.core.config.SerializesOptions",
+      "sourceType": "io.esastack.restlight.starter.autoconfigure.AutoRestlightServerOptions"
     },
     {
       "name": "restlight.server.serialize.request.negotiation",
       "type": "java.lang.Boolean",
       "description": "Is serialize negotiation enable.",
-      "sourceType": "esa.restlight.core.config.SerializeOptions",
+      "sourceType": "io.esastack.restlight.core.config.SerializeOptions",
       "defaultValue": "false"
     },
     {
       "name": "restlight.server.serialize.request.negotiation-param",
       "type": "java.lang.String",
       "description": "Parameter name of serialize negotiation.",
-      "sourceType": "esa.restlight.core.config.SerializeOptions",
+      "sourceType": "io.esastack.restlight.core.config.SerializeOptions",
       "defaultValue": "format"
     },
     {
       "name": "restlight.server.serialize.response.negotiation",
       "type": "java.lang.Boolean",
       "description": "Is serialize negotiation enable.",
-      "sourceType": "esa.restlight.core.config.SerializeOptions",
+      "sourceType": "io.esastack.restlight.core.config.SerializeOptions",
       "defaultValue": "false"
     },
     {
       "name": "restlight.server.serialize.response.negotiation-param",
       "type": "java.lang.String",
       "description": "Parameter name of serialize negotiation.",
-      "sourceType": "esa.restlight.core.config.SerializeOptions",
+      "sourceType": "io.esastack.restlight.core.config.SerializeOptions",
       "defaultValue": "format"
     },
     {
@@ -373,7 +373,7 @@
     {
       "name": "restlight.server.unix-domain-socket-file",
       "type": "java.lang.String",
-      "sourceType": "esa.restlight.starter.autoconfigure.AutoRestlightServerOptions"
+      "sourceType": "io.esastack.restlight.starter.autoconfigure.AutoRestlightServerOptions"
     },
     {
       "name": "restlight.server.use-native-transports",
@@ -386,7 +386,7 @@
       "name": "restlight.server.validation-message-file",
       "type": "java.lang.String",
       "description": "Validation message file name(file name must end of .properties)",
-      "sourceType": "esa.restlight.core.config.RestlightOptions",
+      "sourceType": "io.esastack.restlight.core.config.RestlightOptions",
       "defaultValue": "",
       "deprecated": true,
       "deprecation": {
@@ -395,8 +395,8 @@
     },
     {
       "name": "restlight.server.warm-up",
-      "type": "esa.restlight.starter.autoconfigure.WarmUpOptions",
-      "sourceType": "esa.restlight.starter.autoconfigure.AutoRestlightServerOptions"
+      "type": "io.esastack.restlight.starter.autoconfigure.WarmUpOptions",
+      "sourceType": "io.esastack.restlight.starter.autoconfigure.AutoRestlightServerOptions"
     },
     {
       "name": "restlight.server.write-buffer-high-water-mark",

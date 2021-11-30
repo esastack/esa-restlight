@@ -1,7 +1,7 @@
 {
   "properties": [
     {
-      "sourceType": "esa.restlight.ext.validator.starter.autoconfigurer.ValidationProperties",
+      "sourceType": "io.esastack.restlight.ext.validator.starter.autoconfigurer.ValidationProperties",
       "name": "restlight.server.ext.validation.message-file",
       "type": "java.lang.String",
       "defaultValue": "",

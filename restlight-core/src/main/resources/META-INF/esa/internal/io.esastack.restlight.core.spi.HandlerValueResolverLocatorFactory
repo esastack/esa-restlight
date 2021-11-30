@@ -1,0 +1,2 @@
+io.esastack.restlight.core.spi.impl.HandlerLocatorResolverFactory
+io.esastack.restlight.core.spi.impl.HandlerMethodResolverFactory
