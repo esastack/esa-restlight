@@ -17,7 +17,6 @@ package io.esastack.restlight.core.serialize;
 
 import com.google.protobuf.Message;
 import io.esastack.commons.net.http.MediaType;
-import io.esastack.commons.net.http.MediaTypeUtil;
 import io.esastack.httpserver.core.HttpResponse;
 import io.esastack.restlight.core.resolver.RequestEntity;
 import io.esastack.restlight.core.resolver.ResponseEntity;
@@ -32,7 +31,7 @@ public class ProtoBufHttpBodySerializer extends BaseHttpBodySerializer {
      * The media-type for protobuf {@code application/x-protobuf}.
      */
     public static final MediaType PROTOBUF
-            = MediaTypeUtil.of("application", "x-protobuf", StandardCharsets.UTF_8);
+            = MediaType.builder("application", "x-protobuf").charset(StandardCharsets.UTF_8).build();
 
     /**
      * The HTTP header containing the protobuf schema.

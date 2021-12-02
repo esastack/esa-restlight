@@ -44,9 +44,4 @@ public class MediaTypeBenchmark {
         return MediaTypeUtil.parseMediaType("application/json;charset=utf-8");
     }
 
-    @Benchmark
-    public MediaType parseWithCache() {
-        return MediaTypeUtil.valueOf("application/json;charset=utf-8");
-    }
-
 }

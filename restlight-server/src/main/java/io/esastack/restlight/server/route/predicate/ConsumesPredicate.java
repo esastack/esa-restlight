@@ -91,8 +91,8 @@ public class ConsumesPredicate implements RequestPredicate {
         @Override
         protected boolean matchMediaType(HttpRequest request) {
             String contentTypeString = request.getHeader(HttpHeaderNames.CONTENT_TYPE);
-            MediaType contentType = StringUtils.isEmpty(contentTypeString) ? MediaTypeUtil.APPLICATION_OCTET_STREAM
-                    : MediaTypeUtil.valueOf(contentTypeString);
+            MediaType contentType = StringUtils.isEmpty(contentTypeString) ? MediaType.APPLICATION_OCTET_STREAM
+                    : MediaTypeUtil.parseMediaType(contentTypeString);
             return getMediaType().includes(contentType);
         }
 

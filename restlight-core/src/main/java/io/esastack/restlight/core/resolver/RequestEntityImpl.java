@@ -48,7 +48,7 @@ public class RequestEntityImpl extends HttpEntityImpl implements RequestEntity {
     @Override
     public byte[] byteData() {
         if (byteData == null) {
-            return request.body();
+            return request.body().getBytes();
         } else {
             return byteData;
         }

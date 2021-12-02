@@ -131,9 +131,9 @@ class XssFilterTest {
         filter.inputStream();
         verify(delegate).inputStream();
 
-        verify(delegate, never()).bufferBody();
-        filter.bufferBody();
-        verify(delegate).bufferBody();
+        verify(delegate, never()).body();
+        filter.body();
+        verify(delegate).body();
 
         verify(delegate, never()).remoteAddr();
         filter.remoteAddr();

@@ -16,7 +16,6 @@
 package io.esastack.restlight.core.context.impl;
 
 import io.esastack.commons.net.buffer.Buffer;
-import io.esastack.commons.net.buffer.BufferUtil;
 import io.esastack.httpserver.core.HttpInputStream;
 import io.esastack.httpserver.core.HttpRequest;
 import io.esastack.httpserver.impl.HttpInputStreamImpl;
@@ -27,7 +26,7 @@ import java.io.InputStream;
 
 public class RoutedRequestImpl extends HttpRequestProxy implements RoutedRequest {
 
-    private Buffer bufferBody;
+    private Buffer body;
     private InputStream ins;
 
     public RoutedRequestImpl(HttpRequest underlying) {
@@ -36,20 +35,20 @@ public class RoutedRequestImpl extends HttpRequestProxy implements RoutedRequest
 
     @Override
     public void body(byte[] body) {
-        this.bufferBody = BufferUtil.buffer(body);
+        this.body = Buffer.defaultAlloc().buffer(body);
     }
 
     @Override
-    public void body(Buffer bufferBody) {
-        this.bufferBody = bufferBody;
+    public void body(Buffer body) {
+        this.body = body;
     }
 
     @Override
-    public Buffer bufferBody() {
-        if (bufferBody == null) {
-            return super.bufferBody();
+    public Buffer body() {
+        if (body == null) {
+            return super.body();
         } else {
-            return bufferBody;
+            return body;
         }
     }
 

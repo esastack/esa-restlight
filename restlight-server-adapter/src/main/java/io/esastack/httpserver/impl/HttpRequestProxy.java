@@ -94,13 +94,8 @@ public class HttpRequestProxy implements HttpRequest {
     }
 
     @Override
-    public byte[] body() {
+    public Buffer body() {
         return underlying.body();
-    }
-
-    @Override
-    public Buffer bufferBody() {
-        return underlying.bufferBody();
     }
 
     @Override

@@ -37,7 +37,7 @@ public abstract class AbstractMediaTypeExpression implements Comparable<Abstract
         } else {
             this.isNegated = false;
         }
-        this.mediaType = MediaTypeUtil.valueOf(expression);
+        this.mediaType = MediaTypeUtil.parseMediaType(expression);
     }
 
     public MediaType getMediaType() {

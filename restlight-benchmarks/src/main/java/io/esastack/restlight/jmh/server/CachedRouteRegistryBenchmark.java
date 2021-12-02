@@ -16,7 +16,7 @@
 package io.esastack.restlight.jmh.server;
 
 import io.esastack.commons.net.http.HttpMethod;
-import io.esastack.commons.net.http.MediaTypeUtil;
+import io.esastack.commons.net.http.MediaType;
 import io.esastack.httpserver.core.RequestContext;
 import io.esastack.restlight.server.context.impl.RequestContextImpl;
 import io.esastack.restlight.server.route.Mapping;
@@ -77,8 +77,8 @@ public class CachedRouteRegistryBenchmark {
                     .hasParam("b" + i, "1")
                     .hasHeader("c" + i)
                     .hasHeader("d" + i, "1")
-                    .consumes(MediaTypeUtil.APPLICATION_JSON)
-                    .produces(MediaTypeUtil.TEXT_PLAIN);
+                    .consumes(MediaType.APPLICATION_JSON)
+                    .produces(MediaType.TEXT_PLAIN);
             mappings[i] = mapping;
         }
 
@@ -98,8 +98,8 @@ public class CachedRouteRegistryBenchmark {
                             .withParameter("b" + i, "1")
                             .withHeader("c" + i, "c")
                             .withHeader("d" + i, "1")
-                            .withHeader(HttpHeaderNames.CONTENT_TYPE.toString(), MediaTypeUtil.APPLICATION_JSON.value())
-                            .withHeader(HttpHeaderNames.ACCEPT.toString(), MediaTypeUtil.TEXT_PLAIN.value())
+                            .withHeader(HttpHeaderNames.CONTENT_TYPE.toString(), MediaType.APPLICATION_JSON.value())
+                            .withHeader(HttpHeaderNames.ACCEPT.toString(), MediaType.TEXT_PLAIN.value())
                             .build(), MockHttpResponse.aMockResponse().build());
         }
         this.lambda = (double) routes / 2;

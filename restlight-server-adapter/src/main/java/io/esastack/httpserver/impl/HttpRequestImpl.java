@@ -127,7 +127,7 @@ public class HttpRequestImpl implements io.esastack.httpserver.core.HttpRequest 
 
         MediaType mediaType = null;
         try {
-            mediaType = MediaTypeUtil.valueOf(contentType);
+            mediaType = MediaTypeUtil.parseMediaType(contentType);
         } catch (Exception e) {
             logger.warn("Error while parsing content type: " + contentType, e);
         }
@@ -138,7 +138,7 @@ public class HttpRequestImpl implements io.esastack.httpserver.core.HttpRequest 
     @Override
     public List<MediaType> accepts() {
         final List<MediaType> accepts = new LinkedList<>();
-        MediaTypeUtil.valuesOf(headers.get(HttpHeaderNames.ACCEPT), accepts);
+        MediaTypeUtil.parseMediaTypes(headers.get(HttpHeaderNames.ACCEPT), accepts);
         return accepts;
     }
 
@@ -148,26 +148,14 @@ public class HttpRequestImpl implements io.esastack.httpserver.core.HttpRequest 
     }
 
     @Override
-    public byte[] body() {
-        Buffer bufferBody = bufferBody();
-        if (bufferBody.readableBytes() == 0) {
-            return new byte[0];
-        } else {
-            byte[] body = new byte[bufferBody.readableBytes()];
-            bufferBody.copy().readBytes(body);
-            return body;
-        }
-    }
-
-    @Override
-    public Buffer bufferBody() {
+    public Buffer body() {
         return BufferUtil.wrap(req.aggregated().body());
     }
 
     @Override
     public HttpInputStream inputStream() {
         if (is == null) {
-            this.is = new ByteBufHttpInputStream(bufferBody(), false);
+            this.is = new ByteBufHttpInputStream(body(), false);
         }
         return is;
     }
@@ -202,19 +190,19 @@ public class HttpRequestImpl implements io.esastack.httpserver.core.HttpRequest 
         if (params == null) {
             // merge parameters of application/x-www-form-urlencoded
             Map<String, List<String>> decoded = req.paramMap();
-            if (HttpMethod.POST.equals(req.method()) && bufferBody().readableBytes() > 0) {
+            if (HttpMethod.POST.equals(req.method()) && body().readableBytes() > 0) {
                 String contentType = req.headers().get(HttpHeaderNames.CONTENT_TYPE);
                 if (contentType != null
-                        && contentType.length() >= MediaTypeUtil.APPLICATION_FORM_URLENCODED_VALUE.length()
-                        && contentType.charAt(0) == MediaTypeUtil.APPLICATION_FORM_URLENCODED_VALUE.charAt(0)) {
+                        && contentType.length() >= MediaType.APPLICATION_FORM_URLENCODED_VALUE.length()
+                        && contentType.charAt(0) == MediaType.APPLICATION_FORM_URLENCODED_VALUE.charAt(0)) {
                     MediaType mediaType = contentType();
 
-                    if (mediaType != null && mediaType.isCompatibleWith(MediaTypeUtil.APPLICATION_FORM_URLENCODED)) {
+                    if (mediaType != null && mediaType.isCompatibleWith(MediaType.APPLICATION_FORM_URLENCODED)) {
                         Charset charset = mediaType.charset();
                         if (charset == null) {
                             charset = StandardCharsets.UTF_8;
                         }
-                        String body = bufferBody().string(charset);
+                        String body = body().string(charset);
                         final QueryStringDecoder decoder = new QueryStringDecoder(body, false);
                         Map<String, List<String>> bodyParam = null;
                         try {

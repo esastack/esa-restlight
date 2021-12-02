@@ -574,7 +574,7 @@ public class MappingImpl implements Mapping {
                 tmp = new LinkedHashSet<>(consumes.length);
             }
             for (String c : consumes) {
-                tmp.add(MediaTypeUtil.valueOf(c).value());
+                tmp.add(MediaTypeUtil.parseMediaType(c).value());
             }
             return new MappingImpl(this.name,
                     this.path,
@@ -617,7 +617,7 @@ public class MappingImpl implements Mapping {
                 tmp = new LinkedHashSet<>(produces.length);
             }
             for (String p : produces) {
-                tmp.add(MediaTypeUtil.valueOf(p).value());
+                tmp.add(MediaTypeUtil.parseMediaType(p).value());
             }
             return new MappingImpl(this.name,
                     this.path,

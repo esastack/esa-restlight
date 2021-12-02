@@ -16,7 +16,7 @@
 package io.esastack.restlight.server.schedule;
 
 import esa.commons.Checks;
-import io.esastack.commons.net.http.MediaTypeUtil;
+import io.esastack.commons.net.http.MediaType;
 import io.esastack.httpserver.core.HttpRequest;
 import io.esastack.httpserver.core.HttpResponse;
 import io.esastack.httpserver.core.RequestContext;
@@ -149,7 +149,7 @@ class TimeoutScheduler implements Scheduler {
                     HttpResponseStatus.INTERNAL_SERVER_ERROR.reasonPhrase(),
                     HttpResponseStatus.INTERNAL_SERVER_ERROR.code());
 
-            delegate.response().setHeader(HttpHeaderNames.CONTENT_TYPE, MediaTypeUtil.TEXT_PLAIN.value());
+            delegate.response().setHeader(HttpHeaderNames.CONTENT_TYPE, MediaType.TEXT_PLAIN.value());
             delegate.response().sendResult(HttpResponseStatus.INTERNAL_SERVER_ERROR.code(), errorInfo);
             PromiseUtils.setSuccess(delegate.promise());
         }

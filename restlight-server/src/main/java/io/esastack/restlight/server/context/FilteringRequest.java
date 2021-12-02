@@ -24,44 +24,44 @@ import java.io.InputStream;
 /**
  * The {@link FilteringRequest} is allowed to be modified by {@link #method(HttpMethod)}, {@link #uri(String)} and
  * so on.
- *
+ * <p>
  * !NOTE: The modification of the {@link HttpRequest} will affect {@link #method()}, {@link #uri()}, {@link #path()},
- * {@link #bufferBody()} and so on...
+ * {@link #body()} and so on...
  */
 public interface FilteringRequest extends HttpRequest {
 
     /**
      * Set the method of the {@link HttpRequest}.
      *
-     * @param method    method
+     * @param method method
      */
     void method(HttpMethod method);
 
     /**
      * Set the uri of the {@link HttpRequest}.
      *
-     * @param uri   uri
+     * @param uri uri
      */
     void uri(String uri);
 
     /**
      * Set the body of the {@link HttpRequest} as byte[] format.
      *
-     * @param body  body
+     * @param body body
      */
     void body(byte[] body);
 
     /**
      * Set the body of the {@link HttpRequest} as bufferBody format.
      *
-     * @param bufferBody    buffer body
+     * @param body body
      */
-    void body(Buffer bufferBody);
+    void body(Buffer body);
 
     /**
      * Set the body of the {@link HttpRequest} as is format.
      *
-     * @param ins    input stream
+     * @param ins input stream
      */
     void inputStream(InputStream ins);
 }

@@ -16,7 +16,6 @@
 package io.esastack.restlight.jaxrs.util;
 
 import io.esastack.commons.net.http.MediaType;
-import io.esastack.commons.net.http.MediaTypeUtil;
 
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -36,7 +35,8 @@ public final class MediaTypeUtils {
         if (result == null) {
             result = JAKARTA_TO_COMMON_CACHE.computeIfAbsent(from, (key) -> {
                 try {
-                    return ParseResult.ok(MediaTypeUtil.of(key.getType(), key.getSubtype(), key.getParameters()));
+                    return ParseResult.ok(MediaType.builder(key.getType(), key.getSubtype())
+                            .addParams(key.getParameters()).build());
                 } catch (Throwable th) {
                     return ParseResult.error(new IllegalArgumentException(th));
                 }

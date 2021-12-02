@@ -15,7 +15,7 @@
  */
 package io.esastack.restlight.ext.filter.ipwhitelist;
 
-import io.esastack.commons.net.http.MediaTypeUtil;
+import io.esastack.commons.net.http.MediaType;
 import io.esastack.httpserver.core.HttpRequest;
 import io.esastack.httpserver.core.HttpResponse;
 import io.esastack.restlight.server.context.FilterContext;
@@ -87,6 +87,6 @@ class IpWhiteListFilterTest {
         final HttpResponse response = MockHttpResponse.aMockResponse().build();
         filter.doFilter(new FilterContextImpl(new FilteringRequestImpl(request), response), chain);
         assertEquals(401, response.status());
-        assertEquals(MediaTypeUtil.TEXT_PLAIN.value(), response.getHeader(HttpHeaderNames.CONTENT_TYPE));
+        assertEquals(MediaType.TEXT_PLAIN.value(), response.getHeader(HttpHeaderNames.CONTENT_TYPE));
     }
 }

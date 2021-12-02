@@ -160,8 +160,8 @@ public class XssFilter implements Filter {
         }
 
         @Override
-        public Buffer bufferBody() {
-            return delegate.bufferBody();
+        public Buffer body() {
+            return delegate.body();
         }
 
         @Override
@@ -264,11 +264,6 @@ public class XssFilter implements Filter {
         }
 
         @Override
-        public byte[] body() {
-            return delegate.body();
-        }
-
-        @Override
         public void method(HttpMethod method) {
             delegate.method(method);
         }
@@ -284,8 +279,8 @@ public class XssFilter implements Filter {
         }
 
         @Override
-        public void body(Buffer bufferBody) {
-            delegate.body(bufferBody);
+        public void body(Buffer body) {
+            delegate.body(body);
         }
 
         @Override

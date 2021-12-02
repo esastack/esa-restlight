@@ -18,7 +18,6 @@ package io.esastack.restlight.springmvc.resolver.rspentity;
 import esa.commons.StringUtils;
 import esa.commons.reflect.AnnotationUtils;
 import io.esastack.commons.net.http.MediaType;
-import io.esastack.commons.net.http.MediaTypeUtil;
 import io.esastack.httpserver.core.HttpRequest;
 import io.esastack.restlight.core.method.HandlerMethod;
 import io.esastack.restlight.core.resolver.ParamResolverFactory;
@@ -75,7 +74,7 @@ public class ResponseStatusEntityResolverFactory implements ResponseEntityResolv
         protected byte[] serialize(ResponseEntity entity,
                                    List<MediaType> mediaTypes,
                                    HttpRequest request) throws Exception {
-            entity.response().setHeader(HttpHeaderNames.CONTENT_TYPE, MediaTypeUtil.TEXT_PLAIN.value());
+            entity.response().setHeader(HttpHeaderNames.CONTENT_TYPE, MediaType.TEXT_PLAIN.value());
             return getResponseStatus(Objects.requireNonNull(entity.handler().orElse(null))).reason()
                     .getBytes(StandardCharsets.UTF_8);
         }

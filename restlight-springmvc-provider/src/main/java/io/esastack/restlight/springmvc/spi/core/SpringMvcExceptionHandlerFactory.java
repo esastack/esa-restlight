@@ -19,7 +19,7 @@ import esa.commons.annotation.Internal;
 import esa.commons.logging.Logger;
 import esa.commons.logging.LoggerFactory;
 import esa.commons.spi.Feature;
-import io.esastack.commons.net.http.MediaTypeUtil;
+import io.esastack.commons.net.http.MediaType;
 import io.esastack.httpserver.core.HttpRequest;
 import io.esastack.restlight.core.DeployContext;
 import io.esastack.restlight.core.config.RestlightOptions;
@@ -61,7 +61,7 @@ public class SpringMvcExceptionHandlerFactory implements ExceptionHandlerFactory
 
             final HttpRequest request = context.request();
             final HttpResponse response = context.response();
-            response.setHeader(HttpHeaderNames.CONTENT_TYPE, MediaTypeUtil.TEXT_PLAIN.value());
+            response.setHeader(HttpHeaderNames.CONTENT_TYPE, MediaType.TEXT_PLAIN.value());
             response.sendResult(status.code(), status.reasonPhrase().getBytes(StandardCharsets.UTF_8));
 
             logger.error("Error occurred when doing request(url={}, method={})",

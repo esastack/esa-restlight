@@ -94,18 +94,11 @@ public interface HttpRequest extends Attributes {
     HttpInputStream inputStream();
 
     /**
-     * get body
-     *
-     * @return body bytes
-     */
-    byte[] body();
-
-    /**
      * Get {@link Buffer} result of http body.
      *
      * @return body
      */
-    Buffer bufferBody();
+    Buffer body();
 
     /**
      * Body length.
@@ -118,11 +111,11 @@ public interface HttpRequest extends Attributes {
             try {
                 return Long.parseLong(strContentLength);
             } catch (Throwable ignore) {
-                return bufferBody().readableBytes();
+                return body().readableBytes();
             }
         }
 
-        return bufferBody().readableBytes();
+        return body().readableBytes();
     }
 
     /**

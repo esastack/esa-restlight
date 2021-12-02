@@ -142,7 +142,7 @@ public abstract class AbstractContainerRequestContext implements ContainerReques
 
     @Override
     public boolean hasEntity() {
-        return context.request().bufferBody().readableBytes() > 0;
+        return context.request().body().readableBytes() > 0;
     }
 
     @Override

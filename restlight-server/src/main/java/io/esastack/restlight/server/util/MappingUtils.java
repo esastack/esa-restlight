@@ -94,7 +94,7 @@ public class MappingUtils {
                 HeadersPredicate.Expression expr =
                         new HeadersPredicate.Expression(header);
                 if (HttpHeaderNames.CONTENT_TYPE.contentEqualsIgnoreCase(expr.getName())) {
-                    for (MediaType mediaType : MediaTypeUtil.valuesOf(expr.getValue())) {
+                    for (MediaType mediaType : MediaTypeUtil.parseMediaTypes(expr.getValue())) {
                         result.add(new ConsumesPredicate.Expression(mediaType,
                                 expr.isNegated()));
                     }
@@ -126,7 +126,7 @@ public class MappingUtils {
                 HeadersPredicate.Expression expr =
                         new HeadersPredicate.Expression(header);
                 if (HttpHeaderNames.ACCEPT.contentEqualsIgnoreCase(expr.getName()) && expr.getValue() != null) {
-                    for (MediaType mediaType : MediaTypeUtil.valuesOf(expr.getValue())) {
+                    for (MediaType mediaType : MediaTypeUtil.parseMediaTypes(expr.getValue())) {
                         result.add(new ProducesPredicate.Expression(mediaType,
                                 expr.isNegated()));
                     }

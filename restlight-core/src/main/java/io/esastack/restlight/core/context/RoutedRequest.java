@@ -34,11 +34,11 @@ public interface RoutedRequest extends HttpRequest {
     void body(byte[] body);
 
     /**
-     * Set the body of the {@link HttpRequest} as bufferBody format.
+     * Set the body of the {@link HttpRequest}.
      *
-     * @param bufferBody    buffer body
+     * @param body    buffer body
      */
-    void body(Buffer bufferBody);
+    void body(Buffer body);
 
     /**
      * Set the body of the {@link HttpRequest} as is format.
