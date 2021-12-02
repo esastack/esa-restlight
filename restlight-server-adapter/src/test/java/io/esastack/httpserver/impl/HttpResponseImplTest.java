@@ -111,18 +111,6 @@ class HttpResponseImplTest {
         response.setHeaders(AsciiString.of("h"), Arrays.asList("3", "4"));
         assertArrayEquals(new String[]{"1", "2"}, response.getHeaders("g").toArray(new String[0]));
         assertArrayEquals(new String[]{"3", "4"}, response.getHeaders("h").toArray(new String[0]));
-
-
-        response.setTrailer("a", "1");
-        response.setTrailer(AsciiString.of("b"), "2");
-        assertEquals("1", trailers.get("a"));
-        assertEquals("2", trailers.get(AsciiString.of("b")));
-
-        response.addTrailer("a", "2");
-        assertArrayEquals(new String[]{"1", "2"}, trailers.getAll("a").toArray(new String[0]));
-
-        response.setTrailers("c", Arrays.asList("1", "2"));
-        assertArrayEquals(new String[]{"1", "2"}, trailers.getAll("c").toArray(new String[0]));
     }
 
     @Test

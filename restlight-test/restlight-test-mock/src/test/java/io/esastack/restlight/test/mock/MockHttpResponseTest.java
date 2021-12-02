@@ -34,7 +34,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -77,28 +76,6 @@ class MockHttpResponseTest {
 
         assertTrue(response.headerNames().contains(seq));
         assertTrue(response.containsHeader(seq));
-    }
-
-    @Test
-    void testOperateTrailer() {
-        final MockHttpResponse response = MockHttpResponse.aMockResponse().build();
-        response.addTrailer("t1", "v1");
-        response.setTrailer("t2", "v2");
-        response.setTrailers("t3", Collections.singletonList("v3"));
-
-        assertEquals(3, response.trailers().size());
-        response.addTrailer("", "xx");
-        response.setTrailer("", "xx");
-        response.setTrailers("", Collections.singletonList("xx"));
-
-        response.addTrailer("x", null);
-        response.setTrailer("x", null);
-        response.setTrailers("x", null);
-        assertEquals(3, response.trailers().size());
-
-        assertFalse(response.isKeepAlive());
-        response.setBufferSize(1);
-        assertEquals(1, response.bufferSize());
     }
 
     @Test
@@ -217,12 +194,6 @@ class MockHttpResponseTest {
         response.addIntHeader("int2", 2);
         response.setShortHeader("short1", (short) 1);
         response.addShortHeader("short2", (short) 2);
-
-        response.addTrailer("t1", "v1");
-        response.setTrailer("t2", "v2");
-        response.setTrailers("t3", Collections.singletonList("v3"));
-        assertTrue(response.headerNames().isEmpty());
-        assertTrue(response.trailers().isEmpty());
     }
 
     @Test

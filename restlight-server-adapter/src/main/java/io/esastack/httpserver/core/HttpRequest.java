@@ -26,8 +26,6 @@ import io.esastack.commons.net.http.HttpVersion;
 import io.esastack.commons.net.http.MediaType;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
-
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -298,79 +296,6 @@ public interface HttpRequest extends Attributes {
     HttpHeaders trailers();
 
     /**
-     * Returns a boolean indicating whether the named response header has already been set.
-     *
-     * @param name name
-     * @return is contains
-     */
-    default boolean containsTrailer(CharSequence name) {
-        return trailers().contains(name);
-    }
-
-    /**
-     * @see #containsHeader(CharSequence)
-     */
-    default boolean containsTrailer(String name) {
-        return containsTrailer((CharSequence) name);
-    }
-
-    /**
-     * Returns the value of a trailing header with the specified name. If there are more than one values for the
-     * specified name, the first value is returned.
-     *
-     * @param name The name of the trailing header to search
-     * @return The first trailing header value or {@code null} if there is no such trailing header
-     */
-    default String getTrailer(CharSequence name) {
-        return trailers().get(name);
-    }
-
-    /**
-     * @see #getTrailer(CharSequence)
-     */
-    default String getTrailer(String name) {
-        return getTrailer((CharSequence) name);
-    }
-
-    /**
-     * Returns the integer value of a trailing header with the specified name. If there are more than one values for the
-     * specified name, the first value is returned.
-     *
-     * @param name the name of the trailing header to search
-     * @return the first trailing header value if the trailing header is found and its value is an integer. {@code null}
-     * if there's no such trailing header or its value is not an integer.
-     */
-    default Integer getIntTrailer(CharSequence name) {
-        return trailers().getInt(name);
-    }
-
-    /**
-     * @see #getIntTrailer(CharSequence)
-     */
-    default Integer getIntTrailer(String name) {
-        return getIntTrailer((CharSequence) name);
-    }
-
-    /**
-     * Returns the integer value of a trailing header with the specified name. If there are more than one values for the
-     * specified name, the first value is returned.
-     *
-     * @param name the name of the header to search
-     * @return the first trailing header value if the trailing header is found and its value is an integer. {@code null}
-     * if there's no such trailing header or its value is not an integer.
-     */
-    default Short getShortTrailer(CharSequence name) {
-        return trailers().getShort(name);
-    }
-
-    /**
-     * @see #getShortTrailer(CharSequence)
-     */
-    default Short getShortTrailer(String name) {
-        return getShortTrailer((CharSequence) name);
-    }
-
-    /**
      * Returns a set containing all of the {@link Cookie} objects the client sent with this request.
      *
      * @return all of the {@link Cookie} objects the client sent with this request, returns an empty set if no cookies
@@ -392,31 +317,6 @@ public interface HttpRequest extends Attributes {
             }
         }
         return null;
-    }
-
-    /**
-     * Return the size(byte) of all the header names and values.
-     *
-     * @return size
-     * @deprecated compute by yourself please
-     */
-    @Deprecated
-    default int headerSize() {
-        int size = 0;
-        Iterator<Map.Entry<CharSequence, CharSequence>> iterator = headers().iteratorCharSequence();
-        while (iterator.hasNext()) {
-            Map.Entry<CharSequence, CharSequence> item = iterator.next();
-            CharSequence headerName = item.getKey();
-            CharSequence headerValue = item.getValue();
-            if (headerName == null) {
-                continue;
-            }
-            size += headerName.length();
-            if (headerValue != null) {
-                size += headerValue.length();
-            }
-        }
-        return size;
     }
 
     /**

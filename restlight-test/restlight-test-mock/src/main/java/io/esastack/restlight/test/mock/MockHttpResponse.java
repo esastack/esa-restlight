@@ -147,30 +147,6 @@ public class MockHttpResponse implements HttpResponse {
     }
 
     @Override
-    public void addTrailer(CharSequence headerName, String value) {
-        if (StringUtils.isEmpty(headerName) || value == null || isCommitted()) {
-            return;
-        }
-        trailingHeaders.add(headerName, value);
-    }
-
-    @Override
-    public void setTrailer(CharSequence headerName, String value) {
-        if (StringUtils.isEmpty(headerName) || value == null || isCommitted()) {
-            return;
-        }
-        trailingHeaders.set(headerName, value);
-    }
-
-    @Override
-    public void setTrailers(CharSequence name, List<String> values) {
-        if (StringUtils.isEmpty(name) || values == null || isCommitted()) {
-            return;
-        }
-        trailingHeaders.set(name, values);
-    }
-
-    @Override
     public void addCookie(Cookie cookie) {
         headers.add(HttpHeaderNames.SET_COOKIE, ServerCookieEncoder.STRICT
                 .encode(new DefaultCookie(cookie.name(), cookie.value())));
