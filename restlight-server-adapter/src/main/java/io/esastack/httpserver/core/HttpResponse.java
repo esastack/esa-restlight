@@ -477,53 +477,6 @@ public interface HttpResponse {
     }
 
     /**
-     * Adds a trailing header with the given name and value. This method allows response headers to have multiple
-     * values.
-     *
-     * @param name  name
-     * @param value value
-     */
-    void addTrailer(CharSequence name, String value);
-
-    /**
-     * @see #addTrailer(CharSequence, String)
-     */
-    default void addTrailer(String name, String value) {
-        addTrailer((CharSequence) name, value);
-    }
-
-    /**
-     * Sets a trailing header with the given name and value. If the header had already been set, the new value
-     * overwrites the previous one.
-     *
-     * @param name  name
-     * @param value value
-     */
-    void setTrailer(CharSequence name, String value);
-
-    /**
-     * @see #setTrailer(CharSequence, String)
-     */
-    default void setTrailer(String name, String value) {
-        setTrailer((CharSequence) name, value);
-    }
-
-    /**
-     * Sets a trailing headers with the given name and value.
-     *
-     * @param name   name
-     * @param values values
-     */
-    void setTrailers(CharSequence name, List<String> values);
-
-    /**
-     * @see #setTrailers(CharSequence, List)
-     */
-    default void setTrailers(String name, List<String> values) {
-        setTrailers((CharSequence) name, values);
-    }
-
-    /**
      * Adds the specified cookie to the response. This method can be called multiple times to set more than one cookie.
      *
      * @param cookie the Cookie to return to the client

@@ -219,21 +219,6 @@ public class HttResponseImpl implements HttpResponse {
     }
 
     @Override
-    public void addTrailer(CharSequence name, String value) {
-        res.trailers().add(name, value);
-    }
-
-    @Override
-    public void setTrailer(CharSequence name, String value) {
-        res.trailers().set(name, value);
-    }
-
-    @Override
-    public void setTrailers(CharSequence name, List<String> values) {
-        res.trailers().set(name, values);
-    }
-
-    @Override
     public void addCookie(Cookie cookie) {
         res.addCookie(cookie);
     }

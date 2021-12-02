@@ -171,21 +171,6 @@ public class HttpResponseAdapter implements HttpResponse {
     }
 
     @Override
-    public void addTrailer(CharSequence name, String value) {
-        underlying.addTrailer(name, value);
-    }
-
-    @Override
-    public void setTrailer(CharSequence name, String value) {
-        underlying.setTrailer(name, value);
-    }
-
-    @Override
-    public void setTrailers(CharSequence name, List<String> values) {
-        underlying.setTrailers(name, values);
-    }
-
-    @Override
     public void addCookie(Cookie cookie) {
         underlying.addCookie(cookie);
     }

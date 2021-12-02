@@ -153,7 +153,6 @@ class HttpRequestImplTest {
         assertSame(headers, req.headers());
         assertSame(trailer, req.trailers());
         verifyHeaders(req);
-        verifyTrailers(req);
     }
 
     @Test
@@ -176,7 +175,6 @@ class HttpRequestImplTest {
         assertSame(headers, req.headers());
         assertSame(trailer, req.trailers());
         verifyHeaders(req);
-        verifyTrailers(req);
     }
 
     @Test
@@ -345,7 +343,6 @@ class HttpRequestImplTest {
         assertEquals((short) 2, req.getShortHeader("b"));
         assertEquals((short) 1, req.getShortHeader(AsciiString.of("a")));
         assertEquals((short) 2, req.getShortHeader(AsciiString.of("b")));
-        assertEquals(4, req.headerSize());
 
         req.headers().set("x", "y");
         req.headers().set((CharSequence) "y", "z");
@@ -355,28 +352,6 @@ class HttpRequestImplTest {
         assertEquals("z", req.getHeader("y"));
         assertEquals("n", req.getHeader("m"));
         assertEquals("n", req.getHeader("m0"));
-    }
-
-    private static void verifyTrailers(HttpRequestImpl req) {
-        assertEquals("1", req.trailers().get("c"));
-        assertEquals("2", req.trailers().get("d"));
-        assertTrue(req.containsTrailer("c"));
-        assertTrue(req.containsTrailer("d"));
-        assertTrue(req.containsTrailer(AsciiString.of("c")));
-        assertTrue(req.containsTrailer(AsciiString.of("d")));
-        assertEquals("1", req.getTrailer("c"));
-        assertEquals("2", req.getTrailer("d"));
-        assertEquals("1", req.getTrailer(AsciiString.of("c")));
-        assertEquals("2", req.getTrailer(AsciiString.of("d")));
-        assertEquals(1, req.getIntTrailer("c"));
-        assertEquals(2, req.getIntTrailer("d"));
-        assertEquals(1, req.getIntTrailer(AsciiString.of("c")));
-        assertEquals(2, req.getIntTrailer(AsciiString.of("d")));
-        assertEquals((short) 1, req.getShortTrailer("c"));
-        assertEquals((short) 2, req.getShortTrailer("d"));
-        assertEquals((short) 1, req.getShortTrailer(AsciiString.of("c")));
-        assertEquals((short) 2, req.getShortTrailer(AsciiString.of("d")));
-
     }
 
 }
