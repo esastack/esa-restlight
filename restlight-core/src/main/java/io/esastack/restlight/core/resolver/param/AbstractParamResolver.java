@@ -91,7 +91,7 @@ public abstract class AbstractParamResolver implements ParamResolverFactory {
 
         @Override
         protected Object resolveName(String name, HttpRequest request) {
-            final List<String> values = request.getParameters(name);
+            final List<String> values = request.getParams(name);
             if (values == null || values.isEmpty()) {
                 return null;
             }
@@ -113,7 +113,7 @@ public abstract class AbstractParamResolver implements ParamResolverFactory {
 
         @Override
         protected Map<String, List<String>> resolveName(String name, HttpRequest request) {
-            return request.parameterMap();
+            return request.paramsMap();
         }
     }
 
@@ -125,7 +125,7 @@ public abstract class AbstractParamResolver implements ParamResolverFactory {
 
         @Override
         protected Map<String, String> resolveName(String name, HttpRequest request) {
-            Map<String, List<String>> p = request.parameterMap();
+            Map<String, List<String>> p = request.paramsMap();
             if (p.isEmpty()) {
                 return Collections.emptyMap();
             }

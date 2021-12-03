@@ -134,9 +134,9 @@ public class FilteringRequestImpl extends HttpRequestProxy implements FilteringR
     }
 
     @Override
-    public Map<String, List<String>> parameterMap() {
+    public Map<String, List<String>> paramsMap() {
         if (strUri == null) {
-            return super.parameterMap();
+            return super.paramsMap();
         }
         if (params == null) {
             final MultiValueMap<String, String> params0 = new LinkedMultiValueMap<>();

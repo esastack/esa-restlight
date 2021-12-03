@@ -37,7 +37,7 @@ public abstract class NegotiationResponseResolver extends FlexibleResponseEntity
     @Override
     protected List<MediaType> getMediaTypes(HttpRequest request) {
         // judge by parameter
-        final String format = request.getParameter(paramName);
+        final String format = request.getParam(paramName);
         if (Constants.NEGOTIATION_JSON_FORMAT.equals(format)) {
             List<MediaType> ret = InternalThreadLocalMap.get().arrayList(1);
             ret.add(MediaType.APPLICATION_JSON);

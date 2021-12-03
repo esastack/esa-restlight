@@ -186,7 +186,7 @@ public class HttpRequestImpl implements io.esastack.httpserver.core.HttpRequest 
     }
 
     @Override
-    public Map<String, List<String>> parameterMap() {
+    public Map<String, List<String>> paramsMap() {
         if (params == null) {
             // merge parameters of application/x-www-form-urlencoded
             Map<String, List<String>> decoded = req.paramMap();

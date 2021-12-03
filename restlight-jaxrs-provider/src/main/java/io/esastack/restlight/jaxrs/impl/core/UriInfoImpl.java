@@ -151,7 +151,7 @@ public class UriInfoImpl implements UriInfo {
     @Override
     public MultivaluedMap<String, String> getQueryParameters(boolean decode) {
         MultivaluedMap<String, String> parameters = new MultivaluedHashMap<>();
-        parameters.putAll(context.request().parameterMap());
+        parameters.putAll(context.request().paramsMap());
         return parameters;
     }
 

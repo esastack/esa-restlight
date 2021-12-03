@@ -205,7 +205,7 @@ public class MockHttpRequest implements HttpRequest {
     }
 
     @Override
-    public String getParameter(String parName) {
+    public String getParam(String parName) {
         if (parameters == null) {
             return null;
         }
@@ -218,7 +218,7 @@ public class MockHttpRequest implements HttpRequest {
     }
 
     @Override
-    public List<String> getParameters(String parName) {
+    public List<String> getParams(String parName) {
         if (parameters == null) {
             return null;
         }
@@ -226,7 +226,7 @@ public class MockHttpRequest implements HttpRequest {
     }
 
     @Override
-    public Map<String, List<String>> parameterMap() {
+    public Map<String, List<String>> paramsMap() {
         return parameters;
     }
 

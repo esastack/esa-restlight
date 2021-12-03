@@ -120,13 +120,13 @@ class HttpRequestImplTest {
         params.add("a", "1");
         params.add("b", "2");
         when(mock.paramMap()).thenReturn(params);
-        assertSame(params, req.parameterMap());
+        assertSame(params, req.paramsMap());
 
-        assertEquals("1", req.getParameter("a"));
-        assertEquals("2", req.getParameter("b"));
-        assertEquals(1, req.getParameters("a").size());
-        assertEquals(2, req.parameterMap().size());
-        assertEquals(2, req.parameterMap().size());
+        assertEquals("1", req.getParam("a"));
+        assertEquals("2", req.getParam("b"));
+        assertEquals(1, req.getParams("a").size());
+        assertEquals(2, req.paramsMap().size());
+        assertEquals(2, req.paramsMap().size());
 
         when(mock.toString()).thenReturn("foo");
         assertEquals("foo", req.toString());
@@ -238,10 +238,10 @@ class HttpRequestImplTest {
         when(mock.aggregated()).thenReturn(aggregation);
 
         final HttpRequestImpl req = new HttpRequestImpl(mock, new AttributesImpl());
-        assertEquals(3, req.parameterMap().size());
-        assertEquals("1", req.getParameter("a"));
-        assertEquals("2", req.getParameter("b"));
-        assertEquals("4", req.getParameter("c"));
+        assertEquals(3, req.paramsMap().size());
+        assertEquals("1", req.getParam("a"));
+        assertEquals("2", req.getParam("b"));
+        assertEquals("4", req.getParam("c"));
     }
 
     @Test
@@ -265,9 +265,9 @@ class HttpRequestImplTest {
         when(mock.aggregated()).thenReturn(aggregation);
 
         final HttpRequestImpl req = new HttpRequestImpl(mock, new AttributesImpl());
-        assertEquals(2, req.parameterMap().size());
-        assertEquals("1", req.getParameter("a"));
-        assertEquals("2", req.getParameter("b"));
+        assertEquals(2, req.paramsMap().size());
+        assertEquals("1", req.getParam("a"));
+        assertEquals("2", req.getParam("b"));
     }
 
     @Test
@@ -291,9 +291,9 @@ class HttpRequestImplTest {
         when(mock.aggregated()).thenReturn(aggregation);
 
         final HttpRequestImpl req = new HttpRequestImpl(mock, new AttributesImpl());
-        assertEquals(2, req.parameterMap().size());
-        assertEquals("1", req.getParameter("a"));
-        assertEquals("2", req.getParameter("b"));
+        assertEquals(2, req.paramsMap().size());
+        assertEquals("1", req.getParam("a"));
+        assertEquals("2", req.getParam("b"));
     }
 
     @Test

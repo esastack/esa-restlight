@@ -26,6 +26,7 @@ import io.esastack.commons.net.http.HttpVersion;
 import io.esastack.commons.net.http.MediaType;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -87,81 +88,14 @@ public interface HttpRequest extends Attributes {
     }
 
     /**
-     * Get input stream
-     *
-     * @return input stream
-     */
-    HttpInputStream inputStream();
-
-    /**
-     * Get {@link Buffer} result of http body.
-     *
-     * @return body
-     */
-    Buffer body();
-
-    /**
-     * Body length.
-     *
-     * @return len
-     */
-    default long contentLength() {
-        String strContentLength = getHeader(HttpHeaderNames.CONTENT_LENGTH);
-        if (StringUtils.isNotEmpty(strContentLength)) {
-            try {
-                return Long.parseLong(strContentLength);
-            } catch (Throwable ignore) {
-                return body().readableBytes();
-            }
-        }
-
-        return body().readableBytes();
-    }
-
-    /**
-     * Returns the Internet Protocol (IP) address of the client or last proxy that sent the request.
-     *
-     * @return addr
-     */
-    String remoteAddr();
-
-    /**
-     * Returns the last proxy that sent the request.
-     *
-     * @return addr
-     */
-    String tcpSourceAddr();
-
-    /**
-     * Returns the Internet Protocol (PORT) address of the client or last proxy that sent the request.
-     *
-     * @return port or -1
-     */
-    int remotePort();
-
-    /**
-     * Returns the Internet Protocol (IP) address of the interface on which the request was received.
-     *
-     * @return addr
-     */
-    String localAddr();
-
-    /**
-     * Returns the port of the interface on which the request was received.
-     *
-     * @return port
-     */
-    int localPort();
-
-    /**
      * Get parameter This pair of parameter can be from url parameters or body k-v values when Content-Type equals to
      * 'x-www-form-urlencoded'
      *
      * @param parName parameter name
      * @return value
      */
-    default String getParameter(String parName) {
-        final List<String> params = getParameters(parName);
+    default String getParam(String parName) {
+        final List<String> params = getParams(parName);
         if (params != null && params.size() > 0) {
             return params.get(0);
         }
@@ -175,8 +109,8 @@ public interface HttpRequest extends Attributes {
      * @param parName parameter name
      * @return value
      */
-    default List<String> getParameters(String parName) {
-        return parameterMap().get(parName);
+    default List<String> getParams(String parName) {
+        return paramsMap().get(parName);
     }
 
     /**
@@ -185,7 +119,7 @@ public interface HttpRequest extends Attributes {
      *
      * @return map
      */
-    Map<String, List<String>> parameterMap();
+    Map<String, List<String>> paramsMap();
 
     /**
      * Get http headers
@@ -193,20 +127,6 @@ public interface HttpRequest extends Attributes {
      * @return headers
      */
     HttpHeaders headers();
-
-    /**
-     * Get header of "content-type".
-     *
-     * @return content-type
-     */
-    MediaType contentType();
-
-    /**
-     * Obtains {@link MediaType}s parsed from "accept" header.
-     *
-     * @return mediaTypes
-     */
-    List<MediaType> accepts();
 
     /**
      * Returns a boolean indicating whether the named response header has already been set.
@@ -282,11 +202,18 @@ public interface HttpRequest extends Attributes {
     }
 
     /**
-     * Gets the trailing headers of this request.
+     * Get header of "content-type".
      *
-     * @return trailing headers
+     * @return content-type
      */
-    HttpHeaders trailers();
+    MediaType contentType();
+
+    /**
+     * Obtains {@link MediaType}s parsed from "accept" header.
+     *
+     * @return mediaTypes
+     */
+    List<MediaType> accepts();
 
     /**
      * Returns a set containing all of the {@link Cookie} objects the client sent with this request.
@@ -311,6 +238,80 @@ public interface HttpRequest extends Attributes {
         }
         return null;
     }
+
+    /**
+     * Body length.
+     *
+     * @return len
+     */
+    default long contentLength() {
+        String strContentLength = getHeader(HttpHeaderNames.CONTENT_LENGTH);
+        if (StringUtils.isNotEmpty(strContentLength)) {
+            try {
+                return Long.parseLong(strContentLength);
+            } catch (Throwable ignore) {
+                return body().readableBytes();
+            }
+        }
+
+        return body().readableBytes();
+    }
+
+    /**
+     * Get input stream
+     *
+     * @return input stream
+     */
+    HttpInputStream inputStream();
+
+    /**
+     * Get {@link Buffer} result of http body.
+     *
+     * @return body
+     */
+    Buffer body();
+
+    /**
+     * Gets the trailing headers of this request.
+     *
+     * @return trailing headers
+     */
+    HttpHeaders trailers();
+
+    /**
+     * Returns the Internet Protocol (IP) address of the client or last proxy that sent the request.
+     *
+     * @return addr
+     */
+    String remoteAddr();
+
+    /**
+     * Returns the last proxy that sent the request.
+     *
+     * @return addr
+     */
+    String tcpSourceAddr();
+
+    /**
+     * Returns the Internet Protocol (PORT) address of the client or last proxy that sent the request.
+     *
+     * @return port or -1
+     */
+    int remotePort();
+
+    /**
+     * Returns the Internet Protocol (IP) address of the interface on which the request was received.
+     *
+     * @return addr
+     */
+    String localAddr();
+
+    /**
+     * Returns the port of the interface on which the request was received.
+     *
+     * @return port
+     */
+    int localPort();
 
     /**
      * Get current allocator, if the {@link Buffer} is wrapped by {@link ByteBuf}, the {@link ByteBufAllocator}

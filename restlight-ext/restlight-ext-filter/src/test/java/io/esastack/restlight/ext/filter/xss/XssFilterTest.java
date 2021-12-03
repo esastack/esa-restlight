@@ -55,8 +55,8 @@ class XssFilterTest {
                 .build();
         filter.doFilter(new FilterContextImpl(new FilteringRequestImpl(request0),
                 MockHttpResponse.aMockResponse().build()), chain).join();
-        assertEquals("", req.get().getParameter("script"));
-        assertNull(req.get().getParameter("null"));
+        assertEquals("", req.get().getParam("script"));
+        assertNull(req.get().getParam("null"));
         assertEquals("", req.get().getHeader("header"));
         assertNull(req.get().getHeader("null"));
         assertEquals("script=&foo=bar&name=gcl&name=wxy", req.get().query());
@@ -68,14 +68,14 @@ class XssFilterTest {
         String[] namesForCompare = new String[names.length];
         String[] script = {""};
         String[] scriptForCompare = new String[script.length];
-        assertArrayEquals(names, req.get().getParameters("name").toArray(scriptForCompare));
-        assertNull(req.get().getParameters("null"));
-        assertArrayEquals(names, req.get().parameterMap().get("name").toArray(namesForCompare));
-        assertArrayEquals(script, req.get().parameterMap().get("script").toArray(scriptForCompare));
+        assertArrayEquals(names, req.get().getParams("name").toArray(scriptForCompare));
+        assertNull(req.get().getParams("null"));
+        assertArrayEquals(names, req.get().paramsMap().get("name").toArray(namesForCompare));
+        assertArrayEquals(script, req.get().paramsMap().get("script").toArray(scriptForCompare));
 
         String[] foos = {"bar"};
         String[] foosForCompare = new String[foos.length];
-        assertArrayEquals(foos, req.get().parameterMap().get("foo").toArray(foosForCompare));
+        assertArrayEquals(foos, req.get().paramsMap().get("foo").toArray(foosForCompare));
 
         // escape mode(default mode)
         options.setMode(XssMode.ESCAPE);
@@ -86,10 +86,10 @@ class XssFilterTest {
                 .build();
         filterEscape.doFilter(new FilterContextImpl(new FilteringRequestImpl(requestEscape),
                 MockHttpResponse.aMockResponse().build()), chain).join();
-        assertEquals("&lt;script&gt;test&lt;/script&gt;", req.get().getParameter("script"));
-        assertNull(req.get().getParameter("null"));
+        assertEquals("&lt;script&gt;test&lt;/script&gt;", req.get().getParam("script"));
+        assertNull(req.get().getParam("null"));
         assertEquals("src=&quot;//xxxx.cn/image/t.js&quot;", req.get().getHeader("header"));
-        assertNull(req.get().getParameter("null"));
+        assertNull(req.get().getParam("null"));
         assertEquals("script=&lt;script&gt;test&lt;/script&gt;&amp;foo=test&lt;/script&gt;&amp;name=gcl&amp;" +
                 "name=wxy", req.get().query());
         assertEquals("/test?script=&lt;script&gt;test&lt;/script&gt;&amp;foo=test&lt;/script&gt;&amp;name=gcl&amp;" +
@@ -103,11 +103,11 @@ class XssFilterTest {
         scriptForCompare = new String[script.length];
         foos = new String[]{"test&lt;/script&gt;"};
         foosForCompare = new String[foos.length];
-        assertArrayEquals(names, req.get().getParameters("name").toArray(scriptForCompare));
-        assertNull(req.get().getParameters("null"));
-        assertArrayEquals(names, req.get().parameterMap().get("name").toArray(namesForCompare));
-        assertArrayEquals(script, req.get().parameterMap().get("script").toArray(scriptForCompare));
-        assertArrayEquals(foos, req.get().parameterMap().get("foo").toArray(foosForCompare));
+        assertArrayEquals(names, req.get().getParams("name").toArray(scriptForCompare));
+        assertNull(req.get().getParams("null"));
+        assertArrayEquals(names, req.get().paramsMap().get("name").toArray(namesForCompare));
+        assertArrayEquals(script, req.get().paramsMap().get("script").toArray(scriptForCompare));
+        assertArrayEquals(foos, req.get().paramsMap().get("foo").toArray(foosForCompare));
     }
 
     @Test
