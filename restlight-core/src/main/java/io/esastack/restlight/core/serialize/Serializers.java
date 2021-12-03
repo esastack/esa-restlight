@@ -18,7 +18,6 @@ package io.esastack.restlight.core.serialize;
 import esa.commons.Primitives;
 import io.esastack.commons.net.buffer.BufferUtil;
 import io.esastack.commons.net.http.MediaType;
-import io.esastack.commons.net.http.MediaTypeUtil;
 import io.esastack.httpserver.core.HttpOutputStream;
 import io.esastack.httpserver.core.HttpResponse;
 import io.esastack.restlight.core.resolver.HandledValue;
@@ -75,7 +74,7 @@ public final class Serializers {
 
     private static void setMediaType(HttpResponse response, MediaType mediaType) {
         if (mediaType == null || mediaType.isWildcardType() || mediaType.isWildcardSubtype()) {
-            response.setHeader(HttpHeaderNames.CONTENT_TYPE, MediaTypeUtil.APPLICATION_OCTET_STREAM_VALUE);
+            response.setHeader(HttpHeaderNames.CONTENT_TYPE, MediaType.APPLICATION_OCTET_STREAM_VALUE);
         } else {
             response.setHeader(HttpHeaderNames.CONTENT_TYPE, mediaType.value());
         }

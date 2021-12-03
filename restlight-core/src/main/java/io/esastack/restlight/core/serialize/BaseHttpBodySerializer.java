@@ -16,7 +16,6 @@
 package io.esastack.restlight.core.serialize;
 
 import io.esastack.commons.net.http.MediaType;
-import io.esastack.commons.net.http.MediaTypeUtil;
 import io.esastack.httpserver.core.HttpInputStream;
 import io.esastack.httpserver.core.HttpOutputStream;
 import io.esastack.restlight.core.resolver.HandledValue;
@@ -89,7 +88,7 @@ public abstract class BaseHttpBodySerializer implements HttpBodySerializer {
      */
     protected boolean supportsWrite(ResponseEntity entity) {
         MediaType mediaType = entity.mediaType();
-        return mediaType != null && MediaTypeUtil.APPLICATION_JSON.isCompatibleWith(mediaType);
+        return mediaType != null && MediaType.APPLICATION_JSON.isCompatibleWith(mediaType);
     }
 
     /**
@@ -100,7 +99,7 @@ public abstract class BaseHttpBodySerializer implements HttpBodySerializer {
      */
     protected boolean supportsRead(RequestEntity entity) {
         MediaType mediaType = entity.mediaType();
-        return mediaType != null && MediaTypeUtil.APPLICATION_JSON.isCompatibleWith(mediaType);
+        return mediaType != null && MediaType.APPLICATION_JSON.isCompatibleWith(mediaType);
     }
 
     /**
@@ -109,7 +108,7 @@ public abstract class BaseHttpBodySerializer implements HttpBodySerializer {
      * @param entity  response entity
      */
     protected void addContentType(ResponseEntity entity) {
-        entity.response().setHeader(HttpHeaderNames.CONTENT_TYPE, MediaTypeUtil.APPLICATION_JSON_UTF8.value());
+        entity.response().setHeader(HttpHeaderNames.CONTENT_TYPE, MediaType.APPLICATION_JSON_UTF8.value());
     }
 
     /**

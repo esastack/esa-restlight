@@ -19,11 +19,11 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import esa.commons.StringUtils;
-import io.esastack.commons.net.http.MediaTypeUtil;
+import io.esastack.commons.net.http.MediaType;
 import io.esastack.httpserver.core.HttpRequest;
 import io.esastack.httpserver.core.HttpResponse;
-import io.esastack.restlight.server.handler.FilterChain;
 import io.esastack.restlight.server.context.FilterContext;
+import io.esastack.restlight.server.handler.FilterChain;
 import io.esastack.restlight.server.spi.Filter;
 import io.esastack.restlight.server.util.ErrorDetail;
 import io.esastack.restlight.server.util.Futures;
@@ -104,7 +104,7 @@ public class IpWhiteListFilter implements Filter {
             }
         }
         if (!valid && !response.isCommitted()) {
-            response.setHeader(HttpHeaderNames.CONTENT_TYPE, MediaTypeUtil.TEXT_PLAIN.value());
+            response.setHeader(HttpHeaderNames.CONTENT_TYPE, MediaType.TEXT_PLAIN.value());
             response.sendResult(HttpResponseStatus.UNAUTHORIZED.code(),
                     ErrorDetail.buildErrorMsg(request.path(),
                             HttpResponseStatus.UNAUTHORIZED.reasonPhrase(),

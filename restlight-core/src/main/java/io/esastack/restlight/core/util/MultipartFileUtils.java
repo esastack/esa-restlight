@@ -16,7 +16,7 @@
 package io.esastack.restlight.core.util;
 
 import esa.commons.Checks;
-import io.esastack.commons.net.http.MediaTypeUtil;
+import io.esastack.commons.net.http.MediaType;
 import io.esastack.httpserver.core.HttpResponse;
 import io.netty.handler.codec.http.HttpHeaderNames;
 
@@ -56,7 +56,7 @@ public final class MultipartFileUtils {
         Checks.checkNotEmptyArg(fileName, "fileName");
 
         response.setHeader(HttpHeaderNames.CONTENT_TYPE.toString(),
-                MediaTypeUtil.MULTIPART_FORM_DATA.value() + ";charset=" + charset.name());
+                MediaType.MULTIPART_FORM_DATA.value() + ";charset=" + charset.name());
         response.setHeader(CONTENT_DISPOSITION, ATTACHMENT + "; fileName=" + URLEncoder.encode(fileName,
                 charset.name()));
 

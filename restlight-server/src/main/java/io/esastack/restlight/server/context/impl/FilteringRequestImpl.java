@@ -20,11 +20,9 @@ import esa.commons.StringUtils;
 import esa.commons.collection.LinkedMultiValueMap;
 import esa.commons.collection.MultiValueMap;
 import io.esastack.commons.net.buffer.Buffer;
-import io.esastack.commons.net.buffer.BufferUtil;
 import io.esastack.commons.net.http.HttpHeaderNames;
 import io.esastack.commons.net.http.HttpMethod;
 import io.esastack.commons.net.http.MediaType;
-import io.esastack.commons.net.http.MediaTypeUtil;
 import io.esastack.httpserver.core.HttpInputStream;
 import io.esastack.httpserver.core.HttpRequest;
 import io.esastack.httpserver.impl.HttpInputStreamImpl;
@@ -43,7 +41,7 @@ public class FilteringRequestImpl extends HttpRequestProxy implements FilteringR
     private HttpMethod method;
     private String strUri;
     private URI uri;
-    private Buffer bufferBody;
+    private Buffer body;
     private InputStream ins;
     private Map<String, List<String>> params;
 
@@ -102,22 +100,22 @@ public class FilteringRequestImpl extends HttpRequestProxy implements FilteringR
 
     @Override
     public void body(byte[] body) {
-        this.bufferBody = BufferUtil.buffer(body);
+        this.body = Buffer.defaultAlloc().buffer(body);
     }
 
     @Override
-    public Buffer bufferBody() {
-        if (bufferBody == null) {
-            return super.bufferBody();
+    public Buffer body() {
+        if (body == null) {
+            return super.body();
         } else {
-            return bufferBody;
+            return body;
         }
     }
 
     @Override
-    public void body(Buffer bufferBody) {
-        Checks.checkNotNull(bufferBody, "bufferBody");
-        this.bufferBody = bufferBody;
+    public void body(Buffer body) {
+        Checks.checkNotNull(body, "body");
+        this.body = body;
     }
 
     @Override
@@ -155,19 +153,19 @@ public class FilteringRequestImpl extends HttpRequestProxy implements FilteringR
     }
 
     private void addFormUriEncodedParams(MultiValueMap<String, String> params) {
-        if (HttpMethod.POST.equals(method()) && bufferBody().readableBytes() > 0) {
+        if (HttpMethod.POST.equals(method()) && body().readableBytes() > 0) {
             String contentType = headers().get(HttpHeaderNames.CONTENT_TYPE);
             if (contentType != null
-                    && contentType.length() >= MediaTypeUtil.APPLICATION_FORM_URLENCODED_VALUE.length()
-                    && contentType.charAt(0) == MediaTypeUtil.APPLICATION_FORM_URLENCODED_VALUE.charAt(0)) {
+                    && contentType.length() >= MediaType.APPLICATION_FORM_URLENCODED_VALUE.length()
+                    && contentType.charAt(0) == MediaType.APPLICATION_FORM_URLENCODED_VALUE.charAt(0)) {
                 MediaType mediaType = contentType();
 
-                if (mediaType != null && mediaType.isCompatibleWith(MediaTypeUtil.APPLICATION_FORM_URLENCODED)) {
+                if (mediaType != null && mediaType.isCompatibleWith(MediaType.APPLICATION_FORM_URLENCODED)) {
                     Charset charset = mediaType.charset();
                     if (charset == null) {
                         charset = StandardCharsets.UTF_8;
                     }
-                    String body = bufferBody().string(charset);
+                    String body = body().string(charset);
                     if (StringUtils.isEmpty(body)) {
                         return;
                     }

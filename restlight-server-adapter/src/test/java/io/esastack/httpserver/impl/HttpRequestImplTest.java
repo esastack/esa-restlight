@@ -23,7 +23,7 @@ import io.esastack.commons.net.http.HttpHeaderNames;
 import io.esastack.commons.net.http.HttpHeaders;
 import io.esastack.commons.net.http.HttpMethod;
 import io.esastack.commons.net.http.HttpVersion;
-import io.esastack.commons.net.http.MediaTypeUtil;
+import io.esastack.commons.net.http.MediaType;
 import io.esastack.commons.net.netty.http.Http1HeadersImpl;
 import io.esastack.httpserver.core.Aggregation;
 import io.esastack.httpserver.core.AttributesImpl;
@@ -97,8 +97,7 @@ class HttpRequestImplTest {
         assertEquals(HttpMethod.POST, req.method());
         assertEquals("POST", req.rawMethod());
 
-        assertSame(body, BufferUtil.unwrap(req.bufferBody()));
-        assertEquals("abc", new String(req.body(), StandardCharsets.UTF_8));
+        assertSame(body, BufferUtil.unwrap(req.body()));
         assertEquals(3L, req.contentLength());
 
         final HttpInputStream in = req.inputStream();
@@ -224,7 +223,7 @@ class HttpRequestImplTest {
         when(mock.rawMethod()).thenReturn(HttpMethod.POST.name());
         when(mock.method()).thenReturn(HttpMethod.POST);
         final HttpHeaders headers = new Http1HeadersImpl();
-        headers.set(HttpHeaderNames.CONTENT_TYPE, MediaTypeUtil.APPLICATION_FORM_URLENCODED_VALUE);
+        headers.set(HttpHeaderNames.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED_VALUE);
         when(mock.headers()).thenReturn(headers);
 
         final LinkedMultiValueMap<String, String> params = new LinkedMultiValueMap<>();

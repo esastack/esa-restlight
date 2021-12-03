@@ -87,13 +87,6 @@ public class MockHttpRequest implements HttpRequest {
     }
 
     @Override
-    public byte[] body() {
-        byte[] data = new byte[body.readableBytes()];
-        body.readBytes(data);
-        return data;
-    }
-
-    @Override
     public String path() {
         return path;
     }
@@ -109,7 +102,7 @@ public class MockHttpRequest implements HttpRequest {
     }
 
     @Override
-    public Buffer bufferBody() {
+    public Buffer body() {
         return body;
     }
 
@@ -166,13 +159,13 @@ public class MockHttpRequest implements HttpRequest {
     @Override
     public MediaType contentType() {
         String contentType = headers.get(HttpHeaderNames.CONTENT_TYPE);
-        return StringUtils.isEmpty(contentType) ? null : MediaTypeUtil.valueOf(contentType);
+        return StringUtils.isEmpty(contentType) ? null : MediaTypeUtil.parseMediaType(contentType);
     }
 
     @Override
     public List<MediaType> accepts() {
         List<MediaType> accepts = new LinkedList<>();
-        MediaTypeUtil.valuesOf(headers.get(HttpHeaderNames.ACCEPT), accepts);
+        MediaTypeUtil.parseMediaTypes(headers.get(HttpHeaderNames.ACCEPT), accepts);
         return accepts;
     }
 

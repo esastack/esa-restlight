@@ -77,17 +77,13 @@ class MockHttpRequestTest {
         final MockHttpRequest request = MockHttpRequest.aMockRequest()
                 .withUri("/")
                 .build();
-        assertEquals(0, request.bufferBody().readableBytes());
-        assertEquals(Unpooled.EMPTY_BUFFER, BufferUtil.unwrap(request.bufferBody()));
+        assertEquals(0, request.body().readableBytes());
+        assertEquals(Unpooled.EMPTY_BUFFER, BufferUtil.unwrap(request.body()));
 
         final MockHttpRequest request1 = MockHttpRequest.aMockRequest()
                 .withUri("/")
                 .withBody("Restlight is good!".getBytes()).build();
-        assertEquals("Restlight is good!".getBytes().length, request1.bufferBody().readableBytes());
-
-        byte[] result = new byte[18];
-        request1.bufferBody().getBytes(0, result);
-        assertArrayEquals(result, request1.body());
+        assertEquals("Restlight is good!".getBytes().length, request1.body().readableBytes());
     }
 
     @Test

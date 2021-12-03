@@ -126,14 +126,14 @@ abstract class AbstractSignatureInterceptor implements InternalInterceptor {
             // Note: If requestHeader contains
             String contentType = request.getHeader(HttpHeaderNames.CONTENT_TYPE);
             if (!StringUtils.isEmpty(contentType)) {
-                MediaType mediaType = MediaTypeUtil.valueOf(contentType);
-                if (MediaTypeUtil.APPLICATION_FORM_URLENCODED.isCompatibleWith(mediaType)) {
+                MediaType mediaType = MediaTypeUtil.parseMediaType(contentType);
+                if (MediaType.APPLICATION_FORM_URLENCODED.isCompatibleWith(mediaType)) {
                     return paramsData;
                 }
             }
         }
 
-        byte[] body = request.body();
+        byte[] body = request.body().getBytes();
         if (body != null && body.length > 0) {
             byte[] mergedData = new byte[paramsData.length + body.length];
             System.arraycopy(paramsData, 0, mergedData, 0, paramsData.length);

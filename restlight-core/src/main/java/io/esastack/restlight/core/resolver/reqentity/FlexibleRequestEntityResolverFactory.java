@@ -92,7 +92,7 @@ public abstract class FlexibleRequestEntityResolverFactory implements RequestEnt
         protected HandledValue<Object> readFrom0(String name, Param param, RequestEntity entity) throws Exception {
             MediaType contentType = entity.mediaType();
             //convert argument if content-type is text/plain or missing.
-            if (contentType == null || MediaTypeUtil.TEXT_PLAIN.isCompatibleWith(contentType)) {
+            if (contentType == null || MediaType.TEXT_PLAIN.isCompatibleWith(contentType)) {
                 //ignore empty body.
                 if (entity.inputStream().readBytes() == 0) {
                     return HandledValue.succeed(null);
@@ -114,7 +114,7 @@ public abstract class FlexibleRequestEntityResolverFactory implements RequestEnt
         protected MediaType getMediaType(HttpRequest request) {
             String contentTypeStr = request.getHeader(HttpHeaderNames.CONTENT_TYPE);
             return StringUtils.isEmpty(contentTypeStr) ? null :
-                    MediaTypeUtil.valueOf(contentTypeStr);
+                    MediaTypeUtil.parseMediaType(contentTypeStr);
         }
     }
 
@@ -134,7 +134,7 @@ public abstract class FlexibleRequestEntityResolverFactory implements RequestEnt
             // judge by param
             final String format = request.getParameter(paramName);
             if (Constants.NEGOTIATION_JSON_FORMAT.equals(format)) {
-                return MediaTypeUtil.APPLICATION_JSON;
+                return MediaType.APPLICATION_JSON;
             } else if (Constants.NEGOTIATION_PROTO_BUF_FORMAT.equals(format)) {
                 return ProtoBufHttpBodySerializer.PROTOBUF;
             } else {

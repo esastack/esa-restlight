@@ -169,7 +169,7 @@ abstract class AbstractMultipartParamResolver extends AbstractNameAndValueParamR
     protected io.netty.handler.codec.http.HttpRequest formattedReq(HttpRequest request) {
         return new DefaultFullHttpRequest(convertToNetty(request.httpVersion()),
                 HttpMethod.valueOf(request.method().name()),
-                request.uri(), (ByteBuf) BufferUtil.unwrap(request.bufferBody()),
+                request.uri(), (ByteBuf) BufferUtil.unwrap(request.body()),
                 convertToNetty(request.headers()), convertToNetty(request.trailers()));
     }
 

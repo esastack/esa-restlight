@@ -16,7 +16,7 @@
 package io.esastack.restlight.server.util;
 
 import esa.commons.StringUtils;
-import io.esastack.commons.net.http.MediaTypeUtil;
+import io.esastack.commons.net.http.MediaType;
 import io.esastack.httpserver.core.HttpRequest;
 import io.esastack.httpserver.core.HttpResponse;
 import io.netty.handler.codec.http.HttpHeaderNames;
@@ -100,7 +100,7 @@ public class ErrorDetail<T> {
                 msg,
                 status.reasonPhrase(),
                 status.code());
-        response.setHeader(HttpHeaderNames.CONTENT_TYPE, MediaTypeUtil.TEXT_PLAIN.value());
+        response.setHeader(HttpHeaderNames.CONTENT_TYPE, MediaType.TEXT_PLAIN.value());
         response.sendResult(status.code(), errorInfo);
     }
 }

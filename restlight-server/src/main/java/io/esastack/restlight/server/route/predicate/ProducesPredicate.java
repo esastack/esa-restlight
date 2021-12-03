@@ -37,7 +37,7 @@ public class ProducesPredicate implements RequestPredicate {
     private static final FastThreadLocal<List<MediaType>> ACCEPTABLE_MEDIA_TYPES
             = new FastThreadLocal<>();
     private static final List<MediaType> ALL =
-            Collections.singletonList(MediaTypeUtil.ALL);
+            Collections.singletonList(MediaType.ALL);
 
     private final Expression[] expressions;
     private final List<MediaType> producibleMediaTypes;
@@ -89,7 +89,7 @@ public class ProducesPredicate implements RequestPredicate {
                 if (acceptable.isCompatibleWith(producible)) {
                     mostSpecificMediaType = this.getMostSpecificMediaType(acceptable, producible);
                     //MediaType needs to be ignored
-                    if (!MediaTypeUtil.ALL.equals(mostSpecificMediaType)) {
+                    if (!MediaType.ALL.equals(mostSpecificMediaType)) {
                         compatibleMediaTypes.add(mostSpecificMediaType);
                     }
                 }
@@ -100,7 +100,7 @@ public class ProducesPredicate implements RequestPredicate {
     }
 
     private static List<MediaType> getAcceptedMediaTypes(HttpRequest request) {
-        List<MediaType> mediaTypes = MediaTypeUtil.valuesOf(request.getHeader(HttpHeaderNames.ACCEPT));
+        List<MediaType> mediaTypes = MediaTypeUtil.parseMediaTypes(request.getHeader(HttpHeaderNames.ACCEPT));
         return (mediaTypes.isEmpty())
                 ? ALL
                 : new LinkedList<>(mediaTypes);

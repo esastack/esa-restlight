@@ -115,7 +115,7 @@ public abstract class AbstractResponseEntityResolver implements ResponseEntityRe
             String accept = request.getHeader(HttpHeaderNames.ACCEPT);
             if (!StringUtils.isEmpty(accept)) {
                 List<MediaType> ret = InternalThreadLocalMap.get().arrayList();
-                MediaTypeUtil.valuesOf(accept, ret);
+                MediaTypeUtil.parseMediaTypes(accept, ret);
                 return ret;
             }
         } else {
