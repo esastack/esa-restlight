@@ -15,12 +15,16 @@
  */
 package io.esastack.restlight.test.autoconfig;
 
+import io.esastack.restlight.core.config.RestlightOptions;
+import io.esastack.restlight.core.config.RestlightOptionsConfigure;
 import io.esastack.restlight.server.bootstrap.DispatcherHandler;
 import io.esastack.restlight.server.bootstrap.RestlightServer;
+import io.esastack.restlight.starter.condition.ServerPortType;
 import io.esastack.restlight.test.bootstrap.MockMvcBuilders;
 import io.esastack.restlight.test.context.MockMvc;
 import org.springframework.boot.autoconfigure.AutoConfigureOrder;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -35,5 +39,15 @@ public class MockMvcAutoConfiguration {
     @Bean
     public MockMvc mockMvc(ApplicationContext context) {
         return MockMvcBuilders.contextSetup(context);
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public RestlightOptions options() {
+        final ServerPortType type = ServerPortType.get();
+        if (ServerPortType.MOCK == type) {
+            return RestlightOptionsConfigure.defaultOpts();
+        }
+        return null;
     }
 }
