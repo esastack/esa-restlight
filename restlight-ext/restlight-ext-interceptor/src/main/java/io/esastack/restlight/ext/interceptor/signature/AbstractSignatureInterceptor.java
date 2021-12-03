@@ -59,7 +59,7 @@ abstract class AbstractSignatureInterceptor implements InternalInterceptor {
     @Override
     public boolean preHandle(RequestContext context, Object handler) {
         final HttpRequest request = context.request();
-        boolean emptyParams = request.parameterMap() == null || request.parameterMap().isEmpty();
+        boolean emptyParams = request.paramsMap() == null || request.paramsMap().isEmpty();
         if (emptyParams && request.contentLength() == 0L) {
             return true;
         }
@@ -95,7 +95,7 @@ abstract class AbstractSignatureInterceptor implements InternalInterceptor {
     protected byte[] buildData(HttpRequest request) {
         // Sort all request parameters in ascending order by parameter name
         byte[] paramsData = new byte[0];
-        final Map<String, List<String>> params = request.parameterMap();
+        final Map<String, List<String>> params = request.paramsMap();
         if (params != null && params.size() > 0) {
             // Exclude signature params.
             List<ParamValues> paramValues =
@@ -173,7 +173,7 @@ abstract class AbstractSignatureInterceptor implements InternalInterceptor {
 
     private String getValue(HttpRequest request, String key) {
         String value;
-        return (value = request.getParameter(key)) != null ? value : request.getHeader(key);
+        return (value = request.getParam(key)) != null ? value : request.getHeader(key);
     }
 
     protected String appIdName() {

@@ -107,10 +107,10 @@ public class XssFilter implements Filter {
         }
 
         @Override
-        public Map<String, List<String>> parameterMap() {
+        public Map<String, List<String>> paramsMap() {
             // lazy load
             if (parameterMap == null) {
-                Map<String, List<String>> parameterMapOrigin = delegate.parameterMap();
+                Map<String, List<String>> parameterMapOrigin = delegate.paramsMap();
                 if (parameterMapOrigin.isEmpty()) {
                     parameterMap = Collections.emptyMap();
                 } else {
@@ -135,8 +135,8 @@ public class XssFilter implements Filter {
         // raw delegate method below
 
         @Override
-        public List<String> getParameters(String parName) {
-            return parameterMap().get(parName);
+        public List<String> getParams(String parName) {
+            return paramsMap().get(parName);
         }
 
         @Override
@@ -190,8 +190,8 @@ public class XssFilter implements Filter {
         }
 
         @Override
-        public String getParameter(String parName) {
-            final List<String> params = getParameters(parName);
+        public String getParam(String parName) {
+            final List<String> params = getParams(parName);
             if (params != null && params.size() > 0) {
                 return params.get(0);
             }

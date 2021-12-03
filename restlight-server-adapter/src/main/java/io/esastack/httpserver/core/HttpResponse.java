@@ -98,26 +98,6 @@ public interface HttpResponse {
     HttpHeaders headers();
 
     /**
-     * Obtains the trailer headers.
-     *
-     * @return  trailers.
-     */
-    HttpHeaders trailers();
-
-    /**
-     * Is current response has been write.
-     *
-     * @return isCommitted
-     */
-    boolean isCommitted();
-
-    /**
-     * Reset this response to origin status, which means the values you have changed will be reset such headers, status
-     * and so on.
-     */
-    void reset();
-
-    /**
      * Write the byte data.
      * <p>
      * Note: Once you have called this function you should use this method call to write your response data rather than
@@ -490,6 +470,26 @@ public interface HttpResponse {
      * @param value value
      */
     void addCookie(String name, String value);
+
+    /**
+     * Obtains the trailer headers.
+     *
+     * @return  trailers.
+     */
+    HttpHeaders trailers();
+
+    /**
+     * Is current response has been write.
+     *
+     * @return isCommitted
+     */
+    boolean isCommitted();
+
+    /**
+     * Reset this response to origin status, which means the values you have changed will be reset such headers, status
+     * and so on.
+     */
+    void reset();
 
     /**
      * Add a listener to this response, this listener will be called after current response has been write.

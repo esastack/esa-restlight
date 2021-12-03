@@ -68,8 +68,8 @@ class MockHttpRequestTest {
         assertEquals("/abc/def?a=1&b=2", request.uri());
         assertEquals("/abc/def", request.path());
         assertEquals("a=1&b=2", request.query());
-        assertEquals("1", request.getParameter("a"));
-        assertEquals("2", request.getParameter("b"));
+        assertEquals("1", request.getParam("a"));
+        assertEquals("2", request.getParam("b"));
     }
 
     @Test
@@ -218,13 +218,13 @@ class MockHttpRequestTest {
                 .withParameter("B", "Y")
                 .withParameter("B", "Z").build();
 
-        assertEquals(2, request.parameterMap().size());
+        assertEquals(2, request.paramsMap().size());
 
-        assertEquals(3, request.getParameters("A").size());
-        assertEquals("X", request.getParameter("A"));
+        assertEquals(3, request.getParams("A").size());
+        assertEquals("X", request.getParam("A"));
 
-        assertEquals(3, request.getParameters("B").size());
-        assertEquals("X", request.getParameter("B"));
+        assertEquals(3, request.getParams("B").size());
+        assertEquals("X", request.getParam("B"));
     }
 
     @Test

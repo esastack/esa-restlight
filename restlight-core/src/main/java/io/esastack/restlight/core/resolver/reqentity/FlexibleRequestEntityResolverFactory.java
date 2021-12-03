@@ -132,7 +132,7 @@ public abstract class FlexibleRequestEntityResolverFactory implements RequestEnt
         @Override
         protected MediaType getMediaType(HttpRequest request) {
             // judge by param
-            final String format = request.getParameter(paramName);
+            final String format = request.getParam(paramName);
             if (Constants.NEGOTIATION_JSON_FORMAT.equals(format)) {
                 return MediaType.APPLICATION_JSON;
             } else if (Constants.NEGOTIATION_PROTO_BUF_FORMAT.equals(format)) {

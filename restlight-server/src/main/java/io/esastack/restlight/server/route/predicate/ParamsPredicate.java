@@ -87,12 +87,12 @@ public class ParamsPredicate implements RequestPredicate {
 
         @Override
         protected boolean matchName(HttpRequest request) {
-            return request.getParameter(name) != null;
+            return request.getParam(name) != null;
         }
 
         @Override
         protected boolean matchValue(HttpRequest request) {
-            return Objects.equals(this.value, request.getParameter(this.name));
+            return Objects.equals(this.value, request.getParam(this.name));
         }
 
         @Override

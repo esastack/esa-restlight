@@ -67,7 +67,7 @@ class OperationHandler {
         if (body != null && HttpMethod.POST.equals(request.method())) {
             arguments.putAll(body);
         }
-        request.parameterMap().forEach((name, values) -> arguments.put(name, (values.size() != 1) ? values :
+        request.paramsMap().forEach((name, values) -> arguments.put(name, (values.size() != 1) ? values :
                 values.get(0)));
         Map<String, String> urlTemplateVariables = PathVariableUtils.getPathVariables(request);
         if (urlTemplateVariables != null && !urlTemplateVariables.isEmpty()) {

@@ -124,8 +124,8 @@ public class HttpRequestProxy implements HttpRequest {
     }
 
     @Override
-    public Map<String, List<String>> parameterMap() {
-        return underlying.parameterMap();
+    public Map<String, List<String>> paramsMap() {
+        return underlying.paramsMap();
     }
 
     @Override

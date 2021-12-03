@@ -286,7 +286,7 @@ public interface Mapping {
 
     /**
      * Return the parameter predicates of current {@link Mapping}, which will be used to determine the routing by {@link
-     * HttpRequest#getParameter(String)}
+     * HttpRequest#getParam(String)}
      *
      * @return http parameters, should not be {@code null}
      */
