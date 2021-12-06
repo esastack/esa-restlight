@@ -16,7 +16,6 @@
 package io.esastack.restlight.test.autoconfig;
 
 import io.esastack.restlight.core.config.RestlightOptions;
-import io.esastack.restlight.core.config.RestlightOptionsConfigure;
 import io.esastack.restlight.server.bootstrap.DispatcherHandler;
 import io.esastack.restlight.server.bootstrap.RestlightServer;
 import io.esastack.restlight.starter.condition.ServerPortType;
@@ -46,7 +45,7 @@ public class MockMvcAutoConfiguration {
     public RestlightOptions options() {
         final ServerPortType type = ServerPortType.get();
         if (ServerPortType.MOCK == type) {
-            return RestlightOptionsConfigure.defaultOpts();
+            return new AutoMockMvcOptions();
         }
         return null;
     }

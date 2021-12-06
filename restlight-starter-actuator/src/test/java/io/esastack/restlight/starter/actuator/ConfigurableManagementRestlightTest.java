@@ -17,8 +17,6 @@ package io.esastack.restlight.starter.actuator;
 
 import io.esastack.restlight.core.Deployments;
 import io.esastack.restlight.core.Restlight;
-import io.esastack.restlight.core.spi.Filter;
-import io.esastack.restlight.server.util.Futures;
 import io.esastack.restlight.starter.actuator.autoconfigurer.ManagementOptions;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelOption;
@@ -60,13 +58,6 @@ class ConfigurableManagementRestlightTest {
 
         conf.domainSocketAddress("/tmp");
         assertEquals(new DomainSocketAddress("/tmp"), conf.address);
-
-        final Filter f = (context, chain) -> Futures.completedFuture();
-        conf.addFilter(f);
-        verify(restlight).addFilter(same(f));
-
-        conf.addFilters(Collections.singleton(f));
-        verify(restlight).addFilters(argThat(c -> c != null && c.contains(f)));
 
         conf.daemon(false);
         verify(restlight).daemon(false);

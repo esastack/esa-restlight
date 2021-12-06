@@ -36,7 +36,6 @@ import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -52,7 +51,6 @@ public abstract class BaseRestlightServer<R extends BaseRestlightServer<R, D, O,
      */
     protected final O options;
     boolean daemon = true;
-    private final List<InternalFilter<FCTX>> filters = new LinkedList<>();
     private final Map<ChannelOption<?>, Object> channelOptions = new LinkedHashMap<>();
     private final Map<ChannelOption<?>, Object> childChannelOptions = new LinkedHashMap<>();
     @Beta
@@ -106,39 +104,9 @@ public abstract class BaseRestlightServer<R extends BaseRestlightServer<R, D, O,
     }
 
     /**
-     * Adds a {@link InternalFilter}.
-     *
-     * @param filter filter
-     *
-     * @return this
-     */
-    public R addFilter(InternalFilter<FCTX> filter) {
-        checkImmutable();
-        Checks.checkNotNull(filter, "filter");
-        this.filters.add(filter);
-        return self();
-    }
-
-    /**
-     * Adds {@link InternalFilter}s
-     *
-     * @param filters filters
-     *
-     * @return this
-     */
-    public R addFilters(Collection<? extends InternalFilter<FCTX>> filters) {
-        checkImmutable();
-        if (filters != null && !filters.isEmpty()) {
-            this.filters.addAll(filters);
-        }
-        return self();
-    }
-
-    /**
      * Makes server start on daemon threads.
      *
      * @param daemon daemon
-     *
      * @return this
      */
     public R daemon(boolean daemon) {
@@ -243,19 +211,18 @@ public abstract class BaseRestlightServer<R extends BaseRestlightServer<R, D, O,
 
     private RestlightServer buildServer() {
         RestlightHandler<CTX> handler = deployments().applyDeployments();
-        return doBuildServer(handler);
+        List<InternalFilter<FCTX>> fs = new LinkedList<>(deployments().filters());
+        OrderedComparator.sort(fs);
+        return doBuildServer(handler, fs);
     }
 
-    protected RestlightServer doBuildServer(RestlightHandler<CTX> handler) {
-        this.filters.addAll(deployments().filters());
-        List<InternalFilter<FCTX>> fs = Collections.unmodifiableList(filters);
-        OrderedComparator.sort(fs);
+    protected RestlightServer doBuildServer(RestlightHandler<CTX> handler, List<InternalFilter<FCTX>> fs) {
         return RestlightServerBootstrap.from(options,
                 handler,
                 deployments().requestContext(),
                 deployments().filterContext(),
                 fs,
-                deployments().exceptionHandler)
+                deployments().exceptionHandler())
                 .withAddress(address)
                 .withOptions(channelOptions)
                 .withChildOptions(childChannelOptions)

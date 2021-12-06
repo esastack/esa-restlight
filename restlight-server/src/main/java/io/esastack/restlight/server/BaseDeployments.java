@@ -100,7 +100,7 @@ public abstract class BaseDeployments<R extends BaseRestlightServer<R, D, O, CTX
     private final List<RouteRegistryAwareFactory> registryAwareness = new LinkedList<>();
     private final ServerDeployContext<O> deployContext;
 
-    ExceptionHandlerChain<CTX> exceptionHandler;
+    private ExceptionHandlerChain<CTX> exceptionHandler;
     private DispatcherHandler<CTX> dispatcher;
     private RestlightHandler<CTX> handler;
 
@@ -369,35 +369,44 @@ public abstract class BaseDeployments<R extends BaseRestlightServer<R, D, O, CTX
     /**
      * Obtains the {@link RequestContextFactory}.
      *
-     * @return  factory
+     * @return factory
      */
     protected abstract RequestContextFactory<CTX> requestContext();
 
     /**
      * Obtains the {@link FilterContextFactory}.
      *
-     * @return  factory
+     * @return factory
      */
     protected abstract FilterContextFactory<CTX, FCTX> filterContext();
 
     /**
+     * Obtains the {@link ExceptionHandlerChain}.
+     *
+     * @return exceptionHandler
+     */
+    protected ExceptionHandlerChain<CTX> exceptionHandler() {
+        return exceptionHandler;
+    }
+
+    /**
      * Obtains the {@link InternalExceptionHandler}s.
      *
-     * @return  handlers
+     * @return handlers
      */
     protected abstract List<InternalExceptionHandler<CTX>> exceptionHandlersBySpi();
 
     /**
      * Obtains the {@link InternalFilter}s.
      *
-     * @return  filters
+     * @return filters
      */
     protected abstract List<InternalFilter<FCTX>> filtersBySpi();
 
     /**
      * Obtains all {@link InternalFilter}s.
      *
-     * @return  filters
+     * @return filters
      */
     List<InternalFilter<FCTX>> filters() {
         this.filters.addAll(filtersBySpi());

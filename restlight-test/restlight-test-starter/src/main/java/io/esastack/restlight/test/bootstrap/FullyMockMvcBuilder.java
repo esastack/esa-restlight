@@ -16,6 +16,7 @@
 package io.esastack.restlight.test.bootstrap;
 
 import esa.commons.Checks;
+import io.esastack.restlight.server.bootstrap.RestlightServer;
 import io.esastack.restlight.test.context.DefaultMockMvc;
 import io.esastack.restlight.test.context.MockMvc;
 import org.springframework.context.ApplicationContext;
@@ -33,8 +34,11 @@ class FullyMockMvcBuilder implements MockMvcBuilder {
     public MockMvc build() {
         Restlight4SpringTest server = Restlight4SpringTest.forServer(ctx);
         server.start();
-
-        return new DefaultMockMvc(server.deployments().handler());
+        RestlightServer unWrap = server.unWrap();
+        if (unWrap instanceof FakeServer) {
+            return new DefaultMockMvc(((FakeServer) unWrap).handler);
+        }
+        throw new IllegalStateException("Required type of RestlightServer is FakeServer,But actually it,s " + server);
     }
 
 }
