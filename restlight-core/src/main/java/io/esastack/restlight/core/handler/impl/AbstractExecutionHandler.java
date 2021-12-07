@@ -146,7 +146,9 @@ abstract class AbstractExecutionHandler<H extends HandlerMethodAdapter> implemen
                 future = transfer.transferTo(context, returnValue);
             }
         } catch (Throwable throwable) {
-            logger.debug(getDetailedMessage("Error while invoking handler method."), throwable);
+            if (logger.isDebugEnabled()) {
+                logger.debug(getDetailedMessage("Error while invoking handler method."), throwable);
+            }
             // transfer error thrown by the controller to a CompletableFuture whatever this controller is an
             // asynchronous handler or not('cause error is not expected in an asynchronous implementation).
             future = Futures.completedExceptionally(throwable);
