@@ -19,13 +19,11 @@ import esa.commons.Checks;
 import esa.commons.StringUtils;
 import io.esastack.commons.net.http.HttpMethod;
 import io.esastack.commons.net.http.MediaType;
-import io.esastack.commons.net.http.MediaTypeUtil;
 import io.esastack.httpserver.core.HttpRequest;
 import io.esastack.httpserver.core.RequestContext;
 import io.esastack.restlight.core.interceptor.InternalInterceptor;
 import io.esastack.restlight.ext.interceptor.config.SignatureOptions;
 import io.esastack.restlight.server.bootstrap.WebServerException;
-import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.util.internal.InternalThreadLocalMap;
 
@@ -124,10 +122,9 @@ abstract class AbstractSignatureInterceptor implements InternalInterceptor {
 
         if (HttpMethod.POST.equals(request.method())) {
             // Note: If requestHeader contains
-            String contentType = request.getHeader(HttpHeaderNames.CONTENT_TYPE);
-            if (!StringUtils.isEmpty(contentType)) {
-                MediaType mediaType = MediaTypeUtil.parseMediaType(contentType);
-                if (MediaType.APPLICATION_FORM_URLENCODED.isCompatibleWith(mediaType)) {
+            MediaType contentType = request.contentType();
+            if (contentType != null) {
+                if (MediaType.APPLICATION_FORM_URLENCODED.isCompatibleWith(contentType)) {
                     return paramsData;
                 }
             }
@@ -173,7 +170,7 @@ abstract class AbstractSignatureInterceptor implements InternalInterceptor {
 
     private String getValue(HttpRequest request, String key) {
         String value;
-        return (value = request.getParam(key)) != null ? value : request.getHeader(key);
+        return (value = request.getParam(key)) != null ? value : request.headers().get(key);
     }
 
     protected String appIdName() {

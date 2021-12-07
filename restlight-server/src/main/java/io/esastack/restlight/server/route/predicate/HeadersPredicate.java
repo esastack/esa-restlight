@@ -99,12 +99,12 @@ public class HeadersPredicate implements RequestPredicate {
 
         @Override
         protected boolean matchName(HttpRequest request) {
-            return request.getHeader(name) != null;
+            return request.headers().get(name) != null;
         }
 
         @Override
         protected boolean matchValue(HttpRequest request) {
-            return Objects.equals(this.value, request.getHeader(this.name));
+            return Objects.equals(this.value, request.headers().get(this.name));
         }
 
         @Override

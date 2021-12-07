@@ -15,11 +15,11 @@
  */
 package io.esastack.restlight.ext.interceptor.starter.autoconfigurer;
 
+import io.esastack.restlight.core.util.Ordered;
 import io.esastack.restlight.ext.interceptor.signature.AbstractSignatureHandlerInterceptor;
 import io.esastack.restlight.ext.interceptor.signature.AbstractSignatureRouteInterceptor;
 import io.esastack.restlight.ext.interceptor.signature.SecretProvider;
 import io.esastack.restlight.ext.interceptor.starter.spi.SignValidationInterceptorFactory;
-import io.esastack.restlight.core.util.Ordered;
 import io.esastack.restlight.starter.ServerStarter;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.AutoConfigureOrder;

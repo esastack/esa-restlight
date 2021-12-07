@@ -15,12 +15,9 @@
  */
 package io.esastack.restlight.server.route.predicate;
 
-import esa.commons.StringUtils;
 import io.esastack.commons.net.http.MediaType;
-import io.esastack.commons.net.http.MediaTypeUtil;
 import io.esastack.httpserver.core.HttpRequest;
 import io.esastack.restlight.server.util.MappingUtils;
-import io.netty.handler.codec.http.HttpHeaderNames;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -90,10 +87,8 @@ public class ConsumesPredicate implements RequestPredicate {
 
         @Override
         protected boolean matchMediaType(HttpRequest request) {
-            String contentTypeString = request.getHeader(HttpHeaderNames.CONTENT_TYPE);
-            MediaType contentType = StringUtils.isEmpty(contentTypeString) ? MediaType.APPLICATION_OCTET_STREAM
-                    : MediaTypeUtil.parseMediaType(contentTypeString);
-            return getMediaType().includes(contentType);
+            MediaType contentType = request.contentType();
+            return getMediaType().includes(contentType == null ? MediaType.APPLICATION_OCTET_STREAM : contentType);
         }
 
         @Override

@@ -87,6 +87,6 @@ class IpWhiteListFilterTest {
         final HttpResponse response = MockHttpResponse.aMockResponse().build();
         filter.doFilter(new FilterContextImpl(new FilteringRequestImpl(request), response), chain);
         assertEquals(401, response.status());
-        assertEquals(MediaType.TEXT_PLAIN.value(), response.getHeader(HttpHeaderNames.CONTENT_TYPE));
+        assertEquals(MediaType.TEXT_PLAIN.value(), response.headers().get(HttpHeaderNames.CONTENT_TYPE));
     }
 }

@@ -61,7 +61,7 @@ public class SpringMvcExceptionHandlerFactory implements ExceptionHandlerFactory
 
             final HttpRequest request = context.request();
             final HttpResponse response = context.response();
-            response.setHeader(HttpHeaderNames.CONTENT_TYPE, MediaType.TEXT_PLAIN.value());
+            response.headers().set(HttpHeaderNames.CONTENT_TYPE, MediaType.TEXT_PLAIN.value());
             response.sendResult(status.code(), status.reasonPhrase().getBytes(StandardCharsets.UTF_8));
 
             logger.error("Error occurred when doing request(url={}, method={})",

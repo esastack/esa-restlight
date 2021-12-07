@@ -17,7 +17,6 @@ package io.esastack.restlight.test.mock;
 
 import esa.commons.Checks;
 import esa.commons.ExceptionUtils;
-import esa.commons.StringUtils;
 import esa.commons.http.MimeMappings;
 import esa.commons.io.IOUtils;
 import esa.commons.logging.Logger;
@@ -41,7 +40,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
 import java.util.function.Consumer;
@@ -68,82 +66,6 @@ public class MockHttpResponse implements HttpResponse {
 
     public Buffer getSentData() {
         return result;
-    }
-
-    @Override
-    public String getHeader(CharSequence name) {
-        return headers.get(name);
-    }
-
-    @Override
-    public void addHeader(CharSequence headerName, String value) {
-        if (StringUtils.isEmpty(headerName) || value == null || isCommitted()) {
-            return;
-        }
-        headers.add(headerName, value);
-    }
-
-    @Override
-    public void setHeader(CharSequence headerName, String value) {
-        if (StringUtils.isEmpty(headerName) || value == null || isCommitted()) {
-            return;
-        }
-        headers.set(headerName, value);
-    }
-
-    @Override
-    public void setHeaders(CharSequence headerName, List<String> values) {
-        if (StringUtils.isEmpty(headerName) || values == null || isCommitted()) {
-            return;
-        }
-        headers.set(headerName, values);
-    }
-
-    @Override
-    public void setIntHeader(CharSequence name, int value) {
-        if (StringUtils.isEmpty(name) || isCommitted()) {
-            return;
-        }
-        headers.setInt(name, value);
-    }
-
-    @Override
-    public void addIntHeader(CharSequence name, int value) {
-        if (StringUtils.isEmpty(name) || isCommitted()) {
-            return;
-        }
-        headers.addInt(name, value);
-    }
-
-    @Override
-    public void setShortHeader(CharSequence name, short value) {
-        if (StringUtils.isEmpty(name) || isCommitted()) {
-            return;
-        }
-        headers.setShort(name, value);
-    }
-
-    @Override
-    public void addShortHeader(CharSequence name, short value) {
-        if (StringUtils.isEmpty(name) || isCommitted()) {
-            return;
-        }
-        headers.addShort(name, value);
-    }
-
-    @Override
-    public Collection<String> headerNames() {
-        return headers.names();
-    }
-
-    @Override
-    public Collection<String> getHeaders(CharSequence name) {
-        return headers.getAll(name);
-    }
-
-    @Override
-    public boolean containsHeader(CharSequence name) {
-        return headers.contains(name);
     }
 
     @Override

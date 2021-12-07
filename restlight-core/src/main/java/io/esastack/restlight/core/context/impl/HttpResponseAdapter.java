@@ -24,8 +24,6 @@ import io.esastack.restlight.core.context.HttpResponse;
 
 import java.io.File;
 import java.io.OutputStream;
-import java.util.Collection;
-import java.util.List;
 import java.util.function.Consumer;
 
 public class HttpResponseAdapter implements HttpResponse {
@@ -113,61 +111,6 @@ public class HttpResponseAdapter implements HttpResponse {
     @Override
     public void sendFile(File file, long offset, long length) {
         underlying.sendFile(file, offset, length);
-    }
-
-    @Override
-    public String getHeader(CharSequence name) {
-        return underlying.getHeader(name);
-    }
-
-    @Override
-    public Collection<String> headerNames() {
-        return underlying.headerNames();
-    }
-
-    @Override
-    public Collection<String> getHeaders(CharSequence name) {
-        return underlying.getHeaders(name);
-    }
-
-    @Override
-    public boolean containsHeader(CharSequence name) {
-        return underlying.containsHeader(name);
-    }
-
-    @Override
-    public void addHeader(CharSequence name, String value) {
-        underlying.addHeader(name, value);
-    }
-
-    @Override
-    public void setHeader(CharSequence name, String value) {
-        underlying.setHeader(name, value);
-    }
-
-    @Override
-    public void setHeaders(CharSequence name, List<String> values) {
-        underlying.setHeaders(name, values);
-    }
-
-    @Override
-    public void setIntHeader(CharSequence name, int value) {
-        underlying.setIntHeader(name, value);
-    }
-
-    @Override
-    public void addIntHeader(CharSequence name, int value) {
-        underlying.addIntHeader(name, value);
-    }
-
-    @Override
-    public void setShortHeader(CharSequence name, short value) {
-        underlying.setShortHeader(name, value);
-    }
-
-    @Override
-    public void addShortHeader(CharSequence name, short value) {
-        underlying.addShortHeader(name, value);
     }
 
     @Override

@@ -100,7 +100,7 @@ public class ErrorDetail<T> {
                 msg,
                 status.reasonPhrase(),
                 status.code());
-        response.setHeader(HttpHeaderNames.CONTENT_TYPE, MediaType.TEXT_PLAIN.value());
+        response.headers().set(HttpHeaderNames.CONTENT_TYPE, MediaType.TEXT_PLAIN.value());
         response.sendResult(status.code(), errorInfo);
     }
 }

@@ -74,7 +74,7 @@ public class ResponseStatusEntityResolverFactory implements ResponseEntityResolv
         protected byte[] serialize(ResponseEntity entity,
                                    List<MediaType> mediaTypes,
                                    HttpRequest request) throws Exception {
-            entity.response().setHeader(HttpHeaderNames.CONTENT_TYPE, MediaType.TEXT_PLAIN.value());
+            entity.response().headers().set(HttpHeaderNames.CONTENT_TYPE, MediaType.TEXT_PLAIN.value());
             return getResponseStatus(Objects.requireNonNull(entity.handler().orElse(null))).reason()
                     .getBytes(StandardCharsets.UTF_8);
         }
