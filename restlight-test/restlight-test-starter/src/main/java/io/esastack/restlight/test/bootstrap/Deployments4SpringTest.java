@@ -19,7 +19,6 @@ import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.core.context.FilterContext;
 import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.server.bootstrap.ExceptionHandlerChain;
-import io.esastack.restlight.server.handler.RestlightHandler;
 import io.esastack.restlight.server.internal.FilterContextFactory;
 import io.esastack.restlight.spring.Deployments4Spring;
 import org.springframework.context.ApplicationContext;
@@ -39,9 +38,5 @@ class Deployments4SpringTest extends Deployments4Spring<Restlight4SpringTest, De
     @Override
     protected ExceptionHandlerChain<RequestContext> exceptionHandler() {
         return super.exceptionHandler();
-    }
-
-    RestlightHandler<RequestContext> handler() {
-        return getRestlightHandler();
     }
 }
