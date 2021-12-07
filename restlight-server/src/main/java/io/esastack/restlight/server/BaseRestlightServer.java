@@ -19,7 +19,6 @@ import esa.commons.Checks;
 import esa.commons.annotation.Beta;
 import io.esastack.httpserver.core.RequestContext;
 import io.esastack.restlight.core.util.Constants;
-import io.esastack.restlight.core.util.OrderedComparator;
 import io.esastack.restlight.server.bootstrap.AbstractDelegatedRestlightServer;
 import io.esastack.restlight.server.bootstrap.RestlightServer;
 import io.esastack.restlight.server.bootstrap.RestlightServerBootstrap;
@@ -212,7 +211,6 @@ public abstract class BaseRestlightServer<R extends BaseRestlightServer<R, D, O,
     private RestlightServer buildServer() {
         RestlightHandler<CTX> handler = deployments().applyDeployments();
         List<InternalFilter<FCTX>> fs = new LinkedList<>(deployments().filters());
-        OrderedComparator.sort(fs);
         return doBuildServer(handler, fs);
     }
 

@@ -18,6 +18,7 @@ package io.esastack.restlight.test.bootstrap;
 import esa.commons.Checks;
 import io.esastack.restlight.core.context.FilterContext;
 import io.esastack.restlight.core.context.RequestContext;
+import io.esastack.restlight.core.util.OrderedComparator;
 import io.esastack.restlight.server.bootstrap.ExceptionHandlerChain;
 import io.esastack.restlight.server.bootstrap.RestlightServer;
 import io.esastack.restlight.server.handler.FilteredHandler;
@@ -41,6 +42,7 @@ class FakeServer implements RestlightServer {
                ExceptionHandlerChain<RequestContext> exceptionHandler) {
         Checks.checkNotNull(handler);
         if (!fs.isEmpty()) {
+            OrderedComparator.sort(fs);
             handler = new FilteredHandler<>(handler,
                     fs,
                     filterContext,
