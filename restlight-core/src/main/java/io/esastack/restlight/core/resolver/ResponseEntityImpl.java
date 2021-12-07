@@ -26,7 +26,7 @@ public class ResponseEntityImpl extends HttpEntityImpl implements ResponseEntity
     private final HttpResponse response;
 
     public ResponseEntityImpl(HandlerMethod handler, HttpResponse response) {
-        super(handler, parseMediaType(response.getHeader(HttpHeaderNames.CONTENT_TYPE)));
+        super(handler, parseMediaType(response.headers().get(HttpHeaderNames.CONTENT_TYPE)));
         Checks.checkNotNull(response, "response");
         this.response = response;
         this.type = handler == null ? ClassUtils.getUserType(response.entity()) : handler.method().getReturnType();

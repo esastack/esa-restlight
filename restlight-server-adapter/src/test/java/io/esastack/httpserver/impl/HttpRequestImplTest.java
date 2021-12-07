@@ -31,7 +31,6 @@ import io.esastack.httpserver.core.HttpInputStream;
 import io.esastack.httpserver.core.Request;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
-import io.netty.util.AsciiString;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -326,31 +325,6 @@ class HttpRequestImplTest {
     private static void verifyHeaders(HttpRequestImpl req) {
         assertEquals("1", req.headers().get("a"));
         assertEquals("2", req.headers().get("b"));
-        assertTrue(req.containsHeader("a"));
-        assertTrue(req.containsHeader("b"));
-        assertTrue(req.containsHeader(AsciiString.of("a")));
-        assertTrue(req.containsHeader(AsciiString.of("b")));
-        assertEquals("1", req.getHeader("a"));
-        assertEquals("2", req.getHeader("b"));
-        assertEquals("1", req.getHeader(AsciiString.of("a")));
-        assertEquals("2", req.getHeader(AsciiString.of("b")));
-        assertEquals(1, req.getIntHeader("a"));
-        assertEquals(2, req.getIntHeader("b"));
-        assertEquals(1, req.getIntHeader(AsciiString.of("a")));
-        assertEquals(2, req.getIntHeader(AsciiString.of("b")));
-        assertEquals((short) 1, req.getShortHeader("a"));
-        assertEquals((short) 2, req.getShortHeader("b"));
-        assertEquals((short) 1, req.getShortHeader(AsciiString.of("a")));
-        assertEquals((short) 2, req.getShortHeader(AsciiString.of("b")));
-
-        req.headers().set("x", "y");
-        req.headers().set((CharSequence) "y", "z");
-        req.headers().set("m", "n");
-        req.headers().set((CharSequence) "m0", "n");
-        assertEquals("y", req.getHeader("x"));
-        assertEquals("z", req.getHeader("y"));
-        assertEquals("n", req.getHeader("m"));
-        assertEquals("n", req.getHeader("m0"));
     }
 
 }

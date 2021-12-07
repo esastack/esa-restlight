@@ -74,9 +74,9 @@ public final class Serializers {
 
     private static void setMediaType(HttpResponse response, MediaType mediaType) {
         if (mediaType == null || mediaType.isWildcardType() || mediaType.isWildcardSubtype()) {
-            response.setHeader(HttpHeaderNames.CONTENT_TYPE, MediaType.APPLICATION_OCTET_STREAM_VALUE);
+            response.headers().set(HttpHeaderNames.CONTENT_TYPE, MediaType.APPLICATION_OCTET_STREAM_VALUE);
         } else {
-            response.setHeader(HttpHeaderNames.CONTENT_TYPE, mediaType.value());
+            response.headers().set(HttpHeaderNames.CONTENT_TYPE, mediaType.value());
         }
     }
 

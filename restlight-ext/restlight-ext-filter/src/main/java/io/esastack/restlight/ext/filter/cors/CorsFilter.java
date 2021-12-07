@@ -20,8 +20,8 @@ import io.esastack.commons.net.http.HttpHeaderNames;
 import io.esastack.commons.net.http.HttpMethod;
 import io.esastack.httpserver.core.HttpRequest;
 import io.esastack.httpserver.core.HttpResponse;
-import io.esastack.restlight.server.handler.FilterChain;
 import io.esastack.restlight.server.context.FilterContext;
+import io.esastack.restlight.server.handler.FilterChain;
 import io.esastack.restlight.server.spi.Filter;
 import io.esastack.restlight.server.util.Futures;
 import io.netty.handler.codec.http.HttpResponseStatus;
@@ -43,7 +43,7 @@ public class CorsFilter implements Filter {
     public CompletableFuture<Void> doFilter(FilterContext context, FilterChain<FilterContext> chain) {
         final HttpRequest request = context.request();
         final HttpResponse response = context.response();
-        final String origin = request.getHeader(HttpHeaderNames.ORIGIN);
+        final String origin = request.headers().get(HttpHeaderNames.ORIGIN);
         final CachedOpt opt = forOrigin(origin);
         if (isPreflightRequest(request, origin)) {
             String set = setOrigin(response, origin, opt);
@@ -70,7 +70,7 @@ public class CorsFilter implements Filter {
     }
 
     private static void setOrigin(HttpResponse response, String origin) {
-        response.setHeader(HttpHeaderNames.ACCESS_CONTROL_ALLOW_ORIGIN, origin);
+        response.headers().set(HttpHeaderNames.ACCESS_CONTROL_ALLOW_ORIGIN, origin);
     }
 
     private static String setOrigin(HttpResponse response, String origin, CachedOpt c) {
@@ -97,35 +97,35 @@ public class CorsFilter implements Filter {
 
     private static void setExposeHeaders(HttpResponse response, CachedOpt opt) {
         if (opt.exposeHeadersStr != null) {
-            response.setHeader(HttpHeaderNames.ACCESS_CONTROL_EXPOSE_HEADERS, opt.exposeHeadersStr);
+            response.headers().set(HttpHeaderNames.ACCESS_CONTROL_EXPOSE_HEADERS, opt.exposeHeadersStr);
         }
     }
 
     private static void setAllowHeaders(HttpResponse response, CachedOpt opt) {
         if (opt.allowHeadersStr != null) {
-            response.setHeader(HttpHeaderNames.ACCESS_CONTROL_ALLOW_HEADERS, opt.allowHeadersStr);
+            response.headers().set(HttpHeaderNames.ACCESS_CONTROL_ALLOW_HEADERS, opt.allowHeadersStr);
         }
     }
 
     private static void setAllowMethods(HttpResponse response, CachedOpt opt) {
-        response.setHeader(HttpHeaderNames.ACCESS_CONTROL_ALLOW_METHODS, opt.allowMethodsStr);
+        response.headers().set(HttpHeaderNames.ACCESS_CONTROL_ALLOW_METHODS, opt.allowMethodsStr);
     }
 
     private static void setAllowCredentials(HttpResponse response, CachedOpt opt, String origin) {
         if (opt.theOpt.isAllowCredentials()
                 && !origin.equals(CorsOptions.ANY_ORIGIN)) {
-            response.setHeader(HttpHeaderNames.ACCESS_CONTROL_ALLOW_CREDENTIALS, "true");
+            response.headers().set(HttpHeaderNames.ACCESS_CONTROL_ALLOW_CREDENTIALS, "true");
         }
     }
 
     private static void setMaxAge(HttpResponse response, CachedOpt opt) {
         if (opt.maxAgeStr != null) {
-            response.setHeader(HttpHeaderNames.ACCESS_CONTROL_MAX_AGE, opt.maxAgeStr);
+            response.headers().set(HttpHeaderNames.ACCESS_CONTROL_MAX_AGE, opt.maxAgeStr);
         }
     }
 
     private static void setVaryHeader(HttpResponse response) {
-        response.setHeader(HttpHeaderNames.VARY, HttpHeaderNames.ORIGIN);
+        response.headers().set(HttpHeaderNames.VARY, HttpHeaderNames.ORIGIN);
     }
 
     private CachedOpt forOrigin(String origin) {

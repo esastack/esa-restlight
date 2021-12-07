@@ -43,7 +43,7 @@ public class RouteFailureExceptionHandler implements ExceptionHandler {
         if (th instanceof RouteFailureException) {
             HttpResponse response = context.response();
             HttpResponseStatus status = toStatus(((RouteFailureException) th).getFailureType());
-            response.setHeader(HttpHeaderNames.CONTENT_TYPE, MediaType.TEXT_PLAIN.value());
+            response.headers().set(HttpHeaderNames.CONTENT_TYPE, MediaType.TEXT_PLAIN.value());
             response.sendResult(status.code(),
                     ErrorDetail.buildErrorMsg(context.request().path(), StringUtils.empty(),
                             status.reasonPhrase(), status.code()));

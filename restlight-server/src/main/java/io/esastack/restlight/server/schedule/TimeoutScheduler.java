@@ -149,7 +149,7 @@ class TimeoutScheduler implements Scheduler {
                     HttpResponseStatus.INTERNAL_SERVER_ERROR.reasonPhrase(),
                     HttpResponseStatus.INTERNAL_SERVER_ERROR.code());
 
-            delegate.response().setHeader(HttpHeaderNames.CONTENT_TYPE, MediaType.TEXT_PLAIN.value());
+            delegate.response().headers().set(HttpHeaderNames.CONTENT_TYPE, MediaType.TEXT_PLAIN.value());
             delegate.response().sendResult(HttpResponseStatus.INTERNAL_SERVER_ERROR.code(), errorInfo);
             PromiseUtils.setSuccess(delegate.promise());
         }

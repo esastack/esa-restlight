@@ -108,7 +108,7 @@ public abstract class BaseHttpBodySerializer implements HttpBodySerializer {
      * @param entity  response entity
      */
     protected void addContentType(ResponseEntity entity) {
-        entity.response().setHeader(HttpHeaderNames.CONTENT_TYPE, MediaType.APPLICATION_JSON_UTF8.value());
+        entity.response().headers().set(HttpHeaderNames.CONTENT_TYPE, MediaType.APPLICATION_JSON_UTF8.value());
     }
 
     /**

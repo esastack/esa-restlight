@@ -112,7 +112,7 @@ public abstract class AbstractResponseEntityResolver implements ResponseEntityRe
         List<MediaType> compatibleTypes =
                 request.getUncheckedAttribute(ProducesPredicate.COMPATIBLE_MEDIA_TYPES);
         if (compatibleTypes == null) {
-            String accept = request.getHeader(HttpHeaderNames.ACCEPT);
+            String accept = request.headers().get(HttpHeaderNames.ACCEPT);
             if (!StringUtils.isEmpty(accept)) {
                 List<MediaType> ret = InternalThreadLocalMap.get().arrayList();
                 MediaTypeUtil.parseMediaTypes(accept, ret);

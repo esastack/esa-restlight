@@ -30,8 +30,6 @@ import io.netty.buffer.Unpooled;
 import io.netty.util.internal.MathUtil;
 
 import java.io.File;
-import java.util.Collection;
-import java.util.List;
 import java.util.function.Consumer;
 
 /**
@@ -161,61 +159,6 @@ public class HttResponseImpl implements HttpResponse {
     public void sendRedirect(String newUri) {
         checkOutputStream();
         res.sendRedirect(newUri);
-    }
-
-    @Override
-    public String getHeader(CharSequence name) {
-        return res.headers().get(name);
-    }
-
-    @Override
-    public Collection<String> headerNames() {
-        return res.headers().names();
-    }
-
-    @Override
-    public Collection<String> getHeaders(CharSequence name) {
-        return res.headers().getAll(name);
-    }
-
-    @Override
-    public boolean containsHeader(CharSequence name) {
-        return res.headers().contains(name);
-    }
-
-    @Override
-    public void addHeader(CharSequence name, String value) {
-        res.headers().add(name, value);
-    }
-
-    @Override
-    public void setHeader(CharSequence name, String value) {
-        res.headers().set(name, value);
-    }
-
-    @Override
-    public void setHeaders(CharSequence name, List<String> values) {
-        res.headers().set(name, values);
-    }
-
-    @Override
-    public void setIntHeader(CharSequence name, int value) {
-        res.headers().setInt(name, value);
-    }
-
-    @Override
-    public void addIntHeader(CharSequence name, int value) {
-        res.headers().addInt(name, value);
-    }
-
-    @Override
-    public void setShortHeader(CharSequence name, short value) {
-        res.headers().setShort(name, value);
-    }
-
-    @Override
-    public void addShortHeader(CharSequence name, short value) {
-        res.headers().addShort(name, value);
     }
 
     @Override

@@ -68,7 +68,7 @@ public class RequestImpl implements Request {
     public Variant selectVariant(List<Variant> variants) {
         Checks.checkNotEmptyArg(variants, "variants");
         varyHeader = createVaryHeader(variants);
-        response.addHeader(VARY, varyHeader);
+        response.headers().add(VARY, varyHeader);
         return VariantMatcher.INSTANCE.match(request, variants);
     }
 
@@ -101,14 +101,14 @@ public class RequestImpl implements Request {
         Checks.checkArg(lastModified != null, "lastModified");
 
         Response.ResponseBuilder builder = null;
-        String ifModifiedSince = request.getHeader(IF_MODIFIED_SINCE);
-        if (ifModifiedSince != null && !request.containsHeader(IF_NONE_MATCH)) {
+        String ifModifiedSince = request.headers().get(IF_MODIFIED_SINCE);
+        if (ifModifiedSince != null && !request.headers().contains(IF_NONE_MATCH)) {
             builder = ifModifiedSince(ifModifiedSince, lastModified);
         }
 
         if (builder == null) {
-            String ifUnmodifiedSince = request.getHeader(IF_UNMODIFIED_SINCE);
-            if (ifUnmodifiedSince != null && !request.containsHeader(IF_MATCH)) {
+            String ifUnmodifiedSince = request.headers().get(IF_UNMODIFIED_SINCE);
+            if (ifUnmodifiedSince != null && !request.headers().contains(IF_MATCH)) {
                 builder = ifUnmodifiedSince(ifUnmodifiedSince, lastModified);
             }
         }

@@ -69,9 +69,9 @@ public class ProtoBufHttpBodySerializer extends BaseHttpBodySerializer {
         HttpResponse response = entity.response();
         if (entityValue instanceof Message) {
             Message message = (Message) entityValue;
-            response.setHeader(HttpHeaderNames.CONTENT_TYPE, PROTOBUF.value());
-            response.setHeader(X_PROTOBUF_SCHEMA_HEADER, message.getDescriptorForType().getFile().getName());
-            response.setHeader(X_PROTOBUF_MESSAGE_HEADER, message.getDescriptorForType().getFullName());
+            response.headers().set(HttpHeaderNames.CONTENT_TYPE, PROTOBUF.value());
+            response.headers().set(X_PROTOBUF_SCHEMA_HEADER, message.getDescriptorForType().getFile().getName());
+            response.headers().set(X_PROTOBUF_MESSAGE_HEADER, message.getDescriptorForType().getFullName());
         }
     }
 

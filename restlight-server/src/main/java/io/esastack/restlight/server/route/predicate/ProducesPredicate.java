@@ -19,7 +19,6 @@ import io.esastack.commons.net.http.MediaType;
 import io.esastack.commons.net.http.MediaTypeUtil;
 import io.esastack.httpserver.core.HttpRequest;
 import io.esastack.restlight.server.util.MappingUtils;
-import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.util.concurrent.FastThreadLocal;
 
 import java.util.ArrayList;
@@ -100,7 +99,7 @@ public class ProducesPredicate implements RequestPredicate {
     }
 
     private static List<MediaType> getAcceptedMediaTypes(HttpRequest request) {
-        List<MediaType> mediaTypes = MediaTypeUtil.parseMediaTypes(request.getHeader(HttpHeaderNames.ACCEPT));
+        List<MediaType> mediaTypes = request.accepts();
         return (mediaTypes.isEmpty())
                 ? ALL
                 : new LinkedList<>(mediaTypes);

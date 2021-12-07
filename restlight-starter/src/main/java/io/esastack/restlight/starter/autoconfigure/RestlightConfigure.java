@@ -15,10 +15,10 @@
  */
 package io.esastack.restlight.starter.autoconfigure;
 
-import io.esastack.restlight.starter.ConfigurableRestlight;
 import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.core.util.Ordered;
 import io.esastack.restlight.spring.Restlight4Spring;
+import io.esastack.restlight.starter.ConfigurableRestlight;
 
 /**
  * RestlightConfigure allows user to modify the {@link RestlightOptions} or change the options in {@link
