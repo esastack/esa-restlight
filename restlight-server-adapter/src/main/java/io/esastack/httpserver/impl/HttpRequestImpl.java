@@ -46,7 +46,6 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.LinkedHashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -137,9 +136,7 @@ public class HttpRequestImpl implements io.esastack.httpserver.core.HttpRequest 
 
     @Override
     public List<MediaType> accepts() {
-        final List<MediaType> accepts = new LinkedList<>();
-        MediaTypeUtil.parseMediaTypes(headers.get(HttpHeaderNames.ACCEPT), accepts);
-        return accepts;
+        return MediaTypeUtil.parseMediaTypes(headers.get(HttpHeaderNames.ACCEPT));
     }
 
     @Override

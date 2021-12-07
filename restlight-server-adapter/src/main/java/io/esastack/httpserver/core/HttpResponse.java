@@ -23,8 +23,6 @@ import io.esastack.commons.net.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpResponseStatus;
 
 import java.io.File;
-import java.util.Collection;
-import java.util.List;
 import java.util.function.Consumer;
 
 /**
@@ -252,7 +250,7 @@ public interface HttpResponse {
      */
     default void sendRedirect(String newUri) {
         Checks.checkNotEmptyArg(newUri);
-        setHeader(HttpHeaderNames.LOCATION, newUri);
+        headers().set(HttpHeaderNames.LOCATION, newUri);
         sendResult(HttpResponseStatus.FOUND.code());
     }
 
@@ -280,181 +278,6 @@ public interface HttpResponse {
      * @param length length.
      */
     void sendFile(File file, long offset, long length);
-
-    /**
-     * Return the value for the specified header, or {@code null} if this header has not been set. If more than one
-     * value was added for this name, only the first is returned; use {@link #getHeaders(String)} to retrieve all of
-     * them.
-     *
-     * @param name healder name
-     * @return value
-     */
-    default String getHeader(String name) {
-        return getHeader((CharSequence) name);
-    }
-
-    /**
-     * Return the value for the specified header, or {@code null} if this header has not been set. If more than one
-     * value was added for this name, only the first is returned; use {@link #getHeaders(String)} to retrieve all of
-     * them.
-     *
-     * @param name healder name
-     * @return value
-     */
-    String getHeader(CharSequence name);
-
-    /**
-     * Get the header names set for this HTTP response.
-     *
-     * @return names
-     */
-    Collection<String> headerNames();
-
-    /**
-     * Return a Collection of all the header values associated with the specified header name.
-     *
-     * @param name header name
-     * @return value
-     */
-    Collection<String> getHeaders(CharSequence name);
-
-
-    /**
-     * @return value
-     * @see #getHeaders(CharSequence)
-     */
-    default Collection<String> getHeaders(String name) {
-        return getHeaders((CharSequence) name);
-    }
-
-    /**
-     * Returns a boolean indicating whether the named response header has already been set.
-     *
-     * @param name name
-     * @return is contains
-     */
-    boolean containsHeader(CharSequence name);
-
-    /**
-     * @see #containsHeader(CharSequence)
-     */
-    default boolean containsHeader(String name) {
-        return containsHeader((CharSequence) name);
-    }
-
-    /**
-     * Adds a response header with the given name and value. This method allows response headers to have multiple
-     * values.
-     *
-     * @param name  header name
-     * @param value value
-     */
-    void addHeader(CharSequence name, String value);
-
-    /**
-     * @see #addHeader(CharSequence, String)
-     */
-    default void addHeader(String name, String value) {
-        addHeader((CharSequence) name, value);
-    }
-
-    /**
-     * Sets a response header with the given name and value. If the header had already been set, the new value
-     * overwrites the previous one.
-     *
-     * @param name  name
-     * @param value value
-     */
-    void setHeader(CharSequence name, String value);
-
-    /**
-     * @see #setHeader(CharSequence, String)
-     */
-    default void setHeader(String name, String value) {
-        setHeader((CharSequence) name, value);
-    }
-
-    /**
-     * Sets a response headers with the given name and value.
-     *
-     * @param name   name
-     * @param values values
-     */
-    void setHeaders(CharSequence name, List<String> values);
-
-    /**
-     * Sets a response headers with the given name and value.
-     *
-     * @param name   name
-     * @param values values
-     */
-    default void setHeaders(String name, List<String> values) {
-        setHeaders((CharSequence) name, values);
-    }
-
-    /**
-     * Sets a response header with the given name and integer value. If the header had already been set, the new value
-     * overwrites the previous one.
-     *
-     * @param name  name
-     * @param value value
-     */
-    void setIntHeader(CharSequence name, int value);
-
-    /**
-     * @see #setIntHeader(CharSequence, int)
-     */
-    default void setIntHeader(String name, int value) {
-        setIntHeader((CharSequence) name, value);
-    }
-
-    /**
-     * Adds a response header with the given name and integer value. This method allows response headers to have
-     * multiple values.
-     *
-     * @param name  name
-     * @param value value
-     */
-    void addIntHeader(CharSequence name, int value);
-
-    /**
-     * @see #addIntHeader(CharSequence, int)
-     */
-    default void addIntHeader(String name, int value) {
-        addIntHeader((CharSequence) name, value);
-    }
-
-    /**
-     * Sets a response header with the given name and short value. If the header had already been set, the new value
-     * overwrites the previous one.
-     *
-     * @param name  name
-     * @param value value
-     */
-    void setShortHeader(CharSequence name, short value);
-
-    /**
-     * @see #setShortHeader(CharSequence, short)
-     */
-    default void setShortHeader(String name, short value) {
-        setShortHeader((CharSequence) name, value);
-    }
-
-    /**
-     * Adds a response header with the given name and short value. This method allows response headers to have multiple
-     * values.
-     *
-     * @param name  name
-     * @param value value
-     */
-    void addShortHeader(CharSequence name, short value);
-
-    /**
-     * @see #addShortHeader(CharSequence, short)
-     */
-    default void addShortHeader(String name, short value) {
-        addShortHeader((CharSequence) name, value);
-    }
 
     /**
      * Adds the specified cookie to the response. This method can be called multiple times to set more than one cookie.

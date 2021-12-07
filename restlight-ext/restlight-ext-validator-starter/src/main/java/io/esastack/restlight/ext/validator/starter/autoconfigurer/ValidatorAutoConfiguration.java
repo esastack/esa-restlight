@@ -16,8 +16,8 @@
 package io.esastack.restlight.ext.validator.starter.autoconfigurer;
 
 import esa.commons.StringUtils;
-import io.esastack.restlight.ext.validator.core.ValidationOptions;
 import io.esastack.restlight.core.util.Ordered;
+import io.esastack.restlight.ext.validator.core.ValidationOptions;
 import io.esastack.restlight.spring.util.DeployContextConfigure;
 import org.springframework.boot.autoconfigure.AutoConfigureOrder;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;

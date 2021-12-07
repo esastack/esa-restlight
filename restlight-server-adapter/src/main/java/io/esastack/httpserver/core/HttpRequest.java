@@ -129,79 +129,6 @@ public interface HttpRequest extends Attributes {
     HttpHeaders headers();
 
     /**
-     * Returns a boolean indicating whether the named response header has already been set.
-     *
-     * @param name name
-     * @return is contains
-     */
-    default boolean containsHeader(CharSequence name) {
-        return headers().contains(name);
-    }
-
-    /**
-     * @see #containsHeader(CharSequence)
-     */
-    default boolean containsHeader(String name) {
-        return containsHeader((CharSequence) name);
-    }
-
-    /**
-     * Returns the value of a header with the specified name. If there are more than one values for the specified name,
-     * the first value is returned.
-     *
-     * @param name The name of the header to search
-     * @return The first header value or {@code null} if there is no such header
-     */
-    default String getHeader(CharSequence name) {
-        return headers().get(name);
-    }
-
-    /**
-     * @see #getHeader(CharSequence)
-     */
-    default String getHeader(String name) {
-        return getHeader((CharSequence) name);
-    }
-
-    /**
-     * Returns the integer value of a header with the specified name. If there are more than one values for the
-     * specified name, the first value is returned.
-     *
-     * @param name the name of the header to search
-     * @return the first header value if the header is found and its value is an integer. {@code null} if there's no
-     * such header or its value is not an integer.
-     */
-    default Integer getIntHeader(CharSequence name) {
-        return headers().getInt(name);
-    }
-
-    /**
-     * @see #getIntHeader(CharSequence)
-     */
-    default Integer getIntHeader(String name) {
-        return getIntHeader((CharSequence) name);
-    }
-
-    /**
-     * Returns the integer value of a header with the specified name. If there are more than one values for the
-     * specified name, the first value is returned.
-     *
-     * @param name the name of the header to search
-     * @return the first header value if the header is found and its value is an integer. {@code null} if there's no
-     * such header or its value is not an integer.
-     */
-    default Short getShortHeader(CharSequence name) {
-        return headers().getShort(name);
-    }
-
-    /**
-     * @see #getShortHeader(CharSequence)
-     */
-    default Short getShortHeader(String name) {
-        return getShortHeader((CharSequence) name);
-    }
-
-    /**
      * Get header of "content-type".
      *
      * @return content-type
@@ -245,7 +172,7 @@ public interface HttpRequest extends Attributes {
      * @return len
      */
     default long contentLength() {
-        String strContentLength = getHeader(HttpHeaderNames.CONTENT_LENGTH);
+        String strContentLength = headers().get(HttpHeaderNames.CONTENT_LENGTH);
         if (StringUtils.isNotEmpty(strContentLength)) {
             try {
                 return Long.parseLong(strContentLength);

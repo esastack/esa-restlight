@@ -28,7 +28,7 @@ class TTFBTimeoutScheduler extends TimeoutScheduler {
 
     @Override
     long getStartTime(RequestTask task) {
-        String startTimeStr = task.request().getHeader(Constants.TTFB);
+        String startTimeStr = task.request().headers().get(Constants.TTFB);
         if (StringUtils.isNotEmpty(startTimeStr)) {
             try {
                 return Long.parseLong(startTimeStr);

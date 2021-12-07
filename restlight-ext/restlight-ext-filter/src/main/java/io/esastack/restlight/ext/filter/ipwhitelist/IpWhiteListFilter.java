@@ -104,7 +104,7 @@ public class IpWhiteListFilter implements Filter {
             }
         }
         if (!valid && !response.isCommitted()) {
-            response.setHeader(HttpHeaderNames.CONTENT_TYPE, MediaType.TEXT_PLAIN.value());
+            response.headers().set(HttpHeaderNames.CONTENT_TYPE, MediaType.TEXT_PLAIN.value());
             response.sendResult(HttpResponseStatus.UNAUTHORIZED.code(),
                     ErrorDetail.buildErrorMsg(request.path(),
                             HttpResponseStatus.UNAUTHORIZED.reasonPhrase(),

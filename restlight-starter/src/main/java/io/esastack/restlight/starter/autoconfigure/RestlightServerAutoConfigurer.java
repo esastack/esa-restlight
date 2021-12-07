@@ -15,10 +15,10 @@
  */
 package io.esastack.restlight.starter.autoconfigure;
 
-import io.esastack.restlight.starter.ServerStarter;
-import io.esastack.restlight.starter.condition.ConditionalOnEnableServer;
 import io.esastack.restlight.core.util.Constants;
 import io.esastack.restlight.server.bootstrap.RestlightServer;
+import io.esastack.restlight.starter.ServerStarter;
+import io.esastack.restlight.starter.condition.ConditionalOnEnableServer;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;

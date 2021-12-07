@@ -112,7 +112,7 @@ public abstract class FlexibleRequestEntityResolverFactory implements RequestEnt
         }
 
         protected MediaType getMediaType(HttpRequest request) {
-            String contentTypeStr = request.getHeader(HttpHeaderNames.CONTENT_TYPE);
+            String contentTypeStr = request.headers().get(HttpHeaderNames.CONTENT_TYPE);
             return StringUtils.isEmpty(contentTypeStr) ? null :
                     MediaTypeUtil.parseMediaType(contentTypeStr);
         }

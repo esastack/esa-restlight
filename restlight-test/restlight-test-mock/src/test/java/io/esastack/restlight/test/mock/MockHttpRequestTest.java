@@ -179,9 +179,9 @@ class MockHttpRequestTest {
                 .withHeader("A", "Y")
                 .withHeader("A", "Z").build();
 
-        assertEquals("X", request.getHeader("B"));
+        assertEquals("X", request.headers().get("B"));
         assertEquals(3, request.headers().getAll("B").size());
-        assertEquals("X", request.getHeader("A"));
+        assertEquals("X", request.headers().get("A"));
         assertEquals(3, request.headers().getAll("A").size());
     }
 

@@ -16,6 +16,8 @@
 package io.esastack.restlight.jaxrs.util;
 
 import esa.commons.ClassUtils;
+import esa.commons.collection.LinkedMultiValueMap;
+import esa.commons.collection.MultiValueMap;
 import io.esastack.commons.net.http.HttpHeaders;
 import io.esastack.restlight.core.context.HttpResponse;
 import io.esastack.restlight.jaxrs.impl.core.ResponseImpl;
@@ -23,7 +25,6 @@ import jakarta.ws.rs.core.MultivaluedMap;
 import jakarta.ws.rs.ext.RuntimeDelegate;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -78,9 +79,9 @@ public final class RuntimeDelegateUtils {
         to.setStatus(from.status());
         to.setEntity(from.entity());
 
-        Map<String, List<Object>> headers = new LinkedHashMap<>();
-        for (String name : from.headerNames()) {
-            headers.put(name, new ArrayList<>(from.getHeaders(name)));
+        MultiValueMap<String, Object> headers = new LinkedMultiValueMap<>();
+        for (String name : from.headers().names()) {
+            headers.addAll(name, from.headers().getAll(name));
         }
         to.getHeaders().putAll(headers);
     }

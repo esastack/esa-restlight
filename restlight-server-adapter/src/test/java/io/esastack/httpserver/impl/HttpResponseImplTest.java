@@ -25,13 +25,10 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 import io.netty.handler.codec.http.cookie.DefaultCookie;
-import io.netty.util.AsciiString;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
-import java.util.Arrays;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
@@ -76,41 +73,8 @@ class HttpResponseImplTest {
         when(mock.headers()).thenReturn(headers);
         final HttpHeaders trailers = new Http1HeadersImpl();
         when(mock.trailers()).thenReturn(trailers);
-
-        response.setHeader("a", "1");
-        response.setHeader(AsciiString.of("b"), "2");
-        assertEquals("1", response.getHeader("a"));
-        assertEquals("2", response.getHeader(AsciiString.of("b")));
-        assertTrue(response.containsHeader("a"));
-        assertTrue(response.containsHeader(AsciiString.of("b")));
-
-        response.addHeader("a", "2");
-        assertArrayEquals(new String[]{"1", "2"}, response.getHeaders("a").toArray(new String[0]));
-        assertArrayEquals(new String[]{"a", "b"}, response.headerNames().toArray(new String[0]));
-
-        response.setIntHeader("c", 1);
-        response.setIntHeader(AsciiString.of("d"), 2);
-        assertEquals("1", response.getHeader("c"));
-        assertEquals("2", response.getHeader(AsciiString.of("d")));
-        response.addIntHeader("c", 2);
-        response.addIntHeader(AsciiString.of("d"), 3);
-        assertArrayEquals(new String[]{"1", "2"}, response.getHeaders("c").toArray(new String[0]));
-        assertArrayEquals(new String[]{"2", "3"}, response.getHeaders("d").toArray(new String[0]));
-
-
-        response.setShortHeader("e", (short) 1);
-        response.setShortHeader(AsciiString.of("f"), (short) 2);
-        assertEquals("1", response.getHeader("e"));
-        assertEquals("2", response.getHeader(AsciiString.of("f")));
-        response.addShortHeader("e", (short) 2);
-        response.addShortHeader(AsciiString.of("f"), (short) 3);
-        assertArrayEquals(new String[]{"1", "2"}, response.getHeaders("e").toArray(new String[0]));
-        assertArrayEquals(new String[]{"2", "3"}, response.getHeaders("f").toArray(new String[0]));
-
-        response.setHeaders("g", Arrays.asList("1", "2"));
-        response.setHeaders(AsciiString.of("h"), Arrays.asList("3", "4"));
-        assertArrayEquals(new String[]{"1", "2"}, response.getHeaders("g").toArray(new String[0]));
-        assertArrayEquals(new String[]{"3", "4"}, response.getHeaders("h").toArray(new String[0]));
+        assertSame(headers, response.headers());
+        assertSame(trailers, response.trailers());
     }
 
     @Test

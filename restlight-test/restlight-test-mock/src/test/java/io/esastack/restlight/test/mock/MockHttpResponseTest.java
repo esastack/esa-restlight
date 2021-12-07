@@ -27,13 +27,12 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -51,31 +50,7 @@ class MockHttpResponseTest {
     void testOperateHeader() {
         final MockHttpResponse response = MockHttpResponse.aMockResponse()
                 .build();
-        CharSequence seq = "A";
-        response.addHeader(seq, "foo");
-        assertEquals("foo", response.getHeader(seq));
-        response.setHeader(seq, "bar");
-        assertEquals("bar", response.getHeader(seq));
-
-        response.setHeaders(seq, Arrays.asList("foo", "bar"));
-        assertArrayEquals(new String[]{"foo", "bar"}, response.getHeaders(seq).toArray());
-
-        response.reset();
-
-        response.addIntHeader(seq, 1);
-        assertEquals("1", response.getHeader(seq));
-        response.setIntHeader(seq, 1);
-        assertEquals("1", response.getHeader(seq));
-
-        response.reset();
-
-        response.addShortHeader(seq, (short) 1);
-        assertEquals("1", response.getHeader(seq));
-        response.setShortHeader(seq, (short) 1);
-        assertEquals("1", response.getHeader(seq));
-
-        assertTrue(response.headerNames().contains(seq));
-        assertTrue(response.containsHeader(seq));
+        assertNotNull(response.headers());
     }
 
     @Test
@@ -84,7 +59,7 @@ class MockHttpResponseTest {
         response.addCookie(new CookieImpl("c1", "v1"));
         response.addCookie("c2", "v2");
 
-        final Collection<String> cookies = response.getHeaders(HttpHeaderNames.SET_COOKIE);
+        final Collection<String> cookies = response.headers().getAll(HttpHeaderNames.SET_COOKIE);
         assertEquals(2, cookies.size());
     }
 
@@ -101,7 +76,8 @@ class MockHttpResponseTest {
             response.sendFile(file);
             assertTrue(response.isCommitted());
             assertEquals("foo", response.getSentData().string(StandardCharsets.UTF_8));
-            assertEquals(MimeMappings.getMimeType(file.getName()), response.getHeader(HttpHeaderNames.CONTENT_TYPE));
+            assertEquals(MimeMappings.getMimeType(file.getName()),
+                    response.headers().get(HttpHeaderNames.CONTENT_TYPE));
         } finally {
             file.delete();
         }
@@ -180,20 +156,6 @@ class MockHttpResponseTest {
         response.outputStream().writeUTF("abc");
         response.outputStream().close();
         assertEquals("abc", response.getSentData().string(StandardCharsets.UTF_8));
-    }
-
-    @Test
-    void testOpsAfterCommitted() {
-        final MockHttpResponse response = MockHttpResponse.aMockResponse().build();
-        // end response
-        response.sendResult(200);
-        response.addHeader("a", "b");
-        response.setHeader("x", "y");
-        response.setHeaders("m", Collections.singletonList("n"));
-        response.setIntHeader("int1", 1);
-        response.addIntHeader("int2", 2);
-        response.setShortHeader("short1", (short) 1);
-        response.addShortHeader("short2", (short) 2);
     }
 
     @Test

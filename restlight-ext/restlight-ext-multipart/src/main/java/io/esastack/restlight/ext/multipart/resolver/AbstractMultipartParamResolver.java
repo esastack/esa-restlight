@@ -85,7 +85,7 @@ abstract class AbstractMultipartParamResolver extends AbstractNameAndValueParamR
 
             if (!HttpPostRequestDecoder.isMultipart(request0)) {
                 throw new IllegalStateException("You excepted to accept a multipart file or attribute," +
-                        " but Content-Type is: " + request.getHeader(HttpHeaderNames.CONTENT_TYPE));
+                        " but Content-Type is: " + request.headers().get(HttpHeaderNames.CONTENT_TYPE));
             }
 
             final HttpPostMultipartRequestDecoder decoder = new HttpPostMultipartRequestDecoder(factory, request0);

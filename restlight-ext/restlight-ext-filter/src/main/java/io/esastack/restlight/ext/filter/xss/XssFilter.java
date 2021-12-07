@@ -314,11 +314,6 @@ public class XssFilter implements Filter {
         String handleParam(String param) {
             return htmlEscape(param);
         }
-
-        @Override
-        public String getHeader(CharSequence name) {
-            return htmlEscape(delegate.getHeader(name));
-        }
     }
 
     static class FilterWrapper extends BaseWrapper {
@@ -340,11 +335,6 @@ public class XssFilter implements Filter {
         @Override
         public String query() {
             return xssEncoder(delegate.query());
-        }
-
-        @Override
-        public String getHeader(CharSequence name) {
-            return xssEncoder(delegate.getHeader(name));
         }
 
         @Override

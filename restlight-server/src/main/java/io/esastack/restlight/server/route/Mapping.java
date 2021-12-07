@@ -294,7 +294,7 @@ public interface Mapping {
 
     /**
      * Return the header predicates of current {@link Mapping}, which will be used to determine the routing by {@link
-     * HttpRequest#getHeader(String)}
+     * HttpRequest#headers()}
      *
      * @return http headers, should not be {@code null}
      */

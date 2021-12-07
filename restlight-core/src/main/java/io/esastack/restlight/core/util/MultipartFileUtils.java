@@ -55,9 +55,9 @@ public final class MultipartFileUtils {
         Checks.checkNotNull(charset, "charset");
         Checks.checkNotEmptyArg(fileName, "fileName");
 
-        response.setHeader(HttpHeaderNames.CONTENT_TYPE.toString(),
+        response.headers().set(HttpHeaderNames.CONTENT_TYPE.toString(),
                 MediaType.MULTIPART_FORM_DATA.value() + ";charset=" + charset.name());
-        response.setHeader(CONTENT_DISPOSITION, ATTACHMENT + "; fileName=" + URLEncoder.encode(fileName,
+        response.headers().set(CONTENT_DISPOSITION, ATTACHMENT + "; fileName=" + URLEncoder.encode(fileName,
                 charset.name()));
 
         copy(ins, response.outputStream(), new byte[response.bufferSize() > 0 ? response.bufferSize() :
