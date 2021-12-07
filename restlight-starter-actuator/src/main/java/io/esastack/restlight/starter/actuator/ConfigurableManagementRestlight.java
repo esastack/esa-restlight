@@ -20,8 +20,6 @@ import esa.commons.annotation.Beta;
 import io.esastack.restlight.core.Deployments;
 import io.esastack.restlight.core.Restlight;
 import io.esastack.restlight.core.config.RestlightOptions;
-import io.esastack.restlight.core.spi.Filter;
-import io.esastack.restlight.server.internal.InternalFilter;
 import io.esastack.restlight.spring.Restlight4Spring;
 import io.esastack.restlight.starter.actuator.autoconfigurer.ManagementOptions;
 import io.netty.channel.ChannelHandler;
@@ -82,22 +80,6 @@ public class ConfigurableManagementRestlight {
      */
     public ConfigurableManagementRestlight domainSocketAddress(String path) {
         return address(new DomainSocketAddress(path));
-    }
-
-    /**
-     * @see Restlight4Spring#addFilter(InternalFilter)
-     */
-    public ConfigurableManagementRestlight addFilter(Filter filter) {
-        restlight.addFilter(filter);
-        return this;
-    }
-
-    /**
-     * @see Restlight4Spring#addFilters(Collection)
-     */
-    public ConfigurableManagementRestlight addFilters(Collection<? extends Filter> filters) {
-        restlight.addFilters(filters);
-        return this;
     }
 
     /**

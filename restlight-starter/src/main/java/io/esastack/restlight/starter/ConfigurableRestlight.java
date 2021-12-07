@@ -18,8 +18,6 @@ package io.esastack.restlight.starter;
 import esa.commons.Checks;
 import esa.commons.annotation.Beta;
 import io.esastack.restlight.core.config.RestlightOptions;
-import io.esastack.restlight.core.spi.Filter;
-import io.esastack.restlight.server.internal.InternalFilter;
 import io.esastack.restlight.spring.Deployments4Spring;
 import io.esastack.restlight.spring.Restlight4Spring;
 import io.netty.channel.ChannelHandler;
@@ -104,22 +102,6 @@ public class ConfigurableRestlight {
      */
     public ConfigurableRestlight domainSocketAddress(String path) {
         return address(new DomainSocketAddress(path));
-    }
-
-    /**
-     * @see Restlight4Spring#addFilter(InternalFilter)
-     */
-    public ConfigurableRestlight addFilter(Filter filter) {
-        restlight.addFilter(filter);
-        return this;
-    }
-
-    /**
-     * @see Restlight4Spring#addFilters(Collection)
-     */
-    public ConfigurableRestlight addFilters(Collection<? extends Filter> filters) {
-        restlight.addFilters(filters);
-        return this;
     }
 
     /**

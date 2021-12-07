@@ -28,8 +28,8 @@ import org.springframework.context.annotation.Primary;
 
 @Configuration
 @ConditionalOnClass({RestlightServer.class})
-@EnableConfigurationProperties(AutoRestlightServerOptions.class)
 @ConditionalOnEnableServer
+@EnableConfigurationProperties(AutoRestlightServerOptions.class)
 public class RestlightServerAutoConfigurer {
 
     @Bean(destroyMethod = "")

@@ -17,9 +17,13 @@ package io.esastack.restlight.test.bootstrap;
 
 import io.esastack.restlight.core.AbstractRestlight;
 import io.esastack.restlight.core.config.RestlightOptions;
+import io.esastack.restlight.core.context.FilterContext;
 import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.server.bootstrap.RestlightServer;
 import io.esastack.restlight.server.handler.RestlightHandler;
+import io.esastack.restlight.server.internal.InternalFilter;
+
+import java.util.List;
 
 class Restlight4SpringMvcTest extends AbstractRestlight<Restlight4SpringMvcTest,
         Deployments4SpringMvcTest, RestlightOptions> {
@@ -38,7 +42,8 @@ class Restlight4SpringMvcTest extends AbstractRestlight<Restlight4SpringMvcTest,
     }
 
     @Override
-    protected RestlightServer doBuildServer(RestlightHandler<RequestContext> handler) {
-        return new FakeServer(handler);
+    protected final RestlightServer doBuildServer(RestlightHandler<RequestContext> handler,
+                                                  List<InternalFilter<FilterContext>> fs) {
+        return new FakeServer(handler, fs, deployments().filterContext(), deployments().exceptionHandler());
     }
 }

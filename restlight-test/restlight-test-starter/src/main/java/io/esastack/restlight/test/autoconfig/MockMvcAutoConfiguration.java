@@ -18,9 +18,11 @@ package io.esastack.restlight.test.autoconfig;
 import io.esastack.restlight.server.bootstrap.DispatcherHandler;
 import io.esastack.restlight.server.bootstrap.RestlightServer;
 import io.esastack.restlight.test.bootstrap.MockMvcBuilders;
+import io.esastack.restlight.test.condition.ConditionalOnMockMvc;
 import io.esastack.restlight.test.context.MockMvc;
 import org.springframework.boot.autoconfigure.AutoConfigureOrder;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -30,6 +32,8 @@ import static org.springframework.core.Ordered.HIGHEST_PRECEDENCE;
 @Configuration
 @ConditionalOnClass({RestlightServer.class, DispatcherHandler.class})
 @AutoConfigureOrder(HIGHEST_PRECEDENCE + 100)
+@ConditionalOnMockMvc
+@EnableConfigurationProperties(AutoMockMvcOptions.class)
 public class MockMvcAutoConfiguration {
 
     @Bean

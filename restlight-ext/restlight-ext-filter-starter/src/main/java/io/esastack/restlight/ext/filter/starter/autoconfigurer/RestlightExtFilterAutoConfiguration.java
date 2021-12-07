@@ -15,6 +15,7 @@
  */
 package io.esastack.restlight.ext.filter.starter.autoconfigurer;
 
+import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.core.util.Ordered;
 import io.esastack.restlight.ext.filter.config.AccessLogOptionsConfigure;
 import io.esastack.restlight.ext.filter.connectionlimit.ConnectionLimiter;
@@ -24,7 +25,6 @@ import io.esastack.restlight.ext.filter.ipwhitelist.IpWhiteListFilter;
 import io.esastack.restlight.ext.filter.xss.XssFilter;
 import io.esastack.restlight.server.handler.ConnectionHandler;
 import io.esastack.restlight.starter.ServerStarter;
-import io.esastack.restlight.starter.autoconfigure.AutoRestlightServerOptions;
 import org.springframework.boot.autoconfigure.AutoConfigureOrder;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -73,7 +73,7 @@ public class RestlightExtFilterAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean
     @ConditionalOnProperty(prefix = EXT + "access-log", name = "enable", havingValue = "true")
-    public io.esastack.restlight.ext.filter.AccessLogFilter oldAccessLogFilter(AutoRestlightServerOptions options) {
+    public io.esastack.restlight.ext.filter.AccessLogFilter oldAccessLogFilter(RestlightOptions options) {
         // check again
         if (options.extOption("access-log.enable")
                 .map(Boolean::parseBoolean).orElse(Boolean.FALSE)) {
@@ -90,7 +90,7 @@ public class RestlightExtFilterAutoConfiguration {
     @ConditionalOnMissingBean
     @ConditionalOnProperty(prefix = AccessLogProperties.PREFIX, name = "enable", havingValue = "true")
     public io.esastack.restlight.ext.filter.accesslog.AccessLogFilter accessLogFilter(
-            AutoRestlightServerOptions options, AccessLogProperties props) {
+            RestlightOptions options, AccessLogProperties props) {
         // check again
         if (options.extOption("accesslog.enable")
                 .map(Boolean::parseBoolean).orElse(Boolean.FALSE)) {

@@ -33,8 +33,7 @@ class FullyMockMvcBuilder implements MockMvcBuilder {
     public MockMvc build() {
         Restlight4SpringTest server = Restlight4SpringTest.forServer(ctx);
         server.start();
-
-        return new DefaultMockMvc(server.deployments().handler());
+        return new DefaultMockMvc(((FakeServer) server.unWrap()).handler);
     }
 
 }

@@ -19,6 +19,7 @@ import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.server.handler.RestlightHandler;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
 import java.util.concurrent.CompletableFuture;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -32,7 +33,7 @@ class FakeServerTest {
     @Test
     void testAll() {
         final RestlightHandler<RequestContext> handler = mock(RestlightHandler.class);
-        final FakeServer fake = new FakeServer(handler);
+        final FakeServer fake = new FakeServer(handler, new ArrayList<>(), null, null);
         assertFalse(fake.isStarted());
         fake.start();
         assertTrue(fake.isStarted());

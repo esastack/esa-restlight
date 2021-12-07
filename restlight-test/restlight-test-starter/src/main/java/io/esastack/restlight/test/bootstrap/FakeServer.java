@@ -16,21 +16,38 @@
 package io.esastack.restlight.test.bootstrap;
 
 import esa.commons.Checks;
+import io.esastack.restlight.core.context.FilterContext;
 import io.esastack.restlight.core.context.RequestContext;
+import io.esastack.restlight.core.util.OrderedComparator;
+import io.esastack.restlight.server.bootstrap.ExceptionHandlerChain;
 import io.esastack.restlight.server.bootstrap.RestlightServer;
+import io.esastack.restlight.server.handler.FilteredHandler;
 import io.esastack.restlight.server.handler.RestlightHandler;
+import io.esastack.restlight.server.internal.FilterContextFactory;
+import io.esastack.restlight.server.internal.InternalFilter;
 
 import java.net.SocketAddress;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
 class FakeServer implements RestlightServer {
 
-    private final RestlightHandler<RequestContext> handler;
+    final RestlightHandler<RequestContext> handler;
     private volatile CompletableFuture<Void> stopFuture;
 
-    FakeServer(RestlightHandler<RequestContext> handler) {
+    FakeServer(RestlightHandler<RequestContext> handler,
+               List<InternalFilter<FilterContext>> fs,
+               FilterContextFactory<RequestContext, FilterContext> filterContext,
+               ExceptionHandlerChain<RequestContext> exceptionHandler) {
         Checks.checkNotNull(handler);
+        if (!fs.isEmpty()) {
+            OrderedComparator.sort(fs);
+            handler = new FilteredHandler<>(handler,
+                    fs,
+                    filterContext,
+                    exceptionHandler);
+        }
         this.handler = handler;
     }
 

@@ -17,8 +17,6 @@ package io.esastack.restlight.starter;
 
 import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.core.config.RestlightOptionsConfigure;
-import io.esastack.restlight.core.spi.Filter;
-import io.esastack.restlight.server.util.Futures;
 import io.esastack.restlight.spring.Deployments4Spring;
 import io.esastack.restlight.spring.Restlight4Spring;
 import io.netty.channel.ChannelHandler;
@@ -70,13 +68,6 @@ class ConfigurableRestlightTest {
 
         conf.domainSocketAddress("/tmp");
         assertEquals(new DomainSocketAddress("/tmp"), conf.address);
-
-        final Filter f = (context, chain) -> Futures.completedFuture();
-        conf.addFilter(f);
-        verify(restlight).addFilter(same(f));
-
-        conf.addFilters(Collections.singleton(f));
-        verify(restlight).addFilters(argThat(c -> c != null && c.contains(f)));
 
         conf.daemon(false);
         verify(restlight).daemon(false);
