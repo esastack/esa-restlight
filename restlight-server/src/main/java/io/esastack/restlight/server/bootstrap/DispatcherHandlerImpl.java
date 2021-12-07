@@ -77,7 +77,7 @@ public class DispatcherHandlerImpl<CTX extends RequestContext> implements Dispat
     public void service(CTX context,
                         CompletableFuture<Void> promise,
                         Route route) {
-        final RouteExecution<CTX>  execution = route.executionFactory().create(context);
+        final RouteExecution<CTX> execution = route.executionFactory().create(context);
         final ExecutionHandler<CTX> executionHandler = execution.executionHandler();
         try {
             executionHandler.handle(context)
