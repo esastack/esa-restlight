@@ -77,18 +77,18 @@ abstract class AbstractExecutionHandler<H extends HandlerMethodAdapter> implemen
     /**
      * Resolves the handler object by given {@link RequestContext} and {@link Object}.
      *
-     * @param handler   handler
-     * @param context   context
-     * @return  resolved object
+     * @param handler handler
+     * @param context context
+     * @return resolved object
      */
     protected abstract Object resolveBean(HandlerMethod handler, RequestContext context);
 
     /**
      * Builds a {@link HandlerInvoker} to handle the {@link RequestContext} by given {@code handler} and {@code bean}.
      *
-     * @param handlerMethod   handler method
-     * @param instance        current instance
-     * @return                handler invoker
+     * @param handlerMethod handler method
+     * @param instance      current instance
+     * @return handler invoker
      */
     protected abstract HandlerInvoker getInvoker(HandlerMethod handlerMethod, Object instance);
 
@@ -146,7 +146,9 @@ abstract class AbstractExecutionHandler<H extends HandlerMethodAdapter> implemen
                 future = transfer.transferTo(context, returnValue);
             }
         } catch (Throwable throwable) {
-            logger.error(getDetailedMessage("Error while invoking handler method."), throwable);
+            if (logger.isDebugEnabled()) {
+                logger.debug(getDetailedMessage("Error while invoking handler method."), throwable);
+            }
             // transfer error thrown by the controller to a CompletableFuture whatever this controller is an
             // asynchronous handler or not('cause error is not expected in an asynchronous implementation).
             future = Futures.completedExceptionally(throwable);
