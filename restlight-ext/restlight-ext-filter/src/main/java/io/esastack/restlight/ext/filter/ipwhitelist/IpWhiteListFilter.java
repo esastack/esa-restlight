@@ -19,6 +19,7 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import esa.commons.StringUtils;
+import io.esastack.commons.net.http.HttpStatus;
 import io.esastack.commons.net.http.MediaType;
 import io.esastack.httpserver.core.HttpRequest;
 import io.esastack.httpserver.core.HttpResponse;
@@ -29,7 +30,6 @@ import io.esastack.restlight.server.util.ErrorDetail;
 import io.esastack.restlight.server.util.Futures;
 import io.esastack.restlight.server.util.LoggerUtils;
 import io.netty.handler.codec.http.HttpHeaderNames;
-import io.netty.handler.codec.http.HttpResponseStatus;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -105,10 +105,10 @@ public class IpWhiteListFilter implements Filter {
         }
         if (!valid && !response.isCommitted()) {
             response.headers().set(HttpHeaderNames.CONTENT_TYPE, MediaType.TEXT_PLAIN.value());
-            response.sendResult(HttpResponseStatus.UNAUTHORIZED.code(),
+            response.sendResult(HttpStatus.UNAUTHORIZED.code(),
                     ErrorDetail.buildErrorMsg(request.path(),
-                            HttpResponseStatus.UNAUTHORIZED.reasonPhrase(),
-                            HttpResponseStatus.UNAUTHORIZED.reasonPhrase(), HttpResponseStatus.UNAUTHORIZED.code()));
+                            HttpStatus.UNAUTHORIZED.reasonPhrase(),
+                            HttpStatus.UNAUTHORIZED.reasonPhrase(), HttpStatus.UNAUTHORIZED.code()));
             LoggerUtils.logger().warn("Unauthorized client ip address: {}", ip);
             return Futures.completedFuture();
         }

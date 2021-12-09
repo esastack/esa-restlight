@@ -19,6 +19,7 @@ import esa.commons.Checks;
 import esa.commons.annotation.Internal;
 import esa.commons.logging.Logger;
 import esa.commons.logging.LoggerFactory;
+import io.esastack.commons.net.http.HttpStatus;
 import io.esastack.httpserver.core.HttpRequest;
 import io.esastack.httpserver.core.HttpResponse;
 import io.esastack.httpserver.core.RequestContext;
@@ -35,7 +36,6 @@ import io.esastack.restlight.server.util.ErrorDetail;
 import io.esastack.restlight.server.util.Futures;
 import io.esastack.restlight.server.util.LoggerUtils;
 import io.esastack.restlight.server.util.PromiseUtils;
-import io.netty.handler.codec.http.HttpResponseStatus;
 
 import java.util.Collections;
 import java.util.List;
@@ -111,7 +111,7 @@ public class DispatcherHandlerImpl<CTX extends RequestContext> implements Dispat
             ErrorDetail.sendErrorResult(task.request(),
                     task.response(),
                     reason,
-                    HttpResponseStatus.TOO_MANY_REQUESTS);
+                    HttpStatus.TOO_MANY_REQUESTS);
             LoggerUtils.logger().error("RequestTask(url={}, method={}) rejected, {}", task.request().path(),
                     task.request().method(), reason);
         }
@@ -131,7 +131,7 @@ public class DispatcherHandlerImpl<CTX extends RequestContext> implements Dispat
                 ErrorDetail.sendErrorResult(task.request(),
                         task.response(),
                         "The request was not processed correctly before the server was shutdown",
-                        HttpResponseStatus.SERVICE_UNAVAILABLE);
+                        HttpStatus.SERVICE_UNAVAILABLE);
             }
             final CompletableFuture<Void> p = task.promise();
             if (!p.isDone()) {

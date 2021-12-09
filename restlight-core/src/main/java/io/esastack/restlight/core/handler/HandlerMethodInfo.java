@@ -16,8 +16,8 @@
 package io.esastack.restlight.core.handler;
 
 import esa.commons.Checks;
+import io.esastack.commons.net.http.HttpStatus;
 import io.esastack.restlight.core.method.HandlerMethod;
-import io.netty.handler.codec.http.HttpResponseStatus;
 
 import java.util.Objects;
 
@@ -25,13 +25,13 @@ public class HandlerMethodInfo {
 
     private final boolean locator;
     private final HandlerMethod handlerMethod;
-    private final HttpResponseStatus customResponse;
+    private final HttpStatus customResponse;
 
     private String strVal;
 
     public HandlerMethodInfo(HandlerMethod handlerMethod,
                              boolean locator,
-                             HttpResponseStatus customResponse) {
+                             HttpStatus customResponse) {
         Checks.checkNotNull(handlerMethod, "handlerMethod");
         this.handlerMethod = handlerMethod;
         this.locator = locator;
@@ -46,7 +46,7 @@ public class HandlerMethodInfo {
         return handlerMethod;
     }
 
-    public HttpResponseStatus customResponse() {
+    public HttpStatus customResponse() {
         return customResponse;
     }
 

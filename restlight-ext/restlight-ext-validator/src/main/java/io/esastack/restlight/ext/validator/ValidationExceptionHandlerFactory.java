@@ -17,6 +17,7 @@ package io.esastack.restlight.ext.validator;
 
 import esa.commons.annotation.Internal;
 import esa.commons.spi.Feature;
+import io.esastack.commons.net.http.HttpStatus;
 import io.esastack.restlight.core.DeployContext;
 import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.core.context.RequestContext;
@@ -25,7 +26,6 @@ import io.esastack.restlight.core.spi.ExceptionHandlerFactory;
 import io.esastack.restlight.core.util.Constants;
 import io.esastack.restlight.server.bootstrap.ExceptionHandlerChain;
 import io.esastack.restlight.server.util.Futures;
-import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.util.internal.InternalThreadLocalMap;
 
 import javax.validation.ConstraintViolation;
@@ -57,7 +57,7 @@ public class ValidationExceptionHandlerFactory implements ExceptionHandlerFactor
                 Set<ConstraintViolation<?>> cs = error.getConstraintViolations();
                 if (cs == null || cs.isEmpty()) {
                     sendErrorResult(context.request(), context.response(), error,
-                            HttpResponseStatus.BAD_REQUEST);
+                            HttpStatus.BAD_REQUEST);
                 } else {
 
                     final StringBuilder sb = InternalThreadLocalMap.get().stringBuilder();
@@ -69,7 +69,7 @@ public class ValidationExceptionHandlerFactory implements ExceptionHandlerFactor
                     sb.append('}');
 
                     sendErrorResult(context.request(), context.response(), sb.toString(),
-                            HttpResponseStatus.BAD_REQUEST);
+                            HttpStatus.BAD_REQUEST);
                 }
                 return Futures.completedExceptionally(th);
             }

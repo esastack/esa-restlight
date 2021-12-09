@@ -17,6 +17,7 @@ package io.esastack.restlight.springmvc.spi;
 
 import esa.commons.annotation.Internal;
 import esa.commons.spi.Feature;
+import io.esastack.commons.net.http.HttpStatus;
 import io.esastack.restlight.core.DeployContext;
 import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.core.handler.locate.AbstractRouteMethodLocator;
@@ -25,7 +26,6 @@ import io.esastack.restlight.core.method.HandlerMethod;
 import io.esastack.restlight.core.spi.RouteMethodLocatorFactory;
 import io.esastack.restlight.core.util.Constants;
 import io.esastack.restlight.springmvc.util.ResponseStatusUtils;
-import io.netty.handler.codec.http.HttpResponseStatus;
 
 @Internal
 @Feature(tags = Constants.INTERNAL, order = -10)
@@ -43,7 +43,7 @@ public class SpringMvcRouteMethodLocatorFactory implements RouteMethodLocatorFac
         }
 
         @Override
-        protected HttpResponseStatus getCustomResponse(HandlerMethod handlerMethod) {
+        protected HttpStatus getCustomResponse(HandlerMethod handlerMethod) {
             return ResponseStatusUtils.getCustomResponse(handlerMethod.beanType(),
                     handlerMethod.method());
         }

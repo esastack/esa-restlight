@@ -16,6 +16,7 @@
 package io.esastack.restlight.ext.filter.cors;
 
 import io.esastack.commons.net.http.HttpMethod;
+import io.esastack.commons.net.http.HttpStatus;
 import io.esastack.httpserver.core.HttpRequest;
 import io.esastack.httpserver.core.HttpResponse;
 import io.esastack.restlight.server.context.FilterContext;
@@ -26,7 +27,6 @@ import io.esastack.restlight.server.util.Futures;
 import io.esastack.restlight.test.mock.MockHttpRequest;
 import io.esastack.restlight.test.mock.MockHttpResponse;
 import io.netty.handler.codec.http.HttpHeaderNames;
-import io.netty.handler.codec.http.HttpResponseStatus;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
@@ -237,7 +237,7 @@ class CorsFilterTest {
         });
         filter.doFilter(new FilterContextImpl(new FilteringRequestImpl(request), response), chain).join();
         assertFalse(endOfChain.get());
-        assertEquals(HttpResponseStatus.FORBIDDEN.code(), response.status());
+        assertEquals(HttpStatus.FORBIDDEN.code(), response.status());
     }
 
     @Test
@@ -260,7 +260,7 @@ class CorsFilterTest {
         });
         filter.doFilter(new FilterContextImpl(new FilteringRequestImpl(request), response), chain).join();
         assertFalse(endOfChain.get());
-        assertEquals(HttpResponseStatus.OK.code(), response.status());
+        assertEquals(HttpStatus.OK.code(), response.status());
         assertFalse(response.headers().contains(HttpHeaderNames.ACCESS_CONTROL_ALLOW_ORIGIN));
     }
 

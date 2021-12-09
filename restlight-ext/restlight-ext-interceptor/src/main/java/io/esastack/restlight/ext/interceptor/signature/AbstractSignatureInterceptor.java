@@ -18,13 +18,13 @@ package io.esastack.restlight.ext.interceptor.signature;
 import esa.commons.Checks;
 import esa.commons.StringUtils;
 import io.esastack.commons.net.http.HttpMethod;
+import io.esastack.commons.net.http.HttpStatus;
 import io.esastack.commons.net.http.MediaType;
 import io.esastack.httpserver.core.HttpRequest;
 import io.esastack.httpserver.core.RequestContext;
 import io.esastack.restlight.core.interceptor.InternalInterceptor;
 import io.esastack.restlight.ext.interceptor.config.SignatureOptions;
 import io.esastack.restlight.server.bootstrap.WebServerException;
-import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.util.internal.InternalThreadLocalMap;
 
 import java.nio.charset.StandardCharsets;
@@ -87,7 +87,7 @@ abstract class AbstractSignatureInterceptor implements InternalInterceptor {
         if (data == null || data.length == 0 || validate(data, signature, secret)) {
             return true;
         }
-        throw new WebServerException(HttpResponseStatus.UNAUTHORIZED, "Unmatched secret");
+        throw new WebServerException(HttpStatus.UNAUTHORIZED, "Unmatched secret");
     }
 
     protected byte[] buildData(HttpRequest request) {

@@ -15,18 +15,19 @@
  */
 package io.esastack.restlight.server.bootstrap;
 
-import io.netty.handler.codec.http.HttpResponseStatus;
+
+import io.esastack.commons.net.http.HttpStatus;
 
 public class WebServerException extends RuntimeException {
     private static final long serialVersionUID = -132910193006756089L;
 
     public static final WebServerException BAD_REQUEST
-            = new WebServerException(HttpResponseStatus.BAD_REQUEST);
+            = new WebServerException(HttpStatus.BAD_REQUEST);
 
-    private final HttpResponseStatus status;
+    private final HttpStatus status;
 
     public WebServerException() {
-        this((HttpResponseStatus) null);
+        this((HttpStatus) null);
     }
 
     public WebServerException(String message) {
@@ -38,26 +39,26 @@ public class WebServerException extends RuntimeException {
     }
 
     public WebServerException(Throwable cause) {
-        this((HttpResponseStatus) null, cause);
+        this((HttpStatus) null, cause);
     }
 
-    public WebServerException(HttpResponseStatus status) {
-        this.status = status == null ? HttpResponseStatus.INTERNAL_SERVER_ERROR : status;
+    public WebServerException(HttpStatus status) {
+        this.status = status == null ? HttpStatus.INTERNAL_SERVER_ERROR : status;
     }
 
-    public WebServerException(HttpResponseStatus status, String message) {
+    public WebServerException(HttpStatus status, String message) {
         super(message);
-        this.status = status == null ? HttpResponseStatus.INTERNAL_SERVER_ERROR : status;
+        this.status = status == null ? HttpStatus.INTERNAL_SERVER_ERROR : status;
     }
 
-    public WebServerException(HttpResponseStatus status, String message, Throwable cause) {
+    public WebServerException(HttpStatus status, String message, Throwable cause) {
         super(message, cause);
-        this.status = status == null ? HttpResponseStatus.INTERNAL_SERVER_ERROR : status;
+        this.status = status == null ? HttpStatus.INTERNAL_SERVER_ERROR : status;
     }
 
-    public WebServerException(HttpResponseStatus status, Throwable cause) {
+    public WebServerException(HttpStatus status, Throwable cause) {
         super(cause);
-        this.status = status == null ? HttpResponseStatus.INTERNAL_SERVER_ERROR : status;
+        this.status = status == null ? HttpStatus.INTERNAL_SERVER_ERROR : status;
     }
 
     public static WebServerException wrap(Throwable t) {
@@ -68,22 +69,22 @@ public class WebServerException extends RuntimeException {
     }
 
     public static WebServerException badRequest() {
-        return new WebServerException(HttpResponseStatus.BAD_REQUEST);
+        return new WebServerException(HttpStatus.BAD_REQUEST);
     }
 
     public static WebServerException badRequest(String message) {
-        return new WebServerException(HttpResponseStatus.BAD_REQUEST, message);
+        return new WebServerException(HttpStatus.BAD_REQUEST, message);
     }
 
     public static WebServerException badRequest(String message, Throwable cause) {
-        return new WebServerException(HttpResponseStatus.BAD_REQUEST, message, cause);
+        return new WebServerException(HttpStatus.BAD_REQUEST, message, cause);
     }
 
     public static WebServerException badRequest(Throwable cause) {
-        return new WebServerException(HttpResponseStatus.BAD_REQUEST, cause);
+        return new WebServerException(HttpStatus.BAD_REQUEST, cause);
     }
 
-    public HttpResponseStatus status() {
+    public HttpStatus status() {
         return status;
     }
 }

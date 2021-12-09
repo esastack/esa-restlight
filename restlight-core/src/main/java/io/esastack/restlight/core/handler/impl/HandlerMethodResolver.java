@@ -16,13 +16,13 @@
 package io.esastack.restlight.core.handler.impl;
 
 import esa.commons.Checks;
+import io.esastack.commons.net.http.HttpStatus;
 import io.esastack.restlight.core.context.HttpResponse;
 import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.handler.HandlerMethodInfo;
 import io.esastack.restlight.core.handler.HandlerValueResolver;
 import io.esastack.restlight.core.util.ResponseEntityUtils;
 import io.esastack.restlight.server.util.Futures;
-import io.netty.handler.codec.http.HttpResponseStatus;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -38,7 +38,7 @@ public class HandlerMethodResolver implements HandlerValueResolver {
     @Override
     public CompletableFuture<Void> handle(Object value, RequestContext context) {
         final HttpResponse response = context.response();
-        HttpResponseStatus status = methodInfo.customResponse();
+        HttpStatus status = methodInfo.customResponse();
         if (status != null) {
             response.setStatus(status.code());
         }
