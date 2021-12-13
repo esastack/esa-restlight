@@ -123,7 +123,7 @@
         <encoding>UTF-8</encoding>
         <project.build.sourceEncoding>${encoding}</project.build.sourceEncoding>
         <project.reporting.outputEncoding>${encoding}</project.reporting.outputEncoding>
-        <esa-commons.version>0.1.1</esa-commons.version>
+        <esa-commons.version>0.1.2-SNAPSHOT</esa-commons.version>
         <esa-commons-build.version>1.0</esa-commons-build.version>
         <esa-commons.net.version>0.0.1-SNAPSHOT</esa-commons.net.version>
         <esa-httpserver.version>0.1.1-SNAPSHOT</esa-httpserver.version>

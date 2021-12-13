@@ -1,0 +1,82 @@
+[
+  {
+    "name":"com.fasterxml.jackson.databind.ext.Java7HandlersImpl",
+    "methods":[{"name":"<init>","parameterTypes":[] }]
+  },
+  {
+    "name":"com.fasterxml.jackson.databind.ext.Java7SupportImpl",
+    "methods":[{"name":"<init>","parameterTypes":[] }]
+  },
+  {
+    "name":"io.esastack.restlight.core.method.DefaultResolvableParamPredicate",
+    "methods":[{"name":"<init>","parameterTypes":[] }]
+  },
+  {
+    "name":"io.esastack.restlight.core.resolver.param.HttpRequestParamResolverFactory",
+    "methods":[{"name":"<init>","parameterTypes":[] }]
+  },
+  {
+    "name":"io.esastack.restlight.core.resolver.param.HttpResponseParamResolverFactory",
+    "methods":[{"name":"<init>","parameterTypes":[] }]
+  },
+  {
+    "name":"io.esastack.restlight.core.resolver.rspentity.ByteArrayEntityResolverFactory",
+    "methods":[{"name":"<init>","parameterTypes":[] }]
+  },
+  {
+    "name":"io.esastack.restlight.core.resolver.rspentity.ByteBufEntityResolverFactory",
+    "methods":[{"name":"<init>","parameterTypes":[] }]
+  },
+  {
+    "name":"io.esastack.restlight.core.resolver.rspentity.CharSequenceEntityResolverFactory",
+    "methods":[{"name":"<init>","parameterTypes":[] }]
+  },
+  {
+    "name":"io.esastack.restlight.core.resolver.rspentity.PrimitiveEntityResolverFactory",
+    "methods":[{"name":"<init>","parameterTypes":[] }]
+  },
+  {
+    "name":"io.esastack.restlight.core.spi.impl.CompletableFutureTransferFactory",
+    "methods":[{"name":"<init>","parameterTypes":[] }]
+  },
+  {
+    "name":"io.esastack.restlight.core.spi.impl.DefaultFutureTransferFactory",
+    "methods":[{"name":"<init>","parameterTypes":[] }]
+  },
+  {
+    "name":"io.esastack.restlight.core.spi.impl.HandlerFactoryProviderImpl",
+    "methods":[{"name":"<init>","parameterTypes":[] }]
+  },
+  {
+    "name":"io.esastack.restlight.core.spi.impl.HandlerLocatorResolverFactory",
+    "methods":[{"name":"<init>","parameterTypes":[] }]
+  },
+  {
+    "name":"io.esastack.restlight.core.spi.impl.HandlerMethodResolverFactory",
+    "methods":[{"name":"<init>","parameterTypes":[] }]
+  },
+  {
+    "name":"io.esastack.restlight.core.spi.impl.HandlersParamResolverProvider",
+    "methods":[{"name":"<init>","parameterTypes":[] }]
+  },
+  {
+    "name":"io.esastack.restlight.core.spi.impl.JacksonDefaultSerializerFactory",
+    "methods":[{"name":"<init>","parameterTypes":[] }]
+  },
+  {
+    "name":"io.esastack.restlight.core.spi.impl.ListenableFutureTransferFactory",
+    "methods":[{"name":"<init>","parameterTypes":[] }]
+  },
+  {
+    "name":"io.esastack.restlight.core.spi.impl.QueryBeanParamResolverProvider",
+    "methods":[{"name":"<init>","parameterTypes":[] }]
+  },
+  {
+    "name":"io.esastack.restlight.core.spi.impl.RequestBeanParamResolverProvider",
+    "methods":[{"name":"<init>","parameterTypes":[] }]
+  },
+  {
+    "name":"io.esastack.restlight.core.spi.impl.ResponseEntityWriterFilterFactory",
+    "methods":[{"name":"<init>","parameterTypes":[] }]
+  }
+]
