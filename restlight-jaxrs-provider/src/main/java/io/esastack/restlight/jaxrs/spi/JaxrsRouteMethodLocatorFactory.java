@@ -28,7 +28,7 @@ import io.esastack.restlight.core.util.Constants;
 import io.esastack.restlight.jaxrs.util.JaxrsMappingUtils;
 
 @Internal
-@Feature(tags = Constants.INTERNAL)
+@Feature(tags = Constants.INTERNAL, order = -100)
 public class JaxrsRouteMethodLocatorFactory implements RouteMethodLocatorFactory {
 
     @Override
