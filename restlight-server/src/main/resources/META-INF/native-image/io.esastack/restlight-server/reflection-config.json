@@ -1,0 +1,6 @@
+[
+  {
+    "name":"io.esastack.restlight.server.spi.impl.RouteFailureExceptionHandler",
+    "methods":[{"name":"<init>","parameterTypes":[] }]
+  }
+]

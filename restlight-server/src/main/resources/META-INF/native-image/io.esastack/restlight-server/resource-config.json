@@ -1,0 +1,7 @@
+{
+  "resources":{
+    "includes":[
+      {"pattern":".*/io.esastack.restlight.server.spi.ExceptionHandler$"}
+    ]},
+  "bundles":[]
+}

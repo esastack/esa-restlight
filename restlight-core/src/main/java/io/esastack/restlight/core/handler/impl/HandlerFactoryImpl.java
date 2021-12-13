@@ -222,6 +222,7 @@ public class HandlerFactoryImpl implements HandlerFactory, HandlerContexts {
             ResolvableParamPredicate resolvable = context.paramPredicate().get();
             HandlerResolverFactory resolverFactory = context.resolverFactory().get();
             this.constructor = Objects.requireNonNull(ConstructorUtils.extractResolvable(clazz, resolvable));
+            ReflectionUtils.makeConstructorAccessible(this.constructor);
             this.consParamResolvers = mergeConsParamResolvers(constructor, resolvable, resolverFactory);
             this.setterParamResolvers = mergeSetterParamResolvers(clazz, resolvable, resolverFactory);
             this.fieldParamResolvers = mergeFieldParamResolvers(clazz, resolvable, resolverFactory);

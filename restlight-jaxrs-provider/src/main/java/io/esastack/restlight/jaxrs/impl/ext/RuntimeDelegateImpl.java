@@ -100,12 +100,11 @@ public class RuntimeDelegateImpl extends RuntimeDelegate {
                 return (HeaderDelegate<T>) delegate;
             }
         }
-        delegate = findHeaderDelegateRecursively(type.getSuperclass());
-        if (delegate != null) {
-            return (HeaderDelegate<T>) delegate;
-        } else {
-            return null;
+        Class<?> supClass;
+        if ((supClass = type.getSuperclass()) != null) {
+            return (HeaderDelegate<T>) findHeaderDelegateRecursively(supClass);
         }
+        return null;
     }
 
     private Map<Class<?>, HeaderDelegate<?>> loadHeaderDelegates() {

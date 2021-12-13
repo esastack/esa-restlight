@@ -1,0 +1,62 @@
+[
+  {
+    "name":"io.esastack.restlight.springmvc.spi.SpringMvcMappingLocatorFactory",
+    "methods":[{"name":"<init>","parameterTypes":[] }]
+  },
+  {
+    "name":"io.esastack.restlight.springmvc.spi.SpringMvcRouteMethodLocatorFactory",
+    "methods":[{"name":"<init>","parameterTypes":[] }]
+  },
+  {
+    "name":"io.esastack.restlight.springmvc.resolver.param.CookieValueParamResolver",
+    "methods":[{"name":"<init>","parameterTypes":[] }]
+  },
+  {
+    "name":"io.esastack.restlight.springmvc.resolver.param.MatrixVariableParamResolver",
+    "methods":[{"name":"<init>","parameterTypes":[] }]
+  },
+  {
+    "name":"io.esastack.restlight.springmvc.resolver.param.PathVariableParamResolver",
+    "methods":[{"name":"<init>","parameterTypes":[] }]
+  },
+  {
+    "name":"io.esastack.restlight.springmvc.resolver.param.RequestAttributeParamResolver",
+    "methods":[{"name":"<init>","parameterTypes":[] }]
+  },
+  {
+    "name":"io.esastack.restlight.springmvc.resolver.param.RequestHeaderParamResolver",
+    "methods":[{"name":"<init>","parameterTypes":[] }]
+  },
+  {
+    "name":"io.esastack.restlight.springmvc.resolver.param.RequestParamResolver",
+    "methods":[{"name":"<init>","parameterTypes":[] }]
+  },
+  {
+    "name":"io.esastack.restlight.springmvc.reqentity.FixedRequestEntityResolverFactoryImpl",
+    "methods":[{"name":"<init>","parameterTypes":[] }]
+  },
+  {
+    "name":"io.esastack.restlight.springmvc.resolver.rspentity.FixedResponseEntityResolverFactory",
+    "methods":[{"name":"<init>","parameterTypes":[] }]
+  },
+  {
+    "name":"io.esastack.restlight.springmvc.resolver.rspentity.ResponseStatusEntityResolverFactory",
+    "methods":[{"name":"<init>","parameterTypes":[] }]
+  },
+  {
+    "name":"io.esastack.restlight.springmvc.spi.FlexibleRequestEntityResolverProvider",
+    "methods":[{"name":"<init>","parameterTypes":[] }]
+  },
+  {
+    "name":"io.esastack.restlight.springmvc.spi.FlexibleResponseEntityResolverProvider",
+    "methods":[{"name":"<init>","parameterTypes":[] }]
+  },
+  {
+    "name":"io.esastack.restlight.springmvc.spi.SpringMvcExceptionResolverFactoryProvider",
+    "methods":[{"name":"<init>","parameterTypes":[] }]
+  },
+  {
+    "name":"io.esastack.restlight.springmvc.spi.core.SpringMvcExceptionHandlerFactory",
+    "methods":[{"name":"<init>","parameterTypes":[] }]
+  }
+]
