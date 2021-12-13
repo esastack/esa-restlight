@@ -15,14 +15,14 @@
  */
 package io.esastack.restlight.core.handler;
 
+import io.esastack.commons.net.http.HttpStatus;
 import io.esastack.restlight.core.method.RouteHandlerMethod;
-import io.netty.handler.codec.http.HttpResponseStatus;
 
 public class RouteMethodInfo extends HandlerMethodInfo {
 
     public RouteMethodInfo(RouteHandlerMethod handlerMethod,
                            boolean locator,
-                           HttpResponseStatus customResponse) {
+                           HttpStatus customResponse) {
         super(handlerMethod, locator, customResponse);
     }
 

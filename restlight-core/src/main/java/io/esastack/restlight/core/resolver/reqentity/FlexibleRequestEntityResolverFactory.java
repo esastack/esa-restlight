@@ -16,6 +16,7 @@
 package io.esastack.restlight.core.resolver.reqentity;
 
 import esa.commons.StringUtils;
+import io.esastack.commons.net.http.HttpStatus;
 import io.esastack.commons.net.http.MediaType;
 import io.esastack.commons.net.http.MediaTypeUtil;
 import io.esastack.httpserver.core.HttpRequest;
@@ -31,7 +32,6 @@ import io.esastack.restlight.core.util.Constants;
 import io.esastack.restlight.core.util.ConverterUtils;
 import io.esastack.restlight.server.bootstrap.WebServerException;
 import io.netty.handler.codec.http.HttpHeaderNames;
-import io.netty.handler.codec.http.HttpResponseStatus;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -107,7 +107,7 @@ public abstract class FlexibleRequestEntityResolverFactory implements RequestEnt
                     return handled;
                 }
             }
-            throw new WebServerException(HttpResponseStatus.UNSUPPORTED_MEDIA_TYPE,
+            throw new WebServerException(HttpStatus.UNSUPPORTED_MEDIA_TYPE,
                     "Unsupported media type:" + contentType);
         }
 

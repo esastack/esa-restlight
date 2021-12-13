@@ -18,13 +18,13 @@ package io.esastack.restlight.ext.filter.cors;
 import esa.commons.Checks;
 import io.esastack.commons.net.http.HttpHeaderNames;
 import io.esastack.commons.net.http.HttpMethod;
+import io.esastack.commons.net.http.HttpStatus;
 import io.esastack.httpserver.core.HttpRequest;
 import io.esastack.httpserver.core.HttpResponse;
 import io.esastack.restlight.server.context.FilterContext;
 import io.esastack.restlight.server.handler.FilterChain;
 import io.esastack.restlight.server.spi.Filter;
 import io.esastack.restlight.server.util.Futures;
-import io.netty.handler.codec.http.HttpResponseStatus;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -53,11 +53,11 @@ public class CorsFilter implements Filter {
                 setAllowCredentials(response, opt, origin);
                 setMaxAge(response, opt);
             }
-            response.sendResult(HttpResponseStatus.OK.code());
+            response.sendResult(HttpStatus.OK.code());
             return Futures.completedFuture();
         } else if (origin != null && opt == null) {
             // origin present in request but missing cors options
-            response.sendResult(HttpResponseStatus.FORBIDDEN.code());
+            response.sendResult(HttpStatus.FORBIDDEN.code());
             return Futures.completedFuture();
         } else {
             String set = setOrigin(response, origin, opt);

@@ -19,6 +19,7 @@ import esa.commons.annotation.Internal;
 import esa.commons.logging.Logger;
 import esa.commons.logging.LoggerFactory;
 import esa.commons.spi.Feature;
+import io.esastack.commons.net.http.HttpStatus;
 import io.esastack.commons.net.http.MediaType;
 import io.esastack.httpserver.core.HttpRequest;
 import io.esastack.restlight.core.DeployContext;
@@ -32,7 +33,6 @@ import io.esastack.restlight.server.bootstrap.ExceptionHandlerChain;
 import io.esastack.restlight.server.util.Futures;
 import io.esastack.restlight.springmvc.util.ResponseStatusUtils;
 import io.netty.handler.codec.http.HttpHeaderNames;
-import io.netty.handler.codec.http.HttpResponseStatus;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Optional;
@@ -54,7 +54,7 @@ public class SpringMvcExceptionHandlerFactory implements ExceptionHandlerFactory
         @Override
         public CompletableFuture<Void> handle(RequestContext context, Throwable th,
                                               ExceptionHandlerChain<RequestContext> next) {
-            final HttpResponseStatus status = ResponseStatusUtils.getCustomResponse(th);
+            final HttpStatus status = ResponseStatusUtils.getCustomResponse(th);
             if (status == null) {
                 return next.handle(context, th);
             }

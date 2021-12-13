@@ -15,6 +15,7 @@
  */
 package io.esastack.restlight.server.schedule;
 
+import io.esastack.commons.net.http.HttpStatus;
 import io.esastack.httpserver.core.HttpRequest;
 import io.esastack.httpserver.core.RequestContext;
 import io.esastack.restlight.server.bootstrap.DispatcherHandler;
@@ -24,7 +25,6 @@ import io.esastack.restlight.server.route.RouteFailureException;
 import io.esastack.restlight.server.util.Futures;
 import io.esastack.restlight.server.util.LoggerUtils;
 import io.esastack.restlight.server.util.PromiseUtils;
-import io.netty.handler.codec.http.HttpResponseStatus;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -81,7 +81,7 @@ class ScheduledHandler<CTX extends RequestContext> {
                                 if (!ctx.response().isCommitted()) {
                                     LoggerUtils.logger().warn("Request(url={}, method={}) hasn't been committed" +
                                             "after route failure handling");
-                                    ctx.response().sendResult(HttpResponseStatus.NOT_FOUND.code());
+                                    ctx.response().sendResult(HttpStatus.NOT_FOUND.code());
                                 }
                                 PromiseUtils.setSuccess(promise);
                             } else {
@@ -109,7 +109,7 @@ class ScheduledHandler<CTX extends RequestContext> {
                     if (!ctx.response().isCommitted()) {
                         LoggerUtils.logger().warn("Request(url={}, method={}) hasn't been committed" +
                                 "after route failure handling");
-                        ctx.response().sendResult(HttpResponseStatus.NOT_FOUND.code());
+                        ctx.response().sendResult(HttpStatus.NOT_FOUND.code());
                     }
                     PromiseUtils.setSuccess(promise);
                 } else {

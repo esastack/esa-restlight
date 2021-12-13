@@ -20,7 +20,7 @@ import io.esastack.commons.net.buffer.Buffer;
 import io.esastack.commons.net.http.Cookie;
 import io.esastack.commons.net.http.HttpHeaderNames;
 import io.esastack.commons.net.http.HttpHeaders;
-import io.netty.handler.codec.http.HttpResponseStatus;
+import io.esastack.commons.net.http.HttpStatus;
 
 import java.io.File;
 import java.util.function.Consumer;
@@ -251,7 +251,7 @@ public interface HttpResponse {
     default void sendRedirect(String newUri) {
         Checks.checkNotEmptyArg(newUri);
         headers().set(HttpHeaderNames.LOCATION, newUri);
-        sendResult(HttpResponseStatus.FOUND.code());
+        sendResult(HttpStatus.FOUND.code());
     }
 
     /**

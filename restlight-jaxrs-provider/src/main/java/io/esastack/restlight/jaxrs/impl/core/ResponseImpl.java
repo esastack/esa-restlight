@@ -18,11 +18,11 @@ package io.esastack.restlight.jaxrs.impl.core;
 import esa.commons.Checks;
 import esa.commons.DateUtils;
 import io.esastack.commons.net.http.HttpHeaderNames;
+import io.esastack.commons.net.http.HttpStatus;
 import io.esastack.commons.net.http.MediaTypeUtil;
 import io.esastack.restlight.core.util.HttpHeaderUtils;
 import io.esastack.restlight.jaxrs.util.MediaTypeUtils;
 import io.esastack.restlight.server.util.LoggerUtils;
-import io.netty.handler.codec.http.HttpResponseStatus;
 import jakarta.ws.rs.core.EntityTag;
 import jakarta.ws.rs.core.GenericType;
 import jakarta.ws.rs.core.HttpHeaders;
@@ -339,7 +339,7 @@ public class ResponseImpl extends Response {
 
         @Override
         public String getReasonPhrase() {
-            return HttpResponseStatus.valueOf(status).reasonPhrase();
+            return HttpStatus.valueOf(status).reasonPhrase();
         }
     }
 

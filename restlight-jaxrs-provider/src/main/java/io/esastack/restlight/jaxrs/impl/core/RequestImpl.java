@@ -43,7 +43,7 @@ import static io.esastack.commons.net.http.HttpHeaderNames.IF_MODIFIED_SINCE;
 import static io.esastack.commons.net.http.HttpHeaderNames.IF_NONE_MATCH;
 import static io.esastack.commons.net.http.HttpHeaderNames.IF_UNMODIFIED_SINCE;
 import static io.esastack.commons.net.http.HttpHeaderNames.VARY;
-import static io.netty.handler.codec.http.HttpResponseStatus.PRECONDITION_FAILED;
+import static io.esastack.commons.net.http.HttpStatus.PRECONDITION_FAILED;
 
 public class RequestImpl implements Request {
 
@@ -265,9 +265,9 @@ public class RequestImpl implements Request {
         /**
          * Selects a {@link Variant} which is best match the {@code request} from the given {@code variants}.
          *
-         * @param request   request
-         * @param variants  variants
-         * @return  variant
+         * @param request  request
+         * @param variants variants
+         * @return variant
          */
         private Variant match(HttpRequest request, List<Variant> variants) {
             List<String> acceptEncodings = HttpHeaderUtils.getAcceptEncodings(request.headers());

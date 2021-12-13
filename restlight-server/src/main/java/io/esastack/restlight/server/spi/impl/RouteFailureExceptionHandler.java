@@ -18,6 +18,7 @@ package io.esastack.restlight.server.spi.impl;
 import esa.commons.StringUtils;
 import esa.commons.annotation.Internal;
 import esa.commons.spi.Feature;
+import io.esastack.commons.net.http.HttpStatus;
 import io.esastack.commons.net.http.MediaType;
 import io.esastack.httpserver.core.HttpResponse;
 import io.esastack.httpserver.core.RequestContext;
@@ -29,7 +30,6 @@ import io.esastack.restlight.server.spi.ExceptionHandler;
 import io.esastack.restlight.server.util.ErrorDetail;
 import io.esastack.restlight.server.util.Futures;
 import io.netty.handler.codec.http.HttpHeaderNames;
-import io.netty.handler.codec.http.HttpResponseStatus;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -42,7 +42,7 @@ public class RouteFailureExceptionHandler implements ExceptionHandler {
                                           ExceptionHandlerChain<RequestContext> next) {
         if (th instanceof RouteFailureException) {
             HttpResponse response = context.response();
-            HttpResponseStatus status = toStatus(((RouteFailureException) th).getFailureType());
+            HttpStatus status = toStatus(((RouteFailureException) th).getFailureType());
             response.headers().set(HttpHeaderNames.CONTENT_TYPE, MediaType.TEXT_PLAIN.value());
             response.sendResult(status.code(),
                     ErrorDetail.buildErrorMsg(context.request().path(), StringUtils.empty(),
@@ -53,16 +53,16 @@ public class RouteFailureExceptionHandler implements ExceptionHandler {
         }
     }
 
-    private HttpResponseStatus toStatus(RouteFailureException.RouteFailure cause) {
+    private HttpStatus toStatus(RouteFailureException.RouteFailure cause) {
         switch (cause) {
             case METHOD_MISMATCH:
-                return HttpResponseStatus.METHOD_NOT_ALLOWED;
+                return HttpStatus.METHOD_NOT_ALLOWED;
             case CONSUMES_MISMATCH:
-                return HttpResponseStatus.UNSUPPORTED_MEDIA_TYPE;
+                return HttpStatus.UNSUPPORTED_MEDIA_TYPE;
             case PRODUCES_MISMATCH:
-                return HttpResponseStatus.NOT_ACCEPTABLE;
+                return HttpStatus.NOT_ACCEPTABLE;
             default:
-                return HttpResponseStatus.NOT_FOUND;
+                return HttpStatus.NOT_FOUND;
         }
     }
 

@@ -16,11 +16,11 @@
 package io.esastack.restlight.server.util;
 
 import esa.commons.StringUtils;
+import io.esastack.commons.net.http.HttpStatus;
 import io.esastack.commons.net.http.MediaType;
 import io.esastack.httpserver.core.HttpRequest;
 import io.esastack.httpserver.core.HttpResponse;
 import io.netty.handler.codec.http.HttpHeaderNames;
-import io.netty.handler.codec.http.HttpResponseStatus;
 
 import java.nio.charset.StandardCharsets;
 
@@ -87,7 +87,7 @@ public class ErrorDetail<T> {
     public static void sendErrorResult(HttpRequest request,
                                        HttpResponse response,
                                        Throwable ex,
-                                       HttpResponseStatus status) {
+                                       HttpStatus status) {
         final String msg = StringUtils.isNotEmpty(ex.getMessage()) ? ex.getMessage() : status.reasonPhrase();
         sendErrorResult(request, response, msg, status);
     }
@@ -95,7 +95,7 @@ public class ErrorDetail<T> {
     public static void sendErrorResult(HttpRequest request,
                                        HttpResponse response,
                                        String msg,
-                                       HttpResponseStatus status) {
+                                       HttpStatus status) {
         final byte[] errorInfo = ErrorDetail.buildError(request.path(),
                 msg,
                 status.reasonPhrase(),

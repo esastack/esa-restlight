@@ -19,6 +19,7 @@ import esa.commons.Checks;
 import esa.commons.StringUtils;
 import esa.commons.logging.Logger;
 import esa.commons.logging.LoggerFactory;
+import io.esastack.commons.net.http.HttpStatus;
 import io.esastack.restlight.core.context.HttpResponse;
 import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.handler.FutureTransfer;
@@ -32,7 +33,6 @@ import io.esastack.restlight.server.bootstrap.WebServerException;
 import io.esastack.restlight.server.route.ExecutionHandler;
 import io.esastack.restlight.server.route.Mapping;
 import io.esastack.restlight.server.util.Futures;
-import io.netty.handler.codec.http.HttpResponseStatus;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -139,7 +139,7 @@ abstract class AbstractExecutionHandler<H extends HandlerMethodAdapter> implemen
                 logger.error(getDetailedMessage("Unexpected null return value of concurrent handler."));
                 HttpResponse response = context.response();
                 if (!response.isCommitted()) {
-                    response.sendResult(HttpResponseStatus.INTERNAL_SERVER_ERROR.code());
+                    response.sendResult(HttpStatus.INTERNAL_SERVER_ERROR.code());
                 }
                 return Futures.completedFuture();
             } else {

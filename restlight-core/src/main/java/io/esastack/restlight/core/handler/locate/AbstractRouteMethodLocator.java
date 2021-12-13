@@ -15,13 +15,13 @@
  */
 package io.esastack.restlight.core.handler.locate;
 
+import io.esastack.commons.net.http.HttpStatus;
 import io.esastack.restlight.core.handler.RouteMethodInfo;
 import io.esastack.restlight.core.method.HandlerMethod;
 import io.esastack.restlight.core.method.HandlerMethodImpl;
 import io.esastack.restlight.core.method.RouteHandlerMethodImpl;
 import io.esastack.restlight.core.util.InterceptorUtils;
 import io.esastack.restlight.core.util.RouteUtils;
-import io.netty.handler.codec.http.HttpResponseStatus;
 
 import java.lang.reflect.Method;
 import java.util.Optional;
@@ -57,7 +57,7 @@ public abstract class AbstractRouteMethodLocator implements RouteMethodLocator {
      * Get custom response
      *
      * @param handlerMethod handlerMethod
-     * @return HttpResponseStatus
+     * @return HttpStatus
      */
-    protected abstract HttpResponseStatus getCustomResponse(HandlerMethod handlerMethod);
+    protected abstract HttpStatus getCustomResponse(HandlerMethod handlerMethod);
 }

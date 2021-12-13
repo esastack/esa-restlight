@@ -17,8 +17,8 @@ package io.esastack.restlight.springmvc.util;
 
 import esa.commons.StringUtils;
 import esa.commons.reflect.AnnotationUtils;
+import io.esastack.commons.net.http.HttpStatus;
 import io.esastack.restlight.springmvc.annotation.shaded.ResponseStatus0;
-import io.netty.handler.codec.http.HttpResponseStatus;
 
 import java.lang.reflect.Method;
 import java.util.Map;
@@ -29,10 +29,10 @@ public final class ResponseStatusUtils {
 
     private static final int MAX_THROWABLE_STACK = 8;
 
-    private static final Map<Class<? extends Throwable>, Optional<HttpResponseStatus>> CUSTOM_RESPONSE_MAP =
+    private static final Map<Class<? extends Throwable>, Optional<HttpStatus>> CUSTOM_RESPONSE_MAP =
             new ConcurrentHashMap<>(16);
 
-    public static HttpResponseStatus getCustomResponse(Class<?> userType, Method targetMethod) {
+    public static HttpStatus getCustomResponse(Class<?> userType, Method targetMethod) {
         ResponseStatus0 annotation = ResponseStatus0.fromShade(AnnotationUtils.findAnnotation(targetMethod,
                 ResponseStatus0.shadedClass()));
         if (annotation == null) {
@@ -41,30 +41,30 @@ public final class ResponseStatusUtils {
         }
         if (annotation != null) {
             if (StringUtils.isEmpty(annotation.reason())) {
-                return HttpResponseStatus.valueOf(annotation.code());
+                return HttpStatus.valueOf(annotation.code());
             } else {
-                return HttpResponseStatus.valueOf(annotation.code(), annotation.reason());
+                return HttpStatus.create(annotation.code(), annotation.reason());
             }
         }
 
         return null;
     }
 
-    public static HttpResponseStatus getCustomResponse(Throwable ex) {
+    public static HttpStatus getCustomResponse(Throwable ex) {
         if (ex == null) {
             return null;
         }
-        Optional<HttpResponseStatus> customResponse = CUSTOM_RESPONSE_MAP
+        Optional<HttpStatus> customResponse = CUSTOM_RESPONSE_MAP
                 .computeIfAbsent(ex.getClass(), tClass -> findCustomResponse(ex, 0));
         return customResponse.orElse(null);
     }
 
-    private static Optional<HttpResponseStatus> findCustomResponse(Throwable ex, int deep) {
+    private static Optional<HttpStatus> findCustomResponse(Throwable ex, int deep) {
         if (deep < MAX_THROWABLE_STACK) {
             ResponseStatus0 status = ResponseStatus0.fromShade(AnnotationUtils.findAnnotation(ex.getClass(),
                     ResponseStatus0.shadedClass()));
             if (status != null) {
-                return Optional.of(new HttpResponseStatus(status.code(), status.reason()));
+                return Optional.of(HttpStatus.create(status.code(), status.reason()));
             } else if (ex.getCause() instanceof Exception) {
                 return findCustomResponse(ex.getCause(), ++deep);
             }
