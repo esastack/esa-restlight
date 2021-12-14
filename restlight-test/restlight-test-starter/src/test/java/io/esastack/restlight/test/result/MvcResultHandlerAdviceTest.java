@@ -16,6 +16,7 @@
 package io.esastack.restlight.test.result;
 
 import io.esastack.httpserver.core.HttpRequest;
+import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.context.impl.HttpResponseAdapter;
 import io.esastack.restlight.core.context.impl.RequestContextImpl;
 import io.esastack.restlight.test.mock.MockHttpRequest;
@@ -31,12 +32,13 @@ class MvcResultHandlerAdviceTest {
     void testInvoke() throws Throwable {
         final MvcResultHandlerAdvice advice = new MvcResultHandlerAdvice();
         final HttpRequest request = MockHttpRequest.aMockRequest().build();
-        assertEquals("foo", advice.invoke(new RequestContextImpl(request,
-                new HttpResponseAdapter(MockHttpResponse.aMockResponse().build())),
+        RequestContext context = new RequestContextImpl(request,
+                new HttpResponseAdapter(MockHttpResponse.aMockResponse().build()));
+        assertEquals("foo", advice.invoke(context,
                 null,
                 (ctx, args) -> "foo"));
 
-        assertEquals("foo", request.getAttribute(RETURN_VALUE_KEY));
+        assertEquals("foo", context.attr(RETURN_VALUE_KEY).get());
     }
 
 }

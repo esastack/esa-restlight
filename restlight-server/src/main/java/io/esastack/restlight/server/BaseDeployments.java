@@ -20,7 +20,6 @@ import esa.commons.StringUtils;
 import esa.commons.annotation.Beta;
 import esa.commons.annotation.Internal;
 import esa.commons.spi.SpiLoader;
-import io.esastack.httpserver.core.AttributesImpl;
 import io.esastack.httpserver.core.RequestContext;
 import io.esastack.httpserver.impl.HttResponseImpl;
 import io.esastack.httpserver.impl.HttpRequestImpl;
@@ -535,7 +534,7 @@ public abstract class BaseDeployments<R extends BaseRestlightServer<R, D, O, CTX
                 if (req instanceof RequestContext) {
                     return (RequestContext) req;
                 }
-                return new RequestContextImpl(new HttpRequestImpl(req, new AttributesImpl()),
+                return new RequestContextImpl(new HttpRequestImpl(req),
                         new HttResponseImpl(req.response()));
             };
         }
@@ -547,7 +546,7 @@ public abstract class BaseDeployments<R extends BaseRestlightServer<R, D, O, CTX
                     return (FilterContext) ctx;
                 }
                 FilteringRequest request = new FilteringRequestImpl(ctx.request());
-                return new FilterContextImpl(request, ctx.response());
+                return new FilterContextImpl(ctx, request, ctx.response());
             };
         }
 

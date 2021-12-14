@@ -32,9 +32,7 @@ public class ValidatorAutoConfiguration {
 
     @Bean
     public DeployContextConfigure deployContextConfigure(ValidationOptions options) {
-        return context -> {
-            context.attribute(VALIDATION_OPTIONS, options);
-        };
+        return context -> context.attr(VALIDATION_OPTIONS).set(options);
     }
 
 }

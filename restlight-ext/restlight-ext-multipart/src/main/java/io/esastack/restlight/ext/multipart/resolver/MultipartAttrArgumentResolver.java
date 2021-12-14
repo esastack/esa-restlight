@@ -15,7 +15,8 @@
  */
 package io.esastack.restlight.ext.multipart.resolver;
 
-import io.esastack.httpserver.core.HttpRequest;
+import esa.commons.collection.AttributeKey;
+import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.method.Param;
 import io.esastack.restlight.core.resolver.ParamResolver;
 import io.esastack.restlight.core.resolver.ParamResolverFactory;
@@ -57,8 +58,8 @@ public class MultipartAttrArgumentResolver implements ParamResolverFactory {
         }
 
         @Override
-        protected Object getParamValue(String name, HttpRequest request) {
-            return converter.apply(request.getUncheckedAttribute(PREFIX + name));
+        protected Object getParamValue(String name, RequestContext request) {
+            return converter.apply((String) request.attr(AttributeKey.valueOf(PREFIX + name)).get());
         }
 
         @Override

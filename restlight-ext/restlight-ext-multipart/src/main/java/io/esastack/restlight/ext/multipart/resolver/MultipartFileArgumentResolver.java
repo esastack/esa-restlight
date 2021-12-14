@@ -16,7 +16,7 @@
 package io.esastack.restlight.ext.multipart.resolver;
 
 import esa.commons.StringUtils;
-import io.esastack.httpserver.core.HttpRequest;
+import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.method.Param;
 import io.esastack.restlight.core.resolver.ParamResolver;
 import io.esastack.restlight.core.resolver.ParamResolverFactory;
@@ -64,8 +64,8 @@ public class MultipartFileArgumentResolver implements ParamResolverFactory {
         }
 
         @Override
-        protected Object getParamValue(String name, HttpRequest request) {
-            final List<MultipartFile> files = request.getUncheckedAttribute(MULTIPART_FILES);
+        protected Object getParamValue(String name, RequestContext context) {
+            final List<MultipartFile> files = context.attr(MULTIPART_FILES).get();
             if (files == null) {
                 return null;
             }

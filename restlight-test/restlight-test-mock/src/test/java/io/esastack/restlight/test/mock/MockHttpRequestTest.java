@@ -35,9 +35,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -183,23 +181,6 @@ class MockHttpRequestTest {
         assertEquals(3, request.headers().getAll("B").size());
         assertEquals("X", request.headers().get("A"));
         assertEquals(3, request.headers().getAll("A").size());
-    }
-
-    @Test
-    void testOperateAttribute() {
-        final MockHttpRequest request = MockHttpRequest.aMockRequest()
-                .withUri("/")
-                .withAttribute("A", "X")
-                .withAttribute("A", "Y").build();
-        assertEquals("Y", request.getAttribute("A"));
-
-        request.removeAttribute("A");
-        assertNull(request.getAttribute("A"));
-
-        request.setAttribute("foo", "f");
-        assertEquals("f", request.getAttribute("foo"));
-
-        assertArrayEquals(new String[]{"foo"}, request.attributeNames());
     }
 
     @Test

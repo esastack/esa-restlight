@@ -15,7 +15,8 @@
  */
 package io.esastack.restlight.springmvc.resolver.param;
 
-import io.esastack.httpserver.core.HttpRequest;
+import esa.commons.collection.AttributeKey;
+import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.method.Param;
 import io.esastack.restlight.core.resolver.ParamResolver;
 import io.esastack.restlight.core.resolver.ParamResolverFactory;
@@ -42,8 +43,8 @@ public class RequestAttributeParamResolver implements ParamResolverFactory {
                     ConverterUtils.str2ObjectConverter(param.genericType(), p -> p);
 
             @Override
-            protected Object resolveName(String name, HttpRequest request) throws Exception {
-                Object v = request.getAttribute(name);
+            protected Object resolveName(String name, RequestContext context) {
+                Object v = context.attr(AttributeKey.valueOf(name)).get();
                 if (converter != null && v instanceof String) {
                     return converter.apply((String) v);
                 }

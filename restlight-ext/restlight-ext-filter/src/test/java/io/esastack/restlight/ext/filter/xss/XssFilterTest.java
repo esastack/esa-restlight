@@ -15,6 +15,7 @@
  */
 package io.esastack.restlight.ext.filter.xss;
 
+import esa.commons.collection.AttributeMap;
 import io.esastack.httpserver.core.HttpRequest;
 import io.esastack.restlight.server.context.FilterContext;
 import io.esastack.restlight.server.context.impl.FilterContextImpl;
@@ -53,7 +54,7 @@ class XssFilterTest {
                 .withUri("/test?script=<script>test</script>&foo=bar</script>&name=gcl&name=wxy")
                 .withHeader("header", "src=\"//xxxx.cn/image/t.js\"")
                 .build();
-        filter.doFilter(new FilterContextImpl(new FilteringRequestImpl(request0),
+        filter.doFilter(new FilterContextImpl(new AttributeMap(), new FilteringRequestImpl(request0),
                 MockHttpResponse.aMockResponse().build()), chain).join();
         assertEquals("", req.get().getParam("script"));
         assertNull(req.get().getParam("null"));
@@ -85,7 +86,7 @@ class XssFilterTest {
                 .withUri("/test?script=<script>test</script>&foo=test</script>&name=gcl&name=wxy")
                 .withHeader("header", "src=\"//xxxx.cn/image/t.js\"")
                 .build();
-        filterEscape.doFilter(new FilterContextImpl(new FilteringRequestImpl(requestEscape),
+        filterEscape.doFilter(new FilterContextImpl(new AttributeMap(), new FilteringRequestImpl(requestEscape),
                 MockHttpResponse.aMockResponse().build()), chain).join();
         assertEquals("&lt;script&gt;test&lt;/script&gt;", req.get().getParam("script"));
         assertNull(req.get().getParam("null"));
@@ -168,22 +169,6 @@ class XssFilterTest {
         verify(delegate, never()).cookies();
         filter.cookies();
         verify(delegate).cookies();
-
-        verify(delegate, never()).getAttribute("a");
-        filter.getAttribute("a");
-        verify(delegate).getAttribute("a");
-
-        verify(delegate, never()).setAttribute("a", "b");
-        filter.setAttribute("a", "b");
-        verify(delegate).setAttribute("a", "b");
-
-        verify(delegate, never()).removeAttribute("a");
-        filter.removeAttribute("a");
-        verify(delegate).removeAttribute("a");
-
-        verify(delegate, never()).attributeNames();
-        filter.attributeNames();
-        verify(delegate).attributeNames();
 
         verify(delegate, never()).alloc();
         filter.alloc();

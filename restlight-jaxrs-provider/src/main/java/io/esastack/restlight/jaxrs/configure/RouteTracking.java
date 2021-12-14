@@ -15,6 +15,7 @@
  */
 package io.esastack.restlight.jaxrs.configure;
 
+import esa.commons.collection.AttributeKey;
 import io.esastack.httpserver.core.RequestContext;
 import io.esastack.restlight.core.context.RouteContext;
 import io.esastack.restlight.core.handler.HandlerMapping;
@@ -28,8 +29,10 @@ import java.util.concurrent.CompletableFuture;
 
 public class RouteTracking implements RouteFilter {
 
-    private static final String ROUTE_TRACKING_KEY = "$jakarta.route.tracking";
-    private static final String HANDLER_METHOD_MATCHED = "$jakarta.handler.matched";
+    private static final AttributeKey<List<HandlerMapping>> ROUTE_TRACKING_KEY = AttributeKey
+            .valueOf("$jakarta.route.tracking");
+    private static final AttributeKey<Boolean> HANDLER_METHOD_MATCHED = AttributeKey
+            .valueOf("$jakarta.handler.matched");
 
     private static final RouteTracking SINGLETON = new RouteTracking();
 
@@ -43,19 +46,19 @@ public class RouteTracking implements RouteFilter {
     @Override
     public CompletableFuture<Void> routed(HandlerMapping mapping, RouteContext context, RouteFilterChain next) {
         if (!mapping.methodInfo().isLocator()) {
-            context.setAttribute(HANDLER_METHOD_MATCHED, true);
+            context.attr(HANDLER_METHOD_MATCHED).set(true);
         }
-        List<HandlerMapping> mappings = context.getUncheckedAttribute(ROUTE_TRACKING_KEY);
+        List<HandlerMapping> mappings = context.attr(ROUTE_TRACKING_KEY).get();
         if (mappings == null) {
             mappings = new LinkedList<>();
-            context.setAttribute(ROUTE_TRACKING_KEY, mappings);
+            context.attr(ROUTE_TRACKING_KEY).set(mappings);
         }
         mappings.add(mapping);
         return next.doNext(mapping, context);
     }
 
     public static List<HandlerMapping> tracking(RequestContext context) {
-        List<HandlerMapping> mappings = context.getUncheckedAttribute(ROUTE_TRACKING_KEY);
+        List<HandlerMapping> mappings = context.attr(ROUTE_TRACKING_KEY).get();
         if (mappings == null) {
             return Collections.emptyList();
         } else {
@@ -64,7 +67,7 @@ public class RouteTracking implements RouteFilter {
     }
 
     public static boolean isMethodMatched(RequestContext context) {
-        return context.getUncheckedAttribute(HANDLER_METHOD_MATCHED);
+        return context.attr(HANDLER_METHOD_MATCHED).get();
     }
 
 }

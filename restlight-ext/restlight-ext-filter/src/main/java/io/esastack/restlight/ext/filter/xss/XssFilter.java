@@ -93,7 +93,7 @@ public class XssFilter implements Filter {
 
     @Override
     public CompletableFuture<Void> doFilter(FilterContext context, FilterChain<FilterContext> chain) {
-        return chain.doFilter(new FilterContextImpl(wrapper.apply(context.request()),
+        return chain.doFilter(new FilterContextImpl(context, wrapper.apply(context.request()),
                 context.response()));
     }
 
@@ -221,26 +221,6 @@ public class XssFilter implements Filter {
         @Override
         public Set<Cookie> cookies() {
             return delegate.cookies();
-        }
-
-        @Override
-        public Object getAttribute(String name) {
-            return delegate.getAttribute(name);
-        }
-
-        @Override
-        public void setAttribute(String name, Object value) {
-            delegate.setAttribute(name, value);
-        }
-
-        @Override
-        public Object removeAttribute(String name) {
-            return delegate.removeAttribute(name);
-        }
-
-        @Override
-        public String[] attributeNames() {
-            return delegate.attributeNames();
         }
 
         @Override

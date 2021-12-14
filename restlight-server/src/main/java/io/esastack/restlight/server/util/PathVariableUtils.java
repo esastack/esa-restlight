@@ -16,9 +16,10 @@
 package io.esastack.restlight.server.util;
 
 import esa.commons.StringUtils;
+import esa.commons.collection.AttributeKey;
 import esa.commons.collection.LinkedMultiValueMap;
 import esa.commons.collection.MultiValueMap;
-import io.esastack.httpserver.core.HttpRequest;
+import io.esastack.httpserver.core.RequestContext;
 import io.esastack.restlight.server.route.predicate.PatternsPredicate;
 
 import java.util.Collections;
@@ -28,26 +29,27 @@ import java.util.StringTokenizer;
 
 public final class PathVariableUtils {
 
-    private static final String MATRIX_VARIABLES_ATTRIBUTE = "$matrix.vars";
+    private static final AttributeKey<Map<String, MultiValueMap<String, String>>> MATRIX_VARIABLES_ATTRIBUTE =
+            AttributeKey.valueOf("$matrix.vars");
 
-    public static String getPathVariable(HttpRequest request, String name) {
-        Map<String, String> variables = getPathVariables(request);
+    public static String getPathVariable(RequestContext context, String name) {
+        Map<String, String> variables = getPathVariables(context);
         if (variables == null || variables.isEmpty()) {
             return null;
         }
         return variables.get(name);
     }
 
-    public static Map<String, String> getPathVariables(HttpRequest request) {
-        return request.getUncheckedAttribute(PatternsPredicate.TEMPLATE_VARIABLES);
+    public static Map<String, String> getPathVariables(RequestContext context) {
+        return context.attr(PatternsPredicate.TEMPLATE_VARIABLES).get();
     }
 
-    public static Map<String, MultiValueMap<String, String>> getMatrixVariables(HttpRequest request) {
+    public static Map<String, MultiValueMap<String, String>> getMatrixVariables(RequestContext context) {
         Map<String, MultiValueMap<String, String>> matrixVars =
-                request.getUncheckedAttribute(MATRIX_VARIABLES_ATTRIBUTE);
+                context.attr(MATRIX_VARIABLES_ATTRIBUTE).get();
         if (matrixVars == null) {
-            matrixVars = extractMatrixVariables(getPathVariables(request));
-            request.setAttribute(MATRIX_VARIABLES_ATTRIBUTE, matrixVars);
+            matrixVars = extractMatrixVariables(getPathVariables(context));
+            context.attr(MATRIX_VARIABLES_ATTRIBUTE).set(matrixVars);
         }
 
         return matrixVars;

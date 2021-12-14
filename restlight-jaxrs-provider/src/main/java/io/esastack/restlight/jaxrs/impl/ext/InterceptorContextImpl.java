@@ -16,6 +16,7 @@
 package io.esastack.restlight.jaxrs.impl.ext;
 
 import esa.commons.Checks;
+import esa.commons.collection.AttributeKey;
 import io.esastack.restlight.core.resolver.HttpEntityResolverContext;
 import io.esastack.restlight.jaxrs.util.MediaTypeUtils;
 import jakarta.ws.rs.core.MediaType;
@@ -23,9 +24,9 @@ import jakarta.ws.rs.ext.InterceptorContext;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
+import java.util.List;
 
 public class InterceptorContextImpl implements InterceptorContext {
 
@@ -38,22 +39,24 @@ public class InterceptorContextImpl implements InterceptorContext {
 
     @Override
     public Object getProperty(String name) {
-        return underlying.getAttribute(name);
+        return underlying.attr(AttributeKey.valueOf(name)).get();
     }
 
     @Override
     public Collection<String> getPropertyNames() {
-        return Collections.unmodifiableCollection(Arrays.asList(underlying.attributeNames()));
+        List<String> names = new ArrayList<>(underlying.size());
+        underlying.forEach((name, value) -> names.add(name.name()));
+        return names;
     }
 
     @Override
     public void setProperty(String name, Object object) {
-        underlying.setAttribute(name, object);
+        underlying.attr(AttributeKey.valueOf(name)).set(object);
     }
 
     @Override
     public void removeProperty(String name) {
-        underlying.removeAttribute(name);
+        underlying.attr(AttributeKey.valueOf(name)).remove();
     }
 
     @Override

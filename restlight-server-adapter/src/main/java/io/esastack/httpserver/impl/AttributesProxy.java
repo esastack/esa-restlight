@@ -16,35 +16,45 @@
 package io.esastack.httpserver.impl;
 
 import esa.commons.Checks;
-import io.esastack.httpserver.core.Attributes;
+import esa.commons.collection.Attribute;
+import esa.commons.collection.AttributeKey;
+import esa.commons.collection.Attributes;
+
+import java.util.function.BiConsumer;
 
 public class AttributesProxy implements Attributes {
 
-    private final Attributes attributes;
+    private final Attributes underlying;
 
-    public AttributesProxy(Attributes attributes) {
-        Checks.checkNotNull(attributes, "attributes");
-        this.attributes = attributes;
+    public AttributesProxy(Attributes underlying) {
+        Checks.checkNotNull(underlying, "underlying");
+        this.underlying = underlying;
     }
 
     @Override
-    public Object getAttribute(String name) {
-        return attributes.getAttribute(name);
+    public <V> Attribute<V> attr(AttributeKey<V> key) {
+        return underlying.attr(key);
     }
 
     @Override
-    public void setAttribute(String name, Object value) {
-        attributes.setAttribute(name, value);
+    public boolean hasAttr(AttributeKey<?> key) {
+        return underlying.hasAttr(key);
     }
 
     @Override
-    public Object removeAttribute(String name) {
-        return attributes.removeAttribute(name);
+    public void forEach(BiConsumer<? super AttributeKey<?>, ? super Attribute<?>> consumer) {
+        underlying.forEach(consumer);
     }
 
     @Override
-    public String[] attributeNames() {
-        return attributes.attributeNames();
+    public int size() {
+        return underlying.size();
     }
+
+    @Override
+    public boolean isEmpty() {
+        return underlying.isEmpty();
+    }
+
 }
 

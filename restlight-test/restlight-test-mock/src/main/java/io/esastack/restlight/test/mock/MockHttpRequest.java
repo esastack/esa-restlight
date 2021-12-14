@@ -184,26 +184,6 @@ public class MockHttpRequest implements HttpRequest {
     }
 
     @Override
-    public void setAttribute(String name, Object value) {
-        attributes.put(name, value);
-    }
-
-    @Override
-    public Object getAttribute(String name) {
-        return attributes.get(name);
-    }
-
-    @Override
-    public Object removeAttribute(String name) {
-        return attributes.remove(name);
-    }
-
-    @Override
-    public String[] attributeNames() {
-        return attributes.keySet().toArray(new String[0]);
-    }
-
-    @Override
     public String getParam(String parName) {
         if (parameters == null) {
             return null;

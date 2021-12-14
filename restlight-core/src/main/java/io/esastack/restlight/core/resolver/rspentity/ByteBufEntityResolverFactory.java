@@ -16,7 +16,7 @@
 package io.esastack.restlight.core.resolver.rspentity;
 
 import io.esastack.commons.net.http.MediaType;
-import io.esastack.httpserver.core.HttpRequest;
+import io.esastack.httpserver.core.RequestContext;
 import io.esastack.restlight.core.resolver.ResponseEntity;
 import io.esastack.restlight.core.resolver.ResponseEntityResolver;
 import io.esastack.restlight.core.resolver.ResponseEntityResolverFactory;
@@ -51,7 +51,7 @@ public class ByteBufEntityResolverFactory implements ResponseEntityResolverFacto
         @Override
         protected byte[] serialize(ResponseEntity entity,
                                    List<MediaType> mediaTypes,
-                                   HttpRequest request) throws Exception {
+                                   RequestContext context) throws Exception {
             return Serializers.serializeByteBuf((ByteBuf) entity.response().entity(),
                     entity.response(),
                     selectMediaType(mediaTypes));

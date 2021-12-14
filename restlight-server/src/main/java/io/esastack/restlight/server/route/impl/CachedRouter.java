@@ -16,7 +16,7 @@
 package io.esastack.restlight.server.route.impl;
 
 import esa.commons.concurrent.UnsafeUtils;
-import io.esastack.httpserver.core.HttpRequest;
+import io.esastack.httpserver.core.RequestContext;
 
 class CachedRouter extends AbstractRouter<CountedRoute> {
 
@@ -41,13 +41,13 @@ class CachedRouter extends AbstractRouter<CountedRoute> {
     }
 
     @Override
-    CountedRoute matchAll(HttpRequest request) {
-        return findFor(routes.lookup(), request);
+    CountedRoute matchAll(RequestContext context) {
+        return findFor(routes.lookup(), context);
     }
 
     @Override
-    CountedRoute findFor(CountedRoute[] routes, HttpRequest request) {
-        CountedRoute found = super.findFor(routes, request);
+    CountedRoute findFor(CountedRoute[] routes, RequestContext context) {
+        CountedRoute found = super.findFor(routes, context);
         if (found != null) {
             this.routes.hit(found);
         }

@@ -16,7 +16,7 @@
 package io.esastack.restlight.core.resolver.param;
 
 import io.esastack.commons.net.http.HttpHeaders;
-import io.esastack.httpserver.core.HttpRequest;
+import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.method.Param;
 import io.esastack.restlight.core.resolver.ParamResolver;
 import io.esastack.restlight.core.resolver.ParamResolverFactory;
@@ -69,9 +69,9 @@ public abstract class AbstractHeaderParamResolver implements ParamResolverFactor
         }
 
         @Override
-        protected Object resolveName(String name, HttpRequest request) {
+        protected Object resolveName(String name, RequestContext context) {
             if (strsConverter != null) {
-                List<String> values = request.headers().getAll(name);
+                List<String> values = context.request().headers().getAll(name);
                 if (values == null || values.isEmpty()) {
                     return null;
                 } else if (values.size() > 1) {
@@ -80,7 +80,7 @@ public abstract class AbstractHeaderParamResolver implements ParamResolverFactor
                     return converter.apply(values.get(0));
                 }
             } else {
-                return converter.apply(request.headers().get(name));
+                return converter.apply(context.request().headers().get(name));
             }
         }
     }
@@ -92,8 +92,8 @@ public abstract class AbstractHeaderParamResolver implements ParamResolverFactor
         }
 
         @Override
-        protected HttpHeaders resolveName(String name, HttpRequest request) {
-            return request.headers();
+        protected HttpHeaders resolveName(String name, RequestContext context) {
+            return context.request().headers();
         }
     }
 

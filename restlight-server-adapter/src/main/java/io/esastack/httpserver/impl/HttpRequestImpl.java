@@ -30,7 +30,6 @@ import io.esastack.commons.net.http.HttpMethod;
 import io.esastack.commons.net.http.HttpVersion;
 import io.esastack.commons.net.http.MediaType;
 import io.esastack.commons.net.http.MediaTypeUtil;
-import io.esastack.httpserver.core.Attributes;
 import io.esastack.httpserver.core.HttpInputStream;
 import io.esastack.httpserver.core.HttpRequest;
 import io.esastack.httpserver.core.Request;
@@ -60,7 +59,6 @@ public class HttpRequestImpl implements io.esastack.httpserver.core.HttpRequest 
 
     private static final HttpVersion HTTP2 = HttpVersion.HTTP_2;
 
-    private final Attributes attributes;
     private final Request req;
     private final HttpMethod method;
     private final HttpHeaders headers;
@@ -69,12 +67,11 @@ public class HttpRequestImpl implements io.esastack.httpserver.core.HttpRequest 
     private HttpInputStream is;
     private Set<Cookie> cookies;
 
-    public HttpRequestImpl(Request req, Attributes attributes) {
+    public HttpRequestImpl(Request req) {
         this.req = req;
         this.method = HttpMethod.valueOf(req.rawMethod());
         this.headers = req.headers();
         this.trailers = req.aggregated().trailers();
-        this.attributes = attributes;
     }
 
     @Override
@@ -237,26 +234,6 @@ public class HttpRequestImpl implements io.esastack.httpserver.core.HttpRequest 
     @Override
     public ByteBufAllocator alloc() {
         return req.alloc();
-    }
-
-    @Override
-    public Object getAttribute(String name) {
-        return attributes.getAttribute(name);
-    }
-
-    @Override
-    public void setAttribute(String name, Object value) {
-        attributes.setAttribute(name, value);
-    }
-
-    @Override
-    public Object removeAttribute(String name) {
-        return attributes.removeAttribute(name);
-    }
-
-    @Override
-    public String[] attributeNames() {
-        return attributes.attributeNames();
     }
 
     @Override

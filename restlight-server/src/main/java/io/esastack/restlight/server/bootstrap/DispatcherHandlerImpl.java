@@ -149,7 +149,7 @@ public class DispatcherHandlerImpl<CTX extends RequestContext> implements Dispat
         HttpRequest request = context.request();
         LoggerUtils.logger().warn("No mapping for request(url={}, method={})",
                 request.path(), request.method());
-        RouteFailureException.RouteFailure cause = request.removeUncheckedAttribute(RoutePredicate.MISMATCH_ERR);
+        RouteFailureException.RouteFailure cause = context.attr(RoutePredicate.MISMATCH_ERR).getAndRemove();
         if (cause == null) {
             cause = RouteFailureException.RouteFailure.PATTERN_MISMATCH;
         }

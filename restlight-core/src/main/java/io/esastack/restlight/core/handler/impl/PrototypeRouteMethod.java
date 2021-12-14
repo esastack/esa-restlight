@@ -45,7 +45,7 @@ public class PrototypeRouteMethod extends RouteHandlerMethodAdapter {
     @Override
     public RouteExecution<RequestContext> toExecution(RequestContext context) {
         return new RouteExecutionImpl(mapping(), new PrototypeRouteHandler(handlerResolver(),
-                this, getMatchingInterceptors(context.request())),
+                this, getMatchingInterceptors(context)),
                 filters(), exceptionResolver());
     }
 

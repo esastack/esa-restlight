@@ -17,7 +17,7 @@ package io.esastack.restlight.core.resolver.rspentity;
 
 import esa.commons.StringUtils;
 import io.esastack.commons.net.http.MediaType;
-import io.esastack.httpserver.core.HttpRequest;
+import io.esastack.httpserver.core.RequestContext;
 import io.esastack.restlight.core.serialize.HttpResponseSerializer;
 import io.esastack.restlight.core.serialize.ProtoBufHttpBodySerializer;
 import io.esastack.restlight.core.util.Constants;
@@ -35,9 +35,9 @@ public abstract class NegotiationResponseResolver extends FlexibleResponseEntity
     }
 
     @Override
-    protected List<MediaType> getMediaTypes(HttpRequest request) {
+    protected List<MediaType> getMediaTypes(RequestContext context) {
         // judge by parameter
-        final String format = request.getParam(paramName);
+        final String format = context.request().getParam(paramName);
         if (Constants.NEGOTIATION_JSON_FORMAT.equals(format)) {
             List<MediaType> ret = InternalThreadLocalMap.get().arrayList(1);
             ret.add(MediaType.APPLICATION_JSON);
@@ -48,7 +48,7 @@ public abstract class NegotiationResponseResolver extends FlexibleResponseEntity
             return ret;
         } else {
             // fallback to default
-            return super.getMediaTypes(request);
+            return super.getMediaTypes(context);
         }
     }
 }

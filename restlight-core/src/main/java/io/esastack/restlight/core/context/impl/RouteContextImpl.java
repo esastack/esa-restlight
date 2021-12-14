@@ -15,6 +15,7 @@
  */
 package io.esastack.restlight.core.context.impl;
 
+import esa.commons.collection.Attributes;
 import io.esastack.restlight.core.context.HttpResponse;
 import io.esastack.restlight.core.context.RouteContext;
 import io.esastack.restlight.core.context.RoutedRequest;
@@ -23,8 +24,8 @@ public class RouteContextImpl extends RequestContextImpl implements RouteContext
 
     private final HttpResponse response;
 
-    public RouteContextImpl(RoutedRequest request, HttpResponse response) {
-        super(request, response);
+    public RouteContextImpl(Attributes attributes, RoutedRequest request, HttpResponse response) {
+        super(attributes, request, response);
         this.response = response;
     }
 

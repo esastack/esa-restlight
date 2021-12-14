@@ -16,7 +16,7 @@
 package io.esastack.restlight.core.resolver.param;
 
 import esa.commons.StringUtils;
-import io.esastack.httpserver.core.HttpRequest;
+import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.method.Param;
 import io.esastack.restlight.core.resolver.ParamResolver;
 import io.esastack.restlight.core.resolver.ParamResolverFactory;
@@ -42,8 +42,8 @@ public abstract class AbstractPathVariableParamResolver implements ParamResolver
                     ConverterUtils.str2ObjectConverter(param.genericType(), p -> p);
 
             @Override
-            protected Object resolveName(String name, HttpRequest request) {
-                String value = PathVariableUtils.getPathVariable(request, name);
+            protected Object resolveName(String name, RequestContext context) {
+                String value = PathVariableUtils.getPathVariable(context, name);
                 return converter.apply(StringUtils.isEmpty(value) ? value : cleanTemplateValueIfNecessary(value));
             }
 

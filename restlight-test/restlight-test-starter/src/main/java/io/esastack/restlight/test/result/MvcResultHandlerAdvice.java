@@ -29,7 +29,7 @@ public class MvcResultHandlerAdvice implements HandlerAdvice {
     public Object invoke(RequestContext context, Object[] args, HandlerInvoker invoker) throws Throwable {
         Object result = invoker.invoke(context, args);
         if (context.request() instanceof MockHttpRequest) {
-            context.request().setAttribute(DefaultMockMvc.RETURN_VALUE_KEY, result);
+            context.attr(DefaultMockMvc.RETURN_VALUE_KEY).set(result);
         }
         return result;
     }

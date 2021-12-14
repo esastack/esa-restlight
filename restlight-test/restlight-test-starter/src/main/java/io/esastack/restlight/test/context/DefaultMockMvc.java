@@ -15,7 +15,7 @@
  */
 package io.esastack.restlight.test.context;
 
-import io.esastack.httpserver.core.HttpRequest;
+import esa.commons.collection.AttributeKey;
 import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.context.impl.HttpResponseAdapter;
 import io.esastack.restlight.core.context.impl.RequestContextImpl;
@@ -31,7 +31,7 @@ import io.esastack.restlight.test.result.ResultMatcher;
 
 public class DefaultMockMvc implements MockMvc {
 
-    public static final String RETURN_VALUE_KEY = "$mock.result";
+    public static final AttributeKey<Object> RETURN_VALUE_KEY = AttributeKey.valueOf("$mock.result");
 
     private final RestlightHandler<RequestContext> handler;
 
@@ -42,12 +42,13 @@ public class DefaultMockMvc implements MockMvc {
     @Override
     public ResultActions perform(MockHttpRequest request) {
         final MockHttpResponse response = MockHttpResponse.aMockResponse().build();
-        handler.process(new RequestContextImpl(request, new HttpResponseAdapter(response))).join();
-        return new DefaultResultActions(new DefaultMvcResult(request, response, getResultAndClear(request)));
+        RequestContext context = new RequestContextImpl(request, new HttpResponseAdapter(response));
+        handler.process(context).join();
+        return new DefaultResultActions(new DefaultMvcResult(request, response, getResultAndClear(context)));
     }
 
-    private Object getResultAndClear(HttpRequest request) {
-        return FutureUtils.getFutureResult(request.removeAttribute(RETURN_VALUE_KEY));
+    private Object getResultAndClear(RequestContext context) {
+        return FutureUtils.getFutureResult(context.attr(RETURN_VALUE_KEY).get());
     }
 
     private static class DefaultResultActions implements ResultActions {

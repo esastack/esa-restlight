@@ -15,8 +15,8 @@
  */
 package io.esastack.restlight.core.resolver.rspentity;
 
+import esa.commons.collection.AttributeKey;
 import io.esastack.commons.net.http.MediaType;
-import io.esastack.httpserver.core.HttpRequest;
 import io.esastack.httpserver.core.RequestContext;
 import io.esastack.restlight.core.method.HandlerMethod;
 import io.esastack.restlight.core.resolver.HandledValue;
@@ -32,7 +32,8 @@ import java.util.Objects;
 
 public abstract class FixedResponseEntityResolver extends AbstractResponseEntityResolver {
 
-    private static final String MATCHED_SERIALIZER = "$matched_response_serializer";
+    private static final AttributeKey<HttpResponseSerializer> MATCHED_SERIALIZER = AttributeKey
+            .valueOf("$matched_response_serializer");
 
     private final List<? extends HttpResponseSerializer> serializers;
 
@@ -59,7 +60,7 @@ public abstract class FixedResponseEntityResolver extends AbstractResponseEntity
                     .findFirst()
                     .orElseThrow(() -> new IllegalArgumentException("Could not findFor ResponseBody serializer. " +
                             "target type:" + target.getName()));
-            context.request().setAttribute(MATCHED_SERIALIZER, serializer);
+            context.attr(MATCHED_SERIALIZER).set(serializer);
             return super.writeTo(entity, context);
         } else {
             return HandledValue.failed();
@@ -69,8 +70,8 @@ public abstract class FixedResponseEntityResolver extends AbstractResponseEntity
     @Override
     protected byte[] serialize(ResponseEntity entity,
                                List<MediaType> mediaTypes,
-                               HttpRequest request) throws Exception {
-        final HttpResponseSerializer serializer = (HttpResponseSerializer) request.removeAttribute(MATCHED_SERIALIZER);
+                               RequestContext context) throws Exception {
+        final HttpResponseSerializer serializer = context.attr(MATCHED_SERIALIZER).getAndRemove();
         HandledValue<byte[]> value = Serializers.serializeBySerializer(serializer, entity);
         if (value.isSuccess()) {
             return value.value();
@@ -92,7 +93,7 @@ public abstract class FixedResponseEntityResolver extends AbstractResponseEntity
     }
 
     @Override
-    protected List<MediaType> getMediaTypes(HttpRequest request) {
+    protected List<MediaType> getMediaTypes(RequestContext context) {
         return Collections.emptyList();
     }
 

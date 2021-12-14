@@ -15,7 +15,7 @@
  */
 package io.esastack.restlight.core.configure;
 
-import io.esastack.httpserver.core.Attributes;
+import esa.commons.collection.Attributes;
 import io.esastack.httpserver.impl.AttributesProxy;
 import io.esastack.restlight.core.resolver.ContextResolverFactory;
 import io.esastack.restlight.core.resolver.ParamConverterFactory;

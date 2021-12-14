@@ -16,7 +16,7 @@
 package io.esastack.restlight.core.resolver.rspentity;
 
 import io.esastack.commons.net.http.MediaType;
-import io.esastack.httpserver.core.HttpRequest;
+import io.esastack.httpserver.core.RequestContext;
 import io.esastack.restlight.core.resolver.HandledValue;
 import io.esastack.restlight.core.resolver.ParamResolverFactory;
 import io.esastack.restlight.core.resolver.ResponseEntity;
@@ -40,7 +40,7 @@ public abstract class FlexibleResponseEntityResolver extends AbstractResponseEnt
     }
 
     @Override
-    protected byte[] serialize(ResponseEntity entity, List<MediaType> mediaTypes, HttpRequest request)
+    protected byte[] serialize(ResponseEntity entity, List<MediaType> mediaTypes, RequestContext context)
             throws Exception {
         if (serializers.isEmpty()) {
             throw WebServerException.badRequest("Could not find any compatible serializer to handle " +

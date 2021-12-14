@@ -20,8 +20,6 @@ import esa.commons.ClassUtils;
 import esa.commons.ObjectUtils;
 import esa.commons.StringUtils;
 import esa.commons.spi.SpiLoader;
-import io.esastack.httpserver.core.Attributes;
-import io.esastack.httpserver.core.AttributesImpl;
 import io.esastack.httpserver.core.HttpRequest;
 import io.esastack.httpserver.impl.HttpRequestImpl;
 import io.esastack.restlight.core.config.RestlightOptions;
@@ -172,8 +170,7 @@ public abstract class Deployments<R extends AbstractRestlight<R, D, O>, D extend
             if (req instanceof RequestContext) {
                 return (RequestContext) req;
             }
-            Attributes attributes = new AttributesImpl();
-            HttpRequest request = new HttpRequestImpl(req, attributes);
+            HttpRequest request = new HttpRequestImpl(req);
             HttpResponse response = new HttpResponseImpl(req.response());
             return new RequestContextImpl(request, response);
         };
@@ -185,7 +182,7 @@ public abstract class Deployments<R extends AbstractRestlight<R, D, O>, D extend
             if (ctx instanceof FilterContext) {
                 return (FilterContext) ctx;
             }
-            return new FilterContextImpl(new FilteringRequestImpl(ctx.request()), ctx.response());
+            return new FilterContextImpl(ctx, new FilteringRequestImpl(ctx.request()), ctx.response());
         };
     }
 

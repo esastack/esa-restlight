@@ -16,14 +16,16 @@
 package io.esastack.restlight.server.route.predicate;
 
 import esa.commons.Checks;
+import esa.commons.collection.AttributeKey;
 import io.esastack.commons.net.http.HttpMethod;
-import io.esastack.httpserver.core.HttpRequest;
+import io.esastack.httpserver.core.RequestContext;
 import io.esastack.restlight.server.route.Mapping;
 import io.esastack.restlight.server.route.RouteFailureException;
 
 public class RoutePredicate implements RequestPredicate {
 
-    public static final String MISMATCH_ERR = "$mismatch.err";
+    public static final AttributeKey<RouteFailureException.RouteFailure> MISMATCH_ERR =
+            AttributeKey.valueOf("$mismatch.err");
 
     private final PatternsPredicate patterns;
     private final MethodPredicate method;
@@ -48,34 +50,34 @@ public class RoutePredicate implements RequestPredicate {
     }
 
     @Override
-    public boolean test(HttpRequest request) {
-        if (!patterns.test(request)) {
-            request.setAttribute(MISMATCH_ERR, RouteFailureException.RouteFailure.PATTERN_MISMATCH);
+    public boolean test(RequestContext context) {
+        if (!patterns.test(context)) {
+            context.attr(MISMATCH_ERR).set(RouteFailureException.RouteFailure.PATTERN_MISMATCH);
             return false;
         }
 
-        if (method != null && !method.test(request)) {
-            request.setAttribute(MISMATCH_ERR, RouteFailureException.RouteFailure.METHOD_MISMATCH);
+        if (method != null && !method.test(context)) {
+            context.attr(MISMATCH_ERR).set(RouteFailureException.RouteFailure.METHOD_MISMATCH);
             return false;
         }
 
-        if (params != null && !params.test(request)) {
-            request.setAttribute(MISMATCH_ERR, RouteFailureException.RouteFailure.PARAM_MISMATCH);
+        if (params != null && !params.test(context)) {
+            context.attr(MISMATCH_ERR).set(RouteFailureException.RouteFailure.PARAM_MISMATCH);
             return false;
         }
 
-        if (headers != null && !headers.test(request)) {
-            request.setAttribute(MISMATCH_ERR, RouteFailureException.RouteFailure.HEADER_MISMATCH);
+        if (headers != null && !headers.test(context)) {
+            context.attr(MISMATCH_ERR).set(RouteFailureException.RouteFailure.HEADER_MISMATCH);
             return false;
         }
 
-        if (consumes != null && !consumes.test(request)) {
-            request.setAttribute(MISMATCH_ERR, RouteFailureException.RouteFailure.CONSUMES_MISMATCH);
+        if (consumes != null && !consumes.test(context)) {
+            context.attr(MISMATCH_ERR).set(RouteFailureException.RouteFailure.CONSUMES_MISMATCH);
             return false;
         }
 
-        if (produces != null && !produces.test(request)) {
-            request.setAttribute(MISMATCH_ERR, RouteFailureException.RouteFailure.PRODUCES_MISMATCH);
+        if (produces != null && !produces.test(context)) {
+            context.attr(MISMATCH_ERR).set(RouteFailureException.RouteFailure.PRODUCES_MISMATCH);
             return false;
         }
         return true;

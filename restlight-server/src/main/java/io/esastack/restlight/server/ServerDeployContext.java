@@ -15,13 +15,13 @@
  */
 package io.esastack.restlight.server;
 
+import esa.commons.collection.Attributes;
 import io.esastack.httpserver.core.RequestContext;
 import io.esastack.restlight.server.bootstrap.DispatcherHandler;
 import io.esastack.restlight.server.config.ServerOptions;
 import io.esastack.restlight.server.route.RouteRegistry;
 import io.esastack.restlight.server.schedule.Scheduler;
 
-import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
 
@@ -32,7 +32,7 @@ import java.util.Optional;
  *
  * @param <O> type of options
  */
-public interface ServerDeployContext<O extends ServerOptions> {
+public interface ServerDeployContext<O extends ServerOptions> extends Attributes {
 
     /**
      * Name of the Restlight server.
@@ -71,60 +71,4 @@ public interface ServerDeployContext<O extends ServerOptions> {
      */
     Optional<DispatcherHandler<? extends RequestContext>> dispatcherHandler();
 
-    /**
-     * Stores an attribute in this context.
-     *
-     * @param key   key
-     * @param value value
-     */
-    void attribute(String key, Object value);
-
-    /**
-     * Returns the value of the named attribute as an Object, or{@code null} if no attribute of the given name exists.
-     *
-     * @param key key
-     *
-     * @return value
-     */
-    Object attribute(String key);
-
-    /**
-     * Removes an attribute from this context.
-     *
-     * @param key key
-     *
-     * @return value
-     */
-    Object removeAttribute(String key);
-
-    /**
-     * Obtains an immutable collection which holds all of current attribute name.
-     *
-     * @return  attribute names
-     */
-    Collection<String> attributeNames();
-
-    /**
-     * Returns the value of the named attribute as an Object, or{@code null} if no attribute of the given name exists.
-     *
-     * @param key key
-     *
-     * @return value
-     */
-    @SuppressWarnings("unchecked")
-    default <T> T uncheckedAttribute(String key) {
-        return (T) attribute(key);
-    }
-
-    /**
-     * Removes an attribute from this context.
-     *
-     * @param key key
-     *
-     * @return value
-     */
-    @SuppressWarnings("unchecked")
-    default <T> T removeUncheckedAttribute(String key) {
-        return (T) removeAttribute(key);
-    }
 }
