@@ -35,7 +35,7 @@ public abstract class BaseHttpBodySerializer implements HttpBodySerializer {
         if (preferStream()) {
             return HandledValue.succeed(doDeserialize(entity.inputStream(), entity.type()));
         } else {
-            return HandledValue.succeed(doDeserialize(entity.byteData(), entity.type()));
+            return HandledValue.succeed(doDeserialize(entity.body().getBytes(), entity.type()));
         }
     }
 

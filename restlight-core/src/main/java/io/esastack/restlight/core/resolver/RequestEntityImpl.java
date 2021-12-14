@@ -17,12 +17,17 @@ package io.esastack.restlight.core.resolver;
 
 import esa.commons.Checks;
 import esa.commons.io.IOUtils;
+import io.esastack.commons.net.buffer.Buffer;
+import io.esastack.commons.net.buffer.BufferUtil;
 import io.esastack.httpserver.core.HttpInputStream;
 import io.esastack.httpserver.core.HttpRequest;
 import io.esastack.httpserver.impl.HttpInputStreamImpl;
 import io.esastack.httpserver.impl.HttpRequestProxy;
+import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.method.HandlerMethod;
 import io.esastack.restlight.core.method.Param;
+import io.netty.buffer.ByteBuf;
+import io.netty.util.ReferenceCountUtil;
 
 import java.io.InputStream;
 
@@ -30,27 +35,28 @@ public class RequestEntityImpl extends HttpEntityImpl implements RequestEntity {
 
     private final HttpRequest request;
     private final Param param;
-    private byte[] byteData;
+    private Buffer body;
     private InputStream ins;
 
-    public RequestEntityImpl(HandlerMethod handler, Param param, HttpRequest request) {
-        super(handler, request.contentType());
+    public RequestEntityImpl(HandlerMethod handler, Param param, RequestContext context) {
+        super(handler, context.request().contentType());
         Checks.checkNotNull(handler, "handler");
         Checks.checkNotNull(param, "param");
-        Checks.checkNotNull(request, "request");
-        this.request = request;
+        Checks.checkNotNull(context, "request");
+        this.request = context.request();
         this.param = param;
         this.type = param.type();
         this.genericType = param.genericType();
         this.annotations = param.annotations();
+        context.response().onEnd(rsp -> this.safeRelease());
     }
 
     @Override
-    public byte[] byteData() {
-        if (byteData == null) {
-            return request.body().getBytes();
+    public Buffer body() {
+        if (body == null) {
+            return request.body();
         } else {
-            return byteData;
+            return body;
         }
     }
 
@@ -64,8 +70,8 @@ public class RequestEntityImpl extends HttpEntityImpl implements RequestEntity {
     }
 
     @Override
-    public void byteData(byte[] data) {
-        this.byteData = data;
+    public void body(Buffer data) {
+        this.body = data;
     }
 
     @Override
@@ -90,6 +96,18 @@ public class RequestEntityImpl extends HttpEntityImpl implements RequestEntity {
             };
         }
         return request;
+    }
+
+    private void safeRelease() {
+        if (ins != null) {
+            IOUtils.closeQuietly(this.ins);
+        }
+        if (body != null) {
+            Object underlying = BufferUtil.unwrap(body);
+            if (underlying instanceof ByteBuf) {
+                ReferenceCountUtil.safeRelease(this.ins);
+            }
+        }
     }
 }
 

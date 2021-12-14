@@ -94,7 +94,7 @@ public abstract class FlexibleRequestEntityResolverFactory implements RequestEnt
                 if (entity.inputStream().readBytes() == 0) {
                     return HandledValue.succeed(null);
                 }
-                return HandledValue.succeed(converter.apply(new String(entity.byteData(), StandardCharsets.UTF_8)));
+                return HandledValue.succeed(converter.apply(entity.body().string(StandardCharsets.UTF_8)));
             }
 
             //search serializer to resolve argument

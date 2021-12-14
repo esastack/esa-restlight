@@ -51,7 +51,7 @@ class AdvisedRequestEntityResolver implements ResolverWrap {
     @Override
     public Object resolve(DeployContext<? extends RestlightOptions> deployContext,
                           Param param, RequestContext context) throws Exception {
-        RequestEntity entity = new RequestEntityImpl(handlerMethod, param, context.request());
+        RequestEntity entity = new RequestEntityImpl(handlerMethod, param, context);
         if (absentAdvices) {
             HandledValue<Object> handled;
             for (RequestEntityResolver resolver : resolvers) {
