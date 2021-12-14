@@ -131,7 +131,7 @@ public class UriInfoImpl implements UriInfo {
 
     @Override
     public MultivaluedMap<String, String> getPathParameters(boolean decode) {
-        Map<String, String> variables = context.getUncheckedAttribute(PatternsPredicate.TEMPLATE_VARIABLES);
+        Map<String, String> variables = context.attr(PatternsPredicate.TEMPLATE_VARIABLES).get();
         if (variables == null || variables.isEmpty()) {
             return new UnmodifiableMultivaluedMap<>(new MultivaluedHashMap<>());
         } else {

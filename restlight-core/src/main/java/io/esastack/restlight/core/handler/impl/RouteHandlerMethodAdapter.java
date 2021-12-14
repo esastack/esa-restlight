@@ -17,7 +17,6 @@ package io.esastack.restlight.core.handler.impl;
 
 import esa.commons.Checks;
 import esa.commons.collection.MultiValueMap;
-import io.esastack.httpserver.core.HttpRequest;
 import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.handler.HandlerMapping;
@@ -82,9 +81,9 @@ public abstract class RouteHandlerMethodAdapter extends HandlerMethodAdapter<Rou
         return handlerFactory.getRouteFilters(method);
     }
 
-    List<InternalInterceptor> getMatchingInterceptors(HttpRequest request) {
+    List<InternalInterceptor> getMatchingInterceptors(io.esastack.httpserver.core.RequestContext context) {
         if (handlerMethod().intercepted()) {
-            return interceptorMatcher.match(request);
+            return interceptorMatcher.match(context);
         }
         return null;
     }
@@ -157,7 +156,7 @@ public abstract class RouteHandlerMethodAdapter extends HandlerMethodAdapter<Rou
             this.interceptorMappings = interceptorMappings;
         }
 
-        List<InternalInterceptor> match(HttpRequest request) {
+        List<InternalInterceptor> match(io.esastack.httpserver.core.RequestContext context) {
             //if lookup map is empty -> just return the all mapping interceptors
             if (interceptorMappings.isEmpty()) {
                 return null;
@@ -165,16 +164,16 @@ public abstract class RouteHandlerMethodAdapter extends HandlerMethodAdapter<Rou
 
             // there's no need to sort this result set again, because the interceptorMappings is already kept in sort
             // and we had just matched these in order.
-            return doMatch(request);
+            return doMatch(context);
         }
 
-        protected List<InternalInterceptor> doMatch(HttpRequest request) {
+        protected List<InternalInterceptor> doMatch(io.esastack.httpserver.core.RequestContext context) {
             // match interceptors by order
             final List<InternalInterceptor> matchedInterceptors =
                     new LinkedList<>();
             //no way but to search from the whole collection
             for (InterceptorMapping mapping : interceptorMappings) {
-                if (mapping.test(request)) {
+                if (mapping.test(context)) {
                     matchedInterceptors.add(mapping.interceptor);
                 }
             }
@@ -198,9 +197,9 @@ public abstract class RouteHandlerMethodAdapter extends HandlerMethodAdapter<Rou
         }
 
         @Override
-        protected List<InternalInterceptor> doMatch(HttpRequest request) {
+        protected List<InternalInterceptor> doMatch(io.esastack.httpserver.core.RequestContext context) {
             try {
-                return super.doMatch(request);
+                return super.doMatch(context);
             } finally {
                 // clear flags
                 for (FastThreadLocal<?> local : locals) {
@@ -220,8 +219,8 @@ public abstract class RouteHandlerMethodAdapter extends HandlerMethodAdapter<Rou
         }
 
         @Override
-        public boolean test(HttpRequest request) {
-            return predicate.test(request);
+        public boolean test(io.esastack.httpserver.core.RequestContext context) {
+            return predicate.test(context);
         }
 
         @Override
@@ -244,10 +243,10 @@ public abstract class RouteHandlerMethodAdapter extends HandlerMethodAdapter<Rou
         }
 
         @Override
-        public boolean test(HttpRequest request) {
+        public boolean test(io.esastack.httpserver.core.RequestContext context) {
             Boolean isMatched = matched.getIfExists();
             if (isMatched == null) {
-                boolean matchResult = super.test(request);
+                boolean matchResult = super.test(context);
                 this.matched.set(matchResult);
                 return matchResult;
             } else {

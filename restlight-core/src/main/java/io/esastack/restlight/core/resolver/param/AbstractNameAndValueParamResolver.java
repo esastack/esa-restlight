@@ -15,7 +15,6 @@
  */
 package io.esastack.restlight.core.resolver.param;
 
-import io.esastack.httpserver.core.HttpRequest;
 import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.method.Param;
 import io.esastack.restlight.core.resolver.ParamResolver;
@@ -35,7 +34,7 @@ public abstract class AbstractNameAndValueParamResolver extends AbstractNameAndV
 
     @Override
     public Object resolve(Param param, RequestContext context) throws Exception {
-        Object arg = this.resolveName(nav.name, context.request());
+        Object arg = this.resolveName(nav.name, context);
         if (arg == null) {
             if (nav.hasDefaultValue) {
                 arg = nav.defaultValue;
@@ -47,13 +46,13 @@ public abstract class AbstractNameAndValueParamResolver extends AbstractNameAndV
     }
 
     /**
-     * Try to resolve the value by the given name from the {@link HttpRequest}.
+     * Try to resolve the value by the given name from the {@link RequestContext}.
      *
      * @param name    name
-     * @param request request
+     * @param context context
      *
      * @return resolved value
      * @throws Exception occurred
      */
-    protected abstract Object resolveName(String name, HttpRequest request) throws Exception;
+    protected abstract Object resolveName(String name, RequestContext context) throws Exception;
 }

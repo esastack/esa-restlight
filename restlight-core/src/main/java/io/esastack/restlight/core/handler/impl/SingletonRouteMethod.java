@@ -51,7 +51,7 @@ public class SingletonRouteMethod extends RouteHandlerMethodAdapter {
     @Override
     public RouteExecution<RequestContext> toExecution(RequestContext context) {
         return new RouteExecutionImpl(mapping(), new SingletonRouteHandler(handlerResolver(), this,
-                getMatchingInterceptors(context.request()), singleton), filters(), exceptionResolver());
+                getMatchingInterceptors(context), singleton), filters(), exceptionResolver());
     }
 
     static HandlerInvoker buildInvoker(HandlerMethod method, Object instance,

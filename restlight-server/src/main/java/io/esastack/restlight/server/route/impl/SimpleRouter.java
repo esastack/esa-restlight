@@ -15,13 +15,13 @@
  */
 package io.esastack.restlight.server.route.impl;
 
-import io.esastack.httpserver.core.HttpRequest;
+import io.esastack.httpserver.core.RequestContext;
 
 class SimpleRouter extends AbstractRouter<RouteWrap> {
 
     @Override
-    RouteWrap matchAll(HttpRequest request) {
-        return findFromMappings(request);
+    RouteWrap matchAll(RequestContext context) {
+        return findFromMappings(context);
     }
 
     @Override
@@ -37,12 +37,12 @@ class SimpleRouter extends AbstractRouter<RouteWrap> {
     /**
      * route the RouteHandler for current request from given HandlerMethodMappings
      *
-     * @param request request
+     * @param context context
      * @return RouteHandler found, {@code null} if not found
      */
-    private RouteWrap findFromMappings(HttpRequest request) {
+    private RouteWrap findFromMappings(RequestContext context) {
         for (RouteWrap route : mappingLookups) {
-            if (route.test(request)) {
+            if (route.test(context)) {
                 return route;
             }
         }

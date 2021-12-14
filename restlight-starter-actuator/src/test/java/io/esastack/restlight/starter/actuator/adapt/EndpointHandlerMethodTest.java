@@ -15,8 +15,7 @@
  */
 package io.esastack.restlight.starter.actuator.adapt;
 
-import io.esastack.httpserver.core.HttpRequest;
-import io.esastack.httpserver.core.HttpResponse;
+import io.esastack.httpserver.core.RequestContext;
 import io.esastack.restlight.core.handler.Handler;
 import io.esastack.restlight.core.method.HandlerMethod;
 import io.esastack.restlight.core.method.MethodParam;
@@ -57,13 +56,11 @@ class EndpointHandlerMethodTest {
                         .getMethodAnnotation(ResponseBody0.shadedClass()));
         assertNotNull(responseBody.toString());
 
-
         assertNotNull(handlerMethod.parameters());
-        assertEquals(3, handlerMethod.parameters().length);
-        assertEquals(handlerMethod.parameters()[0].type(), HttpRequest.class);
-        assertEquals(handlerMethod.parameters()[1].type(), HttpResponse.class);
-        assertEquals(handlerMethod.parameters()[2].type(), Map.class);
-        final MethodParam body = handlerMethod.parameters()[2];
+        assertEquals(2, handlerMethod.parameters().length);
+        assertEquals(handlerMethod.parameters()[0].type(), RequestContext.class);
+        assertEquals(handlerMethod.parameters()[1].type(), Map.class);
+        final MethodParam body = handlerMethod.parameters()[1];
 
         assertTrue(body.hasAnnotation(RequestBody0.shadedClass()));
         final Annotation requestBody = body.getAnnotation(RequestBody0.shadedClass());
@@ -79,7 +76,7 @@ class EndpointHandlerMethodTest {
         assertEquals(requestBody,
                 EndpointHandlerMethod.forSpringMvc(webOperation())
                         .handlerMethod()
-                        .parameters()[2].getAnnotation(RequestBody0.shadedClass()));
+                        .parameters()[1].getAnnotation(RequestBody0.shadedClass()));
         assertNotNull(requestBody.toString());
         assertFalse(RequestBody0.fromShade(requestBody).required());
     }
@@ -88,10 +85,9 @@ class EndpointHandlerMethodTest {
     void testJaxrs() {
         final HandlerMethod handlerMethod = EndpointHandlerMethod.forJaxrs(webOperation()).handlerMethod();
         assertNotNull(handlerMethod.parameters());
-        assertEquals(3, handlerMethod.parameters().length);
-        assertEquals(handlerMethod.parameters()[0].type(), HttpRequest.class);
-        assertEquals(handlerMethod.parameters()[1].type(), HttpResponse.class);
-        assertEquals(handlerMethod.parameters()[2].type(), Map.class);
+        assertEquals(2, handlerMethod.parameters().length);
+        assertEquals(handlerMethod.parameters()[0].type(), RequestContext.class);
+        assertEquals(handlerMethod.parameters()[1].type(), Map.class);
     }
 
     private static WebOperation webOperation() {

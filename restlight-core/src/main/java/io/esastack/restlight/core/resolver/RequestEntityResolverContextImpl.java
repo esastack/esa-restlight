@@ -16,12 +16,15 @@
 package io.esastack.restlight.core.resolver;
 
 import esa.commons.Checks;
+import esa.commons.collection.Attribute;
+import esa.commons.collection.AttributeKey;
 import io.esastack.commons.net.http.MediaType;
 import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.method.Param;
 
 import java.io.InputStream;
 import java.util.List;
+import java.util.function.BiConsumer;
 
 public class RequestEntityResolverContextImpl implements RequestEntityResolverContext {
 
@@ -92,23 +95,29 @@ public class RequestEntityResolverContextImpl implements RequestEntityResolverCo
     }
 
     @Override
-    public Object getAttribute(String name) {
-        return context.getAttribute(name);
+    public <V> Attribute<V> attr(AttributeKey<V> key) {
+        return context.attr(key);
     }
 
     @Override
-    public void setAttribute(String name, Object value) {
-        context.setAttribute(name, value);
+    public boolean hasAttr(AttributeKey<?> key) {
+        return context.hasAttr(key);
     }
 
     @Override
-    public Object removeAttribute(String name) {
-        return context.removeAttribute(name);
+    public void forEach(BiConsumer<? super AttributeKey<?>, ? super Attribute<?>> consumer) {
+        context.forEach(consumer);
     }
 
     @Override
-    public String[] attributeNames() {
-        return context.attributeNames();
+    public int size() {
+        return context.size();
     }
+
+    @Override
+    public boolean isEmpty() {
+        return context.isEmpty();
+    }
+
 }
 

@@ -17,7 +17,7 @@ package io.esastack.restlight.core.resolver.param;
 
 import esa.commons.ClassUtils;
 import io.esastack.commons.net.http.Cookie;
-import io.esastack.httpserver.core.HttpRequest;
+import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.method.Param;
 import io.esastack.restlight.core.resolver.ParamResolver;
 import io.esastack.restlight.core.resolver.ParamResolverFactory;
@@ -77,8 +77,8 @@ public abstract class AbstractCookieValueParamResolver implements ParamResolverF
         }
 
         @Override
-        protected Object resolveName(String name, HttpRequest request) {
-            Cookie cookie = request.getCookie(name);
+        protected Object resolveName(String name, RequestContext context) {
+            Cookie cookie = context.request().getCookie(name);
             return cookie == null ? null : converter.apply(cookie.value());
         }
     }
@@ -93,8 +93,8 @@ public abstract class AbstractCookieValueParamResolver implements ParamResolverF
         }
 
         @Override
-        protected Cookie resolveName(String name, HttpRequest request) {
-            return request.getCookie(name);
+        protected Cookie resolveName(String name, RequestContext context) {
+            return context.request().getCookie(name);
         }
     }
 
@@ -108,8 +108,8 @@ public abstract class AbstractCookieValueParamResolver implements ParamResolverF
         }
 
         @Override
-        protected Set<Cookie> resolveName(String name, HttpRequest request) {
-            return request.cookies();
+        protected Set<Cookie> resolveName(String name, RequestContext context) {
+            return context.request().cookies();
         }
     }
 }

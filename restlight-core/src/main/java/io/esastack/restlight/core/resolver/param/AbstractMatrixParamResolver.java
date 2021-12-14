@@ -19,7 +19,7 @@ import esa.commons.ClassUtils;
 import esa.commons.StringUtils;
 import esa.commons.collection.LinkedMultiValueMap;
 import esa.commons.collection.MultiValueMap;
-import io.esastack.httpserver.core.HttpRequest;
+import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.method.Param;
 import io.esastack.restlight.core.resolver.ParamResolver;
 import io.esastack.restlight.core.resolver.ParamResolverFactory;
@@ -64,9 +64,9 @@ public abstract class AbstractMatrixParamResolver implements ParamResolverFactor
         }
 
         @Override
-        protected Object resolveName(String name, HttpRequest request) {
+        protected Object resolveName(String name, RequestContext context) {
             Map<String, MultiValueMap<String, String>> pathParameters =
-                    PathVariableUtils.getMatrixVariables(request);
+                    PathVariableUtils.getMatrixVariables(context);
 
             if (pathParameters.isEmpty()) {
                 return matrixVariableMap ? Collections.emptyMap() : null;

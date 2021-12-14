@@ -76,7 +76,7 @@ public class RouteExecutionImpl implements RouteExecution<RequestContext> {
         LinkedRouteFilterChain chain = LinkedRouteFilterChain.immutable(filters, execution::handle);
         return context -> {
             RoutedRequest request = new RoutedRequestImpl(context.request());
-            return chain.doNext(mapping, new RouteContextImpl(request, context.response()));
+            return chain.doNext(mapping, new RouteContextImpl(context, request, context.response()));
         };
     }
 

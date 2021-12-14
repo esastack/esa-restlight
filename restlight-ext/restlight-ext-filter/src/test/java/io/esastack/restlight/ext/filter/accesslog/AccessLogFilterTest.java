@@ -15,6 +15,7 @@
  */
 package io.esastack.restlight.ext.filter.accesslog;
 
+import esa.commons.collection.AttributeMap;
 import esa.commons.logging.InternalLogger;
 import io.esastack.httpserver.core.HttpRequest;
 import io.esastack.httpserver.core.HttpResponse;
@@ -87,7 +88,8 @@ class AccessLogFilterTest {
             ctx.response().sendResult(200);
             return Futures.completedFuture();
         });
-        filter.doFilter(new FilterContextImpl(new FilteringRequestImpl(request), response), chain).join();
+        filter.doFilter(new FilterContextImpl(new AttributeMap(), new FilteringRequestImpl(request), response),
+                chain).join();
         assertEquals(200, response.status());
         verify(mock).info(argThat(s -> s.contains(request.rawMethod())
                 && s.contains("contentLength=" + request.contentLength())

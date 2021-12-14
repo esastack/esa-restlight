@@ -70,54 +70,6 @@ public abstract class AbstractServerOptionsConfigure<C extends AbstractServerOpt
         return self();
     }
 
-    /**
-     * @deprecated use {@link BizThreadsOptions#setCore(int)}
-     *
-     * @param coreBizThreads core size of biz-threads
-     * @return  self
-     */
-    @Deprecated
-    public C coreBizThreads(int coreBizThreads) {
-        bizThreads.setCore(coreBizThreads);
-        return self();
-    }
-
-    /**
-     * @deprecated use {@link BizThreadsOptions#setMax(int)}
-     *
-     * @param maxBizThreads max size of biz-threads
-     * @return  self
-     */
-    @Deprecated
-    public C maxBizThreads(int maxBizThreads) {
-        bizThreads.setMax(maxBizThreads);
-        return self();
-    }
-
-    /**
-     * @deprecated use {@link BizThreadsOptions#setBlockingQueueLength(int)}
-     *
-     * @param blockingQueueLength   blocking queue length of biz-threads
-     * @return  self
-     */
-    @Deprecated
-    public C blockingQueueLength(int blockingQueueLength) {
-        bizThreads.setBlockingQueueLength(blockingQueueLength);
-        return self();
-    }
-
-    /**
-     * @deprecated use {@link BizThreadsOptions#setKeepAliveTimeSeconds(long)}
-     *
-     * @param keepAliveTimeSeconds  keep alive seconds of biz-threads
-     * @return  self
-     */
-    @Deprecated
-    public C keepAliveTimeSeconds(long keepAliveTimeSeconds) {
-        bizThreads.setKeepAliveTimeSeconds(keepAliveTimeSeconds);
-        return self();
-    }
-
     public C bizTerminationTimeoutSeconds(long bizTerminationTimeoutSeconds) {
         this.bizTerminationTimeoutSeconds = bizTerminationTimeoutSeconds;
         return self();
@@ -181,14 +133,6 @@ public abstract class AbstractServerOptionsConfigure<C extends AbstractServerOpt
     public C logging(LogLevel logging) {
         this.logging = logging;
         return self();
-    }
-
-    /**
-     * @deprecated use {@link #ssl(SslOptions)}
-     */
-    @Deprecated
-    public C https(SslOptions https) {
-        return ssl(https);
     }
 
     public C ssl(SslOptions https) {

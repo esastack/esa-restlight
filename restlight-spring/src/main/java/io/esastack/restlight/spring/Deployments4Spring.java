@@ -391,7 +391,7 @@ public class Deployments4Spring<R extends AbstractRestlight4Spring<R, D, O>, D e
         if (objectMapperClz != null) {
             beanOfType(context, objectMapperClz)
                     .ifPresent(objectMapper -> ctx()
-                            .attribute(JacksonDefaultSerializerFactory.OBJECT_MAPPER, objectMapper));
+                            .attr(JacksonDefaultSerializerFactory.OBJECT_MAPPER).set(objectMapper));
         }
 
         // Check whether GsonHttpBodySerializer and GsonHttpBodySerializerAdapter exist at the same time

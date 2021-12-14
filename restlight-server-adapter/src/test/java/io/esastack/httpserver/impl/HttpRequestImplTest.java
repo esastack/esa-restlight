@@ -26,7 +26,6 @@ import io.esastack.commons.net.http.HttpVersion;
 import io.esastack.commons.net.http.MediaType;
 import io.esastack.commons.net.netty.http.Http1HeadersImpl;
 import io.esastack.httpserver.core.Aggregation;
-import io.esastack.httpserver.core.AttributesImpl;
 import io.esastack.httpserver.core.HttpInputStream;
 import io.esastack.httpserver.core.Request;
 import io.netty.buffer.ByteBuf;
@@ -38,9 +37,7 @@ import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -61,7 +58,7 @@ class HttpRequestImplTest {
         when(aggregation.trailers()).thenReturn(new Http1HeadersImpl());
         when(mock.aggregated()).thenReturn(aggregation);
 
-        final HttpRequestImpl req = new HttpRequestImpl(mock, new AttributesImpl());
+        final HttpRequestImpl req = new HttpRequestImpl(mock);
 
         when(mock.version()).thenReturn(HttpVersion.HTTP_1_1);
         assertEquals(HttpVersion.HTTP_1_1, req.httpVersion());
@@ -79,11 +76,6 @@ class HttpRequestImplTest {
         assertEquals("a=1", req.query());
 
         when(mock.version()).thenReturn(HttpVersion.HTTP_1_1);
-
-        assertFalse(req.hasAttribute("name0"));
-        req.setAttribute("name0", "value1");
-        assertTrue(req.hasAttribute("name0"));
-
         when(mock.scheme()).thenReturn("https");
         assertEquals("https", req.scheme());
 
@@ -147,7 +139,7 @@ class HttpRequestImplTest {
         when(aggregation.trailers()).thenReturn(trailer);
         when(mock.aggregated()).thenReturn(aggregation);
 
-        final HttpRequestImpl req = new HttpRequestImpl(mock, new AttributesImpl());
+        final HttpRequestImpl req = new HttpRequestImpl(mock);
         assertSame(headers, req.headers());
         assertSame(trailer, req.trailers());
         verifyHeaders(req);
@@ -169,7 +161,7 @@ class HttpRequestImplTest {
         when(aggregation.trailers()).thenReturn(trailer);
         when(mock.aggregated()).thenReturn(aggregation);
 
-        final HttpRequestImpl req = new HttpRequestImpl(mock, new AttributesImpl());
+        final HttpRequestImpl req = new HttpRequestImpl(mock);
         assertSame(headers, req.headers());
         assertSame(trailer, req.trailers());
         verifyHeaders(req);
@@ -187,7 +179,7 @@ class HttpRequestImplTest {
         when(aggregation.trailers()).thenReturn(new Http1HeadersImpl());
         when(mock.aggregated()).thenReturn(aggregation);
 
-        final HttpRequestImpl req = new HttpRequestImpl(mock, new AttributesImpl());
+        final HttpRequestImpl req = new HttpRequestImpl(mock);
         final Set<Cookie> cookies = req.cookies();
         assertNotNull(cookies);
         assertEquals(2, cookies.size());
@@ -210,7 +202,7 @@ class HttpRequestImplTest {
         when(aggregation.trailers()).thenReturn(new Http1HeadersImpl());
         when(mock.aggregated()).thenReturn(aggregation);
 
-        final HttpRequestImpl req = new HttpRequestImpl(mock, new AttributesImpl());
+        final HttpRequestImpl req = new HttpRequestImpl(mock);
         final Set<Cookie> cookies = req.cookies();
         assertTrue(cookies.isEmpty());
         assertSame(cookies, req.cookies());
@@ -236,7 +228,7 @@ class HttpRequestImplTest {
         when(aggregation.body()).thenReturn(body);
         when(mock.aggregated()).thenReturn(aggregation);
 
-        final HttpRequestImpl req = new HttpRequestImpl(mock, new AttributesImpl());
+        final HttpRequestImpl req = new HttpRequestImpl(mock);
         assertEquals(3, req.paramsMap().size());
         assertEquals("1", req.getParam("a"));
         assertEquals("2", req.getParam("b"));
@@ -263,7 +255,7 @@ class HttpRequestImplTest {
         when(aggregation.body()).thenReturn(body);
         when(mock.aggregated()).thenReturn(aggregation);
 
-        final HttpRequestImpl req = new HttpRequestImpl(mock, new AttributesImpl());
+        final HttpRequestImpl req = new HttpRequestImpl(mock);
         assertEquals(2, req.paramsMap().size());
         assertEquals("1", req.getParam("a"));
         assertEquals("2", req.getParam("b"));
@@ -289,38 +281,11 @@ class HttpRequestImplTest {
         when(aggregation.body()).thenReturn(body);
         when(mock.aggregated()).thenReturn(aggregation);
 
-        final HttpRequestImpl req = new HttpRequestImpl(mock, new AttributesImpl());
+        final HttpRequestImpl req = new HttpRequestImpl(mock);
         assertEquals(2, req.paramsMap().size());
         assertEquals("1", req.getParam("a"));
         assertEquals("2", req.getParam("b"));
     }
-
-    @Test
-    void testAttribute() {
-        final Request mock = mock(Request.class);
-        when(mock.rawMethod()).thenReturn(HttpMethod.POST.name());
-        when(mock.headers()).thenReturn(new Http1HeadersImpl());
-
-        final Aggregation aggregation = mock(Aggregation.class);
-        when(aggregation.trailers()).thenReturn(new Http1HeadersImpl());
-        when(mock.aggregated()).thenReturn(aggregation);
-
-        final HttpRequestImpl req = new HttpRequestImpl(mock, new AttributesImpl());
-
-        assertEquals(0, req.attributeNames().length);
-        req.setAttribute("a", 1);
-        assertEquals(1, req.attributeNames().length);
-        assertEquals(1, req.getAttribute("a"));
-        assertEquals(Integer.valueOf(1), req.getUncheckedAttribute("a"));
-        req.setAttribute("b", "2");
-        assertArrayEquals(new String[]{"a", "b"}, req.attributeNames());
-        assertEquals(2, req.attributeNames().length);
-        assertEquals("2", req.removeAttribute("b"));
-        assertEquals(Integer.valueOf(1), req.removeUncheckedAttribute("a"));
-
-        assertEquals(0, req.attributeNames().length);
-    }
-
 
     private static void verifyHeaders(HttpRequestImpl req) {
         assertEquals("1", req.headers().get("a"));

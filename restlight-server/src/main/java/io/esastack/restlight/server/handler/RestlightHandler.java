@@ -16,13 +16,11 @@
 package io.esastack.restlight.server.handler;
 
 import io.esastack.httpserver.core.RequestContext;
-import io.esastack.restlight.server.schedule.ExecutorScheduler;
 import io.esastack.restlight.server.schedule.Scheduler;
 import io.netty.channel.Channel;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executor;
 
 public interface RestlightHandler<CTX extends RequestContext> {
 
@@ -64,27 +62,6 @@ public interface RestlightHandler<CTX extends RequestContext> {
      */
     default void onStart() {
 
-    }
-
-    /**
-     * Exposure scheduler for resource multiplexing.
-     *
-     * @return Executor the current handler is using, {@code null} if there's no scheduler used in this handler.
-     * @deprecated use {@link #schedulers()}
-     */
-    @Deprecated
-    default Executor executor() {
-        List<Scheduler> executors = schedulers();
-        if (executors == null || executors.isEmpty()) {
-            return null;
-        }
-        for (int i = executors.size() - 1; i >= 0; i--) {
-            Scheduler scheduler = executors.get(i);
-            if (scheduler instanceof ExecutorScheduler) {
-                return ((ExecutorScheduler) scheduler).executor();
-            }
-        }
-        return null;
     }
 
     List<Scheduler> schedulers();

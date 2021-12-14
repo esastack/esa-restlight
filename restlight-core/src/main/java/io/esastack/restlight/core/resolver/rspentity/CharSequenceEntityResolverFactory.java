@@ -16,7 +16,7 @@
 package io.esastack.restlight.core.resolver.rspentity;
 
 import io.esastack.commons.net.http.MediaType;
-import io.esastack.httpserver.core.HttpRequest;
+import io.esastack.httpserver.core.RequestContext;
 import io.esastack.restlight.core.resolver.ResponseEntity;
 import io.esastack.restlight.core.resolver.ResponseEntityResolver;
 import io.esastack.restlight.core.resolver.ResponseEntityResolverFactory;
@@ -50,8 +50,8 @@ public class CharSequenceEntityResolverFactory implements ResponseEntityResolver
         @Override
         protected byte[] serialize(ResponseEntity entity,
                                    List<MediaType> mediaTypes,
-                                   HttpRequest request) throws Exception {
-            return Serializers.serializeCharSequence(((CharSequence) entity.entity()),
+                                   RequestContext context) throws Exception {
+            return Serializers.serializeCharSequence(((CharSequence) entity.response().entity()),
                     entity.response(),
                     selectMediaType(mediaTypes));
         }

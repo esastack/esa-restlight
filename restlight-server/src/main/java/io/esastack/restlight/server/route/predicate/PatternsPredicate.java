@@ -17,7 +17,8 @@ package io.esastack.restlight.server.route.predicate;
 
 import esa.commons.Checks;
 import esa.commons.UrlUtils;
-import io.esastack.httpserver.core.HttpRequest;
+import esa.commons.collection.AttributeKey;
+import io.esastack.httpserver.core.RequestContext;
 import io.esastack.restlight.server.util.PathMatcher;
 
 import java.util.Arrays;
@@ -34,7 +35,7 @@ import java.util.stream.Collectors;
  */
 public class PatternsPredicate implements RequestPredicate {
 
-    public static final String TEMPLATE_VARIABLES = "$tmp.vars";
+    public static final AttributeKey<Map<String, String>> TEMPLATE_VARIABLES = AttributeKey.valueOf("$tmp.vars");
 
     private final PathMatcher[] patterns;
     private final boolean hasTemplateVar;
@@ -50,16 +51,16 @@ public class PatternsPredicate implements RequestPredicate {
     }
 
     @Override
-    public boolean test(HttpRequest request) {
+    public boolean test(RequestContext context) {
         if (this.patterns.length == 0) {
             return true;
         }
         // assume that if there's uri template in patterns the user will need the uri template variables which are
         // extracted from the path.
-        Map<String, String> uriVariables = this.match(request.path());
+        Map<String, String> uriVariables = this.match(context.request().path());
         if (uriVariables != null) {
             //set matched template variables
-            request.setAttribute(TEMPLATE_VARIABLES, uriVariables);
+            context.attr(TEMPLATE_VARIABLES).set(uriVariables);
             return true;
         }
         return false;

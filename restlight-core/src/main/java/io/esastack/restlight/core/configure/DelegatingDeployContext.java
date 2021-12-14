@@ -16,6 +16,8 @@
 package io.esastack.restlight.core.configure;
 
 import esa.commons.Checks;
+import esa.commons.collection.Attribute;
+import esa.commons.collection.AttributeKey;
 import io.esastack.httpserver.core.RequestContext;
 import io.esastack.restlight.core.DeployContext;
 import io.esastack.restlight.core.config.RestlightOptions;
@@ -33,10 +35,10 @@ import io.esastack.restlight.server.bootstrap.DispatcherHandler;
 import io.esastack.restlight.server.route.RouteRegistry;
 import io.esastack.restlight.server.schedule.Scheduler;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.BiConsumer;
 
 public class DelegatingDeployContext<O extends RestlightOptions> implements DeployContext<O> {
 
@@ -158,23 +160,28 @@ public class DelegatingDeployContext<O extends RestlightOptions> implements Depl
     }
 
     @Override
-    public void attribute(String key, Object value) {
-        underlying.attribute(key, value);
+    public <V> Attribute<V> attr(AttributeKey<V> key) {
+        return underlying.attr(key);
     }
 
     @Override
-    public Object attribute(String key) {
-        return underlying.attribute(key);
+    public boolean hasAttr(AttributeKey<?> key) {
+        return underlying.hasAttr(key);
     }
 
     @Override
-    public Object removeAttribute(String key) {
-        return underlying.removeAttribute(key);
+    public void forEach(BiConsumer<? super AttributeKey<?>, ? super Attribute<?>> consumer) {
+        underlying.forEach(consumer);
     }
 
     @Override
-    public Collection<String> attributeNames() {
-        return underlying.attributeNames();
+    public int size() {
+        return underlying.size();
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return underlying.isEmpty();
     }
 
     public DeployContext<O> unwrap() {

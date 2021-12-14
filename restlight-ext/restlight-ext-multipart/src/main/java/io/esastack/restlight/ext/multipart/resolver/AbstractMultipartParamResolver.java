@@ -17,13 +17,13 @@ package io.esastack.restlight.ext.multipart.resolver;
 
 import esa.commons.Checks;
 import esa.commons.StringUtils;
+import esa.commons.collection.AttributeKey;
 import esa.commons.logging.Logger;
 import esa.commons.logging.LoggerFactory;
 import io.esastack.commons.net.buffer.BufferUtil;
 import io.esastack.commons.net.netty.http.Http1HeadersAdaptor;
 import io.esastack.commons.net.netty.http.Http1HeadersImpl;
 import io.esastack.httpserver.core.HttpRequest;
-import io.esastack.httpserver.core.HttpResponse;
 import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.method.Param;
 import io.esastack.restlight.core.resolver.param.AbstractNameAndValueParamResolver;
@@ -52,14 +52,15 @@ import java.util.List;
 abstract class AbstractMultipartParamResolver extends AbstractNameAndValueParamResolver {
 
     static final String PREFIX = "$multipart.attr.";
-    private static final String MULTIPART_DECODER = "$multipart.decoder";
+    private static final AttributeKey<HttpPostMultipartRequestDecoder> MULTIPART_DECODER = AttributeKey
+            .valueOf("$multipart.decoder");
 
     private static final Logger logger =
             LoggerFactory.getLogger(AbstractMultipartParamResolver.class);
 
-    private static final String MULTIPART_BODY_RESOLVED = "$multipart.resolved";
-    private static final String CLEANER_LISTENER = "$multipart.cleaner";
-    static String MULTIPART_FILES = "$multipart.files";
+    private static final AttributeKey<Boolean> MULTIPART_BODY_RESOLVED = AttributeKey.valueOf("$multipart.resolved");
+    private static final AttributeKey<String> CLEANER_LISTENER = AttributeKey.valueOf("$multipart.cleaner");
+    static AttributeKey<List<MultipartFile>> MULTIPART_FILES = AttributeKey.valueOf("$multipart.files");
 
     private final HttpDataFactory factory;
 
@@ -74,18 +75,18 @@ abstract class AbstractMultipartParamResolver extends AbstractNameAndValueParamR
         try {
             return super.resolve(param, context);
         } finally {
-            tryAddCleaner(context.request(), context.response());
+            tryAddCleaner(context);
         }
     }
 
     @Override
-    protected Object resolveName(String name, HttpRequest request) throws Exception {
-        if (!request.hasAttribute(MULTIPART_BODY_RESOLVED)) {
-            final io.netty.handler.codec.http.HttpRequest request0 = formattedReq(request);
+    protected Object resolveName(String name, RequestContext context) throws Exception {
+        if (!context.hasAttr(MULTIPART_BODY_RESOLVED)) {
+            final io.netty.handler.codec.http.HttpRequest request0 = formattedReq(context.request());
 
             if (!HttpPostRequestDecoder.isMultipart(request0)) {
                 throw new IllegalStateException("You excepted to accept a multipart file or attribute," +
-                        " but Content-Type is: " + request.headers().get(HttpHeaderNames.CONTENT_TYPE));
+                        " but Content-Type is: " + context.request().headers().get(HttpHeaderNames.CONTENT_TYPE));
             }
 
             final HttpPostMultipartRequestDecoder decoder = new HttpPostMultipartRequestDecoder(factory, request0);
@@ -95,18 +96,17 @@ abstract class AbstractMultipartParamResolver extends AbstractNameAndValueParamR
             for (InterfaceHttpData item : resolvedData) {
                 InterfaceHttpData.HttpDataType type = item.getHttpDataType();
                 if (type == InterfaceHttpData.HttpDataType.Attribute) {
-                    request.setAttribute(PREFIX + item.getName(),
-                            getAndClean((Attribute) item));
+                    context.attr(AttributeKey.valueOf(PREFIX + item.getName())).set(getAndClean((Attribute) item));
                 } else if (type == InterfaceHttpData.HttpDataType.FileUpload) {
                     files.add(parse((FileUpload) item));
                 }
             }
-            request.setAttribute(MULTIPART_FILES, files);
-            request.setAttribute(MULTIPART_BODY_RESOLVED, true);
-            request.setAttribute(MULTIPART_DECODER, decoder);
+            context.attr(MULTIPART_FILES).set(files);
+            context.attr(MULTIPART_BODY_RESOLVED).set(true);
+            context.attr(MULTIPART_DECODER).set(decoder);
         }
 
-        return getParamValue(name, request);
+        return getParamValue(name, context);
     }
 
     private static HttpDataFactory buildFactory(final MultipartConfig config) {
@@ -132,14 +132,14 @@ abstract class AbstractMultipartParamResolver extends AbstractNameAndValueParamR
         }
     }
 
-    private void tryAddCleaner(HttpRequest request, HttpResponse response) {
-        final List<MultipartFile> files = request.getUncheckedAttribute(MULTIPART_FILES);
+    private void tryAddCleaner(RequestContext context) {
+        final List<MultipartFile> files = context.attr(MULTIPART_FILES).get();
 
         // Note: decoder.destroy() is only allowed to invoke once.
-        final HttpPostMultipartRequestDecoder decoder = request.removeUncheckedAttribute(MULTIPART_DECODER);
-        if (request.getAttribute(CLEANER_LISTENER) == null && files != null && decoder != null) {
-            request.setAttribute(CLEANER_LISTENER, "");
-            response.onEnd((r) -> {
+        final HttpPostMultipartRequestDecoder decoder = context.attr(MULTIPART_DECODER).getAndRemove();
+        if (context.attr(CLEANER_LISTENER).get() == null && files != null && decoder != null) {
+            context.attr(CLEANER_LISTENER).set("");
+            context.response().onEnd((r) -> {
                 for (MultipartFile file : files) {
                     try {
                         file.delete();
@@ -188,11 +188,11 @@ abstract class AbstractMultipartParamResolver extends AbstractNameAndValueParamR
      * Get parameter value from request's attribute.
      *
      * @param name    name
-     * @param request request
+     * @param context context
      *
      * @return obj
      */
-    protected abstract Object getParamValue(String name, HttpRequest request);
+    protected abstract Object getParamValue(String name, RequestContext context);
 
     private static HttpVersion convertToNetty(io.esastack.commons.net.http.HttpVersion version) {
         if (version == io.esastack.commons.net.http.HttpVersion.HTTP_1_0) {

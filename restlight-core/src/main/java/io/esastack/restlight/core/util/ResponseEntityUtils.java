@@ -17,6 +17,7 @@ package io.esastack.restlight.core.util;
 
 import esa.commons.Primitives;
 import esa.commons.StringUtils;
+import esa.commons.collection.AttributeKey;
 import io.esastack.httpserver.core.HttpResponse;
 import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.method.HandlerMethod;
@@ -26,14 +27,14 @@ import io.esastack.restlight.server.util.LoggerUtils;
 
 public final class ResponseEntityUtils {
 
-    private static final String HANDLED_METHOD = "$internal.handled.method";
+    private static final AttributeKey<HandlerMethod> HANDLED_METHOD = AttributeKey.valueOf("$internal.handled.method");
 
     public static void setHandledMethod(RequestContext context, HandlerMethod method) {
-        context.setAttribute(HANDLED_METHOD, method);
+        context.attr(HANDLED_METHOD).set(method);
     }
 
     public static HandlerMethod getHandledMethod(RequestContext context) {
-        return context.getUncheckedAttribute(HANDLED_METHOD);
+        return context.attr(HANDLED_METHOD).get();
     }
 
     public static void writeTo(ResponseEntity entity, byte[] data, HttpResponse response) {
@@ -42,7 +43,7 @@ public final class ResponseEntityUtils {
                 if (response.isCommitted()) {
                     LoggerUtils.logger().warn(StringUtils.concat("Ignore the non-null return value '{}'," +
                             " because response is " + "not writable.", entity.handler().isPresent()
-                            ? entity.handler().get().toString() : ""), entity.entity());
+                            ? entity.handler().get().toString() : ""), entity.response().entity());
                 }
                 response.sendResult(data);
             }

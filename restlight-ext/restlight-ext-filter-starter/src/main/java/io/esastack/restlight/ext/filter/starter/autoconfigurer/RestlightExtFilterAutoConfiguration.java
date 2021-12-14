@@ -17,7 +17,6 @@ package io.esastack.restlight.ext.filter.starter.autoconfigurer;
 
 import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.core.util.Ordered;
-import io.esastack.restlight.ext.filter.config.AccessLogOptionsConfigure;
 import io.esastack.restlight.ext.filter.connectionlimit.ConnectionLimiter;
 import io.esastack.restlight.ext.filter.cors.CorsFilter;
 import io.esastack.restlight.ext.filter.cpuload.CpuLoadProtector;
@@ -68,22 +67,6 @@ public class RestlightExtFilterAutoConfiguration {
     public ConnectionHandler cpuLoadProtectionFilter(CpuLoadProtectionProperties options) {
         return CpuLoadProtector.newFilter(options.getThreshold(), options.getInitialDiscardRate(),
                 options.getMaxDiscardRate());
-    }
-
-    @Bean
-    @ConditionalOnMissingBean
-    @ConditionalOnProperty(prefix = EXT + "access-log", name = "enable", havingValue = "true")
-    public io.esastack.restlight.ext.filter.AccessLogFilter oldAccessLogFilter(RestlightOptions options) {
-        // check again
-        if (options.extOption("access-log.enable")
-                .map(Boolean::parseBoolean).orElse(Boolean.FALSE)) {
-            final AccessLogOptionsConfigure opts =
-                    AccessLogOptionsConfigure.newOpts();
-            options.extOption("access-log.full-uri").ifPresent(s ->
-                    opts.fullUri(Boolean.parseBoolean(s)));
-            return new io.esastack.restlight.ext.filter.AccessLogFilter(opts.configured());
-        }
-        return null;
     }
 
     @Bean

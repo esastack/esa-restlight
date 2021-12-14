@@ -26,13 +26,6 @@ public class RouteOptions implements Serializable {
     private boolean useCachedRouting = true;
 
     /**
-     * cache ratio in {@link CachedRouteRegistry}
-     * @deprecated unused
-     */
-    @Deprecated
-    private int cacheRatio = 10;
-
-    /**
      * compute rate ration in {@link CachedRouteRegistry}
      */
     private int computeRate = 1;
@@ -45,16 +38,6 @@ public class RouteOptions implements Serializable {
         this.useCachedRouting = useCachedRouting;
     }
 
-    @Deprecated
-    public int getCacheRatio() {
-        return cacheRatio;
-    }
-
-    @Deprecated
-    public void setCacheRatio(int cacheRatio) {
-        this.cacheRatio = cacheRatio;
-    }
-
     public int getComputeRate() {
         return computeRate;
     }
@@ -63,12 +46,10 @@ public class RouteOptions implements Serializable {
         this.computeRate = computeRate;
     }
 
-
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("RouteOptions{");
         sb.append("useCachedRouting=").append(useCachedRouting);
-        sb.append(", cacheRatio=").append(cacheRatio);
         sb.append(", computeRate=").append(computeRate);
         sb.append('}');
         return sb.toString();

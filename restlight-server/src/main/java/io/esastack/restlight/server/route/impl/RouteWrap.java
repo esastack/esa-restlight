@@ -16,7 +16,7 @@
 package io.esastack.restlight.server.route.impl;
 
 import esa.commons.Checks;
-import io.esastack.httpserver.core.HttpRequest;
+import io.esastack.httpserver.core.RequestContext;
 import io.esastack.restlight.server.route.ExecutionHandlerFactory;
 import io.esastack.restlight.server.route.Mapping;
 import io.esastack.restlight.server.route.Route;
@@ -42,8 +42,8 @@ class RouteWrap implements Route, RequestPredicate {
     }
 
     @Override
-    public boolean test(HttpRequest request) {
-        return predicate.test(request);
+    public boolean test(RequestContext context) {
+        return predicate.test(context);
     }
 
     @Override

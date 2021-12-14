@@ -19,6 +19,7 @@ import esa.commons.Checks;
 import esa.commons.MathUtils;
 import io.esastack.commons.net.http.HttpMethod;
 import io.esastack.httpserver.core.HttpRequest;
+import io.esastack.httpserver.core.RequestContext;
 import io.esastack.restlight.server.util.MappingUtils;
 
 import java.util.Arrays;
@@ -58,7 +59,8 @@ public class MethodPredicate implements RequestPredicate {
     }
 
     @Override
-    public boolean test(HttpRequest request) {
+    public boolean test(RequestContext context) {
+        final HttpRequest request = context.request();
         final String method = request.rawMethod();
         return contains(method)
                 || HttpMethod.HEAD.equals(request.method())

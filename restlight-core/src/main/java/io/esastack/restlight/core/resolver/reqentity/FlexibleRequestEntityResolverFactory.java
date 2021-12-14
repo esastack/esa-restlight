@@ -18,8 +18,6 @@ package io.esastack.restlight.core.resolver.reqentity;
 import esa.commons.StringUtils;
 import io.esastack.commons.net.http.HttpStatus;
 import io.esastack.commons.net.http.MediaType;
-import io.esastack.commons.net.http.MediaTypeUtil;
-import io.esastack.httpserver.core.HttpRequest;
 import io.esastack.restlight.core.method.Param;
 import io.esastack.restlight.core.resolver.HandledValue;
 import io.esastack.restlight.core.resolver.RequestEntity;
@@ -31,7 +29,6 @@ import io.esastack.restlight.core.serialize.ProtoBufHttpBodySerializer;
 import io.esastack.restlight.core.util.Constants;
 import io.esastack.restlight.core.util.ConverterUtils;
 import io.esastack.restlight.server.bootstrap.WebServerException;
-import io.netty.handler.codec.http.HttpHeaderNames;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -90,14 +87,14 @@ public abstract class FlexibleRequestEntityResolverFactory implements RequestEnt
 
         @Override
         protected HandledValue<Object> readFrom0(String name, Param param, RequestEntity entity) throws Exception {
-            MediaType contentType = entity.mediaType();
+            MediaType contentType = getMediaType(entity);
             //convert argument if content-type is text/plain or missing.
             if (contentType == null || MediaType.TEXT_PLAIN.isCompatibleWith(contentType)) {
                 //ignore empty body.
                 if (entity.inputStream().readBytes() == 0) {
                     return HandledValue.succeed(null);
                 }
-                return HandledValue.succeed(converter.apply(new String(entity.byteData(), StandardCharsets.UTF_8)));
+                return HandledValue.succeed(converter.apply(entity.body().string(StandardCharsets.UTF_8)));
             }
 
             //search serializer to resolve argument
@@ -111,10 +108,8 @@ public abstract class FlexibleRequestEntityResolverFactory implements RequestEnt
                     "Unsupported media type:" + contentType);
         }
 
-        protected MediaType getMediaType(HttpRequest request) {
-            String contentTypeStr = request.headers().get(HttpHeaderNames.CONTENT_TYPE);
-            return StringUtils.isEmpty(contentTypeStr) ? null :
-                    MediaTypeUtil.parseMediaType(contentTypeStr);
+        protected MediaType getMediaType(RequestEntity entity) {
+            return entity.mediaType();
         }
     }
 
@@ -130,17 +125,15 @@ public abstract class FlexibleRequestEntityResolverFactory implements RequestEnt
         }
 
         @Override
-        protected MediaType getMediaType(HttpRequest request) {
+        protected MediaType getMediaType(RequestEntity entity) {
             // judge by param
-            final String format = request.getParam(paramName);
+            final String format = entity.request().getParam(paramName);
             if (Constants.NEGOTIATION_JSON_FORMAT.equals(format)) {
-                return MediaType.APPLICATION_JSON;
+                entity.mediaType(MediaType.APPLICATION_JSON);
             } else if (Constants.NEGOTIATION_PROTO_BUF_FORMAT.equals(format)) {
-                return ProtoBufHttpBodySerializer.PROTOBUF;
-            } else {
-                // fallback to default
-                return super.getMediaType(request);
+                entity.mediaType(ProtoBufHttpBodySerializer.PROTOBUF);
             }
+            return super.getMediaType(entity);
         }
     }
 }

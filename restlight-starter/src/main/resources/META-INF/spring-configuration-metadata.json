@@ -22,17 +22,6 @@
       "defaultValue": "512"
     },
     {
-      "name": "restlight.server.blocking-queue-length",
-      "type": "java.lang.Integer",
-      "description": "Length of blocking queue",
-      "sourceType": "esa.restlight.server.config.ServerOptions",
-      "defaultValue": "512",
-      "deprecated": true,
-      "deprecation": {
-        "reason": "deprecated"
-      }
-    },
-    {
       "name": "restlight.server.compress",
       "type": "java.lang.Boolean",
       "description": "is compress",
@@ -59,17 +48,6 @@
       "description": "Thread num of cor biz thread pool",
       "sourceType": "esa.restlight.server.config.BizThreadsOptions",
       "defaultValue": "cpu * 4 (must between 64 and 128)"
-    },
-    {
-      "name": "restlight.server.core-biz-threads",
-      "type": "java.lang.Integer",
-      "description": "Thread num of cor biz thread pool",
-      "sourceType": "esa.restlight.server.config.ServerOptions",
-      "defaultValue": "cpu * 4 (must between 64 and 128)",
-      "deprecated": true,
-      "deprecation": {
-        "reason": "deprecated"
-      }
     },
     {
       "name": "restlight.server.decompress",
@@ -124,17 +102,6 @@
       "defaultValue": "180L"
     },
     {
-      "name": "restlight.server.keep-alive-time-seconds",
-      "type": "java.lang.Long",
-      "description": "Keepalive time of max biz thread pool",
-      "sourceType": "esa.restlight.server.config.ServerOptions",
-      "defaultValue": "180L",
-      "deprecated": true,
-      "deprecation": {
-        "reason": "deprecated"
-      }
-    },
-    {
       "name": "restlight.server.logging",
       "type": "io.netty.handler.logging.LogLevel",
       "description": "Logging level of netty channel.",
@@ -147,17 +114,6 @@
       "description": "Thread num of max biz thread pool",
       "sourceType": "esa.restlight.server.config.BizThreadsOptions",
       "defaultValue": "cpu * 6 (must between 128 and 256)"
-    },
-    {
-      "name": "restlight.server.max-biz-threads",
-      "type": "java.lang.Integer",
-      "description": "Thread num of max biz thread pool",
-      "sourceType": "esa.restlight.server.config.ServerOptions",
-      "defaultValue": "cpu * 6 (must between 128 and 256)",
-      "deprecated": true,
-      "deprecation": {
-        "reason": "deprecated"
-      }
     },
     {
       "name": "restlight.server.max-content-length",
@@ -347,30 +303,6 @@
       "defaultValue": "0L"
     },
     {
-      "name": "restlight.server.ssl.session-cache-enable",
-      "type": "java.lang.Boolean",
-      "description": "session-cache-enable",
-      "sourceType": "esa.restlight.server.config.SslOptions",
-      "defaultValue": "false",
-      "deprecated": true,
-      "deprecation": {
-        "reason": "unused",
-        "level": "error"
-      }
-    },
-    {
-      "name": "restlight.server.ssl.session-ticket-key-path",
-      "type": "java.lang.String",
-      "description": "ssl session ticket key",
-      "sourceType": "esa.restlight.server.config.SslOptions",
-      "defaultValue": "null",
-      "deprecated": true,
-      "deprecation": {
-        "reason": "unused",
-        "level": "error"
-      }
-    },
-    {
       "name": "restlight.server.unix-domain-socket-file",
       "type": "java.lang.String",
       "sourceType": "io.esastack.restlight.starter.autoconfigure.AutoRestlightServerOptions"
@@ -381,17 +313,6 @@
       "description": "Use EpollEventLoopGroup(recommend in Linux) or NIOEventLoopGroup",
       "sourceType": "esa.restlight.server.config.ServerOptions",
       "defaultValue": "false"
-    },
-    {
-      "name": "restlight.server.validation-message-file",
-      "type": "java.lang.String",
-      "description": "Validation message file name(file name must end of .properties)",
-      "sourceType": "io.esastack.restlight.core.config.RestlightOptions",
-      "defaultValue": "",
-      "deprecated": true,
-      "deprecation": {
-        "reason": "unused"
-      }
     },
     {
       "name": "restlight.server.warm-up",
@@ -411,17 +332,6 @@
       "description": "Low Water mark",
       "sourceType": "esa.restlight.server.config.ServerOptions",
       "defaultValue": "-1(system default)"
-    },
-    {
-      "name": "restlight.server.route.cache-ratio",
-      "type": "java.lang.Integer",
-      "description": "Ratio of mappings to cache(from 0 to 100).",
-      "sourceType": "esa.restlight.server.config.RouteOptions",
-      "defaultValue": "20",
-      "deprecated": true,
-      "deprecation": {
-        "reason": "unused"
-      }
     }
   ],
   "hints": []

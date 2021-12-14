@@ -19,7 +19,6 @@ import esa.commons.Primitives;
 import esa.commons.StringUtils;
 import io.esastack.commons.net.http.MediaType;
 import io.esastack.commons.net.http.MediaTypeUtil;
-import io.esastack.httpserver.core.HttpRequest;
 import io.esastack.httpserver.core.HttpResponse;
 import io.esastack.httpserver.core.RequestContext;
 import io.esastack.restlight.core.resolver.HandledValue;
@@ -57,10 +56,9 @@ public abstract class AbstractResponseEntityResolver implements ResponseEntityRe
         if (!supports(entity)) {
             return HandledValue.failed();
         }
-        final Object entityValue = entity.entity();
-        final HttpRequest request = context.request();
+        final Object entityValue = entity.response().entity();
         final HttpResponse response = context.response();
-        final List<MediaType> mediaTypes = getMediaTypes(request);
+        final List<MediaType> mediaTypes = getMediaTypes(context);
 
         final byte[] serialized;
         if (maySimpleType && isSimpleType(entity)) {
@@ -68,12 +66,12 @@ public abstract class AbstractResponseEntityResolver implements ResponseEntityRe
             final MediaType mediaType = selectMediaType(mediaTypes);
             byte[] ret = Serializers.serializeIfPossible(entityValue, response, mediaType);
             if (ret == null) {
-                serialized = serialize(entity, mediaTypes, request);
+                serialized = serialize(entity, mediaTypes, context);
             } else {
                 serialized = ret;
             }
         } else {
-            serialized = serialize(entity, mediaTypes, request);
+            serialized = serialize(entity, mediaTypes, context);
         }
 
         ResponseEntityUtils.writeTo(entity, serialized, response);
@@ -108,11 +106,10 @@ public abstract class AbstractResponseEntityResolver implements ResponseEntityRe
         return mediaType;
     }
 
-    protected List<MediaType> getMediaTypes(HttpRequest request) {
-        List<MediaType> compatibleTypes =
-                request.getUncheckedAttribute(ProducesPredicate.COMPATIBLE_MEDIA_TYPES);
+    protected List<MediaType> getMediaTypes(RequestContext context) {
+        List<MediaType> compatibleTypes = context.attr(ProducesPredicate.COMPATIBLE_MEDIA_TYPES).get();
         if (compatibleTypes == null) {
-            String accept = request.headers().get(HttpHeaderNames.ACCEPT);
+            String accept = context.request().headers().get(HttpHeaderNames.ACCEPT);
             if (!StringUtils.isEmpty(accept)) {
                 List<MediaType> ret = InternalThreadLocalMap.get().arrayList();
                 MediaTypeUtil.parseMediaTypes(accept, ret);
@@ -129,11 +126,11 @@ public abstract class AbstractResponseEntityResolver implements ResponseEntityRe
      *
      * @param entity   response entity
      * @param mediaTypes    mediaTypes
-     * @param request       request
+     * @param context       context
      * @return      byte array.
      * @throws Exception    any exception
      */
     protected abstract byte[] serialize(ResponseEntity entity,
                                         List<MediaType> mediaTypes,
-                                        HttpRequest request) throws Exception;
+                                        RequestContext context) throws Exception;
 }

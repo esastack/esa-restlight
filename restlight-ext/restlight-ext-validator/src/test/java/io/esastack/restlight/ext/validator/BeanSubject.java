@@ -15,7 +15,7 @@
  */
 package io.esastack.restlight.ext.validator;
 
-import io.esastack.restlight.core.annotation.ValidGroup;
+import io.esastack.restlight.ext.validator.core.ValidGroup;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.Range;
 

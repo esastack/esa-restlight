@@ -15,6 +15,8 @@
  */
 package io.esastack.restlight.core.context.impl;
 
+import esa.commons.collection.AttributeMap;
+import esa.commons.collection.Attributes;
 import io.esastack.httpserver.core.HttpRequest;
 import io.esastack.restlight.core.context.HttpResponse;
 import io.esastack.restlight.core.context.RequestContext;
@@ -24,9 +26,13 @@ public class RequestContextImpl extends io.esastack.restlight.server.context.imp
 
     private final HttpResponse response;
 
-    public RequestContextImpl(HttpRequest request, HttpResponse response) {
-        super(request, response);
+    protected RequestContextImpl(Attributes attributes, HttpRequest request, HttpResponse response) {
+        super(attributes, request, response);
         this.response = response;
+    }
+
+    public RequestContextImpl(HttpRequest request, HttpResponse response) {
+        this(new AttributeMap(16), request, response);
     }
 
     @Override

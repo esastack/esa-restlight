@@ -52,7 +52,6 @@ public abstract class AbstractRestlightOptionsConfigure<C extends AbstractRestli
     public O configured() {
         O options = super.configured();
         options.setContextPath(contextPath);
-        options.setValidationMessageFile(validationMessageFile);
         options.setSerialize(serialize);
         options.setExt(ext);
         return options;

@@ -17,7 +17,7 @@ package io.esastack.restlight.core.resolver.param;
 
 import esa.commons.ClassUtils;
 import esa.commons.StringUtils;
-import io.esastack.httpserver.core.HttpRequest;
+import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.method.Param;
 import io.esastack.restlight.core.resolver.ParamResolver;
 import io.esastack.restlight.core.resolver.ParamResolverFactory;
@@ -90,8 +90,8 @@ public abstract class AbstractParamResolver implements ParamResolverFactory {
         }
 
         @Override
-        protected Object resolveName(String name, HttpRequest request) {
-            final List<String> values = request.getParams(name);
+        protected Object resolveName(String name, RequestContext context) {
+            final List<String> values = context.request().getParams(name);
             if (values == null || values.isEmpty()) {
                 return null;
             }
@@ -112,8 +112,8 @@ public abstract class AbstractParamResolver implements ParamResolverFactory {
         }
 
         @Override
-        protected Map<String, List<String>> resolveName(String name, HttpRequest request) {
-            return request.paramsMap();
+        protected Map<String, List<String>> resolveName(String name, RequestContext context) {
+            return context.request().paramsMap();
         }
     }
 
@@ -124,8 +124,8 @@ public abstract class AbstractParamResolver implements ParamResolverFactory {
         }
 
         @Override
-        protected Map<String, String> resolveName(String name, HttpRequest request) {
-            Map<String, List<String>> p = request.paramsMap();
+        protected Map<String, String> resolveName(String name, RequestContext context) {
+            Map<String, List<String>> p = context.request().paramsMap();
             if (p.isEmpty()) {
                 return Collections.emptyMap();
             }

@@ -15,6 +15,7 @@
  */
 package io.esastack.restlight.core.resolver;
 
+import io.esastack.commons.net.buffer.Buffer;
 import io.esastack.httpserver.core.HttpInputStream;
 import io.esastack.httpserver.core.HttpRequest;
 import io.esastack.restlight.core.method.MethodParam;
@@ -29,7 +30,7 @@ public interface RequestEntity extends HttpEntity {
      *
      * @return  byte[]
      */
-    byte[] byteData();
+    Buffer body();
 
     /**
      * Obtains the {@link HttpInputStream}.
@@ -43,7 +44,7 @@ public interface RequestEntity extends HttpEntity {
      *
      * @param data  data
      */
-    void byteData(byte[] data);
+    void body(Buffer data);
 
     /**
      * Sets with the given {@code ins}.

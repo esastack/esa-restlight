@@ -16,25 +16,28 @@
 package io.esastack.restlight.server;
 
 import esa.commons.Checks;
+import esa.commons.collection.Attribute;
+import esa.commons.collection.AttributeKey;
+import esa.commons.collection.AttributeMap;
+import esa.commons.collection.Attributes;
 import io.esastack.httpserver.core.RequestContext;
 import io.esastack.restlight.server.bootstrap.DispatcherHandler;
 import io.esastack.restlight.server.config.ServerOptions;
 import io.esastack.restlight.server.route.RouteRegistry;
 import io.esastack.restlight.server.schedule.Scheduler;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.BiConsumer;
 
 public class ServerDeployContextImpl<O extends ServerOptions> implements ServerDeployContext<O> {
 
     private final String name;
     private final O options;
 
-    private final Map<String, Object> attributes = new ConcurrentHashMap<>(16);
+    private final Attributes attributes;
     private final Map<String, Scheduler> schedulers = new HashMap<>(16);
     private volatile RouteRegistry registry;
     private volatile DispatcherHandler<? extends RequestContext> dispatcherHandler;
@@ -44,6 +47,7 @@ public class ServerDeployContextImpl<O extends ServerOptions> implements ServerD
         Checks.checkNotNull(options, "options");
         this.name = name;
         this.options = options;
+        this.attributes = new AttributeMap(8);
     }
 
     @Override
@@ -72,23 +76,28 @@ public class ServerDeployContextImpl<O extends ServerOptions> implements ServerD
     }
 
     @Override
-    public void attribute(String key, Object value) {
-        attributes.put(key, value);
+    public <V> Attribute<V> attr(AttributeKey<V> key) {
+        return attributes.attr(key);
     }
 
     @Override
-    public Object attribute(String key) {
-        return attributes.get(key);
+    public boolean hasAttr(AttributeKey<?> key) {
+        return attributes.hasAttr(key);
     }
 
     @Override
-    public Object removeAttribute(String key) {
-        return attributes.remove(key);
+    public void forEach(BiConsumer<? super AttributeKey<?>, ? super Attribute<?>> consumer) {
+        attributes.forEach(consumer);
     }
 
     @Override
-    public Collection<String> attributeNames() {
-        return Collections.unmodifiableSet(attributes.keySet());
+    public int size() {
+        return attributes.size();
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return attributes.isEmpty();
     }
 
     Map<String, Scheduler> mutableSchedulers() {

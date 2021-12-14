@@ -35,9 +35,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -186,23 +184,6 @@ class MockHttpRequestTest {
     }
 
     @Test
-    void testOperateAttribute() {
-        final MockHttpRequest request = MockHttpRequest.aMockRequest()
-                .withUri("/")
-                .withAttribute("A", "X")
-                .withAttribute("A", "Y").build();
-        assertEquals("Y", request.getAttribute("A"));
-
-        request.removeAttribute("A");
-        assertNull(request.getAttribute("A"));
-
-        request.setAttribute("foo", "f");
-        assertEquals("f", request.getAttribute("foo"));
-
-        assertArrayEquals(new String[]{"foo"}, request.attributeNames());
-    }
-
-    @Test
     void testOperateParameter() {
         final Map<String, List<String>> params = new HashMap<>();
         final List<String> values = new ArrayList<>(3);
@@ -254,13 +235,5 @@ class MockHttpRequestTest {
         final Iterator<Cookie> it = request1.cookies().iterator();
         assertEquals(new CookieImpl("bar", "B"), it.next());
         assertEquals(new CookieImpl("foo", "A"), it.next());
-    }
-
-    @Test
-    void testAsyncTimeout() {
-        final MockHttpRequest request = MockHttpRequest.aMockRequest()
-                .withAsyncTimeOut(1024L)
-                .build();
-        assertEquals(1024L, request.getAsyncTimeout());
     }
 }

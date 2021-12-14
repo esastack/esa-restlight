@@ -15,6 +15,7 @@
  */
 package io.esastack.restlight.ext.filter.cors;
 
+import esa.commons.collection.AttributeMap;
 import io.esastack.commons.net.http.HttpMethod;
 import io.esastack.commons.net.http.HttpStatus;
 import io.esastack.httpserver.core.HttpRequest;
@@ -54,7 +55,8 @@ class CorsFilterTest {
             endOfChain.set(true);
             return Futures.completedFuture();
         });
-        filter.doFilter(new FilterContextImpl(new FilteringRequestImpl(request), response), chain).join();
+        filter.doFilter(new FilterContextImpl(new AttributeMap(), new FilteringRequestImpl(request), response),
+                chain).join();
         assertTrue(endOfChain.get());
         assertFalse(response.headers().contains(HttpHeaderNames.ACCESS_CONTROL_ALLOW_ORIGIN));
     }
@@ -73,7 +75,8 @@ class CorsFilterTest {
             endOfChain.set(true);
             return Futures.completedFuture();
         });
-        filter.doFilter(new FilterContextImpl(new FilteringRequestImpl(request), response), chain).join();
+        filter.doFilter(new FilterContextImpl(new AttributeMap(), new FilteringRequestImpl(request), response),
+                chain).join();
         assertTrue(endOfChain.get());
         assertEquals(request.headers().get(HttpHeaderNames.ORIGIN),
                 response.headers().get(HttpHeaderNames.ACCESS_CONTROL_ALLOW_ORIGIN));
@@ -98,7 +101,8 @@ class CorsFilterTest {
             endOfChain.set(true);
             return Futures.completedFuture();
         });
-        filter.doFilter(new FilterContextImpl(new FilteringRequestImpl(request), response), chain).join();
+        filter.doFilter(new FilterContextImpl(new AttributeMap(), new FilteringRequestImpl(request), response),
+                chain).join();
         assertFalse(endOfChain.get());
         assertEquals(request.headers().get(HttpHeaderNames.ORIGIN),
                 response.headers().get(HttpHeaderNames.ACCESS_CONTROL_ALLOW_ORIGIN));
@@ -129,7 +133,8 @@ class CorsFilterTest {
             endOfChain.set(true);
             return Futures.completedFuture();
         });
-        filter.doFilter(new FilterContextImpl(new FilteringRequestImpl(request), response), chain).join();
+        filter.doFilter(new FilterContextImpl(new AttributeMap(), new FilteringRequestImpl(request), response),
+                chain).join();
         assertTrue(endOfChain.get());
         assertEquals(request.headers().get(HttpHeaderNames.ORIGIN),
                 response.headers().get(HttpHeaderNames.ACCESS_CONTROL_ALLOW_ORIGIN));
@@ -156,7 +161,8 @@ class CorsFilterTest {
             endOfChain.set(true);
             return Futures.completedFuture();
         });
-        filter.doFilter(new FilterContextImpl(new FilteringRequestImpl(request), response), chain).join();
+        filter.doFilter(new FilterContextImpl(new AttributeMap(), new FilteringRequestImpl(request), response),
+                chain).join();
         assertTrue(endOfChain.get());
         assertEquals(request.headers().get(HttpHeaderNames.ORIGIN),
                 response.headers().get(HttpHeaderNames.ACCESS_CONTROL_ALLOW_ORIGIN));
@@ -171,7 +177,8 @@ class CorsFilterTest {
                 .build();
         final HttpResponse response1 = MockHttpResponse.aMockResponse().build();
         endOfChain.set(false);
-        filter.doFilter(new FilterContextImpl(new FilteringRequestImpl(preflight), response1), chain).join();
+        filter.doFilter(new FilterContextImpl(new AttributeMap(), new FilteringRequestImpl(preflight), response1),
+                chain).join();
         assertFalse(endOfChain.get());
         assertEquals(preflight.headers().get(HttpHeaderNames.ORIGIN),
                 response1.headers().get(HttpHeaderNames.ACCESS_CONTROL_ALLOW_ORIGIN));
@@ -196,7 +203,8 @@ class CorsFilterTest {
             endOfChain.set(true);
             return Futures.completedFuture();
         });
-        filter.doFilter(new FilterContextImpl(new FilteringRequestImpl(request), response), chain).join();
+        filter.doFilter(new FilterContextImpl(new AttributeMap(), new FilteringRequestImpl(request), response),
+                chain).join();
         assertTrue(endOfChain.get());
         assertEquals("*",
                 response.headers().get(HttpHeaderNames.ACCESS_CONTROL_ALLOW_ORIGIN));
@@ -211,7 +219,8 @@ class CorsFilterTest {
                 .build();
         final HttpResponse response1 = MockHttpResponse.aMockResponse().build();
         endOfChain.set(false);
-        filter.doFilter(new FilterContextImpl(new FilteringRequestImpl(preflight), response1), chain).join();
+        filter.doFilter(new FilterContextImpl(new AttributeMap(), new FilteringRequestImpl(preflight), response1),
+                chain).join();
         assertFalse(endOfChain.get());
         assertEquals("*",
                 response1.headers().get(HttpHeaderNames.ACCESS_CONTROL_ALLOW_ORIGIN));
@@ -235,7 +244,8 @@ class CorsFilterTest {
             endOfChain.set(true);
             return Futures.completedFuture();
         });
-        filter.doFilter(new FilterContextImpl(new FilteringRequestImpl(request), response), chain).join();
+        filter.doFilter(new FilterContextImpl(new AttributeMap(), new FilteringRequestImpl(request), response),
+                chain).join();
         assertFalse(endOfChain.get());
         assertEquals(HttpStatus.FORBIDDEN.code(), response.status());
     }
@@ -258,7 +268,8 @@ class CorsFilterTest {
             endOfChain.set(true);
             return Futures.completedFuture();
         });
-        filter.doFilter(new FilterContextImpl(new FilteringRequestImpl(request), response), chain).join();
+        filter.doFilter(new FilterContextImpl(new AttributeMap(), new FilteringRequestImpl(request), response),
+                chain).join();
         assertFalse(endOfChain.get());
         assertEquals(HttpStatus.OK.code(), response.status());
         assertFalse(response.headers().contains(HttpHeaderNames.ACCESS_CONTROL_ALLOW_ORIGIN));
@@ -281,7 +292,8 @@ class CorsFilterTest {
             endOfChain.set(true);
             return Futures.completedFuture();
         });
-        filter.doFilter(new FilterContextImpl(new FilteringRequestImpl(request), response), chain).join();
+        filter.doFilter(new FilterContextImpl(new AttributeMap(), new FilteringRequestImpl(request), response),
+                chain).join();
         assertTrue(endOfChain.get());
         assertEquals(request.headers().get(HttpHeaderNames.ORIGIN),
                 response.headers().get(HttpHeaderNames.ACCESS_CONTROL_ALLOW_ORIGIN));
@@ -305,7 +317,8 @@ class CorsFilterTest {
             endOfChain.set(true);
             return Futures.completedFuture();
         });
-        filter.doFilter(new FilterContextImpl(new FilteringRequestImpl(request), response), chain).join();
+        filter.doFilter(new FilterContextImpl(new AttributeMap(), new FilteringRequestImpl(request), response),
+                chain).join();
         assertFalse(endOfChain.get());
         assertEquals(request.headers().get(HttpHeaderNames.ORIGIN),
                 response.headers().get(HttpHeaderNames.ACCESS_CONTROL_ALLOW_ORIGIN));
@@ -332,7 +345,8 @@ class CorsFilterTest {
             endOfChain.set(true);
             return Futures.completedFuture();
         });
-        filter.doFilter(new FilterContextImpl(new FilteringRequestImpl(request), response), chain).join();
+        filter.doFilter(new FilterContextImpl(new AttributeMap(), new FilteringRequestImpl(request), response),
+                chain).join();
         assertTrue(endOfChain.get());
         assertEquals(request.headers().get(HttpHeaderNames.ORIGIN),
                 response.headers().get(HttpHeaderNames.ACCESS_CONTROL_ALLOW_ORIGIN));
@@ -360,7 +374,8 @@ class CorsFilterTest {
             endOfChain.set(true);
             return Futures.completedFuture();
         });
-        filter.doFilter(new FilterContextImpl(new FilteringRequestImpl(request), response), chain).join();
+        filter.doFilter(new FilterContextImpl(new AttributeMap(), new FilteringRequestImpl(request), response),
+                chain).join();
         assertFalse(endOfChain.get());
         assertEquals(request.headers().get(HttpHeaderNames.ORIGIN),
                 response.headers().get(HttpHeaderNames.ACCESS_CONTROL_ALLOW_ORIGIN));

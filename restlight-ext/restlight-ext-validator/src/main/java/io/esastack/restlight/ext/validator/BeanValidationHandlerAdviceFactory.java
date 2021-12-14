@@ -16,6 +16,7 @@
 package io.esastack.restlight.ext.validator;
 
 import esa.commons.annotation.Internal;
+import esa.commons.collection.AttributeKey;
 import esa.commons.spi.Feature;
 import esa.commons.spi.SpiLoader;
 import io.esastack.restlight.core.DeployContext;
@@ -36,14 +37,15 @@ import java.util.Optional;
 @Internal
 public class BeanValidationHandlerAdviceFactory implements HandlerAdviceFactory {
 
-    private static final String VALIDATION_VALIDATOR = "$bean-validation-validator";
+    private static final AttributeKey<Optional<Validator>> VALIDATION_VALIDATOR = AttributeKey
+            .valueOf("$bean-validation-validator");
 
     @Override
     public Optional<HandlerAdvice> handlerAdvice(DeployContext<? extends RestlightOptions> ctx, Handler handler) {
-        Optional<Validator> validator = ctx.uncheckedAttribute(VALIDATION_VALIDATOR);
+        Optional<Validator> validator = ctx.attr(VALIDATION_VALIDATOR).get();
         if (validator == null) {
             validator = doCreate(ctx);
-            ctx.attribute(VALIDATION_VALIDATOR, validator);
+            ctx.attr(VALIDATION_VALIDATOR).set(validator);
         }
 
         if (!validator.isPresent()) {

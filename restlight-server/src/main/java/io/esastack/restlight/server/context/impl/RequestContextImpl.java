@@ -16,6 +16,8 @@
 package io.esastack.restlight.server.context.impl;
 
 import esa.commons.Checks;
+import esa.commons.collection.AttributeMap;
+import esa.commons.collection.Attributes;
 import io.esastack.httpserver.core.HttpRequest;
 import io.esastack.httpserver.core.HttpResponse;
 import io.esastack.httpserver.core.RequestContext;
@@ -27,7 +29,11 @@ public class RequestContextImpl extends AttributesProxy implements RequestContex
     private final HttpResponse response;
 
     public RequestContextImpl(HttpRequest request, HttpResponse response) {
-        super(request);
+        this(new AttributeMap(16), request, response);
+    }
+
+    protected RequestContextImpl(Attributes attributes, HttpRequest request, HttpResponse response) {
+        super(attributes);
         Checks.checkNotNull(request, "request");
         Checks.checkNotNull(response, "response");
         this.request = request;

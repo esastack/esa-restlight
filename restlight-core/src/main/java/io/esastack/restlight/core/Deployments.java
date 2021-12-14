@@ -20,8 +20,6 @@ import esa.commons.ClassUtils;
 import esa.commons.ObjectUtils;
 import esa.commons.StringUtils;
 import esa.commons.spi.SpiLoader;
-import io.esastack.httpserver.core.Attributes;
-import io.esastack.httpserver.core.AttributesImpl;
 import io.esastack.httpserver.core.HttpRequest;
 import io.esastack.httpserver.impl.HttpRequestImpl;
 import io.esastack.restlight.core.config.RestlightOptions;
@@ -85,7 +83,6 @@ import io.esastack.restlight.core.spi.FilterFactory;
 import io.esastack.restlight.core.spi.FutureTransferFactory;
 import io.esastack.restlight.core.spi.HandlerAdviceFactory;
 import io.esastack.restlight.core.spi.HandlerFactoryProvider;
-import io.esastack.restlight.core.spi.MethodAdviceFactory;
 import io.esastack.restlight.core.spi.ParamResolverAdviceProvider;
 import io.esastack.restlight.core.spi.ParamResolverProvider;
 import io.esastack.restlight.core.spi.RequestEntityResolverAdviceProvider;
@@ -98,7 +95,6 @@ import io.esastack.restlight.core.util.OrderedComparator;
 import io.esastack.restlight.core.util.RouteUtils;
 import io.esastack.restlight.server.BaseDeployments;
 import io.esastack.restlight.server.ServerDeployContext;
-import io.esastack.restlight.server.bootstrap.WebServerException;
 import io.esastack.restlight.server.context.impl.FilteringRequestImpl;
 import io.esastack.restlight.server.handler.RestlightHandler;
 import io.esastack.restlight.server.internal.FilterContextFactory;
@@ -109,7 +105,6 @@ import io.esastack.restlight.server.route.RouteRegistry;
 import io.esastack.restlight.server.spi.RouteRegistryAwareFactory;
 import io.esastack.restlight.server.util.LoggerUtils;
 
-import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -117,7 +112,6 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -176,8 +170,7 @@ public abstract class Deployments<R extends AbstractRestlight<R, D, O>, D extend
             if (req instanceof RequestContext) {
                 return (RequestContext) req;
             }
-            Attributes attributes = new AttributesImpl();
-            HttpRequest request = new HttpRequestImpl(req, attributes);
+            HttpRequest request = new HttpRequestImpl(req);
             HttpResponse response = new HttpResponseImpl(req.response());
             return new RequestContextImpl(request, response);
         };
@@ -189,7 +182,7 @@ public abstract class Deployments<R extends AbstractRestlight<R, D, O>, D extend
             if (ctx instanceof FilterContext) {
                 return (FilterContext) ctx;
             }
-            return new FilterContextImpl(new FilteringRequestImpl(ctx.request()), ctx.response());
+            return new FilterContextImpl(ctx, new FilteringRequestImpl(ctx.request()), ctx.response());
         };
     }
 
@@ -309,14 +302,6 @@ public abstract class Deployments<R extends AbstractRestlight<R, D, O>, D extend
             return this.addHandlerMappingProvider(ctx -> new HashSet<>(mappings));
         }
         return self();
-    }
-
-    /**
-     * @deprecated use {@link #addHandlerMappings(Collection)}
-     */
-    @Deprecated
-    public D addHandlerMapping(Collection<? extends HandlerMapping> mappings) {
-        return addHandlerMappings(mappings);
     }
 
     /**
@@ -1087,21 +1072,11 @@ public abstract class Deployments<R extends AbstractRestlight<R, D, O>, D extend
         ctx().setResolverFactory(getHandlerResolverFactory());
 
         // set HandlerAdviceFactory
-        Collection<MethodAdviceFactory> methodAdviceFactories = SpiLoader.cached(MethodAdviceFactory.class)
-                .getByFeature(restlight.name(),
-                        true,
-                        Collections.singletonMap(Constants.INTERNAL, StringUtils.empty()),
-                        false);
         Collection<HandlerAdviceFactory> handlerAdviceFactories = SpiLoader.cached(HandlerAdviceFactory.class)
                 .getByFeature(restlight.name(),
                         true,
                         Collections.singletonMap(Constants.INTERNAL, StringUtils.empty()),
                         false);
-        // convert MethodAdviceFactory to HandlerAdviceFactory
-        handlerAdviceFactories.addAll(methodAdviceFactories.stream()
-                .map(Deployments::convert2HandlerAdviceFactory)
-                .filter(Objects::nonNull)
-                .collect(Collectors.toList()));
         // set into context
         ctx().setHandlerAdvicesFactory(new HandlerAdvicesFactoryImpl(ctx(), handlerAdviceFactories));
 
@@ -1194,27 +1169,6 @@ public abstract class Deployments<R extends AbstractRestlight<R, D, O>, D extend
                 }
             });
         }
-    }
-
-    private static HandlerAdviceFactory convert2HandlerAdviceFactory(MethodAdviceFactory methodAdviceFactory) {
-        if (methodAdviceFactory == null) {
-            return null;
-        }
-        return (ctx, handler) -> {
-            final Object bean = handler.bean();
-            final Method method = handler.handlerMethod().method();
-            return methodAdviceFactory.methodAdvice(ctx, bean, method)
-                    .map(mAdvice -> (ctx0, args, invoker) -> {
-                        if (!mAdvice.preInvoke(ctx0, args)) {
-                            throw new WebServerException("Failed to invoke method: [" + method.getName() + "], "
-                                    + "due to that preInvoke() returned false!");
-                        }
-                        Object result = invoker.invoke(ctx0, args);
-                        //actual invoke
-                        result = mAdvice.postInvoke(ctx0, result);
-                        return result;
-                    });
-        };
     }
 
     private HandlerResolverFactory getHandlerResolverFactory() {

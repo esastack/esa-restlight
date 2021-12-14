@@ -48,9 +48,9 @@ abstract class AbstractRouter<R extends RouteWrap> implements Router {
     public Route route(RequestContext context) {
         HttpRequest request = context.request();
         // find from url lookup
-        R route = matchByUri(request);
+        R route = matchByUri(context);
         if (route == null) {
-            route = matchAll(request);
+            route = matchAll(context);
         }
         if (route == null) {
             return null;
@@ -71,13 +71,13 @@ abstract class AbstractRouter<R extends RouteWrap> implements Router {
         removeConverted(converted(route));
     }
 
-    R matchByUri(HttpRequest request) {
+    R matchByUri(RequestContext context) {
         // find from url lookup
-        final R[] routes = urlLookups.get(request.path());
+        final R[] routes = urlLookups.get(context.request().path());
         if (routes == null || routes.length == 0) {
             return null;
         }
-        return findFor(routes, request);
+        return findFor(routes, context);
     }
 
     void addConverted(R r) {
@@ -123,21 +123,21 @@ abstract class AbstractRouter<R extends RouteWrap> implements Router {
     /**
      * Finds the generalized rotes which can be used to handle the given {@link HttpRequest}.
      *
-     * @param request   request
+     * @param context   context
      * @return      generic routes
      */
-    abstract R matchAll(HttpRequest request);
+    abstract R matchAll(RequestContext context);
 
     /**
      * route the RouteHandler for current request from given HandlerMethodMappings
      *
      * @param routes  immutable
-     * @param request request
+     * @param context context
      * @return RouteHandler found, {@code null} if not found
      */
-    R findFor(R[] routes, HttpRequest request) {
+    R findFor(R[] routes, RequestContext context) {
         for (R route : routes) {
-            if (route.test(request)) {
+            if (route.test(context)) {
                 return route;
             }
         }
