@@ -32,19 +32,5 @@ public interface ResponseEntity extends HttpEntity {
      */
     HttpResponse response();
 
-    /**
-     * Obtains the entity value of current response.
-     *
-     * @return  response
-     */
-    Object entity();
-
-    /**
-     * Sets with the given {@code entity}.
-     *
-     * @param entity    entity
-     */
-    void entity(Object entity);
-
 }
 

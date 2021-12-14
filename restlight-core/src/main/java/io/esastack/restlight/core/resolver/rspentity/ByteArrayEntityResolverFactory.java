@@ -51,7 +51,7 @@ public class ByteArrayEntityResolverFactory implements ResponseEntityResolverFac
         protected byte[] serialize(ResponseEntity entity,
                                    List<MediaType> mediaTypes,
                                    HttpRequest request) throws Exception {
-            return Serializers.serializeByteArray((byte[]) entity.entity(),
+            return Serializers.serializeByteArray((byte[]) entity.response().entity(),
                     entity.response(),
                     selectMediaType(mediaTypes));
         }

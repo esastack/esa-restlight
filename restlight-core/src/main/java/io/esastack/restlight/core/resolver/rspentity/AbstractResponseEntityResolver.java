@@ -57,7 +57,7 @@ public abstract class AbstractResponseEntityResolver implements ResponseEntityRe
         if (!supports(entity)) {
             return HandledValue.failed();
         }
-        final Object entityValue = entity.entity();
+        final Object entityValue = entity.response().entity();
         final HttpRequest request = context.request();
         final HttpResponse response = context.response();
         final List<MediaType> mediaTypes = getMediaTypes(request);

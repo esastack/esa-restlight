@@ -65,7 +65,7 @@ public class ProtoBufHttpBodySerializer extends BaseHttpBodySerializer {
 
     @Override
     protected void addContentType(ResponseEntity entity) {
-        Object entityValue = entity.entity();
+        Object entityValue = entity.response().entity();
         HttpResponse response = entity.response();
         if (entityValue instanceof Message) {
             Message message = (Message) entityValue;

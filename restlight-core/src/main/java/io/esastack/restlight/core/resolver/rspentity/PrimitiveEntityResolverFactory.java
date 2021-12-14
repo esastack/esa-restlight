@@ -51,7 +51,7 @@ public class PrimitiveEntityResolverFactory implements ResponseEntityResolverFac
         protected byte[] serialize(ResponseEntity entity,
                                    List<MediaType> mediaTypes,
                                    HttpRequest request) throws Exception {
-            return Serializers.serializePrimitives(entity.entity(),
+            return Serializers.serializePrimitives(entity.response().entity(),
                     entity.response(),
                     selectMediaType(mediaTypes));
         }

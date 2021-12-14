@@ -42,7 +42,7 @@ public final class ResponseEntityUtils {
                 if (response.isCommitted()) {
                     LoggerUtils.logger().warn(StringUtils.concat("Ignore the non-null return value '{}'," +
                             " because response is " + "not writable.", entity.handler().isPresent()
-                            ? entity.handler().get().toString() : ""), entity.entity());
+                            ? entity.handler().get().toString() : ""), entity.response().entity());
                 }
                 response.sendResult(data);
             }

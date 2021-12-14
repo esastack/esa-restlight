@@ -52,7 +52,7 @@ public class ByteBufEntityResolverFactory implements ResponseEntityResolverFacto
         protected byte[] serialize(ResponseEntity entity,
                                    List<MediaType> mediaTypes,
                                    HttpRequest request) throws Exception {
-            return Serializers.serializeByteBuf((ByteBuf) entity.entity(),
+            return Serializers.serializeByteBuf((ByteBuf) entity.response().entity(),
                     entity.response(),
                     selectMediaType(mediaTypes));
         }
