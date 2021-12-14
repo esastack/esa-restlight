@@ -190,7 +190,8 @@ public class ConfigurationImpl implements Configuration {
             this.resourcesClasses.add(clazz);
             return;
         }
-        LoggerUtils.logger().error("The class :[" + clazz + "] is unsupported to be registered.");
+        LoggerUtils.logger().error("The class :[" + clazz.getName() + "] is unsupported to be registered" +
+                " as a [Resource].");
     }
 
     public void addResourceInstance(Object instance) {
@@ -203,7 +204,7 @@ public class ConfigurationImpl implements Configuration {
             this.resourcesInstances.add(instance);
             return;
         }
-        LoggerUtils.logger().warn("The instance of type: [" + clazz + "] has been registered before," +
+        LoggerUtils.logger().warn("The instance of type: [" + clazz.getName() + "] has been registered before," +
                 " and the current should be ignored.");
     }
 
@@ -218,7 +219,8 @@ public class ConfigurationImpl implements Configuration {
             this.contracts.put(clazz, contracts);
             return true;
         }
-        LoggerUtils.logger().error("The class :[" + clazz + "] is unsupported to be registered.");
+        LoggerUtils.logger().error("The class :[" + clazz.getName() + "] is unsupported to be registered" +
+                " as a [Provider].");
         return false;
     }
 
@@ -232,7 +234,8 @@ public class ConfigurationImpl implements Configuration {
             this.contracts.put(clazz, contracts);
             return true;
         }
-        LoggerUtils.logger().error("The class :[" + clazz + "] is unsupported to be registered.");
+        LoggerUtils.logger().error("The class :[" + clazz.getName() + "] is unsupported to be registered" +
+                " as a [Provider].");
         return false;
     }
 
@@ -241,7 +244,7 @@ public class ConfigurationImpl implements Configuration {
             return true;
         }
         if (!this.classes.add(clazz)) {
-            LoggerUtils.logger().warn("The class: [" + clazz + "] has been registered before," +
+            LoggerUtils.logger().warn("The class: [" + clazz.getName() + "] has been registered before," +
                     " and the current should be ignored.");
             return true;
         }
