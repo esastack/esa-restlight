@@ -32,8 +32,7 @@ class ConnectionLimiterTest {
     @Test
     void testLimited() {
         final ConnectionLimitOptions ops = ConnectionLimitOptionsConfigure.newOpts()
-                .maxCreationPerSecond(1)
-                .configured();
+                .maxPerSecond(1).configured();
         final ConnectionLimiter limiter = new ConnectionLimiter(ops);
         final ChannelHandlerContext ctx = mock(ChannelHandlerContext.class);
         final EmbeddedChannel channel = new EmbeddedChannel();

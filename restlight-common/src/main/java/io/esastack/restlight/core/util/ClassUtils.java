@@ -27,14 +27,9 @@ import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
-import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
 
 public final class ClassUtils {
 
@@ -329,146 +324,6 @@ public final class ClassUtils {
                     || type == org.objectweb.asm.Type.DOUBLE_TYPE);
         }
 
-    }
-
-    /**
-     * @deprecated use {@link esa.commons.ClassUtils#forName(String)} please
-     */
-    @Deprecated
-    public static Class<?> forName(String clz) {
-        return esa.commons.ClassUtils.forName(clz);
-    }
-
-    /**
-     * @deprecated use {@link esa.commons.ClassUtils#forName(String, boolean)} please
-     */
-    @Deprecated
-    public static Class<?> forName(String clz, boolean initialize) {
-        return esa.commons.ClassUtils.forName(clz, initialize);
-    }
-
-    /**
-     * Retrieve the generic types of the given {@link Type}.
-     *
-     * @param requiredType requiredType
-     *
-     * @return {@link Type} of the first type, {@link Object} if could not find a actual {@link Type} such as {@code T}.
-     * @deprecated use {@link esa.commons.ClassUtils#retrieveGenericTypes(Type)} please
-     */
-    @Deprecated
-    public static Class<?>[] retrieveGenericTypes(Type requiredType) {
-        return esa.commons.ClassUtils.retrieveGenericTypes(requiredType);
-    }
-
-    /**
-     * Retrieve the first generic type of the given {@link Type}. For instance, this method will return {@link Integer}
-     * if passed a {@link Type} of list. Aso, this method will return {@link String} if passed a {@link Type} of map.
-     *
-     * @param requiredType requiredType
-     *
-     * @return {@link Type} of the first type, {@link Object} if could not find a actual {@link Type} such as {@code T}.
-     * @deprecated use {@link esa.commons.ClassUtils#retrieveFirstGenericType(Type)} please
-     */
-    @Deprecated
-    public static Optional<Class<?>> retrieveFirstGenericType(Type requiredType) {
-        return esa.commons.ClassUtils.retrieveFirstGenericType(requiredType);
-    }
-
-
-    /**
-     * @see #findFirstGenericType(Class, Class)
-     * @deprecated use {@link esa.commons.ClassUtils#findFirstGenericType(Class)} please
-     */
-    @Deprecated
-    public static Optional<Class<?>> findFirstGenericType(Class<?> concrete) {
-        return esa.commons.ClassUtils.findFirstGenericType(concrete);
-    }
-
-    /**
-     * @see #findGenericTypes(Class, Class)
-     * @deprecated use {@link esa.commons.ClassUtils#findFirstGenericType(Class, Class)} please
-     */
-    @Deprecated
-    public static Optional<Class<?>> findFirstGenericType(Class<?> concrete, Class<?> interfaceType) {
-        return esa.commons.ClassUtils.findFirstGenericType(concrete, interfaceType);
-    }
-
-    /**
-     * @see #findGenericTypes(Class, Class)
-     * @deprecated use {@link esa.commons.ClassUtils#findGenericTypes(Class)} please
-     */
-    @Deprecated
-    public static Class<?>[] findGenericTypes(Class<?> concrete) {
-        return esa.commons.ClassUtils.findGenericTypes(concrete);
-    }
-
-    /**
-     * Finds generic type declared in given target raw type of the given {@link Class} with find semantic which will try
-     * to find the generic types from the supper class and the interfaces of super class recursively.
-     *
-     * @param concrete      real type
-     * @param targetRawType target raw type, {@code null} if no required target raw type.
-     *
-     * @return generic types found
-     * @deprecated use {@link esa.commons.ClassUtils#findFirstGenericType(Class, Class)} please
-     */
-    @Deprecated
-    public static Class<?>[] findGenericTypes(Class<?> concrete,
-                                              Class<?> targetRawType) {
-        return esa.commons.ClassUtils.findGenericTypes(concrete, targetRawType);
-    }
-
-    /**
-     * @deprecated use {@link esa.commons.ClassUtils#getUserType(Object)} please
-     */
-    @Deprecated
-    public static Class<?> getUserType(Object target) {
-        return esa.commons.ClassUtils.getUserType(target);
-    }
-
-    /**
-     * @deprecated use {@link esa.commons.ClassUtils#getUserType(Class)} please
-     */
-    @Deprecated
-    public static Class<?> getUserType(Class<?> clz) {
-        return esa.commons.ClassUtils.getUserType(clz);
-    }
-
-    /**
-     * @deprecated use {@link esa.commons.ClassUtils#doWithUserDeclaredMethodsMethods(Class, Consumer, Predicate)}
-     * please
-     */
-    @Deprecated
-    public static void doWithUserDeclaredMethodsMethods(Class<?> clz,
-                                                        Consumer<Method> c,
-                                                        Predicate<Method> p) {
-        esa.commons.ClassUtils.doWithUserDeclaredMethodsMethods(clz, c, p);
-    }
-
-    /**
-     * @deprecated use {@link esa.commons.ClassUtils#userDeclaredMethods(Class)} please
-     */
-    @Deprecated
-    public static Set<Method> userDeclaredMethods(Class<?> clz) {
-        return esa.commons.ClassUtils.userDeclaredMethods(clz);
-    }
-
-    /**
-     * @deprecated use {@link esa.commons.ClassUtils#userDeclaredMethods(Class, Predicate)} please
-     */
-    @Deprecated
-    public static Set<Method> userDeclaredMethods(Class<?> clz, Predicate<Method> p) {
-        return esa.commons.ClassUtils.userDeclaredMethods(clz, p);
-    }
-
-    /**
-     * @deprecated use {@link esa.commons.ClassUtils#doWithMethods(Class, Consumer, Predicate)} please
-     */
-    @Deprecated
-    public static void doWithMethods(Class<?> clz,
-                                     Consumer<Method> c,
-                                     Predicate<Method> p) {
-        esa.commons.ClassUtils.doWithMethods(clz, c, p);
     }
 
 }

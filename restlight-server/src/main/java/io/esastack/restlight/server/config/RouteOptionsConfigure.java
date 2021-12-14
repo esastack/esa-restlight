@@ -17,7 +17,6 @@ package io.esastack.restlight.server.config;
 
 public final class RouteOptionsConfigure {
     private boolean useCachedRouting = true;
-    private int cacheRatio = 10;
     private int computeRate = 1;
 
     private RouteOptionsConfigure() {
@@ -36,12 +35,6 @@ public final class RouteOptionsConfigure {
         return this;
     }
 
-    @Deprecated
-    public RouteOptionsConfigure cacheRatio(int cacheRatio) {
-        this.cacheRatio = cacheRatio;
-        return this;
-    }
-
     public RouteOptionsConfigure computeRate(int computeRate) {
         this.computeRate = computeRate;
         return this;
@@ -50,7 +43,6 @@ public final class RouteOptionsConfigure {
     public RouteOptions configured() {
         RouteOptions routeOptions = new RouteOptions();
         routeOptions.setUseCachedRouting(useCachedRouting);
-        routeOptions.setCacheRatio(cacheRatio);
         routeOptions.setComputeRate(computeRate);
         return routeOptions;
     }

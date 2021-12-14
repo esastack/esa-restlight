@@ -75,11 +75,6 @@ public class DateUtils {
         DEFAULT_SDFS.add(new SimpleDateFormat(PATTERN_RFC1123));
     }
 
-    @Deprecated
-    public static String format(Date date) {
-        return formatByCache(date.getTime());
-    }
-
     public static String format(LocalDateTime time) {
         return FORMATTER.format(time);
     }

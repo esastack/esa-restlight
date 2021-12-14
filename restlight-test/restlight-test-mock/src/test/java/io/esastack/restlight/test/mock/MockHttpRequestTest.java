@@ -255,12 +255,4 @@ class MockHttpRequestTest {
         assertEquals(new CookieImpl("bar", "B"), it.next());
         assertEquals(new CookieImpl("foo", "A"), it.next());
     }
-
-    @Test
-    void testAsyncTimeout() {
-        final MockHttpRequest request = MockHttpRequest.aMockRequest()
-                .withAsyncTimeOut(1024L)
-                .build();
-        assertEquals(1024L, request.getAsyncTimeout());
-    }
 }

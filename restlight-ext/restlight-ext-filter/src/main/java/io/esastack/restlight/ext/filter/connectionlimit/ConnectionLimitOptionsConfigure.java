@@ -30,14 +30,6 @@ public final class ConnectionLimitOptionsConfigure {
         return newOpts().configured();
     }
 
-    /**
-     * @deprecated use {@link #maxPerSecond(int)}
-     */
-    @Deprecated
-    public ConnectionLimitOptionsConfigure maxCreationPerSecond(int maxCreationPerSecond) {
-        return maxPerSecond(maxCreationPerSecond);
-    }
-
     public ConnectionLimitOptionsConfigure maxPerSecond(int maxPerSecond) {
         this.maxPerSecond = maxPerSecond;
         return this;

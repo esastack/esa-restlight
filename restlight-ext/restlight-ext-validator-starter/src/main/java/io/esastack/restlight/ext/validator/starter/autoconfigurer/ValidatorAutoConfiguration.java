@@ -15,7 +15,6 @@
  */
 package io.esastack.restlight.ext.validator.starter.autoconfigurer;
 
-import esa.commons.StringUtils;
 import io.esastack.restlight.core.util.Ordered;
 import io.esastack.restlight.ext.validator.core.ValidationOptions;
 import io.esastack.restlight.spring.util.DeployContextConfigure;
@@ -34,10 +33,6 @@ public class ValidatorAutoConfiguration {
     @Bean
     public DeployContextConfigure deployContextConfigure(ValidationOptions options) {
         return context -> {
-            String messageFile = options.getMessageFile();
-            if (StringUtils.isEmpty(messageFile)) {
-                options.setMessageFile(context.options().getValidationMessageFile());
-            }
             context.attribute(VALIDATION_OPTIONS, options);
         };
     }

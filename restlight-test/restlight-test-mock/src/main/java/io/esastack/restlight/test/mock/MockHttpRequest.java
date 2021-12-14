@@ -52,7 +52,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class MockHttpRequest implements HttpRequest {
 
-    private long asyncTimeout;
     private String scheme;
     private Buffer body;
     private ByteBufHttpInputStream in;
@@ -230,13 +229,7 @@ public class MockHttpRequest implements HttpRequest {
         return parameters;
     }
 
-    @Deprecated
-    public long getAsyncTimeout() {
-        return asyncTimeout;
-    }
-
     public static final class Builder {
-        private long asyncTimeout = -1;
         private Buffer buffer;
         private String scheme = HttpScheme.HTTP.name().toString().toUpperCase();
         private HttpHeaders headers = new Http1HeadersImpl();
@@ -366,16 +359,9 @@ public class MockHttpRequest implements HttpRequest {
             return this;
         }
 
-        @Deprecated
-        public Builder withAsyncTimeOut(long timeout) {
-            this.asyncTimeout = timeout;
-            return this;
-        }
-
         public MockHttpRequest build() {
             MockHttpRequest mockRequest = new MockHttpRequest();
             mockRequest.scheme = this.scheme;
-            mockRequest.asyncTimeout = this.asyncTimeout;
             mockRequest.uri = StringUtils.nonEmptyOrElse(this.uri, "/");
             QueryStringDecoder decoder = new QueryStringDecoder(mockRequest.uri);
             mockRequest.path = decoder.path();

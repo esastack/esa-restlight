@@ -31,20 +31,4 @@ public class ConnectionLimitOptions implements Serializable {
     public void setMaxPerSecond(int maxPerSecond) {
         this.maxPerSecond = maxPerSecond;
     }
-
-    /**
-     * @deprecated use {@link #getMaxPerSecond()}
-     */
-    @Deprecated
-    public int getMaxCreationPerSecond() {
-        return getMaxPerSecond();
-    }
-
-    /**
-     * @deprecated use {@link #setMaxPerSecond(int)}
-     */
-    @Deprecated
-    public void setMaxCreationPerSecond(int maxCreationPerSecond) {
-        setMaxPerSecond(maxCreationPerSecond);
-    }
 }
