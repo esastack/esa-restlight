@@ -1,6 +1,6 @@
-io.esastack.restlight.springmvc.resolver.param.CookieValueConverter
+io.esastack.restlight.springmvc.resolver.param.CookieValueResolver
 io.esastack.restlight.springmvc.resolver.param.MatrixVariableParamResolver
 io.esastack.restlight.springmvc.resolver.param.PathVariableParamResolver
 io.esastack.restlight.springmvc.resolver.param.RequestAttributeParamResolver
-io.esastack.restlight.springmvc.resolver.param.RequestHeaderConverterAdapter
+io.esastack.restlight.springmvc.resolver.param.RequestHeaderResolver
 io.esastack.restlight.springmvc.resolver.param.RequestParamResolver

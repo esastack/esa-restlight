@@ -34,7 +34,7 @@ import java.util.function.BiFunction;
 /**
  * Implementation of {@link ParamResolverFactory} for resolving argument that annotated by the RequestParam.
  */
-public abstract class AbstractParamResolver extends StrsConverterAdapter {
+public abstract class AbstractParamResolver extends StrsNameAndValueResolverFactory {
 
     @Override
     public ParamResolver createResolver(Param param,

@@ -26,7 +26,7 @@ import java.util.function.BiFunction;
 /**
  * Implementation of {@link ParamResolverFactory} for resolving argument that annotated by the PathVariable.
  */
-public abstract class AbstractPathVariableParamResolver extends StrConverterAdapter {
+public abstract class AbstractPathVariableParamResolver extends StrNameAndValueResolverFactory {
 
     @Override
     protected BiFunction<String, HttpRequest, String> valueExtractor(Param param) {

@@ -38,7 +38,7 @@ import java.util.function.BiFunction;
 /**
  * Implementation of {@link ParamResolverFactory} for resolving argument that annotated by the MatrixVariable
  */
-public abstract class AbstractMatrixParamResolver extends StrsConverterAdapter {
+public abstract class AbstractMatrixParamResolver extends StrsNameAndValueResolverFactory {
 
     @Override
     public ParamResolver createResolver(Param param,

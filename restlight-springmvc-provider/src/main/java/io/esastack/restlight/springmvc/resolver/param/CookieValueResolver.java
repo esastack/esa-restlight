@@ -18,36 +18,36 @@ package io.esastack.restlight.springmvc.resolver.param;
 import io.esastack.restlight.core.method.Param;
 import io.esastack.restlight.core.resolver.ParamResolverFactory;
 import io.esastack.restlight.core.resolver.nav.NameAndValue;
-import io.esastack.restlight.core.resolver.param.AbstractHeaderConverterAdapter;
-import io.esastack.restlight.springmvc.annotation.shaded.RequestHeader0;
+import io.esastack.restlight.core.resolver.param.AbstractCookieValueResolver;
+import io.esastack.restlight.springmvc.annotation.shaded.CookieValue0;
 import io.esastack.restlight.springmvc.util.RequestMappingUtils;
 
 import java.util.function.BiFunction;
+import java.util.function.Function;
 
 /**
- * Implementation of {@link ParamResolverFactory} for resolving argument that annotated by the RequestHeader.
+ * Implementation of {@link ParamResolverFactory} for resolving argument that annotated by the CookieValue
  */
-public class RequestHeaderConverterAdapter extends AbstractHeaderConverterAdapter {
+public class CookieValueResolver extends AbstractCookieValueResolver {
 
     @Override
     public boolean supports(Param param) {
-        return param.hasAnnotation(RequestHeader0.shadedClass());
+        return param.hasAnnotation(CookieValue0.shadedClass());
     }
 
     @Override
-    protected NameAndValue createNameAndValue(Param param, BiFunction<String, Boolean, Object> defaultValueConverter) {
-        RequestHeader0 requestHeader =
-                RequestHeader0.fromShade(param.getAnnotation(RequestHeader0.shadedClass()));
-        assert requestHeader != null;
-        return new NameAndValue(requestHeader.value(),
-                requestHeader.required(),
-                defaultValueConverter.apply(RequestMappingUtils.normaliseDefaultValue(requestHeader.defaultValue())
-                        , false));
+    protected Function<Param, NameAndValue> initNameAndValueCreator(BiFunction<String, Boolean, Object> defaultValueConverter) {
+        return (param) -> {
+            CookieValue0 cookieValue =
+                    CookieValue0.fromShade(param.getAnnotation(CookieValue0.shadedClass()));
+            assert cookieValue != null;
+            return new NameAndValue(cookieValue.value(), cookieValue.required(),
+                    defaultValueConverter.apply(RequestMappingUtils.normaliseDefaultValue(cookieValue.defaultValue()), false));
+        };
     }
 
     @Override
     public int getOrder() {
         return 0;
     }
-
 }

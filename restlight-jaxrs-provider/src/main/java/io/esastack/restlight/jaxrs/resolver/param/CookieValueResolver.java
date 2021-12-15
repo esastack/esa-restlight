@@ -18,18 +18,19 @@ package io.esastack.restlight.jaxrs.resolver.param;
 import io.esastack.restlight.core.method.Param;
 import io.esastack.restlight.core.resolver.ParamResolverFactory;
 import io.esastack.restlight.core.resolver.nav.NameAndValue;
-import io.esastack.restlight.core.resolver.param.AbstractCookieValueConverter;
+import io.esastack.restlight.core.resolver.param.AbstractCookieValueResolver;
 import io.esastack.restlight.jaxrs.util.JaxrsMappingUtils;
 import jakarta.ws.rs.CookieParam;
 import jakarta.ws.rs.ext.ParamConverter;
 
 import java.util.function.BiFunction;
+import java.util.function.Function;
 
 /**
  * Implementation of {@link ParamResolverFactory} for resolving argument that annotated by the
  * {@link CookieParam}
  */
-public class CookieValueConverter extends AbstractCookieValueConverter {
+public class CookieValueResolver extends AbstractCookieValueResolver {
 
     @Override
     public boolean supports(Param parameter) {
@@ -37,13 +38,15 @@ public class CookieValueConverter extends AbstractCookieValueConverter {
     }
 
     @Override
-    protected NameAndValue createNameAndValue(Param param, BiFunction<String, Boolean, Object> defaultValueConverter) {
-        CookieParam cookieParam = param.getAnnotation(CookieParam.class);
-        assert cookieParam != null;
-        return new NameAndValue(cookieParam.value(),
-                false,
-                defaultValueConverter.apply(JaxrsMappingUtils.extractDefaultValue(param),
-                        param.hasAnnotation(ParamConverter.Lazy.class)));
+    protected Function<Param, NameAndValue> initNameAndValueCreator(BiFunction<String, Boolean, Object> defaultValueConverter) {
+        return (param) -> {
+            CookieParam cookieParam = param.getAnnotation(CookieParam.class);
+            assert cookieParam != null;
+            return new NameAndValue(cookieParam.value(),
+                    false,
+                    defaultValueConverter.apply(JaxrsMappingUtils.extractDefaultValue(param),
+                            param.hasAnnotation(ParamConverter.Lazy.class)));
+        };
     }
 
     @Override

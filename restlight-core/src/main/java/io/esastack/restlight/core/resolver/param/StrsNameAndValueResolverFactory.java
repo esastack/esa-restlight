@@ -12,13 +12,14 @@ import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-public abstract class StrsConverterAdapter extends StringConverterAdapter<Collection<String>> {
+public abstract class StrsNameAndValueResolverFactory extends NameAndValueResolverFactory<Collection<String>> {
 
     private final static NullPointerException BOTH_CONVERTERS_ARE_NULL = new NullPointerException(
             "Both strConverter and strsConverter are null");
 
     @Override
-    protected BiFunction<String, Boolean, Object> createDefaultValueConverter(Function<Collection<String>, Object> converter) {
+    protected BiFunction<String, Boolean, Object> initDefaultValueConverter(
+            NameAndValueResolver.Converter<Collection<String>> converter) {
         return (defaultValue, isLazy) -> {
             if (defaultValue == null) {
                 return null;
@@ -27,15 +28,16 @@ public abstract class StrsConverterAdapter extends StringConverterAdapter<Collec
             List<String> values = new ArrayList<>(1);
             values.add(defaultValue);
             if (isLazy) {
-                return new NameAndValue.LazyDefaultValue(() -> converter.apply(values));
+                return new NameAndValue.LazyDefaultValue(() ->
+                        converter.convert(null, null, (name, ctx) -> values));
             }
-            return converter.apply(values);
+            return converter.convert(null, null, (name, ctx) -> values);
         };
     }
 
     @Override
-    protected Function<Collection<String>, Object> initConverter(Param param,
-                                                                 BiFunction<Class<?>, Type, StringConverter> converterLookup) {
+    protected NameAndValueResolver.Converter<Collection<String>> initConverter(Param param,
+                                                                               BiFunction<Class<?>, Type, StringConverter> converterLookup) {
         final StringConverter strConverter = converterLookup.apply(param.type(), param.genericType());
 
         final Function<Collection<String>, Object> strsConverter = ConverterUtils.strs2ObjectConverter(param.type(),
@@ -46,11 +48,13 @@ public abstract class StrsConverterAdapter extends StringConverterAdapter<Collec
             throw BOTH_CONVERTERS_ARE_NULL;
         }
 
-        return (values) -> {
+        return (name, ctx, valueExtractor) -> {
+            Collection<String> values = valueExtractor.apply(name, ctx);
+            if (values == null || values.isEmpty()) {
+                return null;
+            }
             if (strsConverter != null) {
-                if (values == null || values.isEmpty()) {
-                    return null;
-                } else if ((values.size() > 1) || (strConverter == null)) {
+                if ((values.size() > 1) || (strConverter == null)) {
                     return strsConverter.apply(values);
                 } else {
                     return strConverter.fromString(values.iterator().next());
