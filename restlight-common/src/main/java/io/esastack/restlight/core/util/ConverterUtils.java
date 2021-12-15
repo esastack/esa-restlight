@@ -183,27 +183,24 @@ public final class ConverterUtils {
      * @param requiredType target type
      * @return converter or {@code null} if we don't know how to convert it
      */
-    public static Function<Collection<String>, Object> strs2ObjectConverter(Type requiredType,
-                                                                            BiFunction<Class<?>,
-                                                                                    Type,
-                                                                                    Function<String, Object>> str2ObjectConverterLookup) {
+    public static Function<Collection<String>, Object> strs2ObjectConverter(Type requiredType) {
         Checks.checkNotNull(requiredType, "requiredType");
         final Class<?> requiredClass = forRawType(requiredType);
-        return strs2ObjectConverter(requiredClass, requiredType, str2ObjectConverterLookup);
+        return strs2ObjectConverter(requiredClass, requiredType, ConverterUtils::getStr2ObjectConverter);
     }
 
     public static Function<Collection<String>, Object> strs2ObjectConverter(Class<?> requiredClass,
                                                                             Type requiredType,
                                                                             BiFunction<Class<?>,
                                                                                     Type,
-                                                                                    Function<String, Object>> str2ObjectConverterLookup) {
+                                                                                    Function<String, Object>> str2ObjectConverterProvider) {
 
         Function<Collection<String>, Object> converter;
-        if (requiredClass.isArray() && (converter = Strs2ArrayConverter.of(requiredClass, str2ObjectConverterLookup)) != null) {
+        if (requiredClass.isArray() && (converter = Strs2ArrayConverter.of(requiredClass, str2ObjectConverterProvider)) != null) {
             return converter;
         }
         if (Collection.class.isAssignableFrom(requiredClass)
-                && (converter = Strs2CollectionConverter.of(requiredClass, requiredType, str2ObjectConverterLookup)) != null) {
+                && (converter = Strs2CollectionConverter.of(requiredClass, requiredType, str2ObjectConverterProvider)) != null) {
             return converter;
         }
         // we don't know how to convert it
@@ -263,9 +260,9 @@ public final class ConverterUtils {
         private static Strs2ArrayConverter of(Class<?> requiredClass,
                                               BiFunction<Class<?>,
                                                       Type,
-                                                      Function<String, Object>> str2ObjectConverterLookup) {
+                                                      Function<String, Object>> str2ObjectConverterProvider) {
             final Class<?> elementType = requiredClass.getComponentType();
-            Function<String, Object> elementConverter = str2ObjectConverterLookup.apply(elementType, null);
+            Function<String, Object> elementConverter = str2ObjectConverterProvider.apply(elementType, null);
             if (elementConverter == null) {
                 // we don't know how to convert the elements
                 return null;
@@ -335,7 +332,7 @@ public final class ConverterUtils {
                                                    Type requiredType,
                                                    BiFunction<Class<?>,
                                                            Type,
-                                                           Function<String, Object>> str2ObjectConverterLookup) {
+                                                           Function<String, Object>> str2ObjectConverterProvider) {
 
             IntFunction<Collection> collectionGenerator = collectionGenerator(requiredClass);
             if (collectionGenerator == null) {
@@ -343,7 +340,7 @@ public final class ConverterUtils {
                 return null;
             }
 
-            Function<String, Object> elementConverter = str2ObjectConverterLookup.apply(retrieveElementType(requiredType), null);
+            Function<String, Object> elementConverter = str2ObjectConverterProvider.apply(retrieveElementType(requiredType), null);
             if (elementConverter == null) {
                 // we don't know how to convert the elements
                 return null;
@@ -382,7 +379,7 @@ public final class ConverterUtils {
             Strs2CollectionConverter strs2CollectionConverter =
                     Strs2CollectionConverter.of(requiredClass,
                             requiredType,
-                            (type, genericType) -> getStr2ObjectConverter(retrieveElementType(type), genericType));
+                            ConverterUtils::getStr2ObjectConverter);
             if (strs2CollectionConverter == null) {
                 return null;
             }

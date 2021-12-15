@@ -2,6 +2,7 @@ package io.esastack.restlight.core.resolver.param;
 
 import io.esastack.restlight.core.method.Param;
 import io.esastack.restlight.core.resolver.StringConverter;
+import io.esastack.restlight.core.resolver.nav.NameAndValue;
 import io.esastack.restlight.core.util.ConverterUtils;
 
 import java.lang.reflect.Type;
@@ -26,7 +27,7 @@ public abstract class StrsConverterAdapter extends StringConverterAdapter<Collec
             List<String> values = new ArrayList<>(1);
             values.add(defaultValue);
             if (isLazy) {
-                return new LazyDefaultValue(() -> converter.apply(values));
+                return new NameAndValue.LazyDefaultValue(() -> converter.apply(values));
             }
             return converter.apply(values);
         };
