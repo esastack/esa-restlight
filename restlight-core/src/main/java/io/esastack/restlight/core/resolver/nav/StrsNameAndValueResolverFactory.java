@@ -1,8 +1,7 @@
-package io.esastack.restlight.core.resolver.param;
+package io.esastack.restlight.core.resolver.nav;
 
 import io.esastack.restlight.core.method.Param;
 import io.esastack.restlight.core.resolver.StringConverter;
-import io.esastack.restlight.core.resolver.nav.NameAndValue;
 import io.esastack.restlight.core.util.ConverterUtils;
 
 import java.lang.reflect.Type;

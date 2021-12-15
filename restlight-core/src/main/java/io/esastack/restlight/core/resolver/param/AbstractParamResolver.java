@@ -23,6 +23,7 @@ import io.esastack.restlight.core.resolver.HandlerResolverFactory;
 import io.esastack.restlight.core.resolver.ParamResolver;
 import io.esastack.restlight.core.resolver.ParamResolverFactory;
 import io.esastack.restlight.core.resolver.nav.NameAndValue;
+import io.esastack.restlight.core.resolver.nav.StrsNameAndValueResolverFactory;
 
 import java.util.Collection;
 import java.util.Collections;

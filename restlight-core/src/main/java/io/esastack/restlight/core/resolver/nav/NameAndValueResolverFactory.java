@@ -1,4 +1,4 @@
-package io.esastack.restlight.core.resolver.param;
+package io.esastack.restlight.core.resolver.nav;
 
 import io.esastack.restlight.core.DeployContext;
 import io.esastack.restlight.core.config.RestlightOptions;
@@ -7,7 +7,6 @@ import io.esastack.restlight.core.method.Param;
 import io.esastack.restlight.core.resolver.HandlerResolverFactory;
 import io.esastack.restlight.core.resolver.ParamResolverFactory;
 import io.esastack.restlight.core.resolver.StringConverter;
-import io.esastack.restlight.core.resolver.nav.NameAndValue;
 import io.esastack.restlight.core.serialize.HttpRequestSerializer;
 import io.esastack.restlight.core.spi.ParamResolverProvider;
 import io.esastack.restlight.core.util.Ordered;

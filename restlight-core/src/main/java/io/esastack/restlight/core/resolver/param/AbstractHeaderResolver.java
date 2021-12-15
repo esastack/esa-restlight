@@ -20,6 +20,8 @@ import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.method.Param;
 import io.esastack.restlight.core.resolver.ParamResolverFactory;
 import io.esastack.restlight.core.resolver.StringConverter;
+import io.esastack.restlight.core.resolver.nav.NameAndValueResolver;
+import io.esastack.restlight.core.resolver.nav.StrsNameAndValueResolverFactory;
 
 import java.lang.reflect.Type;
 import java.util.Collection;

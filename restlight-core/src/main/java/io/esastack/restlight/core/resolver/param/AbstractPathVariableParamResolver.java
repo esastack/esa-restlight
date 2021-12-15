@@ -19,6 +19,7 @@ import esa.commons.StringUtils;
 import io.esastack.httpserver.core.HttpRequest;
 import io.esastack.restlight.core.method.Param;
 import io.esastack.restlight.core.resolver.ParamResolverFactory;
+import io.esastack.restlight.core.resolver.nav.StrNameAndValueResolverFactory;
 import io.esastack.restlight.server.util.PathVariableUtils;
 
 import java.util.function.BiFunction;

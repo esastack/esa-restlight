@@ -1,11 +1,10 @@
-package io.esastack.restlight.core.resolver.param;
+package io.esastack.restlight.core.resolver.nav;
 
 import esa.commons.Checks;
 import esa.commons.ObjectUtils;
 import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.method.Param;
 import io.esastack.restlight.core.resolver.ParamResolver;
-import io.esastack.restlight.core.resolver.nav.NameAndValue;
 import io.esastack.restlight.core.util.ConverterUtils;
 import io.esastack.restlight.server.bootstrap.WebServerException;
 
