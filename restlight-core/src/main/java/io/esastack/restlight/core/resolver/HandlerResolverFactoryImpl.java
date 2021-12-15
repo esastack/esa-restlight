@@ -28,6 +28,7 @@ import io.esastack.restlight.core.spi.FutureTransferFactory;
 import io.esastack.restlight.core.spi.RouteFilterFactory;
 import io.esastack.restlight.core.util.OrderedComparator;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -48,7 +49,7 @@ public class HandlerResolverFactoryImpl implements HandlerResolverFactory {
     private final List<FutureTransferFactory> futureTransfers;
     private final List<RouteFilterFactory> routeFilters;
 
-    private final List<ParamConverterFactory> paramConverters;
+    private final List<StringConverterFactory> paramConverters;
     private final List<ParamResolverFactory> paramResolvers;
     private final List<ParamResolverAdviceFactory> paramResolverAdvices;
     private final List<ContextResolverFactory> contextResolvers;
@@ -69,8 +70,8 @@ public class HandlerResolverFactoryImpl implements HandlerResolverFactory {
                                       Collection<? extends HttpResponseSerializer> txSerializers,
                                       Collection<? extends FutureTransferFactory> futureTransfers,
                                       Collection<? extends RouteFilterFactory> routeFilters,
-                                      Collection<? extends ParamConverterAdapter> paramConverters,
-                                      Collection<? extends ParamConverterFactory> paramConverterFactories,
+                                      Collection<? extends StringConverterAdapter> paramConverters,
+                                      Collection<? extends StringConverterFactory> paramConverterFactories,
                                       Collection<? extends ParamResolverAdapter> paramResolvers,
                                       Collection<? extends ParamResolverFactory> paramResolverFactories,
                                       Collection<? extends ParamResolverAdviceAdapter> paramResolverAdvices,
@@ -111,7 +112,7 @@ public class HandlerResolverFactoryImpl implements HandlerResolverFactory {
     }
 
     private static List<ResponseEntityResolver> instantiateResponseEntityResolvers(List<ResponseEntityResolverFactory>
-                                                                                   factories,
+                                                                                           factories,
                                                                                    Collection<? extends
                                                                                            HttpResponseSerializer>
                                                                                            txSerializers) {
@@ -141,13 +142,13 @@ public class HandlerResolverFactoryImpl implements HandlerResolverFactory {
                 ResponseEntityResolverAdviceFactory::singleton);
     }
 
-    private static List<ParamConverterFactory> getParamConverters(
-            Collection<? extends ParamConverterAdapter> converters,
-            Collection<? extends ParamConverterFactory> factories) {
+    private static List<StringConverterFactory> getParamConverters(
+            Collection<? extends StringConverterAdapter> converters,
+            Collection<? extends StringConverterFactory> factories) {
 
         return mergeResolvers(converters,
                 factories,
-                ParamConverterFactory::singleton);
+                StringConverterFactory::singleton);
     }
 
     private static List<ParamResolverFactory> getParamResolvers(
@@ -229,12 +230,12 @@ public class HandlerResolverFactoryImpl implements HandlerResolverFactory {
     }
 
     @Override
-    public ParamConverter getParamConverter(Param param) {
+    public StringConverter getParamConverter(Param param, Class<?> baseType, Type baseGenericType) {
         //resolve the fixed parameter resolver
-        ParamConverter converter;
-        for (ParamConverterFactory factory : paramConverters) {
-            if (factory.supports(param) && (converter = factory.createConverter(param, rxSerializers)) != null) {
-                return converter;
+        Optional<StringConverter> converter;
+        for (StringConverterFactory factory : paramConverters) {
+            if ((converter = factory.createConverter(param, rxSerializers)).isPresent()) {
+                return converter.get();
             }
         }
         return (value) -> value;

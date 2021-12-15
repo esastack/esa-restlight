@@ -23,6 +23,7 @@ import io.esastack.restlight.core.serialize.HttpRequestSerializer;
 import io.esastack.restlight.core.serialize.HttpResponseSerializer;
 import io.esastack.restlight.core.spi.FutureTransferFactory;
 
+import java.lang.reflect.Type;
 import java.util.List;
 
 public interface HandlerResolverFactory {
@@ -47,9 +48,11 @@ public interface HandlerResolverFactory {
      * Obtains the {@link ParamResolver} for given {@code param} which is used to convert a {@link String} to object.
      *
      * @param param param
-     * @return      converter
+     * @param baseType baseType
+     * @param baseGenericType baseGenericType
+     * @return StringConverter
      */
-    ParamConverter getParamConverter(Param param);
+    StringConverter getParamConverter(Param param, Class<?> baseType, Type baseGenericType);
 
     /**
      * Get the {@link ParamResolver} for given parameter.

@@ -18,14 +18,17 @@ package io.esastack.restlight.jaxrs.resolver.param;
 import io.esastack.restlight.core.method.Param;
 import io.esastack.restlight.core.resolver.ParamResolverFactory;
 import io.esastack.restlight.core.resolver.nav.NameAndValue;
-import io.esastack.restlight.core.resolver.param.AbstractHeaderParamResolver;
+import io.esastack.restlight.core.resolver.param.AbstractHeaderConverterAdapter;
 import io.esastack.restlight.jaxrs.util.JaxrsMappingUtils;
 import jakarta.ws.rs.HeaderParam;
+import jakarta.ws.rs.ext.ParamConverter;
+
+import java.util.function.BiFunction;
 
 /**
  * Implementation of {@link ParamResolverFactory} for resolving argument that annotated by the RequestHeader.
  */
-public class RequestHeaderParamResolver extends AbstractHeaderParamResolver {
+public class RequestHeaderConverterAdapter extends AbstractHeaderConverterAdapter {
 
     @Override
     public boolean supports(Param param) {
@@ -33,13 +36,15 @@ public class RequestHeaderParamResolver extends AbstractHeaderParamResolver {
     }
 
     @Override
-    protected NameAndValue createNameAndValue(Param param) {
+    protected NameAndValue createNameAndValue(Param param,
+                                              BiFunction<String, Boolean, Object> defaultValueConverter) {
         HeaderParam headerParam =
                 param.getAnnotation(HeaderParam.class);
         assert headerParam != null;
         return new NameAndValue(headerParam.value(),
                 false,
-                JaxrsMappingUtils.extractDefaultValue(param));
+                defaultValueConverter.apply(JaxrsMappingUtils.extractDefaultValue(param),
+                        param.hasAnnotation(ParamConverter.Lazy.class)));
     }
 
     @Override

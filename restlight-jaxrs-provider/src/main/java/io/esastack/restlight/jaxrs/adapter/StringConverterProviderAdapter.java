@@ -17,24 +17,24 @@ package io.esastack.restlight.jaxrs.adapter;
 
 import esa.commons.Checks;
 import io.esastack.restlight.core.method.Param;
-import io.esastack.restlight.core.resolver.ParamConverter;
-import io.esastack.restlight.core.resolver.ParamConverterFactory;
+import io.esastack.restlight.core.resolver.StringConverter;
+import io.esastack.restlight.core.resolver.StringConverterFactory;
 import io.esastack.restlight.core.serialize.HttpRequestSerializer;
 import jakarta.ws.rs.ext.ParamConverterProvider;
 
 import java.util.List;
 
-public class ParamConverterProviderAdapter implements ParamConverterFactory {
+public class StringConverterProviderAdapter implements StringConverterFactory {
 
     private final ParamConverterProvider underlying;
 
-    public ParamConverterProviderAdapter(ParamConverterProvider underlying) {
+    public StringConverterProviderAdapter(ParamConverterProvider underlying) {
         Checks.checkNotNull(underlying, "underlying");
         this.underlying = underlying;
     }
 
     @Override
-    public ParamConverter createConverter(Param param, List<? extends HttpRequestSerializer> serializers) {
+    public StringConverter createConverter(Param param, List<? extends HttpRequestSerializer> serializers) {
         jakarta.ws.rs.ext.ParamConverter<?> converter = underlying.getConverter(param.type(),
                 param.genericType(), param.annotations());
         if (converter == null) {

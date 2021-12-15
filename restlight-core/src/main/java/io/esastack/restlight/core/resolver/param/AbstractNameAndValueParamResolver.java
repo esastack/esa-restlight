@@ -38,8 +38,9 @@ public abstract class AbstractNameAndValueParamResolver extends AbstractNameAndV
         Object arg = this.resolveName(nav.name, context.request());
         if (arg == null) {
             if (nav.hasDefaultValue) {
-                arg = nav.defaultValue;
-            } else if (nav.required) {
+                arg = nav.defaultValue.get();
+            }
+            if (nav.required && arg == null) {
                 throw WebServerException.badRequest("Missing required value: " + nav.name);
             }
         }
@@ -51,7 +52,6 @@ public abstract class AbstractNameAndValueParamResolver extends AbstractNameAndV
      *
      * @param name    name
      * @param request request
-     *
      * @return resolved value
      * @throws Exception occurred
      */

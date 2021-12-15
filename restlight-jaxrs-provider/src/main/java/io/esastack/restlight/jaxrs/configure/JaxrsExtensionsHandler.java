@@ -32,9 +32,9 @@ import io.esastack.restlight.jaxrs.adapter.JaxrsContextResolverAdapter;
 import io.esastack.restlight.jaxrs.adapter.JaxrsExceptionMapperAdapter;
 import io.esastack.restlight.jaxrs.adapter.MessageBodyReaderAdapter;
 import io.esastack.restlight.jaxrs.adapter.MessageBodyWriterAdapter;
-import io.esastack.restlight.jaxrs.adapter.ParamConverterProviderAdapter;
 import io.esastack.restlight.jaxrs.adapter.PreMatchRequestFiltersAdapter;
 import io.esastack.restlight.jaxrs.adapter.ReaderInterceptorsAdapter;
+import io.esastack.restlight.jaxrs.adapter.StringConverterProviderAdapter;
 import io.esastack.restlight.jaxrs.adapter.WriterInterceptorsAdapter;
 import io.esastack.restlight.jaxrs.impl.core.ConfigurableImpl;
 import io.esastack.restlight.jaxrs.impl.core.ConfigurationImpl;
@@ -209,7 +209,7 @@ public class JaxrsExtensionsHandler implements ExtensionsHandler {
             deployments.addContextResolver(new JaxrsContextResolverAdapter(entry.getValue()));
         }
         for (ProxyComponent<ParamConverterProvider> provider : factory.paramConverterProviders()) {
-            deployments.addParamConverter(new ParamConverterProviderAdapter(provider.proxied()));
+            deployments.addParamConverter(new StringConverterProviderAdapter(provider.proxied()));
         }
 
         this.covertThenAddFilters(appNameBindings);

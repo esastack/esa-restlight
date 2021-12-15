@@ -45,6 +45,7 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.StringTokenizer;
 import java.util.TreeSet;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.IntFunction;
 
@@ -182,20 +183,27 @@ public final class ConverterUtils {
      * @param requiredType target type
      * @return converter or {@code null} if we don't know how to convert it
      */
-    public static Function<Collection<String>, Object> strs2ObjectConverter(Type requiredType) {
+    public static Function<Collection<String>, Object> strs2ObjectConverter(Type requiredType,
+                                                                            BiFunction<Class<?>,
+                                                                                    Type,
+                                                                                    Function<String, Object>> str2ObjectConverterLookup) {
         Checks.checkNotNull(requiredType, "requiredType");
         final Class<?> requiredClass = forRawType(requiredType);
-        return strs2ObjectConverter(requiredClass, requiredType);
+        return strs2ObjectConverter(requiredClass, requiredType, str2ObjectConverterLookup);
     }
 
-    private static Function<Collection<String>, Object> strs2ObjectConverter(Class<?> requiredClass,
-                                                                             Type requiredType) {
+    public static Function<Collection<String>, Object> strs2ObjectConverter(Class<?> requiredClass,
+                                                                            Type requiredType,
+                                                                            BiFunction<Class<?>,
+                                                                                    Type,
+                                                                                    Function<String, Object>> str2ObjectConverterLookup) {
+
         Function<Collection<String>, Object> converter;
-        if (requiredClass.isArray() && (converter = Strs2ArrayConverter.of(requiredClass)) != null) {
+        if (requiredClass.isArray() && (converter = Strs2ArrayConverter.of(requiredClass, str2ObjectConverterLookup)) != null) {
             return converter;
         }
         if (Collection.class.isAssignableFrom(requiredClass)
-                && (converter = Strs2CollectionConverter.of(requiredClass, requiredType)) != null) {
+                && (converter = Strs2CollectionConverter.of(requiredClass, requiredType, str2ObjectConverterLookup)) != null) {
             return converter;
         }
         // we don't know how to convert it
@@ -252,9 +260,12 @@ public final class ConverterUtils {
             this.elementConverter = elementConverter;
         }
 
-        private static Strs2ArrayConverter of(Class<?> requiredClass) {
+        private static Strs2ArrayConverter of(Class<?> requiredClass,
+                                              BiFunction<Class<?>,
+                                                      Type,
+                                                      Function<String, Object>> str2ObjectConverterLookup) {
             final Class<?> elementType = requiredClass.getComponentType();
-            Function<String, Object> elementConverter = getStr2ObjectConverter(elementType, null);
+            Function<String, Object> elementConverter = str2ObjectConverterLookup.apply(elementType, null);
             if (elementConverter == null) {
                 // we don't know how to convert the elements
                 return null;
@@ -290,7 +301,8 @@ public final class ConverterUtils {
         }
 
         private static Str2ArrayConverter of(Class<?> requiredClass) {
-            Strs2ArrayConverter strList2ArrayConverter = Strs2ArrayConverter.of(requiredClass);
+            Strs2ArrayConverter strList2ArrayConverter = Strs2ArrayConverter.of(requiredClass,
+                    ConverterUtils::getStr2ObjectConverter);
             if (strList2ArrayConverter == null) {
                 return null;
             }
@@ -319,7 +331,11 @@ public final class ConverterUtils {
             this.elementConverter = elementConverter;
         }
 
-        private static Strs2CollectionConverter of(Class<?> requiredClass, Type requiredType) {
+        private static Strs2CollectionConverter of(Class<?> requiredClass,
+                                                   Type requiredType,
+                                                   BiFunction<Class<?>,
+                                                           Type,
+                                                           Function<String, Object>> str2ObjectConverterLookup) {
 
             IntFunction<Collection> collectionGenerator = collectionGenerator(requiredClass);
             if (collectionGenerator == null) {
@@ -327,8 +343,7 @@ public final class ConverterUtils {
                 return null;
             }
 
-            Function<String, Object> elementConverter = getStr2ObjectConverter(retrieveElementType(requiredType),
-                    null);
+            Function<String, Object> elementConverter = str2ObjectConverterLookup.apply(retrieveElementType(requiredType), null);
             if (elementConverter == null) {
                 // we don't know how to convert the elements
                 return null;
@@ -365,7 +380,9 @@ public final class ConverterUtils {
 
         private static Str2CollectionConverter of(Class<?> requiredClass, Type requiredType) {
             Strs2CollectionConverter strs2CollectionConverter =
-                    Strs2CollectionConverter.of(requiredClass, requiredType);
+                    Strs2CollectionConverter.of(requiredClass,
+                            requiredType,
+                            (type, genericType) -> getStr2ObjectConverter(retrieveElementType(type), genericType));
             if (strs2CollectionConverter == null) {
                 return null;
             }
@@ -488,7 +505,7 @@ public final class ConverterUtils {
     }
 
     @SuppressWarnings("rawtypes")
-    private static IntFunction<Collection> collectionGenerator(Class<?> type) {
+    public static IntFunction<Collection> collectionGenerator(Class<?> type) {
         if (type.isInterface()) {
             if (Set.class == type || Collection.class == type) {
                 return LinkedHashSet::new;

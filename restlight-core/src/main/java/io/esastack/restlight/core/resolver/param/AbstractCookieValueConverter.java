@@ -19,24 +19,21 @@ import esa.commons.ClassUtils;
 import io.esastack.commons.net.http.Cookie;
 import io.esastack.httpserver.core.HttpRequest;
 import io.esastack.restlight.core.method.Param;
+import io.esastack.restlight.core.resolver.HandlerResolverFactory;
 import io.esastack.restlight.core.resolver.ParamResolver;
 import io.esastack.restlight.core.resolver.ParamResolverFactory;
 import io.esastack.restlight.core.resolver.nav.NameAndValue;
-import io.esastack.restlight.core.serialize.HttpRequestSerializer;
-import io.esastack.restlight.core.util.ConverterUtils;
 
-import java.util.List;
 import java.util.Set;
-import java.util.function.Function;
 
 /**
  * Implementation of {@link ParamResolverFactory} for resolving argument that annotated by the CookieValue
  */
-public abstract class AbstractCookieValueParamResolver implements ParamResolverFactory {
+public abstract class AbstractCookieValueConverter extends StrConverterAdapter {
 
     @Override
     public ParamResolver createResolver(Param param,
-                                        List<? extends HttpRequestSerializer> serializers) {
+                                        HandlerResolverFactory resolverFactory) {
         if (Cookie.class.equals(param.type())) {
             return new CookieResolver(param);
         }
@@ -47,10 +44,13 @@ public abstract class AbstractCookieValueParamResolver implements ParamResolverF
                 return new CookiesResolver(param);
             }
         }
-        return new StringResolver(param);
+        return super.createResolver(param, resolverFactory);
     }
 
-    protected abstract NameAndValue createNameAndValue(Param param);
+    protected String extractValue(String name, HttpRequest request) {
+        Cookie cookie = request.getCookie(name);
+        return cookie == null ? null : cookie.value();
+    }
 
     private abstract class BaseResolver extends AbstractNameAndValueParamResolver {
 
@@ -60,26 +60,7 @@ public abstract class AbstractCookieValueParamResolver implements ParamResolverF
 
         @Override
         protected NameAndValue createNameAndValue(Param param) {
-            return AbstractCookieValueParamResolver.this.createNameAndValue(param);
-        }
-    }
-
-    /**
-     * Implementation for resolving argument type of {@link String}
-     */
-    private class StringResolver extends BaseResolver {
-
-        private final Function<String, Object> converter;
-
-        private StringResolver(Param param) {
-            super(param);
-            this.converter = ConverterUtils.str2ObjectConverter(param.genericType(), p -> p);
-        }
-
-        @Override
-        protected Object resolveName(String name, HttpRequest request) {
-            Cookie cookie = request.getCookie(name);
-            return cookie == null ? null : converter.apply(cookie.value());
+            return AbstractCookieValueConverter.this.createNameAndValue(param, (defaultValue, isLazy) -> defaultValue);
         }
     }
 

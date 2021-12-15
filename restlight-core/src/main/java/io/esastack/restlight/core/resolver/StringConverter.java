@@ -15,16 +15,16 @@
  */
 package io.esastack.restlight.core.resolver;
 
-import esa.commons.spi.SPI;
-import io.esastack.restlight.core.util.Ordered;
+@FunctionalInterface
+public interface StringConverter {
 
-@SPI
-public interface ParamConverterAdapter extends ParamConverter, ParamPredicate, Ordered {
-
-    @Override
-    default int getOrder() {
-        return Ordered.LOWEST_PRECEDENCE;
-    }
+    /**
+     * Converts the given {@code value} to an object.
+     *
+     * @param value value
+     * @return      object
+     */
+    Object fromString(String value);
 
 }
 

@@ -21,6 +21,9 @@ import io.esastack.restlight.core.resolver.nav.NameAndValue;
 import io.esastack.restlight.core.resolver.param.AbstractParamResolver;
 import io.esastack.restlight.jaxrs.util.JaxrsMappingUtils;
 import jakarta.ws.rs.FormParam;
+import jakarta.ws.rs.ext.ParamConverter;
+
+import java.util.function.BiFunction;
 
 /**
  * Implementation of {@link ParamResolverFactory} for resolving argument that annotated by the {@link
@@ -34,18 +37,26 @@ public class FormParamResolver extends AbstractParamResolver {
     }
 
     @Override
-    protected NameAndValue createNameAndValue(Param parameter) {
+    protected NameAndValue createNameAndValue(Param param, BiFunction<String, Boolean, Object> defaultValueConverter) {
         FormParam formParam
-                = parameter.getAnnotation(FormParam.class);
+                = param.getAnnotation(FormParam.class);
         assert formParam != null;
         return new NameAndValue(formParam.value(),
                 false,
-                JaxrsMappingUtils.extractDefaultValue(parameter));
+                defaultValueConverter.apply(JaxrsMappingUtils.extractDefaultValue(param),
+                        param.hasAnnotation(ParamConverter.Lazy.class)));
+    }
+
+    @Override
+    public String extractParamName(Param param) {
+        FormParam formParam
+                = param.getAnnotation(FormParam.class);
+        assert formParam != null;
+        return formParam.value();
     }
 
     @Override
     public int getOrder() {
         return 20;
     }
-
 }

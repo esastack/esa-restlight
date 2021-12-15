@@ -19,96 +19,69 @@ import esa.commons.ClassUtils;
 import esa.commons.StringUtils;
 import io.esastack.httpserver.core.HttpRequest;
 import io.esastack.restlight.core.method.Param;
+import io.esastack.restlight.core.resolver.HandlerResolverFactory;
 import io.esastack.restlight.core.resolver.ParamResolver;
 import io.esastack.restlight.core.resolver.ParamResolverFactory;
 import io.esastack.restlight.core.resolver.nav.NameAndValue;
-import io.esastack.restlight.core.serialize.HttpRequestSerializer;
-import io.esastack.restlight.core.util.ConverterUtils;
 
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 
 /**
  * Implementation of {@link ParamResolverFactory} for resolving argument that annotated by the RequestParam.
  */
-public abstract class AbstractParamResolver implements ParamResolverFactory {
+public abstract class AbstractParamResolver extends StrsConverterAdapter {
 
     @Override
     public ParamResolver createResolver(Param param,
-                                        List<? extends HttpRequestSerializer> serializers) {
-        NameAndValue nameAndValue = createNameAndValue(param);
-        if (StringUtils.isEmpty(nameAndValue.name)
+                                        HandlerResolverFactory resolverFactory) {
+        String name = extractParamName(param);
+        if (StringUtils.isEmpty(name)
                 && Map.class.equals(param.type())) {
             Class<?>[] types = ClassUtils.retrieveGenericTypes(param.genericType());
             if (types.length == 2) {
                 Class<?> valueType = types[1];
                 if (String.class.equals(valueType)) {
                     // Map<String, String>
-                    return new SingleValueMapResolver(param, nameAndValue);
+                    return new SingleValueMapResolver(param);
                 } else if (List.class.equals(valueType)) {
                     // Map<String, List<String>>
-                    return new MapResolver(param, nameAndValue);
+                    return new MapResolver(param);
                 }
             }
         }
-        return new StringOrListResolver(param, nameAndValue);
+        return super.createResolver(param, resolverFactory);
     }
 
-    protected abstract NameAndValue createNameAndValue(Param param);
+    public abstract String extractParamName(Param param);
 
-    private abstract static class BaseResolver extends AbstractNameAndValueParamResolver {
+    @Override
+    protected Collection<String> extractValue(String name, HttpRequest request) {
+        return request.paramsMap().get(name);
+    }
 
-        private final NameAndValue nav0;
+    private abstract class BaseResolver extends AbstractNameAndValueParamResolver {
 
-        private BaseResolver(Param param, NameAndValue nav0) {
-            super(param, nav0);
-            this.nav0 = nav0;
+        private BaseResolver(Param param) {
+            super(param);
         }
 
         @Override
         protected NameAndValue createNameAndValue(Param param) {
-            return nav0;
-        }
-    }
-
-    /**
-     * Implementation for resolving argument type of {@link String}
-     */
-    private static class StringOrListResolver extends BaseResolver {
-
-        private final Function<String, Object> converter;
-        private final Function<Collection<String>, Object> strsConverter;
-
-        private StringOrListResolver(Param param, NameAndValue nav) {
-            super(param, nav);
-            this.converter = ConverterUtils.str2ObjectConverter(param.genericType(), p -> p);
-            this.strsConverter = ConverterUtils.strs2ObjectConverter(param.genericType());
-        }
-
-        @Override
-        protected Object resolveName(String name, HttpRequest request) {
-            final List<String> values = request.getParams(name);
-            if (values == null || values.isEmpty()) {
-                return null;
-            }
-            if (values.size() > 1 && strsConverter != null) {
-                return strsConverter.apply(values);
-            }
-            return converter.apply(values.get(0));
+            return AbstractParamResolver.this.createNameAndValue(param, (defaultValue, isLazy) -> defaultValue);
         }
     }
 
     /**
      * Implementation for resolving argument type of {@link Map}
      */
-    private static class MapResolver extends BaseResolver {
+    private class MapResolver extends BaseResolver {
 
-        private MapResolver(Param param, NameAndValue nav) {
-            super(param, nav);
+        private MapResolver(Param param) {
+            super(param);
         }
 
         @Override
@@ -117,10 +90,10 @@ public abstract class AbstractParamResolver implements ParamResolverFactory {
         }
     }
 
-    private static class SingleValueMapResolver extends BaseResolver {
+    private class SingleValueMapResolver extends BaseResolver {
 
-        private SingleValueMapResolver(Param param, NameAndValue nav0) {
-            super(param, nav0);
+        private SingleValueMapResolver(Param param) {
+            super(param);
         }
 
         @Override

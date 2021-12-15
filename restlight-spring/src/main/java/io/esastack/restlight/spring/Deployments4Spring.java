@@ -34,8 +34,6 @@ import io.esastack.restlight.core.interceptor.RouteInterceptor;
 import io.esastack.restlight.core.resolver.ContextResolverAdapter;
 import io.esastack.restlight.core.resolver.ContextResolverFactory;
 import io.esastack.restlight.core.resolver.ExceptionResolver;
-import io.esastack.restlight.core.resolver.ParamConverterAdapter;
-import io.esastack.restlight.core.resolver.ParamConverterFactory;
 import io.esastack.restlight.core.resolver.ParamResolverAdapter;
 import io.esastack.restlight.core.resolver.ParamResolverAdviceAdapter;
 import io.esastack.restlight.core.resolver.ParamResolverAdviceFactory;
@@ -47,6 +45,8 @@ import io.esastack.restlight.core.resolver.RequestEntityResolverFactory;
 import io.esastack.restlight.core.resolver.ResponseEntityResolverAdviceAdapter;
 import io.esastack.restlight.core.resolver.ResponseEntityResolverAdviceFactory;
 import io.esastack.restlight.core.resolver.ResponseEntityResolverFactory;
+import io.esastack.restlight.core.resolver.StringConverterAdapter;
+import io.esastack.restlight.core.resolver.StringConverterFactory;
 import io.esastack.restlight.core.serialize.GsonHttpBodySerializer;
 import io.esastack.restlight.core.serialize.HttpRequestSerializer;
 import io.esastack.restlight.core.serialize.HttpResponseSerializer;
@@ -284,8 +284,8 @@ public class Deployments4Spring<R extends AbstractRestlight4Spring<R, D, O>, D e
     }
 
     private void configureParamConverter(ApplicationContext context) {
-        beansOfType(context, ParamConverterAdapter.class).values().forEach(this::addParamConverter);
-        this.addParamConverters(beansOfType(context, ParamConverterFactory.class).values());
+        beansOfType(context, StringConverterAdapter.class).values().forEach(this::addParamConverter);
+        this.addParamConverters(beansOfType(context, StringConverterFactory.class).values());
     }
 
     private void configureParamResolversAndAdvices(ApplicationContext context) {

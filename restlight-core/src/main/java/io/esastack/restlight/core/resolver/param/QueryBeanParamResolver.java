@@ -25,6 +25,8 @@ import io.esastack.restlight.core.resolver.HandlerResolverFactory;
 import io.esastack.restlight.core.resolver.ParamResolver;
 import io.esastack.restlight.core.resolver.nav.NameAndValue;
 
+import java.util.function.BiFunction;
+
 /**
  * @see QueryBean
  */
@@ -57,7 +59,7 @@ public class QueryBeanParamResolver extends RequestBeanParamResolver {
 
         @Override
         protected ParamResolver findResolver(FieldParam fieldParam, HandlerResolverFactory resolverFactory) {
-            return AlwaysUseParamArgumentResolver.INSTANCE.createResolver(fieldParam, resolverFactory.rxSerializers());
+            return AlwaysUseParamArgumentResolver.INSTANCE.createResolver(fieldParam, resolverFactory);
         }
     }
 
@@ -66,7 +68,13 @@ public class QueryBeanParamResolver extends RequestBeanParamResolver {
         private static final AlwaysUseParamArgumentResolver INSTANCE = new AlwaysUseParamArgumentResolver();
 
         @Override
-        protected NameAndValue createNameAndValue(Param param) {
+        public boolean supports(Param param) {
+            // always return true
+            return true;
+        }
+
+        @Override
+        protected NameAndValue createNameAndValue(Param param, BiFunction<String, Boolean, Object> defaultValueConverter) {
             String name;
             QueryBean.Name alia = param.getAnnotation(QueryBean.Name.class);
             if (alia != null && !StringUtils.isEmpty(alia.value())) {
@@ -78,9 +86,13 @@ public class QueryBeanParamResolver extends RequestBeanParamResolver {
         }
 
         @Override
-        public boolean supports(Param param) {
-            // always return true
-            return true;
+        public String extractParamName(Param param) {
+            QueryBean.Name alia = param.getAnnotation(QueryBean.Name.class);
+            if (alia != null && !StringUtils.isEmpty(alia.value())) {
+                return alia.value();
+            } else {
+                return param.name();
+            }
         }
     }
 }

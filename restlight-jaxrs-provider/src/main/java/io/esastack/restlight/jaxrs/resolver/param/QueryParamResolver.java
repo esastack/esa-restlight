@@ -21,6 +21,9 @@ import io.esastack.restlight.core.resolver.nav.NameAndValue;
 import io.esastack.restlight.core.resolver.param.AbstractParamResolver;
 import io.esastack.restlight.jaxrs.util.JaxrsMappingUtils;
 import jakarta.ws.rs.QueryParam;
+import jakarta.ws.rs.ext.ParamConverter;
+
+import java.util.function.BiFunction;
 
 /**
  * Implementation of {@link ParamResolverFactory} for resolving argument that annotated by the
@@ -34,13 +37,22 @@ public class QueryParamResolver extends AbstractParamResolver {
     }
 
     @Override
-    protected NameAndValue createNameAndValue(Param parameter) {
+    protected NameAndValue createNameAndValue(Param param, BiFunction<String, Boolean, Object> defaultValueConverter) {
         QueryParam queryParam
-                = parameter.getAnnotation(QueryParam.class);
+                = param.getAnnotation(QueryParam.class);
         assert queryParam != null;
         return new NameAndValue(queryParam.value(),
                 false,
-                JaxrsMappingUtils.extractDefaultValue(parameter));
+                defaultValueConverter.apply(JaxrsMappingUtils.extractDefaultValue(param),
+                        param.hasAnnotation(ParamConverter.Lazy.class)));
+    }
+
+    @Override
+    public String extractParamName(Param param) {
+        QueryParam queryParam
+                = param.getAnnotation(QueryParam.class);
+        assert queryParam != null;
+        return queryParam.value();
     }
 
     @Override

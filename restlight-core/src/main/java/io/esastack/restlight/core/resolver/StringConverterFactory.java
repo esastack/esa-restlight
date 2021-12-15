@@ -22,51 +22,56 @@ import io.esastack.restlight.core.serialize.HttpRequestSerializer;
 import io.esastack.restlight.core.util.Ordered;
 
 import java.util.List;
+import java.util.Optional;
 
 @SPI
-public interface ParamConverterFactory extends ParamPredicate, Ordered {
+public interface StringConverterFactory extends Ordered {
 
     /**
-     * Converts given {@link ParamConverterAdapter} to {@link ParamConverterFactory} which
-     * always use the given {@link ParamConverterAdapter} as the result of
+     * Converts given {@link StringConverter} to {@link StringConverterFactory} which
+     * always use the given {@link StringConverter} as the result of
      * {@link #createConverter(Param, List)}
      *
      * @param converter converter
      * @return of factory bean
      */
-    static ParamConverterFactory singleton(ParamConverterAdapter converter) {
-        return new ParamConverterFactory.Singleton(converter);
+    static StringConverterFactory singleton(StringConverter converter) {
+        return new StringConverterFactory.Singleton(converter);
     }
 
     /**
-     * Creates an instance of {@link ParamConverter} for given {@link Param}.
+     * Creates an instance of {@link StringConverter} for given {@link Param}.
      *
-     * @param param param
+     * @param param       param
      * @param serializers all the {@link HttpRequestSerializer}s in the context
      * @return resolver
      */
-    ParamConverter createConverter(Param param, List<? extends HttpRequestSerializer> serializers);
+    Optional<StringConverter> createConverter(Param param, List<? extends HttpRequestSerializer> serializers);
 
-    class Singleton implements ParamConverterFactory {
+    /**
+     * Default to use the 0.
+     *
+     * @return order
+     */
+    @Override
+    default int getOrder() {
+        return 0;
+    }
 
-        private final ParamConverterAdapter converter;
+    class Singleton implements StringConverterFactory {
 
-        Singleton(ParamConverterAdapter converter) {
+        private final StringConverter converter;
+
+        Singleton(StringConverter converter) {
             Checks.checkNotNull(converter, "resolver");
             this.converter = converter;
         }
 
         @Override
-        public boolean supports(Param param) {
-            return converter.supports(param);
-        }
-
-        @Override
-        public ParamConverter createConverter(Param param,
-                                              List<? extends HttpRequestSerializer> serializers) {
-            return converter;
+        public Optional<StringConverter> createConverter(Param param,
+                                                         List<? extends HttpRequestSerializer> serializers) {
+            return Optional.of(converter);
         }
     }
-
 }
 

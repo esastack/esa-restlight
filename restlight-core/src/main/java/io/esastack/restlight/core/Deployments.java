@@ -55,8 +55,6 @@ import io.esastack.restlight.core.resolver.ContextResolverFactory;
 import io.esastack.restlight.core.resolver.ExceptionResolver;
 import io.esastack.restlight.core.resolver.HandlerResolverFactory;
 import io.esastack.restlight.core.resolver.HandlerResolverFactoryImpl;
-import io.esastack.restlight.core.resolver.ParamConverterAdapter;
-import io.esastack.restlight.core.resolver.ParamConverterFactory;
 import io.esastack.restlight.core.resolver.ParamResolverAdapter;
 import io.esastack.restlight.core.resolver.ParamResolverAdviceAdapter;
 import io.esastack.restlight.core.resolver.ParamResolverAdviceFactory;
@@ -69,6 +67,8 @@ import io.esastack.restlight.core.resolver.ResponseEntityResolver;
 import io.esastack.restlight.core.resolver.ResponseEntityResolverAdviceAdapter;
 import io.esastack.restlight.core.resolver.ResponseEntityResolverAdviceFactory;
 import io.esastack.restlight.core.resolver.ResponseEntityResolverFactory;
+import io.esastack.restlight.core.resolver.StringConverterAdapter;
+import io.esastack.restlight.core.resolver.StringConverterFactory;
 import io.esastack.restlight.core.resolver.exception.DefaultExceptionMapper;
 import io.esastack.restlight.core.resolver.exception.DefaultExceptionResolverFactory;
 import io.esastack.restlight.core.resolver.exception.ExceptionResolverFactory;
@@ -137,7 +137,7 @@ public abstract class Deployments<R extends AbstractRestlight<R, D, O>, D extend
     private final List<HandlerConfigure> handlerConfigures = new LinkedList<>();
 
     private final List<RouteFilterFactory> routeFilters = new LinkedList<>();
-    private final List<ParamConverterFactory> paramConverters = new LinkedList<>();
+    private final List<StringConverterFactory> paramConverters = new LinkedList<>();
     private final List<ParamResolverFactory> paramResolvers = new LinkedList<>();
     private final List<ParamResolverAdviceFactory> paramResolverAdvices = new LinkedList<>();
     private final List<ContextResolverFactory> contextResolvers = new LinkedList<>();
@@ -561,26 +561,26 @@ public abstract class Deployments<R extends AbstractRestlight<R, D, O>, D extend
     }
 
     /**
-     * Adds {@link ParamConverterAdapter} which will be registered in the {@link HandlerResolverFactory}
+     * Adds {@link StringConverterAdapter} which will be registered in the {@link HandlerResolverFactory}
      *
      * @param converter resolver
      *
      * @return this deployments
      */
-    public D addParamConverter(ParamConverterAdapter converter) {
+    public D addParamConverter(StringConverterAdapter converter) {
         checkImmutable();
         Checks.checkNotNull(converter, "converter");
-        return addParamConverter(ParamConverterFactory.singleton(converter));
+        return addParamConverter(StringConverterFactory.singleton(converter));
     }
 
     /**
-     * Adds {@link ParamConverterFactory} which will be registered in the {@link HandlerResolverFactory}
+     * Adds {@link StringConverterFactory} which will be registered in the {@link HandlerResolverFactory}
      *
      * @param converter resolver
      *
      * @return this deployments
      */
-    public D addParamConverter(ParamConverterFactory converter) {
+    public D addParamConverter(StringConverterFactory converter) {
         checkImmutable();
         Checks.checkNotNull(converter, "converter");
         this.paramConverters.add(converter);
@@ -588,13 +588,13 @@ public abstract class Deployments<R extends AbstractRestlight<R, D, O>, D extend
     }
 
     /**
-     * Adds {@link ParamConverterFactory}s which will be registered in the {@link HandlerResolverFactory}
+     * Adds {@link StringConverterFactory}s which will be registered in the {@link HandlerResolverFactory}
      *
      * @param converts converters
      *
      * @return this deployments
      */
-    public D addParamConverters(Collection<? extends ParamConverterFactory> converts) {
+    public D addParamConverters(Collection<? extends StringConverterFactory> converts) {
         checkImmutable();
         if (converts != null && !converts.isEmpty()) {
             this.paramConverters.addAll(converts);
@@ -1281,11 +1281,11 @@ public abstract class Deployments<R extends AbstractRestlight<R, D, O>, D extend
     }
 
     private void loadResolversFromSpi() {
-        // load ParamConverter from spi
-        SpiLoader.cached(ParamConverterAdapter.class)
+        // load StringConverter from spi
+        SpiLoader.cached(StringConverterAdapter.class)
                 .getByGroup(restlight.name(), true)
                 .forEach(this::addParamConverter);
-        addParamConverters(SpiLoader.cached(ParamConverterFactory.class)
+        addParamConverters(SpiLoader.cached(StringConverterFactory.class)
                 .getByGroup(restlight.name(), true));
 
         // load ParamResolver from spi
