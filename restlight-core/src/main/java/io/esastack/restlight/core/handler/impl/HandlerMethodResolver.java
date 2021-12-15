@@ -40,7 +40,7 @@ public class HandlerMethodResolver implements HandlerValueResolver {
         final HttpResponse response = context.response();
         HttpStatus status = methodInfo.customResponse();
         if (status != null) {
-            response.setStatus(status.code());
+            response.status(status.code());
         }
         context.response().entity(value);
         ResponseEntityUtils.setHandledMethod(context, methodInfo.handlerMethod());

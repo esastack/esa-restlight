@@ -16,14 +16,18 @@
 package io.esastack.restlight.server.context.impl;
 
 import esa.commons.Checks;
+import esa.commons.collection.AttributeKey;
 import esa.commons.collection.AttributeMap;
 import esa.commons.collection.Attributes;
 import io.esastack.httpserver.core.HttpRequest;
 import io.esastack.httpserver.core.HttpResponse;
 import io.esastack.httpserver.core.RequestContext;
+import io.esastack.httpserver.core.Response;
 import io.esastack.httpserver.impl.AttributesProxy;
 
 public class RequestContextImpl extends AttributesProxy implements RequestContext {
+
+    public static final AttributeKey<Response> UNDERLYING_RESPONSE = AttributeKey.valueOf("$underlying.response");
 
     private final HttpRequest request;
     private final HttpResponse response;

@@ -34,6 +34,8 @@ import io.esastack.restlight.server.handler.FilterChain;
 
 import java.util.concurrent.CompletableFuture;
 
+import static io.esastack.restlight.server.context.impl.RequestContextImpl.UNDERLYING_RESPONSE;
+
 public class ResponseEntityWriterFilter implements Filter {
 
     private final DeployContext<? extends RestlightOptions> ctx;
@@ -49,19 +51,18 @@ public class ResponseEntityWriterFilter implements Filter {
     public CompletableFuture<Void> doFilter(FilterContext context, FilterChain<FilterContext> chain) {
         HandlerResolverFactory resolverFactory = getResolverFactory();
         return chain.doFilter(context).thenApply(v -> {
-            if (!context.response().isCommitted()) {
-                HandlerMethod method = ResponseEntityUtils.getHandledMethod(context);
-                ResponseEntity entity = new ResponseEntityImpl(method, context.response());
-                ResponseEntityResolverContext rspCtx = new ResponseEntityResolverContextImpl(context,
-                        entity, resolverFactory.getResponseEntityResolvers(),
-                        resolverFactory.getResponseEntityResolverAdvices(entity)
-                                .toArray(new ResponseEntityResolverAdvice[0]));
-                try {
-                    rspCtx.proceed();
-                } catch (Throwable th) {
-                    // wrapIfNecessary
-                    throw new WebServerException("Error while resolving return value: " + th.getMessage(), th);
-                }
+            HandlerMethod method = ResponseEntityUtils.getHandledMethod(context);
+            ResponseEntity entity = new ResponseEntityImpl(method, context.response(),
+                    context.attr(UNDERLYING_RESPONSE).get());
+            ResponseEntityResolverContext rspCtx = new ResponseEntityResolverContextImpl(context,
+                    entity, resolverFactory.getResponseEntityResolvers(),
+                    resolverFactory.getResponseEntityResolverAdvices(entity)
+                            .toArray(new ResponseEntityResolverAdvice[0]));
+            try {
+                rspCtx.proceed();
+            } catch (Throwable th) {
+                // wrapIfNecessary
+                throw new WebServerException("Error while resolving return value: " + th.getMessage(), th);
             }
             return v;
         });

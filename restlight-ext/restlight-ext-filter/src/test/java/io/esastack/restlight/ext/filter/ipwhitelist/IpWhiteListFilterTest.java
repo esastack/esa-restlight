@@ -72,7 +72,7 @@ class IpWhiteListFilterTest {
 
     private static void assertAllowed(HttpRequest request, IpWhiteListFilter filter) {
         final FilterChain<FilterContext> chain = ((context) -> {
-            context.response().sendResult(200);
+            context.response().status(200);
             return Futures.completedFuture();
         });
         final HttpResponse response = MockHttpResponse.aMockResponse().build();
@@ -82,7 +82,7 @@ class IpWhiteListFilterTest {
 
     private static void assertNotAllowed(HttpRequest request, IpWhiteListFilter filter) {
         final FilterChain<FilterContext> chain = ((context) -> {
-            context.response().sendResult(200);
+            context.response().status(200);
             return Futures.completedFuture();
         });
         final HttpResponse response = MockHttpResponse.aMockResponse().build();

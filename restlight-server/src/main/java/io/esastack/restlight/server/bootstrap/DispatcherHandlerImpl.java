@@ -107,14 +107,11 @@ public class DispatcherHandlerImpl<CTX extends RequestContext> implements Dispat
 
     @Override
     public void handleRejectedWork(RequestTask task, String reason) {
-        if (!task.response().isCommitted()) {
-            ErrorDetail.sendErrorResult(task.request(),
-                    task.response(),
-                    reason,
-                    HttpStatus.TOO_MANY_REQUESTS);
-            LoggerUtils.logger().error("RequestTask(url={}, method={}) rejected, {}", task.request().path(),
-                    task.request().method(), reason);
-        }
+        task.response().status(HttpStatus.TOO_MANY_REQUESTS.code());
+        task.response().entity(new ErrorDetail<>(task.request().path(), reason));
+
+        LoggerUtils.logger().error("RequestTask(url={}, method={}) rejected, {}", task.request().path(),
+                task.request().method(), reason);
         final CompletableFuture<Void> p = task.promise();
         if (!p.isDone()) {
             PromiseUtils.setSuccess(task.promise(), true);
@@ -127,12 +124,9 @@ public class DispatcherHandlerImpl<CTX extends RequestContext> implements Dispat
         HttpResponse response;
         for (RequestTask task : unfinishedWorkList) {
             response = task.response();
-            if (!response.isCommitted()) {
-                ErrorDetail.sendErrorResult(task.request(),
-                        task.response(),
-                        "The request was not processed correctly before the server was shutdown",
-                        HttpStatus.SERVICE_UNAVAILABLE);
-            }
+            response.status(HttpStatus.SERVICE_UNAVAILABLE.code());
+            response.entity(new ErrorDetail<>(task.request().path(),
+                    "The request was not processed correctly before the server was shutdown"));
             final CompletableFuture<Void> p = task.promise();
             if (!p.isDone()) {
                 PromiseUtils.setSuccess(task.promise(), true);
@@ -160,17 +154,11 @@ public class DispatcherHandlerImpl<CTX extends RequestContext> implements Dispat
                          CompletionHandler completionHandler,
                          CompletableFuture<Void> promise,
                          Throwable dispatchException) {
-        final HttpResponse response = context.response();
         //clean up response.
-        if (!response.isCommitted()) {
-            if (dispatchException != null) {
-                exceptionHandler.handle(context, dispatchException).whenComplete((v, th) ->
-                        completeRequest(context, completionHandler, promise, th));
-                return;
-            }
+        if (dispatchException != null) {
+            exceptionHandler.handle(context, dispatchException)
+                    .whenComplete((v, th) -> completeRequest(context, completionHandler, promise, th));
         }
-
-        completeRequest(context, completionHandler, promise, dispatchException);
     }
 
     private void completeRequest(CTX context,

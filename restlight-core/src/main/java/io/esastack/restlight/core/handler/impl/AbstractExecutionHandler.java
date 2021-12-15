@@ -138,9 +138,7 @@ abstract class AbstractExecutionHandler<H extends HandlerMethodAdapter> implemen
                 // null return value in handler controller is not allowed
                 logger.error(getDetailedMessage("Unexpected null return value of concurrent handler."));
                 HttpResponse response = context.response();
-                if (!response.isCommitted()) {
-                    response.sendResult(HttpStatus.INTERNAL_SERVER_ERROR.code());
-                }
+                response.status(HttpStatus.INTERNAL_SERVER_ERROR.code());
                 return Futures.completedFuture();
             } else {
                 future = transfer.transferTo(context, returnValue);

@@ -32,10 +32,6 @@ public final class Serializers {
 
     private static final byte[] ALREADY_WRITE = new byte[0];
 
-    public static boolean alreadyWrite(byte[] bytes) {
-        return ALREADY_WRITE == bytes;
-    }
-
     public static byte[] alreadyWrite() {
         return ALREADY_WRITE;
     }
@@ -98,7 +94,7 @@ public final class Serializers {
                                           HttpResponse response,
                                           MediaType mediaType) {
         setMediaType(response, mediaType);
-        response.sendResult(BufferUtil.wrap(byteBuf));
+        response.entity(BufferUtil.wrap(byteBuf));
         return ALREADY_WRITE;
     }
 

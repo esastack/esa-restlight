@@ -90,7 +90,7 @@ public final class RuntimeDelegateUtils {
         if (from == null || to == null) {
             return;
         }
-        to.setStatus(from.getStatus());
+        to.status(from.getStatus());
         to.entity(from.getEntity());
 
         if (clearSource) {

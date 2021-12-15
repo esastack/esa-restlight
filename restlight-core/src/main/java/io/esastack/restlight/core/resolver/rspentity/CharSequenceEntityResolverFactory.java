@@ -51,8 +51,8 @@ public class CharSequenceEntityResolverFactory implements ResponseEntityResolver
         protected byte[] serialize(ResponseEntity entity,
                                    List<MediaType> mediaTypes,
                                    RequestContext context) throws Exception {
-            return Serializers.serializeCharSequence(((CharSequence) entity.response().entity()),
-                    entity.response(),
+            return Serializers.serializeCharSequence(((CharSequence) context.response().entity()),
+                    context.response(),
                     selectMediaType(mediaTypes));
         }
 

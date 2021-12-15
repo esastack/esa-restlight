@@ -16,7 +16,6 @@
 package io.esastack.restlight.server.schedule;
 
 import esa.commons.Checks;
-import io.esastack.httpserver.core.HttpResponse;
 import io.esastack.httpserver.core.RequestContext;
 import io.esastack.restlight.core.util.OrderedComparator;
 import io.esastack.restlight.server.bootstrap.DispatcherHandler;
@@ -282,13 +281,9 @@ public class ScheduledRestlightHandler<CTX extends RequestContext> implements Re
     }
 
     private static void handleUncommitted(RequestTask task) {
-        HttpResponse response = task.context().response();
-        if (!response.isCommitted()) {
-            if (LoggerUtils.logger().isDebugEnabled()) {
-                LoggerUtils.logger()
-                        .debug("{} rejected by RequestTaskHook, but response haven't been committed", task);
-            }
-            response.sendResult();
+        if (LoggerUtils.logger().isDebugEnabled()) {
+            LoggerUtils.logger()
+                    .debug("{} rejected by RequestTaskHook, but response haven't been committed", task);
         }
         if (!task.promise().isDone()) {
             PromiseUtils.setSuccess(task.promise());

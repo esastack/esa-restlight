@@ -15,21 +15,12 @@
  */
 package io.esastack.httpserver.impl;
 
-import esa.commons.Checks;
-import esa.commons.ExceptionUtils;
 import esa.commons.annotation.Internal;
-import io.esastack.commons.net.buffer.Buffer;
-import io.esastack.commons.net.buffer.BufferUtil;
 import io.esastack.commons.net.http.Cookie;
 import io.esastack.commons.net.http.HttpHeaders;
-import io.esastack.httpserver.core.HttpOutputStream;
 import io.esastack.httpserver.core.HttpResponse;
 import io.esastack.httpserver.core.Response;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
-import io.netty.util.internal.MathUtil;
 
-import java.io.File;
 import java.util.function.Consumer;
 
 /**
@@ -39,21 +30,30 @@ import java.util.function.Consumer;
 public class HttResponseImpl implements HttpResponse {
 
     private final Response res;
-    private int bufferSize = DEFAULT_BUFFER_SIZE;
-    private HttpOutputStream os;
+    private Object entity;
 
     public HttResponseImpl(Response res) {
         this.res = res;
     }
 
     @Override
-    public void setStatus(int code) {
+    public void status(int code) {
         res.setStatus(code);
     }
 
     @Override
     public int status() {
         return res.status();
+    }
+
+    @Override
+    public void entity(Object entity) {
+        this.entity = entity;
+    }
+
+    @Override
+    public Object entity() {
+        return this.entity;
     }
 
     @Override
@@ -72,93 +72,10 @@ public class HttResponseImpl implements HttpResponse {
     }
 
     @Override
-    public HttpOutputStream outputStream() {
-        if (res.isEnded()) {
-            throw new IllegalStateException("Already ended");
-        }
-        if (os == null) {
-            checkCommitted();
-            os = new ByteBufHttpOutputStream(bufferSize, res);
-        }
-        return os;
-    }
-
-    @Override
-    public void setBufferSize(int size) {
-        if (isCommitted() || os != null) {
-            return;
-        }
-        Checks.checkArg(size > 0, "buffer size must be over than 0. actual: " + size);
-        bufferSize = size;
-    }
-
-    @Override
-    public int bufferSize() {
-        return bufferSize;
-    }
-
-    @Override
-    public boolean isCommitted() {
-        return res.isCommitted();
-    }
-
-    @Override
     public void reset() {
-        if (isCommitted()) {
-            throw new IllegalStateException("Already committed.");
-        }
         res.setStatus(200);
-        setBufferSize(DEFAULT_BUFFER_SIZE);
         res.headers().clear();
         res.trailers().clear();
-    }
-
-    @Override
-    public void sendResult(byte[] body, int off, int len) {
-        checkOutputStream();
-        res.end(body, off, len);
-    }
-
-    @Override
-    public void sendResult(byte[] body) {
-        checkOutputStream();
-        res.end(body);
-    }
-
-    @Override
-    public void sendResult(Buffer body, int len, boolean autoRelease) {
-        checkOutputStream();
-        if (body == null) {
-            sendByteBuf(Unpooled.EMPTY_BUFFER, len, autoRelease);
-            return;
-        }
-
-        Object unwrap;
-        if ((unwrap = BufferUtil.unwrap(body)) instanceof ByteBuf) {
-            sendByteBuf((ByteBuf) unwrap, len, autoRelease);
-            return;
-        }
-
-        if (len > body.readableBytes()) {
-            throw new IndexOutOfBoundsException("You expect to read '" + len + "' byte, but only '"
-                    + body.readableBytes() + "' is readable");
-        }
-
-        byte[] bytes = new byte[len];
-        body.readBytes(bytes);
-        sendResult(bytes);
-    }
-
-    @Override
-    public void sendFile(File file, long offset, long length) {
-        checkOutputStream();
-        res.sendFile(file, offset, length);
-    }
-
-    @Override
-    public void sendRedirect(String newUri) {
-        checkOutputStream();
-        res.sendRedirect(newUri);
     }
 
     @Override
@@ -181,38 +98,7 @@ public class HttResponseImpl implements HttpResponse {
         return res.toString();
     }
 
-    private void sendByteBuf(ByteBuf body, int len, boolean autoRelease) {
-        if (body == null) {
-            body = Unpooled.EMPTY_BUFFER;
-        }
-
-        int off = body.readerIndex();
-        if (MathUtil.isOutOfBounds(off, len, body.capacity())) {
-            throw new IndexOutOfBoundsException();
-        }
-
-        if (autoRelease) {
-            res.end(body.slice(off, len));
-        } else {
-            try {
-                res.end(body.retainedSlice(off, len));
-            } catch (Exception e) {
-                body.release();
-                ExceptionUtils.throwException(e);
-            }
-        }
-    }
-
-    private void checkCommitted() {
-        if (isCommitted()) {
-            throw new IllegalStateException("Already committed.");
-        }
-    }
-
-    private void checkOutputStream() {
-        // only one of output stream and sendXX() is allowed.
-        if (os != null) {
-            throw new IllegalStateException("OutputStream has already opened. use it please.");
-        }
+    public Response underlying() {
+        return res;
     }
 }

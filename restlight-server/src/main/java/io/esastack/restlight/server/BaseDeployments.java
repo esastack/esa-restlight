@@ -80,6 +80,8 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
+import static io.esastack.restlight.server.context.impl.RequestContextImpl.UNDERLYING_RESPONSE;
+
 public abstract class BaseDeployments<R extends BaseRestlightServer<R, D, O, CTX, FCTX>, D extends
         BaseDeployments<R, D, O, CTX, FCTX>, O extends ServerOptions,
         CTX extends RequestContext, FCTX extends FilterContext> {
@@ -534,8 +536,10 @@ public abstract class BaseDeployments<R extends BaseRestlightServer<R, D, O, CTX
                 if (req instanceof RequestContext) {
                     return (RequestContext) req;
                 }
-                return new RequestContextImpl(new HttpRequestImpl(req),
-                        new HttResponseImpl(req.response()));
+                HttResponseImpl response = new HttResponseImpl(req.response());
+                RequestContext context = new RequestContextImpl(new HttpRequestImpl(req), response);
+                context.attr(UNDERLYING_RESPONSE).set(response.underlying());
+                return context;
             };
         }
 

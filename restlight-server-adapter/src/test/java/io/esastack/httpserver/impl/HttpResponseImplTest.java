@@ -16,30 +16,21 @@
 package io.esastack.httpserver.impl;
 
 import io.esastack.commons.net.http.CookieUtil;
+import io.esastack.commons.net.http.HttpHeaderNames;
 import io.esastack.commons.net.http.HttpHeaders;
+import io.esastack.commons.net.http.HttpStatus;
 import io.esastack.commons.net.netty.http.Http1HeadersImpl;
-import io.esastack.httpserver.core.HttpOutputStream;
-import io.esastack.httpserver.core.HttpResponse;
 import io.esastack.httpserver.core.Response;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 import io.netty.handler.codec.http.cookie.DefaultCookie;
 import org.junit.jupiter.api.Test;
 
-import java.io.File;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.ArgumentMatchers.isNull;
-import static org.mockito.ArgumentMatchers.same;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -53,7 +44,7 @@ class HttpResponseImplTest {
         when(mock.status()).thenReturn(500);
         assertEquals(500, response.status());
 
-        response.setStatus(100);
+        response.status(100);
         verify(mock).setStatus(eq(100));
 
         when(mock.isKeepAlive()).thenReturn(true);
@@ -78,56 +69,10 @@ class HttpResponseImplTest {
     }
 
     @Test
-    void testOutputStream() {
-        final Response mock = mock(Response.class);
-        final HttResponseImpl response = new HttResponseImpl(mock);
-
-        when(mock.isEnded()).thenReturn(true);
-
-        assertThrows(IllegalStateException.class, response::outputStream);
-
-        reset(mock);
-        when(mock.isEnded()).thenReturn(false);
-        when(mock.isCommitted()).thenReturn(true);
-
-        assertThrows(IllegalStateException.class, response::outputStream);
-        reset(mock);
-
-        final HttpOutputStream os = initOutputStream(mock, response);
-        assertSame(os, response.outputStream());
-    }
-
-    @Test
-    void testSetBufferSize() {
-        final Response mock = mock(Response.class);
-        final HttResponseImpl response = new HttResponseImpl(mock);
-
-        assertEquals(HttpResponse.DEFAULT_BUFFER_SIZE, response.bufferSize());
-        response.setBufferSize(16);
-        assertEquals(16, response.bufferSize());
-
-        when(mock.isCommitted()).thenReturn(true);
-        response.setBufferSize(32);
-        assertEquals(16, response.bufferSize());
-
-        reset(mock);
-        when(mock.isEnded()).thenReturn(false);
-        when(mock.isCommitted()).thenReturn(false);
-        when(mock.alloc()).thenReturn(Unpooled.EMPTY_BUFFER.alloc());
-        assertNotNull(response.outputStream());
-
-        response.setBufferSize(32);
-        assertEquals(16, response.bufferSize());
-    }
-
-    @Test
     void testReset() {
         final Response mock = mock(Response.class);
         final HttResponseImpl response = new HttResponseImpl(mock);
 
-
-        response.setBufferSize(16);
-        assertEquals(16, response.bufferSize());
         final HttpHeaders headers = new Http1HeadersImpl().set("a", "1");
         when(mock.headers()).thenReturn(headers);
         final HttpHeaders trailers = new Http1HeadersImpl().set("b", "2");
@@ -135,105 +80,20 @@ class HttpResponseImplTest {
 
         response.reset();
 
-        assertEquals(HttpResponse.DEFAULT_BUFFER_SIZE, response.bufferSize());
         assertTrue(headers.isEmpty());
         assertTrue(trailers.isEmpty());
     }
 
     @Test
-    void testSendResultWithByteArray() {
-        final Response mock = mock(Response.class);
-        final HttResponseImpl response = new HttResponseImpl(mock);
-
-        final ByteBuf buf = Unpooled.buffer();
-        buf.writeLong(1L);
-        buf.writeLong(2L);
-        final byte[] body = ByteBufUtil.getBytes(buf);
-
-        response.sendResult(body, 0, 8);
-        verify(mock).end(same(body), eq(0), eq(8));
-
-        reset(mock);
-
-        response.sendResult(500, body, 0, 8);
-        verify(mock).setStatus(eq(500));
-        verify(mock).end(same(body), eq(0), eq(8));
-
-        reset(mock);
-
-        response.sendResult(body);
-        verify(mock).end(same(body));
-
-        reset(mock);
-
-        response.sendResult(500, body);
-        verify(mock).setStatus(eq(500));
-        verify(mock).end(same(body));
-
-        reset(mock);
-
-        response.sendResult(500);
-        verify(mock).setStatus(eq(500));
-        verify(mock).end((byte[]) isNull());
-
-        reset(mock);
-
-        response.sendResult();
-        verify(mock).end((byte[]) isNull());
-
-        reset(mock);
-        initOutputStream(mock, response);
-        assertThrows(IllegalStateException.class, () -> response.sendResult(body, 0, 8));
-        assertThrows(IllegalStateException.class, () -> response.sendResult(500, body, 0, 8));
-        assertThrows(IllegalStateException.class, () -> response.sendResult(500, body));
-        assertThrows(IllegalStateException.class, () -> response.sendResult(500));
-        assertThrows(IllegalStateException.class, response::sendResult);
-    }
-
-    @Test
     void testSendRedirect() {
+        final HttpHeaders headers = new Http1HeadersImpl();
         final Response mock = mock(Response.class);
+        when(mock.headers()).thenReturn(headers);
         final HttResponseImpl response = new HttResponseImpl(mock);
 
         response.sendRedirect("foo");
-        verify(mock).sendRedirect(eq("foo"));
-
-        initOutputStream(mock, response);
-
-        assertThrows(IllegalStateException.class, () -> response.sendRedirect("a"));
-    }
-
-    @Test
-    void testSendFile() {
-        final Response mock = mock(Response.class);
-        final HttResponseImpl response = new HttResponseImpl(mock);
-
-        final File f = new File("");
-        response.sendFile(f);
-        verify(mock).sendFile(same(f), eq(0L), eq(Long.MAX_VALUE));
-
-        reset(mock);
-
-        response.sendFile(f, 1);
-        verify(mock).sendFile(same(f), eq(1L), eq(Long.MAX_VALUE));
-
-        reset(mock);
-
-        response.sendFile(f, 1L, 2L);
-        verify(mock).sendFile(same(f), eq(1L), eq(2L));
-
-        initOutputStream(mock, response);
-
-        assertThrows(IllegalStateException.class, () -> response.sendFile(f));
-    }
-
-    private static HttpOutputStream initOutputStream(Response mock, HttResponseImpl response) {
-        when(mock.isEnded()).thenReturn(false);
-        when(mock.isCommitted()).thenReturn(false);
-        when(mock.alloc()).thenReturn(Unpooled.EMPTY_BUFFER.alloc());
-
-        final HttpOutputStream os = response.outputStream();
-        assertNotNull(os);
-        return os;
+        verify(mock).setStatus(HttpStatus.FOUND.code());
+        assertEquals(1, headers.size());
+        assertEquals(headers.get(HttpHeaderNames.LOCATION), "foo");
     }
 }

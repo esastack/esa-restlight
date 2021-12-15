@@ -16,12 +16,13 @@
 package io.esastack.restlight.core.resolver;
 
 import esa.commons.spi.SPI;
+import io.esastack.commons.net.buffer.Buffer;
 import io.esastack.httpserver.core.RequestContext;
 import io.esastack.restlight.core.context.HttpResponse;
 import io.esastack.restlight.core.util.Ordered;
 
 /**
- * This resolver will serialize the {@link ResponseEntity} and write the serialized result to {@link HttpResponse}.
+ * This resolver will serialize the {@link ResponseEntity} and write the serialized result to given {@link Buffer}.
  */
 @SPI
 public interface ResponseEntityResolver extends Ordered {
@@ -31,7 +32,7 @@ public interface ResponseEntityResolver extends Ordered {
      *
      * @param entity    entity
      * @param context   context
-     * @return  resolved value, which must not be null
+     * @return  resolved value, which must not be {@code null}.
      * @throws Exception    any exception
      */
     HandledValue<Void> writeTo(ResponseEntity entity, RequestContext context) throws Exception;

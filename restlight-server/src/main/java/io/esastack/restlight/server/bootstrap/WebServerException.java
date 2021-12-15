@@ -15,7 +15,6 @@
  */
 package io.esastack.restlight.server.bootstrap;
 
-
 import io.esastack.commons.net.http.HttpStatus;
 
 public class WebServerException extends RuntimeException {

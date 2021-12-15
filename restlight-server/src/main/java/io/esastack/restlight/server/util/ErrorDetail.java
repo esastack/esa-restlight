@@ -15,37 +15,18 @@
  */
 package io.esastack.restlight.server.util;
 
-import esa.commons.StringUtils;
-import io.esastack.commons.net.http.HttpStatus;
-import io.esastack.commons.net.http.MediaType;
-import io.esastack.httpserver.core.HttpRequest;
-import io.esastack.httpserver.core.HttpResponse;
-import io.netty.handler.codec.http.HttpHeaderNames;
-
-import java.nio.charset.StandardCharsets;
+import java.util.Objects;
 
 public class ErrorDetail<T> {
 
     private final String path;
     private final T message;
     private final long time;
-    private final String error;
-    private final int status;
 
-    private ErrorDetail(String path, T message, String error, int status) {
+    public ErrorDetail(String path, T message) {
         this.path = path;
         this.message = message;
-        this.error = error;
-        this.status = status;
         this.time = System.currentTimeMillis();
-    }
-
-    public static byte[] buildErrorMsg(String path, String message, String error, int status) {
-        return new ErrorDetail<>(path, message, error, status).toBytes();
-    }
-
-    public static <T> byte[] buildError(String path, T message, String error, int status) {
-        return new ErrorDetail<>(path, message, error, status).toBytes();
     }
 
     public String getPath() {
@@ -60,47 +41,30 @@ public class ErrorDetail<T> {
         return time;
     }
 
-    public String getError() {
-        return error;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        ErrorDetail<?> that = (ErrorDetail<?>) o;
+        return time == that.time && Objects.equals(path, that.path) && Objects.equals(message, that.message);
     }
 
-    public int getStatus() {
-        return status;
+    @Override
+    public int hashCode() {
+        return Objects.hash(path, message, time);
     }
 
     @Override
     public String toString() {
-        final StringBuilder sb = new StringBuilder("{");
-        sb.append("\"path\":\"").append(path).append("\",");
-        sb.append("\"message\":\"").append(message).append("\",");
-        sb.append("\"time\":\"").append(DateUtils.formatByCache(time)).append("\",");
-        sb.append("\"error\":\"").append(error).append("\",");
-        sb.append("\"status\":").append(status);
+        final StringBuilder sb = new StringBuilder("ErrorDetail{");
+        sb.append("path='").append(path).append('\'');
+        sb.append(", message=").append(message);
+        sb.append(", time=").append(time);
         sb.append('}');
         return sb.toString();
-    }
-
-    public byte[] toBytes() {
-        return this.toString().getBytes(StandardCharsets.UTF_8);
-    }
-
-    public static void sendErrorResult(HttpRequest request,
-                                       HttpResponse response,
-                                       Throwable ex,
-                                       HttpStatus status) {
-        final String msg = StringUtils.isNotEmpty(ex.getMessage()) ? ex.getMessage() : status.reasonPhrase();
-        sendErrorResult(request, response, msg, status);
-    }
-
-    public static void sendErrorResult(HttpRequest request,
-                                       HttpResponse response,
-                                       String msg,
-                                       HttpStatus status) {
-        final byte[] errorInfo = ErrorDetail.buildError(request.path(),
-                msg,
-                status.reasonPhrase(),
-                status.code());
-        response.headers().set(HttpHeaderNames.CONTENT_TYPE, MediaType.TEXT_PLAIN.value());
-        response.sendResult(status.code(), errorInfo);
     }
 }

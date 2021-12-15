@@ -53,11 +53,11 @@ public class CorsFilter implements Filter {
                 setAllowCredentials(response, opt, origin);
                 setMaxAge(response, opt);
             }
-            response.sendResult(HttpStatus.OK.code());
+            response.status(HttpStatus.OK.code());
             return Futures.completedFuture();
         } else if (origin != null && opt == null) {
             // origin present in request but missing cors options
-            response.sendResult(HttpStatus.FORBIDDEN.code());
+            response.status(HttpStatus.FORBIDDEN.code());
             return Futures.completedFuture();
         } else {
             String set = setOrigin(response, origin, opt);

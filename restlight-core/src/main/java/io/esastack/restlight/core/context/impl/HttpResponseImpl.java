@@ -52,7 +52,7 @@ public class HttpResponseImpl extends HttResponseImpl implements HttpResponse {
         if (os != null) {
             return new HttpOutputStreamImpl(os);
         } else {
-            return super.outputStream();
+            return null;
         }
     }
 }

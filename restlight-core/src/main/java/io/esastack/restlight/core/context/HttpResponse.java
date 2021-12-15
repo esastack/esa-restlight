@@ -15,23 +15,11 @@
  */
 package io.esastack.restlight.core.context;
 
+import io.esastack.httpserver.core.HttpOutputStream;
+
 import java.io.OutputStream;
 
 public interface HttpResponse extends io.esastack.httpserver.core.HttpResponse {
-
-    /**
-     * Sets the {@code entity} body of current {@link HttpResponse}.
-     *
-     * @param entity    entity
-     */
-    void entity(Object entity);
-
-    /**
-     * Obtains the {@code entity} body of current {@link HttpResponse}.
-     *
-     * @return  entity
-     */
-    Object entity();
 
     /**
      * Sets the {@code os} as the {@link OutputStream} of current {@link HttpResponse}.
@@ -39,6 +27,13 @@ public interface HttpResponse extends io.esastack.httpserver.core.HttpResponse {
      * @param os    os
      */
     void outputStream(OutputStream os);
+
+    /**
+     * Obtains the {@link OutputStream}.
+     *
+     * @return  output stream
+     */
+    HttpOutputStream outputStream();
 
 }
 

@@ -17,27 +17,56 @@ package io.esastack.restlight.core.resolver;
 
 import esa.commons.Checks;
 import esa.commons.ClassUtils;
+import io.esastack.commons.net.buffer.Buffer;
+import io.esastack.commons.net.buffer.BufferUtil;
 import io.esastack.commons.net.http.HttpHeaderNames;
+import io.esastack.httpserver.core.Response;
 import io.esastack.restlight.core.context.HttpResponse;
 import io.esastack.restlight.core.method.HandlerMethod;
+import io.netty.buffer.ByteBuf;
+
+import java.io.File;
 
 public class ResponseEntityImpl extends HttpEntityImpl implements ResponseEntity {
 
     private final HttpResponse response;
+    private final Response rsp;
 
-    public ResponseEntityImpl(HandlerMethod handler, HttpResponse response) {
+    public ResponseEntityImpl(HandlerMethod handler, HttpResponse response, Response rsp) {
         super(handler, parseMediaType(response.headers().get(HttpHeaderNames.CONTENT_TYPE)));
         Checks.checkNotNull(response, "response");
+        Checks.checkNotNull(rsp, "rsp");
         this.response = response;
         this.type = handler == null ? ClassUtils.getUserType(response.entity()) : handler.method().getReturnType();
         this.genericType = handler == null ? null : handler.method().getGenericReturnType();
         this.annotations = handler == null ? null : handler.method().getAnnotations();
+        this.rsp = rsp;
+    }
+
+    @Override
+    public void sendResult(Buffer buffer) {
+        if (rsp.isCommitted()) {
+            throw new IllegalStateException("Already committed.");
+        }
+        Object unwrapped;
+        if ((unwrapped = BufferUtil.unwrap(buffer)) instanceof ByteBuf) {
+            rsp.end((ByteBuf) unwrapped);
+        } else {
+            rsp.end(buffer.getBytes());
+        }
+    }
+
+    @Override
+    public void sendFile(File file) {
+        if (rsp.isCommitted()) {
+            throw new IllegalStateException("Already committed.");
+        }
+        rsp.sendFile(file);
     }
 
     @Override
     public HttpResponse response() {
-        return response;
+        return this.response;
     }
-
 }
 

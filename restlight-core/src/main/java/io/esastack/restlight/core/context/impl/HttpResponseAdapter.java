@@ -16,13 +16,11 @@
 package io.esastack.restlight.core.context.impl;
 
 import esa.commons.Checks;
-import io.esastack.commons.net.buffer.Buffer;
 import io.esastack.commons.net.http.Cookie;
 import io.esastack.commons.net.http.HttpHeaders;
 import io.esastack.httpserver.core.HttpOutputStream;
 import io.esastack.restlight.core.context.HttpResponse;
 
-import java.io.File;
 import java.io.OutputStream;
 import java.util.function.Consumer;
 
@@ -37,15 +35,21 @@ public class HttpResponseAdapter implements HttpResponse {
 
     @Override
     public void entity(Object entity) {
+        underlying.entity(entity);
     }
 
     @Override
     public Object entity() {
-        return null;
+        return underlying.entity();
     }
 
     @Override
     public void outputStream(OutputStream os) {
+    }
+
+    @Override
+    public HttpOutputStream outputStream() {
+        return null;
     }
 
     @Override
@@ -59,8 +63,8 @@ public class HttpResponseAdapter implements HttpResponse {
     }
 
     @Override
-    public void setStatus(int code) {
-        underlying.setStatus(code);
+    public void status(int code) {
+        underlying.status(code);
     }
 
     @Override
@@ -74,43 +78,8 @@ public class HttpResponseAdapter implements HttpResponse {
     }
 
     @Override
-    public HttpOutputStream outputStream() {
-        return underlying.outputStream();
-    }
-
-    @Override
-    public void setBufferSize(int size) {
-        underlying.setBufferSize(size);
-    }
-
-    @Override
-    public int bufferSize() {
-        return underlying.bufferSize();
-    }
-
-    @Override
-    public boolean isCommitted() {
-        return underlying.isCommitted();
-    }
-
-    @Override
     public void reset() {
         underlying.reset();
-    }
-
-    @Override
-    public void sendResult(byte[] body, int off, int len) {
-        underlying.sendResult(body, off, len);
-    }
-
-    @Override
-    public void sendResult(Buffer body, int len, boolean autoRelease) {
-        underlying.sendResult(body, len, autoRelease);
-    }
-
-    @Override
-    public void sendFile(File file, long offset, long length) {
-        underlying.sendFile(file, offset, length);
     }
 
     @Override

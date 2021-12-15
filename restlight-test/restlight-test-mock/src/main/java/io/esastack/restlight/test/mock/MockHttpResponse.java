@@ -16,56 +16,33 @@
 package io.esastack.restlight.test.mock;
 
 import esa.commons.Checks;
-import esa.commons.ExceptionUtils;
-import esa.commons.http.MimeMappings;
-import esa.commons.io.IOUtils;
 import esa.commons.logging.Logger;
 import esa.commons.logging.LoggerFactory;
-import io.esastack.commons.net.buffer.Buffer;
-import io.esastack.commons.net.buffer.BufferUtil;
 import io.esastack.commons.net.http.Cookie;
 import io.esastack.commons.net.http.HttpHeaderNames;
 import io.esastack.commons.net.http.HttpHeaders;
 import io.esastack.commons.net.netty.http.CookieImpl;
 import io.esastack.commons.net.netty.http.Http1HeadersImpl;
-import io.esastack.httpserver.core.HttpOutputStream;
 import io.esastack.httpserver.core.HttpResponse;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 import io.netty.handler.codec.http.cookie.DefaultCookie;
 import io.netty.handler.codec.http.cookie.ServerCookieEncoder;
-import io.netty.util.internal.MathUtil;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
 import java.util.function.Consumer;
 
 public class MockHttpResponse implements HttpResponse {
 
     private static final Logger logger = LoggerFactory.getLogger(MockHttpResponse.class);
 
-    private static final AtomicIntegerFieldUpdater<MockHttpResponse> COMMITTED_UPDATER =
-            AtomicIntegerFieldUpdater.newUpdater(MockHttpResponse.class, "committed");
-
     private final List<Consumer<HttpResponse>> endListeners = new ArrayList<>(1);
     private final HttpHeaders headers = new Http1HeadersImpl();
     private final HttpHeaders trailingHeaders = new Http1HeadersImpl();
     private int status = 200;
-    private int bufferSize = HttpResponse.DEFAULT_BUFFER_SIZE;
-    private MockHttpOutputStream os;
-    private volatile int committed;
-    final Buffer result = BufferUtil.wrap(Unpooled.buffer());
+    private Object entity;
 
     public static Builder aMockResponse() {
         return new Builder();
-    }
-
-    public Buffer getSentData() {
-        return result;
     }
 
     @Override
@@ -85,11 +62,18 @@ public class MockHttpResponse implements HttpResponse {
     }
 
     @Override
-    public void setStatus(int code) {
-        if (isCommitted()) {
-            return;
-        }
+    public void status(int code) {
         this.status = code;
+    }
+
+    @Override
+    public void entity(Object entity) {
+        this.entity = entity;
+    }
+
+    @Override
+    public Object entity() {
+        return this.entity;
     }
 
     @Override
@@ -98,154 +82,26 @@ public class MockHttpResponse implements HttpResponse {
     }
 
     @Override
-    public HttpOutputStream outputStream() {
-        if (os == null) {
-            os = new MockHttpOutputStream(this);
-        }
-        return os;
-    }
-
-    @Override
-    public int bufferSize() {
-        return this.bufferSize;
-    }
-
-    @Override
-    public void setBufferSize(int size) {
-        this.bufferSize = size;
-    }
-
-    @Override
-    public boolean isCommitted() {
-        return committed == 1;
-    }
-
-    @Override
     public void reset() {
-        checkCommitted();
         reset0();
     }
 
     @Override
-    public void sendResult(byte[] body, int off, int len) {
-        // only one of output stream and sendXX() is allowed.
-        if (os != null) {
-            throw new IllegalStateException("OutputStream has already opened. use it please.");
-        }
-        if (body != null) {
-            if (MathUtil.isOutOfBounds(off, len, body.length)) {
-                throw new IndexOutOfBoundsException();
-            }
-        }
-        ensureCommittedExclusively();
-        if (body != null) {
-            result.writeBytes(body, off, len);
-        }
-        // Note: Nothing to write
-        callEndListener();
-    }
-
-    @Override
-    public void sendResult(Buffer body, int len, boolean autoRelease) {
-        final Object underlying = BufferUtil.unwrap(body);
-        boolean release = autoRelease;
-        try {
-            // only one of output stream and sendXX() is allowed.
-            if (os != null) {
-                throw new IllegalStateException("OutputStream has already opened. use it please.");
-            }
-            if (body == null) {
-                len = 0;
-            } else {
-                if (len > body.readableBytes() || len < 0) {
-                    throw new IndexOutOfBoundsException();
-                }
-            }
-            ensureCommittedExclusively();
-
-            if (len != 0) {
-                byte[] dataToWrite = new byte[len];
-                body.readBytes(dataToWrite);
-                result.writeBytes(dataToWrite);
-                if (release && underlying instanceof ByteBuf) {
-                    ((ByteBuf) underlying).release();
-                    release = false;
-                }
-            }
-            callEndListener();
-        } finally {
-            if (release && body != null && underlying instanceof ByteBuf) {
-                ((ByteBuf) body).release();
-            }
-        }
-    }
-
-    @Override
-    public void sendFile(File file, long offset, long length) {
-        Checks.checkNotNull(file, "file");
-        Checks.checkArg(offset >= 0L, "negative offset");
-        Checks.checkArg(length >= 0L, "negative length");
-
-        if (file.isHidden() || !file.exists() || file.isDirectory() || !file.isFile()) {
-            ExceptionUtils.throwException(new FileNotFoundException(file.getName()));
-        }
-        ensureCommittedExclusively();
-        if (!headers.contains(HttpHeaderNames.CONTENT_TYPE)) {
-            String contentType = MimeMappings.getMimeTypeOrDefault(file.getPath());
-            headers.set(HttpHeaderNames.CONTENT_TYPE, contentType);
-        }
-        long len = Math.min(length, file.length() - offset);
-        headers.set(HttpHeaderNames.CONTENT_LENGTH, len);
-        try {
-            result.writeBytes(IOUtils.toByteArray(file));
-        } catch (IOException e) {
-            ExceptionUtils.throwException(e);
-        }
-    }
-
-    @Override
     public void onEnd(Consumer<HttpResponse> listener) {
-        if (isCommitted()) {
-            return;
-        }
         endListeners.add(listener);
     }
 
+    @Override
     public HttpHeaders headers() {
         return this.headers;
     }
 
+    @Override
     public HttpHeaders trailers() {
         return this.trailingHeaders;
     }
 
-    private void checkCommitted() {
-        if (isCommitted()) {
-            throw new IllegalStateException("Already committed.");
-        }
-    }
-
-    private void reset0() {
-        status = 200;
-        bufferSize = HttpResponse.DEFAULT_BUFFER_SIZE;
-        headers.clear();
-        trailingHeaders.clear();
-        endListeners.clear();
-        IOUtils.closeQuietly(os);
-        os = null;
-    }
-
-    boolean casSetCommitted() {
-        return COMMITTED_UPDATER.compareAndSet(this, 0, 1);
-    }
-
-    private void ensureCommittedExclusively() {
-        if (!casSetCommitted()) {
-            throw new IllegalStateException("Already committed.");
-        }
-    }
-
-    void callEndListener() {
+    public void callEndListener() {
         for (Consumer<HttpResponse> endListener : endListeners) {
             try {
                 endListener.accept(this);
@@ -253,6 +109,13 @@ public class MockHttpResponse implements HttpResponse {
                 logger.error("Error while calling end listener: " + endListener, e);
             }
         }
+    }
+
+    private void reset0() {
+        status = 200;
+        headers.clear();
+        trailingHeaders.clear();
+        endListeners.clear();
     }
 
     public static final class Builder {

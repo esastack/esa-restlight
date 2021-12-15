@@ -26,18 +26,11 @@ import java.io.InputStream;
 public interface RequestEntity extends HttpEntity {
 
     /**
-     * Obtains the request entity as byte[] format.
+     * Obtains the request entity as {@code buffer} format.
      *
-     * @return  byte[]
+     * @return  buffer
      */
     Buffer body();
-
-    /**
-     * Obtains the {@link HttpInputStream}.
-     *
-     * @return  ins
-     */
-    HttpInputStream inputStream();
 
     /**
      * Sets with the given {@code data}.
@@ -45,6 +38,13 @@ public interface RequestEntity extends HttpEntity {
      * @param data  data
      */
     void body(Buffer data);
+
+    /**
+     * Obtains the {@link HttpInputStream}.
+     *
+     * @return  ins
+     */
+    HttpInputStream inputStream();
 
     /**
      * Sets with the given {@code ins}.

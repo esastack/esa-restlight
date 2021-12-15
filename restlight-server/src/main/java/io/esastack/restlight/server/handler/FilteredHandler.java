@@ -22,7 +22,6 @@ import io.esastack.restlight.server.context.FilterContext;
 import io.esastack.restlight.server.internal.FilterContextFactory;
 import io.esastack.restlight.server.internal.InternalFilter;
 import io.esastack.restlight.server.schedule.Scheduler;
-import io.esastack.restlight.server.util.Futures;
 import io.netty.channel.Channel;
 
 import java.util.List;
@@ -49,13 +48,7 @@ public class FilteredHandler<CTX extends RequestContext, FCTX extends FilterCont
         this.delegate = delegate;
         this.filterContext = filterContext;
         this.exceptionHandler = exceptionHandler;
-        this.filterChain = LinkedFilterChain.immutable(filters, (context -> {
-            if (!context.response().isCommitted()) {
-                return delegate.process((CTX) context);
-            } else {
-                return Futures.completedFuture();
-            }
-        }));
+        this.filterChain = LinkedFilterChain.immutable(filters, (context -> delegate.process((CTX) context)));
     }
 
     @Override

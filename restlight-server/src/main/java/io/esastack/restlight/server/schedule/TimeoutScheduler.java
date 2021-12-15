@@ -144,13 +144,12 @@ class TimeoutScheduler implements Scheduler {
         }
 
         void failFast() {
-            byte[] errorInfo = ErrorDetail.buildErrorMsg(delegate.request().path(),
-                    "Out of scheduler(" + schedulerName + ") timeout(" + timeout + ")ms",
-                    HttpStatus.INTERNAL_SERVER_ERROR.reasonPhrase(),
-                    HttpStatus.INTERNAL_SERVER_ERROR.code());
-
+            HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
             delegate.response().headers().set(HttpHeaderNames.CONTENT_TYPE, MediaType.TEXT_PLAIN.value());
-            delegate.response().sendResult(HttpStatus.INTERNAL_SERVER_ERROR.code(), errorInfo);
+            delegate.response().status(status.code());
+            delegate.response().entity(new ErrorDetail<>(delegate.request().path(),
+                    "Out of scheduler(" + schedulerName + ") timeout(" + timeout + ")ms"));
+
             PromiseUtils.setSuccess(delegate.promise());
         }
 

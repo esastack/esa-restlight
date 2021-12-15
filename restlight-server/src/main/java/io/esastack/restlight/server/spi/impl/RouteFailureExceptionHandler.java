@@ -15,7 +15,6 @@
  */
 package io.esastack.restlight.server.spi.impl;
 
-import esa.commons.StringUtils;
 import esa.commons.annotation.Internal;
 import esa.commons.spi.Feature;
 import io.esastack.commons.net.http.HttpStatus;
@@ -44,9 +43,8 @@ public class RouteFailureExceptionHandler implements ExceptionHandler {
             HttpResponse response = context.response();
             HttpStatus status = toStatus(((RouteFailureException) th).getFailureType());
             response.headers().set(HttpHeaderNames.CONTENT_TYPE, MediaType.TEXT_PLAIN.value());
-            response.sendResult(status.code(),
-                    ErrorDetail.buildErrorMsg(context.request().path(), StringUtils.empty(),
-                            status.reasonPhrase(), status.code()));
+            response.status(status.code());
+            response.entity(new ErrorDetail<>(context.request().path(), status.reasonPhrase()));
             return Futures.completedFuture();
         } else {
             return next.handle(context, th);

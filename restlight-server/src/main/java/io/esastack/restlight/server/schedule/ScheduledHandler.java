@@ -24,7 +24,6 @@ import io.esastack.restlight.server.route.Route;
 import io.esastack.restlight.server.route.RouteFailureException;
 import io.esastack.restlight.server.util.Futures;
 import io.esastack.restlight.server.util.LoggerUtils;
-import io.esastack.restlight.server.util.PromiseUtils;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -75,21 +74,13 @@ class ScheduledHandler<CTX extends RequestContext> {
                     final CompletableFuture<Route> route = route(ctx);
                     route.whenComplete((r, th) -> {
                         if (th != null) {
-                            PromiseUtils.setFailure(promise, th);
+                            ctx.response().status(HttpStatus.NOT_FOUND.code());
+                            promise.completeExceptionally(th);
                         } else {
-                            if (r == null) {
-                                if (!ctx.response().isCommitted()) {
-                                    LoggerUtils.logger().warn("Request(url={}, method={}) hasn't been committed" +
-                                            "after route failure handling");
-                                    ctx.response().sendResult(HttpStatus.NOT_FOUND.code());
-                                }
-                                PromiseUtils.setSuccess(promise);
-                            } else {
-                                LoggerUtils.logger().debug("Mapping request(url={}, method={}) to {}",
-                                        ctx.request().path(),
-                                        ctx.request().method(), r);
-                                dispatcher.service(ctx, promise, r);
-                            }
+                            LoggerUtils.logger().debug("Mapping request(url={}, method={}) to {}",
+                                    ctx.request().path(),
+                                    ctx.request().method(), r);
+                            dispatcher.service(ctx, promise, r);
                         }
                     });
                 }));
@@ -103,27 +94,19 @@ class ScheduledHandler<CTX extends RequestContext> {
         final CompletableFuture<Route> route = route(ctx);
         route.whenComplete((r, th) -> {
             if (th != null) {
-                PromiseUtils.setFailure(promise, th);
+                ctx.response().status(HttpStatus.NOT_FOUND.code());
+                promise.completeExceptionally(th);
             } else {
-                if (r == null) {
-                    if (!ctx.response().isCommitted()) {
-                        LoggerUtils.logger().warn("Request(url={}, method={}) hasn't been committed" +
-                                "after route failure handling");
-                        ctx.response().sendResult(HttpStatus.NOT_FOUND.code());
-                    }
-                    PromiseUtils.setSuccess(promise);
-                } else {
-                    LoggerUtils.logger().debug("Mapping request(url={}, method={}) to {}",
-                            ctx.request().path(),
-                            ctx.request().method(), r);
+                LoggerUtils.logger().debug("Mapping request(url={}, method={}) to {}",
+                        ctx.request().path(),
+                        ctx.request().method(), r);
 
-                    RequestTask task = hook.onRequest(newRequestTask(ctx,
-                            promise,
-                            () -> dispatcher.service(ctx, promise, r)));
+                RequestTask task = hook.onRequest(newRequestTask(ctx,
+                        promise,
+                        () -> dispatcher.service(ctx, promise, r)));
 
-                    if (task != null) {
-                        r.scheduler().schedule(task);
-                    }
+                if (task != null) {
+                    r.scheduler().schedule(task);
                 }
             }
         });

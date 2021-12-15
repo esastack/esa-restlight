@@ -31,7 +31,6 @@ import io.esastack.restlight.core.configure.HandlerRegistry;
 import io.esastack.restlight.core.configure.HandlerRegistryImpl;
 import io.esastack.restlight.core.configure.MiniConfigurableDeployments;
 import io.esastack.restlight.core.context.FilterContext;
-import io.esastack.restlight.core.context.HttpResponse;
 import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.context.impl.FilterContextImpl;
 import io.esastack.restlight.core.context.impl.HttpResponseImpl;
@@ -115,6 +114,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static io.esastack.restlight.server.context.impl.RequestContextImpl.UNDERLYING_RESPONSE;
+
 /**
  * Implementation for a Restlight server bootstrap and returns a {@link RestlightHandler} by {@link BaseDeployments} for
  * {@link AbstractRestlight}.
@@ -171,8 +172,10 @@ public abstract class Deployments<R extends AbstractRestlight<R, D, O>, D extend
                 return (RequestContext) req;
             }
             HttpRequest request = new HttpRequestImpl(req);
-            HttpResponse response = new HttpResponseImpl(req.response());
-            return new RequestContextImpl(request, response);
+            HttpResponseImpl response = new HttpResponseImpl(req.response());
+            RequestContext context = new RequestContextImpl(request, response);
+            context.attr(UNDERLYING_RESPONSE).set(response.underlying());
+            return context;
         };
     }
 

@@ -17,7 +17,7 @@ package io.esastack.restlight.server.route;
 
 public class RouteFailureException extends RuntimeException {
 
-    private final RouteFailure failureType;
+    private final transient RouteFailure failureType;
 
     public RouteFailureException(RouteFailure failureType) {
         super();

@@ -25,6 +25,7 @@ import io.esastack.restlight.core.spi.ExceptionHandler;
 import io.esastack.restlight.core.spi.ExceptionHandlerFactory;
 import io.esastack.restlight.core.util.Constants;
 import io.esastack.restlight.server.bootstrap.ExceptionHandlerChain;
+import io.esastack.restlight.server.util.ErrorDetail;
 import io.esastack.restlight.server.util.Futures;
 import io.netty.util.internal.InternalThreadLocalMap;
 
@@ -33,8 +34,6 @@ import javax.validation.ConstraintViolationException;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
-
-import static io.esastack.restlight.server.util.ErrorDetail.sendErrorResult;
 
 @Internal
 @Feature(tags = Constants.INTERNAL)
@@ -56,10 +55,9 @@ public class ValidationExceptionHandlerFactory implements ExceptionHandlerFactor
                 ConstraintViolationException error = (ConstraintViolationException) th;
                 Set<ConstraintViolation<?>> cs = error.getConstraintViolations();
                 if (cs == null || cs.isEmpty()) {
-                    sendErrorResult(context.request(), context.response(), error,
-                            HttpStatus.BAD_REQUEST);
+                    context.response().status(HttpStatus.BAD_REQUEST.code());
+                    context.response().entity(new ErrorDetail<>(context.request().path(), error));
                 } else {
-
                     final StringBuilder sb = InternalThreadLocalMap.get().stringBuilder();
                     for (ConstraintViolation<?> c : cs) {
                         sb.append("{property='").append(c.getPropertyPath()).append('\'');
@@ -68,8 +66,8 @@ public class ValidationExceptionHandlerFactory implements ExceptionHandlerFactor
                     }
                     sb.append('}');
 
-                    sendErrorResult(context.request(), context.response(), sb.toString(),
-                            HttpStatus.BAD_REQUEST);
+                    context.response().status(HttpStatus.BAD_REQUEST.code());
+                    context.response().entity(new ErrorDetail<>(context.request().path(), sb.toString()));
                 }
                 return Futures.completedExceptionally(th);
             }

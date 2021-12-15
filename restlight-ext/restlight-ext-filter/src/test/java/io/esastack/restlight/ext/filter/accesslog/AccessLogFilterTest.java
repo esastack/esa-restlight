@@ -18,7 +18,6 @@ package io.esastack.restlight.ext.filter.accesslog;
 import esa.commons.collection.AttributeMap;
 import esa.commons.logging.InternalLogger;
 import io.esastack.httpserver.core.HttpRequest;
-import io.esastack.httpserver.core.HttpResponse;
 import io.esastack.restlight.server.context.FilterContext;
 import io.esastack.restlight.server.context.impl.FilterContextImpl;
 import io.esastack.restlight.server.context.impl.FilteringRequestImpl;
@@ -83,14 +82,15 @@ class AccessLogFilterTest {
                 .withRemotePort(8081)
                 .withBody("hello".getBytes(StandardCharsets.UTF_8))
                 .build();
-        final HttpResponse response = MockHttpResponse.aMockResponse().build();
+        final MockHttpResponse response = MockHttpResponse.aMockResponse().build();
         final FilterChain<FilterContext> chain = ((ctx) -> {
-            ctx.response().sendResult(200);
+            ctx.response().status(200);
             return Futures.completedFuture();
         });
         filter.doFilter(new FilterContextImpl(new AttributeMap(), new FilteringRequestImpl(request), response),
                 chain).join();
         assertEquals(200, response.status());
+        response.callEndListener();
         verify(mock).info(argThat(s -> s.contains(request.rawMethod())
                 && s.contains("contentLength=" + request.contentLength())
                 && s.contains("remoteAddr=" + request.remoteAddr())

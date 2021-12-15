@@ -103,12 +103,10 @@ public class IpWhiteListFilter implements Filter {
                 valid = cache.getUnchecked(ip);
             }
         }
-        if (!valid && !response.isCommitted()) {
+        if (!valid) {
             response.headers().set(HttpHeaderNames.CONTENT_TYPE, MediaType.TEXT_PLAIN.value());
-            response.sendResult(HttpStatus.UNAUTHORIZED.code(),
-                    ErrorDetail.buildErrorMsg(request.path(),
-                            HttpStatus.UNAUTHORIZED.reasonPhrase(),
-                            HttpStatus.UNAUTHORIZED.reasonPhrase(), HttpStatus.UNAUTHORIZED.code()));
+            response.status(HttpStatus.UNAUTHORIZED.code());
+            response.entity(new ErrorDetail<>(context.request().path(), HttpStatus.UNAUTHORIZED.reasonPhrase()));
             LoggerUtils.logger().warn("Unauthorized client ip address: {}", ip);
             return Futures.completedFuture();
         }

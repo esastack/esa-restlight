@@ -30,11 +30,11 @@ import io.esastack.restlight.core.spi.ExceptionHandler;
 import io.esastack.restlight.core.spi.ExceptionHandlerFactory;
 import io.esastack.restlight.core.util.Constants;
 import io.esastack.restlight.server.bootstrap.ExceptionHandlerChain;
+import io.esastack.restlight.server.util.ErrorDetail;
 import io.esastack.restlight.server.util.Futures;
 import io.esastack.restlight.springmvc.util.ResponseStatusUtils;
 import io.netty.handler.codec.http.HttpHeaderNames;
 
-import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
@@ -62,7 +62,8 @@ public class SpringMvcExceptionHandlerFactory implements ExceptionHandlerFactory
             final HttpRequest request = context.request();
             final HttpResponse response = context.response();
             response.headers().set(HttpHeaderNames.CONTENT_TYPE, MediaType.TEXT_PLAIN.value());
-            response.sendResult(status.code(), status.reasonPhrase().getBytes(StandardCharsets.UTF_8));
+            response.status(status.code());
+            response.entity(new ErrorDetail<>(context.request().path(), status.reasonPhrase()));
 
             logger.error("Error occurred when doing request(url={}, method={})",
                     request.path(), request.method(), th);

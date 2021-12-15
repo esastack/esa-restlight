@@ -15,35 +15,36 @@
  */
 package io.esastack.restlight.test.mock;
 
-import esa.commons.http.MimeMappings;
-import io.esastack.commons.net.buffer.BufferUtil;
 import io.esastack.commons.net.netty.http.CookieImpl;
-import io.esastack.httpserver.core.HttpOutputStream;
-import io.netty.buffer.Unpooled;
 import io.netty.handler.codec.http.HttpHeaderNames;
 import org.junit.jupiter.api.Test;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class MockHttpResponseTest {
 
     @Test
-    void testGetStatus() {
+    void testOperateStatus() {
         final MockHttpResponse response = MockHttpResponse.aMockResponse()
                 .build();
-        response.setStatus(302);
+        response.status(302);
         assertEquals(302, response.status());
+    }
+
+    @Test
+    void testOperateEntity() {
+        final MockHttpResponse response = MockHttpResponse.aMockResponse()
+                .build();
+        Object entity = new Object();
+        response.entity(entity);
+        assertSame(entity, response.entity());
     }
 
     @Test
@@ -61,101 +62,6 @@ class MockHttpResponseTest {
 
         final Collection<String> cookies = response.headers().getAll(HttpHeaderNames.SET_COOKIE);
         assertEquals(2, cookies.size());
-    }
-
-    @Test
-    void testSendFile() throws IOException {
-        File file = File.createTempFile("restlight-test-", ".xml");
-        file.deleteOnExit();
-        try {
-            try (FileOutputStream out = new FileOutputStream(file)) {
-                out.write("foo".getBytes(StandardCharsets.UTF_8));
-                out.flush();
-            }
-            final MockHttpResponse response = MockHttpResponse.aMockResponse().build();
-            response.sendFile(file);
-            assertTrue(response.isCommitted());
-            assertEquals("foo", response.getSentData().string(StandardCharsets.UTF_8));
-            assertEquals(MimeMappings.getMimeType(file.getName()),
-                    response.headers().get(HttpHeaderNames.CONTENT_TYPE));
-        } finally {
-            file.delete();
-        }
-    }
-
-    @Test
-    void testGetOutputStream0() throws IOException {
-        final MockHttpResponse response = MockHttpResponse.aMockResponse()
-                .build();
-
-        HttpOutputStream os = response.outputStream();
-        os.write("Hello".getBytes());
-        assertThrows(IllegalStateException.class, () -> response.sendResult(200, new byte[0]));
-    }
-
-    @Test
-    void testGetOutputStream1() {
-        final MockHttpResponse response = MockHttpResponse.aMockResponse()
-                .build();
-
-        response.sendResult(200, new byte[0]);
-        assertTrue(response.isCommitted());
-        assertThrows(IllegalStateException.class, () -> response.outputStream().write("Hello".getBytes()));
-    }
-
-    @Test
-    void testSendResult0() {
-        final MockHttpResponse response = MockHttpResponse.aMockResponse()
-                .build();
-
-        response.setStatus(200);
-        response.sendResult(302, "Hello".getBytes(), 0, "Hello".getBytes().length);
-        assertEquals(302, response.status());
-
-        assertTrue(response.isCommitted());
-
-        assertThrows(IllegalStateException.class,
-                () -> response.sendResult(404, null, 0, true));
-    }
-
-    @Test
-    void testSendResult1() {
-        final MockHttpResponse response = MockHttpResponse.aMockResponse()
-                .build();
-
-        response.sendResult(404, null, 0, true);
-        assertEquals(404, response.status());
-        assertTrue(response.isCommitted());
-
-        assertThrows(IllegalStateException.class,
-                () -> response.sendResult(302, "Hello".getBytes(), 0, "Hello".getBytes().length));
-    }
-
-    @Test
-    void testCollectResult() throws IOException {
-        MockHttpResponse response = MockHttpResponse.aMockResponse()
-                .build();
-
-        response.sendResult(404, null, 0, true);
-        assertEquals(404, response.status());
-        assertTrue(response.isCommitted());
-        assertEquals(0, response.getSentData().readableBytes());
-
-        response = MockHttpResponse.aMockResponse()
-                .build();
-        response.sendResult("a".getBytes(StandardCharsets.UTF_8));
-        assertEquals("a", response.getSentData().string(StandardCharsets.UTF_8));
-
-        response = MockHttpResponse.aMockResponse()
-                .build();
-        response.sendResult(BufferUtil.wrap(Unpooled.copiedBuffer("a".getBytes(StandardCharsets.UTF_8))));
-        assertEquals("a", response.getSentData().string(StandardCharsets.UTF_8));
-
-        response = MockHttpResponse.aMockResponse()
-                .build();
-        response.outputStream().writeUTF("abc");
-        response.outputStream().close();
-        assertEquals("abc", response.getSentData().string(StandardCharsets.UTF_8));
     }
 
     @Test

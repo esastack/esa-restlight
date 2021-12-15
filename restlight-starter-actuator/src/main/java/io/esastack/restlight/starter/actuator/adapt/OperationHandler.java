@@ -81,7 +81,7 @@ class OperationHandler {
         if (result instanceof WebEndpointResponse) {
             WebEndpointResponse<?> response = (WebEndpointResponse<?>) result;
             r = response.getBody();
-            res.setStatus(response.getStatus());
+            res.status(response.getStatus());
         } else {
             r = result;
         }
