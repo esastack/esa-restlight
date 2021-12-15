@@ -25,6 +25,7 @@ import io.esastack.restlight.core.resolver.ParamResolverFactory;
 import io.esastack.restlight.core.resolver.nav.NameAndValue;
 
 import java.util.Set;
+import java.util.function.BiFunction;
 
 /**
  * Implementation of {@link ParamResolverFactory} for resolving argument that annotated by the CookieValue
@@ -47,9 +48,12 @@ public abstract class AbstractCookieValueConverter extends StrConverterAdapter {
         return super.createResolver(param, resolverFactory);
     }
 
-    protected String extractValue(String name, HttpRequest request) {
-        Cookie cookie = request.getCookie(name);
-        return cookie == null ? null : cookie.value();
+    @Override
+    protected BiFunction<String, HttpRequest, String> valueExtractor(Param param) {
+        return (name, request) -> {
+            Cookie cookie = request.getCookie(name);
+            return cookie == null ? null : cookie.value();
+        };
     }
 
     private abstract class BaseResolver extends AbstractNameAndValueParamResolver {

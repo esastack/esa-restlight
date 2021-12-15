@@ -67,7 +67,6 @@ import io.esastack.restlight.core.resolver.ResponseEntityResolver;
 import io.esastack.restlight.core.resolver.ResponseEntityResolverAdviceAdapter;
 import io.esastack.restlight.core.resolver.ResponseEntityResolverAdviceFactory;
 import io.esastack.restlight.core.resolver.ResponseEntityResolverFactory;
-import io.esastack.restlight.core.resolver.StringConverterAdapter;
 import io.esastack.restlight.core.resolver.StringConverterFactory;
 import io.esastack.restlight.core.resolver.exception.DefaultExceptionMapper;
 import io.esastack.restlight.core.resolver.exception.DefaultExceptionResolverFactory;
@@ -335,7 +334,6 @@ public abstract class Deployments<R extends AbstractRestlight<R, D, O>, D extend
      * in the {@link RouteRegistry}
      *
      * @param providers providers
-     *
      * @return this deployments
      */
     public D addHandlerMappingProviders(Collection<? extends HandlerMappingProvider> providers) {
@@ -350,7 +348,6 @@ public abstract class Deployments<R extends AbstractRestlight<R, D, O>, D extend
      * Adds a controller bean which will be registered in the {@link RouteRegistry}.
      *
      * @param bean an {@link Object} instances.
-     *
      * @return this deployments
      */
     public D addController(Object bean) {
@@ -365,7 +362,6 @@ public abstract class Deployments<R extends AbstractRestlight<R, D, O>, D extend
      * Adds controller beans which will be registered in the {@link RouteRegistry}
      *
      * @param beans {@link Object} instances.
-     *
      * @return this deployments
      */
     public D addControllers(Collection<?> beans) {
@@ -400,7 +396,6 @@ public abstract class Deployments<R extends AbstractRestlight<R, D, O>, D extend
      * Adds controller advice bean or class.
      *
      * @param beanOrClass an {@link Object} instance or {@link Class}.
-     *
      * @return this deployments
      */
     public D addControllerAdvice(Object beanOrClass) {
@@ -417,7 +412,6 @@ public abstract class Deployments<R extends AbstractRestlight<R, D, O>, D extend
      * Adds controller advice beans.
      *
      * @param beanOrClasses {@link Object} instances or {@link Class}s.
-     *
      * @return this deployments
      */
     public D addControllerAdvices(Collection<?> beanOrClasses) {
@@ -432,7 +426,6 @@ public abstract class Deployments<R extends AbstractRestlight<R, D, O>, D extend
      * Adds a {@link RouteInterceptor}.
      *
      * @param interceptor interceptor
-     *
      * @return this deployments
      */
     public D addRouteInterceptor(RouteInterceptor interceptor) {
@@ -443,7 +436,6 @@ public abstract class Deployments<R extends AbstractRestlight<R, D, O>, D extend
      * Adds {@link RouteInterceptor}s.
      *
      * @param interceptors interceptors
-     *
      * @return this deployments
      */
     public D addRouteInterceptors(Collection<? extends RouteInterceptor> interceptors) {
@@ -457,7 +449,6 @@ public abstract class Deployments<R extends AbstractRestlight<R, D, O>, D extend
      * Adds a {@link HandlerInterceptor}.
      *
      * @param interceptor interceptor
-     *
      * @return this deployments
      */
     public D addHandlerInterceptor(HandlerInterceptor interceptor) {
@@ -468,7 +459,6 @@ public abstract class Deployments<R extends AbstractRestlight<R, D, O>, D extend
      * Adds {@link HandlerInterceptor}s.
      *
      * @param interceptors interceptors
-     *
      * @return this deployments
      */
     public D addHandlerInterceptors(Collection<? extends HandlerInterceptor> interceptors) {
@@ -483,7 +473,6 @@ public abstract class Deployments<R extends AbstractRestlight<R, D, O>, D extend
      * Adds a {@link MappingInterceptor}.
      *
      * @param interceptor interceptors
-     *
      * @return this deployments
      */
     public D addMappingInterceptor(MappingInterceptor interceptor) {
@@ -494,7 +483,6 @@ public abstract class Deployments<R extends AbstractRestlight<R, D, O>, D extend
      * Adds {@link MappingInterceptor}s.
      *
      * @param interceptors interceptors
-     *
      * @return this deployments
      */
     public D addMappingInterceptors(Collection<? extends MappingInterceptor> interceptors) {
@@ -509,7 +497,6 @@ public abstract class Deployments<R extends AbstractRestlight<R, D, O>, D extend
      * Adds {@link InterceptorFactory} which will be registered in the {@link HandlerResolverFactory}
      *
      * @param interceptor interceptor
-     *
      * @return this deployments
      */
     public D addInterceptor(Interceptor interceptor) {
@@ -520,7 +507,6 @@ public abstract class Deployments<R extends AbstractRestlight<R, D, O>, D extend
      * Adds {@link InterceptorFactory}s.
      *
      * @param interceptors interceptors
-     *
      * @return this deployments
      */
     public D addInterceptors(Collection<? extends Interceptor> interceptors) {
@@ -535,7 +521,6 @@ public abstract class Deployments<R extends AbstractRestlight<R, D, O>, D extend
      * Adds {@link InterceptorFactory} which will be registered in the {@link HandlerResolverFactory}
      *
      * @param factory factory
-     *
      * @return this deployments
      */
     public D addInterceptorFactory(InterceptorFactory factory) {
@@ -549,7 +534,6 @@ public abstract class Deployments<R extends AbstractRestlight<R, D, O>, D extend
      * Adds {@link InterceptorFactory}s.
      *
      * @param interceptors interceptors
-     *
      * @return this deployments
      */
     public D addInterceptorFactories(Collection<? extends InterceptorFactory> interceptors) {
@@ -561,23 +545,9 @@ public abstract class Deployments<R extends AbstractRestlight<R, D, O>, D extend
     }
 
     /**
-     * Adds {@link StringConverterAdapter} which will be registered in the {@link HandlerResolverFactory}
-     *
-     * @param converter resolver
-     *
-     * @return this deployments
-     */
-    public D addParamConverter(StringConverterAdapter converter) {
-        checkImmutable();
-        Checks.checkNotNull(converter, "converter");
-        return addParamConverter(StringConverterFactory.singleton(converter));
-    }
-
-    /**
      * Adds {@link StringConverterFactory} which will be registered in the {@link HandlerResolverFactory}
      *
      * @param converter resolver
-     *
      * @return this deployments
      */
     public D addParamConverter(StringConverterFactory converter) {
@@ -591,7 +561,6 @@ public abstract class Deployments<R extends AbstractRestlight<R, D, O>, D extend
      * Adds {@link StringConverterFactory}s which will be registered in the {@link HandlerResolverFactory}
      *
      * @param converts converters
-     *
      * @return this deployments
      */
     public D addParamConverters(Collection<? extends StringConverterFactory> converts) {
@@ -606,7 +575,6 @@ public abstract class Deployments<R extends AbstractRestlight<R, D, O>, D extend
      * Adds {@link ParamResolverAdapter} which will be registered in the {@link HandlerResolverFactory}
      *
      * @param resolver resolver
-     *
      * @return this deployments
      */
     public D addParamResolver(ParamResolverAdapter resolver) {
@@ -619,7 +587,6 @@ public abstract class Deployments<R extends AbstractRestlight<R, D, O>, D extend
      * Adds {@link ParamResolverFactory} which will be registered in the {@link HandlerResolverFactory}
      *
      * @param resolver resolver
-     *
      * @return this deployments
      */
     public D addParamResolver(ParamResolverFactory resolver) {
@@ -633,7 +600,6 @@ public abstract class Deployments<R extends AbstractRestlight<R, D, O>, D extend
      * Adds {@link ParamResolverFactory}s which will be registered in the {@link HandlerResolverFactory}
      *
      * @param resolvers resolvers
-     *
      * @return this deployments
      */
     public D addParamResolvers(Collection<? extends ParamResolverFactory> resolvers) {
@@ -648,7 +614,6 @@ public abstract class Deployments<R extends AbstractRestlight<R, D, O>, D extend
      * Adds {@link ParamResolverFactory} which will be registered in the {@link HandlerResolverFactory}
      *
      * @param advice advice
-     *
      * @return this deployments
      */
     public D addParamResolverAdvice(ParamResolverAdviceAdapter advice) {
@@ -661,7 +626,6 @@ public abstract class Deployments<R extends AbstractRestlight<R, D, O>, D extend
      * Adds {@link ParamResolverAdviceFactory} which will be registered in the {@link HandlerResolverFactory}
      *
      * @param advice advice
-     *
      * @return this deployments
      */
     public D addParamResolverAdvice(ParamResolverAdviceFactory advice) {
@@ -675,7 +639,6 @@ public abstract class Deployments<R extends AbstractRestlight<R, D, O>, D extend
      * Adds {@link ParamResolverAdviceFactory}s which will be registered in the {@link HandlerResolverFactory}
      *
      * @param advices advices
-     *
      * @return this deployments
      */
     public D addParamResolverAdvices(Collection<? extends ParamResolverAdviceFactory> advices) {
@@ -690,7 +653,6 @@ public abstract class Deployments<R extends AbstractRestlight<R, D, O>, D extend
      * Adds {@link ContextResolverAdapter} which will be registered in the {@link HandlerResolverFactory}
      *
      * @param resolver resolver
-     *
      * @return this deployments
      */
     public D addContextResolver(ContextResolverAdapter resolver) {
@@ -703,7 +665,6 @@ public abstract class Deployments<R extends AbstractRestlight<R, D, O>, D extend
      * Adds {@link ParamResolverFactory} which will be registered in the {@link HandlerResolverFactory}
      *
      * @param resolver resolver
-     *
      * @return this deployments
      */
     public D addContextResolver(ContextResolverFactory resolver) {
@@ -717,7 +678,6 @@ public abstract class Deployments<R extends AbstractRestlight<R, D, O>, D extend
      * Adds {@link ParamResolverFactory}s which will be registered in the {@link HandlerResolverFactory}
      *
      * @param resolvers resolvers
-     *
      * @return this deployments
      */
     public D addContextResolvers(Collection<? extends ContextResolverFactory> resolvers) {
@@ -732,7 +692,6 @@ public abstract class Deployments<R extends AbstractRestlight<R, D, O>, D extend
      * Adds {@link RequestEntityResolverAdapter} which will be registered in the {@link HandlerResolverFactory}
      *
      * @param resolver resolver
-     *
      * @return this deployments
      */
     public D addRequestEntityResolver(RequestEntityResolverAdapter resolver) {
@@ -745,7 +704,6 @@ public abstract class Deployments<R extends AbstractRestlight<R, D, O>, D extend
      * Adds {@link RequestEntityResolverFactory} which will be registered in the {@link HandlerResolverFactory}
      *
      * @param resolver resolver
-     *
      * @return this deployments
      */
     public D addRequestEntityResolver(RequestEntityResolverFactory resolver) {
@@ -759,7 +717,6 @@ public abstract class Deployments<R extends AbstractRestlight<R, D, O>, D extend
      * Adds {@link RequestEntityResolverFactory}s which will be registered in the {@link HandlerResolverFactory}
      *
      * @param resolvers resolvers
-     *
      * @return this deployments
      */
     public D addRequestEntityResolvers(Collection<? extends RequestEntityResolverFactory> resolvers) {
@@ -774,7 +731,6 @@ public abstract class Deployments<R extends AbstractRestlight<R, D, O>, D extend
      * Adds {@link RequestEntityResolverAdviceAdapter} which will be registered in the {@link HandlerResolverFactory}
      *
      * @param advice advice
-     *
      * @return this deployments
      */
     public D addRequestEntityResolverAdvice(RequestEntityResolverAdviceAdapter advice) {
@@ -787,7 +743,6 @@ public abstract class Deployments<R extends AbstractRestlight<R, D, O>, D extend
      * Adds {@link RequestEntityResolverAdviceFactory} which will be registered in the {@link HandlerResolverFactory}
      *
      * @param advice advice
-     *
      * @return this deployments
      */
     public D addRequestEntityResolverAdvice(RequestEntityResolverAdviceFactory advice) {
@@ -801,7 +756,6 @@ public abstract class Deployments<R extends AbstractRestlight<R, D, O>, D extend
      * Adds {@link RequestEntityResolverAdviceFactory}s which will be registered in the {@link HandlerResolverFactory}
      *
      * @param advices resolvers
-     *
      * @return this deployments
      */
     public D addRequestEntityResolverAdvices(Collection<? extends RequestEntityResolverAdviceFactory> advices) {
@@ -822,7 +776,6 @@ public abstract class Deployments<R extends AbstractRestlight<R, D, O>, D extend
      * Adds {@link ResponseEntityResolverFactory} which will be registered in the {@link HandlerResolverFactory}
      *
      * @param resolver resolver
-     *
      * @return this deployments
      */
     public D addResponseEntityResolver(ResponseEntityResolverFactory resolver) {
@@ -836,7 +789,6 @@ public abstract class Deployments<R extends AbstractRestlight<R, D, O>, D extend
      * Adds {@link ResponseEntityResolverFactory}s which will be registered in the {@link HandlerResolverFactory}
      *
      * @param resolvers resolvers
-     *
      * @return this deployments
      */
     public D addResponseEntityResolvers(Collection<? extends ResponseEntityResolverFactory> resolvers) {
@@ -851,7 +803,6 @@ public abstract class Deployments<R extends AbstractRestlight<R, D, O>, D extend
      * Adds {@link ResponseEntityResolverAdviceAdapter} which will be registered in the {@link HandlerResolverFactory}
      *
      * @param advice advice
-     *
      * @return this deployments
      */
     public D addResponseEntityResolverAdvice(ResponseEntityResolverAdviceAdapter advice) {
@@ -864,7 +815,6 @@ public abstract class Deployments<R extends AbstractRestlight<R, D, O>, D extend
      * Adds {@link ResponseEntityResolverAdviceAdapter} which will be registered in the {@link HandlerResolverFactory}
      *
      * @param advice advice
-     *
      * @return this deployments
      */
     public D addResponseEntityResolverAdvice(ResponseEntityResolverAdviceFactory advice) {
@@ -878,7 +828,6 @@ public abstract class Deployments<R extends AbstractRestlight<R, D, O>, D extend
      * Adds {@link ResponseEntityResolverAdviceFactory}s which will be registered in the {@link HandlerResolverFactory}
      *
      * @param advices resolvers
-     *
      * @return this deployments
      */
     public D addResponseEntityResolverAdvices(Collection<? extends ResponseEntityResolverAdviceFactory> advices) {
@@ -893,7 +842,6 @@ public abstract class Deployments<R extends AbstractRestlight<R, D, O>, D extend
      * Adds {@link HttpRequestSerializer} which will be registered in the {@link HandlerResolverFactory}
      *
      * @param requestSerializer requestSerializer
-     *
      * @return this deployments
      */
     public D addRequestSerializer(HttpRequestSerializer requestSerializer) {
@@ -907,7 +855,6 @@ public abstract class Deployments<R extends AbstractRestlight<R, D, O>, D extend
      * Adds {@link HttpRequestSerializer}s which will be registered in the {@link HandlerResolverFactory}
      *
      * @param requestSerializers requestSerializers
-     *
      * @return this deployments
      */
     public D addRequestSerializers(Collection<? extends HttpRequestSerializer> requestSerializers) {
@@ -922,7 +869,6 @@ public abstract class Deployments<R extends AbstractRestlight<R, D, O>, D extend
      * Adds {@link HttpResponseSerializer} which will be registered in the {@link HandlerResolverFactory}
      *
      * @param responseSerializer responseSerializer
-     *
      * @return this deployments
      */
     public D addResponseSerializer(HttpResponseSerializer responseSerializer) {
@@ -936,7 +882,6 @@ public abstract class Deployments<R extends AbstractRestlight<R, D, O>, D extend
      * Adds {@link HttpResponseSerializer}s which will be registered in the {@link HandlerResolverFactory}
      *
      * @param responseSerializers responseSerializers
-     *
      * @return this deployments
      */
     public D addResponseSerializers(Collection<? extends HttpResponseSerializer> responseSerializers) {
@@ -952,7 +897,6 @@ public abstract class Deployments<R extends AbstractRestlight<R, D, O>, D extend
      * HttpRequestSerializer} and {@link HttpResponseSerializer}
      *
      * @param serializer serializer
-     *
      * @return this deployments
      */
     public D addSerializer(HttpBodySerializer serializer) {
@@ -968,7 +912,6 @@ public abstract class Deployments<R extends AbstractRestlight<R, D, O>, D extend
      * HttpRequestSerializer} and {@link HttpResponseSerializer}
      *
      * @param serializers serializers
-     *
      * @return this deployments
      */
     public D addSerializers(Collection<? extends HttpBodySerializer> serializers) {
@@ -1246,7 +1189,6 @@ public abstract class Deployments<R extends AbstractRestlight<R, D, O>, D extend
                 txSerializers,
                 futureTransfers,
                 routeFilters,
-                null,
                 paramConverters,
                 null,
                 paramResolvers,
@@ -1282,9 +1224,6 @@ public abstract class Deployments<R extends AbstractRestlight<R, D, O>, D extend
 
     private void loadResolversFromSpi() {
         // load StringConverter from spi
-        SpiLoader.cached(StringConverterAdapter.class)
-                .getByGroup(restlight.name(), true)
-                .forEach(this::addParamConverter);
         addParamConverters(SpiLoader.cached(StringConverterFactory.class)
                 .getByGroup(restlight.name(), true));
 

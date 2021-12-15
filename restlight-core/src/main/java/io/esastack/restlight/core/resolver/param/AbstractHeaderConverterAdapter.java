@@ -24,6 +24,7 @@ import io.esastack.restlight.core.resolver.ParamResolverFactory;
 import io.esastack.restlight.core.resolver.nav.NameAndValue;
 
 import java.util.Collection;
+import java.util.function.BiFunction;
 
 /**
  * Implementation of {@link ParamResolverFactory} for resolving argument that annotated by the RequestHeader.
@@ -40,8 +41,8 @@ public abstract class AbstractHeaderConverterAdapter extends StrsConverterAdapte
     }
 
     @Override
-    protected Collection<String> extractValue(String name, HttpRequest request) {
-        return request.headers().getAll(name);
+    protected BiFunction<String, HttpRequest, Collection<String>> valueExtractor(Param param) {
+        return (name, request) -> request.headers().getAll(name);
     }
 
     private class HeadersResolver extends AbstractNameAndValueParamResolver {

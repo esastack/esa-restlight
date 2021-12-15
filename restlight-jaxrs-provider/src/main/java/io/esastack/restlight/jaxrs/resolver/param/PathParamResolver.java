@@ -21,6 +21,9 @@ import io.esastack.restlight.core.resolver.nav.NameAndValue;
 import io.esastack.restlight.core.resolver.param.AbstractPathVariableParamResolver;
 import io.esastack.restlight.jaxrs.util.JaxrsMappingUtils;
 import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.ext.ParamConverter;
+
+import java.util.function.BiFunction;
 
 /**
  * Implementation of {@link ParamResolverFactory} for resolving argument that annotated by the PathVariable.
@@ -28,17 +31,18 @@ import jakarta.ws.rs.PathParam;
 public class PathParamResolver extends AbstractPathVariableParamResolver {
 
     @Override
-    protected NameAndValue createNameAndValue(Param parameter) {
-        PathParam pathParam =
-                parameter.getAnnotation(PathParam.class);
-        assert pathParam != null;
-        return new NameAndValue(pathParam.value(), false,
-                JaxrsMappingUtils.extractDefaultValue(parameter));
+    public boolean supports(Param parameter) {
+        return parameter.hasAnnotation(PathParam.class);
     }
 
     @Override
-    public boolean supports(Param parameter) {
-        return parameter.hasAnnotation(PathParam.class);
+    protected NameAndValue createNameAndValue(Param param, BiFunction<String, Boolean, Object> defaultValueConverter) {
+        PathParam pathParam =
+                param.getAnnotation(PathParam.class);
+        assert pathParam != null;
+        return new NameAndValue(pathParam.value(), false,
+                defaultValueConverter.apply(JaxrsMappingUtils.extractDefaultValue(param),
+                        param.hasAnnotation(ParamConverter.Lazy.class)));
     }
 
     @Override

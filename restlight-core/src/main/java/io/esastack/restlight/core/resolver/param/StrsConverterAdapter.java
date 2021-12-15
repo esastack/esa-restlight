@@ -35,7 +35,6 @@ public abstract class StrsConverterAdapter extends StringConverterAdapter<Collec
     @Override
     protected Function<Collection<String>, Object> initConverter(Param param,
                                                                  BiFunction<Class<?>, Type, StringConverter> converterLookup) {
-
         final StringConverter strConverter = converterLookup.apply(param.type(), param.genericType());
 
         final Function<Collection<String>, Object> strsConverter = ConverterUtils.strs2ObjectConverter(param.type(),

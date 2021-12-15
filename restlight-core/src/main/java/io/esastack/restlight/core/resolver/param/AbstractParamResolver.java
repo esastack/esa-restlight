@@ -29,6 +29,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiFunction;
 
 /**
  * Implementation of {@link ParamResolverFactory} for resolving argument that annotated by the RequestParam.
@@ -59,8 +60,8 @@ public abstract class AbstractParamResolver extends StrsConverterAdapter {
     public abstract String extractParamName(Param param);
 
     @Override
-    protected Collection<String> extractValue(String name, HttpRequest request) {
-        return request.paramsMap().get(name);
+    protected BiFunction<String, HttpRequest, Collection<String>> valueExtractor(Param param) {
+        return (name, request) -> request.paramsMap().get(name);
     }
 
     private abstract class BaseResolver extends AbstractNameAndValueParamResolver {

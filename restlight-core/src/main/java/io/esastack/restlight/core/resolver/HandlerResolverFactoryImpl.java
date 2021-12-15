@@ -70,7 +70,6 @@ public class HandlerResolverFactoryImpl implements HandlerResolverFactory {
                                       Collection<? extends HttpResponseSerializer> txSerializers,
                                       Collection<? extends FutureTransferFactory> futureTransfers,
                                       Collection<? extends RouteFilterFactory> routeFilters,
-                                      Collection<? extends StringConverterAdapter> paramConverters,
                                       Collection<? extends StringConverterFactory> paramConverterFactories,
                                       Collection<? extends ParamResolverAdapter> paramResolvers,
                                       Collection<? extends ParamResolverFactory> paramResolverFactories,
@@ -97,7 +96,7 @@ public class HandlerResolverFactoryImpl implements HandlerResolverFactory {
 
         this.futureTransfers = sortForUnmodifiableList(futureTransfers);
         this.routeFilters = sortForUnmodifiableList(routeFilters);
-        this.paramConverters = getParamConverters(paramConverters, paramConverterFactories);
+        this.paramConverters = sortForUnmodifiableList(paramConverterFactories);
         this.paramResolvers = getParamResolvers(paramResolvers, paramResolverFactories);
         this.paramResolverAdvices = getParamResolverAdvices(paramResolverAdvices,
                 paramResolverAdviceFactories);
@@ -140,15 +139,6 @@ public class HandlerResolverFactoryImpl implements HandlerResolverFactory {
         return mergeResolvers(resolvers,
                 factories,
                 ResponseEntityResolverAdviceFactory::singleton);
-    }
-
-    private static List<StringConverterFactory> getParamConverters(
-            Collection<? extends StringConverterAdapter> converters,
-            Collection<? extends StringConverterFactory> factories) {
-
-        return mergeResolvers(converters,
-                factories,
-                StringConverterFactory::singleton);
     }
 
     private static List<ParamResolverFactory> getParamResolvers(
@@ -390,7 +380,6 @@ public class HandlerResolverFactoryImpl implements HandlerResolverFactory {
                 factory.txSerializers(),
                 factory.futureTransfers(),
                 configuration.getRouteFilters(),
-                null,
                 configuration.getParamConverts(),
                 null,
                 configuration.getParamResolvers(),

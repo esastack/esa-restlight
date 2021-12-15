@@ -64,7 +64,7 @@ public abstract class StringConverterAdapter<T> implements ParamResolverProvider
     protected abstract NameAndValue createNameAndValue(Param param,
                                                        BiFunction<String, Boolean, Object> defaultValueConverter);
 
-    protected abstract T extractValue(String name, HttpRequest request);
+    protected abstract BiFunction<String, HttpRequest, T> valueExtractor(Param param);
 
     protected abstract BiFunction<String, Boolean, Object> createDefaultValueConverter(Function<T, Object> converter);
 
@@ -74,16 +74,18 @@ public abstract class StringConverterAdapter<T> implements ParamResolverProvider
     private class Resolver extends AbstractNameAndValueParamResolver {
 
         private final Function<T, Object> converter;
+        private final BiFunction<String, HttpRequest, T> valueExtractor;
 
         private Resolver(Param param,
                          BiFunction<Class<?>, Type, StringConverter> converterLookup) {
             super(param);
+            valueExtractor = Checks.checkNotNull(valueExtractor(param), "valueExtractor");
             converter = Checks.checkNotNull(initConverter(param, converterLookup), "converter");
         }
 
         @Override
         protected Object resolveName(String name, HttpRequest request) {
-            return converter.apply(extractValue(name, request));
+            return converter.apply(valueExtractor.apply(name, request));
         }
 
         @Override
