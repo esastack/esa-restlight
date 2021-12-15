@@ -183,12 +183,6 @@ public final class ConverterUtils {
      * @param requiredType target type
      * @return converter or {@code null} if we don't know how to convert it
      */
-    public static Function<Collection<String>, Object> strs2ObjectConverter(Type requiredType) {
-        Checks.checkNotNull(requiredType, "requiredType");
-        final Class<?> requiredClass = forRawType(requiredType);
-        return strs2ObjectConverter(requiredClass, requiredType, ConverterUtils::getStr2ObjectConverter);
-    }
-
     public static Function<Collection<String>, Object> strs2ObjectConverter(Class<?> requiredClass,
                                                                             Type requiredType,
                                                                             BiFunction<Class<?>,
@@ -392,7 +386,7 @@ public final class ConverterUtils {
         }
     }
 
-    private static Function<String, Object> getStr2ObjectConverter(Class<?> requiredClass, Type requiredType) {
+    public static Function<String, Object> getStr2ObjectConverter(Class<?> requiredClass, Type requiredType) {
         Function<String, Object> converter = STRING_CONVERTER_MAP.get(requiredClass);
         if (converter != null) {
             return converter;
