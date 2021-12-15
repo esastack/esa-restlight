@@ -31,11 +31,6 @@ public abstract class AbstractNameAndValueResolver {
         this.nav = getNameAndValue(param);
     }
 
-    public AbstractNameAndValueResolver(Param param, NameAndValue nav) {
-        this.param = param;
-        this.nav = updatedNamedValue(param, nav);
-    }
-
     protected NameAndValue getNameAndValue(Param param) {
         NameAndValue nav = createNameAndValue(param);
         return updatedNamedValue(param, nav);

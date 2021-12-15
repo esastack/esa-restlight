@@ -18,10 +18,9 @@ package io.esastack.restlight.core.resolver;
 import esa.commons.Checks;
 import esa.commons.spi.SPI;
 import io.esastack.restlight.core.method.Param;
-import io.esastack.restlight.core.serialize.HttpRequestSerializer;
 import io.esastack.restlight.core.util.Ordered;
 
-import java.util.List;
+import java.lang.reflect.Type;
 import java.util.Optional;
 
 @SPI
@@ -30,7 +29,7 @@ public interface StringConverterFactory extends Ordered {
     /**
      * Converts given {@link StringConverter} to {@link StringConverterFactory} which
      * always use the given {@link StringConverter} as the result of
-     * {@link #createConverter(Param, List)}
+     * {@link #createConverter(Param, Class, Type)}
      *
      * @param converter converter
      * @return of factory bean
@@ -42,11 +41,12 @@ public interface StringConverterFactory extends Ordered {
     /**
      * Creates an instance of {@link StringConverter} for given {@link Param}.
      *
-     * @param param       param
-     * @param serializers all the {@link HttpRequestSerializer}s in the context
-     * @return resolver
+     * @param param           param
+     * @param baseType        baseType
+     * @param baseGenericType baseGenericType
+     * @return StringConverter
      */
-    Optional<StringConverter> createConverter(Param param, List<? extends HttpRequestSerializer> serializers);
+    Optional<StringConverter> createConverter(Param param, Class<?> baseType, Type baseGenericType);
 
     /**
      * Default to use the 0.
@@ -68,8 +68,7 @@ public interface StringConverterFactory extends Ordered {
         }
 
         @Override
-        public Optional<StringConverter> createConverter(Param param,
-                                                         List<? extends HttpRequestSerializer> serializers) {
+        public Optional<StringConverter> createConverter(Param param, Class<?> baseType, Type baseGenericType) {
             return Optional.of(converter);
         }
     }

@@ -21,17 +21,12 @@ import io.esastack.restlight.core.resolver.HandledValue;
 import io.esastack.restlight.core.resolver.RequestEntity;
 import io.esastack.restlight.core.resolver.RequestEntityResolver;
 import io.esastack.restlight.core.resolver.nav.AbstractNameAndValueResolver;
-import io.esastack.restlight.core.resolver.nav.NameAndValue;
 
 public abstract class AbstractNameAndValueRequestEntityResolver extends AbstractNameAndValueResolver
         implements RequestEntityResolver {
 
     public AbstractNameAndValueRequestEntityResolver(Param param) {
         super(param);
-    }
-
-    public AbstractNameAndValueRequestEntityResolver(Param param, NameAndValue nav) {
-        super(param, nav);
     }
 
     @Override

@@ -20,17 +20,12 @@ import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.method.Param;
 import io.esastack.restlight.core.resolver.ParamResolver;
 import io.esastack.restlight.core.resolver.nav.AbstractNameAndValueResolver;
-import io.esastack.restlight.core.resolver.nav.NameAndValue;
 import io.esastack.restlight.server.bootstrap.WebServerException;
 
 public abstract class AbstractNameAndValueParamResolver extends AbstractNameAndValueResolver implements ParamResolver {
 
     public AbstractNameAndValueParamResolver(Param param) {
         super(param);
-    }
-
-    public AbstractNameAndValueParamResolver(Param param, NameAndValue nav) {
-        super(param, nav);
     }
 
     @Override

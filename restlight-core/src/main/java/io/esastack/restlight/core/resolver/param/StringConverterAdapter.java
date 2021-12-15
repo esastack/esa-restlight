@@ -56,7 +56,7 @@ public abstract class StringConverterAdapter<T> implements ParamResolverProvider
     protected ParamResolver createResolver(Param param,
                                            HandlerResolverFactory resolverFactory) {
         return new Resolver(param, (baseType, baseGenericType) ->
-                resolverFactory.getParamConverter(param, baseType, baseGenericType));
+                resolverFactory.getStringConverter(param, baseType, baseGenericType));
     }
 
     public abstract boolean supports(Param param);

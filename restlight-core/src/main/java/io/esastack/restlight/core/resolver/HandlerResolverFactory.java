@@ -52,7 +52,7 @@ public interface HandlerResolverFactory {
      * @param baseGenericType baseGenericType
      * @return StringConverter
      */
-    StringConverter getParamConverter(Param param, Class<?> baseType, Type baseGenericType);
+    StringConverter getStringConverter(Param param, Class<?> baseType, Type baseGenericType);
 
     /**
      * Get the {@link ParamResolver} for given parameter.

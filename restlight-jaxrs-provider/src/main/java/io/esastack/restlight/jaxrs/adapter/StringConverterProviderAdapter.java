@@ -19,10 +19,10 @@ import esa.commons.Checks;
 import io.esastack.restlight.core.method.Param;
 import io.esastack.restlight.core.resolver.StringConverter;
 import io.esastack.restlight.core.resolver.StringConverterFactory;
-import io.esastack.restlight.core.serialize.HttpRequestSerializer;
 import jakarta.ws.rs.ext.ParamConverterProvider;
 
-import java.util.List;
+import java.lang.reflect.Type;
+import java.util.Optional;
 
 public class StringConverterProviderAdapter implements StringConverterFactory {
 
@@ -34,18 +34,13 @@ public class StringConverterProviderAdapter implements StringConverterFactory {
     }
 
     @Override
-    public StringConverter createConverter(Param param, List<? extends HttpRequestSerializer> serializers) {
-        jakarta.ws.rs.ext.ParamConverter<?> converter = underlying.getConverter(param.type(),
-                param.genericType(), param.annotations());
+    public Optional<StringConverter> createConverter(Param param, Class<?> baseType, Type baseGenericType) {
+        jakarta.ws.rs.ext.ParamConverter<?> converter = underlying.getConverter(baseType,
+                baseGenericType, param.annotations());
         if (converter == null) {
-            return null;
+            return Optional.empty();
         }
-        return converter::fromString;
-    }
-
-    @Override
-    public boolean supports(Param param) {
-        return true;
+        return Optional.of(converter::fromString);
     }
 }
 
