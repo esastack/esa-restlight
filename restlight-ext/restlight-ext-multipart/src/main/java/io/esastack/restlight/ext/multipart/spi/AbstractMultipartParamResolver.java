@@ -144,8 +144,12 @@ abstract class AbstractMultipartParamResolver<T> extends NameAndValueResolverFac
     protected abstract BiFunction<String, RequestContext, T> doInitValueProvider(Param param);
 
     @Override
-    protected NameAndValueResolver.Converter<T> initConverter(Param param, BiFunction<Class<?>, Type, StringConverter> converterLookup) {
-        NameAndValueResolver.Converter<T> converter = Checks.checkNotNull(doInitConverter(param, converterLookup), "converter");
+    protected NameAndValueResolver.Converter<T> initConverter(Param param,
+                                                              BiFunction<Class<?>,
+                                                                      Type,
+                                                                      StringConverter> converterLookup) {
+        NameAndValueResolver.Converter<T> converter = Checks.checkNotNull(doInitConverter(param, converterLookup),
+                "converter");
         return (name, ctx, valueProvider) -> {
             try {
                 return converter.convert(name, ctx, valueProvider);
@@ -157,7 +161,10 @@ abstract class AbstractMultipartParamResolver<T> extends NameAndValueResolverFac
         };
     }
 
-    protected abstract NameAndValueResolver.Converter<T> doInitConverter(Param param, BiFunction<Class<?>, Type, StringConverter> converterLookup);
+    protected abstract NameAndValueResolver.Converter<T> doInitConverter(Param param,
+                                                                         BiFunction<Class<?>,
+                                                                                 Type,
+                                                                                 StringConverter> converterLookup);
 
     void initFactory(final MultipartConfig config) {
         if (config.isUseDisk()) {

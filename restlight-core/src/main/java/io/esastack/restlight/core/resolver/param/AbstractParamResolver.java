@@ -19,7 +19,6 @@ import esa.commons.ClassUtils;
 import esa.commons.StringUtils;
 import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.method.Param;
-import io.esastack.restlight.core.resolver.ParamResolverFactory;
 import io.esastack.restlight.core.resolver.StringConverter;
 import io.esastack.restlight.core.resolver.nav.NameAndValueResolver;
 import io.esastack.restlight.core.resolver.nav.StrsNameAndValueResolverFactory;
@@ -33,11 +32,12 @@ import java.util.Map;
 import java.util.function.BiFunction;
 
 /**
- * Implementation of {@link ParamResolverFactory} for resolving argument that annotated by the RequestParam.
+ * Implementation of {@link StrsNameAndValueResolverFactory} for resolving argument that annotated by
+ * the RequestParam.
  */
 public abstract class AbstractParamResolver extends StrsNameAndValueResolverFactory {
 
-    private final static NameAndValueResolver.Converter<Collection<String>> singleMapConverter =
+    private static final NameAndValueResolver.Converter<Collection<String>> SINGLE_MAP_CONVERTER =
             (name, ctx, valueProvider) -> {
                 if (ctx != null) {
                     return ctx.request().paramsMap();
@@ -46,7 +46,7 @@ public abstract class AbstractParamResolver extends StrsNameAndValueResolverFact
                 return null;
             };
 
-    private final static NameAndValueResolver.Converter<Collection<String>> mapConverter =
+    private static final NameAndValueResolver.Converter<Collection<String>> MAP_CONVERTER =
             (name, ctx, valueProvider) -> {
                 if (ctx != null) {
                     Map<String, List<String>> p = ctx.request().paramsMap();
@@ -66,8 +66,9 @@ public abstract class AbstractParamResolver extends StrsNameAndValueResolverFact
             };
 
     @Override
-    protected NameAndValueResolver.Converter<Collection<String>> initConverter(Param param,
-                                                                               BiFunction<Class<?>, Type, StringConverter> converterLookup) {
+    protected NameAndValueResolver.Converter<Collection<String>> initConverter(
+            Param param,
+            BiFunction<Class<?>, Type, StringConverter> converterLookup) {
         String name = extractParamName(param);
         if (StringUtils.isEmpty(name)
                 && Map.class.equals(param.type())) {
@@ -76,10 +77,10 @@ public abstract class AbstractParamResolver extends StrsNameAndValueResolverFact
                 Class<?> valueType = types[1];
                 if (String.class.equals(valueType)) {
                     // Map<String, String>
-                    return singleMapConverter;
+                    return SINGLE_MAP_CONVERTER;
                 } else if (List.class.equals(valueType)) {
                     // Map<String, List<String>>
-                    return mapConverter;
+                    return MAP_CONVERTER;
                 }
             }
         }

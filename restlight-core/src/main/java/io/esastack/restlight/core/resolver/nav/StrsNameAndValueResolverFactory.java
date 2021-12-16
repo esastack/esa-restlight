@@ -13,7 +13,7 @@ import java.util.function.Function;
 
 public abstract class StrsNameAndValueResolverFactory extends NameAndValueResolverFactory<Collection<String>> {
 
-    private final static NullPointerException BOTH_CONVERTERS_ARE_NULL = new NullPointerException(
+    private static final NullPointerException BOTH_CONVERTERS_ARE_NULL = new NullPointerException(
             "Both strConverter and strsConverter are null");
 
     @Override
@@ -35,8 +35,9 @@ public abstract class StrsNameAndValueResolverFactory extends NameAndValueResolv
     }
 
     @Override
-    protected NameAndValueResolver.Converter<Collection<String>> initConverter(Param param,
-                                                                               BiFunction<Class<?>, Type, StringConverter> converterLookup) {
+    protected NameAndValueResolver.Converter<Collection<String>> initConverter(
+            Param param,
+            BiFunction<Class<?>, Type, StringConverter> converterLookup) {
         final StringConverter strConverter = converterLookup.apply(param.type(), param.genericType());
 
         final Function<Collection<String>, Object> strsConverter = ConverterUtils.strs2ObjectConverter(param.type(),

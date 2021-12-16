@@ -30,8 +30,8 @@ public class NameAndValueResolver<T> implements ParamResolver {
     }
 
     @Override
-    public Object resolve(Param param, RequestContext context) {
-        Object arg = converter.convert(nav.name, context, valueProvider);
+    public Object resolve(Param param, RequestContext ctx) {
+        Object arg = converter.convert(nav.name, ctx, valueProvider);
         if (arg == null) {
             if (nav.hasDefaultValue) {
                 arg = nav.defaultValue.get();

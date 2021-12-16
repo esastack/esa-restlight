@@ -36,13 +36,16 @@ public class CookieValueResolver extends AbstractCookieValueResolver {
     }
 
     @Override
-    protected Function<Param, NameAndValue> initNameAndValueCreator(BiFunction<String, Boolean, Object> defaultValueConverter) {
+    protected Function<Param, NameAndValue> initNameAndValueCreator(BiFunction<String,
+            Boolean,
+            Object> defaultValueConverter) {
         return (param) -> {
             CookieValue0 cookieValue =
                     CookieValue0.fromShade(param.getAnnotation(CookieValue0.shadedClass()));
             assert cookieValue != null;
             return new NameAndValue(cookieValue.value(), cookieValue.required(),
-                    defaultValueConverter.apply(RequestMappingUtils.normaliseDefaultValue(cookieValue.defaultValue()), false));
+                    defaultValueConverter
+                            .apply(RequestMappingUtils.normaliseDefaultValue(cookieValue.defaultValue()), false));
         };
     }
 

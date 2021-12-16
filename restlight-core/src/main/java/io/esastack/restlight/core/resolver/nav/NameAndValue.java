@@ -27,7 +27,7 @@ public class NameAndValue {
     public final boolean required;
     public final Supplier<Object> defaultValue;
     public final boolean hasDefaultValue;
-    private final static Supplier<Object> NULL_SUPPLIER = () -> null;
+    private static final Supplier<Object> NULL_SUPPLIER = () -> null;
 
     public NameAndValue(String name, boolean required) {
         this(name, required, null);

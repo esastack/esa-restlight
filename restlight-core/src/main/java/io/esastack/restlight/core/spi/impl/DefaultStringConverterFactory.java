@@ -1,4 +1,4 @@
-package io.esastack.restlight.core.resolver.param;
+package io.esastack.restlight.core.spi.impl;
 
 import io.esastack.restlight.core.method.Param;
 import io.esastack.restlight.core.resolver.StringConverter;

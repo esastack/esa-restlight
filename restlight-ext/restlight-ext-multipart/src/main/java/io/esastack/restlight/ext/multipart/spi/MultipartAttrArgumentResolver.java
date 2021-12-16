@@ -35,12 +35,16 @@ public class MultipartAttrArgumentResolver extends AbstractMultipartParamResolve
     }
 
     @Override
-    protected Function<Param, NameAndValue> initNameAndValueCreator(BiFunction<String, Boolean, Object> defaultValueConverter) {
+    protected Function<Param, NameAndValue> initNameAndValueCreator(BiFunction<String,
+            Boolean,
+            Object> defaultValueConverter) {
         return (param) -> {
             FormParam formParam = param.getAnnotation(FormParam.class);
             assert formParam != null;
-            return new NameAndValue(formParam.value(), formParam.required(),
-                    defaultValueConverter.apply(ConverterUtils.normaliseDefaultValue(formParam.defaultValue()), false));
+            return new NameAndValue(formParam.value(),
+                    formParam.required(),
+                    defaultValueConverter.apply(ConverterUtils.normaliseDefaultValue(formParam.defaultValue()),
+                            false));
         };
     }
 
@@ -50,14 +54,17 @@ public class MultipartAttrArgumentResolver extends AbstractMultipartParamResolve
     }
 
     @Override
-    protected NameAndValueResolver.Converter<String> doInitConverter(Param param, BiFunction<Class<?>, Type, StringConverter> converterLookup) {
+    protected NameAndValueResolver.Converter<String> doInitConverter(Param param,
+                                                                     BiFunction<Class<?>,
+                                                                             Type,
+                                                                             StringConverter> converterLookup) {
         StringConverter converter = converterLookup.apply(param.type(), param.genericType());
-
         return (name, ctx, valueProvider) -> converter.fromString(valueProvider.apply(name, ctx));
     }
 
     @Override
-    protected BiFunction<String, Boolean, Object> initDefaultValueConverter(NameAndValueResolver.Converter<String> converter) {
+    protected BiFunction<String, Boolean, Object> initDefaultValueConverter(
+            NameAndValueResolver.Converter<String> converter) {
         return (defaultValue, isLazy) -> converter.convert(null, null, (name, ctx) -> defaultValue);
     }
 

@@ -24,6 +24,7 @@ import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.ext.ParamConverter;
 
 import java.util.function.BiFunction;
+import java.util.function.Function;
 
 /**
  * Implementation of {@link ParamResolverFactory} for resolving argument that annotated by the
@@ -37,14 +38,18 @@ public class QueryParamResolver extends AbstractParamResolver {
     }
 
     @Override
-    protected NameAndValue createNameAndValue(Param param, BiFunction<String, Boolean, Object> defaultValueConverter) {
-        QueryParam queryParam
-                = param.getAnnotation(QueryParam.class);
-        assert queryParam != null;
-        return new NameAndValue(queryParam.value(),
-                false,
-                defaultValueConverter.apply(JaxrsMappingUtils.extractDefaultValue(param),
-                        param.hasAnnotation(ParamConverter.Lazy.class)));
+    protected Function<Param, NameAndValue> initNameAndValueCreator(BiFunction<String,
+            Boolean,
+            Object> defaultValueConverter) {
+        return (param) -> {
+            QueryParam queryParam
+                    = param.getAnnotation(QueryParam.class);
+            assert queryParam != null;
+            return new NameAndValue(queryParam.value(),
+                    false,
+                    defaultValueConverter.apply(JaxrsMappingUtils.extractDefaultValue(param),
+                            param.hasAnnotation(ParamConverter.Lazy.class)));
+        };
     }
 
     @Override

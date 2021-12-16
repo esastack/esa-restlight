@@ -22,7 +22,9 @@ public abstract class StrNameAndValueResolverFactory extends NameAndValueResolve
 
     @Override
     protected NameAndValueResolver.Converter<String> initConverter(Param param,
-                                                                   BiFunction<Class<?>, Type, StringConverter> converterLookup) {
+                                                                   BiFunction<Class<?>,
+                                                                           Type,
+                                                                           StringConverter> converterLookup) {
         StringConverter converter = converterLookup.apply(param.type(), param.genericType());
         if (converter == null) {
             return null;

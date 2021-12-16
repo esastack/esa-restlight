@@ -37,7 +37,9 @@ public class RequestHeaderResolver extends AbstractHeaderResolver {
     }
 
     @Override
-    protected Function<Param, NameAndValue> initNameAndValueCreator(BiFunction<String, Boolean, Object> defaultValueConverter) {
+    protected Function<Param, NameAndValue> initNameAndValueCreator(BiFunction<String,
+            Boolean,
+            Object> defaultValueConverter) {
         return (param) -> {
             HeaderParam headerParam =
                     param.getAnnotation(HeaderParam.class);

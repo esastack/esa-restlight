@@ -32,7 +32,7 @@ import java.util.function.Function;
 
 public class MultipartFileArgumentResolver extends AbstractMultipartParamResolver<List<MultipartFile>> {
 
-    private final static NameAndValueResolver.Converter<List<MultipartFile>> singleFileConverter =
+    private static final NameAndValueResolver.Converter<List<MultipartFile>> SINGLE_FILE_CONVERTER =
             (name, ctx, valueProvider) -> {
                 List<MultipartFile> files = valueProvider.apply(name, ctx);
                 if (files == null) {
@@ -41,7 +41,7 @@ public class MultipartFileArgumentResolver extends AbstractMultipartParamResolve
                 return files.isEmpty() ? null : files.get(0);
             };
 
-    private final static NameAndValueResolver.Converter<List<MultipartFile>> filesConverter =
+    private static final NameAndValueResolver.Converter<List<MultipartFile>> FILES_CONVERTER =
             (name, ctx, valueProvider) ->
                     valueProvider.apply(name, ctx);
 
@@ -53,7 +53,9 @@ public class MultipartFileArgumentResolver extends AbstractMultipartParamResolve
     }
 
     @Override
-    protected Function<Param, NameAndValue> initNameAndValueCreator(BiFunction<String, Boolean, Object> defaultValueConverter) {
+    protected Function<Param, NameAndValue> initNameAndValueCreator(BiFunction<String,
+            Boolean,
+            Object> defaultValueConverter) {
         return (param) -> {
             UploadFile uploadFile = param.getAnnotation(UploadFile.class);
             assert uploadFile != null;
@@ -62,7 +64,8 @@ public class MultipartFileArgumentResolver extends AbstractMultipartParamResolve
     }
 
     @Override
-    protected BiFunction<String, Boolean, Object> initDefaultValueConverter(NameAndValueResolver.Converter<List<MultipartFile>> converter) {
+    protected BiFunction<String, Boolean, Object> initDefaultValueConverter(
+            NameAndValueResolver.Converter<List<MultipartFile>> converter) {
         return (defaultValue, isLazy) -> null;
     }
 
@@ -88,13 +91,13 @@ public class MultipartFileArgumentResolver extends AbstractMultipartParamResolve
     protected NameAndValueResolver.Converter<List<MultipartFile>> doInitConverter(Param param,
                                                                                   BiFunction<Class<?>,
                                                                                           Type,
-                                                                                          StringConverter> converterLookup) {
+                                                                                          StringConverter> lookup) {
 
         if (MultipartFile.class.isAssignableFrom(param.type())) {
-            return singleFileConverter;
+            return SINGLE_FILE_CONVERTER;
         }
         if (List.class.isAssignableFrom(param.type())) {
-            return filesConverter;
+            return FILES_CONVERTER;
         }
         throw new IllegalStateException("Unexpected");
     }

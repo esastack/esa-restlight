@@ -39,7 +39,9 @@ public class RequestAttributeParamResolver extends NameAndValueResolverFactory<O
     }
 
     @Override
-    protected Function<Param, NameAndValue> initNameAndValueCreator(BiFunction<String, Boolean, Object> defaultValueConverter) {
+    protected Function<Param, NameAndValue> initNameAndValueCreator(BiFunction<String,
+            Boolean,
+            Object> defaultValueConverter) {
         return (param) -> {
             RequestAttribute0 requestAttribute
                     = RequestAttribute0.fromShade(param.getAnnotation(RequestAttribute0.shadedClass()));
@@ -54,12 +56,16 @@ public class RequestAttributeParamResolver extends NameAndValueResolverFactory<O
     }
 
     @Override
-    protected BiFunction<String, Boolean, Object> initDefaultValueConverter(NameAndValueResolver.Converter<Object> converter) {
+    protected BiFunction<String, Boolean, Object> initDefaultValueConverter(
+            NameAndValueResolver.Converter<Object> converter) {
         return (defaultString, isLazy) -> null;
     }
 
     @Override
-    protected NameAndValueResolver.Converter<Object> initConverter(Param param, BiFunction<Class<?>, Type, StringConverter> converterLookup) {
+    protected NameAndValueResolver.Converter<Object> initConverter(Param param,
+                                                                   BiFunction<Class<?>,
+                                                                           Type,
+                                                                           StringConverter> converterLookup) {
         final StringConverter converter =
                 converterLookup.apply(param.type(), param.genericType());
 

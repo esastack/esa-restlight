@@ -37,7 +37,9 @@ public class MatrixVariableParamResolver extends AbstractMatrixParamResolver {
     }
 
     @Override
-    protected Function<Param, NameAndValue> initNameAndValueCreator(BiFunction<String, Boolean, Object> defaultValueConverter) {
+    protected Function<Param, NameAndValue> initNameAndValueCreator(BiFunction<String,
+            Boolean,
+            Object> defaultValueConverter) {
         return (param) -> {
             MatrixParam matrixParam =
                     param.getAnnotation(MatrixParam.class);

@@ -35,7 +35,9 @@ public class PathVariableParamResolver extends AbstractPathVariableParamResolver
     }
 
     @Override
-    protected Function<Param, NameAndValue> initNameAndValueCreator(BiFunction<String, Boolean, Object> defaultValueConverter) {
+    protected Function<Param, NameAndValue> initNameAndValueCreator(BiFunction<String,
+            Boolean,
+            Object> defaultValueConverter) {
         return (param) -> {
             PathVariable0 pathVariable =
                     PathVariable0.fromShade(param.getAnnotation(PathVariable0.shadedClass()));

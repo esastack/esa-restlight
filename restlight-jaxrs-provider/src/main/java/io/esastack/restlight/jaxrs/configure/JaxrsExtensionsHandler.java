@@ -116,7 +116,7 @@ public class JaxrsExtensionsHandler implements ExtensionsHandler {
 
         if (application != null) {
             ApplicationPath pathAnn = AnnotationUtils.findAnnotation(ClassUtils
-                            .getUserType(application.underlying()), ApplicationPath.class);
+                    .getUserType(application.underlying()), ApplicationPath.class);
             if (pathAnn != null) {
                 /*
                  * NOTE: If the external context-path is empty, try to use the value defined in @ApplicationPath.
@@ -209,7 +209,7 @@ public class JaxrsExtensionsHandler implements ExtensionsHandler {
             deployments.addContextResolver(new JaxrsContextResolverAdapter(entry.getValue()));
         }
         for (ProxyComponent<ParamConverterProvider> provider : factory.paramConverterProviders()) {
-            deployments.addParamConverter(new StringConverterProviderAdapter(provider.proxied()));
+            deployments.addStringConverter(new StringConverterProviderAdapter(provider.proxied()));
         }
 
         this.covertThenAddFilters(appNameBindings);

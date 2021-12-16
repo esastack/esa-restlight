@@ -21,7 +21,6 @@ import esa.commons.collection.LinkedMultiValueMap;
 import esa.commons.collection.MultiValueMap;
 import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.method.Param;
-import io.esastack.restlight.core.resolver.ParamResolverFactory;
 import io.esastack.restlight.core.resolver.StringConverter;
 import io.esastack.restlight.core.resolver.nav.NameAndValueResolver;
 import io.esastack.restlight.core.resolver.nav.StrsNameAndValueResolverFactory;
@@ -37,13 +36,15 @@ import java.util.Map;
 import java.util.function.BiFunction;
 
 /**
- * Implementation of {@link ParamResolverFactory} for resolving argument that annotated by the MatrixVariable
+ * Implementation of {@link StrsNameAndValueResolverFactory} for resolving argument that annotated by
+ * the MatrixVariable
  */
 public abstract class AbstractMatrixParamResolver extends StrsNameAndValueResolverFactory {
 
     @Override
-    protected NameAndValueResolver.Converter<Collection<String>> initConverter(Param param,
-                                                                               BiFunction<Class<?>, Type, StringConverter> converterLookup) {
+    protected NameAndValueResolver.Converter<Collection<String>> initConverter(
+            Param param,
+            BiFunction<Class<?>, Type, StringConverter> converterLookup) {
         if (isMatrixVariableMap(param, extractParamName(param))) {
             boolean singleValueMap = isSingleValueMap(param);
             String pathVar = getPathVar(param);

@@ -35,15 +35,17 @@ public class RequestHeaderResolver extends AbstractHeaderResolver {
         return param.hasAnnotation(RequestHeader0.shadedClass());
     }
 
-    protected Function<Param, NameAndValue> initNameAndValueCreator(BiFunction<String, Boolean, Object> defaultValueConverter) {
+    protected Function<Param, NameAndValue> initNameAndValueCreator(BiFunction<String,
+            Boolean,
+            Object> defaultValueConverter) {
         return (param) -> {
             RequestHeader0 requestHeader =
                     RequestHeader0.fromShade(param.getAnnotation(RequestHeader0.shadedClass()));
             assert requestHeader != null;
             return new NameAndValue(requestHeader.value(),
                     requestHeader.required(),
-                    defaultValueConverter.apply(RequestMappingUtils.normaliseDefaultValue(requestHeader.defaultValue())
-                            , false));
+                    defaultValueConverter
+                            .apply(RequestMappingUtils.normaliseDefaultValue(requestHeader.defaultValue()), false));
         };
     }
 

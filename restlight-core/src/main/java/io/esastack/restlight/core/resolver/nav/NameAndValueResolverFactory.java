@@ -36,7 +36,8 @@ public abstract class NameAndValueResolverFactory<T> implements ParamResolverPro
             }
 
             @Override
-            public NameAndValueResolver<T> createResolver(Param param, List<? extends HttpRequestSerializer> serializers) {
+            public NameAndValueResolver<T> createResolver(Param param,
+                                                          List<? extends HttpRequestSerializer> serializers) {
                 return NameAndValueResolverFactory.this.createResolver(param, ctx.resolverFactory().orElse(null));
             }
 
@@ -62,14 +63,19 @@ public abstract class NameAndValueResolverFactory<T> implements ParamResolverPro
 
     public abstract boolean supports(Param param);
 
-    protected abstract Function<Param, NameAndValue> initNameAndValueCreator(
-            BiFunction<String, Boolean, Object> defaultValueConverter);
+    protected abstract NameAndValueResolver.Converter<T> initConverter(Param param,
+                                                                       BiFunction<Class<?>,
+                                                                               Type,
+                                                                               StringConverter> converterLookup);
 
     protected abstract BiFunction<String, RequestContext, T> initValueProvider(Param param);
 
-    protected abstract BiFunction<String, Boolean, Object> initDefaultValueConverter(
-            NameAndValueResolver.Converter<T> converter);
+    protected abstract Function<Param, NameAndValue> initNameAndValueCreator(BiFunction<String,
+            Boolean,
+            Object> defaultValueConverter);
 
-    protected abstract NameAndValueResolver.Converter<T> initConverter(Param param,
-                                                                       BiFunction<Class<?>, Type, StringConverter> converterLookup);
+    protected abstract BiFunction<String,
+            Boolean,
+            Object> initDefaultValueConverter(NameAndValueResolver.Converter<T> converter);
+
 }

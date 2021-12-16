@@ -38,7 +38,9 @@ public class FormParamResolver extends AbstractParamResolver {
     }
 
     @Override
-    protected Function<Param, NameAndValue> initNameAndValueCreator(BiFunction<String, Boolean, Object> defaultValueConverter) {
+    protected Function<Param, NameAndValue> initNameAndValueCreator(BiFunction<String,
+            Boolean,
+            Object> defaultValueConverter) {
         return (param) -> {
             FormParam formParam
                     = param.getAnnotation(FormParam.class);

@@ -38,7 +38,9 @@ public class CookieValueResolver extends AbstractCookieValueResolver {
     }
 
     @Override
-    protected Function<Param, NameAndValue> initNameAndValueCreator(BiFunction<String, Boolean, Object> defaultValueConverter) {
+    protected Function<Param, NameAndValue> initNameAndValueCreator(BiFunction<String,
+            Boolean,
+            Object> defaultValueConverter) {
         return (param) -> {
             CookieParam cookieParam = param.getAnnotation(CookieParam.class);
             assert cookieParam != null;

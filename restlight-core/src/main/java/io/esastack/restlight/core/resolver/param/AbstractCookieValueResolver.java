@@ -19,7 +19,6 @@ import esa.commons.ClassUtils;
 import io.esastack.commons.net.http.Cookie;
 import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.method.Param;
-import io.esastack.restlight.core.resolver.ParamResolverFactory;
 import io.esastack.restlight.core.resolver.StringConverter;
 import io.esastack.restlight.core.resolver.nav.NameAndValueResolver;
 import io.esastack.restlight.core.resolver.nav.StrNameAndValueResolverFactory;
@@ -29,11 +28,12 @@ import java.util.Set;
 import java.util.function.BiFunction;
 
 /**
- * Implementation of {@link ParamResolverFactory} for resolving argument that annotated by the CookieValue
+ * Implementation of {@link StrNameAndValueResolverFactory} for resolving argument that annotated by the
+ * CookieValue
  */
 public abstract class AbstractCookieValueResolver extends StrNameAndValueResolverFactory {
 
-    private final static NameAndValueResolver.Converter<String> cookieConverter =
+    private static final NameAndValueResolver.Converter<String> COOKIE_CONVERTER =
             (name, ctx, valueProvider) -> {
                 if (ctx != null) {
                     return ctx.request().getCookie(name);
@@ -42,7 +42,7 @@ public abstract class AbstractCookieValueResolver extends StrNameAndValueResolve
                 return null;
             };
 
-    private final static NameAndValueResolver.Converter<String> cookiesConverter =
+    private static final NameAndValueResolver.Converter<String> COOKIES_CONVERTER =
             (name, ctx, valueProvider) -> {
                 if (ctx != null) {
                     return ctx.request().cookies();
@@ -56,13 +56,13 @@ public abstract class AbstractCookieValueResolver extends StrNameAndValueResolve
             Param param, BiFunction<Class<?>, Type, StringConverter> converterLookup) {
 
         if (Cookie.class.equals(param.type())) {
-            return cookieConverter;
+            return COOKIE_CONVERTER;
         }
 
         if (Set.class.equals(param.type())) {
             Class<?>[] types = ClassUtils.retrieveGenericTypes(param.genericType());
             if (types != null && types.length == 1 && types[0].equals(Cookie.class)) {
-                return cookiesConverter;
+                return COOKIES_CONVERTER;
             }
         }
 

@@ -24,16 +24,16 @@ import io.esastack.restlight.core.util.Ordered;
  * This resolver will deserialize the {@link RequestEntity} to an instance.
  */
 @SPI
-public interface RequestEntityResolver extends Ordered {
+public interface RequestEntityResolver extends Resolver, Ordered {
 
     /**
      * Deserialize the given {@code entity} to result.
      *
-     * @param param     param
-     * @param entity    entity
-     * @param context   context
-     * @return  resolved value, which must not be null.
-     * @throws Exception  any exception
+     * @param param   param
+     * @param entity  entity
+     * @param context context
+     * @return resolved value, which must not be null.
+     * @throws Exception any exception
      */
     HandledValue<Object> readFrom(Param param, RequestEntity entity, RequestContext context) throws Exception;
 

@@ -36,15 +36,17 @@ public class MatrixVariableParamResolver extends AbstractMatrixParamResolver {
     }
 
     @Override
-    protected Function<Param, NameAndValue> initNameAndValueCreator(BiFunction<String, Boolean, Object> defaultValueConverter) {
+    protected Function<Param, NameAndValue> initNameAndValueCreator(BiFunction<String,
+            Boolean,
+            Object> defaultValueConverter) {
         return (param) -> {
             MatrixVariable0 matrixVariable =
                     MatrixVariable0.fromShade(param.getAnnotation(MatrixVariable0.shadedClass()));
             assert matrixVariable != null;
             return new NameAndValue(matrixVariable.value(),
                     matrixVariable.required(),
-                    defaultValueConverter.apply(RequestMappingUtils.normaliseDefaultValue(matrixVariable.defaultValue()),
-                            false));
+                    defaultValueConverter
+                            .apply(RequestMappingUtils.normaliseDefaultValue(matrixVariable.defaultValue()), false));
         };
     }
 

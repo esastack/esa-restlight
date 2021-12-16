@@ -18,7 +18,6 @@ package io.esastack.restlight.core.resolver.param;
 import io.esastack.commons.net.http.HttpHeaders;
 import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.method.Param;
-import io.esastack.restlight.core.resolver.ParamResolverFactory;
 import io.esastack.restlight.core.resolver.StringConverter;
 import io.esastack.restlight.core.resolver.nav.NameAndValueResolver;
 import io.esastack.restlight.core.resolver.nav.StrsNameAndValueResolverFactory;
@@ -28,11 +27,12 @@ import java.util.Collection;
 import java.util.function.BiFunction;
 
 /**
- * Implementation of {@link ParamResolverFactory} for resolving argument that annotated by the RequestHeader.
+ * Implementation of {@link StrsNameAndValueResolverFactory} for resolving argument that annotated by
+ * the RequestHeader.
  */
 public abstract class AbstractHeaderResolver extends StrsNameAndValueResolverFactory {
 
-    private final static NameAndValueResolver.Converter<Collection<String>> headersConverter =
+    private static final NameAndValueResolver.Converter<Collection<String>> HEADERS_CONVERTER =
             (name, ctx, valueProvider) -> {
                 if (ctx != null) {
                     return ctx.request().headers();
@@ -46,7 +46,7 @@ public abstract class AbstractHeaderResolver extends StrsNameAndValueResolverFac
             Param param, BiFunction<Class<?>, Type, StringConverter> converterLookup) {
 
         if (HttpHeaders.class.equals(param.type())) {
-            return headersConverter;
+            return HEADERS_CONVERTER;
         }
         return super.initConverter(param, converterLookup);
     }

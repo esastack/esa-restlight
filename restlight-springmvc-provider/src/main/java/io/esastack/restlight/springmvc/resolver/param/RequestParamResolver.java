@@ -36,15 +36,17 @@ public class RequestParamResolver extends AbstractParamResolver {
     }
 
     @Override
-    protected Function<Param, NameAndValue> initNameAndValueCreator(BiFunction<String, Boolean, Object> defaultValueConverter) {
+    protected Function<Param, NameAndValue> initNameAndValueCreator(BiFunction<String,
+            Boolean,
+            Object> defaultValueConverter) {
         return (param) -> {
             RequestParam0 requestParam
                     = RequestParam0.fromShade(param.getAnnotation(RequestParam0.shadedClass()));
             assert requestParam != null;
             return new NameAndValue(requestParam.value(),
                     requestParam.required(),
-                    defaultValueConverter.apply(RequestMappingUtils.normaliseDefaultValue(requestParam.defaultValue())
-                            , false));
+                    defaultValueConverter
+                            .apply(RequestMappingUtils.normaliseDefaultValue(requestParam.defaultValue()), false));
         };
     }
 

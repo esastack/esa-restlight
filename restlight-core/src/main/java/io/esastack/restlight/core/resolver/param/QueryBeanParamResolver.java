@@ -75,7 +75,8 @@ public class QueryBeanParamResolver extends RequestBeanParamResolver {
         }
 
         @Override
-        protected Function<Param, NameAndValue> initNameAndValueCreator(BiFunction<String, Boolean, Object> defaultValueConverter) {
+        protected Function<Param, NameAndValue> initNameAndValueCreator(
+                BiFunction<String, Boolean, Object> defaultValueConverter) {
             return (param) -> {
                 String name;
                 QueryBean.Name alia = param.getAnnotation(QueryBean.Name.class);

@@ -18,14 +18,14 @@ package io.esastack.restlight.core.resolver.param;
 import esa.commons.StringUtils;
 import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.method.Param;
-import io.esastack.restlight.core.resolver.ParamResolverFactory;
 import io.esastack.restlight.core.resolver.nav.StrNameAndValueResolverFactory;
 import io.esastack.restlight.server.util.PathVariableUtils;
 
 import java.util.function.BiFunction;
 
 /**
- * Implementation of {@link ParamResolverFactory} for resolving argument that annotated by the PathVariable.
+ * Implementation of {@link StrNameAndValueResolverFactory} for resolving argument that annotated by
+ * the PathVariable.
  */
 public abstract class AbstractPathVariableParamResolver extends StrNameAndValueResolverFactory {
 

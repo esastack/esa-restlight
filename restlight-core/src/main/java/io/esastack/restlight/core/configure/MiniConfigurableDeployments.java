@@ -373,8 +373,8 @@ public class MiniConfigurableDeployments {
      *
      * @return this deployments
      */
-    public MiniConfigurableDeployments addParamConverter(StringConverterFactory converter) {
-        deployments.addParamConverter(converter);
+    public MiniConfigurableDeployments addStringConverter(StringConverterFactory converter) {
+        deployments.addStringConverter(converter);
         return self();
     }
 
@@ -385,8 +385,8 @@ public class MiniConfigurableDeployments {
      *
      * @return this deployments
      */
-    public MiniConfigurableDeployments addParamConverters(Collection<? extends StringConverterFactory> converters) {
-        deployments.addParamConverters(converters);
+    public MiniConfigurableDeployments addStringConverters(Collection<? extends StringConverterFactory> converters) {
+        deployments.addStringConverters(converters);
         return self();
     }
 
