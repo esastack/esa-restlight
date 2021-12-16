@@ -19,9 +19,9 @@ import esa.commons.Checks;
 import io.esastack.commons.net.http.HttpHeaderNames;
 import io.esastack.commons.net.http.HttpMethod;
 import io.esastack.commons.net.http.HttpStatus;
-import io.esastack.httpserver.core.HttpRequest;
-import io.esastack.httpserver.core.HttpResponse;
 import io.esastack.restlight.server.context.FilterContext;
+import io.esastack.restlight.server.core.HttpRequest;
+import io.esastack.restlight.server.core.HttpResponse;
 import io.esastack.restlight.server.handler.FilterChain;
 import io.esastack.restlight.server.spi.Filter;
 import io.esastack.restlight.server.util.Futures;
@@ -40,7 +40,7 @@ public class CorsFilter implements Filter {
     }
 
     @Override
-    public CompletableFuture<Void> doFilter(FilterContext context, FilterChain<FilterContext> chain) {
+    public CompletableFuture<Void> doFilter(FilterContext context, FilterChain chain) {
         final HttpRequest request = context.request();
         final HttpResponse response = context.response();
         final String origin = request.headers().get(HttpHeaderNames.ORIGIN);

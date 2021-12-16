@@ -53,13 +53,6 @@
             <artifactId>spring-context</artifactId>
             <optional>true</optional>
         </dependency>
-        <!-- test scope -->
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>restlight-test-mock</artifactId>
-            <version>${project.version}</version>
-            <scope>test</scope>
-        </dependency>
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>

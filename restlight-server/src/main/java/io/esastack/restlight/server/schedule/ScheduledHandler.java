@@ -16,10 +16,10 @@
 package io.esastack.restlight.server.schedule;
 
 import io.esastack.commons.net.http.HttpStatus;
-import io.esastack.httpserver.core.HttpRequest;
-import io.esastack.httpserver.core.RequestContext;
 import io.esastack.restlight.server.bootstrap.DispatcherHandler;
 import io.esastack.restlight.server.bootstrap.DispatcherHandlerImpl;
+import io.esastack.restlight.server.context.RequestContext;
+import io.esastack.restlight.server.core.HttpRequest;
 import io.esastack.restlight.server.route.Route;
 import io.esastack.restlight.server.route.RouteFailureException;
 import io.esastack.restlight.server.util.Futures;
@@ -31,14 +31,14 @@ import java.util.function.BiConsumer;
 
 import static io.esastack.restlight.server.schedule.RequestTaskImpl.newRequestTask;
 
-class ScheduledHandler<CTX extends RequestContext> {
+class ScheduledHandler {
 
     private final List<Scheduler> schedulers;
     private final RequestTaskHook hook;
-    private final DispatcherHandler<CTX> dispatcher;
-    private final BiConsumer<CTX, CompletableFuture<Void>> processor;
+    private final DispatcherHandler dispatcher;
+    private final BiConsumer<RequestContext, CompletableFuture<Void>> processor;
 
-    ScheduledHandler(DispatcherHandler<CTX> dispatcher,
+    ScheduledHandler(DispatcherHandler dispatcher,
                      List<Scheduler> schedulers,
                      RequestTaskHook hook) {
         this.schedulers = schedulers;
@@ -56,7 +56,7 @@ class ScheduledHandler<CTX extends RequestContext> {
         }
     }
 
-    void process(CTX context, CompletableFuture<Void> promise) {
+    void process(RequestContext context, CompletableFuture<Void> promise) {
         final HttpRequest request = context.request();
         if (LoggerUtils.logger().isDebugEnabled()) {
             LoggerUtils.logger().debug("Received request(url={}, method={})",
@@ -65,7 +65,7 @@ class ScheduledHandler<CTX extends RequestContext> {
         this.processor.accept(context, promise);
     }
 
-    private void processByFixedScheduler(CTX ctx,
+    private void processByFixedScheduler(RequestContext ctx,
                                          CompletableFuture<Void> promise,
                                          Scheduler scheduler) {
         final RequestTask task = hook.onRequest(newRequestTask(ctx,
@@ -89,7 +89,7 @@ class ScheduledHandler<CTX extends RequestContext> {
         }
     }
 
-    private void processBySpecifiedScheduler(CTX ctx,
+    private void processBySpecifiedScheduler(RequestContext ctx,
                                              CompletableFuture<Void> promise) {
         final CompletableFuture<Route> route = route(ctx);
         route.whenComplete((r, th) -> {
@@ -112,7 +112,7 @@ class ScheduledHandler<CTX extends RequestContext> {
         });
     }
 
-    private CompletableFuture<Route> route(CTX context) {
+    private CompletableFuture<Route> route(RequestContext context) {
         final Route route = dispatcher.route(context);
         // handle routed failure and return
         if (route == null) {

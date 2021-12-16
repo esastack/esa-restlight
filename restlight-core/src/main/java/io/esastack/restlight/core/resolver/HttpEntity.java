@@ -16,10 +16,10 @@
 package io.esastack.restlight.core.resolver;
 
 import io.esastack.commons.net.http.MediaType;
-import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.handler.Handler;
 import io.esastack.restlight.core.method.HandlerMethod;
-import io.esastack.restlight.core.spi.Filter;
+import io.esastack.restlight.server.context.RequestContext;
+import io.esastack.restlight.server.spi.Filter;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;

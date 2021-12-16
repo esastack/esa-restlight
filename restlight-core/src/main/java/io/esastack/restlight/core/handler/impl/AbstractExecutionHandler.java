@@ -20,8 +20,6 @@ import esa.commons.StringUtils;
 import esa.commons.logging.Logger;
 import esa.commons.logging.LoggerFactory;
 import io.esastack.commons.net.http.HttpStatus;
-import io.esastack.restlight.core.context.HttpResponse;
-import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.handler.FutureTransfer;
 import io.esastack.restlight.core.handler.HandlerInvoker;
 import io.esastack.restlight.core.handler.HandlerValueResolver;
@@ -30,6 +28,8 @@ import io.esastack.restlight.core.method.MethodParam;
 import io.esastack.restlight.core.method.ResolvableParam;
 import io.esastack.restlight.core.resolver.HandlerResolverFactory;
 import io.esastack.restlight.server.bootstrap.WebServerException;
+import io.esastack.restlight.server.context.RequestContext;
+import io.esastack.restlight.server.core.HttpResponse;
 import io.esastack.restlight.server.route.ExecutionHandler;
 import io.esastack.restlight.server.route.Mapping;
 import io.esastack.restlight.server.util.Futures;
@@ -42,8 +42,7 @@ import java.util.concurrent.CompletableFuture;
  *
  * @param <H> Handler type
  */
-abstract class AbstractExecutionHandler<H extends HandlerMethodAdapter> implements
-        ExecutionHandler<RequestContext> {
+abstract class AbstractExecutionHandler<H extends HandlerMethodAdapter> implements ExecutionHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(AbstractExecutionHandler.class);
 

@@ -15,12 +15,12 @@
  */
 package io.esastack.restlight.core.resolver.param;
 
-import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.method.Param;
 import io.esastack.restlight.core.resolver.ParamResolver;
 import io.esastack.restlight.core.resolver.nav.AbstractNameAndValueResolver;
 import io.esastack.restlight.core.resolver.nav.NameAndValue;
 import io.esastack.restlight.server.bootstrap.WebServerException;
+import io.esastack.restlight.server.context.RequestContext;
 
 public abstract class AbstractNameAndValueParamResolver extends AbstractNameAndValueResolver implements ParamResolver {
 

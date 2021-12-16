@@ -17,13 +17,13 @@ package io.esastack.restlight.server.schedule;
 
 import esa.commons.annotation.Beta;
 import esa.commons.spi.SPI;
-import io.esastack.httpserver.core.RequestContext;
 import io.esastack.restlight.core.util.Ordered;
-import io.esastack.restlight.server.internal.InternalFilter;
+import io.esastack.restlight.server.context.RequestContext;
+import io.esastack.restlight.server.spi.Filter;
 
 /**
  * Hook of every {@link RequestTask} which will be created when a request is coming after the execution of {@link
- * InternalFilter} and about to be submitted to Biz-{@link Scheduler}.
+ * Filter} and about to be submitted to Biz-{@link Scheduler}.
  * <p>
  * Note: please do not use this interface unless you know what you are doing.
  */

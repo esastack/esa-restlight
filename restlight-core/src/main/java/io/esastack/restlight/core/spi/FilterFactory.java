@@ -17,6 +17,7 @@ package io.esastack.restlight.core.spi;
 
 import io.esastack.restlight.core.DeployContext;
 import io.esastack.restlight.core.config.RestlightOptions;
+import io.esastack.restlight.server.spi.Filter;
 
 import java.util.Optional;
 

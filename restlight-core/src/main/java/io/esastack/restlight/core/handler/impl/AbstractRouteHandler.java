@@ -15,9 +15,9 @@
  */
 package io.esastack.restlight.core.handler.impl;
 
-import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.handler.HandlerValueResolver;
 import io.esastack.restlight.core.interceptor.InternalInterceptor;
+import io.esastack.restlight.server.context.RequestContext;
 import io.esastack.restlight.server.util.Futures;
 import io.netty.util.Signal;
 

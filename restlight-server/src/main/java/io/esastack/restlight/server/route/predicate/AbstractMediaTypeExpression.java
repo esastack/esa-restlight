@@ -17,7 +17,7 @@ package io.esastack.restlight.server.route.predicate;
 
 import io.esastack.commons.net.http.MediaType;
 import io.esastack.commons.net.http.MediaTypeUtil;
-import io.esastack.httpserver.core.HttpRequest;
+import io.esastack.restlight.server.core.HttpRequest;
 
 public abstract class AbstractMediaTypeExpression implements Comparable<AbstractMediaTypeExpression> {
     private static final String NEGATE_SYMBOL = "!";

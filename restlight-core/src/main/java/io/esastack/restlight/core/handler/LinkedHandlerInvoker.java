@@ -16,7 +16,7 @@
 package io.esastack.restlight.core.handler;
 
 import esa.commons.Checks;
-import io.esastack.restlight.core.context.RequestContext;
+import io.esastack.restlight.server.context.RequestContext;
 
 /**
  * Implementation of {@link HandlerInvoker} which maintains a reference of {@link HandlerAdvice} and a

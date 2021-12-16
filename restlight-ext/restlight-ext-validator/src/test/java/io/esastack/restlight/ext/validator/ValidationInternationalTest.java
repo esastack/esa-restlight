@@ -16,9 +16,6 @@
 package io.esastack.restlight.ext.validator;
 
 import esa.commons.ClassUtils;
-import io.esastack.httpserver.core.HttpRequest;
-import io.esastack.restlight.core.context.impl.HttpResponseAdapter;
-import io.esastack.restlight.core.context.impl.RequestContextImpl;
 import io.esastack.restlight.core.handler.HandlerInvoker;
 import io.esastack.restlight.core.handler.LinkedHandlerInvoker;
 import io.esastack.restlight.core.handler.impl.HandlerInvokerImpl;
@@ -26,8 +23,10 @@ import io.esastack.restlight.core.handler.impl.RouteHandlerImpl;
 import io.esastack.restlight.core.method.HandlerMethod;
 import io.esastack.restlight.core.method.HandlerMethodImpl;
 import io.esastack.restlight.core.method.RouteHandlerMethodImpl;
-import io.esastack.restlight.test.mock.MockHttpRequest;
-import io.esastack.restlight.test.mock.MockHttpResponse;
+import io.esastack.restlight.server.core.HttpRequest;
+import io.esastack.restlight.server.core.impl.RequestContextImpl;
+import io.esastack.restlight.server.mock.MockHttpRequest;
+import io.esastack.restlight.server.mock.MockHttpResponse;
 import org.hibernate.validator.messageinterpolation.ResourceBundleMessageInterpolator;
 import org.hibernate.validator.resourceloading.PlatformResourceBundleLocator;
 import org.junit.jupiter.api.BeforeAll;
@@ -87,8 +86,7 @@ class ValidationInternationalTest {
             final Object[] simpleArg = {"Hello"};
             final HttpRequest request = MockHttpRequest.aMockRequest().build();
             handlerMethodInvokerAdapter.invoke(new RequestContextImpl(request,
-                    new HttpResponseAdapter(MockHttpResponse.aMockResponse().build())),
-                    simpleArg);
+                    MockHttpResponse.aMockResponse().build()), simpleArg);
         } catch (ConstraintViolationException e) {
             assertTrue(e.getConstraintViolations()
                     .toArray(new ConstraintViolation[]{})[0].getMessage().contains("EN"));

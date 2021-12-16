@@ -19,8 +19,8 @@ import esa.commons.ClassUtils;
 import esa.commons.collection.LinkedMultiValueMap;
 import esa.commons.collection.MultiValueMap;
 import io.esastack.commons.net.http.HttpHeaders;
-import io.esastack.restlight.core.context.HttpResponse;
 import io.esastack.restlight.jaxrs.impl.core.ResponseImpl;
+import io.esastack.restlight.server.core.HttpResponse;
 import jakarta.ws.rs.core.MultivaluedMap;
 import jakarta.ws.rs.ext.RuntimeDelegate;
 

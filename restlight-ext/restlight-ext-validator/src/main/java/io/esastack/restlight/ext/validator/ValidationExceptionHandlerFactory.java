@@ -20,11 +20,11 @@ import esa.commons.spi.Feature;
 import io.esastack.commons.net.http.HttpStatus;
 import io.esastack.restlight.core.DeployContext;
 import io.esastack.restlight.core.config.RestlightOptions;
-import io.esastack.restlight.core.context.RequestContext;
-import io.esastack.restlight.core.spi.ExceptionHandler;
 import io.esastack.restlight.core.spi.ExceptionHandlerFactory;
 import io.esastack.restlight.core.util.Constants;
 import io.esastack.restlight.server.bootstrap.ExceptionHandlerChain;
+import io.esastack.restlight.server.context.RequestContext;
+import io.esastack.restlight.server.spi.ExceptionHandler;
 import io.esastack.restlight.server.util.ErrorDetail;
 import io.esastack.restlight.server.util.Futures;
 import io.netty.util.internal.InternalThreadLocalMap;
@@ -48,7 +48,7 @@ public class ValidationExceptionHandlerFactory implements ExceptionHandlerFactor
 
         @Override
         public CompletableFuture<Void> handle(RequestContext context, Throwable th,
-                                              ExceptionHandlerChain<RequestContext> next) {
+                                              ExceptionHandlerChain next) {
             if (th instanceof ConstraintViolationException) {
                 //400 bad request
 

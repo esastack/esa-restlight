@@ -17,19 +17,19 @@ package io.esastack.restlight.server.handler;
 
 import esa.commons.annotation.Internal;
 import io.esastack.restlight.server.context.FilterContext;
-import io.esastack.restlight.server.internal.InternalFilter;
+import io.esastack.restlight.server.spi.Filter;
 
 import java.util.concurrent.CompletableFuture;
 
 @Internal
-public interface FilterChain<FCTX extends FilterContext> {
+public interface FilterChain {
 
     /**
-     * Invoke the registered {@link InternalFilter}s.
+     * Invoke the registered {@link Filter}s.
      *
      * @param context  context
      * @return future
      */
-    CompletableFuture<Void> doFilter(FCTX context);
+    CompletableFuture<Void> doFilter(FilterContext context);
 
 }

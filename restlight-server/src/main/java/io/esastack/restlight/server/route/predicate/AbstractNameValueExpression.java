@@ -15,7 +15,7 @@
  */
 package io.esastack.restlight.server.route.predicate;
 
-import io.esastack.httpserver.core.HttpRequest;
+import io.esastack.restlight.server.core.HttpRequest;
 
 import java.util.Objects;
 

@@ -15,13 +15,13 @@
  */
 package io.esastack.restlight.core.resolver.reqentity;
 
-import io.esastack.httpserver.core.RequestContext;
 import io.esastack.restlight.core.method.Param;
 import io.esastack.restlight.core.resolver.HandledValue;
 import io.esastack.restlight.core.resolver.RequestEntity;
 import io.esastack.restlight.core.resolver.RequestEntityResolver;
 import io.esastack.restlight.core.resolver.nav.AbstractNameAndValueResolver;
 import io.esastack.restlight.core.resolver.nav.NameAndValue;
+import io.esastack.restlight.server.context.RequestContext;
 
 public abstract class AbstractNameAndValueRequestEntityResolver extends AbstractNameAndValueResolver
         implements RequestEntityResolver {

@@ -21,15 +21,15 @@ import esa.commons.logging.LoggerFactory;
 import esa.commons.spi.Feature;
 import io.esastack.commons.net.http.HttpStatus;
 import io.esastack.commons.net.http.MediaType;
-import io.esastack.httpserver.core.HttpRequest;
 import io.esastack.restlight.core.DeployContext;
 import io.esastack.restlight.core.config.RestlightOptions;
-import io.esastack.restlight.core.context.HttpResponse;
-import io.esastack.restlight.core.context.RequestContext;
-import io.esastack.restlight.core.spi.ExceptionHandler;
 import io.esastack.restlight.core.spi.ExceptionHandlerFactory;
 import io.esastack.restlight.core.util.Constants;
 import io.esastack.restlight.server.bootstrap.ExceptionHandlerChain;
+import io.esastack.restlight.server.context.RequestContext;
+import io.esastack.restlight.server.core.HttpRequest;
+import io.esastack.restlight.server.core.HttpResponse;
+import io.esastack.restlight.server.spi.ExceptionHandler;
 import io.esastack.restlight.server.util.ErrorDetail;
 import io.esastack.restlight.server.util.Futures;
 import io.esastack.restlight.springmvc.util.ResponseStatusUtils;
@@ -53,7 +53,7 @@ public class SpringMvcExceptionHandlerFactory implements ExceptionHandlerFactory
 
         @Override
         public CompletableFuture<Void> handle(RequestContext context, Throwable th,
-                                              ExceptionHandlerChain<RequestContext> next) {
+                                              ExceptionHandlerChain next) {
             final HttpStatus status = ResponseStatusUtils.getCustomResponse(th);
             if (status == null) {
                 return next.handle(context, th);

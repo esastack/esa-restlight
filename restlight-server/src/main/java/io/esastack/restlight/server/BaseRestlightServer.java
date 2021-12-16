@@ -17,15 +17,13 @@ package io.esastack.restlight.server;
 
 import esa.commons.Checks;
 import esa.commons.annotation.Beta;
-import io.esastack.httpserver.core.RequestContext;
 import io.esastack.restlight.core.util.Constants;
 import io.esastack.restlight.server.bootstrap.AbstractDelegatedRestlightServer;
 import io.esastack.restlight.server.bootstrap.RestlightServer;
 import io.esastack.restlight.server.bootstrap.RestlightServerBootstrap;
 import io.esastack.restlight.server.config.ServerOptions;
-import io.esastack.restlight.server.context.FilterContext;
 import io.esastack.restlight.server.handler.RestlightHandler;
-import io.esastack.restlight.server.internal.InternalFilter;
+import io.esastack.restlight.server.spi.Filter;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.unix.DomainSocketAddress;
@@ -41,9 +39,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public abstract class BaseRestlightServer<R extends BaseRestlightServer<R, D, O, CTX, FCTX>, D extends
-        BaseDeployments<R, D, O, CTX, FCTX>, O extends ServerOptions,
-        CTX extends RequestContext, FCTX extends FilterContext> extends AbstractDelegatedRestlightServer
+public abstract class BaseRestlightServer<R extends BaseRestlightServer<R, D, O>, D extends
+        BaseDeployments<R, D, O>, O extends ServerOptions> extends AbstractDelegatedRestlightServer
         implements RestlightServer {
     /**
      * Server options
@@ -209,16 +206,14 @@ public abstract class BaseRestlightServer<R extends BaseRestlightServer<R, D, O,
     }
 
     private RestlightServer buildServer() {
-        RestlightHandler<CTX> handler = deployments().applyDeployments();
-        List<InternalFilter<FCTX>> fs = new LinkedList<>(deployments().filters());
+        RestlightHandler handler = deployments().applyDeployments();
+        List<Filter> fs = new LinkedList<>(deployments().filters());
         return doBuildServer(handler, fs);
     }
 
-    protected RestlightServer doBuildServer(RestlightHandler<CTX> handler, List<InternalFilter<FCTX>> fs) {
+    protected RestlightServer doBuildServer(RestlightHandler handler, List<Filter> fs) {
         return RestlightServerBootstrap.from(options,
                 handler,
-                deployments().requestContext(),
-                deployments().filterContext(),
                 fs,
                 deployments().exceptionHandler())
                 .withAddress(address)

@@ -17,7 +17,7 @@ package io.esastack.restlight.jaxrs.impl.container;
 
 import esa.commons.Checks;
 import esa.commons.collection.AttributeKey;
-import io.esastack.httpserver.core.RequestContext;
+import io.esastack.restlight.server.context.RequestContext;
 import io.esastack.restlight.jaxrs.impl.JaxrsContextUtils;
 import io.esastack.restlight.jaxrs.impl.core.ModifiableMultivaluedMap;
 import io.esastack.restlight.jaxrs.impl.core.UriInfoImpl;

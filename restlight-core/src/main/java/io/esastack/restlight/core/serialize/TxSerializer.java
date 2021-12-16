@@ -15,7 +15,7 @@
  */
 package io.esastack.restlight.core.serialize;
 
-import io.esastack.httpserver.core.HttpOutputStream;
+import io.esastack.restlight.server.core.HttpOutputStream;
 
 /**
  * This serializer is used to serialize the data to byte[] for http response.

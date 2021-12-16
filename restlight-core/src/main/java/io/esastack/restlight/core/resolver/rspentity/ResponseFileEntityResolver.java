@@ -15,11 +15,11 @@
  */
 package io.esastack.restlight.core.resolver.rspentity;
 
-import io.esastack.httpserver.core.RequestContext;
 import io.esastack.restlight.core.resolver.HandledValue;
 import io.esastack.restlight.core.resolver.ResponseEntity;
 import io.esastack.restlight.core.resolver.ResponseEntityResolver;
 import io.esastack.restlight.core.util.ResponseEntityUtils;
+import io.esastack.restlight.server.context.RequestContext;
 
 import java.io.File;
 

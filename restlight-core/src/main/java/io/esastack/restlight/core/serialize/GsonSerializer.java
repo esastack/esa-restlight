@@ -17,8 +17,8 @@ package io.esastack.restlight.core.serialize;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import io.esastack.httpserver.core.HttpInputStream;
-import io.esastack.httpserver.core.HttpOutputStream;
+import io.esastack.restlight.server.core.HttpInputStream;
+import io.esastack.restlight.server.core.HttpOutputStream;
 
 import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;

@@ -21,13 +21,15 @@ import io.esastack.httpserver.H2OptionsConfigure;
 import io.esastack.httpserver.HttpServer;
 import io.esastack.httpserver.ServerOptionsConfigure;
 import io.esastack.httpserver.SslOptionsConfigure;
-import io.esastack.httpserver.core.RequestContext;
 import io.esastack.restlight.core.util.ResourceUtils;
 import io.esastack.restlight.core.util.RestlightVer;
 import io.esastack.restlight.server.config.ServerOptions;
 import io.esastack.restlight.server.config.SslOptions;
+import io.esastack.restlight.server.context.RequestContext;
+import io.esastack.restlight.server.core.impl.HttResponseImpl;
+import io.esastack.restlight.server.core.impl.HttpRequestImpl;
+import io.esastack.restlight.server.core.impl.RequestContextImpl;
 import io.esastack.restlight.server.handler.RestlightHandler;
-import io.esastack.restlight.server.internal.RequestContextFactory;
 import io.esastack.restlight.server.schedule.ExecutorScheduler;
 import io.esastack.restlight.server.schedule.Schedulers;
 import io.esastack.restlight.server.util.LoggerUtils;
@@ -44,12 +46,13 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-public class NettyRestlightServer<CTX extends RequestContext> implements RestlightServer {
+import static io.esastack.restlight.server.core.impl.RequestContextImpl.UNDERLYING_RESPONSE;
+
+public class NettyRestlightServer implements RestlightServer {
 
     protected final HttpServer httpServer;
     private final SocketAddress address;
-    private final RestlightHandler<CTX> handler;
-    private final RequestContextFactory<CTX> requestContext;
+    private final RestlightHandler handler;
 
     /**
      * running state(protected by {@link #lock})
@@ -67,8 +70,7 @@ public class NettyRestlightServer<CTX extends RequestContext> implements Restlig
     private final Condition shutdown = lock.newCondition();
 
     NettyRestlightServer(ServerOptions options,
-                         RestlightHandler<CTX> handler,
-                         RequestContextFactory<CTX> requestContext,
+                         RestlightHandler handler,
                          SocketAddress address,
                          boolean daemon,
                          Map<ChannelOption<?>, Object> channelOptions,
@@ -76,10 +78,8 @@ public class NettyRestlightServer<CTX extends RequestContext> implements Restlig
                          List<ChannelHandler> channelHandlers) {
         Checks.checkNotNull(options, "options");
         Checks.checkNotNull(handler, "handler");
-        Checks.checkNotNull(requestContext, "requestContext");
         this.address = address == null ? new InetSocketAddress(8080) : address;
         this.handler = handler;
-        this.requestContext = requestContext;
         this.httpServer = buildServer(options,
                 handler,
                 daemon,
@@ -176,7 +176,7 @@ public class NettyRestlightServer<CTX extends RequestContext> implements Restlig
     }
 
     private HttpServer buildServer(ServerOptions options,
-                                   RestlightHandler<CTX> handler,
+                                   RestlightHandler handler,
                                    boolean daemon,
                                    Map<ChannelOption<?>, Object> channelOptions,
                                    Map<ChannelOption<?>, Object> childChannelOptions,
@@ -236,7 +236,10 @@ public class NettyRestlightServer<CTX extends RequestContext> implements Restlig
                 .onDisconnected(handler::onDisconnected)
                 .handle(req -> req.aggregate(true)
                         .onEnd(promise -> {
-                            handler.process(requestContext.create(req))
+                            HttResponseImpl response = new HttResponseImpl(req.response());
+                            RequestContext context = new RequestContextImpl(new HttpRequestImpl(req), response);
+                            context.attr(UNDERLYING_RESPONSE).set(response.underlying());
+                            handler.process(context)
                                     .whenComplete((r, t) -> {
                                         if (t == null) {
                                             PromiseUtils.setSuccess(promise);

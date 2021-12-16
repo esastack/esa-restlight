@@ -17,7 +17,7 @@ package io.esastack.restlight.jaxrs.impl.core;
 
 import esa.commons.Checks;
 import esa.commons.StringUtils;
-import io.esastack.httpserver.core.RequestContext;
+import io.esastack.restlight.server.context.RequestContext;
 import io.esastack.restlight.core.handler.HandlerMapping;
 import io.esastack.restlight.jaxrs.configure.RouteTracking;
 import io.esastack.restlight.server.route.predicate.PatternsPredicate;

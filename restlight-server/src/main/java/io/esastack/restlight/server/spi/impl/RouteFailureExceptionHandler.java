@@ -19,11 +19,11 @@ import esa.commons.annotation.Internal;
 import esa.commons.spi.Feature;
 import io.esastack.commons.net.http.HttpStatus;
 import io.esastack.commons.net.http.MediaType;
-import io.esastack.httpserver.core.HttpResponse;
-import io.esastack.httpserver.core.RequestContext;
 import io.esastack.restlight.core.util.Constants;
 import io.esastack.restlight.core.util.Ordered;
 import io.esastack.restlight.server.bootstrap.ExceptionHandlerChain;
+import io.esastack.restlight.server.context.RequestContext;
+import io.esastack.restlight.server.core.HttpResponse;
 import io.esastack.restlight.server.route.RouteFailureException;
 import io.esastack.restlight.server.spi.ExceptionHandler;
 import io.esastack.restlight.server.util.ErrorDetail;
@@ -38,7 +38,7 @@ public class RouteFailureExceptionHandler implements ExceptionHandler {
 
     @Override
     public CompletableFuture<Void> handle(RequestContext context, Throwable th,
-                                          ExceptionHandlerChain<RequestContext> next) {
+                                          ExceptionHandlerChain next) {
         if (th instanceof RouteFailureException) {
             HttpResponse response = context.response();
             HttpStatus status = toStatus(((RouteFailureException) th).getFailureType());

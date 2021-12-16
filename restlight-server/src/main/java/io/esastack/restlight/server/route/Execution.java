@@ -15,14 +15,13 @@
  */
 package io.esastack.restlight.server.route;
 
-import io.esastack.httpserver.core.HttpRequest;
-import io.esastack.httpserver.core.HttpResponse;
-import io.esastack.httpserver.core.RequestContext;
+import io.esastack.restlight.server.core.HttpRequest;
+import io.esastack.restlight.server.core.HttpResponse;
 
 /**
  * A Execution is used to handle current {@link HttpRequest}'s lifecycle after routing this {@link HttpRequest}.
  */
-public interface Execution<CTX extends RequestContext> {
+public interface Execution {
 
     /**
      * Handles current {@link HttpRequest}, this method must make sure that current {@link HttpResponse} has been
@@ -30,7 +29,7 @@ public interface Execution<CTX extends RequestContext> {
      *
      * @return execution handler
      */
-    ExecutionHandler<CTX> executionHandler();
+    ExecutionHandler executionHandler();
 
     /**
      * Returns an instance of {@link CompletionHandler} to handle the completion event of current request.

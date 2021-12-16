@@ -78,7 +78,9 @@ public class WriterInterceptorContextImpl extends InterceptorContextImpl impleme
 
     @Override
     public OutputStream getOutputStream() {
-        return underlying.context().response().outputStream();
+        // TODO:
+        return null;
+        //return underlying.context().response().outputStream();
     }
 
     @Override

@@ -18,7 +18,6 @@ package io.esastack.restlight.core.spi.impl;
 import esa.commons.Checks;
 import io.esastack.restlight.core.DeployContext;
 import io.esastack.restlight.core.config.RestlightOptions;
-import io.esastack.restlight.core.context.FilterContext;
 import io.esastack.restlight.core.method.HandlerMethod;
 import io.esastack.restlight.core.resolver.HandlerResolverFactory;
 import io.esastack.restlight.core.resolver.ResponseEntity;
@@ -26,15 +25,16 @@ import io.esastack.restlight.core.resolver.ResponseEntityImpl;
 import io.esastack.restlight.core.resolver.ResponseEntityResolverAdvice;
 import io.esastack.restlight.core.resolver.ResponseEntityResolverContext;
 import io.esastack.restlight.core.resolver.ResponseEntityResolverContextImpl;
-import io.esastack.restlight.core.spi.Filter;
 import io.esastack.restlight.core.util.Ordered;
 import io.esastack.restlight.core.util.ResponseEntityUtils;
 import io.esastack.restlight.server.bootstrap.WebServerException;
+import io.esastack.restlight.server.context.FilterContext;
 import io.esastack.restlight.server.handler.FilterChain;
+import io.esastack.restlight.server.spi.Filter;
 
 import java.util.concurrent.CompletableFuture;
 
-import static io.esastack.restlight.server.context.impl.RequestContextImpl.UNDERLYING_RESPONSE;
+import static io.esastack.restlight.server.core.impl.RequestContextImpl.UNDERLYING_RESPONSE;
 
 public class ResponseEntityWriterFilter implements Filter {
 
@@ -48,7 +48,7 @@ public class ResponseEntityWriterFilter implements Filter {
     }
 
     @Override
-    public CompletableFuture<Void> doFilter(FilterContext context, FilterChain<FilterContext> chain) {
+    public CompletableFuture<Void> doFilter(FilterContext context, FilterChain chain) {
         HandlerResolverFactory resolverFactory = getResolverFactory();
         return chain.doFilter(context).thenApply(v -> {
             HandlerMethod method = ResponseEntityUtils.getHandledMethod(context);

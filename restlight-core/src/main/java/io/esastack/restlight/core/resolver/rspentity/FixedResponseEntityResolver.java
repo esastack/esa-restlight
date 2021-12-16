@@ -17,7 +17,7 @@ package io.esastack.restlight.core.resolver.rspentity;
 
 import esa.commons.collection.AttributeKey;
 import io.esastack.commons.net.http.MediaType;
-import io.esastack.httpserver.core.RequestContext;
+import io.esastack.restlight.server.context.RequestContext;
 import io.esastack.restlight.core.method.HandlerMethod;
 import io.esastack.restlight.core.resolver.HandledValue;
 import io.esastack.restlight.core.resolver.ResponseEntity;

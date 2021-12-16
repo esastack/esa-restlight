@@ -15,20 +15,19 @@
  */
 package io.esastack.restlight.server.route;
 
-import io.esastack.httpserver.core.HttpRequest;
-import io.esastack.httpserver.core.RequestContext;
+import io.esastack.restlight.server.core.HttpRequest;
 
 /**
  * A RouteExecution is used to handle current {@link HttpRequest}'s lifecycle after routing this {@link HttpRequest}.
  */
-public interface RouteExecution<CTX extends RequestContext> extends Execution<CTX> {
+public interface RouteExecution extends Execution {
 
     /**
      * Returns an instance of {@link ExceptionHandler} to handle the error occurred in request's lifecycle.
      *
      * @return handler to handle exception, {@code null} for nothing to do.
      */
-    default ExceptionHandler<CTX, Throwable> exceptionHandler() {
+    default ExceptionHandler<Throwable> exceptionHandler() {
         return null;
     }
 }

@@ -16,12 +16,12 @@
 package io.esastack.restlight.jaxrs.adapter;
 
 import esa.commons.Checks;
-import io.esastack.restlight.core.context.FilterContext;
-import io.esastack.restlight.core.spi.Filter;
 import io.esastack.restlight.core.util.Ordered;
 import io.esastack.restlight.jaxrs.impl.JaxrsContextUtils;
 import io.esastack.restlight.jaxrs.impl.container.AbstractContainerRequestContext;
+import io.esastack.restlight.server.context.FilterContext;
 import io.esastack.restlight.server.handler.FilterChain;
+import io.esastack.restlight.server.spi.Filter;
 import io.esastack.restlight.server.util.Futures;
 import jakarta.ws.rs.container.ContainerRequestFilter;
 
@@ -37,7 +37,7 @@ public class PreMatchRequestFiltersAdapter implements Filter {
     }
 
     @Override
-    public CompletableFuture<Void> doFilter(FilterContext context, FilterChain<FilterContext> chain) {
+    public CompletableFuture<Void> doFilter(FilterContext context, FilterChain chain) {
         final AbstractContainerRequestContext ctx = JaxrsContextUtils.getRequestContext(context);
         try {
             for (ContainerRequestFilter filter : filters) {

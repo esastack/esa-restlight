@@ -16,9 +16,8 @@
 package io.esastack.restlight.core.resolver;
 
 import io.esastack.commons.net.buffer.Buffer;
-import io.esastack.restlight.core.context.HttpResponse;
-import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.handler.Handler;
+import io.esastack.restlight.server.core.HttpResponse;
 
 import java.io.File;
 

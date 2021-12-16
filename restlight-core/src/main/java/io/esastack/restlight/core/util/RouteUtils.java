@@ -19,7 +19,6 @@ import com.google.common.util.concurrent.ListenableFuture;
 import esa.commons.Checks;
 import esa.commons.StringUtils;
 import esa.commons.spi.SpiLoader;
-import io.esastack.httpserver.core.RequestContext;
 import io.esastack.restlight.core.DeployContext;
 import io.esastack.restlight.core.annotation.Scheduled;
 import io.esastack.restlight.core.config.RestlightOptions;
@@ -47,10 +46,8 @@ import io.esastack.restlight.core.resolver.exception.ExceptionResolverFactory;
 import io.esastack.restlight.core.spi.HandlerValueResolverLocatorFactory;
 import io.esastack.restlight.core.spi.MappingLocatorFactory;
 import io.esastack.restlight.core.spi.RouteMethodLocatorFactory;
-import io.esastack.restlight.server.route.ExecutionHandlerFactory;
 import io.esastack.restlight.server.route.Mapping;
 import io.esastack.restlight.server.route.Route;
-import io.esastack.restlight.server.route.RouteExecution;
 import io.esastack.restlight.server.route.Routing;
 import io.esastack.restlight.server.schedule.Scheduler;
 import io.esastack.restlight.server.schedule.Schedulers;
@@ -202,15 +199,7 @@ public class RouteUtils {
                 .mapping(buildMapping(methodInfo.isLocator(), mapping))
                 .scheduler(scheduler)
                 .handler(handler)
-                .executionFactory(new ExecutionHandlerFactory() {
-                    @Override
-                    public <CTX extends RequestContext> RouteExecution<CTX> create(CTX ctx) {
-                        @SuppressWarnings("unchecked")
-                        RouteExecution<CTX> execution = (RouteExecution<CTX>) routeMethod.toExecution(
-                                (io.esastack.restlight.core.context.RequestContext) ctx);
-                        return execution;
-                    }
-                })
+                .executionFactory(routeMethod::toExecution)
         );
     }
 

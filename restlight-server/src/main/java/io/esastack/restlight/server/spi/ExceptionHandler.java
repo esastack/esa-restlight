@@ -17,12 +17,26 @@ package io.esastack.restlight.server.spi;
 
 import esa.commons.annotation.Internal;
 import esa.commons.spi.SPI;
-import io.esastack.httpserver.core.RequestContext;
-import io.esastack.restlight.server.internal.InternalExceptionHandler;
+import io.esastack.restlight.core.util.Ordered;
+import io.esastack.restlight.server.bootstrap.ExceptionHandlerChain;
+import io.esastack.restlight.server.context.RequestContext;
+
+import java.util.concurrent.CompletableFuture;
 
 @SPI
 @Internal
 @FunctionalInterface
-public interface ExceptionHandler extends InternalExceptionHandler<RequestContext> {
+public interface ExceptionHandler extends Ordered {
+
+    /**
+     * Handles the exception by given {@code context} and next {@link ExceptionHandlerChain}.
+     *
+     * @param context   context
+     * @param th        th
+     * @param next      next handler chain
+     * @return          handled result
+     */
+    CompletableFuture<Void> handle(RequestContext context, Throwable th, ExceptionHandlerChain next);
+
 }
 

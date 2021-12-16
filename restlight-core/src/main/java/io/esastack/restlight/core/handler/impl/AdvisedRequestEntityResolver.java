@@ -17,7 +17,6 @@ package io.esastack.restlight.core.handler.impl;
 
 import io.esastack.restlight.core.DeployContext;
 import io.esastack.restlight.core.config.RestlightOptions;
-import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.method.HandlerMethod;
 import io.esastack.restlight.core.method.Param;
 import io.esastack.restlight.core.resolver.HandledValue;
@@ -26,6 +25,7 @@ import io.esastack.restlight.core.resolver.RequestEntityImpl;
 import io.esastack.restlight.core.resolver.RequestEntityResolver;
 import io.esastack.restlight.core.resolver.RequestEntityResolverAdvice;
 import io.esastack.restlight.core.resolver.RequestEntityResolverContextImpl;
+import io.esastack.restlight.server.context.RequestContext;
 
 import java.util.List;
 

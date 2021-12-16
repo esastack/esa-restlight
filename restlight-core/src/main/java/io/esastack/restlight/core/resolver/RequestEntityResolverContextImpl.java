@@ -19,8 +19,8 @@ import esa.commons.Checks;
 import esa.commons.collection.Attribute;
 import esa.commons.collection.AttributeKey;
 import io.esastack.commons.net.http.MediaType;
-import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.method.Param;
+import io.esastack.restlight.server.context.RequestContext;
 
 import java.io.InputStream;
 import java.util.List;

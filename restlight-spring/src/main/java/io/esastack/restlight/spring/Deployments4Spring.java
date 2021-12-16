@@ -181,8 +181,6 @@ public class Deployments4Spring<R extends AbstractRestlight4Spring<R, D, O>, D e
             filters.values().forEach(filter -> this.addFilter(
                     (c, next) -> filter.doFilter(c, ctx -> next.doFilter(c))));
         }
-        beansOfType(context, io.esastack.restlight.core.spi.Filter.class).values()
-                .forEach(this::addFilter);
         this.addFilters(beansOfType(context, FilterFactory.class).values()
                 .stream()
                 .map(factory -> factory.filter(deployContext()))

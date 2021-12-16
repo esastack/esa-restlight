@@ -22,10 +22,10 @@ import io.esastack.commons.net.http.HttpHeaders;
 import io.esastack.commons.net.http.HttpMethod;
 import io.esastack.commons.net.http.HttpVersion;
 import io.esastack.commons.net.http.MediaType;
-import io.esastack.httpserver.core.HttpInputStream;
 import io.esastack.restlight.server.context.FilterContext;
-import io.esastack.restlight.server.context.FilteringRequest;
-import io.esastack.restlight.server.context.impl.FilterContextImpl;
+import io.esastack.restlight.server.core.FilteringRequest;
+import io.esastack.restlight.server.core.HttpInputStream;
+import io.esastack.restlight.server.core.impl.FilterContextImpl;
 import io.esastack.restlight.server.handler.FilterChain;
 import io.esastack.restlight.server.spi.Filter;
 import io.esastack.restlight.server.util.LoggerUtils;
@@ -92,7 +92,7 @@ public class XssFilter implements Filter {
     }
 
     @Override
-    public CompletableFuture<Void> doFilter(FilterContext context, FilterChain<FilterContext> chain) {
+    public CompletableFuture<Void> doFilter(FilterContext context, FilterChain chain) {
         return chain.doFilter(new FilterContextImpl(context, wrapper.apply(context.request()),
                 context.response()));
     }

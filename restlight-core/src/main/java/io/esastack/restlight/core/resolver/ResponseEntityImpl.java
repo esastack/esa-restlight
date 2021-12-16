@@ -21,8 +21,8 @@ import io.esastack.commons.net.buffer.Buffer;
 import io.esastack.commons.net.buffer.BufferUtil;
 import io.esastack.commons.net.http.HttpHeaderNames;
 import io.esastack.httpserver.core.Response;
-import io.esastack.restlight.core.context.HttpResponse;
 import io.esastack.restlight.core.method.HandlerMethod;
+import io.esastack.restlight.server.core.HttpResponse;
 import io.netty.buffer.ByteBuf;
 
 import java.io.File;

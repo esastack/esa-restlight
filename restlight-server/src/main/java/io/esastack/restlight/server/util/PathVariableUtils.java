@@ -19,7 +19,7 @@ import esa.commons.StringUtils;
 import esa.commons.collection.AttributeKey;
 import esa.commons.collection.LinkedMultiValueMap;
 import esa.commons.collection.MultiValueMap;
-import io.esastack.httpserver.core.RequestContext;
+import io.esastack.restlight.server.context.RequestContext;
 import io.esastack.restlight.server.route.predicate.PatternsPredicate;
 
 import java.util.Collections;

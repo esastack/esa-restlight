@@ -16,7 +16,6 @@
 package io.esastack.restlight.starter.actuator.meter;
 
 import esa.commons.Checks;
-import io.esastack.httpserver.core.RequestContext;
 import io.esastack.restlight.core.DeployContext;
 import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.server.bootstrap.DispatcherHandler;
@@ -59,7 +58,7 @@ public class RestlightBizThreadPoolBinder implements RestlightBizExecutorAware, 
                     .tag("id", "queue.length")
                     .register(registry);
             if (deployContext != null) {
-                Optional<DispatcherHandler<? extends RequestContext>> dispatcherHandler =
+                Optional<DispatcherHandler> dispatcherHandler =
                         deployContext.dispatcherHandler();
                 dispatcherHandler.ifPresent(handler ->
                         FunctionCounter.builder(restlightBizThread, handler, DispatcherHandler::rejectCount)

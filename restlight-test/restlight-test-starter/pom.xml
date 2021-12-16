@@ -31,11 +31,6 @@
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>restlight-test-mock</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
             <artifactId>restlight-starter</artifactId>
             <version>${project.version}</version>
             <scope>provided</scope>

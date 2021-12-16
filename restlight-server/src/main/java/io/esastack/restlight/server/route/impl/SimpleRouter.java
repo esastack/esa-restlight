@@ -15,7 +15,7 @@
  */
 package io.esastack.restlight.server.route.impl;
 
-import io.esastack.httpserver.core.RequestContext;
+import io.esastack.restlight.server.context.RequestContext;
 
 class SimpleRouter extends AbstractRouter<RouteWrap> {
 

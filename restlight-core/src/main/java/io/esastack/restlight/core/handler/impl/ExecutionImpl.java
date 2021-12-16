@@ -16,21 +16,20 @@
 package io.esastack.restlight.core.handler.impl;
 
 import esa.commons.Checks;
-import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.server.route.CompletionHandler;
 import io.esastack.restlight.server.route.Execution;
 import io.esastack.restlight.server.route.ExecutionHandler;
 
-public class ExecutionImpl implements Execution<RequestContext> {
+public class ExecutionImpl implements Execution {
 
-    private final ExecutionHandler<RequestContext> executionHandler;
+    private final ExecutionHandler executionHandler;
     private final CompletionHandler completionHandler;
 
-    public ExecutionImpl(ExecutionHandler<RequestContext> executionHandler) {
+    public ExecutionImpl(ExecutionHandler executionHandler) {
         this(executionHandler, null);
     }
 
-    public ExecutionImpl(ExecutionHandler<RequestContext> executionHandler,
+    public ExecutionImpl(ExecutionHandler executionHandler,
                          CompletionHandler completionHandler) {
         Checks.checkNotNull(executionHandler, "executionHandler");
         this.executionHandler = executionHandler;
@@ -38,7 +37,7 @@ public class ExecutionImpl implements Execution<RequestContext> {
     }
 
     @Override
-    public ExecutionHandler<RequestContext> executionHandler() {
+    public ExecutionHandler executionHandler() {
         return executionHandler;
     }
 

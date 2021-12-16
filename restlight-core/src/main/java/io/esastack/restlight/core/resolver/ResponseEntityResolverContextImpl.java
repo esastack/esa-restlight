@@ -16,8 +16,8 @@
 package io.esastack.restlight.core.resolver;
 
 import esa.commons.Checks;
-import io.esastack.httpserver.impl.AttributesProxy;
-import io.esastack.restlight.core.context.RequestContext;
+import io.esastack.restlight.server.context.RequestContext;
+import io.esastack.restlight.server.core.impl.AttributesProxy;
 
 import java.io.OutputStream;
 import java.util.List;
@@ -55,7 +55,9 @@ public class ResponseEntityResolverContextImpl extends AttributesProxy implement
 
     @Override
     public void outputStream(OutputStream os) {
-        context.response().outputStream(os);
+        // TODO:
+        return;
+        //context.response().outputStream(os);
     }
 
     @Override

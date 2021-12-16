@@ -18,8 +18,6 @@ package io.esastack.restlight.jaxrs.adapter;
 import esa.commons.Checks;
 import esa.commons.annotation.Internal;
 import esa.commons.spi.Feature;
-import io.esastack.restlight.core.context.RequestContext;
-import io.esastack.restlight.core.spi.ExceptionHandler;
 import io.esastack.restlight.core.util.Constants;
 import io.esastack.restlight.jaxrs.impl.JaxrsContextUtils;
 import io.esastack.restlight.jaxrs.impl.container.ContainerResponseContextImpl;
@@ -27,6 +25,8 @@ import io.esastack.restlight.jaxrs.impl.container.ResponseContainerContext;
 import io.esastack.restlight.jaxrs.impl.core.ResponseImpl;
 import io.esastack.restlight.jaxrs.util.RuntimeDelegateUtils;
 import io.esastack.restlight.server.bootstrap.ExceptionHandlerChain;
+import io.esastack.restlight.server.context.RequestContext;
+import io.esastack.restlight.server.spi.ExceptionHandler;
 import jakarta.ws.rs.container.ContainerRequestContext;
 import jakarta.ws.rs.container.ContainerResponseFilter;
 
@@ -45,7 +45,7 @@ public class GlobalResponseFiltersAdapter implements ExceptionHandler {
 
     @Override
     public CompletableFuture<Void> handle(RequestContext context, Throwable th,
-                                          ExceptionHandlerChain<RequestContext> next) {
+                                          ExceptionHandlerChain next) {
         ResponseImpl rsp = JaxrsContextUtils.getResponse(context);
         RuntimeDelegateUtils.addMetadataToJakarta(context.response(), rsp);
         final ContainerRequestContext reqCtx = new ResponseContainerContext(JaxrsContextUtils

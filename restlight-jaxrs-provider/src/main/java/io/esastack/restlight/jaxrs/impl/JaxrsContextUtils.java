@@ -18,7 +18,7 @@ package io.esastack.restlight.jaxrs.impl;
 import esa.commons.collection.AttributeKey;
 import esa.commons.reflect.AnnotationUtils;
 import esa.commons.reflect.ReflectionUtils;
-import io.esastack.httpserver.core.RequestContext;
+import io.esastack.restlight.server.context.RequestContext;
 import io.esastack.restlight.core.method.MethodParam;
 import io.esastack.restlight.core.method.Param;
 import io.esastack.restlight.jaxrs.impl.container.AbstractContainerRequestContext;

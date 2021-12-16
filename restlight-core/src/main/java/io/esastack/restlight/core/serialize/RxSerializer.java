@@ -15,7 +15,7 @@
  */
 package io.esastack.restlight.core.serialize;
 
-import io.esastack.httpserver.core.HttpInputStream;
+import io.esastack.restlight.server.core.HttpInputStream;
 
 import java.lang.reflect.Type;
 

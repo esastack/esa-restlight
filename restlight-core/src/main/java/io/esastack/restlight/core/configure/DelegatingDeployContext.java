@@ -18,7 +18,6 @@ package io.esastack.restlight.core.configure;
 import esa.commons.Checks;
 import esa.commons.collection.Attribute;
 import esa.commons.collection.AttributeKey;
-import io.esastack.httpserver.core.RequestContext;
 import io.esastack.restlight.core.DeployContext;
 import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.core.handler.HandlerAdvicesFactory;
@@ -130,7 +129,7 @@ public class DelegatingDeployContext<O extends RestlightOptions> implements Depl
     }
 
     @Override
-    public Optional<DispatcherHandler<? extends RequestContext>> dispatcherHandler() {
+    public Optional<DispatcherHandler> dispatcherHandler() {
         return underlying.dispatcherHandler();
     }
 

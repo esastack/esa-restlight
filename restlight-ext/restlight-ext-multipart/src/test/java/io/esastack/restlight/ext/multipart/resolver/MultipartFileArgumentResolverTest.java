@@ -15,14 +15,13 @@
  */
 package io.esastack.restlight.ext.multipart.resolver;
 
-import io.esastack.httpserver.core.HttpRequest;
-import io.esastack.restlight.core.context.impl.HttpResponseAdapter;
-import io.esastack.restlight.core.context.impl.RequestContextImpl;
 import io.esastack.restlight.core.method.MethodParam;
 import io.esastack.restlight.core.resolver.ParamResolver;
 import io.esastack.restlight.ext.multipart.core.MultipartFile;
 import io.esastack.restlight.server.bootstrap.WebServerException;
-import io.esastack.restlight.test.mock.MockHttpResponse;
+import io.esastack.restlight.server.core.HttpRequest;
+import io.esastack.restlight.server.core.impl.RequestContextImpl;
+import io.esastack.restlight.server.mock.MockHttpResponse;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -41,7 +40,7 @@ class MultipartFileArgumentResolverTest extends AbstractMultipartResolverTest {
         assertTrue(fileResolver.supports(parameter));
         final ParamResolver resolver = fileResolver.createResolver(parameter, null);
         return resolver.resolve(parameter, new RequestContextImpl(request,
-                new HttpResponseAdapter(MockHttpResponse.aMockResponse().build())));
+                MockHttpResponse.aMockResponse().build()));
     }
 
     private static Object createFormResolverAndResolve(HttpRequest request,
@@ -51,7 +50,7 @@ class MultipartFileArgumentResolverTest extends AbstractMultipartResolverTest {
         assertTrue(attrResolver.supports(parameter));
         final ParamResolver resolver = attrResolver.createResolver(parameter, null);
         return resolver.resolve(parameter, new RequestContextImpl(request,
-                new HttpResponseAdapter(MockHttpResponse.aMockResponse().build())));
+                MockHttpResponse.aMockResponse().build()));
     }
 
     @Test

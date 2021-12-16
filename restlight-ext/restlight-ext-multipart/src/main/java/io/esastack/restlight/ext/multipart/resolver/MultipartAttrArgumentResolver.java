@@ -16,7 +16,6 @@
 package io.esastack.restlight.ext.multipart.resolver;
 
 import esa.commons.collection.AttributeKey;
-import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.method.Param;
 import io.esastack.restlight.core.resolver.ParamResolver;
 import io.esastack.restlight.core.resolver.ParamResolverFactory;
@@ -25,6 +24,7 @@ import io.esastack.restlight.core.serialize.HttpRequestSerializer;
 import io.esastack.restlight.core.util.ConverterUtils;
 import io.esastack.restlight.ext.multipart.annotation.FormParam;
 import io.esastack.restlight.ext.multipart.core.MultipartConfig;
+import io.esastack.restlight.server.context.RequestContext;
 
 import java.util.List;
 import java.util.function.Function;

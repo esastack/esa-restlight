@@ -16,15 +16,14 @@
 package io.esastack.restlight.ext.filter.xss;
 
 import esa.commons.collection.AttributeMap;
-import io.esastack.httpserver.core.HttpRequest;
-import io.esastack.restlight.server.context.FilterContext;
-import io.esastack.restlight.server.context.impl.FilterContextImpl;
-import io.esastack.restlight.server.context.impl.FilteringRequestImpl;
+import io.esastack.restlight.server.core.HttpRequest;
+import io.esastack.restlight.server.core.impl.FilterContextImpl;
+import io.esastack.restlight.server.core.impl.FilteringRequestImpl;
 import io.esastack.restlight.server.handler.FilterChain;
+import io.esastack.restlight.server.mock.MockHttpRequest;
+import io.esastack.restlight.server.mock.MockHttpResponse;
 import io.esastack.restlight.server.spi.Filter;
 import io.esastack.restlight.server.util.Futures;
-import io.esastack.restlight.test.mock.MockHttpRequest;
-import io.esastack.restlight.test.mock.MockHttpResponse;
 import org.junit.jupiter.api.Test;
 
 import java.util.concurrent.atomic.AtomicReference;
@@ -42,7 +41,7 @@ class XssFilterTest {
     void testDoFilter() {
         final AtomicReference<HttpRequest> req = new AtomicReference<>();
 
-        final FilterChain<FilterContext> chain = ((context) -> {
+        final FilterChain chain = ((context) -> {
             req.set(context.request());
             return Futures.completedFuture();
         });

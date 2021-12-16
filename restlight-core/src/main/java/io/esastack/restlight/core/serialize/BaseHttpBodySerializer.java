@@ -16,8 +16,8 @@
 package io.esastack.restlight.core.serialize;
 
 import io.esastack.commons.net.http.MediaType;
-import io.esastack.httpserver.core.HttpInputStream;
-import io.esastack.httpserver.core.HttpOutputStream;
+import io.esastack.restlight.server.core.HttpInputStream;
+import io.esastack.restlight.server.core.HttpOutputStream;
 import io.esastack.restlight.core.resolver.HandledValue;
 import io.esastack.restlight.core.resolver.RequestEntity;
 import io.esastack.restlight.core.resolver.ResponseEntity;

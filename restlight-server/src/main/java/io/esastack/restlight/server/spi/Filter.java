@@ -16,10 +16,36 @@
 package io.esastack.restlight.server.spi;
 
 import esa.commons.spi.SPI;
+import io.esastack.restlight.core.util.Ordered;
 import io.esastack.restlight.server.context.FilterContext;
-import io.esastack.restlight.server.internal.InternalFilter;
+import io.esastack.restlight.server.handler.FilterChain;
+
+import java.util.concurrent.CompletableFuture;
 
 @SPI
-public interface Filter extends InternalFilter<FilterContext> {
+public interface Filter extends Ordered {
+
+    /**
+     * Note: we do not allowed any exception or error here. if a exception or error is threw in this function we will
+     * ignore it to protect the process of current request.
+     * <p>
+     * IMPORTANT: never block current thread please, cause that will effect the performance.
+     *
+     * @param context  context
+     * @param chain    filter chain
+     * @return future
+     */
+    CompletableFuture<Void> doFilter(FilterContext context, FilterChain chain);
+
+    /**
+     * Default to lowest order.
+     *
+     * @return order
+     */
+    @Override
+    default int getOrder() {
+        return LOWEST_PRECEDENCE;
+    }
+
 }
 

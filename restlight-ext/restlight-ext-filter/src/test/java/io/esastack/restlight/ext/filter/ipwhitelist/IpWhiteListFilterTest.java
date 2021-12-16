@@ -17,15 +17,14 @@ package io.esastack.restlight.ext.filter.ipwhitelist;
 
 import esa.commons.collection.AttributeMap;
 import io.esastack.commons.net.http.MediaType;
-import io.esastack.httpserver.core.HttpRequest;
-import io.esastack.httpserver.core.HttpResponse;
-import io.esastack.restlight.server.context.FilterContext;
-import io.esastack.restlight.server.context.impl.FilterContextImpl;
-import io.esastack.restlight.server.context.impl.FilteringRequestImpl;
+import io.esastack.restlight.server.core.HttpRequest;
+import io.esastack.restlight.server.core.HttpResponse;
+import io.esastack.restlight.server.core.impl.FilterContextImpl;
+import io.esastack.restlight.server.core.impl.FilteringRequestImpl;
 import io.esastack.restlight.server.handler.FilterChain;
+import io.esastack.restlight.server.mock.MockHttpRequest;
+import io.esastack.restlight.server.mock.MockHttpResponse;
 import io.esastack.restlight.server.util.Futures;
-import io.esastack.restlight.test.mock.MockHttpRequest;
-import io.esastack.restlight.test.mock.MockHttpResponse;
 import io.netty.handler.codec.http.HttpHeaderNames;
 import org.junit.jupiter.api.Test;
 
@@ -71,7 +70,7 @@ class IpWhiteListFilterTest {
     }
 
     private static void assertAllowed(HttpRequest request, IpWhiteListFilter filter) {
-        final FilterChain<FilterContext> chain = ((context) -> {
+        final FilterChain chain = ((context) -> {
             context.response().status(200);
             return Futures.completedFuture();
         });
@@ -81,7 +80,7 @@ class IpWhiteListFilterTest {
     }
 
     private static void assertNotAllowed(HttpRequest request, IpWhiteListFilter filter) {
-        final FilterChain<FilterContext> chain = ((context) -> {
+        final FilterChain chain = ((context) -> {
             context.response().status(200);
             return Futures.completedFuture();
         });

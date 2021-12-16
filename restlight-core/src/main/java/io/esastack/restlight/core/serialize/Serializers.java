@@ -18,10 +18,10 @@ package io.esastack.restlight.core.serialize;
 import esa.commons.Primitives;
 import io.esastack.commons.net.buffer.BufferUtil;
 import io.esastack.commons.net.http.MediaType;
-import io.esastack.httpserver.core.HttpOutputStream;
-import io.esastack.httpserver.core.HttpResponse;
 import io.esastack.restlight.core.resolver.HandledValue;
 import io.esastack.restlight.core.resolver.ResponseEntity;
+import io.esastack.restlight.server.core.HttpOutputStream;
+import io.esastack.restlight.server.core.HttpResponse;
 import io.netty.buffer.ByteBuf;
 import io.netty.handler.codec.http.HttpHeaderNames;
 
@@ -39,7 +39,8 @@ public final class Serializers {
     public static HandledValue<byte[]> serializeBySerializer(HttpResponseSerializer serializer,
                                                              ResponseEntity entity) throws Exception {
         if (serializer.preferStream()) {
-            HandledValue<Void> value = serializeAndCloseStream(serializer, entity, entity.response().outputStream());
+            // TODO:
+            HandledValue<Void> value = serializeAndCloseStream(serializer, entity, null);
             if (value.isSuccess()) {
                 return HandledValue.succeed(alreadyWrite());
             } else {

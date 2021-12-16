@@ -30,11 +30,6 @@
             <artifactId>restlight-common</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>restlight-server-adapter</artifactId>
-            <version>${project.version}</version>
-        </dependency>
         <!--netty decompressor,used by netty-->
         <dependency>
             <groupId>com.jcraft</groupId>
@@ -44,12 +39,9 @@
             <groupId>io.netty</groupId>
             <artifactId>netty-tcnative-boringssl-static</artifactId>
         </dependency>
-        <!-- test scope -->
         <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>restlight-test-mock</artifactId>
-            <version>${project.version}</version>
-            <scope>test</scope>
+            <groupId>io.esastack</groupId>
+            <artifactId>httpserver</artifactId>
         </dependency>
     </dependencies>
 

@@ -15,7 +15,6 @@
  */
 package io.esastack.restlight.core.handler;
 
-import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.method.HandlerMethod;
 
 import java.lang.reflect.Method;

@@ -15,7 +15,7 @@
  */
 package io.esastack.restlight.server.route;
 
-import io.esastack.httpserver.core.RequestContext;
+import io.esastack.restlight.server.context.RequestContext;
 
 /**
  * The factory to create a {@link ExecutionHandler} to handle the specified {@link RequestContext}.
@@ -29,7 +29,7 @@ public interface ExecutionHandlerFactory {
      * @param ctx   ctx
      * @return      execution handler
      */
-    <CTX extends RequestContext> RouteExecution<CTX> create(CTX ctx);
+    RouteExecution create(RequestContext ctx);
 
 }
 

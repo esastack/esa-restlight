@@ -17,9 +17,9 @@ package io.esastack.restlight.core.util;
 
 import esa.commons.Primitives;
 import esa.commons.collection.AttributeKey;
-import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.method.HandlerMethod;
 import io.esastack.restlight.core.resolver.ResponseEntity;
+import io.esastack.restlight.server.context.RequestContext;
 
 public final class ResponseEntityUtils {
 

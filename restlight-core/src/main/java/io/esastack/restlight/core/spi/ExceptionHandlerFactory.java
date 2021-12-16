@@ -19,6 +19,7 @@ import esa.commons.annotation.Internal;
 import esa.commons.spi.SPI;
 import io.esastack.restlight.core.DeployContext;
 import io.esastack.restlight.core.config.RestlightOptions;
+import io.esastack.restlight.server.spi.ExceptionHandler;
 
 import java.util.Optional;
 

@@ -20,7 +20,6 @@ import esa.commons.collection.Attribute;
 import esa.commons.collection.AttributeKey;
 import esa.commons.collection.AttributeMap;
 import esa.commons.collection.Attributes;
-import io.esastack.httpserver.core.RequestContext;
 import io.esastack.restlight.server.bootstrap.DispatcherHandler;
 import io.esastack.restlight.server.config.ServerOptions;
 import io.esastack.restlight.server.route.RouteRegistry;
@@ -40,7 +39,7 @@ public class ServerDeployContextImpl<O extends ServerOptions> implements ServerD
     private final Attributes attributes;
     private final Map<String, Scheduler> schedulers = new HashMap<>(16);
     private volatile RouteRegistry registry;
-    private volatile DispatcherHandler<? extends RequestContext> dispatcherHandler;
+    private volatile DispatcherHandler dispatcherHandler;
 
     protected ServerDeployContextImpl(String name, O options) {
         Checks.checkNotNull(options, "name");
@@ -71,7 +70,7 @@ public class ServerDeployContextImpl<O extends ServerOptions> implements ServerD
     }
 
     @Override
-    public Optional<DispatcherHandler<? extends RequestContext>> dispatcherHandler() {
+    public Optional<DispatcherHandler> dispatcherHandler() {
         return Optional.of(dispatcherHandler);
     }
 
@@ -108,7 +107,7 @@ public class ServerDeployContextImpl<O extends ServerOptions> implements ServerD
         this.registry = registry;
     }
 
-    void setDispatcherHandler(DispatcherHandler<? extends RequestContext> dispatcherHandler) {
+    void setDispatcherHandler(DispatcherHandler dispatcherHandler) {
         this.dispatcherHandler = dispatcherHandler;
     }
 }

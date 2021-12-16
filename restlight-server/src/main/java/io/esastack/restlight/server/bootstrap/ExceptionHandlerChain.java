@@ -16,16 +16,16 @@
 package io.esastack.restlight.server.bootstrap;
 
 import esa.commons.annotation.Internal;
-import io.esastack.httpserver.core.RequestContext;
-import io.esastack.restlight.server.internal.InternalExceptionHandler;
+import io.esastack.restlight.server.context.RequestContext;
+import io.esastack.restlight.server.spi.ExceptionHandler;
 
 import java.util.concurrent.CompletableFuture;
 
 /**
- * This is a chained {@link InternalExceptionHandler} which is used to handle throwable.
+ * This is a chained {@link ExceptionHandler} which is used to handle throwable.
  */
 @Internal
-public interface ExceptionHandlerChain<CTX extends RequestContext> {
+public interface ExceptionHandlerChain {
 
     /**
      * Handles the given {@link Throwable} by given {@code context}.
@@ -34,7 +34,7 @@ public interface ExceptionHandlerChain<CTX extends RequestContext> {
      * @param th        throwable
      * @return          handled result
      */
-    CompletableFuture<Void> handle(CTX context, Throwable th);
+    CompletableFuture<Void> handle(RequestContext context, Throwable th);
 
 }
 

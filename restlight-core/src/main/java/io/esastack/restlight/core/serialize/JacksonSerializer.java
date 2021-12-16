@@ -24,8 +24,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import esa.commons.Checks;
-import io.esastack.httpserver.core.HttpInputStream;
-import io.esastack.httpserver.core.HttpOutputStream;
+import io.esastack.restlight.server.core.HttpInputStream;
+import io.esastack.restlight.server.core.HttpOutputStream;
 
 import java.io.IOException;
 import java.io.InputStream;

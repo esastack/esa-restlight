@@ -16,7 +16,6 @@
 package io.esastack.restlight.server;
 
 import esa.commons.collection.Attributes;
-import io.esastack.httpserver.core.RequestContext;
 import io.esastack.restlight.server.bootstrap.DispatcherHandler;
 import io.esastack.restlight.server.config.ServerOptions;
 import io.esastack.restlight.server.route.RouteRegistry;
@@ -69,6 +68,6 @@ public interface ServerDeployContext<O extends ServerOptions> extends Attributes
      *
      * @return optional value
      */
-    Optional<DispatcherHandler<? extends RequestContext>> dispatcherHandler();
+    Optional<DispatcherHandler> dispatcherHandler();
 
 }

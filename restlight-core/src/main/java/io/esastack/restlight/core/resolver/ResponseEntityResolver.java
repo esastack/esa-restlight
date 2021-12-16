@@ -17,9 +17,9 @@ package io.esastack.restlight.core.resolver;
 
 import esa.commons.spi.SPI;
 import io.esastack.commons.net.buffer.Buffer;
-import io.esastack.httpserver.core.RequestContext;
-import io.esastack.restlight.core.context.HttpResponse;
 import io.esastack.restlight.core.util.Ordered;
+import io.esastack.restlight.server.context.RequestContext;
+import io.esastack.restlight.server.core.HttpResponse;
 
 /**
  * This resolver will serialize the {@link ResponseEntity} and write the serialized result to given {@link Buffer}.

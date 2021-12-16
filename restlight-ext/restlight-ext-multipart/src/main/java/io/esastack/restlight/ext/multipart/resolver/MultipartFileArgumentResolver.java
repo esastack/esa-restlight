@@ -16,7 +16,6 @@
 package io.esastack.restlight.ext.multipart.resolver;
 
 import esa.commons.StringUtils;
-import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.method.Param;
 import io.esastack.restlight.core.resolver.ParamResolver;
 import io.esastack.restlight.core.resolver.ParamResolverFactory;
@@ -25,6 +24,7 @@ import io.esastack.restlight.core.serialize.HttpRequestSerializer;
 import io.esastack.restlight.ext.multipart.annotation.UploadFile;
 import io.esastack.restlight.ext.multipart.core.MultipartConfig;
 import io.esastack.restlight.ext.multipart.core.MultipartFile;
+import io.esastack.restlight.server.context.RequestContext;
 
 import java.util.LinkedList;
 import java.util.List;

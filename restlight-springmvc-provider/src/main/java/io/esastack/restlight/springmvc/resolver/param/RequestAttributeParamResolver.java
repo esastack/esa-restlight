@@ -16,7 +16,6 @@
 package io.esastack.restlight.springmvc.resolver.param;
 
 import esa.commons.collection.AttributeKey;
-import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.method.Param;
 import io.esastack.restlight.core.resolver.ParamResolver;
 import io.esastack.restlight.core.resolver.ParamResolverFactory;
@@ -24,6 +23,7 @@ import io.esastack.restlight.core.resolver.nav.NameAndValue;
 import io.esastack.restlight.core.resolver.param.AbstractNameAndValueParamResolver;
 import io.esastack.restlight.core.serialize.HttpRequestSerializer;
 import io.esastack.restlight.core.util.ConverterUtils;
+import io.esastack.restlight.server.context.RequestContext;
 import io.esastack.restlight.springmvc.annotation.shaded.RequestAttribute0;
 
 import java.util.List;

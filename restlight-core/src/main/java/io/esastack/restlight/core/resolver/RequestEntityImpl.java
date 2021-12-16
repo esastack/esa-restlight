@@ -19,13 +19,13 @@ import esa.commons.Checks;
 import esa.commons.io.IOUtils;
 import io.esastack.commons.net.buffer.Buffer;
 import io.esastack.commons.net.buffer.BufferUtil;
-import io.esastack.httpserver.core.HttpInputStream;
-import io.esastack.httpserver.core.HttpRequest;
-import io.esastack.httpserver.impl.HttpInputStreamImpl;
-import io.esastack.httpserver.impl.HttpRequestProxy;
-import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.method.HandlerMethod;
 import io.esastack.restlight.core.method.Param;
+import io.esastack.restlight.server.context.RequestContext;
+import io.esastack.restlight.server.core.HttpInputStream;
+import io.esastack.restlight.server.core.HttpRequest;
+import io.esastack.restlight.server.core.impl.HttpInputStreamImpl;
+import io.esastack.restlight.server.core.impl.HttpRequestProxy;
 import io.netty.buffer.ByteBuf;
 import io.netty.util.ReferenceCountUtil;
 

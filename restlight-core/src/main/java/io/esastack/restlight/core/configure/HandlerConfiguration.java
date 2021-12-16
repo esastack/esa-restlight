@@ -16,7 +16,6 @@
 package io.esastack.restlight.core.configure;
 
 import esa.commons.collection.Attributes;
-import io.esastack.httpserver.impl.AttributesProxy;
 import io.esastack.restlight.core.resolver.ContextResolverFactory;
 import io.esastack.restlight.core.resolver.ParamConverterFactory;
 import io.esastack.restlight.core.resolver.ParamResolverAdviceFactory;
@@ -26,6 +25,7 @@ import io.esastack.restlight.core.resolver.RequestEntityResolverFactory;
 import io.esastack.restlight.core.resolver.ResponseEntityResolverAdviceFactory;
 import io.esastack.restlight.core.resolver.ResponseEntityResolverFactory;
 import io.esastack.restlight.core.spi.RouteFilterFactory;
+import io.esastack.restlight.server.core.impl.AttributesProxy;
 
 import java.util.Collection;
 import java.util.List;

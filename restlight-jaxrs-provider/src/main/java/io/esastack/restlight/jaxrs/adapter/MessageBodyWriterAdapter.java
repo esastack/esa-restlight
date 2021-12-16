@@ -16,12 +16,12 @@
 package io.esastack.restlight.jaxrs.adapter;
 
 import esa.commons.Checks;
-import io.esastack.httpserver.core.RequestContext;
 import io.esastack.restlight.core.resolver.HandledValue;
 import io.esastack.restlight.core.resolver.ResponseEntity;
 import io.esastack.restlight.core.resolver.ResponseEntityResolver;
 import io.esastack.restlight.jaxrs.util.MediaTypeUtils;
 import io.esastack.restlight.jaxrs.util.RuntimeDelegateUtils;
+import io.esastack.restlight.server.context.RequestContext;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.MultivaluedHashMap;
 import jakarta.ws.rs.core.MultivaluedMap;
@@ -56,8 +56,9 @@ public class MessageBodyWriterAdapter<T> implements ResponseEntityResolver {
         MultivaluedMap<String, Object> headers = new MultivaluedHashMap<>();
         RuntimeDelegateUtils.addHeadersToMap(context.response().headers(), headers);
         try {
+            // TODO:
             underlying.writeTo(value, entity.type(), entity.genericType(), entity.annotations(),
-                    mediaType, headers, entity.response().outputStream());
+                    mediaType, headers, null);
         } finally {
             RuntimeDelegateUtils.addHeadersFromMap(context.response().headers(), headers, true);
         }
