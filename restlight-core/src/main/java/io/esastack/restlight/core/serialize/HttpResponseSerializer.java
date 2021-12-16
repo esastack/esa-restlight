@@ -15,11 +15,11 @@
  */
 package io.esastack.restlight.core.serialize;
 
-import io.esastack.restlight.server.core.HttpOutputStream;
 import io.esastack.restlight.core.resolver.HandledValue;
 import io.esastack.restlight.core.resolver.ResponseEntity;
+import io.esastack.restlight.core.util.Ordered;
 
-public interface HttpResponseSerializer extends BaseHttpSerializer {
+public interface HttpResponseSerializer extends Ordered {
 
     /**
      * Serialize the object to byte array.
@@ -29,15 +29,5 @@ public interface HttpResponseSerializer extends BaseHttpSerializer {
      * @throws Exception    any exception
      */
     HandledValue<byte[]> serialize(ResponseEntity entity) throws Exception;
-
-    /**
-     * Serializes the object to byte array.
-     *
-     * @param entity    response entity
-     * @param outputStream  output stream
-     * @return  handled value
-     * @throws Exception    any exception
-     */
-    HandledValue<Void> serialize(ResponseEntity entity, HttpOutputStream outputStream) throws Exception;
 
 }

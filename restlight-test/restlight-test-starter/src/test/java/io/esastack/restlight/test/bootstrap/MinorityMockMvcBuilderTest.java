@@ -27,7 +27,6 @@ import io.esastack.restlight.core.resolver.ResponseEntityResolver;
 import io.esastack.restlight.core.resolver.ResponseEntityResolverAdviceAdapter;
 import io.esastack.restlight.core.serialize.HttpBodySerializer;
 import io.esastack.restlight.server.context.RequestContext;
-import io.esastack.restlight.server.core.HttpOutputStream;
 import io.esastack.restlight.server.mock.MockHttpRequest;
 import io.esastack.restlight.test.context.MockMvc;
 import org.junit.jupiter.api.Assertions;
@@ -74,11 +73,6 @@ class MinorityMockMvcBuilderTest {
         @Override
         public HandledValue<byte[]> serialize(ResponseEntity entity) {
             return HandledValue.succeed(new byte[0]);
-        }
-
-        @Override
-        public HandledValue<Void> serialize(ResponseEntity entity, HttpOutputStream outputStream) {
-            return null;
         }
     }
 

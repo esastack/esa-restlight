@@ -17,8 +17,6 @@ package io.esastack.restlight.core.serialize;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import io.esastack.restlight.server.core.HttpInputStream;
-import io.esastack.restlight.server.core.HttpOutputStream;
 
 import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
@@ -45,17 +43,8 @@ public class GsonSerializer implements JsonSerializer {
     }
 
     @Override
-    public void serialize(Object target, HttpOutputStream outputStream) throws Exception {
-        outputStream.write(gson.toJson(target).getBytes(StandardCharsets.UTF_8));
-    }
-
-    @Override
     public <T> T deserialize(byte[] data, Type type) {
         return gson.fromJson(new String(data, StandardCharsets.UTF_8), type);
     }
 
-    @Override
-    public <T> T deserialize(HttpInputStream inputStream, Type type) throws Exception {
-        return gson.fromJson(inputStream.readString(StandardCharsets.UTF_8), type);
-    }
 }

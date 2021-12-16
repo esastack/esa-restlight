@@ -16,8 +16,6 @@
 package io.esastack.restlight.core.serialize;
 
 import io.esastack.commons.net.http.MediaType;
-import io.esastack.restlight.server.core.HttpInputStream;
-import io.esastack.restlight.server.core.HttpOutputStream;
 import io.esastack.restlight.core.resolver.HandledValue;
 import io.esastack.restlight.core.resolver.RequestEntity;
 import io.esastack.restlight.core.resolver.ResponseEntity;
@@ -32,11 +30,8 @@ public abstract class BaseHttpBodySerializer implements HttpBodySerializer {
         if (!supportsRead(entity)) {
             return HandledValue.failed();
         }
-        if (preferStream()) {
-            return HandledValue.succeed(doDeserialize(entity.inputStream(), entity.type()));
-        } else {
-            return HandledValue.succeed(doDeserialize(entity.body().getBytes(), entity.type()));
-        }
+
+        return HandledValue.succeed(doDeserialize(entity.body().getBytes(), entity.type()));
     }
 
     @Override
@@ -48,22 +43,8 @@ public abstract class BaseHttpBodySerializer implements HttpBodySerializer {
         return HandledValue.succeed(doSerialize(entity.response().entity()));
     }
 
-    @Override
-    public HandledValue<Void> serialize(ResponseEntity entity, HttpOutputStream outputStream) throws Exception {
-        if (!supportsWrite(entity)) {
-            return HandledValue.failed();
-        }
-        addContentType(entity);
-        doSerialize(entity.response().entity(), outputStream);
-        return HandledValue.succeed(null);
-    }
-
     protected byte[] doSerialize(Object target) throws Exception {
         return serializer().serialize(target);
-    }
-
-    protected void doSerialize(Object target, HttpOutputStream outputStream) throws Exception {
-        serializer().serialize(target, outputStream);
     }
 
     protected  <T> T doDeserialize(byte[] data, Type type) throws Exception {
@@ -71,13 +52,6 @@ public abstract class BaseHttpBodySerializer implements HttpBodySerializer {
             return null;
         }
         return serializer().deserialize(data, type);
-    }
-
-    protected <T> T doDeserialize(HttpInputStream inputStream, Type type) throws Exception {
-        if (inputStream.available() == 0) {
-            return null;
-        }
-        return serializer().deserialize(inputStream, type);
     }
 
     /**
