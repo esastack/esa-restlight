@@ -27,6 +27,6 @@ public abstract class StrNameAndValueResolverFactory extends NameAndValueResolve
         if (converter == null) {
             return null;
         }
-        return (name, ctx, valueExtractor) -> converter.fromString(valueExtractor.apply(name, ctx));
+        return (name, ctx, valueProvider) -> converter.fromString(valueProvider.apply(name, ctx));
     }
 }

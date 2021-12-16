@@ -19,16 +19,16 @@ import esa.commons.ClassUtils;
 import esa.commons.StringUtils;
 import esa.commons.collection.LinkedMultiValueMap;
 import esa.commons.collection.MultiValueMap;
-import io.esastack.httpserver.core.HttpRequest;
+import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.method.Param;
-import io.esastack.restlight.core.resolver.HandlerResolverFactory;
-import io.esastack.restlight.core.resolver.ParamResolver;
 import io.esastack.restlight.core.resolver.ParamResolverFactory;
-import io.esastack.restlight.core.resolver.nav.NameAndValue;
+import io.esastack.restlight.core.resolver.StringConverter;
+import io.esastack.restlight.core.resolver.nav.NameAndValueResolver;
 import io.esastack.restlight.core.resolver.nav.StrsNameAndValueResolverFactory;
 import io.esastack.restlight.server.bootstrap.WebServerException;
 import io.esastack.restlight.server.util.PathVariableUtils;
 
+import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -42,22 +42,37 @@ import java.util.function.BiFunction;
 public abstract class AbstractMatrixParamResolver extends StrsNameAndValueResolverFactory {
 
     @Override
-    public ParamResolver createResolver(Param param,
-                                        HandlerResolverFactory resolverFactory) {
+    protected NameAndValueResolver.Converter<Collection<String>> initConverter(Param param,
+                                                                               BiFunction<Class<?>, Type, StringConverter> converterLookup) {
         if (isMatrixVariableMap(param, extractParamName(param))) {
-            return new MatrixMapResolver(param, isSingleValueMap(param), getPathVar(param));
+            boolean singleValueMap = isSingleValueMap(param);
+            String pathVar = getPathVar(param);
+            return (name, ctx, valueProvider) -> {
+                if (ctx != null) {
+                    Map<String, MultiValueMap<String, String>> pathParameters =
+                            PathVariableUtils.getMatrixVariables(ctx.request());
+
+                    if (pathParameters.isEmpty()) {
+                        return Collections.emptyMap();
+                    }
+
+                    // Handle matrixVariableMap
+                    return getMatrixVariableMap(pathParameters, pathVar, singleValueMap);
+                }
+                //handle when convert defaultValue
+                return null;
+            };
+        } else {
+            return super.initConverter(param, converterLookup);
         }
-        return super.createResolver(param, resolverFactory);
     }
 
-    public abstract String extractParamName(Param param);
-
     @Override
-    protected BiFunction<String, HttpRequest, Collection<String>> valueExtractor(Param param) {
+    protected BiFunction<String, RequestContext, Collection<String>> initValueProvider(Param param) {
         String pathVar = getPathVar(param);
-        return (name, request) -> {
+        return (name, ctx) -> {
             Map<String, MultiValueMap<String, String>> pathParameters =
-                    PathVariableUtils.getMatrixVariables(request);
+                    PathVariableUtils.getMatrixVariables(ctx.request());
 
             if (pathParameters.isEmpty()) {
                 return null;
@@ -88,6 +103,8 @@ public abstract class AbstractMatrixParamResolver extends StrsNameAndValueResolv
         };
     }
 
+    public abstract String extractParamName(Param param);
+
     /**
      * Obtains path variable from the given {@code param}.
      *
@@ -96,57 +113,28 @@ public abstract class AbstractMatrixParamResolver extends StrsNameAndValueResolv
      */
     protected abstract String getPathVar(Param param);
 
-    protected class MatrixMapResolver extends AbstractNameAndValueParamResolver {
+    private static Object getMatrixVariableMap(Map<String, MultiValueMap<String, String>> matrixVariables,
+                                               String pathVar,
+                                               boolean singleValueMap) {
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
 
-        private final boolean singleValueMap;
-        private final String pathVar;
-
-        protected MatrixMapResolver(Param param, boolean singleValueMap, String pathVar) {
-            super(param);
-            this.singleValueMap = singleValueMap;
-            this.pathVar = pathVar;
-        }
-
-        @Override
-        protected Object resolveName(String name, HttpRequest request) {
-            Map<String, MultiValueMap<String, String>> pathParameters =
-                    PathVariableUtils.getMatrixVariables(request);
-
-            if (pathParameters.isEmpty()) {
+        if (pathVar != null) {
+            MultiValueMap<String, String> mapForPathVariable = matrixVariables.get(pathVar);
+            if (mapForPathVariable == null) {
                 return Collections.emptyMap();
             }
-
-            // Handle matrixVariableMap
-            return getMatrixVariableMap(pathParameters);
-        }
-
-        @Override
-        protected NameAndValue createNameAndValue(Param param) {
-            return AbstractMatrixParamResolver.this.createNameAndValue(param, (defaultValue, isLazy) -> defaultValue);
-        }
-
-        private Object getMatrixVariableMap(Map<String, MultiValueMap<String, String>> matrixVariables) {
-            MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
-
-            if (pathVar != null) {
-                MultiValueMap<String, String> mapForPathVariable = matrixVariables.get(pathVar);
-                if (mapForPathVariable == null) {
-                    return Collections.emptyMap();
-                }
-                map.putAll(mapForPathVariable);
-            } else {
-                for (MultiValueMap<String, String> vars : matrixVariables.values()) {
-                    vars.forEach((name, values) -> {
-                        for (String value : values) {
-                            map.add(name, value);
-                        }
-                    });
-                }
+            map.putAll(mapForPathVariable);
+        } else {
+            for (MultiValueMap<String, String> vars : matrixVariables.values()) {
+                vars.forEach((name, values) -> {
+                    for (String value : values) {
+                        map.add(name, value);
+                    }
+                });
             }
-
-            return singleValueMap ? map.toSingleValueMap() : map;
         }
 
+        return singleValueMap ? map.toSingleValueMap() : map;
     }
 
     private static boolean isMatrixVariableMap(Param param, String matrixName) {

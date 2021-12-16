@@ -26,6 +26,7 @@ import io.esastack.restlight.core.resolver.ParamResolver;
 import io.esastack.restlight.core.resolver.nav.NameAndValue;
 
 import java.util.function.BiFunction;
+import java.util.function.Function;
 
 /**
  * @see QueryBean
@@ -74,15 +75,17 @@ public class QueryBeanParamResolver extends RequestBeanParamResolver {
         }
 
         @Override
-        protected NameAndValue createNameAndValue(Param param, BiFunction<String, Boolean, Object> defaultValueConverter) {
-            String name;
-            QueryBean.Name alia = param.getAnnotation(QueryBean.Name.class);
-            if (alia != null && !StringUtils.isEmpty(alia.value())) {
-                name = alia.value();
-            } else {
-                name = param.name();
-            }
-            return new NameAndValue(name, false, null);
+        protected Function<Param, NameAndValue> initNameAndValueCreator(BiFunction<String, Boolean, Object> defaultValueConverter) {
+            return (param) -> {
+                String name;
+                QueryBean.Name alia = param.getAnnotation(QueryBean.Name.class);
+                if (alia != null && !StringUtils.isEmpty(alia.value())) {
+                    name = alia.value();
+                } else {
+                    name = param.name();
+                }
+                return new NameAndValue(name, false, null);
+            };
         }
 
         @Override

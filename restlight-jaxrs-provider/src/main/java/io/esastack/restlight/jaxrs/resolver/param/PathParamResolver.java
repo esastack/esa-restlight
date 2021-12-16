@@ -24,6 +24,7 @@ import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.ext.ParamConverter;
 
 import java.util.function.BiFunction;
+import java.util.function.Function;
 
 /**
  * Implementation of {@link ParamResolverFactory} for resolving argument that annotated by the PathVariable.
@@ -36,13 +37,15 @@ public class PathParamResolver extends AbstractPathVariableParamResolver {
     }
 
     @Override
-    protected NameAndValue createNameAndValue(Param param, BiFunction<String, Boolean, Object> defaultValueConverter) {
-        PathParam pathParam =
-                param.getAnnotation(PathParam.class);
-        assert pathParam != null;
-        return new NameAndValue(pathParam.value(), false,
-                defaultValueConverter.apply(JaxrsMappingUtils.extractDefaultValue(param),
-                        param.hasAnnotation(ParamConverter.Lazy.class)));
+    protected Function<Param, NameAndValue> initNameAndValueCreator(BiFunction<String, Boolean, Object> defaultValueConverter) {
+        return (param) -> {
+            PathParam pathParam =
+                    param.getAnnotation(PathParam.class);
+            assert pathParam != null;
+            return new NameAndValue(pathParam.value(), false,
+                    defaultValueConverter.apply(JaxrsMappingUtils.extractDefaultValue(param),
+                            param.hasAnnotation(ParamConverter.Lazy.class)));
+        };
     }
 
     @Override

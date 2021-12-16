@@ -16,14 +16,14 @@ public class NameAndValueResolver<T> implements ParamResolver {
 
     private final NameAndValue nav;
     private final Converter<T> converter;
-    private final BiFunction<String, RequestContext, T> valueExtractor;
+    private final BiFunction<String, RequestContext, T> valueProvider;
 
     public NameAndValueResolver(Param param,
                                 Converter<T> converter,
-                                BiFunction<String, RequestContext, T> valueExtractor,
+                                BiFunction<String, RequestContext, T> valueProvider,
                                 Function<Param, NameAndValue> nameAndValueCreator) {
         this.converter = Checks.checkNotNull(converter, "converter");
-        this.valueExtractor = Checks.checkNotNull(valueExtractor, "valueExtractor");
+        this.valueProvider = Checks.checkNotNull(valueProvider, "valueProvider");
         this.nav = getNameAndValue(param,
                 Checks.checkNotNull(nameAndValueCreator, "nameAndValueCreator")
                         .apply(Checks.checkNotNull(param, "param")));
@@ -31,7 +31,7 @@ public class NameAndValueResolver<T> implements ParamResolver {
 
     @Override
     public Object resolve(Param param, RequestContext context) {
-        Object arg = converter.convert(nav.name, context, valueExtractor);
+        Object arg = converter.convert(nav.name, context, valueProvider);
         if (arg == null) {
             if (nav.hasDefaultValue) {
                 arg = nav.defaultValue.get();
@@ -94,6 +94,6 @@ public class NameAndValueResolver<T> implements ParamResolver {
     }
 
     public interface Converter<T> {
-        Object convert(String name, RequestContext ctx, BiFunction<String, RequestContext, T> valueExtractor);
+        Object convert(String name, RequestContext ctx, BiFunction<String, RequestContext, T> valueProvider);
     }
 }

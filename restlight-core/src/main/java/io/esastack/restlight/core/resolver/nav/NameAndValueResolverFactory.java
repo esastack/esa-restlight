@@ -1,5 +1,6 @@
 package io.esastack.restlight.core.resolver.nav;
 
+import esa.commons.Checks;
 import io.esastack.restlight.core.DeployContext;
 import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.core.context.RequestContext;
@@ -36,11 +37,7 @@ public abstract class NameAndValueResolverFactory<T> implements ParamResolverPro
 
             @Override
             public NameAndValueResolver<T> createResolver(Param param, List<? extends HttpRequestSerializer> serializers) {
-                Optional<HandlerResolverFactory> resolverFactory = ctx.resolverFactory();
-                if (!resolverFactory.isPresent()) {
-                    throw new NullPointerException("resolverFactory");
-                }
-                return NameAndValueResolverFactory.this.createResolver(param, resolverFactory.get());
+                return NameAndValueResolverFactory.this.createResolver(param, ctx.resolverFactory().orElse(null));
             }
 
             @Override
@@ -50,14 +47,15 @@ public abstract class NameAndValueResolverFactory<T> implements ParamResolverPro
         });
     }
 
-    private NameAndValueResolver<T> createResolver(Param param,
-                                                   HandlerResolverFactory resolverFactory) {
+    public NameAndValueResolver<T> createResolver(Param param,
+                                                  HandlerResolverFactory resolverFactory) {
+        Checks.checkNotNull(resolverFactory, "resolverFactory");
         BiFunction<Class<?>, Type, StringConverter> converterLookup = (baseType, baseGenericType) ->
                 resolverFactory.getStringConverter(param, baseType, baseGenericType);
         NameAndValueResolver.Converter<T> converter = initConverter(param, converterLookup);
         return new NameAndValueResolver<>(param,
                 converter,
-                initValueExtractor(param),
+                initValueProvider(param),
                 initNameAndValueCreator(initDefaultValueConverter(converter))
         );
     }
@@ -67,7 +65,7 @@ public abstract class NameAndValueResolverFactory<T> implements ParamResolverPro
     protected abstract Function<Param, NameAndValue> initNameAndValueCreator(
             BiFunction<String, Boolean, Object> defaultValueConverter);
 
-    protected abstract BiFunction<String, RequestContext, T> initValueExtractor(Param param);
+    protected abstract BiFunction<String, RequestContext, T> initValueProvider(Param param);
 
     protected abstract BiFunction<String, Boolean, Object> initDefaultValueConverter(
             NameAndValueResolver.Converter<T> converter);

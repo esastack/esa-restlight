@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.esastack.restlight.ext.multipart.resolver;
+package io.esastack.restlight.ext.multipart.spi;
 
 import io.esastack.restlight.ext.multipart.annotation.FormParam;
 import io.esastack.restlight.ext.multipart.annotation.UploadFile;

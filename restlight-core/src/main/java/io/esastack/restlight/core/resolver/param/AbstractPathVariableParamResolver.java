@@ -16,7 +16,7 @@
 package io.esastack.restlight.core.resolver.param;
 
 import esa.commons.StringUtils;
-import io.esastack.httpserver.core.HttpRequest;
+import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.method.Param;
 import io.esastack.restlight.core.resolver.ParamResolverFactory;
 import io.esastack.restlight.core.resolver.nav.StrNameAndValueResolverFactory;
@@ -30,9 +30,9 @@ import java.util.function.BiFunction;
 public abstract class AbstractPathVariableParamResolver extends StrNameAndValueResolverFactory {
 
     @Override
-    protected BiFunction<String, HttpRequest, String> valueExtractor(Param param) {
-        return (name, request) -> {
-            String value = PathVariableUtils.getPathVariable(request, name);
+    protected BiFunction<String, RequestContext, String> initValueProvider(Param param) {
+        return (name, ctx) -> {
+            String value = PathVariableUtils.getPathVariable(ctx.request(), name);
             return StringUtils.isEmpty(value) ? value : cleanTemplateValueIfNecessary(value);
         };
     }

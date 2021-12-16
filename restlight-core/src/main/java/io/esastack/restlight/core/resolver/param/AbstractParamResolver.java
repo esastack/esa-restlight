@@ -17,14 +17,14 @@ package io.esastack.restlight.core.resolver.param;
 
 import esa.commons.ClassUtils;
 import esa.commons.StringUtils;
-import io.esastack.httpserver.core.HttpRequest;
+import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.method.Param;
-import io.esastack.restlight.core.resolver.HandlerResolverFactory;
-import io.esastack.restlight.core.resolver.ParamResolver;
 import io.esastack.restlight.core.resolver.ParamResolverFactory;
-import io.esastack.restlight.core.resolver.nav.NameAndValue;
+import io.esastack.restlight.core.resolver.StringConverter;
+import io.esastack.restlight.core.resolver.nav.NameAndValueResolver;
 import io.esastack.restlight.core.resolver.nav.StrsNameAndValueResolverFactory;
 
+import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -37,9 +37,37 @@ import java.util.function.BiFunction;
  */
 public abstract class AbstractParamResolver extends StrsNameAndValueResolverFactory {
 
+    private final static NameAndValueResolver.Converter<Collection<String>> singleMapConverter =
+            (name, ctx, valueProvider) -> {
+                if (ctx != null) {
+                    return ctx.request().paramsMap();
+                }
+                //handle when convert defaultValue
+                return null;
+            };
+
+    private final static NameAndValueResolver.Converter<Collection<String>> mapConverter =
+            (name, ctx, valueProvider) -> {
+                if (ctx != null) {
+                    Map<String, List<String>> p = ctx.request().paramsMap();
+                    if (p.isEmpty()) {
+                        return Collections.emptyMap();
+                    }
+                    Map<String, String> m = new HashMap<>(p.size());
+                    p.forEach((k, v) -> {
+                        if (!v.isEmpty()) {
+                            m.put(k, v.get(0));
+                        }
+                    });
+                    return m;
+                }
+                //handle when convert defaultValue
+                return null;
+            };
+
     @Override
-    public ParamResolver createResolver(Param param,
-                                        HandlerResolverFactory resolverFactory) {
+    protected NameAndValueResolver.Converter<Collection<String>> initConverter(Param param,
+                                                                               BiFunction<Class<?>, Type, StringConverter> converterLookup) {
         String name = extractParamName(param);
         if (StringUtils.isEmpty(name)
                 && Map.class.equals(param.type())) {
@@ -48,70 +76,20 @@ public abstract class AbstractParamResolver extends StrsNameAndValueResolverFact
                 Class<?> valueType = types[1];
                 if (String.class.equals(valueType)) {
                     // Map<String, String>
-                    return new SingleValueMapResolver(param);
+                    return singleMapConverter;
                 } else if (List.class.equals(valueType)) {
                     // Map<String, List<String>>
-                    return new MapResolver(param);
+                    return mapConverter;
                 }
             }
         }
-        return super.createResolver(param, resolverFactory);
+        return super.initConverter(param, converterLookup);
     }
 
     public abstract String extractParamName(Param param);
 
     @Override
-    protected BiFunction<String, HttpRequest, Collection<String>> valueExtractor(Param param) {
-        return (name, request) -> request.paramsMap().get(name);
+    protected BiFunction<String, RequestContext, Collection<String>> initValueProvider(Param param) {
+        return (name, ctx) -> ctx.request().paramsMap().get(name);
     }
-
-    private abstract class BaseResolver extends AbstractNameAndValueParamResolver {
-
-        private BaseResolver(Param param) {
-            super(param);
-        }
-
-        @Override
-        protected NameAndValue createNameAndValue(Param param) {
-            return AbstractParamResolver.this.createNameAndValue(param, (defaultValue, isLazy) -> defaultValue);
-        }
-    }
-
-    /**
-     * Implementation for resolving argument type of {@link Map}
-     */
-    private class MapResolver extends BaseResolver {
-
-        private MapResolver(Param param) {
-            super(param);
-        }
-
-        @Override
-        protected Map<String, List<String>> resolveName(String name, HttpRequest request) {
-            return request.paramsMap();
-        }
-    }
-
-    private class SingleValueMapResolver extends BaseResolver {
-
-        private SingleValueMapResolver(Param param) {
-            super(param);
-        }
-
-        @Override
-        protected Map<String, String> resolveName(String name, HttpRequest request) {
-            Map<String, List<String>> p = request.paramsMap();
-            if (p.isEmpty()) {
-                return Collections.emptyMap();
-            }
-            Map<String, String> m = new HashMap<>(p.size());
-            p.forEach((k, v) -> {
-                if (!v.isEmpty()) {
-                    m.put(k, v.get(0));
-                }
-            });
-            return m;
-        }
-    }
-
 }

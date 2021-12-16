@@ -15,54 +15,61 @@
  */
 package io.esastack.restlight.springmvc.resolver.param;
 
-import io.esastack.httpserver.core.HttpRequest;
+import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.method.Param;
-import io.esastack.restlight.core.resolver.ParamResolver;
 import io.esastack.restlight.core.resolver.ParamResolverFactory;
+import io.esastack.restlight.core.resolver.StringConverter;
 import io.esastack.restlight.core.resolver.nav.NameAndValue;
-import io.esastack.restlight.core.resolver.param.AbstractNameAndValueParamResolver;
-import io.esastack.restlight.core.serialize.HttpRequestSerializer;
-import io.esastack.restlight.core.util.ConverterUtils;
+import io.esastack.restlight.core.resolver.nav.NameAndValueResolver;
+import io.esastack.restlight.core.resolver.nav.NameAndValueResolverFactory;
 import io.esastack.restlight.springmvc.annotation.shaded.RequestAttribute0;
 
-import java.util.List;
+import java.lang.reflect.Type;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 /**
  * Implementation of {@link ParamResolverFactory} for resolving argument that annotated by the RequestAttribute.
  */
-public class RequestAttributeParamResolver implements ParamResolverFactory {
-
-    @Override
-    public ParamResolver createResolver(Param param,
-                                        List<? extends HttpRequestSerializer> serializers) {
-        return new AbstractNameAndValueParamResolver(param) {
-
-            final Function<String, Object> converter =
-                    ConverterUtils.str2ObjectConverter(param.genericType(), p -> p);
-
-            @Override
-            protected Object resolveName(String name, HttpRequest request) throws Exception {
-                Object v = request.getAttribute(name);
-                if (converter != null && v instanceof String) {
-                    return converter.apply((String) v);
-                }
-                return v;
-            }
-
-            @Override
-            protected NameAndValue createNameAndValue(Param param) {
-                RequestAttribute0 requestAttribute
-                        = RequestAttribute0.fromShade(param.getAnnotation(RequestAttribute0.shadedClass()));
-                assert requestAttribute != null;
-                return new NameAndValue(requestAttribute.value(), requestAttribute.required());
-            }
-        };
-    }
+public class RequestAttributeParamResolver extends NameAndValueResolverFactory<Object> {
 
     @Override
     public boolean supports(Param param) {
         return param.hasAnnotation(RequestAttribute0.shadedClass());
+    }
+
+    @Override
+    protected Function<Param, NameAndValue> initNameAndValueCreator(BiFunction<String, Boolean, Object> defaultValueConverter) {
+        return (param) -> {
+            RequestAttribute0 requestAttribute
+                    = RequestAttribute0.fromShade(param.getAnnotation(RequestAttribute0.shadedClass()));
+            assert requestAttribute != null;
+            return new NameAndValue(requestAttribute.value(), requestAttribute.required());
+        };
+    }
+
+    @Override
+    protected BiFunction<String, RequestContext, Object> initValueProvider(Param param) {
+        return (name, ctx) -> ctx.request().getAttribute(name);
+    }
+
+    @Override
+    protected BiFunction<String, Boolean, Object> initDefaultValueConverter(NameAndValueResolver.Converter<Object> converter) {
+        return (defaultString, isLazy) -> null;
+    }
+
+    @Override
+    protected NameAndValueResolver.Converter<Object> initConverter(Param param, BiFunction<Class<?>, Type, StringConverter> converterLookup) {
+        final StringConverter converter =
+                converterLookup.apply(param.type(), param.genericType());
+
+        return (name, ctx, valueProvider) -> {
+            Object v = valueProvider.apply(name, ctx);
+            if (converter != null && v instanceof String) {
+                return converter.fromString((String) v);
+            }
+            return v;
+        };
     }
 
     @Override

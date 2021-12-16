@@ -43,7 +43,6 @@ import io.esastack.restlight.core.resolver.ResponseEntityResolver;
 import io.esastack.restlight.core.resolver.ResponseEntityResolverAdviceAdapter;
 import io.esastack.restlight.core.resolver.ResponseEntityResolverAdviceFactory;
 import io.esastack.restlight.core.resolver.ResponseEntityResolverFactory;
-import io.esastack.restlight.core.resolver.StringConverterAdapter;
 import io.esastack.restlight.core.resolver.StringConverterFactory;
 import io.esastack.restlight.core.serialize.HttpBodySerializer;
 import io.esastack.restlight.core.serialize.HttpRequestSerializer;
@@ -364,18 +363,6 @@ public class MiniConfigurableDeployments {
      */
     public MiniConfigurableDeployments addInterceptorFactories(Collection<? extends InterceptorFactory> interceptors) {
         deployments.addInterceptorFactories(interceptors);
-        return self();
-    }
-
-    /**
-     * Adds {@link StringConverterAdapter} which will be registered in the {@link HandlerResolverFactory}
-     *
-     * @param converter resolver
-     *
-     * @return this deployments
-     */
-    public MiniConfigurableDeployments addParamConverter(StringConverterAdapter converter) {
-        deployments.addParamConverter(converter);
         return self();
     }
 

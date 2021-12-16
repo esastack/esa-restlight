@@ -23,6 +23,7 @@ import io.esastack.restlight.springmvc.annotation.shaded.MatrixVariable0;
 import io.esastack.restlight.springmvc.util.RequestMappingUtils;
 
 import java.util.function.BiFunction;
+import java.util.function.Function;
 
 /**
  * Implementation of {@link ParamResolverFactory} for resolving argument that annotated by the MatrixVariable
@@ -35,14 +36,16 @@ public class MatrixVariableParamResolver extends AbstractMatrixParamResolver {
     }
 
     @Override
-    protected NameAndValue createNameAndValue(Param param, BiFunction<String, Boolean, Object> defaultValueConverter) {
-        MatrixVariable0 matrixVariable =
-                MatrixVariable0.fromShade(param.getAnnotation(MatrixVariable0.shadedClass()));
-        assert matrixVariable != null;
-        return new NameAndValue(matrixVariable.value(),
-                matrixVariable.required(),
-                defaultValueConverter.apply(RequestMappingUtils.normaliseDefaultValue(matrixVariable.defaultValue()),
-                        false));
+    protected Function<Param, NameAndValue> initNameAndValueCreator(BiFunction<String, Boolean, Object> defaultValueConverter) {
+        return (param) -> {
+            MatrixVariable0 matrixVariable =
+                    MatrixVariable0.fromShade(param.getAnnotation(MatrixVariable0.shadedClass()));
+            assert matrixVariable != null;
+            return new NameAndValue(matrixVariable.value(),
+                    matrixVariable.required(),
+                    defaultValueConverter.apply(RequestMappingUtils.normaliseDefaultValue(matrixVariable.defaultValue()),
+                            false));
+        };
     }
 
     @Override

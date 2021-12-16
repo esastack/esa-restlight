@@ -47,8 +47,8 @@ public abstract class StrsNameAndValueResolverFactory extends NameAndValueResolv
             throw BOTH_CONVERTERS_ARE_NULL;
         }
 
-        return (name, ctx, valueExtractor) -> {
-            Collection<String> values = valueExtractor.apply(name, ctx);
+        return (name, ctx, valueProvider) -> {
+            Collection<String> values = valueProvider.apply(name, ctx);
             if (values == null || values.isEmpty()) {
                 return null;
             }

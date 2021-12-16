@@ -13,13 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.esastack.restlight.ext.multipart.resolver;
+package io.esastack.restlight.ext.multipart.spi;
 
 import io.esastack.httpserver.core.HttpRequest;
 import io.esastack.restlight.core.context.impl.HttpResponseAdapter;
 import io.esastack.restlight.core.context.impl.RequestContextImpl;
 import io.esastack.restlight.core.method.MethodParam;
+import io.esastack.restlight.core.resolver.HandlerResolverFactory;
 import io.esastack.restlight.core.resolver.ParamResolver;
+import io.esastack.restlight.core.util.ConverterUtils;
 import io.esastack.restlight.ext.multipart.core.MultipartFile;
 import io.esastack.restlight.server.bootstrap.WebServerException;
 import io.esastack.restlight.test.mock.MockHttpResponse;
@@ -31,6 +33,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 class MultipartFileArgumentResolverTest extends AbstractMultipartResolverTest {
 
@@ -39,7 +43,10 @@ class MultipartFileArgumentResolverTest extends AbstractMultipartResolverTest {
                                                    int index) throws Exception {
         final MethodParam parameter = handlerMethods.get(method).parameters()[index];
         assertTrue(fileResolver.supports(parameter));
-        final ParamResolver resolver = fileResolver.createResolver(parameter, null);
+        HandlerResolverFactory resolverFactory = mock(HandlerResolverFactory.class);
+        when(resolverFactory.getStringConverter(parameter, parameter.type(), parameter.genericType()))
+                .thenReturn(null);
+        final ParamResolver resolver = fileResolver.createResolver(parameter, resolverFactory);
         return resolver.resolve(parameter, new RequestContextImpl(request,
                 new HttpResponseAdapter(MockHttpResponse.aMockResponse().build())));
     }
@@ -48,8 +55,10 @@ class MultipartFileArgumentResolverTest extends AbstractMultipartResolverTest {
                                                        String method,
                                                        int index) throws Exception {
         final MethodParam parameter = handlerMethods.get(method).parameters()[index];
-        assertTrue(attrResolver.supports(parameter));
-        final ParamResolver resolver = attrResolver.createResolver(parameter, null);
+        HandlerResolverFactory resolverFactory = mock(HandlerResolverFactory.class);
+        when(resolverFactory.getStringConverter(parameter, parameter.type(), parameter.genericType()))
+                .thenReturn(ConverterUtils.str2ObjectConverter(parameter.genericType())::apply);
+        final ParamResolver resolver = attrResolver.createResolver(parameter, resolverFactory);
         return resolver.resolve(parameter, new RequestContextImpl(request,
                 new HttpResponseAdapter(MockHttpResponse.aMockResponse().build())));
     }

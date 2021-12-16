@@ -34,7 +34,7 @@ import java.util.function.BiFunction;
 public abstract class AbstractCookieValueResolver extends StrNameAndValueResolverFactory {
 
     private final static NameAndValueResolver.Converter<String> cookieConverter =
-            (name, ctx, valueExtractor) -> {
+            (name, ctx, valueProvider) -> {
                 if (ctx != null) {
                     return ctx.request().getCookie(name);
                 }
@@ -43,7 +43,7 @@ public abstract class AbstractCookieValueResolver extends StrNameAndValueResolve
             };
 
     private final static NameAndValueResolver.Converter<String> cookiesConverter =
-            (name, ctx, valueExtractor) -> {
+            (name, ctx, valueProvider) -> {
                 if (ctx != null) {
                     return ctx.request().cookies();
                 }
@@ -70,7 +70,7 @@ public abstract class AbstractCookieValueResolver extends StrNameAndValueResolve
     }
 
     @Override
-    protected BiFunction<String, RequestContext, String> initValueExtractor(Param param) {
+    protected BiFunction<String, RequestContext, String> initValueProvider(Param param) {
         return (name, ctx) -> {
             Cookie cookie = ctx.request().getCookie(name);
             return cookie == null ? null : cookie.value();

@@ -24,6 +24,7 @@ import jakarta.ws.rs.MatrixParam;
 import jakarta.ws.rs.ext.ParamConverter;
 
 import java.util.function.BiFunction;
+import java.util.function.Function;
 
 /**
  * Implementation of {@link ParamResolverFactory} for resolving argument that annotated by the MatrixVariable
@@ -36,13 +37,15 @@ public class MatrixVariableParamResolver extends AbstractMatrixParamResolver {
     }
 
     @Override
-    protected NameAndValue createNameAndValue(Param param, BiFunction<String, Boolean, Object> defaultValueConverter) {
-        MatrixParam matrixParam =
-                param.getAnnotation(MatrixParam.class);
-        assert matrixParam != null;
-        return new NameAndValue(matrixParam.value(), false,
-                defaultValueConverter.apply(JaxrsMappingUtils.extractDefaultValue(param),
-                        param.hasAnnotation(ParamConverter.Lazy.class)));
+    protected Function<Param, NameAndValue> initNameAndValueCreator(BiFunction<String, Boolean, Object> defaultValueConverter) {
+        return (param) -> {
+            MatrixParam matrixParam =
+                    param.getAnnotation(MatrixParam.class);
+            assert matrixParam != null;
+            return new NameAndValue(matrixParam.value(), false,
+                    defaultValueConverter.apply(JaxrsMappingUtils.extractDefaultValue(param),
+                            param.hasAnnotation(ParamConverter.Lazy.class)));
+        };
     }
 
     @Override

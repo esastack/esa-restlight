@@ -33,7 +33,7 @@ import java.util.function.BiFunction;
 public abstract class AbstractHeaderResolver extends StrsNameAndValueResolverFactory {
 
     private final static NameAndValueResolver.Converter<Collection<String>> headersConverter =
-            (name, ctx, valueExtractor) -> {
+            (name, ctx, valueProvider) -> {
                 if (ctx != null) {
                     return ctx.request().headers();
                 }
@@ -52,7 +52,7 @@ public abstract class AbstractHeaderResolver extends StrsNameAndValueResolverFac
     }
 
     @Override
-    protected BiFunction<String, RequestContext, Collection<String>> initValueExtractor(Param param) {
+    protected BiFunction<String, RequestContext, Collection<String>> initValueProvider(Param param) {
         return (name, ctx) -> ctx.request().headers().getAll(name);
     }
 }

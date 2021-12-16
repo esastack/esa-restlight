@@ -24,6 +24,7 @@ import jakarta.ws.rs.FormParam;
 import jakarta.ws.rs.ext.ParamConverter;
 
 import java.util.function.BiFunction;
+import java.util.function.Function;
 
 /**
  * Implementation of {@link ParamResolverFactory} for resolving argument that annotated by the {@link
@@ -37,14 +38,16 @@ public class FormParamResolver extends AbstractParamResolver {
     }
 
     @Override
-    protected NameAndValue createNameAndValue(Param param, BiFunction<String, Boolean, Object> defaultValueConverter) {
-        FormParam formParam
-                = param.getAnnotation(FormParam.class);
-        assert formParam != null;
-        return new NameAndValue(formParam.value(),
-                false,
-                defaultValueConverter.apply(JaxrsMappingUtils.extractDefaultValue(param),
-                        param.hasAnnotation(ParamConverter.Lazy.class)));
+    protected Function<Param, NameAndValue> initNameAndValueCreator(BiFunction<String, Boolean, Object> defaultValueConverter) {
+        return (param) -> {
+            FormParam formParam
+                    = param.getAnnotation(FormParam.class);
+            assert formParam != null;
+            return new NameAndValue(formParam.value(),
+                    false,
+                    defaultValueConverter.apply(JaxrsMappingUtils.extractDefaultValue(param),
+                            param.hasAnnotation(ParamConverter.Lazy.class)));
+        };
     }
 
     @Override
