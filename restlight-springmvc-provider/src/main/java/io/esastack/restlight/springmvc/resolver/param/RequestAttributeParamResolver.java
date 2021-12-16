@@ -15,6 +15,7 @@
  */
 package io.esastack.restlight.springmvc.resolver.param;
 
+import esa.commons.collection.AttributeKey;
 import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.method.Param;
 import io.esastack.restlight.core.resolver.ParamResolverFactory;
@@ -52,7 +53,7 @@ public class RequestAttributeParamResolver extends NameAndValueResolverFactory<O
 
     @Override
     protected BiFunction<String, RequestContext, Object> initValueProvider(Param param) {
-        return (name, ctx) -> ctx.request().getAttribute(name);
+        return (name, ctx) -> ctx.attr(AttributeKey.stringKey(name));
     }
 
     @Override

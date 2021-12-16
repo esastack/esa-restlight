@@ -17,13 +17,13 @@ package io.esastack.restlight.ext.multipart.spi;
 
 import esa.commons.Checks;
 import esa.commons.StringUtils;
+import esa.commons.collection.AttributeKey;
 import esa.commons.logging.Logger;
 import esa.commons.logging.LoggerFactory;
 import io.esastack.commons.net.buffer.BufferUtil;
 import io.esastack.commons.net.netty.http.Http1HeadersAdaptor;
 import io.esastack.commons.net.netty.http.Http1HeadersImpl;
 import io.esastack.httpserver.core.HttpRequest;
-import io.esastack.httpserver.core.HttpResponse;
 import io.esastack.restlight.core.DeployContext;
 import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.core.context.RequestContext;
@@ -60,8 +60,9 @@ import java.util.function.BiFunction;
 
 abstract class AbstractMultipartParamResolver<T> extends NameAndValueResolverFactory<T> {
 
-    static final String PREFIX = "$multipart.attr.";
-    private static final String MULTIPART_DECODER = "$multipart.decoder";
+    static final AttributeKey<String> PREFIX = AttributeKey.stringKey("$multipart.attr.");
+    private static final AttributeKey<HttpPostMultipartRequestDecoder> MULTIPART_DECODER =
+            AttributeKey.valueOf("$multipart.decoder");
 
     private static final String ENCODING_KEY = "multipart.charset";
     private static final String USE_DISK_KEY = "multipart.use-disk";
@@ -72,9 +73,9 @@ abstract class AbstractMultipartParamResolver<T> extends NameAndValueResolverFac
     private static final Logger logger =
             LoggerFactory.getLogger(AbstractMultipartParamResolver.class);
 
-    private static final String MULTIPART_BODY_RESOLVED = "$multipart.resolved";
-    private static final String CLEANER_LISTENER = "$multipart.cleaner";
-    static String MULTIPART_FILES = "$multipart.files";
+    private static final AttributeKey<Boolean> MULTIPART_BODY_RESOLVED = AttributeKey.valueOf("$multipart.resolved");
+    private static final AttributeKey<String> CLEANER_LISTENER = AttributeKey.stringKey("$multipart.cleaner");
+    static final AttributeKey<List<MultipartFile>> MULTIPART_FILES = AttributeKey.valueOf("$multipart.files");
 
     private HttpDataFactory factory;
 
@@ -108,7 +109,7 @@ abstract class AbstractMultipartParamResolver<T> extends NameAndValueResolverFac
 
         return (name, ctx) -> {
             HttpRequest request = ctx.request();
-            if (!request.hasAttribute(MULTIPART_BODY_RESOLVED)) {
+            if (!ctx.hasAttr(MULTIPART_BODY_RESOLVED)) {
                 final io.netty.handler.codec.http.HttpRequest request0 = formattedReq(request);
 
                 if (!HttpPostRequestDecoder.isMultipart(request0)) {
@@ -124,8 +125,8 @@ abstract class AbstractMultipartParamResolver<T> extends NameAndValueResolverFac
                     InterfaceHttpData.HttpDataType type = item.getHttpDataType();
                     if (type == InterfaceHttpData.HttpDataType.Attribute) {
                         try {
-                            request.setAttribute(PREFIX + item.getName(),
-                                    getAndClean((Attribute) item));
+                            ctx.attr(AttributeKey.stringKey(PREFIX + item.getName()))
+                                    .set(getAndClean((Attribute) item));
                         } catch (IOException e) {
                             throw new RuntimeException(e);
                         }
@@ -133,9 +134,9 @@ abstract class AbstractMultipartParamResolver<T> extends NameAndValueResolverFac
                         files.add(parse((FileUpload) item));
                     }
                 }
-                request.setAttribute(MULTIPART_FILES, files);
-                request.setAttribute(MULTIPART_BODY_RESOLVED, true);
-                request.setAttribute(MULTIPART_DECODER, decoder);
+                ctx.attr(MULTIPART_FILES).set(files);
+                ctx.attr(MULTIPART_BODY_RESOLVED).set(true);
+                ctx.attr(MULTIPART_DECODER).set(decoder);
             }
             return valueProvider.apply(name, ctx);
         };
@@ -155,7 +156,7 @@ abstract class AbstractMultipartParamResolver<T> extends NameAndValueResolverFac
                 return converter.convert(name, ctx, valueProvider);
             } finally {
                 if (ctx != null) {
-                    tryAddCleaner(ctx.request(), ctx.response());
+                    tryAddCleaner(ctx);
                 }
             }
         };
@@ -187,14 +188,14 @@ abstract class AbstractMultipartParamResolver<T> extends NameAndValueResolverFac
         }
     }
 
-    private void tryAddCleaner(HttpRequest request, HttpResponse response) {
-        final List<MultipartFile> files = request.getUncheckedAttribute(MULTIPART_FILES);
+    private void tryAddCleaner(RequestContext ctx) {
+        final List<MultipartFile> files = ctx.attr(MULTIPART_FILES).get();
 
         // Note: decoder.destroy() is only allowed to invoke once.
-        final HttpPostMultipartRequestDecoder decoder = request.removeUncheckedAttribute(MULTIPART_DECODER);
-        if (request.getAttribute(CLEANER_LISTENER) == null && files != null && decoder != null) {
-            request.setAttribute(CLEANER_LISTENER, "");
-            response.onEnd((r) -> {
+        final HttpPostMultipartRequestDecoder decoder = ctx.attr(MULTIPART_DECODER).getAndRemove();
+        if (ctx.attr(CLEANER_LISTENER).get() == null && files != null && decoder != null) {
+            ctx.attr(CLEANER_LISTENER).set("");
+            ctx.response().onEnd((r) -> {
                 for (MultipartFile file : files) {
                     try {
                         file.delete();

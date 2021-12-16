@@ -72,7 +72,7 @@ public class MultipartFileArgumentResolver extends AbstractMultipartParamResolve
     @Override
     protected BiFunction<String, RequestContext, List<MultipartFile>> doInitValueProvider(Param param) {
         return (name, ctx) -> {
-            final List<MultipartFile> files = ctx.request().getUncheckedAttribute(MULTIPART_FILES);
+            final List<MultipartFile> files = ctx.attr(MULTIPART_FILES).get();
             if (files == null) {
                 return null;
             }

@@ -15,6 +15,7 @@
  */
 package io.esastack.restlight.ext.multipart.spi;
 
+import esa.commons.collection.AttributeKey;
 import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.method.Param;
 import io.esastack.restlight.core.resolver.StringConverter;
@@ -50,7 +51,7 @@ public class MultipartAttrArgumentResolver extends AbstractMultipartParamResolve
 
     @Override
     protected BiFunction<String, RequestContext, String> doInitValueProvider(Param param) {
-        return (name, ctx) -> ctx.request().getUncheckedAttribute(PREFIX + name);
+        return (name, ctx) -> ctx.attr(AttributeKey.stringKey(PREFIX + name)).get();
     }
 
     @Override

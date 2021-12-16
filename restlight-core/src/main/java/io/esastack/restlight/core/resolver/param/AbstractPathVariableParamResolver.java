@@ -32,7 +32,7 @@ public abstract class AbstractPathVariableParamResolver extends StrNameAndValueR
     @Override
     protected BiFunction<String, RequestContext, String> initValueProvider(Param param) {
         return (name, ctx) -> {
-            String value = PathVariableUtils.getPathVariable(ctx.request(), name);
+            String value = PathVariableUtils.getPathVariable(ctx, name);
             return StringUtils.isEmpty(value) ? value : cleanTemplateValueIfNecessary(value);
         };
     }

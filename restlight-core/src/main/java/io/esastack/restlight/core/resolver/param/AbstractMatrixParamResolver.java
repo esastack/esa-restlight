@@ -51,7 +51,7 @@ public abstract class AbstractMatrixParamResolver extends StrsNameAndValueResolv
             return (name, ctx, valueProvider) -> {
                 if (ctx != null) {
                     Map<String, MultiValueMap<String, String>> pathParameters =
-                            PathVariableUtils.getMatrixVariables(ctx.request());
+                            PathVariableUtils.getMatrixVariables(ctx);
 
                     if (pathParameters.isEmpty()) {
                         return Collections.emptyMap();
@@ -73,7 +73,7 @@ public abstract class AbstractMatrixParamResolver extends StrsNameAndValueResolv
         String pathVar = getPathVar(param);
         return (name, ctx) -> {
             Map<String, MultiValueMap<String, String>> pathParameters =
-                    PathVariableUtils.getMatrixVariables(ctx.request());
+                    PathVariableUtils.getMatrixVariables(ctx);
 
             if (pathParameters.isEmpty()) {
                 return null;

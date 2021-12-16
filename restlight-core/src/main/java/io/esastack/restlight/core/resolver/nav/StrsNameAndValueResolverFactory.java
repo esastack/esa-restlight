@@ -38,8 +38,8 @@ public abstract class StrsNameAndValueResolverFactory extends NameAndValueResolv
     protected NameAndValueResolver.Converter<Collection<String>> initConverter(
             Param param,
             BiFunction<Class<?>, Type, StringConverter> converterLookup) {
-        final StringConverter strConverter = converterLookup.apply(param.type(), param.genericType());
 
+        final StringConverter strConverter = converterLookup.apply(param.type(), param.genericType());
         final Function<Collection<String>, Object> strsConverter = ConverterUtils.strs2ObjectConverter(param.type(),
                 param.genericType(),
                 converterLookup.andThen((converter) -> converter::fromString));
