@@ -17,6 +17,7 @@ package io.esastack.restlight.core.spi.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import esa.commons.annotation.Internal;
+import esa.commons.collection.AttributeKey;
 import esa.commons.spi.Feature;
 import io.esastack.restlight.core.DeployContext;
 import io.esastack.restlight.core.config.RestlightOptions;
@@ -32,7 +33,7 @@ import io.esastack.restlight.core.util.Constants;
 public class JacksonDefaultSerializerFactory implements DefaultSerializerFactory {
 
     @Internal
-    public static final String OBJECT_MAPPER = "$object_mapper";
+    public static final AttributeKey<Object> OBJECT_MAPPER = AttributeKey.valueOf("$object_mapper");
 
     private volatile HttpBodySerializer jackson;
 
@@ -49,7 +50,7 @@ public class JacksonDefaultSerializerFactory implements DefaultSerializerFactory
     private HttpBodySerializer getInstance(DeployContext<? extends RestlightOptions> ctx) {
         if (jackson == null) {
             synchronized (this) {
-                final Object objectMapper = ctx.attribute(OBJECT_MAPPER);
+                final Object objectMapper = ctx.attr(OBJECT_MAPPER).get();
                 if (objectMapper instanceof ObjectMapper) {
                     jackson = new JacksonHttpBodySerializer((ObjectMapper) objectMapper);
                     return jackson;

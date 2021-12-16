@@ -60,12 +60,12 @@ public class ResponseEntityResolverContextImpl extends AttributesProxy implement
 
     @Override
     public Object entity() {
-        return entity.entity();
+        return entity.response().entity();
     }
 
     @Override
     public void entity(Object entity) {
-        this.entity.entity(entity);
+        this.entity.response().entity(entity);
     }
 
     @Override

@@ -17,8 +17,8 @@ package io.esastack.restlight.starter.actuator.adapt;
 
 import esa.commons.Checks;
 import io.esastack.commons.net.http.HttpMethod;
-import io.esastack.httpserver.core.HttpRequest;
 import io.esastack.httpserver.core.HttpResponse;
+import io.esastack.httpserver.core.RequestContext;
 import io.esastack.restlight.server.bootstrap.WebServerException;
 import io.esastack.restlight.server.route.RouteRegistry;
 import io.esastack.restlight.server.util.Futures;
@@ -34,7 +34,7 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 /**
- * This handler is a fake handler for Restlight. {@link #handle(HttpRequest, HttpResponse, Map)} method will be
+ * This handler is a fake handler for Restlight. {@link #handle(RequestContext, Map)} method will be
  * regarded as a controller interface to be registered into the {@link RouteRegistry}, and it is designed as a
  * asynchronously controller which always returns a {@link CompletableFuture} result.
  */
@@ -48,28 +48,28 @@ class OperationHandler {
     }
 
     @SuppressWarnings("unused")
-    CompletableFuture<Object> handle(HttpRequest request, HttpResponse response, Map<String, String> body) {
-        return handleResult(doInvoke(request, body), response);
+    CompletableFuture<Object> handle(RequestContext context, Map<String, String> body) {
+        return handleResult(doInvoke(context, body), context.response());
     }
 
-    private Object doInvoke(HttpRequest request, Map<String, String> body) {
+    private Object doInvoke(RequestContext context, Map<String, String> body) {
         try {
             return this.operation.invoke(new InvocationContext(SecurityContext.NONE,
-                    getArguments(request, body)));
+                    getArguments(context, body)));
         } catch (MissingParametersException e) {
             return Futures.completedExceptionally(WebServerException.badRequest(e));
         }
     }
 
-    private Map<String, Object> getArguments(HttpRequest request,
+    private Map<String, Object> getArguments(RequestContext context,
                                              Map<String, String> body) {
         Map<String, Object> arguments = new LinkedHashMap<>();
-        if (body != null && HttpMethod.POST.equals(request.method())) {
+        if (body != null && HttpMethod.POST.equals(context.request().method())) {
             arguments.putAll(body);
         }
-        request.paramsMap().forEach((name, values) -> arguments.put(name, (values.size() != 1) ? values :
+        context.request().paramsMap().forEach((name, values) -> arguments.put(name, (values.size() != 1) ? values :
                 values.get(0)));
-        Map<String, String> urlTemplateVariables = PathVariableUtils.getPathVariables(request);
+        Map<String, String> urlTemplateVariables = PathVariableUtils.getPathVariables(context);
         if (urlTemplateVariables != null && !urlTemplateVariables.isEmpty()) {
             arguments.putAll(urlTemplateVariables);
         }

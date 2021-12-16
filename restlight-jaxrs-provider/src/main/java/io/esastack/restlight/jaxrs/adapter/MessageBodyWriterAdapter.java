@@ -46,13 +46,13 @@ public class MessageBodyWriterAdapter<T> implements ResponseEntityResolver {
     @Override
     public HandledValue<Void> writeTo(ResponseEntity entity, RequestContext context) throws Exception {
         MediaType mediaType = MediaTypeUtils.convert(entity.mediaType());
-        if (entity.entity() == null
+        if (entity.response().entity() == null
                 || !isCompatible(mediaType)
                 || !underlying.isWriteable(entity.type(), entity.genericType(), entity.annotations(), mediaType)) {
             return HandledValue.failed();
         }
         @SuppressWarnings("unchecked")
-        T value = (T) entity.entity();
+        T value = (T) entity.response().entity();
         MultivaluedMap<String, Object> headers = new MultivaluedHashMap<>();
         RuntimeDelegateUtils.addHeadersToMap(context.response().headers(), headers);
         try {

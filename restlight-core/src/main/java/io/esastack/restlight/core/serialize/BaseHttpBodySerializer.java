@@ -33,9 +33,9 @@ public abstract class BaseHttpBodySerializer implements HttpBodySerializer {
             return HandledValue.failed();
         }
         if (preferStream()) {
-            return doDeserialize(entity.inputStream(), entity.type());
+            return HandledValue.succeed(doDeserialize(entity.inputStream(), entity.type()));
         } else {
-            return doDeserialize(entity.byteData(), entity.type());
+            return HandledValue.succeed(doDeserialize(entity.body().getBytes(), entity.type()));
         }
     }
 
@@ -45,7 +45,7 @@ public abstract class BaseHttpBodySerializer implements HttpBodySerializer {
             return HandledValue.failed();
         }
         addContentType(entity);
-        return HandledValue.succeed(doSerialize(entity.entity()));
+        return HandledValue.succeed(doSerialize(entity.response().entity()));
     }
 
     @Override
@@ -54,7 +54,7 @@ public abstract class BaseHttpBodySerializer implements HttpBodySerializer {
             return HandledValue.failed();
         }
         addContentType(entity);
-        doSerialize(entity.entity(), outputStream);
+        doSerialize(entity.response().entity(), outputStream);
         return HandledValue.succeed(null);
     }
 

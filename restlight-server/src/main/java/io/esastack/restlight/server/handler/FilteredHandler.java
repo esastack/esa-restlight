@@ -27,7 +27,6 @@ import io.netty.channel.Channel;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executor;
 
 import static io.esastack.restlight.server.schedule.ScheduledRestlightHandler.handleException;
 
@@ -62,11 +61,6 @@ public class FilteredHandler<CTX extends RequestContext, FCTX extends FilterCont
     @Override
     public void onStart() {
         delegate.onStart();
-    }
-
-    @Override
-    public Executor executor() {
-        return delegate.executor();
     }
 
     @Override

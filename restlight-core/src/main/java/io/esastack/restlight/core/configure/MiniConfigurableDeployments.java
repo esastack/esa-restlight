@@ -161,7 +161,7 @@ public class MiniConfigurableDeployments {
      * Adds {@link HandlerMapping}
      */
     public MiniConfigurableDeployments addHandlerMappings(Collection<? extends HandlerMapping> mappings) {
-        deployments.addHandlerMapping(mappings);
+        deployments.addHandlerMappings(mappings);
         return self();
     }
 

@@ -35,32 +35,18 @@ public interface HttpEntity {
     Class<?> type();
 
     /**
-     * Obtains the generic type corresponds to current entity.
-     *
-     * @return  generic type
-     */
-    Type genericType();
-
-    /**
-     * Obtains the {@link Annotation}s corresponds to current entity.
-     *
-     * @return  annotations
-     */
-    Annotation[] annotations();
-
-    /**
-     * Obtains the {@link MediaType} corresponds to current entity.
-     *
-     * @return  mediaType
-     */
-    MediaType mediaType();
-
-    /**
      * Sets with the given {@code type}.
      *
      * @param type  type
      */
     void type(Class<?> type);
+
+    /**
+     * Obtains the generic type corresponds to current entity.
+     *
+     * @return  generic type
+     */
+    Type genericType();
 
     /**
      * Sets with the given {@link Type}.
@@ -70,11 +56,25 @@ public interface HttpEntity {
     void genericType(Type genericType);
 
     /**
+     * Obtains the {@link Annotation}s corresponds to current entity.
+     *
+     * @return  annotations
+     */
+    Annotation[] annotations();
+
+    /**
      * Sets with the given {@code annotations}.
      *
      * @param annotations   annotations
      */
     void annotations(Annotation[] annotations);
+
+    /**
+     * Obtains the {@link MediaType} corresponds to current entity.
+     *
+     * @return  mediaType
+     */
+    MediaType mediaType();
 
     /**
      * Sets with the given {@code mediaType}.

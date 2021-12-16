@@ -16,6 +16,7 @@
 package io.esastack.restlight.jaxrs.impl.container;
 
 import esa.commons.Checks;
+import esa.commons.collection.AttributeKey;
 import io.esastack.httpserver.core.RequestContext;
 import io.esastack.restlight.jaxrs.impl.JaxrsContextUtils;
 import io.esastack.restlight.jaxrs.impl.core.ModifiableMultivaluedMap;
@@ -31,9 +32,8 @@ import jakarta.ws.rs.core.SecurityContext;
 import jakarta.ws.rs.core.UriInfo;
 
 import java.io.InputStream;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -58,12 +58,14 @@ public abstract class AbstractContainerRequestContext implements ContainerReques
 
     @Override
     public Object getProperty(String name) {
-        return context.getAttribute(name);
+        return context.attr(AttributeKey.valueOf(name)).get();
     }
 
     @Override
     public Collection<String> getPropertyNames() {
-        return Collections.unmodifiableList(Arrays.asList(context.attributeNames()));
+        List<String> names = new ArrayList<>(context.size());
+        context.forEach((name, value) -> names.add(name.name()));
+        return names;
     }
 
     @Override
@@ -71,13 +73,13 @@ public abstract class AbstractContainerRequestContext implements ContainerReques
         if (object == null) {
             removeProperty(name);
         } else {
-            context.setAttribute(name, object);
+            context.attr(AttributeKey.valueOf(name)).set(object);
         }
     }
 
     @Override
     public void removeProperty(String name) {
-        context.removeAttribute(name);
+        context.attr(AttributeKey.valueOf(name)).remove();
     }
 
     @Override

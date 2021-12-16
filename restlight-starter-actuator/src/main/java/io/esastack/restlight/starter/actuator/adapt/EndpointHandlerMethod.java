@@ -17,8 +17,7 @@ package io.esastack.restlight.starter.actuator.adapt;
 
 import esa.commons.Checks;
 import esa.commons.reflect.ReflectionUtils;
-import io.esastack.httpserver.core.HttpRequest;
-import io.esastack.httpserver.core.HttpResponse;
+import io.esastack.httpserver.core.RequestContext;
 import io.esastack.restlight.core.handler.Handler;
 import io.esastack.restlight.core.handler.impl.HandlerImpl;
 import io.esastack.restlight.core.method.HandlerMethodImpl;
@@ -42,7 +41,7 @@ class EndpointHandlerMethod extends HandlerMethodImpl {
     static {
         try {
             Method m = OperationHandler.class.getDeclaredMethod(
-                    "handle", HttpRequest.class, HttpResponse.class, Map.class);
+                    "handle", RequestContext.class, Map.class);
             ReflectionUtils.makeMethodAccessible(m);
             HANDLE_METHOD = m;
         } catch (NoSuchMethodException e) {
@@ -89,7 +88,7 @@ class EndpointHandlerMethod extends HandlerMethodImpl {
     @Override
     protected MethodParam getMethodParam(int i) {
         MethodParam p = super.getMethodParam(i);
-        if (p.index() == 2) {
+        if (p.index() == 1) {
             return new RequestBodyParam(responseBody, p);
         }
         return p;

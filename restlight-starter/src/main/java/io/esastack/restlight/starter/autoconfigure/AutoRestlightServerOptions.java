@@ -82,7 +82,6 @@ public class AutoRestlightServerOptions extends RestlightOptions {
         sb.append(", ioThreads=").append(getIoThreads());
         sb.append(", bizThreads=").append(getBizThreads());
         sb.append(", bizTerminationTimeoutSeconds=").append(getBizTerminationTimeoutSeconds());
-        sb.append(", validationMessageFile='").append(getValidationMessageFile()).append('\'');
         sb.append(", contextPath='").append(getContextPath()).append('\'');
         sb.append(", serialize=").append(getSerialize());
         sb.append(", compress=").append(isCompress());

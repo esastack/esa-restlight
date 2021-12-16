@@ -34,7 +34,7 @@ import java.util.Set;
 /**
  * An interface defines a http server request.
  */
-public interface HttpRequest extends Attributes {
+public interface HttpRequest {
 
     /**
      * HttpVersion, such as HTTP/1.1

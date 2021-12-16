@@ -15,7 +15,7 @@
  */
 package io.esastack.restlight.core.interceptor;
 
-import io.esastack.httpserver.core.HttpRequest;
+import io.esastack.httpserver.core.RequestContext;
 import io.esastack.restlight.server.util.PathMatcher;
 
 import java.util.Arrays;
@@ -31,8 +31,8 @@ public class InterceptorPathPredicate implements InterceptorPredicate {
     }
 
     @Override
-    public boolean test(HttpRequest request) {
-        return match(request.path());
+    public boolean test(RequestContext context) {
+        return match(context.request().path());
     }
 
     /**

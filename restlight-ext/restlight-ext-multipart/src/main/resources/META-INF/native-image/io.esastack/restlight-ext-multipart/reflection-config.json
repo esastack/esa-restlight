@@ -1,0 +1,10 @@
+[
+  {
+    "name":"io.esastack.restlight.ext.multipart.spi.MultipartAttrParamResolverProvider",
+    "methods":[{"name":"<init>","parameterTypes":[] }]
+  },
+  {
+    "name":"io.esastack.restlight.ext.multipart.spi.MultipartFileParamResolverProvider",
+    "methods":[{"name":"<init>","parameterTypes":[] }]
+  }
+]

@@ -99,33 +99,11 @@
       "defaultValue": "2"
     },
     {
-      "sourceType": "esa.restlight.server.config.ServerOptions",
-      "name": "management.server.restlight.core-biz-threads",
-      "type": "java.lang.Integer",
-      "defaultValue": "2",
-      "description": "Thread num of cor biz thread pool",
-      "deprecated": true,
-      "deprecation": {
-        "reason": "deprecated"
-      }
-    },
-    {
       "name": "management.server.restlight.biz-threads.max",
       "type": "java.lang.Integer",
       "description": "Thread num of max biz thread pool",
       "sourceType": "esa.restlight.server.config.BizThreadsOptions",
       "defaultValue": "4"
-    },
-    {
-      "sourceType": "esa.restlight.server.config.ServerOptions",
-      "name": "management.server.restlight.max-biz-threads",
-      "type": "java.lang.Integer",
-      "defaultValue": "4",
-      "description": "Thread num of max biz thread pool",
-      "deprecated": true,
-      "deprecation": {
-        "reason": "deprecated"
-      }
     },
     {
       "name": "management.server.restlight.biz-threads.blocking-queue-length",
@@ -135,33 +113,11 @@
       "defaultValue": "128"
     },
     {
-      "sourceType": "esa.restlight.server.config.ServerOptions",
-      "name": "management.server.restlight.blocking-queue-length",
-      "type": "java.lang.Integer",
-      "defaultValue": "128",
-      "description": "Length of blocking queue",
-      "deprecated": true,
-      "deprecation": {
-        "reason": "deprecated"
-      }
-    },
-    {
       "name": "management.server.restlight.biz-threads.keep-alive-time-seconds",
       "type": "java.lang.Long",
       "description": "Keepalive time of max biz thread pool",
       "sourceType": "esa.restlight.server.config.BizThreadsOptions",
       "defaultValue": "30L"
-    },
-    {
-      "sourceType": "esa.restlight.server.config.ServerOptions",
-      "name": "management.server.restlight.keep-alive-time-seconds",
-      "type": "java.lang.Long",
-      "defaultValue": "30L",
-      "description": "Keepalive time of max biz thread pool",
-      "deprecated": true,
-      "deprecation": {
-        "reason": "deprecated"
-      }
     },
     {
       "sourceType": "esa.restlight.server.config.ServerOptions",
@@ -281,17 +237,6 @@
       "type": "java.lang.Integer",
       "defaultValue": "10",
       "description": "Rate of recompute cached mappings(from 0 to 1000)."
-    },
-    {
-      "sourceType": "io.esastack.restlight.core.config.RestlightOptions",
-      "name": "management.server.restlight.validation-message-file",
-      "type": "java.lang.String",
-      "defaultValue": "",
-      "description": "Validation message file name(file name must end of .properties)",
-      "deprecated": true,
-      "deprecation": {
-        "reason": "unused"
-      }
     },
     {
       "sourceType": "esa.restlight.server.config.ServerOptions",

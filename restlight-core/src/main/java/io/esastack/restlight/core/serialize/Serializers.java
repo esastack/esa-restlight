@@ -94,11 +94,11 @@ public final class Serializers {
         return bytes;
     }
 
-    public static byte[] serializeByteBuf(ByteBuf bytes,
+    public static byte[] serializeByteBuf(ByteBuf byteBuf,
                                           HttpResponse response,
                                           MediaType mediaType) {
         setMediaType(response, mediaType);
-        response.sendResult(BufferUtil.wrap(bytes));
+        response.sendResult(BufferUtil.wrap(byteBuf));
         return ALREADY_WRITE;
     }
 

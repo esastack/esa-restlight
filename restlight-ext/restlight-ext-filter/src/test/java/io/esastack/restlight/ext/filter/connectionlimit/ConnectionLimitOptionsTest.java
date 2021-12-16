@@ -24,11 +24,10 @@ class ConnectionLimitOptionsTest {
     @Test
     void testConfigure() {
         final ConnectionLimitOptions options = ConnectionLimitOptionsConfigure.newOpts()
-                .maxCreationPerSecond(1)
                 .maxPerSecond(2)
                 .configured();
         assertEquals(2, options.getMaxPerSecond());
-        assertEquals(2, options.getMaxCreationPerSecond());
+        assertEquals(2, options.getMaxPerSecond());
     }
 
     @Test
@@ -37,7 +36,6 @@ class ConnectionLimitOptionsTest {
         final ConnectionLimitOptions def = new ConnectionLimitOptions();
 
         assertEquals(def.getMaxPerSecond(), options.getMaxPerSecond());
-        assertEquals(def.getMaxCreationPerSecond(), options.getMaxCreationPerSecond());
     }
 
 }

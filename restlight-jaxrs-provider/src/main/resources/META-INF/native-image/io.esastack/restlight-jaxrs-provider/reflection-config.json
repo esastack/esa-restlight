@@ -1,0 +1,102 @@
+[
+  {
+    "name":"io.esastack.restlight.jaxrs.spi.AsyncResponseTransferFactory",
+    "methods":[{"name":"<init>","parameterTypes":[] }]
+  },
+  {
+    "name":"io.esastack.restlight.jaxrs.resolver.param.CookieValueParamResolver",
+    "methods":[{"name":"<init>","parameterTypes":[] }]
+  },
+  {
+    "name":"io.esastack.restlight.jaxrs.resolver.param.DefaultValueParamResolver",
+    "methods":[{"name":"<init>","parameterTypes":[] }]
+  },
+  {
+    "name":"io.esastack.restlight.jaxrs.resolver.param.FormParamResolver",
+    "methods":[{"name":"<init>","parameterTypes":[] }]
+  },
+  {
+    "name":"io.esastack.restlight.jaxrs.resolver.param.RequestHeaderParamResolver",
+    "methods":[{"name":"<init>","parameterTypes":[] }]
+  },
+  {
+    "name":"io.esastack.restlight.jaxrs.resolver.param.MatrixVariableParamResolver",
+    "methods":[{"name":"<init>","parameterTypes":[] }]
+  },
+  {
+    "name":"io.esastack.restlight.jaxrs.resolver.param.PathParamResolver",
+    "methods":[{"name":"<init>","parameterTypes":[] }]
+  },
+  {
+    "name":"io.esastack.restlight.jaxrs.resolver.param.QueryParamResolver",
+    "methods":[{"name":"<init>","parameterTypes":[] }]
+  },
+  {
+    "name":"io.esastack.restlight.jaxrs.resolver.param.HttpHeadersParamResolver",
+    "methods":[{"name":"<init>","parameterTypes":[] }]
+  },
+  {
+    "name":"io.esastack.restlight.jaxrs.resolver.param.SecurityContextParamResolver",
+    "methods":[{"name":"<init>","parameterTypes":[] }]
+  },
+  {
+    "name":"io.esastack.restlight.jaxrs.resolver.param.RequestParamResolver",
+    "methods":[{"name":"<init>","parameterTypes":[] }]
+  },
+  {
+    "name":"io.esastack.restlight.jaxrs.resolver.param.UriInfoParamResolver",
+    "methods":[{"name":"<init>","parameterTypes":[] }]
+  },
+  {
+    "name":"io.esastack.restlight.jaxrs.resolver.param.AsyncResponseParamResolver",
+    "methods":[{"name":"<init>","parameterTypes":[] }]
+  },
+  {
+    "name":"io.esastack.restlight.jaxrs.spi.JaxrsHandlerFactoryProvider",
+    "methods":[{"name":"<init>","parameterTypes":[] }]
+  },
+  {
+    "name":"io.esastack.restlight.jaxrs.spi.JaxrsResolvableParamPredicate",
+    "methods":[{"name":"<init>","parameterTypes":[] }]
+  },
+  {
+    "name":"io.esastack.restlight.jaxrs.resolver.reqentity.FixedRequestEntityResolverFactoryImpl",
+    "methods":[{"name":"<init>","parameterTypes":[] }]
+  },
+  {
+    "name":"io.esastack.restlight.jaxrs.resolver.rspentity.FixedResponseEntityResolverFactory",
+    "methods":[{"name":"<init>","parameterTypes":[] }]
+  },
+  {
+    "name":"io.esastack.restlight.jaxrs.spi.BeanParamResolverProvider",
+    "methods":[{"name":"<init>","parameterTypes":[] }]
+  },
+  {
+    "name":"io.esastack.restlight.jaxrs.spi.FlexibleRequestEntityResolverProvider",
+    "methods":[{"name":"<init>","parameterTypes":[] }]
+  },
+  {
+    "name":"io.esastack.restlight.jaxrs.spi.FlexibleResponseEntityResolverProvider",
+    "methods":[{"name":"<init>","parameterTypes":[] }]
+  },
+  {
+    "name":"io.esastack.restlight.jaxrs.spi.JaxrsExtensionsHandlerFactory",
+    "methods":[{"name":"<init>","parameterTypes":[] }]
+  },
+  {
+    "name":"io.esastack.restlight.jaxrs.spi.JaxrsMappingLocatorFactory",
+    "methods":[{"name":"<init>","parameterTypes":[] }]
+  },
+  {
+    "name":"io.esastack.restlight.jaxrs.spi.JaxrsResponseAdapterFactory",
+    "methods":[{"name":"<init>","parameterTypes":[] }]
+  },
+  {
+    "name":"io.esastack.restlight.jaxrs.spi.JaxrsRouteMethodLocatorFactory",
+    "methods":[{"name":"<init>","parameterTypes":[] }]
+  },
+  {
+    "name":"io.esastack.restlight.jaxrs.spi.RouteTrackingFilterFactory",
+    "methods":[{"name":"<init>","parameterTypes":[] }]
+  }
+]

@@ -17,6 +17,7 @@ package io.esastack.restlight.server.route.predicate;
 
 import io.esastack.commons.net.http.MediaType;
 import io.esastack.httpserver.core.HttpRequest;
+import io.esastack.httpserver.core.RequestContext;
 import io.esastack.restlight.server.util.MappingUtils;
 
 import java.util.ArrayList;
@@ -51,9 +52,9 @@ public class ConsumesPredicate implements RequestPredicate {
     }
 
     @Override
-    public boolean test(HttpRequest request) {
+    public boolean test(RequestContext context) {
         for (Expression expression : expressions) {
-            if (expression.match(request)) {
+            if (expression.match(context.request())) {
                 return true;
             }
         }

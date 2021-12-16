@@ -51,7 +51,6 @@ public final class JaxrsMappingUtils {
      * DefaultValue}.
      *
      * @param parameter parameter
-     *
      * @return default value
      */
     public static String extractDefaultValue(Param parameter) {
@@ -73,7 +72,6 @@ public final class JaxrsMappingUtils {
      * @param userType    type of target method's declaring class.
      * @param method      target method
      * @param contextPath context path
-     *
      * @return optional value of {@link Mapping}
      */
     public static Optional<Mapping> extractMapping(Class<?> userType,
@@ -111,17 +109,15 @@ public final class JaxrsMappingUtils {
         final String parentHttpMethod = getMethod(userType);
         final String httpMethod = getMethod(method);
 
+        if (path == null && httpMethod == null) {
+            return Optional.empty();
+        }
+
         if (parentPath == null
                 && parentConsumes == null
                 && parentProduces == null
                 && parentHttpMethod == null) {
-
-            if (path == null && httpMethod == null) {
-                return Optional.empty();
-            }
             return Optional.of(getMapping(contextPath, path, httpMethod, consumes, produces));
-        } else if ((parentPath == null && path == null) && (parentHttpMethod == null && httpMethod == null)) {
-            return Optional.empty();
         } else {
             return Optional.of(getMapping(contextPath, parentPath, parentHttpMethod, parentConsumes, parentProduces)
                     .combine(getMapping(StringUtils.empty(), path, httpMethod, consumes, produces)));

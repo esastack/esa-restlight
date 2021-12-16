@@ -39,14 +39,5 @@ public class ResponseEntityImpl extends HttpEntityImpl implements ResponseEntity
         return response;
     }
 
-    @Override
-    public Object entity() {
-        return response.entity();
-    }
-
-    @Override
-    public void entity(Object entity) {
-        response.entity(entity);
-    }
 }
 

@@ -15,6 +15,7 @@
  */
 package io.esastack.restlight.core.context.impl;
 
+import esa.commons.collection.Attributes;
 import io.esastack.restlight.core.context.FilterContext;
 import io.esastack.restlight.core.context.HttpResponse;
 import io.esastack.restlight.server.context.FilteringRequest;
@@ -24,8 +25,8 @@ public class FilterContextImpl extends io.esastack.restlight.server.context.impl
 
     private final HttpResponse response;
 
-    public FilterContextImpl(FilteringRequest request, HttpResponse response) {
-        super(request, response);
+    public FilterContextImpl(Attributes attributes, FilteringRequest request, HttpResponse response) {
+        super(attributes, request, response);
         this.response = response;
     }
 

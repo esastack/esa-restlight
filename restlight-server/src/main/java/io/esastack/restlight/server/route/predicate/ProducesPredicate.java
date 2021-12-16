@@ -15,9 +15,11 @@
  */
 package io.esastack.restlight.server.route.predicate;
 
+import esa.commons.collection.AttributeKey;
 import io.esastack.commons.net.http.MediaType;
 import io.esastack.commons.net.http.MediaTypeUtil;
 import io.esastack.httpserver.core.HttpRequest;
+import io.esastack.httpserver.core.RequestContext;
 import io.esastack.restlight.server.util.MappingUtils;
 import io.netty.util.concurrent.FastThreadLocal;
 
@@ -31,7 +33,7 @@ import java.util.Set;
 
 public class ProducesPredicate implements RequestPredicate {
 
-    public static final String COMPATIBLE_MEDIA_TYPES = "$cpt.mts";
+    public static final AttributeKey<List<MediaType>> COMPATIBLE_MEDIA_TYPES = AttributeKey.valueOf("$cpt.mts");
 
     private static final FastThreadLocal<List<MediaType>> ACCEPTABLE_MEDIA_TYPES
             = new FastThreadLocal<>();
@@ -62,13 +64,13 @@ public class ProducesPredicate implements RequestPredicate {
     }
 
     @Override
-    public boolean test(HttpRequest request) {
+    public boolean test(RequestContext context) {
         try {
             for (Expression expression : expressions) {
-                if (expression.match(request)) {
+                if (expression.match(context.request())) {
                     List<MediaType> compatibleMediaTypes = getCompatibleMediaType();
                     if (!compatibleMediaTypes.isEmpty()) {
-                        request.setAttribute(COMPATIBLE_MEDIA_TYPES, compatibleMediaTypes);
+                        context.attr(COMPATIBLE_MEDIA_TYPES).set(compatibleMediaTypes);
                     }
                     return true;
                 }

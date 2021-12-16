@@ -51,7 +51,7 @@ public interface RequestEntityResolverFactory extends ParamPredicate, Ordered {
 
         private final RequestEntityResolverAdapter resolver;
 
-        Singleton(RequestEntityResolverAdapter resolver) {
+        private Singleton(RequestEntityResolverAdapter resolver) {
             Checks.checkNotNull(resolver, "resolver");
             this.resolver = resolver;
         }

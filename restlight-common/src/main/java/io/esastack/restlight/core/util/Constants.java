@@ -20,14 +20,9 @@ public final class Constants {
     private Constants() {
     }
 
-    @Deprecated
-    public static final String SERVER_QUALIFIER = "Restlight-Server";
-    @Deprecated
-    public static final String MANAGEMENT_QUALIFIER = "Restlight-Management";
-
     public static final String INTERNAL = "$internal";
-    public static final String SERVER = SERVER_QUALIFIER;
-    public static final String MANAGEMENT = MANAGEMENT_QUALIFIER;
+    public static final String SERVER = "Restlight-Server";
+    public static final String MANAGEMENT = "Restlight-Management";
 
     public static final String MANAGEMENT_SERVER_PORT = "management.server.port";
     public static final String SERVER_PORT = "restlight.server.port";

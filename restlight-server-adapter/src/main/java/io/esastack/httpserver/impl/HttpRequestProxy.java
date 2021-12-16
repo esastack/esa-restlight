@@ -39,26 +39,6 @@ public class HttpRequestProxy implements HttpRequest {
     }
 
     @Override
-    public Object getAttribute(String name) {
-        return underlying.getAttribute(name);
-    }
-
-    @Override
-    public void setAttribute(String name, Object value) {
-        underlying.setAttribute(name, value);
-    }
-
-    @Override
-    public Object removeAttribute(String name) {
-        return underlying.removeAttribute(name);
-    }
-
-    @Override
-    public String[] attributeNames() {
-        return underlying.attributeNames();
-    }
-
-    @Override
     public HttpVersion httpVersion() {
         return underlying.httpVersion();
     }

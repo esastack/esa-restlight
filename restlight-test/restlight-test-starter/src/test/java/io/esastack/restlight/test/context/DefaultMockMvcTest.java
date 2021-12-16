@@ -16,7 +16,6 @@
 package io.esastack.restlight.test.context;
 
 import io.esastack.commons.net.buffer.BufferUtil;
-import io.esastack.httpserver.core.HttpRequest;
 import io.esastack.restlight.core.context.HttpResponse;
 import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.server.handler.RestlightHandler;
@@ -44,9 +43,8 @@ class DefaultMockMvcTest {
         final MockHttpRequest request = MockHttpRequest.aMockRequest().build();
         when(handler.process(any())).then(mock -> {
             final RequestContext context = mock.getArgument(0, RequestContext.class);
-            final HttpRequest req = context.request();
             final HttpResponse res = context.response();
-            req.setAttribute(DefaultMockMvc.RETURN_VALUE_KEY, "foo");
+            context.attr(DefaultMockMvc.RETURN_VALUE_KEY).set("foo");
             res.sendResult(200, "foo".getBytes());
             return Futures.completedFuture();
         });
@@ -74,8 +72,8 @@ class DefaultMockMvcTest {
 
         final MockHttpRequest request = MockHttpRequest.aMockRequest().build();
         when(handler.process(any())).then(mock -> {
-            final HttpRequest req = mock.getArgument(0, RequestContext.class).request();
-            req.setAttribute(DefaultMockMvc.RETURN_VALUE_KEY, Futures.completedFuture("foo"));
+            final RequestContext ctx = mock.getArgument(0, RequestContext.class);
+            ctx.attr(DefaultMockMvc.RETURN_VALUE_KEY).set(Futures.completedFuture("foo"));
             return Futures.completedFuture();
         });
         mockMvc.perform(request)

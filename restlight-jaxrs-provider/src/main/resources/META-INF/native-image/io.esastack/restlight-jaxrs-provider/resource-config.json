@@ -1,0 +1,21 @@
+{
+  "resources":{
+    "includes":[
+      {"pattern":".*/io.esastack.restlight.core.method.ResolvableParamPredicate$"},
+      {"pattern":".*/io.esastack.restlight.core.spi.ExtensionsHandlerFactory$"},
+      {"pattern":".*/io.esastack.restlight.core.spi.FutureTransferFactory$"},
+      {"pattern":".*/io.esastack.restlight.core.spi.HandlerFactoryProvider$"},
+      {"pattern":".*/io.esastack.restlight.core.spi.MappingLocatorFactory$"},
+      {"pattern":".*/io.esastack.restlight.core.spi.RouteMethodLocatorFactory$"},
+      {"pattern":".*/io.esastack.restlight.core.resolver.ParamResolverFactory$"},
+      {"pattern":".*/io.esastack.restlight.core.resolver.RequestEntityResolverFactory$"},
+      {"pattern":".*/io.esastack.restlight.core.resolver.ResponseEntityResolverAdviceFactory$"},
+      {"pattern":".*/io.esastack.restlight.core.resolver.ResponseEntityResolverFactory$"},
+      {"pattern":".*/io.esastack.restlight.core.spi.ParamResolverProvider$"},
+      {"pattern":".*/io.esastack.restlight.core.spi.RequestEntityResolverProvider$"},
+      {"pattern":".*/io.esastack.restlight.core.spi.ResponseEntityResolverProvider$"},
+      {"pattern":".*/io.esastack.restlight.core.spi.RouteFilterFactory$"},
+      {"pattern":".*/jakarta.ws.rs.ext.RuntimeDelegate$"}
+    ]},
+  "bundles":[]
+}

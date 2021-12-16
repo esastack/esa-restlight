@@ -17,6 +17,8 @@ package io.esastack.restlight.starter.actuator.adapt;
 
 import io.esastack.httpserver.core.HttpRequest;
 import io.esastack.httpserver.core.HttpResponse;
+import io.esastack.httpserver.core.RequestContext;
+import io.esastack.restlight.server.context.impl.RequestContextImpl;
 import io.esastack.restlight.server.route.predicate.PatternsPredicate;
 import io.esastack.restlight.server.util.Futures;
 import io.esastack.restlight.test.mock.MockHttpRequest;
@@ -48,7 +50,7 @@ class OperationHandlerTest {
         final OperationHandler handler = new OperationHandler(op);
         final HttpRequest request = MockHttpRequest.aMockRequest().build();
         final HttpResponse response = MockHttpResponse.aMockResponse().build();
-        final CompletableFuture<Object> ret = handler.handle(request, response, null);
+        final CompletableFuture<Object> ret = handler.handle(new RequestContextImpl(request, response), null);
         assertNotNull(ret);
         assertNull(ret.join());
     }
@@ -57,24 +59,24 @@ class OperationHandlerTest {
     void testInvokeWithArgs() {
         final WebOperation op = webOperation(InvocationContext::getArguments);
         final OperationHandler handler = new OperationHandler(op);
-        final HttpRequest get = MockHttpRequest.aMockRequest()
+        final HttpRequest request1 = MockHttpRequest.aMockRequest()
                 .withMethod("GET")
                 .build();
         final HttpResponse response = MockHttpResponse.aMockResponse().build();
         Map<String, String> body = new HashMap<>(16);
         body.put("foo", "1");
         body.put("bar", "2");
-        final CompletableFuture<Object> ret = handler.handle(get, response, body);
+        final CompletableFuture<Object> ret = handler.handle(new RequestContextImpl(request1, response), body);
         assertNotNull(ret);
         assertNotNull(ret.join());
         final Map<String, Object> args = (Map<String, Object>) ret.join();
         assertEquals(0, args.size());
 
-        final HttpRequest post = MockHttpRequest.aMockRequest()
+        final HttpRequest request2 = MockHttpRequest.aMockRequest()
                 .withMethod("POST")
                 .build();
         final HttpResponse response1 = MockHttpResponse.aMockResponse().build();
-        final CompletableFuture<Object> ret1 = handler.handle(post, response1, body);
+        final CompletableFuture<Object> ret1 = handler.handle(new RequestContextImpl(request2, response1), body);
         assertNotNull(ret1);
         assertNotNull(ret1.join());
         final Map<String, Object> args1 = (Map<String, Object>) ret1.join();
@@ -91,9 +93,9 @@ class OperationHandlerTest {
                 .build();
 
         PatternsPredicate p = new PatternsPredicate(new String[]{"/{foo}/{bar}"});
-        p.test(get);
-        final HttpResponse response = MockHttpResponse.aMockResponse().build();
-        final CompletableFuture<Object> ret1 = handler.handle(get, response, null);
+        RequestContext context = new RequestContextImpl(get, MockHttpResponse.aMockResponse().build());
+        p.test(context);
+        final CompletableFuture<Object> ret1 = handler.handle(context, null);
         assertNotNull(ret1);
         assertNotNull(ret1.join());
         final Map<String, Object> args = (Map<String, Object>) ret1.join();
@@ -114,7 +116,7 @@ class OperationHandlerTest {
                 .withParameter("bar", "b")
                 .build();
         final HttpResponse response = MockHttpResponse.aMockResponse().build();
-        final CompletableFuture<Object> ret1 = handler.handle(get, response, null);
+        final CompletableFuture<Object> ret1 = handler.handle(new RequestContextImpl(get, response), null);
         assertNotNull(ret1);
         assertNotNull(ret1.join());
         final Map<String, Object> args = (Map<String, Object>) ret1.join();
@@ -131,7 +133,7 @@ class OperationHandlerTest {
         final OperationHandler handler = new OperationHandler(op);
         final HttpRequest request = MockHttpRequest.aMockRequest().build();
         final HttpResponse response = MockHttpResponse.aMockResponse().build();
-        final CompletableFuture<Object> ret1 = handler.handle(request, response, null);
+        final CompletableFuture<Object> ret1 = handler.handle(new RequestContextImpl(request, response), null);
         assertNotNull(ret1);
         assertNull(ret1.join());
     }
@@ -142,7 +144,7 @@ class OperationHandlerTest {
         final OperationHandler handler = new OperationHandler(op);
         final HttpRequest request = MockHttpRequest.aMockRequest().build();
         final HttpResponse response = MockHttpResponse.aMockResponse().build();
-        final CompletableFuture<Object> ret1 = handler.handle(request, response, null);
+        final CompletableFuture<Object> ret1 = handler.handle(new RequestContextImpl(request, response), null);
         assertNotNull(ret1);
         assertNotNull(ret1.join());
         assertEquals("foo", ret1.join());
@@ -156,7 +158,7 @@ class OperationHandlerTest {
         final OperationHandler handler = new OperationHandler(op);
         final HttpRequest request = MockHttpRequest.aMockRequest().build();
         final HttpResponse response = MockHttpResponse.aMockResponse().build();
-        final CompletableFuture<Object> ret1 = handler.handle(request, response, null);
+        final CompletableFuture<Object> ret1 = handler.handle(new RequestContextImpl(request, response), null);
         assertNotNull(ret1);
         assertEquals(cf, ret1);
         assertNull(ret1.join());
@@ -169,7 +171,7 @@ class OperationHandlerTest {
         final OperationHandler handler = new OperationHandler(op);
         final HttpRequest request = MockHttpRequest.aMockRequest().build();
         final HttpResponse response = MockHttpResponse.aMockResponse().build();
-        final CompletableFuture<Object> ret1 = handler.handle(request, response, null);
+        final CompletableFuture<Object> ret1 = handler.handle(new RequestContextImpl(request, response), null);
         assertNotNull(ret1);
         assertEquals(obj, ret1.join());
     }

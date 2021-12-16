@@ -16,7 +16,6 @@
 package io.esastack.restlight.ext.validator;
 
 import esa.commons.reflect.AnnotationUtils;
-import io.esastack.restlight.core.annotation.ValidGroup;
 import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.handler.HandlerAdvice;
 import io.esastack.restlight.core.handler.HandlerInvoker;
@@ -55,9 +54,7 @@ class BeanValidationHandlerAdvice implements HandlerAdvice {
         if (group != null) {
             return group.value();
         }
-
-        ValidGroup group0 = AnnotationUtils.findAnnotation(method, ValidGroup.class);
-        return group0 != null ? group0.value() : new Class<?>[0];
+        return new Class[0];
     }
 
     @Override

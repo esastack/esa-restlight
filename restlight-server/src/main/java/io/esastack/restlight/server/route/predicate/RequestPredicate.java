@@ -15,12 +15,12 @@
  */
 package io.esastack.restlight.server.route.predicate;
 
-import io.esastack.httpserver.core.HttpRequest;
+import io.esastack.httpserver.core.RequestContext;
 
 import java.util.function.Predicate;
 
 @FunctionalInterface
-public interface RequestPredicate extends Predicate<HttpRequest> {
+public interface RequestPredicate extends Predicate<RequestContext> {
 
     /**
      * Whether current predicate is able to ambiguous with given predicate.

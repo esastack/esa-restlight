@@ -15,6 +15,8 @@
  */
 package io.esastack.httpserver.core;
 
+import esa.commons.collection.Attributes;
+
 public interface RequestContext extends Attributes {
 
     /**
