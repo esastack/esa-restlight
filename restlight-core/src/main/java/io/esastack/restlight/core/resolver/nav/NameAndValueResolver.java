@@ -7,5 +7,5 @@ public interface NameAndValueResolver {
 
     Object resolve(String name, RequestContext ctx);
 
-    NameAndValue createNameAndValue(Param param);
+    NameAndValue<?> createNameAndValue(Param param);
 }
