@@ -13,24 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.esastack.restlight.jaxrs.adapter;
+package io.esastack.restlight.core.spi.impl;
 
+import esa.commons.spi.Feature;
 import io.esastack.restlight.core.resolver.ResponseEntityChannel;
 import io.esastack.restlight.core.resolver.ResponseEntityChannelImpl;
+import io.esastack.restlight.core.spi.ResponseEntityChannelFactory;
+import io.esastack.restlight.core.util.Constants;
 import io.esastack.restlight.server.context.RequestContext;
 
-final class ResponseEntityChannelUtils extends ResponseEntityChannelImpl {
+@Feature(tags = Constants.INTERNAL)
+public class ResponseEntityChannelFactoryImpl implements ResponseEntityChannelFactory {
 
-    static ResponseEntityChannel get(RequestContext context) {
-        ResponseEntityChannel channel = context.attr(RESPONSE_ENTITY_CHANNEL).get();
-        if (channel != null) {
-            return channel;
-        }
-        return new ResponseEntityChannelUtils(context);
+    @Override
+    public ResponseEntityChannel create(RequestContext context) {
+        return new ResponseEntityChannelImpl(context);
     }
 
-    private ResponseEntityChannelUtils(RequestContext context) {
-        super(context);
-    }
 }
 

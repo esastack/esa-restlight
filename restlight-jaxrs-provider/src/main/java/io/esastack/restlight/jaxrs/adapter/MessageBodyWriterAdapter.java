@@ -20,6 +20,7 @@ import io.esastack.restlight.core.resolver.HandledValue;
 import io.esastack.restlight.core.resolver.ResponseEntity;
 import io.esastack.restlight.core.resolver.ResponseEntityChannel;
 import io.esastack.restlight.core.resolver.ResponseEntityResolver;
+import io.esastack.restlight.jaxrs.resolver.ResponseEntityStreamChannel;
 import io.esastack.restlight.jaxrs.util.MediaTypeUtils;
 import io.esastack.restlight.jaxrs.util.RuntimeDelegateUtils;
 import io.esastack.restlight.server.context.RequestContext;
@@ -60,7 +61,7 @@ public class MessageBodyWriterAdapter<T> implements ResponseEntityResolver {
         RuntimeDelegateUtils.addHeadersToMap(context.response().headers(), headers);
         try {
             underlying.writeTo(value, entity.type(), entity.genericType(), entity.annotations(),
-                    mediaType, headers, channel.outputStream());
+                    mediaType, headers, ((ResponseEntityStreamChannel) channel).outputStream());
         } finally {
             RuntimeDelegateUtils.addHeadersFromMap(context.response().headers(), headers, true);
         }

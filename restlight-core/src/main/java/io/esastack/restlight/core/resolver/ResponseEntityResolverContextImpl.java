@@ -16,12 +16,28 @@
 package io.esastack.restlight.core.resolver;
 
 import esa.commons.Checks;
+import esa.commons.StringUtils;
+import esa.commons.spi.SpiLoader;
+import io.esastack.restlight.core.spi.ResponseEntityChannelFactory;
+import io.esastack.restlight.core.util.Constants;
+import io.esastack.restlight.core.util.OrderedComparator;
 import io.esastack.restlight.server.context.RequestContext;
 import io.esastack.restlight.server.core.impl.AttributesProxy;
 
+import java.util.Collections;
 import java.util.List;
 
 public class ResponseEntityResolverContextImpl extends AttributesProxy implements ResponseEntityResolverContext {
+
+    private static final ResponseEntityChannelFactory CHANNEL_FACTORY;
+
+    static {
+        List<ResponseEntityChannelFactory> factories = SpiLoader.cached(ResponseEntityChannelFactory.class)
+                .getByTags(Collections.singletonMap(Constants.INTERNAL, StringUtils.empty()));
+        assert !factories.isEmpty();
+        OrderedComparator.sort(factories);
+        CHANNEL_FACTORY = factories.get(0);
+    }
 
     private final RequestContext context;
     private final ResponseEntity entity;
@@ -37,7 +53,7 @@ public class ResponseEntityResolverContextImpl extends AttributesProxy implement
         super(context);
         Checks.checkNotNull(entity, "entity");
         Checks.checkNotNull(resolvers, "resolvers");
-        this.channel = new ResponseEntityChannelImpl(context);
+        this.channel = CHANNEL_FACTORY.create(context);
         this.context = context;
         this.entity = entity;
         this.resolvers = resolvers;

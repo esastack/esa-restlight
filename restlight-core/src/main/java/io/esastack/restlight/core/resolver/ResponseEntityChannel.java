@@ -16,7 +16,6 @@
 package io.esastack.restlight.core.resolver;
 
 import io.esastack.commons.net.buffer.Buffer;
-import io.esastack.restlight.server.core.HttpOutputStream;
 import io.esastack.restlight.server.core.HttpResponse;
 
 import java.io.File;
@@ -76,16 +75,5 @@ public interface ResponseEntityChannel {
      * @return isCommitted
      */
     boolean isCommitted();
-
-    /**
-     * Get output stream of this response. Create a new implementation of HttpOutputStream if it is {@code null}
-     * <p>
-     * Note: Once you have called this function you should use this output stream to write your response data rather
-     * than using other method such as {@link #writeThenEnd(File)} or {@link #writeThenEnd(Buffer)}.
-     *
-     * @return output stream
-     */
-    HttpOutputStream outputStream();
-
 }
 
