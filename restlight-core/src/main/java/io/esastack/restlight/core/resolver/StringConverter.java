@@ -15,16 +15,18 @@
  */
 package io.esastack.restlight.core.resolver;
 
-@FunctionalInterface
 public interface StringConverter {
 
     /**
      * Converts the given {@code value} to an object.
      *
      * @param value value
-     * @return      object
+     * @return object
      */
     Object fromString(String value);
+
+    //TODO 增加注释
+    boolean isLazy();
 
 }
 

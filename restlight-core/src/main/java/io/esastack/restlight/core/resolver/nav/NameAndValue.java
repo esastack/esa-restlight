@@ -21,39 +21,22 @@ import esa.commons.annotation.Internal;
 import java.util.function.Supplier;
 
 @Internal
-public class NameAndValue {
+public class NameAndValue<T> {
 
     public final String name;
     public final boolean required;
-    public final Supplier<Object> defaultValue;
+    public final T defaultValue;
     public final boolean hasDefaultValue;
-    private static final Supplier<Object> NULL_SUPPLIER = () -> null;
 
     public NameAndValue(String name, boolean required) {
         this(name, required, null);
     }
 
-    public NameAndValue(String name, boolean required, Object defaultValue) {
+    public NameAndValue(String name, boolean required, T defaultValue) {
         this(name, required, defaultValue, defaultValue != null);
     }
 
-    @SuppressWarnings("unchecked")
-    public NameAndValue(String name, boolean required, Object defaultValue, boolean hasDefaultValue) {
-        this.name = name;
-        this.required = required;
-        if (defaultValue != null) {
-            if (defaultValue instanceof Supplier) {
-                this.defaultValue = (Supplier<Object>) defaultValue;
-            } else {
-                this.defaultValue = () -> defaultValue;
-            }
-        } else {
-            this.defaultValue = NULL_SUPPLIER;
-        }
-        this.hasDefaultValue = hasDefaultValue;
-    }
-
-    public NameAndValue(String name, boolean required, Supplier<Object> defaultValue, boolean hasDefaultValue) {
+    public NameAndValue(String name, boolean required, T defaultValue, boolean hasDefaultValue) {
         this.name = name;
         this.required = required;
         this.defaultValue = defaultValue;

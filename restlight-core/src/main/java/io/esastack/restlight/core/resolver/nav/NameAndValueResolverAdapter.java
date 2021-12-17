@@ -1,51 +1,53 @@
-/*
- * Copyright 2021 OPPO ESA Stack Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package io.esastack.restlight.core.resolver.nav;
 
+import esa.commons.Checks;
 import esa.commons.ObjectUtils;
+import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.method.Param;
+import io.esastack.restlight.core.resolver.ParamResolver;
 import io.esastack.restlight.core.util.ConverterUtils;
+import io.esastack.restlight.server.bootstrap.WebServerException;
 
 import java.util.Optional;
+import java.util.function.Supplier;
 
-//TODO need delete
-public abstract class AbstractNameAndValueResolver {
+@SuppressWarnings("rawtypes")
+public class NameAndValueResolverAdapter implements ParamResolver {
 
-    protected final Param param;
-    protected final NameAndValue nav;
+    private final NameAndValue nav;
+    private final NameAndValueResolver resolver;
 
-    public AbstractNameAndValueResolver(Param param) {
-        this.param = param;
-        this.nav = getNameAndValue(param);
+    public NameAndValueResolverAdapter(Param param,
+                                       NameAndValueResolver resolver) {
+        Checks.checkNotNull(param, "param");
+        this.resolver = Checks.checkNotNull(resolver, "converter");
+        this.nav = getNameAndValue(param, resolver.createNameAndValue(param));
     }
 
-    protected NameAndValue getNameAndValue(Param param) {
-        NameAndValue nav = createNameAndValue(param);
+    @Override
+    public Object resolve(Param param, RequestContext ctx) {
+        Object arg = resolver.resolve(nav.name, ctx);
+        if (arg == null) {
+            if (nav.hasDefaultValue) {
+                if (nav.defaultValue instanceof Supplier) {
+                    arg = ((Supplier) nav.defaultValue).get();
+                } else {
+                    arg = nav.defaultValue;
+                }
+            }
+            if (nav.required && arg == null) {
+                throw WebServerException.badRequest("Missing required value: " + nav.name);
+            }
+        }
+        return arg;
+    }
+
+    private NameAndValue getNameAndValue(Param param, NameAndValue nav) {
+        Checks.checkNotNull(nav);
         return updatedNamedValue(param, nav);
     }
 
-    /**
-     * Create an instance of {@link NameAndValue} for the parameter.
-     *
-     * @param param parameter
-     * @return name and value
-     */
-    protected abstract NameAndValue createNameAndValue(Param param);
-
-    protected boolean useObjectDefaultValueIfRequired(Param param, NameAndValue info) {
+    private boolean useObjectDefaultValueIfRequired(Param param) {
         return !param.isFieldParam();
     }
 
@@ -64,7 +66,7 @@ public abstract class AbstractNameAndValueResolver {
         if (nav.hasDefaultValue) {
             defaultValue = nav.defaultValue;
             hasDefaultValue = true;
-        } else if (!nav.required && (useObjectDefaultValueIfRequired(param, nav))) {
+        } else if (!nav.required && (useObjectDefaultValueIfRequired(param))) {
             defaultValue = defaultValue(param.type());
             hasDefaultValue = true;
         } else if (Optional.class.equals(param.type())) {
@@ -79,7 +81,7 @@ public abstract class AbstractNameAndValueResolver {
             defaultValue = ConverterUtils.forceConvertStringValue((String) defaultValue, param.genericType());
             hasDefaultValue = true;
         }
-        return new NameAndValue(name, nav.required, defaultValue, hasDefaultValue);
+        return new NameAndValue<>(name, nav.required, defaultValue, hasDefaultValue);
     }
 
     private static Object defaultValue(Class<?> type) {
@@ -89,6 +91,4 @@ public abstract class AbstractNameAndValueResolver {
 
         return ObjectUtils.defaultValue(type);
     }
-
 }
-

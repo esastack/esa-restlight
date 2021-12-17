@@ -18,23 +18,32 @@ package io.esastack.restlight.core.resolver.param;
 import esa.commons.StringUtils;
 import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.method.Param;
-import io.esastack.restlight.core.resolver.nav.StrNameAndValueResolverFactory;
+import io.esastack.restlight.core.resolver.HandlerResolverFactory;
+import io.esastack.restlight.core.resolver.nav.NameAndStringValueResolver;
+import io.esastack.restlight.core.resolver.nav.NameAndValue;
+import io.esastack.restlight.core.resolver.nav.NameAndValueResolver;
+import io.esastack.restlight.core.resolver.nav.NameAndValueResolverFactory;
 import io.esastack.restlight.server.util.PathVariableUtils;
 
-import java.util.function.BiFunction;
-
 /**
- * Implementation of {@link StrNameAndValueResolverFactory} for resolving argument that annotated by
+ * Implementation of {@link NameAndValueResolverFactory} for resolving argument that annotated by
  * the PathVariable.
  */
-public abstract class AbstractPathVariableParamResolver extends StrNameAndValueResolverFactory {
+public abstract class AbstractPathVariableParamResolver extends NameAndValueResolverFactory {
 
     @Override
-    protected BiFunction<String, RequestContext, String> initValueProvider(Param param) {
-        return (name, ctx) -> {
-            String value = PathVariableUtils.getPathVariable(ctx, name);
-            return StringUtils.isEmpty(value) ? value : cleanTemplateValueIfNecessary(value);
-        };
+    public NameAndValueResolver createResolver(Param param, HandlerResolverFactory resolverFactory) {
+        return new NameAndStringValueResolver(param,
+                resolverFactory,
+                this::extractValue,
+                createNameAndValue(param));
+    }
+
+    protected abstract NameAndValue<String> createNameAndValue(Param param);
+
+    protected String extractValue(String name, RequestContext ctx) {
+        String value = PathVariableUtils.getPathVariable(ctx, name);
+        return StringUtils.isEmpty(value) ? value : cleanTemplateValueIfNecessary(value);
     }
 
     /**

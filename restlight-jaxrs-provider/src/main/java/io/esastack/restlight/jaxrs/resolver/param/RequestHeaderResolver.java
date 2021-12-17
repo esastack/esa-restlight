@@ -21,10 +21,6 @@ import io.esastack.restlight.core.resolver.nav.NameAndValue;
 import io.esastack.restlight.core.resolver.param.AbstractHeaderResolver;
 import io.esastack.restlight.jaxrs.util.JaxrsMappingUtils;
 import jakarta.ws.rs.HeaderParam;
-import jakarta.ws.rs.ext.ParamConverter;
-
-import java.util.function.BiFunction;
-import java.util.function.Function;
 
 /**
  * Implementation of {@link ParamResolverFactory} for resolving argument that annotated by the RequestHeader.
@@ -37,23 +33,17 @@ public class RequestHeaderResolver extends AbstractHeaderResolver {
     }
 
     @Override
-    protected Function<Param, NameAndValue> initNameAndValueCreator(BiFunction<String,
-            Boolean,
-            Object> defaultValueConverter) {
-        return (param) -> {
-            HeaderParam headerParam =
-                    param.getAnnotation(HeaderParam.class);
-            assert headerParam != null;
-            return new NameAndValue(headerParam.value(),
-                    false,
-                    defaultValueConverter.apply(JaxrsMappingUtils.extractDefaultValue(param),
-                            param.hasAnnotation(ParamConverter.Lazy.class)));
-        };
+    protected NameAndValue<String> createNameAndValue(Param param) {
+        HeaderParam headerParam =
+                param.getAnnotation(HeaderParam.class);
+        assert headerParam != null;
+        return new NameAndValue<>(headerParam.value(),
+                false,
+                JaxrsMappingUtils.extractDefaultValue(param));
     }
 
     @Override
     public int getOrder() {
         return 10;
     }
-
 }

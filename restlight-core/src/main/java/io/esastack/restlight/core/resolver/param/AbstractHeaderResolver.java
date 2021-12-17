@@ -18,41 +18,47 @@ package io.esastack.restlight.core.resolver.param;
 import io.esastack.commons.net.http.HttpHeaders;
 import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.method.Param;
-import io.esastack.restlight.core.resolver.StringConverter;
+import io.esastack.restlight.core.resolver.HandlerResolverFactory;
+import io.esastack.restlight.core.resolver.nav.NameAndStringsValueResolver;
+import io.esastack.restlight.core.resolver.nav.NameAndValue;
 import io.esastack.restlight.core.resolver.nav.NameAndValueResolver;
-import io.esastack.restlight.core.resolver.nav.StrsNameAndValueResolverFactory;
+import io.esastack.restlight.core.resolver.nav.NameAndValueResolverFactory;
 
-import java.lang.reflect.Type;
-import java.util.Collection;
-import java.util.function.BiFunction;
+import java.util.List;
 
 /**
- * Implementation of {@link StrsNameAndValueResolverFactory} for resolving argument that annotated by
+ * Implementation of {@link NameAndValueResolverFactory} for resolving argument that annotated by
  * the RequestHeader.
  */
-public abstract class AbstractHeaderResolver extends StrsNameAndValueResolverFactory {
-
-    private static final NameAndValueResolver.Converter<Collection<String>> HEADERS_CONVERTER =
-            (name, ctx, valueProvider) -> {
-                if (ctx != null) {
-                    return ctx.request().headers();
-                }
-                //handle when convert defaultValue
-                return null;
-            };
+public abstract class AbstractHeaderResolver extends NameAndValueResolverFactory {
 
     @Override
-    protected NameAndValueResolver.Converter<Collection<String>> initConverter(
-            Param param, BiFunction<Class<?>, Type, StringConverter> converterLookup) {
-
+    public NameAndValueResolver createResolver(Param param, HandlerResolverFactory resolverFactory) {
         if (HttpHeaders.class.equals(param.type())) {
-            return HEADERS_CONVERTER;
+            return new HeadersResolver();
         }
-        return super.initConverter(param, converterLookup);
+        return new NameAndStringsValueResolver(param,
+                resolverFactory,
+                this::extractHeaderValues,
+                createNameAndValue(param));
     }
 
-    @Override
-    protected BiFunction<String, RequestContext, Collection<String>> initValueProvider(Param param) {
-        return (name, ctx) -> ctx.request().headers().getAll(name);
+    private List<String> extractHeaderValues(String name, RequestContext ctx) {
+        return ctx.request().headers().getAll(name);
+    }
+
+    protected abstract NameAndValue<String> createNameAndValue(Param param);
+
+    private class HeadersResolver implements NameAndValueResolver {
+
+        @Override
+        public Object resolve(String name, RequestContext ctx) {
+            return ctx.request().headers();
+        }
+
+        @Override
+        public NameAndValue<String> createNameAndValue(Param param) {
+            return AbstractHeaderResolver.this.createNameAndValue(param);
+        }
     }
 }

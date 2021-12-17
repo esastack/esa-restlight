@@ -21,10 +21,6 @@ import io.esastack.restlight.core.resolver.nav.NameAndValue;
 import io.esastack.restlight.core.resolver.param.AbstractParamResolver;
 import io.esastack.restlight.jaxrs.util.JaxrsMappingUtils;
 import jakarta.ws.rs.FormParam;
-import jakarta.ws.rs.ext.ParamConverter;
-
-import java.util.function.BiFunction;
-import java.util.function.Function;
 
 /**
  * Implementation of {@link ParamResolverFactory} for resolving argument that annotated by the {@link
@@ -38,22 +34,17 @@ public class FormParamResolver extends AbstractParamResolver {
     }
 
     @Override
-    protected Function<Param, NameAndValue> initNameAndValueCreator(BiFunction<String,
-            Boolean,
-            Object> defaultValueConverter) {
-        return (param) -> {
-            FormParam formParam
-                    = param.getAnnotation(FormParam.class);
-            assert formParam != null;
-            return new NameAndValue(formParam.value(),
-                    false,
-                    defaultValueConverter.apply(JaxrsMappingUtils.extractDefaultValue(param),
-                            param.hasAnnotation(ParamConverter.Lazy.class)));
-        };
+    protected NameAndValue<String> createNameAndValue(Param param) {
+        FormParam formParam
+                = param.getAnnotation(FormParam.class);
+        assert formParam != null;
+        return new NameAndValue<>(formParam.value(),
+                false,
+                JaxrsMappingUtils.extractDefaultValue(param));
     }
 
     @Override
-    public String extractParamName(Param param) {
+    protected String extractName(Param param) {
         FormParam formParam
                 = param.getAnnotation(FormParam.class);
         assert formParam != null;

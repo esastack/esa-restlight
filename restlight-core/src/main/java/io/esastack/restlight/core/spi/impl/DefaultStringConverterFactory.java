@@ -7,11 +7,29 @@ import io.esastack.restlight.core.util.ConverterUtils;
 
 import java.lang.reflect.Type;
 import java.util.Optional;
+import java.util.function.Function;
 
 public class DefaultStringConverterFactory implements StringConverterFactory {
+
     @Override
     public Optional<StringConverter> createConverter(Param param, Class<?> baseType, Type baseGenericType) {
-        return Optional.of(ConverterUtils.str2ObjectConverter(baseType)::apply);
+        Function<String, Object> converter = ConverterUtils.str2ObjectConverter(baseType);
+
+        if (converter == null) {
+            return Optional.empty();
+        }
+
+        return Optional.of(new StringConverter() {
+            @Override
+            public Object fromString(String value) {
+                return converter.apply(value);
+            }
+
+            @Override
+            public boolean isLazy() {
+                return false;
+            }
+        });
     }
 
     @Override

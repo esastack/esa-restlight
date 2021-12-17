@@ -22,9 +22,6 @@ import io.esastack.restlight.core.resolver.param.AbstractHeaderResolver;
 import io.esastack.restlight.springmvc.annotation.shaded.RequestHeader0;
 import io.esastack.restlight.springmvc.util.RequestMappingUtils;
 
-import java.util.function.BiFunction;
-import java.util.function.Function;
-
 /**
  * Implementation of {@link ParamResolverFactory} for resolving argument that annotated by the RequestHeader.
  */
@@ -35,23 +32,18 @@ public class RequestHeaderResolver extends AbstractHeaderResolver {
         return param.hasAnnotation(RequestHeader0.shadedClass());
     }
 
-    protected Function<Param, NameAndValue> initNameAndValueCreator(BiFunction<String,
-            Boolean,
-            Object> defaultValueConverter) {
-        return (param) -> {
-            RequestHeader0 requestHeader =
-                    RequestHeader0.fromShade(param.getAnnotation(RequestHeader0.shadedClass()));
-            assert requestHeader != null;
-            return new NameAndValue(requestHeader.value(),
-                    requestHeader.required(),
-                    defaultValueConverter
-                            .apply(RequestMappingUtils.normaliseDefaultValue(requestHeader.defaultValue()), false));
-        };
+    @Override
+    protected NameAndValue<String> createNameAndValue(Param param) {
+        RequestHeader0 requestHeader =
+                RequestHeader0.fromShade(param.getAnnotation(RequestHeader0.shadedClass()));
+        assert requestHeader != null;
+        return new NameAndValue<>(requestHeader.value(),
+                requestHeader.required(),
+                RequestMappingUtils.normaliseDefaultValue(requestHeader.defaultValue()));
     }
 
     @Override
     public int getOrder() {
         return 0;
     }
-
 }

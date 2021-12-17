@@ -24,9 +24,7 @@ import io.esastack.restlight.core.method.Param;
 import io.esastack.restlight.core.resolver.HandlerResolverFactory;
 import io.esastack.restlight.core.resolver.ParamResolver;
 import io.esastack.restlight.core.resolver.nav.NameAndValue;
-
-import java.util.function.BiFunction;
-import java.util.function.Function;
+import io.esastack.restlight.core.resolver.nav.NameAndValueResolverAdapter;
 
 /**
  * @see QueryBean
@@ -60,7 +58,8 @@ public class QueryBeanParamResolver extends RequestBeanParamResolver {
 
         @Override
         protected ParamResolver findResolver(FieldParam fieldParam, HandlerResolverFactory resolverFactory) {
-            return AlwaysUseParamArgumentResolver.INSTANCE.createResolver(fieldParam, resolverFactory);
+            return new NameAndValueResolverAdapter(
+                    fieldParam, AlwaysUseParamArgumentResolver.INSTANCE.createResolver(fieldParam, resolverFactory));
         }
     }
 
@@ -75,28 +74,25 @@ public class QueryBeanParamResolver extends RequestBeanParamResolver {
         }
 
         @Override
-        protected Function<Param, NameAndValue> initNameAndValueCreator(
-                BiFunction<String, Boolean, Object> defaultValueConverter) {
-            return (param) -> {
-                String name;
-                QueryBean.Name alia = param.getAnnotation(QueryBean.Name.class);
-                if (alia != null && !StringUtils.isEmpty(alia.value())) {
-                    name = alia.value();
-                } else {
-                    name = param.name();
-                }
-                return new NameAndValue(name, false, null);
-            };
-        }
-
-        @Override
-        public String extractParamName(Param param) {
+        protected String extractName(Param param) {
             QueryBean.Name alia = param.getAnnotation(QueryBean.Name.class);
             if (alia != null && !StringUtils.isEmpty(alia.value())) {
                 return alia.value();
             } else {
                 return param.name();
             }
+        }
+
+        @Override
+        protected NameAndValue<String> createNameAndValue(Param param) {
+            String name;
+            QueryBean.Name alia = param.getAnnotation(QueryBean.Name.class);
+            if (alia != null && !StringUtils.isEmpty(alia.value())) {
+                name = alia.value();
+            } else {
+                name = param.name();
+            }
+            return new NameAndValue<>(name, false, null);
         }
     }
 }

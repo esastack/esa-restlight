@@ -18,32 +18,16 @@ package io.esastack.restlight.ext.multipart.spi;
 import esa.commons.StringUtils;
 import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.method.Param;
-import io.esastack.restlight.core.resolver.StringConverter;
+import io.esastack.restlight.core.resolver.HandlerResolverFactory;
 import io.esastack.restlight.core.resolver.nav.NameAndValue;
 import io.esastack.restlight.core.resolver.nav.NameAndValueResolver;
 import io.esastack.restlight.ext.multipart.annotation.UploadFile;
 import io.esastack.restlight.ext.multipart.core.MultipartFile;
 
-import java.lang.reflect.Type;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.function.BiFunction;
-import java.util.function.Function;
 
-public class MultipartFileArgumentResolver extends AbstractMultipartParamResolver<List<MultipartFile>> {
-
-    private static final NameAndValueResolver.Converter<List<MultipartFile>> SINGLE_FILE_CONVERTER =
-            (name, ctx, valueProvider) -> {
-                List<MultipartFile> files = valueProvider.apply(name, ctx);
-                if (files == null) {
-                    return null;
-                }
-                return files.isEmpty() ? null : files.get(0);
-            };
-
-    private static final NameAndValueResolver.Converter<List<MultipartFile>> FILES_CONVERTER =
-            (name, ctx, valueProvider) ->
-                    valueProvider.apply(name, ctx);
+public class MultipartFileArgumentResolver extends AbstractMultipartParamResolver {
 
     @Override
     public boolean supports(Param param) {
@@ -53,52 +37,64 @@ public class MultipartFileArgumentResolver extends AbstractMultipartParamResolve
     }
 
     @Override
-    protected Function<Param, NameAndValue> initNameAndValueCreator(BiFunction<String,
-            Boolean,
-            Object> defaultValueConverter) {
-        return (param) -> {
-            UploadFile uploadFile = param.getAnnotation(UploadFile.class);
-            assert uploadFile != null;
-            return new NameAndValue(uploadFile.value(), uploadFile.required(), null);
-        };
+    protected NameAndValueResolver doCreateResolver(Param param, HandlerResolverFactory resolverFactory) {
+        if (MultipartFile.class.isAssignableFrom(param.type())) {
+            return new SingleFileResolver();
+        }
+        if (List.class.isAssignableFrom(param.type())) {
+            return new FilesResolver();
+        }
+        throw new IllegalStateException("Unexpected");
     }
 
-    @Override
-    protected BiFunction<String, Boolean, Object> initDefaultValueConverter(
-            NameAndValueResolver.Converter<List<MultipartFile>> converter) {
-        return (defaultValue, isLazy) -> null;
+    private NameAndValue<Object> createNameAndValue(Param param) {
+        UploadFile uploadFile = param.getAnnotation(UploadFile.class);
+        assert uploadFile != null;
+        return new NameAndValue<>(uploadFile.value(), uploadFile.required(), null);
     }
 
-    @Override
-    protected BiFunction<String, RequestContext, List<MultipartFile>> doInitValueProvider(Param param) {
-        return (name, ctx) -> {
-            final List<MultipartFile> files = ctx.attr(MULTIPART_FILES).get();
+    private List<MultipartFile> extractFiles(String name, RequestContext ctx) {
+        final List<MultipartFile> files = ctx.attr(MULTIPART_FILES).get();
+        if (files == null) {
+            return null;
+        }
+
+        final List<MultipartFile> result = new LinkedList<>();
+        for (MultipartFile file : files) {
+            if (StringUtils.isEmpty(name) || name.equals(file.filedName())) {
+                result.add(file);
+            }
+        }
+        return result;
+    }
+
+    private class SingleFileResolver implements NameAndValueResolver {
+
+        @Override
+        public Object resolve(String name, RequestContext ctx) {
+            List<MultipartFile> files = extractFiles(name, ctx);
             if (files == null) {
                 return null;
             }
+            return files.isEmpty() ? null : files.get(0);
+        }
 
-            final List<MultipartFile> result = new LinkedList<>();
-            for (MultipartFile file : files) {
-                if (StringUtils.isEmpty(name) || name.equals(file.filedName())) {
-                    result.add(file);
-                }
-            }
-            return result;
-        };
+        @Override
+        public NameAndValue<Object> createNameAndValue(Param param) {
+            return MultipartFileArgumentResolver.this.createNameAndValue(param);
+        }
     }
 
-    @Override
-    protected NameAndValueResolver.Converter<List<MultipartFile>> doInitConverter(Param param,
-                                                                                  BiFunction<Class<?>,
-                                                                                          Type,
-                                                                                          StringConverter> lookup) {
+    private class FilesResolver implements NameAndValueResolver {
 
-        if (MultipartFile.class.isAssignableFrom(param.type())) {
-            return SINGLE_FILE_CONVERTER;
+        @Override
+        public Object resolve(String name, RequestContext ctx) {
+            return extractFiles(name, ctx);
         }
-        if (List.class.isAssignableFrom(param.type())) {
-            return FILES_CONVERTER;
+
+        @Override
+        public NameAndValue<Object> createNameAndValue(Param param) {
+            return MultipartFileArgumentResolver.this.createNameAndValue(param);
         }
-        throw new IllegalStateException("Unexpected");
     }
 }

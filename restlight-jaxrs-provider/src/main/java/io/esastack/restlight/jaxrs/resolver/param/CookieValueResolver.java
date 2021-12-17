@@ -21,10 +21,6 @@ import io.esastack.restlight.core.resolver.nav.NameAndValue;
 import io.esastack.restlight.core.resolver.param.AbstractCookieValueResolver;
 import io.esastack.restlight.jaxrs.util.JaxrsMappingUtils;
 import jakarta.ws.rs.CookieParam;
-import jakarta.ws.rs.ext.ParamConverter;
-
-import java.util.function.BiFunction;
-import java.util.function.Function;
 
 /**
  * Implementation of {@link ParamResolverFactory} for resolving argument that annotated by the
@@ -38,17 +34,12 @@ public class CookieValueResolver extends AbstractCookieValueResolver {
     }
 
     @Override
-    protected Function<Param, NameAndValue> initNameAndValueCreator(BiFunction<String,
-            Boolean,
-            Object> defaultValueConverter) {
-        return (param) -> {
-            CookieParam cookieParam = param.getAnnotation(CookieParam.class);
-            assert cookieParam != null;
-            return new NameAndValue(cookieParam.value(),
-                    false,
-                    defaultValueConverter.apply(JaxrsMappingUtils.extractDefaultValue(param),
-                            param.hasAnnotation(ParamConverter.Lazy.class)));
-        };
+    protected NameAndValue<String> createNameAndValue(Param param) {
+        CookieParam cookieParam = param.getAnnotation(CookieParam.class);
+        assert cookieParam != null;
+        return new NameAndValue<>(cookieParam.value(),
+                false,
+                JaxrsMappingUtils.extractDefaultValue(param));
     }
 
     @Override

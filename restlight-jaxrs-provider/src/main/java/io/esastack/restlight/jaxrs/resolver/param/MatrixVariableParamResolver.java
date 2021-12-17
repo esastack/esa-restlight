@@ -21,10 +21,6 @@ import io.esastack.restlight.core.resolver.nav.NameAndValue;
 import io.esastack.restlight.core.resolver.param.AbstractMatrixParamResolver;
 import io.esastack.restlight.jaxrs.util.JaxrsMappingUtils;
 import jakarta.ws.rs.MatrixParam;
-import jakarta.ws.rs.ext.ParamConverter;
-
-import java.util.function.BiFunction;
-import java.util.function.Function;
 
 /**
  * Implementation of {@link ParamResolverFactory} for resolving argument that annotated by the MatrixVariable
@@ -37,21 +33,15 @@ public class MatrixVariableParamResolver extends AbstractMatrixParamResolver {
     }
 
     @Override
-    protected Function<Param, NameAndValue> initNameAndValueCreator(BiFunction<String,
-            Boolean,
-            Object> defaultValueConverter) {
-        return (param) -> {
-            MatrixParam matrixParam =
-                    param.getAnnotation(MatrixParam.class);
-            assert matrixParam != null;
-            return new NameAndValue(matrixParam.value(), false,
-                    defaultValueConverter.apply(JaxrsMappingUtils.extractDefaultValue(param),
-                            param.hasAnnotation(ParamConverter.Lazy.class)));
-        };
+    protected NameAndValue<String> createNameAndValue(Param param) {
+        MatrixParam matrixParam =
+                param.getAnnotation(MatrixParam.class);
+        assert matrixParam != null;
+        return new NameAndValue<>(matrixParam.value(), false, JaxrsMappingUtils.extractDefaultValue(param));
     }
 
     @Override
-    public String extractParamName(Param param) {
+    protected String extractName(Param param) {
         MatrixParam matrixParam =
                 param.getAnnotation(MatrixParam.class);
         assert matrixParam != null;

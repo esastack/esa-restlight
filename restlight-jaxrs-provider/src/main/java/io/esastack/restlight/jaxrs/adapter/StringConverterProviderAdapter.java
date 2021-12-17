@@ -19,6 +19,7 @@ import esa.commons.Checks;
 import io.esastack.restlight.core.method.Param;
 import io.esastack.restlight.core.resolver.StringConverter;
 import io.esastack.restlight.core.resolver.StringConverterFactory;
+import jakarta.ws.rs.ext.ParamConverter;
 import jakarta.ws.rs.ext.ParamConverterProvider;
 
 import java.lang.reflect.Type;
@@ -40,7 +41,19 @@ public class StringConverterProviderAdapter implements StringConverterFactory {
         if (converter == null) {
             return Optional.empty();
         }
-        return Optional.of(converter::fromString);
+
+        final boolean isLazy = (converter.getClass().getAnnotation(ParamConverter.Lazy.class) != null);
+        return Optional.of(new StringConverter() {
+            @Override
+            public Object fromString(String value) {
+                return converter.fromString(value);
+            }
+
+            @Override
+            public boolean isLazy() {
+                return isLazy;
+            }
+        });
     }
 }
 

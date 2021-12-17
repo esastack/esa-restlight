@@ -22,9 +22,6 @@ import io.esastack.restlight.core.resolver.param.AbstractParamResolver;
 import io.esastack.restlight.springmvc.annotation.shaded.RequestParam0;
 import io.esastack.restlight.springmvc.util.RequestMappingUtils;
 
-import java.util.function.BiFunction;
-import java.util.function.Function;
-
 /**
  * Implementation of {@link ParamResolverFactory} for resolving argument that annotated by the RequestParam.
  */
@@ -36,22 +33,17 @@ public class RequestParamResolver extends AbstractParamResolver {
     }
 
     @Override
-    protected Function<Param, NameAndValue> initNameAndValueCreator(BiFunction<String,
-            Boolean,
-            Object> defaultValueConverter) {
-        return (param) -> {
-            RequestParam0 requestParam
-                    = RequestParam0.fromShade(param.getAnnotation(RequestParam0.shadedClass()));
-            assert requestParam != null;
-            return new NameAndValue(requestParam.value(),
-                    requestParam.required(),
-                    defaultValueConverter
-                            .apply(RequestMappingUtils.normaliseDefaultValue(requestParam.defaultValue()), false));
-        };
+    protected NameAndValue<String> createNameAndValue(Param param) {
+        RequestParam0 requestParam
+                = RequestParam0.fromShade(param.getAnnotation(RequestParam0.shadedClass()));
+        assert requestParam != null;
+        return new NameAndValue<>(requestParam.value(),
+                requestParam.required(),
+                RequestMappingUtils.normaliseDefaultValue(requestParam.defaultValue()));
     }
 
     @Override
-    public String extractParamName(Param param) {
+    protected String extractName(Param param) {
         RequestParam0 requestParam
                 = RequestParam0.fromShade(param.getAnnotation(RequestParam0.shadedClass()));
         assert requestParam != null;

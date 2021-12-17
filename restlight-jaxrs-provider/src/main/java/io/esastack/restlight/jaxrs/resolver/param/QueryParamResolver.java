@@ -21,10 +21,6 @@ import io.esastack.restlight.core.resolver.nav.NameAndValue;
 import io.esastack.restlight.core.resolver.param.AbstractParamResolver;
 import io.esastack.restlight.jaxrs.util.JaxrsMappingUtils;
 import jakarta.ws.rs.QueryParam;
-import jakarta.ws.rs.ext.ParamConverter;
-
-import java.util.function.BiFunction;
-import java.util.function.Function;
 
 /**
  * Implementation of {@link ParamResolverFactory} for resolving argument that annotated by the
@@ -38,22 +34,17 @@ public class QueryParamResolver extends AbstractParamResolver {
     }
 
     @Override
-    protected Function<Param, NameAndValue> initNameAndValueCreator(BiFunction<String,
-            Boolean,
-            Object> defaultValueConverter) {
-        return (param) -> {
-            QueryParam queryParam
-                    = param.getAnnotation(QueryParam.class);
-            assert queryParam != null;
-            return new NameAndValue(queryParam.value(),
-                    false,
-                    defaultValueConverter.apply(JaxrsMappingUtils.extractDefaultValue(param),
-                            param.hasAnnotation(ParamConverter.Lazy.class)));
-        };
+    protected NameAndValue<String> createNameAndValue(Param param) {
+        QueryParam queryParam
+                = param.getAnnotation(QueryParam.class);
+        assert queryParam != null;
+        return new NameAndValue<>(queryParam.value(),
+                false,
+                JaxrsMappingUtils.extractDefaultValue(param));
     }
 
     @Override
-    public String extractParamName(Param param) {
+    protected String extractName(Param param) {
         QueryParam queryParam
                 = param.getAnnotation(QueryParam.class);
         assert queryParam != null;
@@ -64,5 +55,4 @@ public class QueryParamResolver extends AbstractParamResolver {
     public int getOrder() {
         return 10;
     }
-
 }

@@ -19,61 +19,70 @@ import esa.commons.ClassUtils;
 import io.esastack.commons.net.http.Cookie;
 import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.method.Param;
-import io.esastack.restlight.core.resolver.StringConverter;
+import io.esastack.restlight.core.resolver.HandlerResolverFactory;
+import io.esastack.restlight.core.resolver.nav.NameAndStringValueResolver;
+import io.esastack.restlight.core.resolver.nav.NameAndValue;
 import io.esastack.restlight.core.resolver.nav.NameAndValueResolver;
-import io.esastack.restlight.core.resolver.nav.StrNameAndValueResolverFactory;
+import io.esastack.restlight.core.resolver.nav.NameAndValueResolverFactory;
 
-import java.lang.reflect.Type;
 import java.util.Set;
-import java.util.function.BiFunction;
 
 /**
- * Implementation of {@link StrNameAndValueResolverFactory} for resolving argument that annotated by the
+ * Implementation of {@link NameAndValueResolverFactory} for resolving argument that annotated by the
  * CookieValue
  */
-public abstract class AbstractCookieValueResolver extends StrNameAndValueResolverFactory {
-
-    private static final NameAndValueResolver.Converter<String> COOKIE_CONVERTER =
-            (name, ctx, valueProvider) -> {
-                if (ctx != null) {
-                    return ctx.request().getCookie(name);
-                }
-                //handle when convert defaultValue
-                return null;
-            };
-
-    private static final NameAndValueResolver.Converter<String> COOKIES_CONVERTER =
-            (name, ctx, valueProvider) -> {
-                if (ctx != null) {
-                    return ctx.request().cookies();
-                }
-                //handle when convert defaultValue
-                return null;
-            };
+public abstract class AbstractCookieValueResolver extends NameAndValueResolverFactory {
 
     @Override
-    protected NameAndValueResolver.Converter<String> initConverter(
-            Param param, BiFunction<Class<?>, Type, StringConverter> converterLookup) {
-
+    public NameAndValueResolver createResolver(Param param, HandlerResolverFactory resolverFactory) {
         if (Cookie.class.equals(param.type())) {
-            return COOKIE_CONVERTER;
+            return new CookieResolver();
         }
 
         if (Set.class.equals(param.type())) {
             Class<?>[] types = ClassUtils.retrieveGenericTypes(param.genericType());
             if (types != null && types.length == 1 && types[0].equals(Cookie.class)) {
-                return COOKIES_CONVERTER;
+                return new CookiesResolver();
             }
         }
 
-        return super.initConverter(param, converterLookup);
+        return new NameAndStringValueResolver(param,
+                resolverFactory,
+                this::extractCookieValue,
+                createNameAndValue(param)
+        );
     }
 
-    @Override
-    protected BiFunction<String, RequestContext, String> initValueProvider(Param param) {
-        return (name, ctx) -> {
-            Cookie cookie = ctx.request().getCookie(name);
-            return cookie == null ? null : cookie.value();
-        };
+    protected abstract NameAndValue<String> createNameAndValue(Param param);
+
+    private String extractCookieValue(String name, RequestContext ctx) {
+        Cookie cookie = ctx.request().getCookie(name);
+        return cookie == null ? null : cookie.value();
+    }
+
+    private class CookieResolver implements NameAndValueResolver {
+
+        @Override
+        public Object resolve(String name, RequestContext ctx) {
+            return ctx.request().getCookie(name);
+        }
+
+        @Override
+        public NameAndValue<String> createNameAndValue(Param param) {
+            return AbstractCookieValueResolver.this.createNameAndValue(param);
+        }
+    }
+
+    private class CookiesResolver implements NameAndValueResolver {
+
+        @Override
+        public Object resolve(String name, RequestContext ctx) {
+            return ctx.request().cookies();
+        }
+
+        @Override
+        public NameAndValue<String> createNameAndValue(Param param) {
+            return AbstractCookieValueResolver.this.createNameAndValue(param);
+        }
     }
 }

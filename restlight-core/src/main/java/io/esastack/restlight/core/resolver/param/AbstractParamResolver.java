@@ -19,57 +19,27 @@ import esa.commons.ClassUtils;
 import esa.commons.StringUtils;
 import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.method.Param;
-import io.esastack.restlight.core.resolver.StringConverter;
+import io.esastack.restlight.core.resolver.HandlerResolverFactory;
+import io.esastack.restlight.core.resolver.nav.NameAndStringsValueResolver;
+import io.esastack.restlight.core.resolver.nav.NameAndValue;
 import io.esastack.restlight.core.resolver.nav.NameAndValueResolver;
-import io.esastack.restlight.core.resolver.nav.StrsNameAndValueResolverFactory;
+import io.esastack.restlight.core.resolver.nav.NameAndValueResolverFactory;
 
-import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.BiFunction;
 
 /**
- * Implementation of {@link StrsNameAndValueResolverFactory} for resolving argument that annotated by
+ * Implementation of {@link NameAndValueResolverFactory} for resolving argument that annotated by
  * the RequestParam.
  */
-public abstract class AbstractParamResolver extends StrsNameAndValueResolverFactory {
-
-    private static final NameAndValueResolver.Converter<Collection<String>> SINGLE_MAP_CONVERTER =
-            (name, ctx, valueProvider) -> {
-                if (ctx != null) {
-                    return ctx.request().paramsMap();
-                }
-                //handle when convert defaultValue
-                return null;
-            };
-
-    private static final NameAndValueResolver.Converter<Collection<String>> MAP_CONVERTER =
-            (name, ctx, valueProvider) -> {
-                if (ctx != null) {
-                    Map<String, List<String>> p = ctx.request().paramsMap();
-                    if (p.isEmpty()) {
-                        return Collections.emptyMap();
-                    }
-                    Map<String, String> m = new HashMap<>(p.size());
-                    p.forEach((k, v) -> {
-                        if (!v.isEmpty()) {
-                            m.put(k, v.get(0));
-                        }
-                    });
-                    return m;
-                }
-                //handle when convert defaultValue
-                return null;
-            };
+public abstract class AbstractParamResolver extends NameAndValueResolverFactory {
 
     @Override
-    protected NameAndValueResolver.Converter<Collection<String>> initConverter(
-            Param param,
-            BiFunction<Class<?>, Type, StringConverter> converterLookup) {
-        String name = extractParamName(param);
+    public NameAndValueResolver createResolver(Param param, HandlerResolverFactory resolverFactory) {
+        String name = extractName(param);
         if (StringUtils.isEmpty(name)
                 && Map.class.equals(param.type())) {
             Class<?>[] types = ClassUtils.retrieveGenericTypes(param.genericType());
@@ -77,20 +47,59 @@ public abstract class AbstractParamResolver extends StrsNameAndValueResolverFact
                 Class<?> valueType = types[1];
                 if (String.class.equals(valueType)) {
                     // Map<String, String>
-                    return SINGLE_MAP_CONVERTER;
+                    return new SingleMapResolver();
                 } else if (List.class.equals(valueType)) {
                     // Map<String, List<String>>
-                    return MAP_CONVERTER;
+                    return new ListMapResolver();
                 }
             }
         }
-        return super.initConverter(param, converterLookup);
+
+        return new NameAndStringsValueResolver(param,
+                resolverFactory,
+                this::extractValue,
+                createNameAndValue(param));
     }
 
-    public abstract String extractParamName(Param param);
+    protected abstract String extractName(Param param);
 
-    @Override
-    protected BiFunction<String, RequestContext, Collection<String>> initValueProvider(Param param) {
-        return (name, ctx) -> ctx.request().paramsMap().get(name);
+    protected abstract NameAndValue<String> createNameAndValue(Param param);
+
+    private Collection<String> extractValue(String name, RequestContext ctx) {
+        return ctx.request().paramsMap().get(name);
+    }
+
+    private class SingleMapResolver implements NameAndValueResolver {
+        @Override
+        public Object resolve(String name, RequestContext ctx) {
+            return ctx.request().paramsMap();
+        }
+
+        @Override
+        public NameAndValue<String> createNameAndValue(Param param) {
+            return AbstractParamResolver.this.createNameAndValue(param);
+        }
+    }
+
+    private class ListMapResolver implements NameAndValueResolver {
+        @Override
+        public Object resolve(String name, RequestContext ctx) {
+            Map<String, List<String>> p = ctx.request().paramsMap();
+            if (p.isEmpty()) {
+                return Collections.emptyMap();
+            }
+            Map<String, String> m = new HashMap<>(p.size());
+            p.forEach((k, v) -> {
+                if (!v.isEmpty()) {
+                    m.put(k, v.get(0));
+                }
+            });
+            return m;
+        }
+
+        @Override
+        public NameAndValue<String> createNameAndValue(Param param) {
+            return AbstractParamResolver.this.createNameAndValue(param);
+        }
     }
 }

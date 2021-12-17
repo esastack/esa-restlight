@@ -228,7 +228,7 @@ public class HandlerResolverFactoryImpl implements HandlerResolverFactory {
                 return converter.get();
             }
         }
-        return (value) -> value;
+        return null;
     }
 
     @Override

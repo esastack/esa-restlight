@@ -28,8 +28,9 @@ import io.esastack.restlight.core.DeployContext;
 import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.method.Param;
+import io.esastack.restlight.core.resolver.HandlerResolverFactory;
 import io.esastack.restlight.core.resolver.ParamResolverFactory;
-import io.esastack.restlight.core.resolver.StringConverter;
+import io.esastack.restlight.core.resolver.nav.NameAndValue;
 import io.esastack.restlight.core.resolver.nav.NameAndValueResolver;
 import io.esastack.restlight.core.resolver.nav.NameAndValueResolverFactory;
 import io.esastack.restlight.ext.multipart.core.MultipartConfig;
@@ -51,14 +52,12 @@ import io.netty.handler.codec.http.multipart.HttpPostRequestDecoder;
 import io.netty.handler.codec.http.multipart.InterfaceHttpData;
 
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.BiFunction;
 
-abstract class AbstractMultipartParamResolver<T> extends NameAndValueResolverFactory<T> {
+abstract class AbstractMultipartParamResolver extends NameAndValueResolverFactory {
 
     static final AttributeKey<String> PREFIX = AttributeKey.stringKey("$multipart.attr.");
     private static final AttributeKey<HttpPostMultipartRequestDecoder> MULTIPART_DECODER =
@@ -85,6 +84,64 @@ abstract class AbstractMultipartParamResolver<T> extends NameAndValueResolverFac
         return super.factoryBean(ctx);
     }
 
+    @SuppressWarnings("rawtypes")
+    @Override
+    public NameAndValueResolver createResolver(Param param, HandlerResolverFactory resolverFactory) {
+        final NameAndValueResolver resolver = doCreateResolver(param, resolverFactory);
+        Checks.checkNotNull(resolver, "resolver");
+        return new NameAndValueResolver() {
+            @Override
+            public Object resolve(String name, RequestContext ctx) {
+                try {
+                    fillMultipart(ctx);
+                    return resolver.resolve(name, ctx);
+                } finally {
+                    tryAddCleaner(ctx);
+                }
+            }
+
+            @Override
+            public NameAndValue createNameAndValue(Param param) {
+                return resolver.createNameAndValue(param);
+            }
+        };
+    }
+
+    private void fillMultipart(RequestContext ctx) {
+        HttpRequest request = ctx.request();
+        if (!ctx.hasAttr(MULTIPART_BODY_RESOLVED)) {
+            final io.netty.handler.codec.http.HttpRequest request0 = formattedReq(request);
+
+            if (!HttpPostRequestDecoder.isMultipart(request0)) {
+                throw new IllegalStateException("You excepted to accept a multipart file or attribute," +
+                        " but Content-Type is: " + request.headers().get(HttpHeaderNames.CONTENT_TYPE));
+            }
+
+            final HttpPostMultipartRequestDecoder decoder = new HttpPostMultipartRequestDecoder(factory, request0);
+            // Only decode once and get all resolved data
+            List<InterfaceHttpData> resolvedData = decoder.getBodyHttpDatas();
+            List<MultipartFile> files = new ArrayList<>(resolvedData.size());
+            for (InterfaceHttpData item : resolvedData) {
+                InterfaceHttpData.HttpDataType type = item.getHttpDataType();
+                if (type == InterfaceHttpData.HttpDataType.Attribute) {
+                    try {
+                        ctx.attr(AttributeKey.stringKey(PREFIX + item.getName()))
+                                .set(getAndClean((Attribute) item));
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                } else if (type == InterfaceHttpData.HttpDataType.FileUpload) {
+                    files.add(parse((FileUpload) item));
+                }
+            }
+            ctx.attr(MULTIPART_FILES).set(files);
+            ctx.attr(MULTIPART_BODY_RESOLVED).set(true);
+            ctx.attr(MULTIPART_DECODER).set(decoder);
+        }
+    }
+
+    protected abstract NameAndValueResolver doCreateResolver(Param param, HandlerResolverFactory resolverFactory);
+
     MultipartConfig buildConfig(DeployContext<? extends RestlightOptions> ctx) {
         MultipartConfig config;
 
@@ -101,71 +158,6 @@ abstract class AbstractMultipartParamResolver<T> extends NameAndValueResolverFac
         ctx.options().extOption(TEMP_DIR_KEY).ifPresent((s) -> config.setTempDir(StringUtils.trim(s)));
         return config;
     }
-
-    @Override
-    protected BiFunction<String, RequestContext, T> initValueProvider(Param param) {
-        BiFunction<String, RequestContext, T> valueProvider =
-                Checks.checkNotNull(doInitValueProvider(param), "valueProvider");
-
-        return (name, ctx) -> {
-            HttpRequest request = ctx.request();
-            if (!ctx.hasAttr(MULTIPART_BODY_RESOLVED)) {
-                final io.netty.handler.codec.http.HttpRequest request0 = formattedReq(request);
-
-                if (!HttpPostRequestDecoder.isMultipart(request0)) {
-                    throw new IllegalStateException("You excepted to accept a multipart file or attribute," +
-                            " but Content-Type is: " + request.headers().get(HttpHeaderNames.CONTENT_TYPE));
-                }
-
-                final HttpPostMultipartRequestDecoder decoder = new HttpPostMultipartRequestDecoder(factory, request0);
-                // Only decode once and get all resolved data
-                List<InterfaceHttpData> resolvedData = decoder.getBodyHttpDatas();
-                List<MultipartFile> files = new ArrayList<>(resolvedData.size());
-                for (InterfaceHttpData item : resolvedData) {
-                    InterfaceHttpData.HttpDataType type = item.getHttpDataType();
-                    if (type == InterfaceHttpData.HttpDataType.Attribute) {
-                        try {
-                            ctx.attr(AttributeKey.stringKey(PREFIX + item.getName()))
-                                    .set(getAndClean((Attribute) item));
-                        } catch (IOException e) {
-                            throw new RuntimeException(e);
-                        }
-                    } else if (type == InterfaceHttpData.HttpDataType.FileUpload) {
-                        files.add(parse((FileUpload) item));
-                    }
-                }
-                ctx.attr(MULTIPART_FILES).set(files);
-                ctx.attr(MULTIPART_BODY_RESOLVED).set(true);
-                ctx.attr(MULTIPART_DECODER).set(decoder);
-            }
-            return valueProvider.apply(name, ctx);
-        };
-    }
-
-    protected abstract BiFunction<String, RequestContext, T> doInitValueProvider(Param param);
-
-    @Override
-    protected NameAndValueResolver.Converter<T> initConverter(Param param,
-                                                              BiFunction<Class<?>,
-                                                                      Type,
-                                                                      StringConverter> converterLookup) {
-        NameAndValueResolver.Converter<T> converter = Checks.checkNotNull(doInitConverter(param, converterLookup),
-                "converter");
-        return (name, ctx, valueProvider) -> {
-            try {
-                return converter.convert(name, ctx, valueProvider);
-            } finally {
-                if (ctx != null) {
-                    tryAddCleaner(ctx);
-                }
-            }
-        };
-    }
-
-    protected abstract NameAndValueResolver.Converter<T> doInitConverter(Param param,
-                                                                         BiFunction<Class<?>,
-                                                                                 Type,
-                                                                                 StringConverter> converterLookup);
 
     void initFactory(final MultipartConfig config) {
         if (config.isUseDisk()) {
