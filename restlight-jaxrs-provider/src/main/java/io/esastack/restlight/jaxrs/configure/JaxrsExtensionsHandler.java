@@ -27,7 +27,7 @@ import io.esastack.restlight.core.configure.MiniConfigurableDeployments;
 import io.esastack.restlight.core.method.ResolvableParamPredicate;
 import io.esastack.restlight.core.util.ConstructorUtils;
 import io.esastack.restlight.jaxrs.adapter.DynamicFeatureAdapter;
-import io.esastack.restlight.jaxrs.adapter.GlobalResponseFiltersAdapter;
+import io.esastack.restlight.jaxrs.adapter.FilteredExceptionHandler;
 import io.esastack.restlight.jaxrs.adapter.JaxrsContextResolverAdapter;
 import io.esastack.restlight.jaxrs.adapter.JaxrsExceptionMapperAdapter;
 import io.esastack.restlight.jaxrs.adapter.MessageBodyReaderAdapter;
@@ -240,7 +240,7 @@ public class JaxrsExtensionsHandler implements ExtensionsHandler {
             }
         }
         if (!rspFilters.isEmpty()) {
-            deployments.addExceptionHandler(new GlobalResponseFiltersAdapter(descendingOrder(rspFilters)
+            deployments.addExceptionHandler(new FilteredExceptionHandler(descendingOrder(rspFilters)
                     .toArray(new ContainerResponseFilter[0])));
         }
     }

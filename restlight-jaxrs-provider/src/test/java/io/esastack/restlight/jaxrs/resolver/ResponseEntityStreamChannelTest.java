@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.esastack.restlight.core.resolver;
+package io.esastack.restlight.jaxrs.resolver;
 
 import io.esastack.httpserver.core.Response;
 import io.netty.buffer.ByteBuf;
@@ -36,14 +36,14 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-class ResponseEntityChannelImplTest {
+class ResponseEntityStreamChannelTest {
 
     @Test
     void testWrite() {
         final Response response = mock(Response.class);
         when(response.alloc()).thenReturn(Unpooled.EMPTY_BUFFER.alloc());
-        final ResponseEntityChannelImpl.ByteBufHttpOutputStream out =
-                new ResponseEntityChannelImpl.ByteBufHttpOutputStream(8, response);
+        final ResponseEntityStreamChannelImpl.ByteBufHttpOutputStream out =
+                new ResponseEntityStreamChannelImpl.ByteBufHttpOutputStream(8, response);
         final ByteBuf buf = Unpooled.buffer();
         final ByteBuf write = Unpooled.buffer();
 
@@ -121,8 +121,8 @@ class ResponseEntityChannelImplTest {
             return buffer.get();
         });
         when(response.alloc()).thenReturn(alloc);
-        final ResponseEntityChannelImpl.ByteBufHttpOutputStream out =
-                new ResponseEntityChannelImpl.ByteBufHttpOutputStream(8, response);
+        final ResponseEntityStreamChannelImpl.ByteBufHttpOutputStream out =
+                new ResponseEntityStreamChannelImpl.ByteBufHttpOutputStream(8, response);
 
         final AtomicReference<ByteBuf> written = new AtomicReference<>();
         when(response.write(any(ByteBuf.class))).then(invocation -> {

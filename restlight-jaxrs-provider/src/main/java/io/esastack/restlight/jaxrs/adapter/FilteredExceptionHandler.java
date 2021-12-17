@@ -35,11 +35,11 @@ import java.util.concurrent.CompletableFuture;
 
 @Internal
 @Feature(tags = Constants.INTERNAL)
-public class GlobalResponseFiltersAdapter implements ExceptionHandler {
+public class FilteredExceptionHandler implements ExceptionHandler {
 
     private final ContainerResponseFilter[] filters;
 
-    public GlobalResponseFiltersAdapter(ContainerResponseFilter[] filters) {
+    public FilteredExceptionHandler(ContainerResponseFilter[] filters) {
         Checks.checkNotNull(filters, "filters");
         this.filters = filters;
     }
