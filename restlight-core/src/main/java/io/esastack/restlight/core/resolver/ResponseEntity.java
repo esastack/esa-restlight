@@ -15,11 +15,9 @@
  */
 package io.esastack.restlight.core.resolver;
 
-import io.esastack.commons.net.buffer.Buffer;
 import io.esastack.restlight.core.handler.Handler;
+import io.esastack.restlight.server.context.RequestContext;
 import io.esastack.restlight.server.core.HttpResponse;
-
-import java.io.File;
 
 /**
  * The handled value which maybe obtained from {@link Handler#invoke(RequestContext, Object[])} or
@@ -28,24 +26,11 @@ import java.io.File;
 public interface ResponseEntity extends HttpEntity {
 
     /**
-     * Sends the {@code buffer} to remote endpoint and end current request.
-     *
-     * @param buffer    buffer
-     */
-    void sendResult(Buffer buffer);
-
-    /**
-     * Sends the {@code file} to remote endpoint and end current request.
-     *
-     * @param file  file
-     */
-    void sendFile(File file);
-
-    /**
      * Obtains the {@link HttpResponse} corresponding to current entity.
      *
      * @return  response.
      */
     HttpResponse response();
+
 }
 

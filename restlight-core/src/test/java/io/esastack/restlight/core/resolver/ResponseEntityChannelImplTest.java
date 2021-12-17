@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 OPPO ESA Stack Project
+ * Copyright 2021 OPPO ESA Stack Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.esastack.restlight.server.core.impl;
+package io.esastack.restlight.core.resolver;
 
 import io.esastack.httpserver.core.Response;
 import io.netty.buffer.ByteBuf;
@@ -36,13 +36,14 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-class ByteBufHttpOutPutStreamTest {
+class ResponseEntityChannelImplTest {
 
     @Test
     void testWrite() {
         final Response response = mock(Response.class);
         when(response.alloc()).thenReturn(Unpooled.EMPTY_BUFFER.alloc());
-        final ByteBufHttpOutputStream out = new ByteBufHttpOutputStream(8, response);
+        final ResponseEntityChannelImpl.ByteBufHttpOutputStream out =
+                new ResponseEntityChannelImpl.ByteBufHttpOutputStream(8, response);
         final ByteBuf buf = Unpooled.buffer();
         final ByteBuf write = Unpooled.buffer();
 
@@ -120,7 +121,8 @@ class ByteBufHttpOutPutStreamTest {
             return buffer.get();
         });
         when(response.alloc()).thenReturn(alloc);
-        final ByteBufHttpOutputStream out = new ByteBufHttpOutputStream(8, response);
+        final ResponseEntityChannelImpl.ByteBufHttpOutputStream out =
+                new ResponseEntityChannelImpl.ByteBufHttpOutputStream(8, response);
 
         final AtomicReference<ByteBuf> written = new AtomicReference<>();
         when(response.write(any(ByteBuf.class))).then(invocation -> {
@@ -141,5 +143,5 @@ class ByteBufHttpOutPutStreamTest {
         assertEquals(0, buffer.get().refCnt());
     }
 
-
 }
+

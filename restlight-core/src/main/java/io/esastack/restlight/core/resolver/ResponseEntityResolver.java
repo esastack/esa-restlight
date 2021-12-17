@@ -31,11 +31,14 @@ public interface ResponseEntityResolver extends Ordered {
      * Writes the given {@code value} to {@link HttpResponse}.
      *
      * @param entity    entity
+     * @param channel   the channel to write resolved {@code entity}
      * @param context   context
      * @return  resolved value, which must not be {@code null}.
      * @throws Exception    any exception
      */
-    HandledValue<Void> writeTo(ResponseEntity entity, RequestContext context) throws Exception;
+    HandledValue<Void> writeTo(ResponseEntity entity,
+                               ResponseEntityChannel channel,
+                               RequestContext context) throws Exception;
 
     /**
      * Default to HIGHEST_PRECEDENCE.

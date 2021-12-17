@@ -19,13 +19,13 @@ import esa.commons.Checks;
 import io.esastack.restlight.server.context.RequestContext;
 import io.esastack.restlight.server.core.impl.AttributesProxy;
 
-import java.io.OutputStream;
 import java.util.List;
 
 public class ResponseEntityResolverContextImpl extends AttributesProxy implements ResponseEntityResolverContext {
 
     private final RequestContext context;
     private final ResponseEntity entity;
+    private final ResponseEntityChannel channel;
     private final List<ResponseEntityResolver> resolvers;
     private final ResponseEntityResolverAdvice[] advices;
     private int index;
@@ -35,8 +35,9 @@ public class ResponseEntityResolverContextImpl extends AttributesProxy implement
                                              List<ResponseEntityResolver> resolvers,
                                              ResponseEntityResolverAdvice[] advices) {
         super(context);
-        Checks.checkNotNull(entity, "value");
+        Checks.checkNotNull(entity, "entity");
         Checks.checkNotNull(resolvers, "resolvers");
+        this.channel = new ResponseEntityChannelImpl(context);
         this.context = context;
         this.entity = entity;
         this.resolvers = resolvers;
@@ -54,10 +55,8 @@ public class ResponseEntityResolverContextImpl extends AttributesProxy implement
     }
 
     @Override
-    public void outputStream(OutputStream os) {
-        // TODO:
-        return;
-        //context.response().outputStream(os);
+    public ResponseEntityChannel channel() {
+        return channel;
     }
 
     @Override
@@ -75,7 +74,7 @@ public class ResponseEntityResolverContextImpl extends AttributesProxy implement
         if (advices == null || index >= advices.length) {
             HandledValue<Void> handled;
             for (ResponseEntityResolver resolver : resolvers) {
-                handled = resolver.writeTo(entity, context);
+                handled = resolver.writeTo(entity, channel, context);
                 if (handled.isSuccess()) {
                     return;
                 }

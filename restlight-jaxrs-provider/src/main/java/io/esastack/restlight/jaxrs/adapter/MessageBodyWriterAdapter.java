@@ -18,6 +18,7 @@ package io.esastack.restlight.jaxrs.adapter;
 import esa.commons.Checks;
 import io.esastack.restlight.core.resolver.HandledValue;
 import io.esastack.restlight.core.resolver.ResponseEntity;
+import io.esastack.restlight.core.resolver.ResponseEntityChannel;
 import io.esastack.restlight.core.resolver.ResponseEntityResolver;
 import io.esastack.restlight.jaxrs.util.MediaTypeUtils;
 import io.esastack.restlight.jaxrs.util.RuntimeDelegateUtils;
@@ -44,7 +45,9 @@ public class MessageBodyWriterAdapter<T> implements ResponseEntityResolver {
     }
 
     @Override
-    public HandledValue<Void> writeTo(ResponseEntity entity, RequestContext context) throws Exception {
+    public HandledValue<Void> writeTo(ResponseEntity entity,
+                                      ResponseEntityChannel channel,
+                                      RequestContext context) throws Exception {
         MediaType mediaType = MediaTypeUtils.convert(entity.mediaType());
         if (entity.response().entity() == null
                 || !isCompatible(mediaType)
@@ -56,9 +59,8 @@ public class MessageBodyWriterAdapter<T> implements ResponseEntityResolver {
         MultivaluedMap<String, Object> headers = new MultivaluedHashMap<>();
         RuntimeDelegateUtils.addHeadersToMap(context.response().headers(), headers);
         try {
-            // TODO:
             underlying.writeTo(value, entity.type(), entity.genericType(), entity.annotations(),
-                    mediaType, headers, null);
+                    mediaType, headers, channel.outputStream());
         } finally {
             RuntimeDelegateUtils.addHeadersFromMap(context.response().headers(), headers, true);
         }

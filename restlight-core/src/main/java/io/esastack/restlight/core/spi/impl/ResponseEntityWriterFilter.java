@@ -34,8 +34,6 @@ import io.esastack.restlight.server.spi.Filter;
 
 import java.util.concurrent.CompletableFuture;
 
-import static io.esastack.restlight.server.core.impl.RequestContextImpl.UNDERLYING_RESPONSE;
-
 public class ResponseEntityWriterFilter implements Filter {
 
     private final DeployContext<? extends RestlightOptions> ctx;
@@ -52,8 +50,7 @@ public class ResponseEntityWriterFilter implements Filter {
         HandlerResolverFactory resolverFactory = getResolverFactory();
         return chain.doFilter(context).thenApply(v -> {
             HandlerMethod method = ResponseEntityUtils.getHandledMethod(context);
-            ResponseEntity entity = new ResponseEntityImpl(method, context.response(),
-                    context.attr(UNDERLYING_RESPONSE).get());
+            ResponseEntity entity = new ResponseEntityImpl(method, context.response());
             ResponseEntityResolverContext rspCtx = new ResponseEntityResolverContextImpl(context,
                     entity, resolverFactory.getResponseEntityResolvers(),
                     resolverFactory.getResponseEntityResolverAdvices(entity)

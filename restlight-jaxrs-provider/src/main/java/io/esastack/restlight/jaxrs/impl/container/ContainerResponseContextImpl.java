@@ -18,7 +18,6 @@ package io.esastack.restlight.jaxrs.impl.container;
 import esa.commons.Checks;
 import esa.commons.ClassUtils;
 import io.esastack.restlight.jaxrs.impl.core.ResponseImpl;
-import io.esastack.restlight.server.context.RequestContext;
 import jakarta.ws.rs.container.ContainerResponseContext;
 import jakarta.ws.rs.core.EntityTag;
 import jakarta.ws.rs.core.Link;
@@ -38,13 +37,13 @@ import java.util.Set;
 
 public class ContainerResponseContextImpl implements ContainerResponseContext {
 
-    private final RequestContext context;
     private final ResponseImpl response;
+    private OutputStream outputStream;
 
-    public ContainerResponseContextImpl(RequestContext context, ResponseImpl response) {
-        Checks.checkNotNull(context, "context");
+    public ContainerResponseContextImpl(OutputStream outputStream, ResponseImpl response) {
+        Checks.checkNotNull(outputStream, "outputStream");
         Checks.checkNotNull(response, "response");
-        this.context = context;
+        this.outputStream = outputStream;
         this.response = response;
     }
 
@@ -185,15 +184,12 @@ public class ContainerResponseContextImpl implements ContainerResponseContext {
 
     @Override
     public OutputStream getEntityStream() {
-        // TODO:
-        //return context.response().outputStream();
-        return null;
+        return this.outputStream;
     }
 
     @Override
     public void setEntityStream(OutputStream outputStream) {
-        // TODO:
-        //context.response().outputStream(outputStream);
+        this.outputStream = outputStream;
     }
 }
 

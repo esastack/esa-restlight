@@ -16,7 +16,6 @@
 package io.esastack.restlight.jaxrs.adapter;
 
 import esa.commons.Checks;
-import io.esastack.restlight.server.context.RouteContext;
 import io.esastack.restlight.core.handler.HandlerMapping;
 import io.esastack.restlight.core.handler.RouteFilter;
 import io.esastack.restlight.core.handler.RouteFilterChain;
@@ -26,6 +25,7 @@ import io.esastack.restlight.jaxrs.impl.container.ContainerResponseContextImpl;
 import io.esastack.restlight.jaxrs.impl.container.ResponseContainerContext;
 import io.esastack.restlight.jaxrs.impl.core.ResponseImpl;
 import io.esastack.restlight.jaxrs.util.RuntimeDelegateUtils;
+import io.esastack.restlight.server.context.RouteContext;
 import io.esastack.restlight.server.util.Futures;
 import jakarta.ws.rs.container.ContainerRequestContext;
 import jakarta.ws.rs.container.ContainerResponseFilter;
@@ -48,7 +48,8 @@ public class JaxrsResponseFilters implements RouteFilter {
             RuntimeDelegateUtils.addMetadataToJakarta(context.response(), rsp);
             final ContainerRequestContext reqCtx = new ResponseContainerContext(JaxrsContextUtils
                     .getRequestContext(context));
-            final ContainerResponseContextImpl rspCtx = new ContainerResponseContextImpl(context, rsp);
+            final ContainerResponseContextImpl rspCtx = new ContainerResponseContextImpl(
+                    ResponseEntityChannelUtils.get(context).outputStream(), rsp);
             for (ContainerResponseFilter filter : filters) {
                 try {
                     filter.filter(reqCtx, rspCtx);

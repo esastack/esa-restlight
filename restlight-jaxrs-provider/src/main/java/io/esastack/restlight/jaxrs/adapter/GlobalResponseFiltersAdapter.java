@@ -44,13 +44,15 @@ public class GlobalResponseFiltersAdapter implements ExceptionHandler {
     }
 
     @Override
-    public CompletableFuture<Void> handle(RequestContext context, Throwable th,
+    public CompletableFuture<Void> handle(RequestContext context,
+                                          Throwable th,
                                           ExceptionHandlerChain next) {
         ResponseImpl rsp = JaxrsContextUtils.getResponse(context);
         RuntimeDelegateUtils.addMetadataToJakarta(context.response(), rsp);
         final ContainerRequestContext reqCtx = new ResponseContainerContext(JaxrsContextUtils
                 .getRequestContext(context));
-        final ContainerResponseContextImpl rspCtx = new ContainerResponseContextImpl(context, rsp);
+        final ContainerResponseContextImpl rspCtx = new ContainerResponseContextImpl(
+                ResponseEntityChannelUtils.get(context).outputStream(), rsp);
         for (ContainerResponseFilter filter : filters) {
             try {
                 filter.filter(reqCtx, rspCtx);

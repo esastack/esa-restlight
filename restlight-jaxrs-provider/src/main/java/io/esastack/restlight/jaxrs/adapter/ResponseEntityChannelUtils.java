@@ -13,21 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.esastack.restlight.core.resolver;
+package io.esastack.restlight.jaxrs.adapter;
 
+import io.esastack.restlight.core.resolver.ResponseEntityChannel;
+import io.esastack.restlight.core.resolver.ResponseEntityChannelImpl;
 import io.esastack.restlight.server.context.RequestContext;
 
-public interface RequestEntityResolverAdvice {
+final class ResponseEntityChannelUtils extends ResponseEntityChannelImpl {
 
-    /**
-     * This method will be called around
-     * {@link ResponseEntityResolver#writeTo(ResponseEntity, ResponseEntityChannel, RequestContext)}.
-     *
-     * @param context   context
-     * @return object   resolved value
-     * @throws Exception exception
-     */
-    Object aroundRead(RequestEntityResolverContext context) throws Exception;
+    static ResponseEntityChannel get(RequestContext context) {
+        ResponseEntityChannel channel = context.attr(RESPONSE_ENTITY_CHANNEL).get();
+        if (channel != null) {
+            return channel;
+        }
+        return new ResponseEntityChannelUtils(context);
+    }
 
+    private ResponseEntityChannelUtils(RequestContext context) {
+        super(context);
+    }
 }
 

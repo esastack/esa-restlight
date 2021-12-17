@@ -23,6 +23,7 @@ import io.esastack.restlight.core.resolver.ParamResolverAdapter;
 import io.esastack.restlight.core.resolver.ParamResolverAdviceAdapter;
 import io.esastack.restlight.core.resolver.RequestEntity;
 import io.esastack.restlight.core.resolver.ResponseEntity;
+import io.esastack.restlight.core.resolver.ResponseEntityChannel;
 import io.esastack.restlight.core.resolver.ResponseEntityResolver;
 import io.esastack.restlight.core.resolver.ResponseEntityResolverAdviceAdapter;
 import io.esastack.restlight.core.serialize.HttpBodySerializer;
@@ -109,7 +110,8 @@ class MinorityMockMvcBuilderTest {
 
         @Override
         public HandledValue<Void> writeTo(ResponseEntity entity,
-                                          io.esastack.restlight.server.context.RequestContext context) {
+                                          ResponseEntityChannel channel,
+                                          RequestContext context) {
             return HandledValue.succeed(null);
         }
     }

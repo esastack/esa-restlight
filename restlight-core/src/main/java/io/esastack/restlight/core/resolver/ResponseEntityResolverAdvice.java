@@ -23,7 +23,8 @@ import io.esastack.restlight.server.context.RequestContext;
 public interface ResponseEntityResolverAdvice {
 
     /**
-     * This method will be called around {@link ResponseEntityResolver#writeTo(ResponseEntity, RequestContext)}.
+     * This method will be called around
+     * {@link ResponseEntityResolver#writeTo(ResponseEntity, ResponseEntityChannel, RequestContext)}.
      *
      * @param context   context
      * @throws Exception exception

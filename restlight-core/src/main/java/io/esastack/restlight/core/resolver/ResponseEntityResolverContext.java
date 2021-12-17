@@ -17,8 +17,6 @@ package io.esastack.restlight.core.resolver;
 
 import io.esastack.restlight.core.method.Param;
 
-import java.io.OutputStream;
-
 public interface ResponseEntityResolverContext extends HttpEntityResolverContext {
 
     /**
@@ -28,6 +26,13 @@ public interface ResponseEntityResolverContext extends HttpEntityResolverContext
      */
     @Override
     ResponseEntity entityInfo();
+
+    /**
+     * Obtains teh {@link ResponseEntityChannel}.
+     *
+     * @return  channel
+     */
+    ResponseEntityChannel channel();
 
     /**
      * Obtains the current entity.
@@ -42,13 +47,6 @@ public interface ResponseEntityResolverContext extends HttpEntityResolverContext
      * @param entity    entity
      */
     void entity(Object entity);
-
-    /**
-     * Sets the input stream to resolve.
-     *
-     * @param os   output stream
-     */
-    void outputStream(OutputStream os);
 
     /**
      * Resolves the {@link #entity()} by given {@link #context()}.

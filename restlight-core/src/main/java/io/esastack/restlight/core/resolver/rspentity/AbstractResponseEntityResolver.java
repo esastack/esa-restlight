@@ -17,15 +17,15 @@ package io.esastack.restlight.core.resolver.rspentity;
 
 import esa.commons.Primitives;
 import esa.commons.StringUtils;
-import io.esastack.commons.net.buffer.Buffer;
 import io.esastack.commons.net.http.MediaType;
 import io.esastack.commons.net.http.MediaTypeUtil;
-import io.esastack.restlight.server.core.HttpResponse;
-import io.esastack.restlight.server.context.RequestContext;
 import io.esastack.restlight.core.resolver.HandledValue;
 import io.esastack.restlight.core.resolver.ResponseEntity;
+import io.esastack.restlight.core.resolver.ResponseEntityChannel;
 import io.esastack.restlight.core.resolver.ResponseEntityResolver;
 import io.esastack.restlight.core.serialize.Serializers;
+import io.esastack.restlight.server.context.RequestContext;
+import io.esastack.restlight.server.core.HttpResponse;
 import io.esastack.restlight.server.route.predicate.ProducesPredicate;
 import io.netty.buffer.ByteBuf;
 import io.netty.handler.codec.http.HttpHeaderNames;
@@ -52,7 +52,9 @@ public abstract class AbstractResponseEntityResolver implements ResponseEntityRe
     }
 
     @Override
-    public HandledValue<Void> writeTo(ResponseEntity entity, RequestContext context) throws Exception {
+    public HandledValue<Void> writeTo(ResponseEntity entity,
+                                      ResponseEntityChannel channel,
+                                      RequestContext context) throws Exception {
         if (!supports(entity)) {
             return HandledValue.failed();
         }
@@ -74,7 +76,7 @@ public abstract class AbstractResponseEntityResolver implements ResponseEntityRe
             serialized = serialize(entity, mediaTypes, context);
         }
 
-        entity.sendResult(Buffer.defaultAlloc().buffer(serialized));
+        channel.writeThenEnd(serialized);
         return HandledValue.succeed(null);
     }
 
