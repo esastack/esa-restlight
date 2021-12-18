@@ -38,7 +38,7 @@ public class RequestAttributeParamResolver extends NameAndValueResolverFactory {
 
     @Override
     public NameAndValueResolver createResolver(Param param, HandlerResolverFactory resolverFactory) {
-        final StringConverter converter = resolverFactory.getStringConverter(param, param.type(), param.genericType());
+        final StringConverter converter = resolverFactory.getStringConverter(param.type(), param.genericType(), param);
         return new NameAndValueResolver() {
             @Override
             public Object resolve(String name, RequestContext ctx) {

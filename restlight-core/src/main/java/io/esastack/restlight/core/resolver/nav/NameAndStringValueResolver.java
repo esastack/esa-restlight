@@ -19,9 +19,9 @@ public class NameAndStringValueResolver implements NameAndValueResolver {
                                       BiFunction<String, RequestContext, String> valueExtractor,
                                       NameAndValue<String> nav) {
         Checks.checkNotNull(resolverFactory, "resolverFactory");
-        this.converter = Checks.checkNotNull(resolverFactory.getStringConverter(param,
-                param.type(),
-                param.genericType()), "converter");
+        this.converter = Checks.checkNotNull(resolverFactory.getStringConverter(param.type(),
+                param.genericType(),
+                param), "converter");
         this.valueExtractor = Checks.checkNotNull(valueExtractor, "valueExtractor");
         Object defaultValue;
         if (converter.isLazy()) {

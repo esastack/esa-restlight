@@ -220,11 +220,11 @@ public class HandlerResolverFactoryImpl implements HandlerResolverFactory {
     }
 
     @Override
-    public StringConverter getStringConverter(Param param, Class<?> baseType, Type baseGenericType) {
+    public StringConverter getStringConverter(Class<?> type, Type genericType, Param relatedParam) {
         //resolve the fixed parameter resolver
         Optional<StringConverter> converter;
         for (StringConverterFactory factory : paramConverters) {
-            if ((converter = factory.createConverter(param, baseType, baseGenericType)).isPresent()) {
+            if ((converter = factory.createConverter(type, genericType, relatedParam)).isPresent()) {
                 return converter.get();
             }
         }

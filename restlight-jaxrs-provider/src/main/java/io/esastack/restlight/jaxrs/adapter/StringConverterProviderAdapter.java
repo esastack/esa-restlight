@@ -35,9 +35,9 @@ public class StringConverterProviderAdapter implements StringConverterFactory {
     }
 
     @Override
-    public Optional<StringConverter> createConverter(Param param, Class<?> baseType, Type baseGenericType) {
-        jakarta.ws.rs.ext.ParamConverter<?> converter = underlying.getConverter(baseType,
-                baseGenericType, param.annotations());
+    public Optional<StringConverter> createConverter(Class<?> type, Type genericType, Param relatedParam) {
+        jakarta.ws.rs.ext.ParamConverter<?> converter = underlying.getConverter(type,
+                genericType, relatedParam.annotations());
         if (converter == null) {
             return Optional.empty();
         }

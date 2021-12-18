@@ -28,12 +28,12 @@ public class NameAndStringsValueResolver implements NameAndValueResolver {
                                        NameAndValue<String> nav) {
         Checks.checkNotNull(resolverFactory, "resolverFactory");
         this.valueExtractor = Checks.checkNotNull(valueExtractor, "valueExtractor");
-        this.strConverter = resolverFactory.getStringConverter(param,
-                param.type(),
-                param.genericType());
+        this.strConverter = resolverFactory.getStringConverter(param.type(),
+                param.genericType(),
+                param);
 
         BiFunction<Class<?>, Type, StringConverter> converterLookup = (baseType, baseGenericType) ->
-                resolverFactory.getStringConverter(param, baseType, baseGenericType);
+                resolverFactory.getStringConverter(baseType, baseGenericType, param);
 
         this.strsConverter = ConverterUtils.strs2ObjectConverter(param.type(),
                 param.genericType(),

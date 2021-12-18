@@ -12,8 +12,8 @@ import java.util.function.Function;
 public class DefaultStringConverterFactory implements StringConverterFactory {
 
     @Override
-    public Optional<StringConverter> createConverter(Param param, Class<?> baseType, Type baseGenericType) {
-        Function<String, Object> converter = ConverterUtils.str2ObjectConverter(baseType);
+    public Optional<StringConverter> createConverter(Class<?> type, Type genericType, Param relatedParam) {
+        Function<String, Object> converter = ConverterUtils.str2ObjectConverter(type);
 
         if (converter == null) {
             return Optional.empty();

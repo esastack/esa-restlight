@@ -46,9 +46,9 @@ public class NameAndValue<T> {
     public static class LazyDefaultValue implements Supplier<Object> {
 
         private final Supplier<Object> supplier;
-        //The reason why the object is not used directly is that the object
-        //may be null and cannot be used to judge whether it has been loaded
-        private volatile Supplier<Object> loadedSupplier;
+        private volatile Object value;
+        //Because the value may be null,so there need a flag which declare whether the value had been loaded
+        private volatile boolean loaded = false;
 
         public LazyDefaultValue(Supplier<Object> supplier) {
             this.supplier = Checks.checkNotNull(supplier);
@@ -56,16 +56,16 @@ public class NameAndValue<T> {
 
         @Override
         public Object get() {
-            if (loadedSupplier != null) {
-                return loadedSupplier.get();
+            if (loaded) {
+                return value;
             }
             synchronized (this) {
-                if (loadedSupplier != null) {
-                    return loadedSupplier.get();
+                if (loaded) {
+                    return value;
                 }
-                Object obj = supplier.get();
-                loadedSupplier = () -> obj;
-                return obj;
+                value = supplier.get();
+                loaded = true;
+                return value;
             }
         }
     }

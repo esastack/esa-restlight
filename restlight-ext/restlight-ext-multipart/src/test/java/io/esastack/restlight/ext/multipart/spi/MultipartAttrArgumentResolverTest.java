@@ -45,9 +45,9 @@ class MultipartAttrArgumentResolverTest extends AbstractMultipartResolverTest {
         assertTrue(attrResolver.supports(parameter));
         HandlerResolverFactory resolverFactory = mock(HandlerResolverFactory.class);
         when(resolverFactory
-                .getStringConverter(parameter, parameter.type(), parameter.genericType()))
+                .getStringConverter(parameter.type(), parameter.genericType(), parameter))
                 .thenReturn(CONVERTER_FACTORY
-                        .createConverter(parameter, parameter.type(), parameter.genericType()).get());
+                        .createConverter(parameter.type(), parameter.genericType(), parameter).get());
         final ParamResolver resolver = new NameAndValueResolverAdapter(parameter,
                 attrResolver.createResolver(parameter, resolverFactory));
         return resolver.resolve(parameter, new RequestContextImpl(request,

@@ -29,7 +29,7 @@ public interface StringConverterFactory extends Ordered {
     /**
      * Converts given {@link StringConverter} to {@link StringConverterFactory} which
      * always use the given {@link StringConverter} as the result of
-     * {@link #createConverter(Param, Class, Type)}
+     * {@link #createConverter(Class, Type, Param)}
      *
      * @param converter converter
      * @return of factory bean
@@ -41,12 +41,12 @@ public interface StringConverterFactory extends Ordered {
     /**
      * Creates an instance of {@link StringConverter} for given {@link Param}.
      *
-     * @param param           param
-     * @param baseType        baseType
-     * @param baseGenericType baseGenericType
+     * @param type         type
+     * @param genericType  genericType
+     * @param relatedParam relatedParam
      * @return StringConverter
      */
-    Optional<StringConverter> createConverter(Param param, Class<?> baseType, Type baseGenericType);
+    Optional<StringConverter> createConverter(Class<?> type, Type genericType, Param relatedParam);
 
     /**
      * Default to use the 0.
@@ -68,7 +68,7 @@ public interface StringConverterFactory extends Ordered {
         }
 
         @Override
-        public Optional<StringConverter> createConverter(Param param, Class<?> baseType, Type baseGenericType) {
+        public Optional<StringConverter> createConverter(Class<?> type, Type genericType, Param relatedParam) {
             return Optional.of(converter);
         }
     }
