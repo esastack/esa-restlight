@@ -24,7 +24,7 @@ import io.esastack.restlight.core.spi.ExceptionHandlerFactory;
 import io.esastack.restlight.core.util.Constants;
 import io.esastack.restlight.server.bootstrap.ExceptionHandlerChain;
 import io.esastack.restlight.server.context.RequestContext;
-import io.esastack.restlight.server.spi.ExceptionHandler;
+import io.esastack.restlight.server.spi.IExceptionHandler;
 import io.esastack.restlight.server.util.ErrorDetail;
 import io.esastack.restlight.server.util.Futures;
 import io.netty.util.internal.InternalThreadLocalMap;
@@ -40,11 +40,11 @@ import java.util.concurrent.CompletableFuture;
 public class ValidationExceptionHandlerFactory implements ExceptionHandlerFactory {
 
     @Override
-    public Optional<ExceptionHandler> handler(DeployContext<? extends RestlightOptions> ctx) {
-        return Optional.of(new ValidationExceptionHandler());
+    public Optional<IExceptionHandler> handler(DeployContext<? extends RestlightOptions> ctx) {
+        return Optional.of(new ValidationIExceptionHandler());
     }
 
-    private static class ValidationExceptionHandler implements ExceptionHandler {
+    private static class ValidationIExceptionHandler implements IExceptionHandler {
 
         @Override
         public CompletableFuture<Void> handle(RequestContext context, Throwable th,

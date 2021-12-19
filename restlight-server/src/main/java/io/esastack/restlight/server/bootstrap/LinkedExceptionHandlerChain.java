@@ -18,7 +18,7 @@ package io.esastack.restlight.server.bootstrap;
 import esa.commons.Checks;
 import esa.commons.annotation.Internal;
 import io.esastack.restlight.server.context.RequestContext;
-import io.esastack.restlight.server.spi.ExceptionHandler;
+import io.esastack.restlight.server.spi.IExceptionHandler;
 import io.esastack.restlight.server.util.Futures;
 
 import java.util.concurrent.CompletableFuture;
@@ -26,15 +26,15 @@ import java.util.concurrent.CompletableFuture;
 @Internal
 public class LinkedExceptionHandlerChain implements ExceptionHandlerChain {
 
-    private final ExceptionHandler handler;
+    private final IExceptionHandler handler;
     private final ExceptionHandlerChain next;
 
-    private LinkedExceptionHandlerChain(ExceptionHandler handler, ExceptionHandlerChain next) {
+    private LinkedExceptionHandlerChain(IExceptionHandler handler, ExceptionHandlerChain next) {
         this.handler = handler;
         this.next = next;
     }
 
-    public static ExceptionHandlerChain immutable(ExceptionHandler[] handlers) {
+    public static ExceptionHandlerChain immutable(IExceptionHandler[] handlers) {
         Checks.checkNotNull(handlers, "handlers");
         ExceptionHandlerChain chain = (context, th) -> Futures.completedExceptionally(th);
         int i = handlers.length - 1;

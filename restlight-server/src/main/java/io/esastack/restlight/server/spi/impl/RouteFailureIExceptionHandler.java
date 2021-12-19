@@ -25,7 +25,7 @@ import io.esastack.restlight.server.bootstrap.ExceptionHandlerChain;
 import io.esastack.restlight.server.context.RequestContext;
 import io.esastack.restlight.server.core.HttpResponse;
 import io.esastack.restlight.server.route.RouteFailureException;
-import io.esastack.restlight.server.spi.ExceptionHandler;
+import io.esastack.restlight.server.spi.IExceptionHandler;
 import io.esastack.restlight.server.util.ErrorDetail;
 import io.esastack.restlight.server.util.Futures;
 import io.netty.handler.codec.http.HttpHeaderNames;
@@ -34,7 +34,7 @@ import java.util.concurrent.CompletableFuture;
 
 @Internal
 @Feature(tags = Constants.INTERNAL)
-public class RouteFailureExceptionHandler implements ExceptionHandler {
+public class RouteFailureIExceptionHandler implements IExceptionHandler {
 
     @Override
     public CompletableFuture<Void> handle(RequestContext context, Throwable th,

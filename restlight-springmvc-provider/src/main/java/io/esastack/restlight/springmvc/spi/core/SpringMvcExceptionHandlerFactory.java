@@ -29,7 +29,7 @@ import io.esastack.restlight.server.bootstrap.ExceptionHandlerChain;
 import io.esastack.restlight.server.context.RequestContext;
 import io.esastack.restlight.server.core.HttpRequest;
 import io.esastack.restlight.server.core.HttpResponse;
-import io.esastack.restlight.server.spi.ExceptionHandler;
+import io.esastack.restlight.server.spi.IExceptionHandler;
 import io.esastack.restlight.server.util.ErrorDetail;
 import io.esastack.restlight.server.util.Futures;
 import io.esastack.restlight.springmvc.util.ResponseStatusUtils;
@@ -43,13 +43,13 @@ import java.util.concurrent.CompletableFuture;
 public class SpringMvcExceptionHandlerFactory implements ExceptionHandlerFactory {
 
     @Override
-    public Optional<ExceptionHandler> handler(DeployContext<? extends RestlightOptions> ctx) {
-        return Optional.of(new SpringMvcExceptionHandler());
+    public Optional<IExceptionHandler> handler(DeployContext<? extends RestlightOptions> ctx) {
+        return Optional.of(new SpringMvcIExceptionHandler());
     }
 
-    private static class SpringMvcExceptionHandler implements ExceptionHandler {
+    private static class SpringMvcIExceptionHandler implements IExceptionHandler {
 
-        private static final Logger logger = LoggerFactory.getLogger(SpringMvcExceptionHandler.class);
+        private static final Logger logger = LoggerFactory.getLogger(SpringMvcIExceptionHandler.class);
 
         @Override
         public CompletableFuture<Void> handle(RequestContext context, Throwable th,

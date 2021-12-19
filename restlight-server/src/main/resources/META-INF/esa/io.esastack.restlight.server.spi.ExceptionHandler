@@ -1,1 +1,1 @@
-io.esastack.restlight.server.spi.impl.RouteFailureExceptionHandler
+io.esastack.restlight.server.spi.impl.RouteFailureIExceptionHandler

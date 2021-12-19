@@ -46,8 +46,8 @@ import io.esastack.restlight.server.schedule.Scheduler;
 import io.esastack.restlight.server.schedule.Schedulers;
 import io.esastack.restlight.server.spi.ConnectionHandlerFactory;
 import io.esastack.restlight.server.spi.DisConnectionHandlerFactory;
-import io.esastack.restlight.server.spi.ExceptionHandler;
 import io.esastack.restlight.server.spi.Filter;
+import io.esastack.restlight.server.spi.IExceptionHandler;
 import io.esastack.restlight.server.spi.RequestTaskHookFactory;
 import io.esastack.restlight.server.spi.RouteRegistryAware;
 import io.esastack.restlight.server.spi.RouteRegistryAwareFactory;
@@ -78,7 +78,7 @@ public abstract class BaseDeployments<R extends BaseRestlightServer<R, D, O>, D 
     protected final R restlight;
     private final List<Route> routes = new LinkedList<>();
     private final List<Filter> filters = new LinkedList<>();
-    private final List<ExceptionHandler> exceptionHandlers = new LinkedList<>();
+    private final List<IExceptionHandler> exceptionHandlers = new LinkedList<>();
     private final List<ConnectionHandlerFactory> connectionHandlers = new LinkedList<>();
     private final List<DisConnectionHandlerFactory> disConnectionHandlers = new LinkedList<>();
     private final List<RequestTaskHookFactory> requestTaskHooks = new LinkedList<>();
@@ -255,7 +255,7 @@ public abstract class BaseDeployments<R extends BaseRestlightServer<R, D, O>, D 
     }
 
     @Internal
-    public D addExceptionHandler(ExceptionHandler handler) {
+    public D addExceptionHandler(IExceptionHandler handler) {
         checkImmutable();
         Checks.checkNotNull(handler, "handler");
         this.exceptionHandlers.add(handler);
@@ -263,7 +263,7 @@ public abstract class BaseDeployments<R extends BaseRestlightServer<R, D, O>, D 
     }
 
     @Internal
-    public D addExceptionHandlers(Collection<? extends ExceptionHandler> handlers) {
+    public D addExceptionHandlers(Collection<? extends IExceptionHandler> handlers) {
         checkImmutable();
         if (handlers != null && !handlers.isEmpty()) {
             handlers.forEach(this::addExceptionHandler);
@@ -406,14 +406,14 @@ public abstract class BaseDeployments<R extends BaseRestlightServer<R, D, O>, D 
                 .forEach(aware -> aware.setRegistry(routeRegistry));
 
         // init ExceptionHandlerChain
-        this.exceptionHandlers.addAll(SpiLoader.cached(ExceptionHandler.class)
+        this.exceptionHandlers.addAll(SpiLoader.cached(IExceptionHandler.class)
                 .getByFeature(restlight.name(),
                         true,
                         Collections.singletonMap(Constants.INTERNAL, StringUtils.empty()),
                         false));
         OrderedComparator.sort(exceptionHandlers);
-        ExceptionHandler[] exceptionHandlers0 = exceptionHandlers.toArray(new ExceptionHandler[0]);
-        this.exceptionHandler = LinkedExceptionHandlerChain.immutable(exceptionHandlers0);
+        IExceptionHandler[] iExceptionHandlers = exceptionHandlers.toArray(new IExceptionHandler[0]);
+        this.exceptionHandler = LinkedExceptionHandlerChain.immutable(iExceptionHandlers);
 
         // init DispatcherHandler
         this.dispatcher = new DispatcherHandlerImpl(routeRegistry, exceptionHandler);

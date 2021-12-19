@@ -50,7 +50,7 @@ import io.esastack.restlight.core.serialize.HttpRequestSerializer;
 import io.esastack.restlight.core.serialize.HttpResponseSerializer;
 import io.esastack.restlight.core.spi.RouteFilterFactory;
 import io.esastack.restlight.server.route.RouteRegistry;
-import io.esastack.restlight.server.spi.ExceptionHandler;
+import io.esastack.restlight.server.spi.IExceptionHandler;
 import io.esastack.restlight.server.spi.Filter;
 
 import java.util.Collection;
@@ -126,25 +126,25 @@ public class MiniConfigurableDeployments {
     }
 
     /**
-     * Adds {@link ExceptionHandler}.
+     * Adds {@link IExceptionHandler}.
      *
      * @param handler    exception handler
      * @return this deployments
      */
     @Internal
-    public MiniConfigurableDeployments addExceptionHandler(ExceptionHandler handler) {
+    public MiniConfigurableDeployments addExceptionHandler(IExceptionHandler handler) {
         deployments.addExceptionHandler(handler);
         return self();
     }
 
     /**
-     * Adds {@link ExceptionHandler}s.
+     * Adds {@link IExceptionHandler}s.
      *
      * @param handlers    exception handlers
      * @return this deployments
      */
     @Internal
-    public MiniConfigurableDeployments addExceptionHandlers(Collection<? extends ExceptionHandler> handlers) {
+    public MiniConfigurableDeployments addExceptionHandlers(Collection<? extends IExceptionHandler> handlers) {
         deployments.addExceptionHandlers(handlers);
         return self();
     }

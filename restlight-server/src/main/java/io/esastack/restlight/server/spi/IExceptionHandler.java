@@ -23,10 +23,14 @@ import io.esastack.restlight.server.context.RequestContext;
 
 import java.util.concurrent.CompletableFuture;
 
+/**
+ * This {@link IExceptionHandler} is designed for internal using. The exception caught will be proceed by
+ * sorted {@link IExceptionHandler}s one by one.
+ */
 @SPI
 @Internal
 @FunctionalInterface
-public interface ExceptionHandler extends Ordered {
+public interface IExceptionHandler extends Ordered {
 
     /**
      * Handles the exception by given {@code context} and next {@link ExceptionHandlerChain}.

@@ -17,12 +17,12 @@ package io.esastack.restlight.server.bootstrap;
 
 import esa.commons.annotation.Internal;
 import io.esastack.restlight.server.context.RequestContext;
-import io.esastack.restlight.server.spi.ExceptionHandler;
+import io.esastack.restlight.server.spi.IExceptionHandler;
 
 import java.util.concurrent.CompletableFuture;
 
 /**
- * This is a chained {@link ExceptionHandler} which is used to handle throwable.
+ * This is a chained {@link IExceptionHandler} which is used to handle throwable.
  */
 @Internal
 public interface ExceptionHandlerChain {
