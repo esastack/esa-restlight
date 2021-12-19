@@ -26,7 +26,7 @@ public class ParamResolverContextImpl implements ParamResolverContext {
     private final RequestContext context;
     private final Param param;
     private final ParamResolver resolver;
-    private final List<ParamResolverAdvice> advices;
+    private final ParamResolverAdvice[] advices;
     private int index;
 
     public ParamResolverContextImpl(RequestContext context,
@@ -39,7 +39,7 @@ public class ParamResolverContextImpl implements ParamResolverContext {
         this.context = context;
         this.param = param;
         this.resolver = resolver;
-        this.advices = advices;
+        this.advices = (advices == null ? null : advices.toArray(new ParamResolverAdvice[0]));
     }
 
     @Override
@@ -54,10 +54,10 @@ public class ParamResolverContextImpl implements ParamResolverContext {
 
     @Override
     public Object proceed() throws Exception {
-        if (advices == null || index >= advices.size()) {
+        if (advices == null || index >= advices.length) {
             return resolver.resolve(param, context);
         }
 
-        return advices.get(index++).aroundResolve(this);
+        return advices[index++].aroundResolve(this);
     }
 }

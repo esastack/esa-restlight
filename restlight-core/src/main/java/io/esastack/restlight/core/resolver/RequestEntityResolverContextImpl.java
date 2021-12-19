@@ -23,7 +23,6 @@ import io.esastack.restlight.core.method.Param;
 import io.esastack.restlight.server.context.RequestContext;
 
 import java.io.InputStream;
-import java.util.List;
 import java.util.function.BiConsumer;
 
 public class RequestEntityResolverContextImpl implements RequestEntityResolverContext {
@@ -31,16 +30,16 @@ public class RequestEntityResolverContextImpl implements RequestEntityResolverCo
     private final Param param;
     private final RequestContext context;
     private final RequestEntity entity;
-    private final List<RequestEntityResolver> resolvers;
-    private final List<RequestEntityResolverAdvice> advices;
+    private final RequestEntityResolver[] resolvers;
+    private final RequestEntityResolverAdvice[] advices;
     private final int advicesSize;
     private int index;
 
     public RequestEntityResolverContextImpl(Param param,
                                             RequestContext context,
                                             RequestEntity entity,
-                                            List<RequestEntityResolver> resolvers,
-                                            List<RequestEntityResolverAdvice> advices) {
+                                            RequestEntityResolver[] resolvers,
+                                            RequestEntityResolverAdvice[] advices) {
         Checks.checkNotNull(param, "param");
         Checks.checkNotNull(context, "context");
         Checks.checkNotNull(entity, "entity");
@@ -50,7 +49,7 @@ public class RequestEntityResolverContextImpl implements RequestEntityResolverCo
         this.entity = entity;
         this.resolvers = resolvers;
         this.advices = advices;
-        this.advicesSize = (advices == null || advices.isEmpty()) ? 0 : advices.size();
+        this.advicesSize = (advices == null ? 0 : advices.length);
     }
 
     @Override
@@ -91,7 +90,7 @@ public class RequestEntityResolverContextImpl implements RequestEntityResolverCo
             return null;
         }
 
-        return advices.get(index++).aroundRead(this);
+        return advices[index++].aroundRead(this);
     }
 
     @Override
