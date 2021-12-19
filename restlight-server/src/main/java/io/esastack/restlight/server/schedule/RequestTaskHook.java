@@ -19,7 +19,7 @@ import esa.commons.annotation.Beta;
 import esa.commons.spi.SPI;
 import io.esastack.restlight.core.util.Ordered;
 import io.esastack.restlight.server.context.RequestContext;
-import io.esastack.restlight.server.spi.Filter;
+import io.esastack.restlight.server.handler.Filter;
 
 /**
  * Hook of every {@link RequestTask} which will be created when a request is coming after the execution of {@link

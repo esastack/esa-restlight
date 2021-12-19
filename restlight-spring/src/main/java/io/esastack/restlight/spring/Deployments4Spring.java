@@ -69,7 +69,7 @@ import io.esastack.restlight.server.schedule.RequestTaskHook;
 import io.esastack.restlight.server.schedule.Scheduler;
 import io.esastack.restlight.server.spi.ConnectionHandlerFactory;
 import io.esastack.restlight.server.spi.DisConnectionHandlerFactory;
-import io.esastack.restlight.server.spi.Filter;
+import io.esastack.restlight.server.handler.Filter;
 import io.esastack.restlight.server.spi.RequestTaskHookFactory;
 import io.esastack.restlight.server.spi.RouteRegistryAware;
 import io.esastack.restlight.server.spi.RouteRegistryAwareFactory;

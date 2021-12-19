@@ -1,6 +1,6 @@
 [
   {
-    "name":"io.esastack.restlight.server.spi.impl.RouteFailureExceptionHandler",
+    "name":"io.esastack.restlight.server.spi.impl.RouteFailureExceptionHandlerFactory",
     "methods":[{"name":"<init>","parameterTypes":[] }]
   }
 ]

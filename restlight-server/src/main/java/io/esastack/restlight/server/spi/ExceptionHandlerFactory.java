@@ -13,18 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.esastack.restlight.core.spi;
+package io.esastack.restlight.server.spi;
 
 import esa.commons.annotation.Internal;
 import esa.commons.spi.SPI;
-import io.esastack.restlight.core.DeployContext;
-import io.esastack.restlight.core.config.RestlightOptions;
-import io.esastack.restlight.server.spi.IExceptionHandler;
+import io.esastack.restlight.server.ServerDeployContext;
+import io.esastack.restlight.server.bootstrap.IExceptionHandler;
+import io.esastack.restlight.server.config.ServerOptions;
 
 import java.util.Optional;
 
 @Internal
 @SPI
+@FunctionalInterface
 public interface ExceptionHandlerFactory {
 
     /**
@@ -33,7 +34,7 @@ public interface ExceptionHandlerFactory {
      * @param ctx   ctx
      * @return      an optional {@link IExceptionHandler}, which must not be {@code null}.
      */
-    Optional<IExceptionHandler> handler(DeployContext<? extends RestlightOptions> ctx);
+    Optional<IExceptionHandler> handler(ServerDeployContext<? extends ServerOptions> ctx);
 
 }
 

@@ -18,7 +18,7 @@ package io.esastack.restlight.core.interceptor;
 import io.esastack.restlight.core.util.Ordered;
 import io.esastack.restlight.server.context.RequestContext;
 import io.esastack.restlight.server.route.Route;
-import io.esastack.restlight.server.spi.Filter;
+import io.esastack.restlight.server.handler.Filter;
 import io.esastack.restlight.server.util.Futures;
 
 import java.util.concurrent.CompletableFuture;

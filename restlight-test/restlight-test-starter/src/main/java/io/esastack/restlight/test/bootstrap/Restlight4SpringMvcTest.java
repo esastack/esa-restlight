@@ -19,7 +19,7 @@ import io.esastack.restlight.core.AbstractRestlight;
 import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.server.bootstrap.RestlightServer;
 import io.esastack.restlight.server.handler.RestlightHandler;
-import io.esastack.restlight.server.spi.Filter;
+import io.esastack.restlight.server.handler.Filter;
 
 import java.util.List;
 

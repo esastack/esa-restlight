@@ -18,7 +18,7 @@ package io.esastack.restlight.test.context;
 import esa.commons.collection.AttributeKey;
 import io.esastack.restlight.core.util.FutureUtils;
 import io.esastack.restlight.server.context.RequestContext;
-import io.esastack.restlight.server.core.impl.RequestContextImpl;
+import io.esastack.restlight.server.context.impl.RequestContextImpl;
 import io.esastack.restlight.server.handler.RestlightHandler;
 import io.esastack.restlight.server.mock.MockHttpRequest;
 import io.esastack.restlight.server.mock.MockHttpResponse;

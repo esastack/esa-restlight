@@ -21,7 +21,7 @@ import io.esastack.restlight.server.bootstrap.ExceptionHandlerChain;
 import io.esastack.restlight.server.bootstrap.RestlightServer;
 import io.esastack.restlight.server.handler.FilteredHandler;
 import io.esastack.restlight.server.handler.RestlightHandler;
-import io.esastack.restlight.server.spi.Filter;
+import io.esastack.restlight.server.handler.Filter;
 
 import java.net.SocketAddress;
 import java.util.List;

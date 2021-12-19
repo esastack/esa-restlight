@@ -23,7 +23,7 @@ import io.esastack.restlight.server.bootstrap.RestlightServer;
 import io.esastack.restlight.server.bootstrap.RestlightServerBootstrap;
 import io.esastack.restlight.server.config.ServerOptions;
 import io.esastack.restlight.server.handler.RestlightHandler;
-import io.esastack.restlight.server.spi.Filter;
+import io.esastack.restlight.server.handler.Filter;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.unix.DomainSocketAddress;

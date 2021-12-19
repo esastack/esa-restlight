@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.esastack.restlight.server.core.impl;
+package io.esastack.restlight.server.context.impl;
 
 import esa.commons.Checks;
 import esa.commons.collection.AttributeKey;
@@ -23,6 +23,7 @@ import io.esastack.httpserver.core.Response;
 import io.esastack.restlight.server.context.RequestContext;
 import io.esastack.restlight.server.core.HttpRequest;
 import io.esastack.restlight.server.core.HttpResponse;
+import io.esastack.restlight.server.core.impl.AttributesProxy;
 
 public class RequestContextImpl extends AttributesProxy implements RequestContext {
 

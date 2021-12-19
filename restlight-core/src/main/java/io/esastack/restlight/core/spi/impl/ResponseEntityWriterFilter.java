@@ -29,8 +29,8 @@ import io.esastack.restlight.core.util.Ordered;
 import io.esastack.restlight.core.util.ResponseEntityUtils;
 import io.esastack.restlight.server.bootstrap.WebServerException;
 import io.esastack.restlight.server.context.FilterContext;
+import io.esastack.restlight.server.handler.Filter;
 import io.esastack.restlight.server.handler.FilterChain;
-import io.esastack.restlight.server.spi.Filter;
 
 import java.util.concurrent.CompletableFuture;
 

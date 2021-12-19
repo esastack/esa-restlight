@@ -18,7 +18,7 @@ package io.esastack.restlight.jmh.server;
 import io.esastack.commons.net.http.HttpMethod;
 import io.esastack.commons.net.http.MediaType;
 import io.esastack.restlight.server.context.RequestContext;
-import io.esastack.restlight.server.core.impl.RequestContextImpl;
+import io.esastack.restlight.server.context.impl.RequestContextImpl;
 import io.esastack.restlight.server.route.Mapping;
 import io.esastack.restlight.server.route.Route;
 import io.esastack.restlight.server.route.RouteRegistry;

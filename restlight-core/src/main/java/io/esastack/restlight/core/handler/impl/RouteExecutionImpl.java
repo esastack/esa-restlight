@@ -22,7 +22,7 @@ import io.esastack.restlight.core.handler.RouteFilter;
 import io.esastack.restlight.core.interceptor.InternalInterceptor;
 import io.esastack.restlight.core.resolver.ExceptionResolver;
 import io.esastack.restlight.server.core.RoutedRequest;
-import io.esastack.restlight.server.core.impl.RouteContextImpl;
+import io.esastack.restlight.server.context.impl.RouteContextImpl;
 import io.esastack.restlight.server.core.impl.RoutedRequestImpl;
 import io.esastack.restlight.server.route.CompletionHandler;
 import io.esastack.restlight.server.route.ExceptionHandler;

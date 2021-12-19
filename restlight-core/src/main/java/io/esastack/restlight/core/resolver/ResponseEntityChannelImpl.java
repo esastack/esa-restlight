@@ -20,7 +20,7 @@ import io.esastack.commons.net.buffer.Buffer;
 import io.esastack.commons.net.buffer.BufferUtil;
 import io.esastack.httpserver.core.Response;
 import io.esastack.restlight.server.context.RequestContext;
-import io.esastack.restlight.server.core.impl.RequestContextImpl;
+import io.esastack.restlight.server.context.impl.RequestContextImpl;
 import io.netty.buffer.ByteBuf;
 
 import java.io.File;

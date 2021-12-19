@@ -26,7 +26,7 @@ import io.esastack.restlight.jaxrs.impl.core.ResponseImpl;
 import io.esastack.restlight.jaxrs.util.RuntimeDelegateUtils;
 import io.esastack.restlight.server.bootstrap.ExceptionHandlerChain;
 import io.esastack.restlight.server.context.RequestContext;
-import io.esastack.restlight.server.spi.IExceptionHandler;
+import io.esastack.restlight.server.bootstrap.IExceptionHandler;
 import jakarta.ws.rs.container.ContainerRequestContext;
 import jakarta.ws.rs.container.ContainerResponseFilter;
 

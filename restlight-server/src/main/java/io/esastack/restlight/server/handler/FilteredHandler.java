@@ -18,10 +18,9 @@ package io.esastack.restlight.server.handler;
 import esa.commons.Checks;
 import io.esastack.restlight.server.bootstrap.ExceptionHandlerChain;
 import io.esastack.restlight.server.context.RequestContext;
-import io.esastack.restlight.server.core.impl.FilterContextImpl;
+import io.esastack.restlight.server.context.impl.FilterContextImpl;
 import io.esastack.restlight.server.core.impl.FilteringRequestImpl;
 import io.esastack.restlight.server.schedule.Scheduler;
-import io.esastack.restlight.server.spi.Filter;
 import io.netty.channel.Channel;
 
 import java.util.List;

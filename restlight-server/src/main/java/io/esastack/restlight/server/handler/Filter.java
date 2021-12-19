@@ -13,12 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.esastack.restlight.server.spi;
+package io.esastack.restlight.server.handler;
 
 import esa.commons.spi.SPI;
 import io.esastack.restlight.core.util.Ordered;
 import io.esastack.restlight.server.context.FilterContext;
-import io.esastack.restlight.server.handler.FilterChain;
 
 import java.util.concurrent.CompletableFuture;
 

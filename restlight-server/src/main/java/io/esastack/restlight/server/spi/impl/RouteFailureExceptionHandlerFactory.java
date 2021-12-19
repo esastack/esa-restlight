@@ -13,28 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.esastack.restlight.springmvc.spi.core;
+package io.esastack.restlight.server.spi.impl;
 
 import esa.commons.annotation.Internal;
-import esa.commons.logging.Logger;
-import esa.commons.logging.LoggerFactory;
 import esa.commons.spi.Feature;
 import io.esastack.commons.net.http.HttpStatus;
 import io.esastack.commons.net.http.MediaType;
-import io.esastack.restlight.core.DeployContext;
-import io.esastack.restlight.core.config.RestlightOptions;
-import io.esastack.restlight.server.ServerDeployContext;
-import io.esastack.restlight.server.config.ServerOptions;
-import io.esastack.restlight.server.spi.ExceptionHandlerFactory;
 import io.esastack.restlight.core.util.Constants;
+import io.esastack.restlight.core.util.Ordered;
+import io.esastack.restlight.server.ServerDeployContext;
 import io.esastack.restlight.server.bootstrap.ExceptionHandlerChain;
-import io.esastack.restlight.server.context.RequestContext;
-import io.esastack.restlight.server.core.HttpRequest;
-import io.esastack.restlight.server.core.HttpResponse;
 import io.esastack.restlight.server.bootstrap.IExceptionHandler;
+import io.esastack.restlight.server.config.ServerOptions;
+import io.esastack.restlight.server.context.RequestContext;
+import io.esastack.restlight.server.core.HttpResponse;
+import io.esastack.restlight.server.route.RouteFailureException;
+import io.esastack.restlight.server.spi.ExceptionHandlerFactory;
 import io.esastack.restlight.server.util.ErrorDetail;
 import io.esastack.restlight.server.util.Futures;
-import io.esastack.restlight.springmvc.util.ResponseStatusUtils;
 import io.netty.handler.codec.http.HttpHeaderNames;
 
 import java.util.Optional;
@@ -42,42 +38,47 @@ import java.util.concurrent.CompletableFuture;
 
 @Internal
 @Feature(tags = Constants.INTERNAL)
-public class SpringMvcExceptionHandlerFactory implements ExceptionHandlerFactory {
+public class RouteFailureExceptionHandlerFactory implements ExceptionHandlerFactory {
 
     @Override
     public Optional<IExceptionHandler> handler(ServerDeployContext<? extends ServerOptions> ctx) {
-        return Optional.of(new SpringMvcIExceptionHandler());
+        return Optional.of(new RouteFailureIExceptionHandler());
     }
 
-    private static class SpringMvcIExceptionHandler implements IExceptionHandler {
-
-        private static final Logger logger = LoggerFactory.getLogger(SpringMvcIExceptionHandler.class);
+    private static class RouteFailureIExceptionHandler implements IExceptionHandler {
 
         @Override
         public CompletableFuture<Void> handle(RequestContext context, Throwable th,
                                               ExceptionHandlerChain next) {
-            final HttpStatus status = ResponseStatusUtils.getCustomResponse(th);
-            if (status == null) {
+            if (th instanceof RouteFailureException) {
+                HttpResponse response = context.response();
+                HttpStatus status = toStatus(((RouteFailureException) th).getFailureType());
+                response.headers().set(HttpHeaderNames.CONTENT_TYPE, MediaType.TEXT_PLAIN.value());
+                response.status(status.code());
+                response.entity(new ErrorDetail<>(context.request().path(), status.reasonPhrase()));
+                return Futures.completedFuture();
+            } else {
                 return next.handle(context, th);
             }
+        }
 
-            final HttpRequest request = context.request();
-            final HttpResponse response = context.response();
-            response.headers().set(HttpHeaderNames.CONTENT_TYPE, MediaType.TEXT_PLAIN.value());
-            response.status(status.code());
-            response.entity(new ErrorDetail<>(context.request().path(), status.reasonPhrase()));
-
-            logger.error("Error occurred when doing request(url={}, method={})",
-                    request.path(), request.method(), th);
-
-            return Futures.completedFuture();
+        private HttpStatus toStatus(RouteFailureException.RouteFailure cause) {
+            switch (cause) {
+                case METHOD_MISMATCH:
+                    return HttpStatus.METHOD_NOT_ALLOWED;
+                case CONSUMES_MISMATCH:
+                    return HttpStatus.UNSUPPORTED_MEDIA_TYPE;
+                case PRODUCES_MISMATCH:
+                    return HttpStatus.NOT_ACCEPTABLE;
+                default:
+                    return HttpStatus.NOT_FOUND;
+            }
         }
 
         @Override
         public int getOrder() {
-            return -200;
+            return Ordered.LOWEST_PRECEDENCE;
         }
     }
-
 }
 

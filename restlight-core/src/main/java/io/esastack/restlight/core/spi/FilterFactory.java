@@ -15,15 +15,17 @@
  */
 package io.esastack.restlight.core.spi;
 
+import esa.commons.spi.SPI;
 import io.esastack.restlight.core.DeployContext;
 import io.esastack.restlight.core.config.RestlightOptions;
-import io.esastack.restlight.server.spi.Filter;
+import io.esastack.restlight.server.handler.Filter;
 
 import java.util.Optional;
 
 /**
  * The factory to create {@link Filter}.
  */
+@SPI
 public interface FilterFactory {
 
     /**

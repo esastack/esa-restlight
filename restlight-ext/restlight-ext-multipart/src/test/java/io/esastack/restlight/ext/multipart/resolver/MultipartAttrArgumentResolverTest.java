@@ -19,7 +19,7 @@ import io.esastack.restlight.core.method.MethodParam;
 import io.esastack.restlight.core.resolver.ParamResolver;
 import io.esastack.restlight.server.bootstrap.WebServerException;
 import io.esastack.restlight.server.core.HttpRequest;
-import io.esastack.restlight.server.core.impl.RequestContextImpl;
+import io.esastack.restlight.server.context.impl.RequestContextImpl;
 import io.esastack.restlight.server.mock.MockHttpResponse;
 import org.junit.jupiter.api.Test;
 

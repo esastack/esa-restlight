@@ -18,7 +18,7 @@ package io.esastack.restlight.starter.actuator.adapt;
 import io.esastack.restlight.server.core.HttpRequest;
 import io.esastack.restlight.server.core.HttpResponse;
 import io.esastack.restlight.server.context.RequestContext;
-import io.esastack.restlight.server.core.impl.RequestContextImpl;
+import io.esastack.restlight.server.context.impl.RequestContextImpl;
 import io.esastack.restlight.server.route.predicate.PatternsPredicate;
 import io.esastack.restlight.server.util.Futures;
 import io.esastack.restlight.server.mock.MockHttpRequest;

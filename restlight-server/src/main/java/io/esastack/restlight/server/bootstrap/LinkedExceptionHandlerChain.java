@@ -18,7 +18,6 @@ package io.esastack.restlight.server.bootstrap;
 import esa.commons.Checks;
 import esa.commons.annotation.Internal;
 import io.esastack.restlight.server.context.RequestContext;
-import io.esastack.restlight.server.spi.IExceptionHandler;
 import io.esastack.restlight.server.util.Futures;
 
 import java.util.concurrent.CompletableFuture;

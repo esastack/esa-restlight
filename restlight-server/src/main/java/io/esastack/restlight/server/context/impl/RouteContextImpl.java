@@ -13,25 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.esastack.restlight.server.core.impl;
+package io.esastack.restlight.server.context.impl;
 
 import esa.commons.collection.Attributes;
-import io.esastack.restlight.server.context.FilterContext;
-import io.esastack.restlight.server.core.FilteringRequest;
+import io.esastack.restlight.server.context.RouteContext;
 import io.esastack.restlight.server.core.HttpResponse;
+import io.esastack.restlight.server.core.RoutedRequest;
 
-public class FilterContextImpl extends RequestContextImpl implements FilterContext {
+public class RouteContextImpl extends RequestContextImpl implements RouteContext {
 
-    private final FilteringRequest request;
+    private final HttpResponse response;
 
-    public FilterContextImpl(Attributes attributes, FilteringRequest request, HttpResponse response) {
+    public RouteContextImpl(Attributes attributes, RoutedRequest request, HttpResponse response) {
         super(attributes, request, response);
-        this.request = request;
+        this.response = response;
     }
 
     @Override
-    public FilteringRequest request() {
-        return request;
+    public HttpResponse response() {
+        return response;
     }
 }
 

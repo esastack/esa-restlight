@@ -28,7 +28,7 @@ import io.esastack.restlight.server.config.SslOptions;
 import io.esastack.restlight.server.context.RequestContext;
 import io.esastack.restlight.server.core.impl.HttResponseImpl;
 import io.esastack.restlight.server.core.impl.HttpRequestImpl;
-import io.esastack.restlight.server.core.impl.RequestContextImpl;
+import io.esastack.restlight.server.context.impl.RequestContextImpl;
 import io.esastack.restlight.server.handler.RestlightHandler;
 import io.esastack.restlight.server.schedule.ExecutorScheduler;
 import io.esastack.restlight.server.schedule.Schedulers;
@@ -46,7 +46,7 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import static io.esastack.restlight.server.core.impl.RequestContextImpl.UNDERLYING_RESPONSE;
+import static io.esastack.restlight.server.context.impl.RequestContextImpl.UNDERLYING_RESPONSE;
 
 public class NettyRestlightServer implements RestlightServer {
 

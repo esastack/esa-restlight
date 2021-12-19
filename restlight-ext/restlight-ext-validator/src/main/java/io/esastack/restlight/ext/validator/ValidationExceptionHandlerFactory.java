@@ -18,13 +18,13 @@ package io.esastack.restlight.ext.validator;
 import esa.commons.annotation.Internal;
 import esa.commons.spi.Feature;
 import io.esastack.commons.net.http.HttpStatus;
-import io.esastack.restlight.core.DeployContext;
-import io.esastack.restlight.core.config.RestlightOptions;
-import io.esastack.restlight.core.spi.ExceptionHandlerFactory;
 import io.esastack.restlight.core.util.Constants;
+import io.esastack.restlight.server.ServerDeployContext;
 import io.esastack.restlight.server.bootstrap.ExceptionHandlerChain;
+import io.esastack.restlight.server.bootstrap.IExceptionHandler;
+import io.esastack.restlight.server.config.ServerOptions;
 import io.esastack.restlight.server.context.RequestContext;
-import io.esastack.restlight.server.spi.IExceptionHandler;
+import io.esastack.restlight.server.spi.ExceptionHandlerFactory;
 import io.esastack.restlight.server.util.ErrorDetail;
 import io.esastack.restlight.server.util.Futures;
 import io.netty.util.internal.InternalThreadLocalMap;
@@ -40,7 +40,7 @@ import java.util.concurrent.CompletableFuture;
 public class ValidationExceptionHandlerFactory implements ExceptionHandlerFactory {
 
     @Override
-    public Optional<IExceptionHandler> handler(DeployContext<? extends RestlightOptions> ctx) {
+    public Optional<IExceptionHandler> handler(ServerDeployContext<? extends ServerOptions> ctx) {
         return Optional.of(new ValidationIExceptionHandler());
     }
 

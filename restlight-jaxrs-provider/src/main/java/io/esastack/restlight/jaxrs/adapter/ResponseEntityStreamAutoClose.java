@@ -24,7 +24,7 @@ import io.esastack.restlight.server.context.RequestContext;
 import io.esastack.restlight.server.core.HttpOutputStream;
 import io.esastack.restlight.server.core.impl.HttpOutputStreamImpl;
 import io.esastack.restlight.server.handler.FilterChain;
-import io.esastack.restlight.server.spi.Filter;
+import io.esastack.restlight.server.handler.Filter;
 
 import java.io.IOException;
 import java.io.OutputStream;

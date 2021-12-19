@@ -13,12 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.esastack.restlight.server.spi;
+package io.esastack.restlight.server.bootstrap;
 
 import esa.commons.annotation.Internal;
-import esa.commons.spi.SPI;
 import io.esastack.restlight.core.util.Ordered;
-import io.esastack.restlight.server.bootstrap.ExceptionHandlerChain;
 import io.esastack.restlight.server.context.RequestContext;
 
 import java.util.concurrent.CompletableFuture;
@@ -27,7 +25,6 @@ import java.util.concurrent.CompletableFuture;
  * This {@link IExceptionHandler} is designed for internal using. The exception caught will be proceed by
  * sorted {@link IExceptionHandler}s one by one.
  */
-@SPI
 @Internal
 @FunctionalInterface
 public interface IExceptionHandler extends Ordered {

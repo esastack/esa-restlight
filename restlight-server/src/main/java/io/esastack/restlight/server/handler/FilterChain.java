@@ -17,7 +17,6 @@ package io.esastack.restlight.server.handler;
 
 import esa.commons.annotation.Internal;
 import io.esastack.restlight.server.context.FilterContext;
-import io.esastack.restlight.server.spi.Filter;
 
 import java.util.concurrent.CompletableFuture;
 

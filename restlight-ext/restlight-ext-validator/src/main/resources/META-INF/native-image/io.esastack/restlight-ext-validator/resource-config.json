@@ -1,7 +1,7 @@
 {
   "resources":{
     "includes":[
-      {"pattern":".*/io.esastack.restlight.core.spi.ExceptionHandlerFactory$"},
+      {"pattern":".*/io.esastack.restlight.server.spi.ExceptionHandlerFactory$"},
       {"pattern":".*/io.esastack.restlight.core.spi.HandlerAdviceFactory$"},
       {"pattern":".*/io.esastack.restlight.ext.validator.ValidatorFactory$"}
     ]},

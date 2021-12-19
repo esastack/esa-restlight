@@ -25,6 +25,7 @@ import io.esastack.restlight.core.util.OrderedComparator;
 import io.esastack.restlight.server.bootstrap.DispatcherHandler;
 import io.esastack.restlight.server.bootstrap.DispatcherHandlerImpl;
 import io.esastack.restlight.server.bootstrap.ExceptionHandlerChain;
+import io.esastack.restlight.server.bootstrap.IExceptionHandler;
 import io.esastack.restlight.server.bootstrap.LinkedExceptionHandlerChain;
 import io.esastack.restlight.server.bootstrap.RestlightThreadFactory;
 import io.esastack.restlight.server.config.BizThreadsOptions;
@@ -32,6 +33,7 @@ import io.esastack.restlight.server.config.ServerOptions;
 import io.esastack.restlight.server.config.TimeoutOptions;
 import io.esastack.restlight.server.handler.ConnectionHandler;
 import io.esastack.restlight.server.handler.DisConnectionHandler;
+import io.esastack.restlight.server.handler.Filter;
 import io.esastack.restlight.server.handler.RestlightHandler;
 import io.esastack.restlight.server.route.Route;
 import io.esastack.restlight.server.route.RouteRegistry;
@@ -46,8 +48,7 @@ import io.esastack.restlight.server.schedule.Scheduler;
 import io.esastack.restlight.server.schedule.Schedulers;
 import io.esastack.restlight.server.spi.ConnectionHandlerFactory;
 import io.esastack.restlight.server.spi.DisConnectionHandlerFactory;
-import io.esastack.restlight.server.spi.Filter;
-import io.esastack.restlight.server.spi.IExceptionHandler;
+import io.esastack.restlight.server.spi.ExceptionHandlerFactory;
 import io.esastack.restlight.server.spi.RequestTaskHookFactory;
 import io.esastack.restlight.server.spi.RouteRegistryAware;
 import io.esastack.restlight.server.spi.RouteRegistryAwareFactory;
@@ -365,7 +366,7 @@ public abstract class BaseDeployments<R extends BaseRestlightServer<R, D, O>, D 
      *
      * @return filters
      */
-    List<Filter> filters() {
+    protected List<Filter> filters() {
         this.filters.addAll(SpiLoader.cached(Filter.class)
                 .getByGroup(restlight.name(), true));
         OrderedComparator.sort(this.filters);
@@ -406,11 +407,13 @@ public abstract class BaseDeployments<R extends BaseRestlightServer<R, D, O>, D 
                 .forEach(aware -> aware.setRegistry(routeRegistry));
 
         // init ExceptionHandlerChain
-        this.exceptionHandlers.addAll(SpiLoader.cached(IExceptionHandler.class)
+        this.exceptionHandlers.addAll(SpiLoader.cached(ExceptionHandlerFactory.class)
                 .getByFeature(restlight.name(),
                         true,
                         Collections.singletonMap(Constants.INTERNAL, StringUtils.empty()),
-                        false));
+                        false)
+                .stream().map(factory -> factory.handler(ctx())).filter(Optional::isPresent)
+                .map(Optional::get).collect(Collectors.toList()));
         OrderedComparator.sort(exceptionHandlers);
         IExceptionHandler[] iExceptionHandlers = exceptionHandlers.toArray(new IExceptionHandler[0]);
         this.exceptionHandler = LinkedExceptionHandlerChain.immutable(iExceptionHandlers);

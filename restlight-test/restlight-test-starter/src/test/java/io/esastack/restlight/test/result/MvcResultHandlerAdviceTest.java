@@ -17,7 +17,7 @@ package io.esastack.restlight.test.result;
 
 import io.esastack.restlight.server.context.RequestContext;
 import io.esastack.restlight.server.core.HttpRequest;
-import io.esastack.restlight.server.core.impl.RequestContextImpl;
+import io.esastack.restlight.server.context.impl.RequestContextImpl;
 import io.esastack.restlight.server.mock.MockHttpRequest;
 import io.esastack.restlight.server.mock.MockHttpResponse;
 import org.junit.jupiter.api.Test;

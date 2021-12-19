@@ -20,7 +20,7 @@ import io.esastack.commons.net.http.HttpMethod;
 import io.esastack.commons.net.http.HttpStatus;
 import io.esastack.restlight.server.core.HttpRequest;
 import io.esastack.restlight.server.core.HttpResponse;
-import io.esastack.restlight.server.core.impl.FilterContextImpl;
+import io.esastack.restlight.server.context.impl.FilterContextImpl;
 import io.esastack.restlight.server.core.impl.FilteringRequestImpl;
 import io.esastack.restlight.server.handler.FilterChain;
 import io.esastack.restlight.server.mock.MockHttpRequest;
