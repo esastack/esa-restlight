@@ -21,7 +21,6 @@ import io.esastack.restlight.core.resolver.ResponseEntityResolverAdviceAdapter;
 import io.esastack.restlight.core.resolver.ResponseEntityResolverContext;
 import io.esastack.restlight.jaxrs.configure.RouteTracking;
 import io.esastack.restlight.jaxrs.impl.ext.WriterInterceptorContextImpl;
-import io.esastack.restlight.jaxrs.resolver.ResponseEntityStreamChannel;
 import io.esastack.restlight.jaxrs.util.RuntimeDelegateUtils;
 import jakarta.ws.rs.core.MultivaluedHashMap;
 import jakarta.ws.rs.core.MultivaluedMap;
@@ -46,7 +45,7 @@ public class WriterInterceptorsAdapter implements ResponseEntityResolverAdviceAd
             RuntimeDelegateUtils.addHeadersToMap(context.context().response().headers(), headers);
             try {
                 new WriterInterceptorContextImpl(context,
-                        ((ResponseEntityStreamChannel) context.channel()).outputStream(),
+                        ResponseEntityStreamAutoClose.getNonClosableOutputStream(context.context()),
                         headers, interceptors).proceed();
             } finally {
                 RuntimeDelegateUtils.addHeadersFromMap(context.context().response().headers(), headers, true);
