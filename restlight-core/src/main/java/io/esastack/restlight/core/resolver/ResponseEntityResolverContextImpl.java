@@ -76,16 +76,6 @@ public class ResponseEntityResolverContextImpl extends AttributesProxy implement
     }
 
     @Override
-    public Object entity() {
-        return entity.response().entity();
-    }
-
-    @Override
-    public void entity(Object entity) {
-        this.entity.response().entity(entity);
-    }
-
-    @Override
     public void proceed() throws Exception {
         if (advices == null || index >= advices.length) {
             HandledValue<Void> handled;

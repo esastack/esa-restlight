@@ -18,11 +18,9 @@ package io.esastack.restlight.core.resolver;
 import esa.commons.Checks;
 import esa.commons.collection.Attribute;
 import esa.commons.collection.AttributeKey;
-import io.esastack.commons.net.http.MediaType;
 import io.esastack.restlight.core.method.Param;
 import io.esastack.restlight.server.context.RequestContext;
 
-import java.io.InputStream;
 import java.util.function.BiConsumer;
 
 public class RequestEntityResolverContextImpl implements RequestEntityResolverContext {
@@ -60,21 +58,6 @@ public class RequestEntityResolverContextImpl implements RequestEntityResolverCo
     @Override
     public RequestEntity entityInfo() {
         return entity;
-    }
-
-    @Override
-    public MediaType mediaType() {
-        return entity.mediaType();
-    }
-
-    @Override
-    public void mediaType(MediaType mediaType) {
-        entity.mediaType(mediaType);
-    }
-
-    @Override
-    public void inputStream(InputStream ins) {
-        entity.inputStream(ins);
     }
 
     @Override

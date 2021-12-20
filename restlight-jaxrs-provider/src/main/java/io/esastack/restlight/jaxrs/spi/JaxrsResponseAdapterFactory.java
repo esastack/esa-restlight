@@ -48,7 +48,7 @@ public class JaxrsResponseAdapterFactory implements ResponseEntityResolverAdvice
 
         @Override
         public void aroundWrite(ResponseEntityResolverContext context) {
-            Object entity = context.entity();
+            Object entity = context.context().response().entity();
             if (entity == null) {
                 return;
             }
@@ -65,7 +65,7 @@ public class JaxrsResponseAdapterFactory implements ResponseEntityResolverAdvice
                 response = ((Response.ResponseBuilder) entity).build();
             }
             if (response != null) {
-                context.entity(response);
+                context.context().response().entity(response);
             }
         }
     }

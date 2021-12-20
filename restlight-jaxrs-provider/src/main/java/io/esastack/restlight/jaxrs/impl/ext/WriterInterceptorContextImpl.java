@@ -72,12 +72,12 @@ public class WriterInterceptorContextImpl extends InterceptorContextImpl impleme
 
     @Override
     public Object getEntity() {
-        return underlying.entity();
+        return underlying.context().response().entity();
     }
 
     @Override
     public void setEntity(Object entity) {
-        underlying.entity(entity);
+        underlying.context().response().entity(entity);
     }
 
     @Override

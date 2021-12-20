@@ -15,10 +15,7 @@
  */
 package io.esastack.restlight.core.resolver;
 
-import io.esastack.commons.net.http.MediaType;
 import io.esastack.restlight.core.method.Param;
-
-import java.io.InputStream;
 
 public interface RequestEntityResolverContext extends HttpEntityResolverContext {
 
@@ -29,27 +26,6 @@ public interface RequestEntityResolverContext extends HttpEntityResolverContext 
      */
     @Override
     RequestEntity entityInfo();
-
-    /**
-     * Obtains the {@link MediaType} corresponds to current entity.
-     *
-     * @return  media type
-     */
-    MediaType mediaType();
-
-    /**
-     * Sets the {@link MediaType}.
-     *
-     * @param mediaType mediaType
-     */
-    void mediaType(MediaType mediaType);
-
-    /**
-     * Sets the input stream to resolve.
-     *
-     * @param ins   ins
-     */
-    void inputStream(InputStream ins);
 
     /**
      * Resolves the {@link #entityInfo()} by given {@link #context()}.
