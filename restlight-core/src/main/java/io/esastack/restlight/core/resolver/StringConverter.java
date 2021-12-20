@@ -25,8 +25,22 @@ public interface StringConverter {
      */
     Object fromString(String value);
 
-    //TODO 增加注释
-    boolean isLazy();
+    /**
+     * Declare weather a conversion of any default value delegated to this {@link StringConverter string
+     * converter} is lazy.
+     * <p>
+     * If {@code true},it will occur only once the default value is actually required (e.g. to be injected for
+     * the first time).
+     * <p>
+     * If {@code false},any default value will be convert before the runtime, that is during the application
+     * deployment, before any value is actually required. This conversion strategy ensures that any errors
+     * in the default values are reported as early as possible.
+     *
+     * @return isLazy
+     */
+    default boolean isLazy() {
+        return false;
+    }
 
 }
 
