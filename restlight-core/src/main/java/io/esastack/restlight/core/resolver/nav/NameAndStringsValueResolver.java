@@ -51,29 +51,13 @@ public class NameAndStringsValueResolver implements NameAndValueResolver {
 
         this.strsConverter = ConverterUtils.strs2ObjectConverter(param.type(),
                 param.genericType(),
-                converterLookup.andThen((converter) -> converter::fromString));
+                converterLookup.andThen((converter) -> converter == null ? null : (converter::fromString)));
 
         if (strConverter == null && strsConverter == null) {
-            throw new IllegalStateException("There is no suitable StringConverter for param named " + param.name());
+            throw new IllegalStateException("There is no suitable StringConverter for param(" + param + ").");
         }
 
-        Supplier<String> defaultValue = nav.defaultValue();
-        if (defaultValue == null) {
-            this.nav = new NameAndValue<>(nav.name(),
-                    nav.required(),
-                    null);
-        } else {
-            if (strConverter == null) {
-                this.nav = new NameAndValue<>(nav.name(),
-                        nav.required(),
-                        strsConverter.apply(Collections.singletonList(nav.defaultValue().get())));
-            } else {
-                this.nav = new NameAndValue<>(nav.name(),
-                        nav.required(),
-                        () -> strConverter.fromString(defaultValue.get()),
-                        strConverter.isLazy());
-            }
-        }
+        this.nav = transNameAndValue(nav);
     }
 
     @Override
@@ -96,5 +80,25 @@ public class NameAndStringsValueResolver implements NameAndValueResolver {
     @Override
     public NameAndValue<Object> createNameAndValue(Param param) {
         return nav;
+    }
+
+    private NameAndValue<Object> transNameAndValue(NameAndValue<String> nav) {
+        Supplier<String> defaultValue = nav.defaultValue();
+        if (defaultValue == null) {
+            return new NameAndValue<>(nav.name(),
+                    nav.required(),
+                    null);
+        } else {
+            if (strConverter == null) {
+                return new NameAndValue<>(nav.name(),
+                        nav.required(),
+                        strsConverter.apply(Collections.singletonList(nav.defaultValue().get())));
+            } else {
+                return new NameAndValue<>(nav.name(),
+                        nav.required(),
+                        () -> strConverter.fromString(defaultValue.get()),
+                        strConverter.isLazy());
+            }
+        }
     }
 }
