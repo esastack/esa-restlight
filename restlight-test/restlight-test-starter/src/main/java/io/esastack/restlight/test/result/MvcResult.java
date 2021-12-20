@@ -15,8 +15,8 @@
  */
 package io.esastack.restlight.test.result;
 
-import io.esastack.restlight.test.mock.MockHttpRequest;
-import io.esastack.restlight.test.mock.MockHttpResponse;
+import io.esastack.restlight.server.mock.MockHttpRequest;
+import io.esastack.restlight.server.mock.MockHttpResponse;
 
 public interface MvcResult {
 

@@ -15,12 +15,12 @@
  */
 package io.esastack.restlight.server.route;
 
-import io.esastack.httpserver.core.RequestContext;
+import io.esastack.restlight.server.context.RequestContext;
 
 import java.util.concurrent.CompletableFuture;
 
 @FunctionalInterface
-public interface ExceptionHandler<CTX extends RequestContext, T extends Throwable> {
+public interface ExceptionHandler<T extends Throwable> {
 
     /**
      * Handle error occurred in the lifecycle of request.
@@ -30,6 +30,6 @@ public interface ExceptionHandler<CTX extends RequestContext, T extends Throwabl
      *
      * @return future
      */
-    CompletableFuture<Void> handleException(CTX context, T t);
+    CompletableFuture<Void> handleException(RequestContext context, T t);
 
 }

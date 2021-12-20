@@ -15,14 +15,11 @@
  */
 package io.esastack.restlight.test.context;
 
-import io.esastack.commons.net.buffer.BufferUtil;
-import io.esastack.restlight.core.context.HttpResponse;
-import io.esastack.restlight.core.context.RequestContext;
+import io.esastack.restlight.server.context.RequestContext;
+import io.esastack.restlight.server.core.HttpResponse;
 import io.esastack.restlight.server.handler.RestlightHandler;
+import io.esastack.restlight.server.mock.MockHttpRequest;
 import io.esastack.restlight.server.util.Futures;
-import io.esastack.restlight.test.mock.MockHttpRequest;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.ByteBufUtil;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -37,49 +34,43 @@ class DefaultMockMvcTest {
 
     @Test
     void testPerform() {
-        final RestlightHandler<RequestContext> handler = mock(RestlightHandler.class);
+        final RestlightHandler handler = mock(RestlightHandler.class);
         final DefaultMockMvc mockMvc = new DefaultMockMvc(handler);
 
         final MockHttpRequest request = MockHttpRequest.aMockRequest().build();
         when(handler.process(any())).then(mock -> {
             final RequestContext context = mock.getArgument(0, RequestContext.class);
             final HttpResponse res = context.response();
-            context.attr(DefaultMockMvc.RETURN_VALUE_KEY).set("foo");
-            res.sendResult(200, "foo".getBytes());
+            context.attrs().attr(DefaultMockMvc.RETURN_VALUE_KEY).set("foo");
+            res.status(200);
+            res.entity("foo".getBytes());
             return Futures.completedFuture();
         });
         mockMvc.perform(request).addExpect(r -> {
-            Assertions.assertEquals("foo", r.result());
             assertSame(request, r.request());
             assertNotNull(r.response());
-            Assertions.assertTrue(r.response().isCommitted());
-            assertArrayEquals("foo".getBytes(), ByteBufUtil.getBytes((ByteBuf) BufferUtil.unwrap(
-                    r.response().getSentData())));
+            assertArrayEquals("foo".getBytes(), (byte[]) r.response().entity());
         }).then(r -> {
-            Assertions.assertEquals("foo", r.result());
             assertSame(request, r.request());
             assertNotNull(r.response());
-            Assertions.assertTrue(r.response().isCommitted());
-            assertArrayEquals("foo".getBytes(), ByteBufUtil.getBytes((ByteBuf) BufferUtil.unwrap(
-                    r.response().getSentData())));
+            assertArrayEquals("foo".getBytes(), (byte[]) r.response().entity());
         });
     }
 
     @Test
     void testPerformAsync() {
-        final RestlightHandler<RequestContext> handler = mock(RestlightHandler.class);
+        final RestlightHandler handler = mock(RestlightHandler.class);
         final DefaultMockMvc mockMvc = new DefaultMockMvc(handler);
 
         final MockHttpRequest request = MockHttpRequest.aMockRequest().build();
         when(handler.process(any())).then(mock -> {
             final RequestContext ctx = mock.getArgument(0, RequestContext.class);
-            ctx.attr(DefaultMockMvc.RETURN_VALUE_KEY).set(Futures.completedFuture("foo"));
+            ctx.attrs().attr(DefaultMockMvc.RETURN_VALUE_KEY).set(Futures.completedFuture("foo"));
             return Futures.completedFuture();
         });
         mockMvc.perform(request)
                 .addExpect(r -> Assertions.assertEquals("foo", r.result()))
                 .then(r -> Assertions.assertEquals("foo", r.result()));
     }
-
 
 }

@@ -15,7 +15,7 @@
  */
 package io.esastack.restlight.starter.actuator.adapt;
 
-import io.esastack.httpserver.core.RequestContext;
+import io.esastack.restlight.server.context.RequestContext;
 import io.esastack.restlight.core.handler.Handler;
 import io.esastack.restlight.core.method.HandlerMethod;
 import io.esastack.restlight.core.method.MethodParam;

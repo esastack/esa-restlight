@@ -18,15 +18,14 @@ package io.esastack.restlight.ext.filter.cors;
 import esa.commons.collection.AttributeMap;
 import io.esastack.commons.net.http.HttpMethod;
 import io.esastack.commons.net.http.HttpStatus;
-import io.esastack.httpserver.core.HttpRequest;
-import io.esastack.httpserver.core.HttpResponse;
-import io.esastack.restlight.server.context.FilterContext;
+import io.esastack.restlight.server.core.HttpRequest;
+import io.esastack.restlight.server.core.HttpResponse;
 import io.esastack.restlight.server.context.impl.FilterContextImpl;
-import io.esastack.restlight.server.context.impl.FilteringRequestImpl;
+import io.esastack.restlight.server.core.impl.FilteringRequestImpl;
 import io.esastack.restlight.server.handler.FilterChain;
+import io.esastack.restlight.server.mock.MockHttpRequest;
+import io.esastack.restlight.server.mock.MockHttpResponse;
 import io.esastack.restlight.server.util.Futures;
-import io.esastack.restlight.test.mock.MockHttpRequest;
-import io.esastack.restlight.test.mock.MockHttpResponse;
 import io.netty.handler.codec.http.HttpHeaderNames;
 import org.junit.jupiter.api.Test;
 
@@ -51,7 +50,7 @@ class CorsFilterTest {
                 .build();
         final HttpResponse response = MockHttpResponse.aMockResponse().build();
         final AtomicBoolean endOfChain = new AtomicBoolean(false);
-        final FilterChain<FilterContext> chain = ((context) -> {
+        final FilterChain chain = ((context) -> {
             endOfChain.set(true);
             return Futures.completedFuture();
         });
@@ -71,7 +70,7 @@ class CorsFilterTest {
                 .build();
         final HttpResponse response = MockHttpResponse.aMockResponse().build();
         final AtomicBoolean endOfChain = new AtomicBoolean(false);
-        final FilterChain<FilterContext> chain = ((context) -> {
+        final FilterChain chain = ((context) -> {
             endOfChain.set(true);
             return Futures.completedFuture();
         });
@@ -97,7 +96,7 @@ class CorsFilterTest {
                 .build();
         final HttpResponse response = MockHttpResponse.aMockResponse().build();
         final AtomicBoolean endOfChain = new AtomicBoolean(false);
-        final FilterChain<FilterContext> chain = ((context) -> {
+        final FilterChain chain = ((context) -> {
             endOfChain.set(true);
             return Futures.completedFuture();
         });
@@ -129,7 +128,7 @@ class CorsFilterTest {
                 .build();
         final HttpResponse response = MockHttpResponse.aMockResponse().build();
         final AtomicBoolean endOfChain = new AtomicBoolean(false);
-        final FilterChain<FilterContext> chain = ((context) -> {
+        final FilterChain chain = ((context) -> {
             endOfChain.set(true);
             return Futures.completedFuture();
         });
@@ -157,7 +156,7 @@ class CorsFilterTest {
                 .build();
         final HttpResponse response = MockHttpResponse.aMockResponse().build();
         final AtomicBoolean endOfChain = new AtomicBoolean(false);
-        final FilterChain<FilterContext> chain = ((context) -> {
+        final FilterChain chain = ((context) -> {
             endOfChain.set(true);
             return Futures.completedFuture();
         });
@@ -199,7 +198,7 @@ class CorsFilterTest {
                 .build();
         final HttpResponse response = MockHttpResponse.aMockResponse().build();
         final AtomicBoolean endOfChain = new AtomicBoolean(false);
-        final FilterChain<FilterContext> chain = ((context) -> {
+        final FilterChain chain = ((context) -> {
             endOfChain.set(true);
             return Futures.completedFuture();
         });
@@ -240,7 +239,7 @@ class CorsFilterTest {
                 .build();
         final HttpResponse response = MockHttpResponse.aMockResponse().build();
         final AtomicBoolean endOfChain = new AtomicBoolean(false);
-        final FilterChain<FilterContext> chain = ((context) -> {
+        final FilterChain chain = ((context) -> {
             endOfChain.set(true);
             return Futures.completedFuture();
         });
@@ -264,7 +263,7 @@ class CorsFilterTest {
                 .build();
         final HttpResponse response = MockHttpResponse.aMockResponse().build();
         final AtomicBoolean endOfChain = new AtomicBoolean(false);
-        final FilterChain<FilterContext> chain = ((context) -> {
+        final FilterChain chain = ((context) -> {
             endOfChain.set(true);
             return Futures.completedFuture();
         });
@@ -288,7 +287,7 @@ class CorsFilterTest {
                 .build();
         final HttpResponse response = MockHttpResponse.aMockResponse().build();
         final AtomicBoolean endOfChain = new AtomicBoolean(false);
-        final FilterChain<FilterContext> chain = ((context) -> {
+        final FilterChain chain = ((context) -> {
             endOfChain.set(true);
             return Futures.completedFuture();
         });
@@ -313,7 +312,7 @@ class CorsFilterTest {
                 .build();
         final HttpResponse response = MockHttpResponse.aMockResponse().build();
         final AtomicBoolean endOfChain = new AtomicBoolean(false);
-        final FilterChain<FilterContext> chain = ((context) -> {
+        final FilterChain chain = ((context) -> {
             endOfChain.set(true);
             return Futures.completedFuture();
         });
@@ -341,7 +340,7 @@ class CorsFilterTest {
                 .build();
         final HttpResponse response = MockHttpResponse.aMockResponse().build();
         final AtomicBoolean endOfChain = new AtomicBoolean(false);
-        final FilterChain<FilterContext> chain = ((context) -> {
+        final FilterChain chain = ((context) -> {
             endOfChain.set(true);
             return Futures.completedFuture();
         });
@@ -370,7 +369,7 @@ class CorsFilterTest {
                 .build();
         final HttpResponse response = MockHttpResponse.aMockResponse().build();
         final AtomicBoolean endOfChain = new AtomicBoolean(false);
-        final FilterChain<FilterContext> chain = ((context) -> {
+        final FilterChain chain = ((context) -> {
             endOfChain.set(true);
             return Futures.completedFuture();
         });

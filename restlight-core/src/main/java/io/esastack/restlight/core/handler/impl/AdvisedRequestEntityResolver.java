@@ -15,9 +15,9 @@
  */
 package io.esastack.restlight.core.handler.impl;
 
+import esa.commons.Checks;
 import io.esastack.restlight.core.DeployContext;
 import io.esastack.restlight.core.config.RestlightOptions;
-import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.method.HandlerMethod;
 import io.esastack.restlight.core.method.Param;
 import io.esastack.restlight.core.resolver.HandledValue;
@@ -26,6 +26,7 @@ import io.esastack.restlight.core.resolver.RequestEntityImpl;
 import io.esastack.restlight.core.resolver.RequestEntityResolver;
 import io.esastack.restlight.core.resolver.RequestEntityResolverAdvice;
 import io.esastack.restlight.core.resolver.RequestEntityResolverContextImpl;
+import io.esastack.restlight.server.context.RequestContext;
 
 import java.util.List;
 
@@ -33,19 +34,20 @@ class AdvisedRequestEntityResolver implements ResolverWrap {
 
     private final Param param;
     private final HandlerMethod handlerMethod;
-    private final List<RequestEntityResolver> resolvers;
-    private final List<RequestEntityResolverAdvice> advices;
+    private final RequestEntityResolver[] resolvers;
+    private final RequestEntityResolverAdvice[] advices;
     private final boolean absentAdvices;
 
     AdvisedRequestEntityResolver(HandlerMethod handlerMethod,
                                  Param param,
                                  List<RequestEntityResolver> resolvers,
                                  List<RequestEntityResolverAdvice> advices) {
+        Checks.checkNotEmptyArg(resolvers, "resolver");
         this.handlerMethod = handlerMethod;
         this.param = param;
-        this.resolvers = resolvers;
+        this.resolvers = resolvers.toArray(new RequestEntityResolver[0]);
         this.absentAdvices = (advices == null || advices.isEmpty());
-        this.advices = advices;
+        this.advices = (advices == null ? null : advices.toArray(new RequestEntityResolverAdvice[0]));
     }
 
     @Override

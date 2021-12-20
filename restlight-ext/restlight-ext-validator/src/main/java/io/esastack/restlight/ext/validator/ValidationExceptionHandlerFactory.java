@@ -18,13 +18,14 @@ package io.esastack.restlight.ext.validator;
 import esa.commons.annotation.Internal;
 import esa.commons.spi.Feature;
 import io.esastack.commons.net.http.HttpStatus;
-import io.esastack.restlight.core.DeployContext;
-import io.esastack.restlight.core.config.RestlightOptions;
-import io.esastack.restlight.core.context.RequestContext;
-import io.esastack.restlight.core.spi.ExceptionHandler;
-import io.esastack.restlight.core.spi.ExceptionHandlerFactory;
 import io.esastack.restlight.core.util.Constants;
+import io.esastack.restlight.server.ServerDeployContext;
 import io.esastack.restlight.server.bootstrap.ExceptionHandlerChain;
+import io.esastack.restlight.server.bootstrap.IExceptionHandler;
+import io.esastack.restlight.server.config.ServerOptions;
+import io.esastack.restlight.server.context.RequestContext;
+import io.esastack.restlight.server.spi.ExceptionHandlerFactory;
+import io.esastack.restlight.server.util.ErrorDetail;
 import io.esastack.restlight.server.util.Futures;
 import io.netty.util.internal.InternalThreadLocalMap;
 
@@ -34,32 +35,29 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
-import static io.esastack.restlight.server.util.ErrorDetail.sendErrorResult;
-
 @Internal
 @Feature(tags = Constants.INTERNAL)
 public class ValidationExceptionHandlerFactory implements ExceptionHandlerFactory {
 
     @Override
-    public Optional<ExceptionHandler> handler(DeployContext<? extends RestlightOptions> ctx) {
-        return Optional.of(new ValidationExceptionHandler());
+    public Optional<IExceptionHandler> handler(ServerDeployContext<? extends ServerOptions> ctx) {
+        return Optional.of(new ValidationIExceptionHandler());
     }
 
-    private static class ValidationExceptionHandler implements ExceptionHandler {
+    private static class ValidationIExceptionHandler implements IExceptionHandler {
 
         @Override
         public CompletableFuture<Void> handle(RequestContext context, Throwable th,
-                                              ExceptionHandlerChain<RequestContext> next) {
+                                              ExceptionHandlerChain next) {
             if (th instanceof ConstraintViolationException) {
                 //400 bad request
 
                 ConstraintViolationException error = (ConstraintViolationException) th;
                 Set<ConstraintViolation<?>> cs = error.getConstraintViolations();
                 if (cs == null || cs.isEmpty()) {
-                    sendErrorResult(context.request(), context.response(), error,
-                            HttpStatus.BAD_REQUEST);
+                    context.response().status(HttpStatus.BAD_REQUEST.code());
+                    context.response().entity(new ErrorDetail<>(context.request().path(), error));
                 } else {
-
                     final StringBuilder sb = InternalThreadLocalMap.get().stringBuilder();
                     for (ConstraintViolation<?> c : cs) {
                         sb.append("{property='").append(c.getPropertyPath()).append('\'');
@@ -68,8 +66,8 @@ public class ValidationExceptionHandlerFactory implements ExceptionHandlerFactor
                     }
                     sb.append('}');
 
-                    sendErrorResult(context.request(), context.response(), sb.toString(),
-                            HttpStatus.BAD_REQUEST);
+                    context.response().status(HttpStatus.BAD_REQUEST.code());
+                    context.response().entity(new ErrorDetail<>(context.request().path(), sb.toString()));
                 }
                 return Futures.completedExceptionally(th);
             }

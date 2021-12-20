@@ -18,8 +18,8 @@ package io.esastack.restlight.server.route.predicate;
 import esa.commons.collection.AttributeKey;
 import io.esastack.commons.net.http.MediaType;
 import io.esastack.commons.net.http.MediaTypeUtil;
-import io.esastack.httpserver.core.HttpRequest;
-import io.esastack.httpserver.core.RequestContext;
+import io.esastack.restlight.server.context.RequestContext;
+import io.esastack.restlight.server.core.HttpRequest;
 import io.esastack.restlight.server.util.MappingUtils;
 import io.netty.util.concurrent.FastThreadLocal;
 
@@ -70,7 +70,7 @@ public class ProducesPredicate implements RequestPredicate {
                 if (expression.match(context.request())) {
                     List<MediaType> compatibleMediaTypes = getCompatibleMediaType();
                     if (!compatibleMediaTypes.isEmpty()) {
-                        context.attr(COMPATIBLE_MEDIA_TYPES).set(compatibleMediaTypes);
+                        context.attrs().attr(COMPATIBLE_MEDIA_TYPES).set(compatibleMediaTypes);
                     }
                     return true;
                 }

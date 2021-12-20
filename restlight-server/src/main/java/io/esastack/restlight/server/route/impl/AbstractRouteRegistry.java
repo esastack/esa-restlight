@@ -18,7 +18,7 @@ package io.esastack.restlight.server.route.impl;
 import esa.commons.Checks;
 import esa.commons.logging.Logger;
 import esa.commons.logging.LoggerFactory;
-import io.esastack.httpserver.core.RequestContext;
+import io.esastack.restlight.server.context.RequestContext;
 import io.esastack.restlight.server.route.Route;
 import io.esastack.restlight.server.route.RouteRegistry;
 import io.esastack.restlight.server.route.Router;

@@ -16,7 +16,7 @@
 package io.esastack.restlight.core.handler;
 
 import esa.commons.Checks;
-import io.esastack.restlight.core.context.RouteContext;
+import io.esastack.restlight.server.context.RouteContext;
 import io.esastack.restlight.server.handler.LinkedFilterChain;
 
 import java.util.List;

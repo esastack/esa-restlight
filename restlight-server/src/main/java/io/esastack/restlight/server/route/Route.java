@@ -15,7 +15,7 @@
  */
 package io.esastack.restlight.server.route;
 
-import io.esastack.httpserver.core.HttpRequest;
+import io.esastack.restlight.server.core.HttpRequest;
 import io.esastack.restlight.server.route.impl.RouteImpl;
 import io.esastack.restlight.server.schedule.Scheduler;
 import io.esastack.restlight.server.schedule.Scheduling;

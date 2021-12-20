@@ -28,7 +28,14 @@ import io.esastack.restlight.core.resolver.ResponseEntityResolverAdvice;
 
 import java.util.Collection;
 
-public interface ConfigurableHandler extends Attributes {
+public interface ConfigurableHandler {
+
+    /**
+     * Obtains {@link Attributes}.
+     *
+     * @return  attrs
+     */
+    Attributes attrs();
 
     /**
      * Add {@link RouteFilter}s.

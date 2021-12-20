@@ -23,12 +23,12 @@ import io.esastack.restlight.core.resolver.HandledValue;
 import io.esastack.restlight.core.resolver.RequestEntity;
 import io.esastack.restlight.core.resolver.RequestEntityResolver;
 import io.esastack.restlight.core.resolver.RequestEntityResolverFactory;
-import io.esastack.restlight.core.resolver.nav.NameAndValue;
 import io.esastack.restlight.core.serialize.HttpRequestSerializer;
 import io.esastack.restlight.core.serialize.ProtoBufHttpBodySerializer;
 import io.esastack.restlight.core.util.Constants;
 import io.esastack.restlight.core.util.ConverterUtils;
 import io.esastack.restlight.server.bootstrap.WebServerException;
+import io.esastack.restlight.server.context.RequestContext;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -59,34 +59,19 @@ public abstract class FlexibleRequestEntityResolverFactory implements RequestEnt
                 : new DefaultResolver(serializers, param);
     }
 
-    /**
-     * Create an instance of {@link NameAndValue} for the parameter.
-     *
-     * @param param parameter
-     *
-     * @return name and value
-     */
-    protected abstract NameAndValue createNameAndValue(Param param);
-
-    private class DefaultResolver extends AbstractNameAndValueRequestEntityResolver {
+    private static class DefaultResolver implements RequestEntityResolver {
 
         private final List<? extends HttpRequestSerializer> serializers;
         final Function<String, Object> converter;
 
-        private DefaultResolver(List<? extends HttpRequestSerializer> serializers,
-                                Param param) {
-            super(param);
+        private DefaultResolver(List<? extends HttpRequestSerializer> serializers, Param param) {
             this.serializers = serializers;
             this.converter = ConverterUtils.str2ObjectConverter(param.genericType(), p -> p);
         }
 
         @Override
-        protected NameAndValue createNameAndValue(Param param) {
-            return FlexibleRequestEntityResolverFactory.this.createNameAndValue(param);
-        }
-
-        @Override
-        protected HandledValue<Object> readFrom0(String name, Param param, RequestEntity entity) throws Exception {
+        public HandledValue<Object> readFrom(Param param, RequestEntity entity, RequestContext context)
+                throws Exception {
             MediaType contentType = getMediaType(entity);
             //convert argument if content-type is text/plain or missing.
             if (contentType == null || MediaType.TEXT_PLAIN.isCompatibleWith(contentType)) {

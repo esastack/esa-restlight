@@ -18,8 +18,8 @@ package io.esastack.restlight.core.resolver;
 import esa.commons.Checks;
 import esa.commons.ClassUtils;
 import io.esastack.commons.net.http.HttpHeaderNames;
-import io.esastack.restlight.core.context.HttpResponse;
 import io.esastack.restlight.core.method.HandlerMethod;
+import io.esastack.restlight.server.core.HttpResponse;
 
 public class ResponseEntityImpl extends HttpEntityImpl implements ResponseEntity {
 
@@ -36,8 +36,7 @@ public class ResponseEntityImpl extends HttpEntityImpl implements ResponseEntity
 
     @Override
     public HttpResponse response() {
-        return response;
+        return this.response;
     }
-
 }
 

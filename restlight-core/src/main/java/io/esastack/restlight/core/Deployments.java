@@ -20,8 +20,6 @@ import esa.commons.ClassUtils;
 import esa.commons.ObjectUtils;
 import esa.commons.StringUtils;
 import esa.commons.spi.SpiLoader;
-import io.esastack.httpserver.core.HttpRequest;
-import io.esastack.httpserver.impl.HttpRequestImpl;
 import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.core.configure.ConfigurableDeployments;
 import io.esastack.restlight.core.configure.DeploymentsConfigure;
@@ -30,12 +28,6 @@ import io.esastack.restlight.core.configure.HandlerConfigure;
 import io.esastack.restlight.core.configure.HandlerRegistry;
 import io.esastack.restlight.core.configure.HandlerRegistryImpl;
 import io.esastack.restlight.core.configure.MiniConfigurableDeployments;
-import io.esastack.restlight.core.context.FilterContext;
-import io.esastack.restlight.core.context.HttpResponse;
-import io.esastack.restlight.core.context.RequestContext;
-import io.esastack.restlight.core.context.impl.FilterContextImpl;
-import io.esastack.restlight.core.context.impl.HttpResponseImpl;
-import io.esastack.restlight.core.context.impl.RequestContextImpl;
 import io.esastack.restlight.core.handler.HandlerMapping;
 import io.esastack.restlight.core.handler.HandlerMappingProvider;
 import io.esastack.restlight.core.handler.RouteFilterAdapter;
@@ -73,11 +65,8 @@ import io.esastack.restlight.core.serialize.HttpBodySerializer;
 import io.esastack.restlight.core.serialize.HttpRequestSerializer;
 import io.esastack.restlight.core.serialize.HttpResponseSerializer;
 import io.esastack.restlight.core.spi.DefaultSerializerFactory;
-import io.esastack.restlight.core.spi.ExceptionHandler;
-import io.esastack.restlight.core.spi.ExceptionHandlerFactory;
 import io.esastack.restlight.core.spi.ExceptionResolverFactoryProvider;
 import io.esastack.restlight.core.spi.ExtensionsHandlerFactory;
-import io.esastack.restlight.core.spi.Filter;
 import io.esastack.restlight.core.spi.FilterFactory;
 import io.esastack.restlight.core.spi.FutureTransferFactory;
 import io.esastack.restlight.core.spi.HandlerAdviceFactory;
@@ -94,12 +83,8 @@ import io.esastack.restlight.core.util.OrderedComparator;
 import io.esastack.restlight.core.util.RouteUtils;
 import io.esastack.restlight.server.BaseDeployments;
 import io.esastack.restlight.server.ServerDeployContext;
-import io.esastack.restlight.server.context.impl.FilteringRequestImpl;
+import io.esastack.restlight.server.handler.Filter;
 import io.esastack.restlight.server.handler.RestlightHandler;
-import io.esastack.restlight.server.internal.FilterContextFactory;
-import io.esastack.restlight.server.internal.InternalExceptionHandler;
-import io.esastack.restlight.server.internal.InternalFilter;
-import io.esastack.restlight.server.internal.RequestContextFactory;
 import io.esastack.restlight.server.route.RouteRegistry;
 import io.esastack.restlight.server.spi.RouteRegistryAwareFactory;
 import io.esastack.restlight.server.util.LoggerUtils;
@@ -119,8 +104,7 @@ import java.util.stream.Collectors;
  * {@link AbstractRestlight}.
  */
 public abstract class Deployments<R extends AbstractRestlight<R, D, O>, D extends
-        Deployments<R, D, O>, O extends RestlightOptions> extends BaseDeployments<R, D, O,
-        RequestContext, FilterContext> {
+        Deployments<R, D, O>, O extends RestlightOptions> extends BaseDeployments<R, D, O> {
 
     private final List<HandlerMappingProvider> mappingProviders = new LinkedList<>();
     private final List<Object> singletonControllers = new LinkedList<>();
@@ -161,76 +145,6 @@ public abstract class Deployments<R extends AbstractRestlight<R, D, O>, D extend
     @Override
     public DeployContext<O> deployContext() {
         return ctx();
-    }
-
-    @Override
-    protected RequestContextFactory<RequestContext> requestContext() {
-        return req -> {
-            if (req instanceof RequestContext) {
-                return (RequestContext) req;
-            }
-            HttpRequest request = new HttpRequestImpl(req);
-            HttpResponse response = new HttpResponseImpl(req.response());
-            return new RequestContextImpl(request, response);
-        };
-    }
-
-    @Override
-    protected FilterContextFactory<RequestContext, FilterContext> filterContext() {
-        return ctx -> {
-            if (ctx instanceof FilterContext) {
-                return (FilterContext) ctx;
-            }
-            return new FilterContextImpl(ctx, new FilteringRequestImpl(ctx.request()), ctx.response());
-        };
-    }
-
-    @Override
-    protected List<InternalExceptionHandler<RequestContext>> exceptionHandlersBySpi() {
-        final List<InternalExceptionHandler<RequestContext>> handlers = new LinkedList<>();
-        SpiLoader.cached(io.esastack.restlight.server.spi.ExceptionHandler.class)
-                .getByFeature(restlight.name(),
-                        true,
-                        Collections.singletonMap(Constants.INTERNAL, StringUtils.empty()),
-                        false)
-                .forEach(h -> handlers.add((context, th, next) -> h.handle(context, th,
-                        (ctx, t) -> next.handle(context, th))));
-
-        handlers.addAll(SpiLoader.cached(ExceptionHandler.class)
-                .getByFeature(restlight.name(),
-                        true,
-                        Collections.singletonMap(Constants.INTERNAL, StringUtils.empty()),
-                        false));
-
-        SpiLoader.cached(ExceptionHandlerFactory.class)
-                .getByFeature(restlight.name(),
-                        true,
-                        Collections.singletonMap(Constants.INTERNAL, StringUtils.empty()),
-                        false)
-                .forEach(factory -> factory.handler(ctx()).ifPresent(handlers::add));
-        return handlers;
-    }
-
-    @Override
-    protected List<InternalFilter<FilterContext>> filtersBySpi() {
-        final List<InternalFilter<FilterContext>> filters = new LinkedList<>();
-        SpiLoader.cached(io.esastack.restlight.server.spi.Filter.class)
-                .getByGroup(restlight.name(), true).forEach(f ->
-                filters.add((context, next) -> f.doFilter(context,
-                        (ctx) -> next.doFilter(context))));
-        filters.addAll(SpiLoader.cached(Filter.class)
-                .getByGroup(restlight.name(), true));
-        SpiLoader.cached(FilterFactory.class).getByGroup(restlight.name(), true)
-                .forEach(factory -> factory.filter(ctx()).ifPresent(filters::add));
-        return filters;
-    }
-
-    public HandlerRegistry getHandlerRegistry() {
-        if (!restlight.isStarted()) {
-            throw new IllegalStateException("The handler registry is only allowed to be got after staring" +
-                    " the restlight!");
-        }
-        return ctx().handlerRegistry().orElse(null);
     }
 
     public D addRouteFilter(RouteFilterAdapter filter) {
@@ -924,6 +838,16 @@ public abstract class Deployments<R extends AbstractRestlight<R, D, O>, D extend
     }
 
     @Override
+    protected List<Filter> filters() {
+        List<Filter> filters = super.filters();
+        SpiLoader.cached(FilterFactory.class)
+                .getByGroup(restlight.name(), true)
+                .forEach(factory -> factory.filter(ctx()).ifPresent(filters::add));
+        OrderedComparator.sort(filters);
+        return filters;
+    }
+
+    @Override
     protected void beforeApplyDeployments() {
         List<DeploymentsConfigure> configures = SpiLoader.cached(DeploymentsConfigure.class)
                 .getByFeature(restlight.name(),
@@ -943,7 +867,7 @@ public abstract class Deployments<R extends AbstractRestlight<R, D, O>, D extend
     }
 
     @Override
-    protected RestlightHandler<RequestContext> doGetRestlightHandler() {
+    protected RestlightHandler doGetRestlightHandler() {
         // set the ResolvableParamPredicate immediately due to it may be used when resolving extensions.
         ctx().setParamPredicate(RouteUtils.loadResolvableParamPredicate(ctx()));
 

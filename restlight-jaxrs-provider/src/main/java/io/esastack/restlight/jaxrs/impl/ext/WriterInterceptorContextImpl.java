@@ -38,14 +38,18 @@ public class WriterInterceptorContextImpl extends InterceptorContextImpl impleme
     private final MultivaluedMap<String, Object> headers;
     private final WriterInterceptor[] interceptors;
     private final int interceptorsSize;
+    private OutputStream outputStream;
     private int index;
 
     public WriterInterceptorContextImpl(ResponseEntityResolverContext underlying,
+                                        OutputStream outputStream,
                                         MultivaluedMap<String, Object> headers,
                                         WriterInterceptor[] interceptors) {
         super(underlying);
+        Checks.checkNotNull(outputStream, "outputStream");
         Checks.checkNotNull(headers, "headers");
         this.underlying = underlying;
+        this.outputStream = outputStream;
         this.headers = headers;
         this.interceptors = interceptors;
         this.interceptorsSize = interceptors != null ? interceptors.length : 0;
@@ -68,22 +72,22 @@ public class WriterInterceptorContextImpl extends InterceptorContextImpl impleme
 
     @Override
     public Object getEntity() {
-        return underlying.entity();
+        return underlying.context().response().entity();
     }
 
     @Override
     public void setEntity(Object entity) {
-        underlying.entity(entity);
+        underlying.context().response().entity(entity);
     }
 
     @Override
     public OutputStream getOutputStream() {
-        return underlying.context().response().outputStream();
+        return this.outputStream;
     }
 
     @Override
     public void setOutputStream(OutputStream os) {
-        underlying.outputStream(os);
+        this.outputStream = os;
     }
 
     @Override

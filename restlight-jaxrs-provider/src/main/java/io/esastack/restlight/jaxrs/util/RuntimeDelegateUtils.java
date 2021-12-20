@@ -19,8 +19,8 @@ import esa.commons.ClassUtils;
 import esa.commons.collection.LinkedMultiValueMap;
 import esa.commons.collection.MultiValueMap;
 import io.esastack.commons.net.http.HttpHeaders;
-import io.esastack.restlight.core.context.HttpResponse;
 import io.esastack.restlight.jaxrs.impl.core.ResponseImpl;
+import io.esastack.restlight.server.core.HttpResponse;
 import jakarta.ws.rs.core.MultivaluedMap;
 import jakarta.ws.rs.ext.RuntimeDelegate;
 
@@ -55,7 +55,8 @@ public final class RuntimeDelegateUtils {
     }
 
     public static void addHeadersFromMap(HttpHeaders headers,
-                                         MultivaluedMap<String, Object> values, boolean clearDest) {
+                                         MultivaluedMap<String, Object> values,
+                                         boolean clearDest) {
         if (values == null || values.isEmpty()) {
             return;
         }
@@ -90,7 +91,7 @@ public final class RuntimeDelegateUtils {
         if (from == null || to == null) {
             return;
         }
-        to.setStatus(from.getStatus());
+        to.status(from.getStatus());
         to.entity(from.getEntity());
 
         if (clearSource) {

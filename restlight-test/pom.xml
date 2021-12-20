@@ -26,7 +26,6 @@
     <name>Restlight :: Test</name>
 
     <modules>
-        <module>restlight-test-mock</module>
         <module>restlight-test-starter</module>
     </modules>
 

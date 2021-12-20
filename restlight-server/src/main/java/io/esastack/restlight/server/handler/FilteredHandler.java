@@ -16,13 +16,11 @@
 package io.esastack.restlight.server.handler;
 
 import esa.commons.Checks;
-import io.esastack.httpserver.core.RequestContext;
 import io.esastack.restlight.server.bootstrap.ExceptionHandlerChain;
-import io.esastack.restlight.server.context.FilterContext;
-import io.esastack.restlight.server.internal.FilterContextFactory;
-import io.esastack.restlight.server.internal.InternalFilter;
+import io.esastack.restlight.server.context.RequestContext;
+import io.esastack.restlight.server.context.impl.FilterContextImpl;
+import io.esastack.restlight.server.core.impl.FilteringRequestImpl;
 import io.esastack.restlight.server.schedule.Scheduler;
-import io.esastack.restlight.server.util.Futures;
 import io.netty.channel.Channel;
 
 import java.util.List;
@@ -30,32 +28,21 @@ import java.util.concurrent.CompletableFuture;
 
 import static io.esastack.restlight.server.schedule.ScheduledRestlightHandler.handleException;
 
-public class FilteredHandler<CTX extends RequestContext, FCTX extends FilterContext> implements RestlightHandler<CTX> {
+public class FilteredHandler implements RestlightHandler {
 
-    private final RestlightHandler<CTX> delegate;
-    private final ExceptionHandlerChain<CTX> exceptionHandler;
-    private final FilterChain<FCTX> filterChain;
-    private final FilterContextFactory<CTX, FCTX> filterContext;
+    private final RestlightHandler delegate;
+    private final ExceptionHandlerChain exceptionHandler;
+    private final FilterChain filterChain;
 
-    @SuppressWarnings("unchecked")
-    public FilteredHandler(RestlightHandler<CTX> delegate,
-                           List<InternalFilter<FCTX>> filters,
-                           FilterContextFactory<CTX, FCTX> filterContext,
-                           ExceptionHandlerChain<CTX> exceptionHandler) {
+    public FilteredHandler(RestlightHandler delegate,
+                           List<Filter> filters,
+                           ExceptionHandlerChain exceptionHandler) {
         Checks.checkNotNull(delegate, "delegate");
         Checks.checkNotNull(filters, "filters");
-        Checks.checkNotNull(filterContext, "filterContext");
         Checks.checkNotNull(exceptionHandler, "exceptionHandler");
         this.delegate = delegate;
-        this.filterContext = filterContext;
         this.exceptionHandler = exceptionHandler;
-        this.filterChain = LinkedFilterChain.immutable(filters, (context -> {
-            if (!context.response().isCommitted()) {
-                return delegate.process((CTX) context);
-            } else {
-                return Futures.completedFuture();
-            }
-        }));
+        this.filterChain = LinkedFilterChain.immutable(filters, (delegate::process));
     }
 
     @Override
@@ -69,9 +56,10 @@ public class FilteredHandler<CTX extends RequestContext, FCTX extends FilterCont
     }
 
     @Override
-    public CompletableFuture<Void> process(CTX context) {
+    public CompletableFuture<Void> process(RequestContext context) {
         CompletableFuture<Void> promise = new CompletableFuture<>();
-        filterChain.doFilter(filterContext.create(context))
+        filterChain.doFilter(new FilterContextImpl(context.attrs(), new FilteringRequestImpl(context.request()),
+                context.response()))
                 .whenComplete((v, th) -> {
                     if (th != null) {
                         handleException(exceptionHandler, context, th, promise);

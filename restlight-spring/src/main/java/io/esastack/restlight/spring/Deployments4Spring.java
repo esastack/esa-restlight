@@ -63,12 +63,12 @@ import io.esastack.restlight.core.util.Constants;
 import io.esastack.restlight.core.util.OrderedComparator;
 import io.esastack.restlight.server.handler.ConnectionHandler;
 import io.esastack.restlight.server.handler.DisConnectionHandler;
+import io.esastack.restlight.server.handler.Filter;
 import io.esastack.restlight.server.route.Route;
 import io.esastack.restlight.server.schedule.RequestTaskHook;
 import io.esastack.restlight.server.schedule.Scheduler;
 import io.esastack.restlight.server.spi.ConnectionHandlerFactory;
 import io.esastack.restlight.server.spi.DisConnectionHandlerFactory;
-import io.esastack.restlight.server.spi.Filter;
 import io.esastack.restlight.server.spi.RequestTaskHookFactory;
 import io.esastack.restlight.server.spi.RouteRegistryAware;
 import io.esastack.restlight.server.spi.RouteRegistryAwareFactory;
@@ -180,8 +180,6 @@ public class Deployments4Spring<R extends AbstractRestlight4Spring<R, D, O>, D e
             filters.values().forEach(filter -> this.addFilter(
                     (c, next) -> filter.doFilter(c, ctx -> next.doFilter(c))));
         }
-        beansOfType(context, io.esastack.restlight.core.spi.Filter.class).values()
-                .forEach(this::addFilter);
         this.addFilters(beansOfType(context, FilterFactory.class).values()
                 .stream()
                 .map(factory -> factory.filter(deployContext()))
@@ -389,7 +387,7 @@ public class Deployments4Spring<R extends AbstractRestlight4Spring<R, D, O>, D e
         if (objectMapperClz != null) {
             beanOfType(context, objectMapperClz)
                     .ifPresent(objectMapper -> ctx()
-                            .attr(JacksonDefaultSerializerFactory.OBJECT_MAPPER).set(objectMapper));
+                            .attrs().attr(JacksonDefaultSerializerFactory.OBJECT_MAPPER).set(objectMapper));
         }
 
         // Check whether GsonHttpBodySerializer and GsonHttpBodySerializerAdapter exist at the same time

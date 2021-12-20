@@ -16,16 +16,31 @@
 package io.esastack.restlight.core.resolver;
 
 import esa.commons.Checks;
-import io.esastack.httpserver.impl.AttributesProxy;
-import io.esastack.restlight.core.context.RequestContext;
+import esa.commons.StringUtils;
+import esa.commons.spi.SpiLoader;
+import io.esastack.restlight.core.spi.ResponseEntityChannelFactory;
+import io.esastack.restlight.core.util.Constants;
+import io.esastack.restlight.core.util.OrderedComparator;
+import io.esastack.restlight.server.context.RequestContext;
 
-import java.io.OutputStream;
+import java.util.Collections;
 import java.util.List;
 
-public class ResponseEntityResolverContextImpl extends AttributesProxy implements ResponseEntityResolverContext {
+public class ResponseEntityResolverContextImpl implements ResponseEntityResolverContext {
+
+    private static final ResponseEntityChannelFactory CHANNEL_FACTORY;
+
+    static {
+        List<ResponseEntityChannelFactory> factories = SpiLoader.cached(ResponseEntityChannelFactory.class)
+                .getByTags(Collections.singletonMap(Constants.INTERNAL, StringUtils.empty()));
+        assert !factories.isEmpty();
+        OrderedComparator.sort(factories);
+        CHANNEL_FACTORY = factories.get(0);
+    }
 
     private final RequestContext context;
     private final ResponseEntity entity;
+    private final ResponseEntityChannel channel;
     private final List<ResponseEntityResolver> resolvers;
     private final ResponseEntityResolverAdvice[] advices;
     private int index;
@@ -34,9 +49,9 @@ public class ResponseEntityResolverContextImpl extends AttributesProxy implement
                                              ResponseEntity entity,
                                              List<ResponseEntityResolver> resolvers,
                                              ResponseEntityResolverAdvice[] advices) {
-        super(context);
-        Checks.checkNotNull(entity, "value");
+        Checks.checkNotNull(entity, "entity");
         Checks.checkNotNull(resolvers, "resolvers");
+        this.channel = CHANNEL_FACTORY.create(context);
         this.context = context;
         this.entity = entity;
         this.resolvers = resolvers;
@@ -49,23 +64,13 @@ public class ResponseEntityResolverContextImpl extends AttributesProxy implement
     }
 
     @Override
-    public ResponseEntity entityInfo() {
+    public ResponseEntity httpEntity() {
         return entity;
     }
 
     @Override
-    public void outputStream(OutputStream os) {
-        context.response().outputStream(os);
-    }
-
-    @Override
-    public Object entity() {
-        return entity.response().entity();
-    }
-
-    @Override
-    public void entity(Object entity) {
-        this.entity.response().entity(entity);
+    public ResponseEntityChannel channel() {
+        return channel;
     }
 
     @Override
@@ -73,7 +78,7 @@ public class ResponseEntityResolverContextImpl extends AttributesProxy implement
         if (advices == null || index >= advices.length) {
             HandledValue<Void> handled;
             for (ResponseEntityResolver resolver : resolvers) {
-                handled = resolver.writeTo(entity, context);
+                handled = resolver.writeTo(entity, channel, context);
                 if (handled.isSuccess()) {
                     return;
                 }

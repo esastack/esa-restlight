@@ -16,15 +16,14 @@
 package io.esastack.restlight.core.handler.impl;
 
 import esa.commons.Checks;
-import io.esastack.restlight.core.context.RequestContext;
-import io.esastack.restlight.core.context.RoutedRequest;
-import io.esastack.restlight.core.context.impl.RouteContextImpl;
-import io.esastack.restlight.core.context.impl.RoutedRequestImpl;
 import io.esastack.restlight.core.handler.HandlerMapping;
 import io.esastack.restlight.core.handler.LinkedRouteFilterChain;
 import io.esastack.restlight.core.handler.RouteFilter;
 import io.esastack.restlight.core.interceptor.InternalInterceptor;
 import io.esastack.restlight.core.resolver.ExceptionResolver;
+import io.esastack.restlight.server.context.impl.RouteContextImpl;
+import io.esastack.restlight.server.core.RoutedRequest;
+import io.esastack.restlight.server.core.impl.RoutedRequestImpl;
 import io.esastack.restlight.server.route.CompletionHandler;
 import io.esastack.restlight.server.route.ExceptionHandler;
 import io.esastack.restlight.server.route.ExecutionHandler;
@@ -34,11 +33,11 @@ import io.esastack.restlight.server.util.Futures;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-public class RouteExecutionImpl implements RouteExecution<RequestContext> {
+public class RouteExecutionImpl implements RouteExecution {
 
     private final HandlerMapping mapping;
     private final AbstractRouteHandler handler;
-    private final ExecutionHandler<RequestContext> execution;
+    private final ExecutionHandler execution;
     private final CompletionHandler completionHandler;
     private final ExceptionResolver<Throwable> exceptionResolver;
 
@@ -54,7 +53,7 @@ public class RouteExecutionImpl implements RouteExecution<RequestContext> {
     }
 
     @Override
-    public ExecutionHandler<RequestContext> executionHandler() {
+    public ExecutionHandler executionHandler() {
         return execution;
     }
 
@@ -64,23 +63,23 @@ public class RouteExecutionImpl implements RouteExecution<RequestContext> {
     }
 
     @Override
-    public ExceptionHandler<RequestContext, Throwable> exceptionHandler() {
+    public ExceptionHandler<Throwable> exceptionHandler() {
         return exceptionResolver;
     }
 
-    private ExecutionHandler<RequestContext> toExecution(ExecutionHandler<RequestContext> execution,
-                                                         List<RouteFilter> filters) {
+    private ExecutionHandler toExecution(ExecutionHandler execution,
+                                         List<RouteFilter> filters) {
         if (filters == null || filters.isEmpty()) {
             return execution;
         }
         LinkedRouteFilterChain chain = LinkedRouteFilterChain.immutable(filters, execution::handle);
         return context -> {
             RoutedRequest request = new RoutedRequestImpl(context.request());
-            return chain.doNext(mapping, new RouteContextImpl(context, request, context.response()));
+            return chain.doNext(mapping, new RouteContextImpl(context.attrs(), request, context.response()));
         };
     }
 
-    private CompletableFuture<Void> triggerAfterCompletion(io.esastack.httpserver.core.RequestContext context,
+    private CompletableFuture<Void> triggerAfterCompletion(io.esastack.restlight.server.context.RequestContext context,
                                                            Throwable t) {
         if (handler.interceptorAbsent) {
             return Futures.completedFuture();

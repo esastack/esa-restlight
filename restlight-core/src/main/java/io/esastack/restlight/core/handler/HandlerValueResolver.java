@@ -15,9 +15,9 @@
  */
 package io.esastack.restlight.core.handler;
 
-import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.method.HandlerMethod;
 import io.esastack.restlight.core.util.Ordered;
+import io.esastack.restlight.server.context.RequestContext;
 
 import java.util.concurrent.CompletableFuture;
 

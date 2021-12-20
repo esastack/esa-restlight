@@ -17,15 +17,13 @@ package io.esastack.restlight.ext.filter.accesslog;
 
 import esa.commons.collection.AttributeMap;
 import esa.commons.logging.InternalLogger;
-import io.esastack.httpserver.core.HttpRequest;
-import io.esastack.httpserver.core.HttpResponse;
-import io.esastack.restlight.server.context.FilterContext;
+import io.esastack.restlight.server.core.HttpRequest;
 import io.esastack.restlight.server.context.impl.FilterContextImpl;
-import io.esastack.restlight.server.context.impl.FilteringRequestImpl;
+import io.esastack.restlight.server.core.impl.FilteringRequestImpl;
 import io.esastack.restlight.server.handler.FilterChain;
+import io.esastack.restlight.server.mock.MockHttpRequest;
+import io.esastack.restlight.server.mock.MockHttpResponse;
 import io.esastack.restlight.server.util.Futures;
-import io.esastack.restlight.test.mock.MockHttpRequest;
-import io.esastack.restlight.test.mock.MockHttpResponse;
 import org.junit.jupiter.api.Test;
 
 import java.nio.charset.StandardCharsets;
@@ -83,14 +81,15 @@ class AccessLogFilterTest {
                 .withRemotePort(8081)
                 .withBody("hello".getBytes(StandardCharsets.UTF_8))
                 .build();
-        final HttpResponse response = MockHttpResponse.aMockResponse().build();
-        final FilterChain<FilterContext> chain = ((ctx) -> {
-            ctx.response().sendResult(200);
+        final MockHttpResponse response = MockHttpResponse.aMockResponse().build();
+        final FilterChain chain = ((ctx) -> {
+            ctx.response().status(200);
             return Futures.completedFuture();
         });
         filter.doFilter(new FilterContextImpl(new AttributeMap(), new FilteringRequestImpl(request), response),
                 chain).join();
         assertEquals(200, response.status());
+        response.callEndListener();
         verify(mock).info(argThat(s -> s.contains(request.rawMethod())
                 && s.contains("contentLength=" + request.contentLength())
                 && s.contains("remoteAddr=" + request.remoteAddr())

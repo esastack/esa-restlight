@@ -16,12 +16,11 @@
 package io.esastack.restlight.server.schedule;
 
 import esa.commons.Checks;
-import io.esastack.httpserver.core.HttpResponse;
-import io.esastack.httpserver.core.RequestContext;
 import io.esastack.restlight.core.util.OrderedComparator;
 import io.esastack.restlight.server.bootstrap.DispatcherHandler;
 import io.esastack.restlight.server.bootstrap.ExceptionHandlerChain;
 import io.esastack.restlight.server.config.ServerOptions;
+import io.esastack.restlight.server.context.RequestContext;
 import io.esastack.restlight.server.handler.ConnectionHandler;
 import io.esastack.restlight.server.handler.DisConnectionHandler;
 import io.esastack.restlight.server.handler.RestlightHandler;
@@ -43,11 +42,11 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-public class ScheduledRestlightHandler<CTX extends RequestContext> implements RestlightHandler<CTX> {
+public class ScheduledRestlightHandler implements RestlightHandler {
 
-    private final DispatcherHandler<CTX> dispatcher;
-    private final ExceptionHandlerChain<CTX> exceptionHandler;
-    private ScheduledHandler<CTX> handler;
+    private final DispatcherHandler dispatcher;
+    private final ExceptionHandlerChain exceptionHandler;
+    private ScheduledHandler handler;
     private final List<Scheduler> schedulers = new LinkedList<>();
     private final RequestTaskHook hook;
     private final List<ConnectionHandler> connections;
@@ -56,15 +55,15 @@ public class ScheduledRestlightHandler<CTX extends RequestContext> implements Re
     private volatile long terminationTimeoutSeconds;
 
     public ScheduledRestlightHandler(ServerOptions options,
-                                     DispatcherHandler<CTX> dispatcher,
-                                     ExceptionHandlerChain<CTX> exceptionHandler) {
+                                     DispatcherHandler dispatcher,
+                                     ExceptionHandlerChain exceptionHandler) {
         this(options, dispatcher, exceptionHandler, Collections.emptyList(),
                 Collections.emptyList(), Collections.emptyList());
     }
 
     public ScheduledRestlightHandler(ServerOptions options,
-                                     DispatcherHandler<CTX> dispatcher,
-                                     ExceptionHandlerChain<CTX> exceptionHandler,
+                                     DispatcherHandler dispatcher,
+                                     ExceptionHandlerChain exceptionHandler,
                                      List<RequestTaskHook> hooks,
                                      List<ConnectionHandler> connections,
                                      List<DisConnectionHandler> disConnections) {
@@ -90,7 +89,7 @@ public class ScheduledRestlightHandler<CTX extends RequestContext> implements Re
                 this.schedulers.add(scheduler);
             }
         }
-        this.handler = new ScheduledHandler<>(dispatcher, schedulers, hook);
+        this.handler = new ScheduledHandler(dispatcher, schedulers, hook);
     }
 
     @Override
@@ -99,7 +98,7 @@ public class ScheduledRestlightHandler<CTX extends RequestContext> implements Re
     }
 
     @Override
-    public CompletableFuture<Void> process(CTX context) {
+    public CompletableFuture<Void> process(RequestContext context) {
         CompletableFuture<Void> promise = new CompletableFuture<>();
         handler.process(context, promise);
 
@@ -269,9 +268,9 @@ public class ScheduledRestlightHandler<CTX extends RequestContext> implements Re
         }
     }
 
-    public static <C extends RequestContext> void handleException(ExceptionHandlerChain<C> exceptionHandler,
-                                                                  C context, Throwable th,
-                                                                  CompletableFuture<Void> promise) {
+    public static void handleException(ExceptionHandlerChain exceptionHandler,
+                                       RequestContext context, Throwable th,
+                                       CompletableFuture<Void> promise) {
         exceptionHandler.handle(context, th).whenComplete((v, t) -> {
             if (t != null) {
                 PromiseUtils.setFailure(promise, th);
@@ -282,13 +281,9 @@ public class ScheduledRestlightHandler<CTX extends RequestContext> implements Re
     }
 
     private static void handleUncommitted(RequestTask task) {
-        HttpResponse response = task.context().response();
-        if (!response.isCommitted()) {
-            if (LoggerUtils.logger().isDebugEnabled()) {
-                LoggerUtils.logger()
-                        .debug("{} rejected by RequestTaskHook, but response haven't been committed", task);
-            }
-            response.sendResult();
+        if (LoggerUtils.logger().isDebugEnabled()) {
+            LoggerUtils.logger()
+                    .debug("{} rejected by RequestTaskHook, but response haven't been committed", task);
         }
         if (!task.promise().isDone()) {
             PromiseUtils.setSuccess(task.promise());

@@ -44,7 +44,9 @@ public class WriterInterceptorsAdapter implements ResponseEntityResolverAdviceAd
             MultivaluedMap<String, Object> headers = new MultivaluedHashMap<>();
             RuntimeDelegateUtils.addHeadersToMap(context.context().response().headers(), headers);
             try {
-                new WriterInterceptorContextImpl(context, headers, interceptors).proceed();
+                new WriterInterceptorContextImpl(context,
+                        ResponseEntityStreamAutoClose.getNonClosableOutputStream(context.context()),
+                        headers, interceptors).proceed();
             } finally {
                 RuntimeDelegateUtils.addHeadersFromMap(context.context().response().headers(), headers, true);
             }

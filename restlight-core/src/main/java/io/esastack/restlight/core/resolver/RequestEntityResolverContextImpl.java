@@ -16,31 +16,24 @@
 package io.esastack.restlight.core.resolver;
 
 import esa.commons.Checks;
-import esa.commons.collection.Attribute;
-import esa.commons.collection.AttributeKey;
-import io.esastack.commons.net.http.MediaType;
-import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.method.Param;
-
-import java.io.InputStream;
-import java.util.List;
-import java.util.function.BiConsumer;
+import io.esastack.restlight.server.context.RequestContext;
 
 public class RequestEntityResolverContextImpl implements RequestEntityResolverContext {
 
     private final Param param;
     private final RequestContext context;
     private final RequestEntity entity;
-    private final List<RequestEntityResolver> resolvers;
-    private final List<RequestEntityResolverAdvice> advices;
+    private final RequestEntityResolver[] resolvers;
+    private final RequestEntityResolverAdvice[] advices;
     private final int advicesSize;
     private int index;
 
     public RequestEntityResolverContextImpl(Param param,
                                             RequestContext context,
                                             RequestEntity entity,
-                                            List<RequestEntityResolver> resolvers,
-                                            List<RequestEntityResolverAdvice> advices) {
+                                            RequestEntityResolver[] resolvers,
+                                            RequestEntityResolverAdvice[] advices) {
         Checks.checkNotNull(param, "param");
         Checks.checkNotNull(context, "context");
         Checks.checkNotNull(entity, "entity");
@@ -50,7 +43,7 @@ public class RequestEntityResolverContextImpl implements RequestEntityResolverCo
         this.entity = entity;
         this.resolvers = resolvers;
         this.advices = advices;
-        this.advicesSize = (advices == null || advices.isEmpty()) ? 0 : advices.size();
+        this.advicesSize = (advices == null ? 0 : advices.length);
     }
 
     @Override
@@ -59,23 +52,8 @@ public class RequestEntityResolverContextImpl implements RequestEntityResolverCo
     }
 
     @Override
-    public RequestEntity entityInfo() {
+    public RequestEntity httpEntity() {
         return entity;
-    }
-
-    @Override
-    public MediaType mediaType() {
-        return entity.mediaType();
-    }
-
-    @Override
-    public void mediaType(MediaType mediaType) {
-        entity.mediaType(mediaType);
-    }
-
-    @Override
-    public void inputStream(InputStream ins) {
-        entity.inputStream(ins);
     }
 
     @Override
@@ -91,32 +69,7 @@ public class RequestEntityResolverContextImpl implements RequestEntityResolverCo
             return null;
         }
 
-        return advices.get(index++).aroundRead(this);
-    }
-
-    @Override
-    public <V> Attribute<V> attr(AttributeKey<V> key) {
-        return context.attr(key);
-    }
-
-    @Override
-    public boolean hasAttr(AttributeKey<?> key) {
-        return context.hasAttr(key);
-    }
-
-    @Override
-    public void forEach(BiConsumer<? super AttributeKey<?>, ? super Attribute<?>> consumer) {
-        context.forEach(consumer);
-    }
-
-    @Override
-    public int size() {
-        return context.size();
-    }
-
-    @Override
-    public boolean isEmpty() {
-        return context.isEmpty();
+        return advices[index++].aroundRead(this);
     }
 
 }

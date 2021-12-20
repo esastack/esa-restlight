@@ -16,8 +16,8 @@
 package io.esastack.restlight.core.handler;
 
 import esa.commons.annotation.Internal;
-import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.util.Ordered;
+import io.esastack.restlight.server.context.RequestContext;
 
 /**
  * The class is designed to execute some additional operations around method invoking. Eg: validate parameters pre

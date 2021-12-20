@@ -22,7 +22,6 @@ import esa.commons.reflect.ReflectionUtils;
 import io.esastack.restlight.core.DeployContext;
 import io.esastack.restlight.core.annotation.RequestBean;
 import io.esastack.restlight.core.config.RestlightOptions;
-import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.method.FieldParam;
 import io.esastack.restlight.core.method.FieldParamImpl;
 import io.esastack.restlight.core.method.Param;
@@ -30,6 +29,7 @@ import io.esastack.restlight.core.resolver.HandlerResolverFactory;
 import io.esastack.restlight.core.resolver.ParamResolver;
 import io.esastack.restlight.core.resolver.ParamResolverFactory;
 import io.esastack.restlight.core.serialize.HttpRequestSerializer;
+import io.esastack.restlight.server.context.RequestContext;
 import io.esastack.restlight.server.util.LoggerUtils;
 
 import java.lang.reflect.Constructor;

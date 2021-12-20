@@ -50,7 +50,7 @@ public class JacksonDefaultSerializerFactory implements DefaultSerializerFactory
     private HttpBodySerializer getInstance(DeployContext<? extends RestlightOptions> ctx) {
         if (jackson == null) {
             synchronized (this) {
-                final Object objectMapper = ctx.attr(OBJECT_MAPPER).get();
+                final Object objectMapper = ctx.attrs().attr(OBJECT_MAPPER).get();
                 if (objectMapper instanceof ObjectMapper) {
                     jackson = new JacksonHttpBodySerializer((ObjectMapper) objectMapper);
                     return jackson;

@@ -16,7 +16,7 @@
 package io.esastack.restlight.core.handler;
 
 import esa.commons.annotation.Internal;
-import io.esastack.restlight.core.context.RequestContext;
+import io.esastack.restlight.server.context.RequestContext;
 
 import java.util.concurrent.CompletableFuture;
 

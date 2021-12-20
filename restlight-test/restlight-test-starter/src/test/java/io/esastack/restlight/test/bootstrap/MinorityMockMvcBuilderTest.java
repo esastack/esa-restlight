@@ -15,8 +15,6 @@
  */
 package io.esastack.restlight.test.bootstrap;
 
-import io.esastack.httpserver.core.HttpOutputStream;
-import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.interceptor.HandlerInterceptor;
 import io.esastack.restlight.core.method.HandlerMethod;
 import io.esastack.restlight.core.method.Param;
@@ -25,11 +23,13 @@ import io.esastack.restlight.core.resolver.ParamResolverAdapter;
 import io.esastack.restlight.core.resolver.ParamResolverAdviceAdapter;
 import io.esastack.restlight.core.resolver.RequestEntity;
 import io.esastack.restlight.core.resolver.ResponseEntity;
+import io.esastack.restlight.core.resolver.ResponseEntityChannel;
 import io.esastack.restlight.core.resolver.ResponseEntityResolver;
 import io.esastack.restlight.core.resolver.ResponseEntityResolverAdviceAdapter;
 import io.esastack.restlight.core.serialize.HttpBodySerializer;
+import io.esastack.restlight.server.context.RequestContext;
+import io.esastack.restlight.server.mock.MockHttpRequest;
 import io.esastack.restlight.test.context.MockMvc;
-import io.esastack.restlight.test.mock.MockHttpRequest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -75,11 +75,6 @@ class MinorityMockMvcBuilderTest {
         public HandledValue<byte[]> serialize(ResponseEntity entity) {
             return HandledValue.succeed(new byte[0]);
         }
-
-        @Override
-        public HandledValue<Void> serialize(ResponseEntity entity, HttpOutputStream outputStream) {
-            return null;
-        }
     }
 
     private static class ArgResolver implements ParamResolverAdapter {
@@ -115,7 +110,8 @@ class MinorityMockMvcBuilderTest {
 
         @Override
         public HandledValue<Void> writeTo(ResponseEntity entity,
-                                          io.esastack.httpserver.core.RequestContext context) {
+                                          ResponseEntityChannel channel,
+                                          RequestContext context) {
             return HandledValue.succeed(null);
         }
     }

@@ -15,11 +15,9 @@
  */
 package io.esastack.restlight.server;
 
-import io.esastack.httpserver.core.RequestContext;
 import io.esastack.restlight.server.bootstrap.RestlightServer;
 import io.esastack.restlight.server.config.ServerOptions;
 import io.esastack.restlight.server.config.ServerOptionsConfigure;
-import io.esastack.restlight.server.context.FilterContext;
 
 /**
  * Restlite is a entrance for creating a HTTP server of Restlight. You can use this to build a HTTP server by use the
@@ -35,8 +33,7 @@ import io.esastack.restlight.server.context.FilterContext;
  * BaseDeployments}) to bootstrap a {@link RestlightServer} which could be {@link
  * #start()} for service.
  */
-public class Restlite extends BaseRestlightServer<Restlite, BaseDeployments.Impl, ServerOptions,
-        RequestContext, FilterContext> {
+public class Restlite extends BaseRestlightServer<Restlite, BaseDeployments.Impl, ServerOptions> {
 
     Restlite(ServerOptions options) {
         super(options);

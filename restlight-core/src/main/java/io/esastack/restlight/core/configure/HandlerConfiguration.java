@@ -15,8 +15,8 @@
  */
 package io.esastack.restlight.core.configure;
 
+import esa.commons.Checks;
 import esa.commons.collection.Attributes;
-import io.esastack.httpserver.impl.AttributesProxy;
 import io.esastack.restlight.core.resolver.ContextResolverFactory;
 import io.esastack.restlight.core.resolver.ParamResolverAdviceFactory;
 import io.esastack.restlight.core.resolver.ParamResolverFactory;
@@ -30,8 +30,9 @@ import io.esastack.restlight.core.spi.RouteFilterFactory;
 import java.util.Collection;
 import java.util.List;
 
-public class HandlerConfiguration extends AttributesProxy implements Attributes {
+public class HandlerConfiguration {
 
+    private final Attributes attributes;
     private final List<RouteFilterFactory> routeFilters;
     private final List<StringConverterFactory> paramConverters;
     private final List<ParamResolverFactory> paramResolvers;
@@ -52,7 +53,8 @@ public class HandlerConfiguration extends AttributesProxy implements Attributes 
                                 List<RequestEntityResolverAdviceFactory> requestEntityResolverAdvices,
                                 List<ResponseEntityResolverFactory> responseEntityResolvers,
                                 List<ResponseEntityResolverAdviceFactory> responseEntityResolverAdvices) {
-        super(attributes);
+        Checks.checkNotNull(attributes, "attributes");
+        this.attributes = attributes;
         this.routeFilters = routeFilters;
         this.paramConverters = paramConverters;
         this.paramResolvers = paramResolvers;
@@ -62,6 +64,10 @@ public class HandlerConfiguration extends AttributesProxy implements Attributes 
         this.requestEntityResolverAdvices = requestEntityResolverAdvices;
         this.responseEntityResolvers = responseEntityResolvers;
         this.responseEntityResolverAdvices = responseEntityResolverAdvices;
+    }
+
+    public Attributes attrs() {
+        return attributes;
     }
 
     public List<StringConverterFactory> getParamConverts() {

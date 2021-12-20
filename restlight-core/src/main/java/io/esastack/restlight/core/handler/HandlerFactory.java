@@ -15,11 +15,11 @@
  */
 package io.esastack.restlight.core.handler;
 
-import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.method.Param;
 import io.esastack.restlight.core.method.ResolvableParamPredicate;
 import io.esastack.restlight.core.resolver.ContextResolver;
 import io.esastack.restlight.core.resolver.ParamResolver;
+import io.esastack.restlight.server.context.RequestContext;
 
 import java.lang.reflect.Method;
 

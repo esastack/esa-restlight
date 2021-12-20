@@ -21,20 +21,22 @@ import esa.commons.logging.LoggerFactory;
 import esa.commons.spi.Feature;
 import io.esastack.commons.net.http.HttpStatus;
 import io.esastack.commons.net.http.MediaType;
-import io.esastack.httpserver.core.HttpRequest;
 import io.esastack.restlight.core.DeployContext;
 import io.esastack.restlight.core.config.RestlightOptions;
-import io.esastack.restlight.core.context.HttpResponse;
-import io.esastack.restlight.core.context.RequestContext;
-import io.esastack.restlight.core.spi.ExceptionHandler;
-import io.esastack.restlight.core.spi.ExceptionHandlerFactory;
+import io.esastack.restlight.server.ServerDeployContext;
+import io.esastack.restlight.server.config.ServerOptions;
+import io.esastack.restlight.server.spi.ExceptionHandlerFactory;
 import io.esastack.restlight.core.util.Constants;
 import io.esastack.restlight.server.bootstrap.ExceptionHandlerChain;
+import io.esastack.restlight.server.context.RequestContext;
+import io.esastack.restlight.server.core.HttpRequest;
+import io.esastack.restlight.server.core.HttpResponse;
+import io.esastack.restlight.server.bootstrap.IExceptionHandler;
+import io.esastack.restlight.server.util.ErrorDetail;
 import io.esastack.restlight.server.util.Futures;
 import io.esastack.restlight.springmvc.util.ResponseStatusUtils;
 import io.netty.handler.codec.http.HttpHeaderNames;
 
-import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
@@ -43,17 +45,17 @@ import java.util.concurrent.CompletableFuture;
 public class SpringMvcExceptionHandlerFactory implements ExceptionHandlerFactory {
 
     @Override
-    public Optional<ExceptionHandler> handler(DeployContext<? extends RestlightOptions> ctx) {
-        return Optional.of(new SpringMvcExceptionHandler());
+    public Optional<IExceptionHandler> handler(ServerDeployContext<? extends ServerOptions> ctx) {
+        return Optional.of(new SpringMvcIExceptionHandler());
     }
 
-    private static class SpringMvcExceptionHandler implements ExceptionHandler {
+    private static class SpringMvcIExceptionHandler implements IExceptionHandler {
 
-        private static final Logger logger = LoggerFactory.getLogger(SpringMvcExceptionHandler.class);
+        private static final Logger logger = LoggerFactory.getLogger(SpringMvcIExceptionHandler.class);
 
         @Override
         public CompletableFuture<Void> handle(RequestContext context, Throwable th,
-                                              ExceptionHandlerChain<RequestContext> next) {
+                                              ExceptionHandlerChain next) {
             final HttpStatus status = ResponseStatusUtils.getCustomResponse(th);
             if (status == null) {
                 return next.handle(context, th);
@@ -62,7 +64,8 @@ public class SpringMvcExceptionHandlerFactory implements ExceptionHandlerFactory
             final HttpRequest request = context.request();
             final HttpResponse response = context.response();
             response.headers().set(HttpHeaderNames.CONTENT_TYPE, MediaType.TEXT_PLAIN.value());
-            response.sendResult(status.code(), status.reasonPhrase().getBytes(StandardCharsets.UTF_8));
+            response.status(status.code());
+            response.entity(new ErrorDetail<>(context.request().path(), status.reasonPhrase()));
 
             logger.error("Error occurred when doing request(url={}, method={})",
                     request.path(), request.method(), th);

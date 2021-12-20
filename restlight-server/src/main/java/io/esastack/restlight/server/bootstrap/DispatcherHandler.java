@@ -16,7 +16,7 @@
 package io.esastack.restlight.server.bootstrap;
 
 import esa.commons.annotation.Internal;
-import io.esastack.httpserver.core.RequestContext;
+import io.esastack.restlight.server.context.RequestContext;
 import io.esastack.restlight.server.route.Route;
 import io.esastack.restlight.server.schedule.RequestTask;
 
@@ -33,7 +33,7 @@ import java.util.concurrent.CompletableFuture;
  * see {@link #service(RequestContext, CompletableFuture, Route)}.
  */
 @Internal
-public interface DispatcherHandler<CTX extends RequestContext> {
+public interface DispatcherHandler {
 
     /**
      * Get all handler method invokers.
@@ -49,7 +49,7 @@ public interface DispatcherHandler<CTX extends RequestContext> {
      * @param context  context
      * @return routes, which may be {@code null}.
      */
-    Route route(CTX context);
+    Route route(RequestContext context);
 
     /**
      * process for request
@@ -58,7 +58,7 @@ public interface DispatcherHandler<CTX extends RequestContext> {
      * @param promise  promise
      * @param route   routes
      */
-    void service(CTX context,
+    void service(RequestContext context,
                  CompletableFuture<Void> promise,
                  Route route);
 

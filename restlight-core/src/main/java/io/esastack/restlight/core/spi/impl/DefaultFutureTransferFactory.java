@@ -17,11 +17,11 @@ package io.esastack.restlight.core.spi.impl;
 
 import esa.commons.annotation.Internal;
 import esa.commons.spi.Feature;
-import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.handler.FutureTransfer;
 import io.esastack.restlight.core.method.HandlerMethod;
 import io.esastack.restlight.core.spi.FutureTransferFactory;
 import io.esastack.restlight.core.util.Constants;
+import io.esastack.restlight.server.context.RequestContext;
 import io.esastack.restlight.server.util.Futures;
 
 import java.util.Optional;

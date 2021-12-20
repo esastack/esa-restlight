@@ -17,13 +17,13 @@ package io.esastack.restlight.ext.multipart.spi;
 
 import esa.commons.ClassUtils;
 import io.esastack.commons.net.http.HttpHeaderNames;
-import io.esastack.httpserver.core.HttpRequest;
+import io.esastack.restlight.server.core.HttpRequest;
 import io.esastack.restlight.core.method.HandlerMethodImpl;
 import io.esastack.restlight.core.method.RouteHandlerMethod;
 import io.esastack.restlight.core.method.RouteHandlerMethodImpl;
 import io.esastack.restlight.ext.multipart.core.MultipartConfig;
 import io.esastack.restlight.server.schedule.Schedulers;
-import io.esastack.restlight.test.mock.MockHttpRequest;
+import io.esastack.restlight.server.mock.MockHttpRequest;
 import io.netty.handler.codec.DecoderResult;
 import io.netty.handler.codec.http.DefaultFullHttpRequest;
 import io.netty.handler.codec.http.FullHttpRequest;
@@ -40,8 +40,8 @@ public abstract class AbstractMultipartResolverTest {
     private static final String CONTENT_TYPE = "multipart/form-data; boundary=---1234";
     private static final ResolverSubject SUBJECT = new ResolverSubject();
     private static final MultipartConfig config = new MultipartConfig(false);
-    static MultipartAttrArgumentResolver attrResolver = new MultipartAttrArgumentResolver();
-    static MultipartFileArgumentResolver fileResolver = new MultipartFileArgumentResolver();
+    static MultipartAttrParamResolver attrResolver = new MultipartAttrParamResolver();
+    static MultipartFileParamResolver fileResolver = new MultipartFileParamResolver();
     {
         attrResolver.initFactory(config);
         fileResolver.initFactory(config);

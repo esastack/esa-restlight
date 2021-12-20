@@ -16,7 +16,7 @@
 package io.esastack.restlight.core.resolver.rspentity;
 
 import io.esastack.commons.net.http.MediaType;
-import io.esastack.httpserver.core.RequestContext;
+import io.esastack.restlight.server.context.RequestContext;
 import io.esastack.restlight.core.resolver.HandledValue;
 import io.esastack.restlight.core.resolver.ParamResolverFactory;
 import io.esastack.restlight.core.resolver.ResponseEntity;

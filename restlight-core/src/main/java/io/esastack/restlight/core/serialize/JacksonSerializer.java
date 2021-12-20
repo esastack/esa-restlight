@@ -24,12 +24,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import esa.commons.Checks;
-import io.esastack.httpserver.core.HttpInputStream;
-import io.esastack.httpserver.core.HttpOutputStream;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 
@@ -54,18 +50,8 @@ public class JacksonSerializer implements JsonSerializer {
     }
 
     @Override
-    public void serialize(Object target, HttpOutputStream outputStream) throws Exception {
-        objectMapper.writeValue((OutputStream) outputStream, target);
-    }
-
-    @Override
     public <T> T deserialize(byte[] data, Type type) throws IOException {
         return objectMapper.readValue(data, getJavaType(type));
-    }
-
-    @Override
-    public <T> T deserialize(HttpInputStream inputStream, Type type) throws Exception {
-        return objectMapper.readValue((InputStream) inputStream, getJavaType(type));
     }
 
     public static synchronized ObjectMapper getDefaultMapper() {

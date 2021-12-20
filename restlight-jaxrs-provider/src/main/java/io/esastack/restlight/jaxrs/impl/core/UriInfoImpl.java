@@ -17,9 +17,9 @@ package io.esastack.restlight.jaxrs.impl.core;
 
 import esa.commons.Checks;
 import esa.commons.StringUtils;
-import io.esastack.httpserver.core.RequestContext;
 import io.esastack.restlight.core.handler.HandlerMapping;
 import io.esastack.restlight.jaxrs.configure.RouteTracking;
+import io.esastack.restlight.server.context.RequestContext;
 import io.esastack.restlight.server.route.predicate.PatternsPredicate;
 import io.esastack.restlight.server.util.LoggerUtils;
 import jakarta.ws.rs.core.MultivaluedHashMap;
@@ -131,7 +131,7 @@ public class UriInfoImpl implements UriInfo {
 
     @Override
     public MultivaluedMap<String, String> getPathParameters(boolean decode) {
-        Map<String, String> variables = context.attr(PatternsPredicate.TEMPLATE_VARIABLES).get();
+        Map<String, String> variables = context.attrs().attr(PatternsPredicate.TEMPLATE_VARIABLES).get();
         if (variables == null || variables.isEmpty()) {
             return new UnmodifiableMultivaluedMap<>(new MultivaluedHashMap<>());
         } else {

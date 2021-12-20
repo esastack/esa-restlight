@@ -17,7 +17,6 @@ package io.esastack.restlight.core.handler.impl;
 
 import esa.commons.collection.MultiValueMap;
 import io.esastack.restlight.core.config.RestlightOptions;
-import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.handler.Handler;
 import io.esastack.restlight.core.handler.HandlerAdvice;
 import io.esastack.restlight.core.handler.HandlerAdvicesFactory;
@@ -30,6 +29,7 @@ import io.esastack.restlight.core.interceptor.InterceptorPredicate;
 import io.esastack.restlight.core.interceptor.InternalInterceptor;
 import io.esastack.restlight.core.method.HandlerMethod;
 import io.esastack.restlight.core.resolver.ExceptionResolver;
+import io.esastack.restlight.server.context.RequestContext;
 import io.esastack.restlight.server.route.RouteExecution;
 
 import java.util.List;
@@ -49,7 +49,7 @@ public class SingletonRouteMethod extends RouteHandlerMethodAdapter {
     }
 
     @Override
-    public RouteExecution<RequestContext> toExecution(RequestContext context) {
+    public RouteExecution toExecution(RequestContext context) {
         return new RouteExecutionImpl(mapping(), new SingletonRouteHandler(handlerResolver(), this,
                 getMatchingInterceptors(context), singleton), filters(), exceptionResolver());
     }

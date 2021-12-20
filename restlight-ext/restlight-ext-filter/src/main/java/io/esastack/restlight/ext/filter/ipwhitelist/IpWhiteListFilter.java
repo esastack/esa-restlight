@@ -21,11 +21,11 @@ import com.google.common.cache.LoadingCache;
 import esa.commons.StringUtils;
 import io.esastack.commons.net.http.HttpStatus;
 import io.esastack.commons.net.http.MediaType;
-import io.esastack.httpserver.core.HttpRequest;
-import io.esastack.httpserver.core.HttpResponse;
 import io.esastack.restlight.server.context.FilterContext;
+import io.esastack.restlight.server.core.HttpRequest;
+import io.esastack.restlight.server.core.HttpResponse;
 import io.esastack.restlight.server.handler.FilterChain;
-import io.esastack.restlight.server.spi.Filter;
+import io.esastack.restlight.server.handler.Filter;
 import io.esastack.restlight.server.util.ErrorDetail;
 import io.esastack.restlight.server.util.Futures;
 import io.esastack.restlight.server.util.LoggerUtils;
@@ -90,7 +90,7 @@ public class IpWhiteListFilter implements Filter {
     }
 
     @Override
-    public CompletableFuture<Void> doFilter(FilterContext context, FilterChain<FilterContext> chain) {
+    public CompletableFuture<Void> doFilter(FilterContext context, FilterChain chain) {
         final HttpRequest request = context.request();
         final HttpResponse response = context.response();
 
@@ -103,12 +103,10 @@ public class IpWhiteListFilter implements Filter {
                 valid = cache.getUnchecked(ip);
             }
         }
-        if (!valid && !response.isCommitted()) {
+        if (!valid) {
             response.headers().set(HttpHeaderNames.CONTENT_TYPE, MediaType.TEXT_PLAIN.value());
-            response.sendResult(HttpStatus.UNAUTHORIZED.code(),
-                    ErrorDetail.buildErrorMsg(request.path(),
-                            HttpStatus.UNAUTHORIZED.reasonPhrase(),
-                            HttpStatus.UNAUTHORIZED.reasonPhrase(), HttpStatus.UNAUTHORIZED.code()));
+            response.status(HttpStatus.UNAUTHORIZED.code());
+            response.entity(new ErrorDetail<>(context.request().path(), HttpStatus.UNAUTHORIZED.reasonPhrase()));
             LoggerUtils.logger().warn("Unauthorized client ip address: {}", ip);
             return Futures.completedFuture();
         }

@@ -16,7 +16,7 @@
 package io.esastack.restlight.jaxrs.impl.core;
 
 import esa.commons.Checks;
-import io.esastack.httpserver.core.HttpRequest;
+import io.esastack.restlight.server.core.HttpRequest;
 import io.esastack.restlight.core.util.HttpHeaderUtils;
 import io.esastack.restlight.jaxrs.util.MediaTypeUtils;
 import jakarta.ws.rs.core.Cookie;

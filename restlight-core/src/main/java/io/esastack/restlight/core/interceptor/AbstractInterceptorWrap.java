@@ -16,7 +16,7 @@
 package io.esastack.restlight.core.interceptor;
 
 import esa.commons.Checks;
-import io.esastack.httpserver.core.RequestContext;
+import io.esastack.restlight.server.context.RequestContext;
 
 import java.util.concurrent.CompletableFuture;
 

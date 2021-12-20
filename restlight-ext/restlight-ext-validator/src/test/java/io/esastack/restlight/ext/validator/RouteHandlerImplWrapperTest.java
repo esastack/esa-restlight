@@ -16,10 +16,6 @@
 package io.esastack.restlight.ext.validator;
 
 import esa.commons.ClassUtils;
-import io.esastack.httpserver.core.HttpRequest;
-import io.esastack.httpserver.core.HttpResponse;
-import io.esastack.restlight.core.context.impl.HttpResponseAdapter;
-import io.esastack.restlight.core.context.impl.RequestContextImpl;
 import io.esastack.restlight.core.handler.HandlerInvoker;
 import io.esastack.restlight.core.handler.LinkedHandlerInvoker;
 import io.esastack.restlight.core.handler.impl.HandlerInvokerImpl;
@@ -27,8 +23,11 @@ import io.esastack.restlight.core.handler.impl.RouteHandlerImpl;
 import io.esastack.restlight.core.method.HandlerMethod;
 import io.esastack.restlight.core.method.HandlerMethodImpl;
 import io.esastack.restlight.core.method.RouteHandlerMethodImpl;
-import io.esastack.restlight.test.mock.MockHttpRequest;
-import io.esastack.restlight.test.mock.MockHttpResponse;
+import io.esastack.restlight.server.core.HttpRequest;
+import io.esastack.restlight.server.core.HttpResponse;
+import io.esastack.restlight.server.context.impl.RequestContextImpl;
+import io.esastack.restlight.server.mock.MockHttpRequest;
+import io.esastack.restlight.server.mock.MockHttpResponse;
 import org.hibernate.validator.messageinterpolation.ResourceBundleMessageInterpolator;
 import org.hibernate.validator.resourceloading.PlatformResourceBundleLocator;
 import org.junit.jupiter.api.BeforeAll;
@@ -92,8 +91,8 @@ class RouteHandlerImplWrapperTest {
     @Test
     void testNormalInvoke() throws Throwable {
         handlerMethodInvokerAdapter = handlerMethodAdapters.get("testSimpleValidation");
-        final Object returnValue = handlerMethodInvokerAdapter.invoke(new RequestContextImpl(request,
-                new HttpResponseAdapter(response)), simpleArg);
+        final Object returnValue = handlerMethodInvokerAdapter.invoke(new RequestContextImpl(request, response),
+                simpleArg);
         assertEquals(simpleArg[0], returnValue);
     }
 
@@ -101,8 +100,7 @@ class RouteHandlerImplWrapperTest {
     void testNormalWrapper() throws Throwable {
         handlerMethodInvokerAdapter = handlerMethodAdapters.get("testSimpleValidation");
         try {
-            handlerMethodInvokerAdapter.invoke(new RequestContextImpl(request,
-                    new HttpResponseAdapter(response)), simpleArg);
+            handlerMethodInvokerAdapter.invoke(new RequestContextImpl(request, response), simpleArg);
         } catch (ConstraintViolationException e) {
             assertEquals(1, e.getConstraintViolations().size());
         }
@@ -112,8 +110,7 @@ class RouteHandlerImplWrapperTest {
     void testMessageWrapper() {
         handlerMethodInvokerAdapter = handlerMethodAdapters.get("testSimpleValidation");
         try {
-            handlerMethodInvokerAdapter.invoke(new RequestContextImpl(request,
-                    new HttpResponseAdapter(response)), simpleArg);
+            handlerMethodInvokerAdapter.invoke(new RequestContextImpl(request, response), simpleArg);
         } catch (ConstraintViolationException e) {
             assertEquals(1, e.getConstraintViolations().size());
         } catch (Throwable throwable) {
@@ -129,8 +126,7 @@ class RouteHandlerImplWrapperTest {
             Object[] args = {new BeanSubject.SimpleBean("abc", 34,
                     new BeanSubject.SimpleBean.InnerBean("a", 0)), ""};
 
-            handlerMethodInvokerAdapter.invoke(new RequestContextImpl(request,
-                    new HttpResponseAdapter(response)), args);
+            handlerMethodInvokerAdapter.invoke(new RequestContextImpl(request, response), args);
         } catch (ConstraintViolationException e) {
             assertEquals(3L, e.getConstraintViolations().size());
         }
@@ -143,8 +139,7 @@ class RouteHandlerImplWrapperTest {
         try {
             Object[] args = {new BeanSubject.SimpleBean2("abc", 34,
                     new BeanSubject.SimpleBean2.InnerBean("a", 0)), ""};
-            handlerMethodInvokerAdapter.invoke(new RequestContextImpl(request,
-                    new HttpResponseAdapter(response)), args);
+            handlerMethodInvokerAdapter.invoke(new RequestContextImpl(request, response), args);
         } catch (ConstraintViolationException e) {
             assertEquals(2L, e.getConstraintViolations().size());
         }
@@ -156,8 +151,7 @@ class RouteHandlerImplWrapperTest {
 
         try {
             Object[] args = {"", -1};
-            handlerMethodInvokerAdapter.invoke(new RequestContextImpl(request,
-                    new HttpResponseAdapter(response)), args);
+            handlerMethodInvokerAdapter.invoke(new RequestContextImpl(request, response), args);
         } catch (ConstraintViolationException e) {
             assertEquals(4L, e.getConstraintViolations().size());
         }
@@ -169,8 +163,7 @@ class RouteHandlerImplWrapperTest {
 
         try {
             Object[] args = {"", -1};
-            handlerMethodInvokerAdapter.invoke(new RequestContextImpl(request,
-                    new HttpResponseAdapter(response)), args);
+            handlerMethodInvokerAdapter.invoke(new RequestContextImpl(request, response), args);
         } catch (ConstraintViolationException e) {
             assertEquals(1L, e.getConstraintViolations().size());
         }
@@ -182,8 +175,7 @@ class RouteHandlerImplWrapperTest {
 
         try {
             Object[] args = {"abc", -1, 100L};
-            handlerMethodInvokerAdapter.invoke(new RequestContextImpl(request,
-                    new HttpResponseAdapter(response)), args);
+            handlerMethodInvokerAdapter.invoke(new RequestContextImpl(request, response), args);
         } catch (ConstraintViolationException e) {
             assertEquals(1L, e.getConstraintViolations().size());
         }
@@ -195,8 +187,7 @@ class RouteHandlerImplWrapperTest {
 
         try {
             Object[] args = {"", -1, 100L};
-            handlerMethodInvokerAdapter.invoke(new RequestContextImpl(request,
-                    new HttpResponseAdapter(response)), args);
+            handlerMethodInvokerAdapter.invoke(new RequestContextImpl(request, response), args);
         } catch (ConstraintViolationException e) {
             assertEquals(1L, e.getConstraintViolations().size());
         }
@@ -208,8 +199,7 @@ class RouteHandlerImplWrapperTest {
 
         // Test zh_CN
         try {
-            handlerMethodInvokerAdapter.invoke(new RequestContextImpl(request,
-                    new HttpResponseAdapter(response)), simpleArg);
+            handlerMethodInvokerAdapter.invoke(new RequestContextImpl(request, response), simpleArg);
         } catch (ConstraintViolationException e) {
             assertTrue(e.getConstraintViolations()
                     .toArray(new ConstraintViolation[]{})[0].getMessage().contains("CN"));

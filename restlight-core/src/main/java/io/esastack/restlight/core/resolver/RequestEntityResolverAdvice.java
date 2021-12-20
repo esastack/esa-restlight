@@ -15,12 +15,13 @@
  */
 package io.esastack.restlight.core.resolver;
 
-import io.esastack.httpserver.core.RequestContext;
+import io.esastack.restlight.server.context.RequestContext;
 
 public interface RequestEntityResolverAdvice {
 
     /**
-     * This method will be called around {@link ResponseEntityResolver#writeTo(ResponseEntity, RequestContext)}.
+     * This method will be called around
+     * {@link ResponseEntityResolver#writeTo(ResponseEntity, ResponseEntityChannel, RequestContext)}.
      *
      * @param context   context
      * @return object   resolved value

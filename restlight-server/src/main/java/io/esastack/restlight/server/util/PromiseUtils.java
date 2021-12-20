@@ -65,7 +65,7 @@ public final class PromiseUtils {
             return;
         }
         if (!promise.completeExceptionally(throwable)) {
-            LoggerUtils.logger().warn("Unexpected error, failed to set promise to failure.");
+            LoggerUtils.logger().warn("Unexpected error, failed to set promise to failure.", throwable);
         }
     }
 

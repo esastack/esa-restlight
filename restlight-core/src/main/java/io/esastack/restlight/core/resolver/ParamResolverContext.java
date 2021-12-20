@@ -15,7 +15,7 @@
  */
 package io.esastack.restlight.core.resolver;
 
-import io.esastack.httpserver.core.RequestContext;
+import io.esastack.restlight.server.context.RequestContext;
 import io.esastack.restlight.core.method.Param;
 
 /**

@@ -16,13 +16,13 @@
 package io.esastack.restlight.core.resolver.rspentity;
 
 import io.esastack.commons.net.http.MediaType;
-import io.esastack.httpserver.core.RequestContext;
 import io.esastack.restlight.core.resolver.ResponseEntity;
 import io.esastack.restlight.core.resolver.ResponseEntityResolver;
 import io.esastack.restlight.core.resolver.ResponseEntityResolverFactory;
 import io.esastack.restlight.core.serialize.HttpResponseSerializer;
 import io.esastack.restlight.core.serialize.Serializers;
 import io.esastack.restlight.core.util.ResponseEntityUtils;
+import io.esastack.restlight.server.context.RequestContext;
 
 import java.util.List;
 
@@ -51,8 +51,8 @@ public class ByteArrayEntityResolverFactory implements ResponseEntityResolverFac
         protected byte[] serialize(ResponseEntity entity,
                                    List<MediaType> mediaTypes,
                                    RequestContext context) throws Exception {
-            return Serializers.serializeByteArray((byte[]) entity.response().entity(),
-                    entity.response(),
+            return Serializers.serializeByteArray((byte[]) context.response().entity(),
+                    context.response(),
                     selectMediaType(mediaTypes));
         }
 

@@ -18,7 +18,7 @@ package io.esastack.restlight.server.route.predicate;
 import esa.commons.Checks;
 import esa.commons.UrlUtils;
 import esa.commons.collection.AttributeKey;
-import io.esastack.httpserver.core.RequestContext;
+import io.esastack.restlight.server.context.RequestContext;
 import io.esastack.restlight.server.util.PathMatcher;
 
 import java.util.Arrays;
@@ -60,7 +60,7 @@ public class PatternsPredicate implements RequestPredicate {
         Map<String, String> uriVariables = this.match(context.request().path());
         if (uriVariables != null) {
             //set matched template variables
-            context.attr(TEMPLATE_VARIABLES).set(uriVariables);
+            context.attrs().attr(TEMPLATE_VARIABLES).set(uriVariables);
             return true;
         }
         return false;

@@ -59,13 +59,6 @@
             <artifactId>protobuf-java</artifactId>
             <optional>true</optional>
         </dependency>
-        <!-- test scope -->
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>restlight-test-mock</artifactId>
-            <version>${project.version}</version>
-            <scope>test</scope>
-        </dependency>
     </dependencies>
 
 </project>

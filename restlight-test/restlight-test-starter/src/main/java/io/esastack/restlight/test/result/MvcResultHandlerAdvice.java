@@ -16,11 +16,11 @@
 package io.esastack.restlight.test.result;
 
 import esa.commons.annotation.Internal;
-import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.handler.HandlerAdvice;
 import io.esastack.restlight.core.handler.HandlerInvoker;
+import io.esastack.restlight.server.context.RequestContext;
+import io.esastack.restlight.server.mock.MockHttpRequest;
 import io.esastack.restlight.test.context.DefaultMockMvc;
-import io.esastack.restlight.test.mock.MockHttpRequest;
 
 @Internal
 public class MvcResultHandlerAdvice implements HandlerAdvice {
@@ -29,7 +29,7 @@ public class MvcResultHandlerAdvice implements HandlerAdvice {
     public Object invoke(RequestContext context, Object[] args, HandlerInvoker invoker) throws Throwable {
         Object result = invoker.invoke(context, args);
         if (context.request() instanceof MockHttpRequest) {
-            context.attr(DefaultMockMvc.RETURN_VALUE_KEY).set(result);
+            context.attrs().attr(DefaultMockMvc.RETURN_VALUE_KEY).set(result);
         }
         return result;
     }

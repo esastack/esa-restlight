@@ -48,15 +48,15 @@ public class JaxrsResponseAdapterFactory implements ResponseEntityResolverAdvice
 
         @Override
         public void aroundWrite(ResponseEntityResolverContext context) {
-            Object entity = context.entity();
+            Object entity = context.context().response().entity();
             if (entity == null) {
                 return;
             }
             if (entity instanceof GenericEntity) {
                 GenericEntity<?> gEntity = (GenericEntity<?>) entity;
                 entity = gEntity.getEntity();
-                context.entityInfo().type(gEntity.getRawType());
-                context.entityInfo().genericType(gEntity.getType());
+                context.httpEntity().type(gEntity.getRawType());
+                context.httpEntity().genericType(gEntity.getType());
             }
             Response response = null;
             if (entity instanceof Response) {
@@ -65,7 +65,7 @@ public class JaxrsResponseAdapterFactory implements ResponseEntityResolverAdvice
                 response = ((Response.ResponseBuilder) entity).build();
             }
             if (response != null) {
-                context.entity(response);
+                context.context().response().entity(response);
             }
         }
     }

@@ -39,64 +39,64 @@ public class InterceptorContextImpl implements InterceptorContext {
 
     @Override
     public Object getProperty(String name) {
-        return underlying.attr(AttributeKey.valueOf(name)).get();
+        return underlying.context().attrs().attr(AttributeKey.valueOf(name)).get();
     }
 
     @Override
     public Collection<String> getPropertyNames() {
-        List<String> names = new ArrayList<>(underlying.size());
-        underlying.forEach((name, value) -> names.add(name.name()));
+        List<String> names = new ArrayList<>(underlying.context().attrs().size());
+        underlying.context().attrs().forEach((name, value) -> names.add(name.name()));
         return names;
     }
 
     @Override
     public void setProperty(String name, Object object) {
-        underlying.attr(AttributeKey.valueOf(name)).set(object);
+        underlying.context().attrs().attr(AttributeKey.valueOf(name)).set(object);
     }
 
     @Override
     public void removeProperty(String name) {
-        underlying.attr(AttributeKey.valueOf(name)).remove();
+        underlying.context().attrs().attr(AttributeKey.valueOf(name)).remove();
     }
 
     @Override
     public Annotation[] getAnnotations() {
-        return underlying.entityInfo().annotations();
+        return underlying.httpEntity().annotations();
     }
 
     @Override
     public void setAnnotations(Annotation[] annotations) {
-        underlying.entityInfo().annotations(annotations);
+        underlying.httpEntity().annotations(annotations);
     }
 
     @Override
     public Class<?> getType() {
-        return underlying.entityInfo().type();
+        return underlying.httpEntity().type();
     }
 
     @Override
     public void setType(Class<?> type) {
-        underlying.entityInfo().type(type);
+        underlying.httpEntity().type(type);
     }
 
     @Override
     public Type getGenericType() {
-        return underlying.entityInfo().genericType();
+        return underlying.httpEntity().genericType();
     }
 
     @Override
     public void setGenericType(Type genericType) {
-        underlying.entityInfo().genericType(genericType);
+        underlying.httpEntity().genericType(genericType);
     }
 
     @Override
     public MediaType getMediaType() {
-        return MediaTypeUtils.convert(underlying.entityInfo().mediaType());
+        return MediaTypeUtils.convert(underlying.httpEntity().mediaType());
     }
 
     @Override
     public void setMediaType(MediaType mediaType) {
-        underlying.entityInfo().mediaType(MediaTypeUtils.convert(mediaType));
+        underlying.httpEntity().mediaType(MediaTypeUtils.convert(mediaType));
     }
 }
 

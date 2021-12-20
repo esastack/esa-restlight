@@ -18,8 +18,8 @@ package io.esastack.restlight.core.resolver.exception;
 import esa.commons.Checks;
 import esa.commons.logging.Logger;
 import esa.commons.logging.LoggerFactory;
-import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.resolver.ExceptionResolver;
+import io.esastack.restlight.server.context.RequestContext;
 import io.esastack.restlight.server.util.Futures;
 
 import java.util.concurrent.CompletableFuture;

@@ -20,31 +20,21 @@ import esa.commons.StringUtils;
 import esa.commons.annotation.Beta;
 import esa.commons.annotation.Internal;
 import esa.commons.spi.SpiLoader;
-import io.esastack.httpserver.core.RequestContext;
-import io.esastack.httpserver.impl.HttResponseImpl;
-import io.esastack.httpserver.impl.HttpRequestImpl;
 import io.esastack.restlight.core.util.Constants;
 import io.esastack.restlight.core.util.OrderedComparator;
 import io.esastack.restlight.server.bootstrap.DispatcherHandler;
 import io.esastack.restlight.server.bootstrap.DispatcherHandlerImpl;
 import io.esastack.restlight.server.bootstrap.ExceptionHandlerChain;
+import io.esastack.restlight.server.bootstrap.IExceptionHandler;
 import io.esastack.restlight.server.bootstrap.LinkedExceptionHandlerChain;
 import io.esastack.restlight.server.bootstrap.RestlightThreadFactory;
 import io.esastack.restlight.server.config.BizThreadsOptions;
 import io.esastack.restlight.server.config.ServerOptions;
 import io.esastack.restlight.server.config.TimeoutOptions;
-import io.esastack.restlight.server.context.FilterContext;
-import io.esastack.restlight.server.context.FilteringRequest;
-import io.esastack.restlight.server.context.impl.FilterContextImpl;
-import io.esastack.restlight.server.context.impl.FilteringRequestImpl;
-import io.esastack.restlight.server.context.impl.RequestContextImpl;
 import io.esastack.restlight.server.handler.ConnectionHandler;
 import io.esastack.restlight.server.handler.DisConnectionHandler;
+import io.esastack.restlight.server.handler.Filter;
 import io.esastack.restlight.server.handler.RestlightHandler;
-import io.esastack.restlight.server.internal.FilterContextFactory;
-import io.esastack.restlight.server.internal.InternalExceptionHandler;
-import io.esastack.restlight.server.internal.InternalFilter;
-import io.esastack.restlight.server.internal.RequestContextFactory;
 import io.esastack.restlight.server.route.Route;
 import io.esastack.restlight.server.route.RouteRegistry;
 import io.esastack.restlight.server.route.impl.AbstractRouteRegistry;
@@ -58,14 +48,12 @@ import io.esastack.restlight.server.schedule.Scheduler;
 import io.esastack.restlight.server.schedule.Schedulers;
 import io.esastack.restlight.server.spi.ConnectionHandlerFactory;
 import io.esastack.restlight.server.spi.DisConnectionHandlerFactory;
-import io.esastack.restlight.server.spi.ExceptionHandler;
-import io.esastack.restlight.server.spi.Filter;
+import io.esastack.restlight.server.spi.ExceptionHandlerFactory;
 import io.esastack.restlight.server.spi.RequestTaskHookFactory;
 import io.esastack.restlight.server.spi.RouteRegistryAware;
 import io.esastack.restlight.server.spi.RouteRegistryAwareFactory;
 import io.esastack.restlight.server.util.LoggerUtils;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -80,9 +68,8 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-public abstract class BaseDeployments<R extends BaseRestlightServer<R, D, O, CTX, FCTX>, D extends
-        BaseDeployments<R, D, O, CTX, FCTX>, O extends ServerOptions,
-        CTX extends RequestContext, FCTX extends FilterContext> {
+public abstract class BaseDeployments<R extends BaseRestlightServer<R, D, O>, D extends
+        BaseDeployments<R, D, O>, O extends ServerOptions> {
 
     private static final Class<? extends RejectedExecutionHandler> JDK_DEFAULT_REJECT_HANDLER;
 
@@ -91,17 +78,17 @@ public abstract class BaseDeployments<R extends BaseRestlightServer<R, D, O, CTX
      */
     protected final R restlight;
     private final List<Route> routes = new LinkedList<>();
-    private final List<InternalFilter<FCTX>> filters = new LinkedList<>();
-    private final List<InternalExceptionHandler<CTX>> exceptionHandlers = new LinkedList<>();
+    private final List<Filter> filters = new LinkedList<>();
+    private final List<IExceptionHandler> exceptionHandlers = new LinkedList<>();
     private final List<ConnectionHandlerFactory> connectionHandlers = new LinkedList<>();
     private final List<DisConnectionHandlerFactory> disConnectionHandlers = new LinkedList<>();
     private final List<RequestTaskHookFactory> requestTaskHooks = new LinkedList<>();
     private final List<RouteRegistryAwareFactory> registryAwareness = new LinkedList<>();
     private final ServerDeployContext<O> deployContext;
 
-    private ExceptionHandlerChain<CTX> exceptionHandler;
-    private DispatcherHandler<CTX> dispatcher;
-    private RestlightHandler<CTX> handler;
+    private ExceptionHandlerChain exceptionHandler;
+    private DispatcherHandler dispatcher;
+    private RestlightHandler handler;
 
     static {
         Class<? extends RejectedExecutionHandler> defaultHandlerClass;
@@ -253,14 +240,14 @@ public abstract class BaseDeployments<R extends BaseRestlightServer<R, D, O, CTX
         return self();
     }
 
-    public D addFilter(InternalFilter<FCTX> filter) {
+    public D addFilter(Filter filter) {
         checkImmutable();
         Checks.checkNotNull(filter, "filter");
         this.filters.add(filter);
         return self();
     }
 
-    public D addFilters(Collection<? extends InternalFilter<FCTX>> filters) {
+    public D addFilters(Collection<? extends Filter> filters) {
         checkImmutable();
         if (filters != null && !filters.isEmpty()) {
             filters.forEach(this::addFilter);
@@ -269,7 +256,7 @@ public abstract class BaseDeployments<R extends BaseRestlightServer<R, D, O, CTX
     }
 
     @Internal
-    public D addExceptionHandler(InternalExceptionHandler<CTX> handler) {
+    public D addExceptionHandler(IExceptionHandler handler) {
         checkImmutable();
         Checks.checkNotNull(handler, "handler");
         this.exceptionHandlers.add(handler);
@@ -277,7 +264,7 @@ public abstract class BaseDeployments<R extends BaseRestlightServer<R, D, O, CTX
     }
 
     @Internal
-    public D addExceptionHandlers(Collection<? extends InternalExceptionHandler<CTX>> handlers) {
+    public D addExceptionHandlers(Collection<? extends IExceptionHandler> handlers) {
         checkImmutable();
         if (handlers != null && !handlers.isEmpty()) {
             handlers.forEach(this::addExceptionHandler);
@@ -366,54 +353,27 @@ public abstract class BaseDeployments<R extends BaseRestlightServer<R, D, O, CTX
     }
 
     /**
-     * Obtains the {@link RequestContextFactory}.
-     *
-     * @return factory
-     */
-    protected abstract RequestContextFactory<CTX> requestContext();
-
-    /**
-     * Obtains the {@link FilterContextFactory}.
-     *
-     * @return factory
-     */
-    protected abstract FilterContextFactory<CTX, FCTX> filterContext();
-
-    /**
      * Obtains the {@link ExceptionHandlerChain}.
      *
      * @return exceptionHandler
      */
-    protected ExceptionHandlerChain<CTX> exceptionHandler() {
+    protected ExceptionHandlerChain exceptionHandler() {
         return exceptionHandler;
     }
 
     /**
-     * Obtains the {@link InternalExceptionHandler}s.
-     *
-     * @return handlers
-     */
-    protected abstract List<InternalExceptionHandler<CTX>> exceptionHandlersBySpi();
-
-    /**
-     * Obtains the {@link InternalFilter}s.
+     * Obtains all {@link Filter}s.
      *
      * @return filters
      */
-    protected abstract List<InternalFilter<FCTX>> filtersBySpi();
-
-    /**
-     * Obtains all {@link InternalFilter}s.
-     *
-     * @return filters
-     */
-    List<InternalFilter<FCTX>> filters() {
-        this.filters.addAll(filtersBySpi());
+    protected List<Filter> filters() {
+        this.filters.addAll(SpiLoader.cached(Filter.class)
+                .getByGroup(restlight.name(), true));
         OrderedComparator.sort(this.filters);
         return filters;
     }
 
-    RestlightHandler<CTX> applyDeployments() {
+    RestlightHandler applyDeployments() {
         this.beforeApplyDeployments();
         return getRestlightHandler();
     }
@@ -421,14 +381,14 @@ public abstract class BaseDeployments<R extends BaseRestlightServer<R, D, O, CTX
     protected void beforeApplyDeployments() {
     }
 
-    protected RestlightHandler<CTX> getRestlightHandler() {
+    protected RestlightHandler getRestlightHandler() {
         if (handler == null) {
             handler = doGetRestlightHandler();
         }
         return handler;
     }
 
-    protected RestlightHandler<CTX> doGetRestlightHandler() {
+    protected RestlightHandler doGetRestlightHandler() {
         final AbstractRouteRegistry routeRegistry = getRouteRegistry();
         ctx().setRegistry(routeRegistry);
 
@@ -447,14 +407,19 @@ public abstract class BaseDeployments<R extends BaseRestlightServer<R, D, O, CTX
                 .forEach(aware -> aware.setRegistry(routeRegistry));
 
         // init ExceptionHandlerChain
-        this.exceptionHandlers.addAll(exceptionHandlersBySpi());
+        this.exceptionHandlers.addAll(SpiLoader.cached(ExceptionHandlerFactory.class)
+                .getByFeature(restlight.name(),
+                        true,
+                        Collections.singletonMap(Constants.INTERNAL, StringUtils.empty()),
+                        false)
+                .stream().map(factory -> factory.handler(ctx())).filter(Optional::isPresent)
+                .map(Optional::get).collect(Collectors.toList()));
         OrderedComparator.sort(exceptionHandlers);
-        @SuppressWarnings("unchecked")
-        InternalExceptionHandler<CTX>[] exceptionHandlers0 = exceptionHandlers.toArray(new InternalExceptionHandler[0]);
-        this.exceptionHandler = LinkedExceptionHandlerChain.immutable(exceptionHandlers0);
+        IExceptionHandler[] iExceptionHandlers = exceptionHandlers.toArray(new IExceptionHandler[0]);
+        this.exceptionHandler = LinkedExceptionHandlerChain.immutable(iExceptionHandlers);
 
         // init DispatcherHandler
-        this.dispatcher = new DispatcherHandlerImpl<>(routeRegistry, exceptionHandler);
+        this.dispatcher = new DispatcherHandlerImpl(routeRegistry, exceptionHandler);
 
         // load RequestTaskHookFactory by spi
         SpiLoader.cached(RequestTaskHookFactory.class)
@@ -475,7 +440,7 @@ public abstract class BaseDeployments<R extends BaseRestlightServer<R, D, O, CTX
                 .getByGroup(restlight.name(), true)
                 .forEach(factory -> factory.handler(ctx()).ifPresent(this::addDisConnectionHandler));
 
-        return new ScheduledRestlightHandler<>(deployContext.options(),
+        return new ScheduledRestlightHandler(deployContext.options(),
                 dispatcher,
                 exceptionHandler,
                 requestTaskHooks.stream()
@@ -522,48 +487,12 @@ public abstract class BaseDeployments<R extends BaseRestlightServer<R, D, O, CTX
         return (D) this;
     }
 
-    public static class Impl extends BaseDeployments<Restlite, Impl, ServerOptions,
-            RequestContext, FilterContext> {
+    public static class Impl extends BaseDeployments<Restlite, Impl, ServerOptions> {
+
         Impl(Restlite restlight, ServerOptions options) {
             super(restlight, options);
         }
 
-        @Override
-        protected RequestContextFactory<RequestContext> requestContext() {
-            return req -> {
-                if (req instanceof RequestContext) {
-                    return (RequestContext) req;
-                }
-                return new RequestContextImpl(new HttpRequestImpl(req),
-                        new HttResponseImpl(req.response()));
-            };
-        }
-
-        @Override
-        protected FilterContextFactory<RequestContext, FilterContext> filterContext() {
-            return ctx -> {
-                if (ctx instanceof FilterContext) {
-                    return (FilterContext) ctx;
-                }
-                FilteringRequest request = new FilteringRequestImpl(ctx.request());
-                return new FilterContextImpl(ctx, request, ctx.response());
-            };
-        }
-
-        @Override
-        protected List<InternalExceptionHandler<RequestContext>> exceptionHandlersBySpi() {
-            return new ArrayList<>(SpiLoader.cached(ExceptionHandler.class)
-                    .getByFeature(restlight.name(),
-                            true,
-                            Collections.singletonMap(Constants.INTERNAL, StringUtils.empty()),
-                            false));
-        }
-
-        @Override
-        protected List<InternalFilter<FilterContext>> filtersBySpi() {
-            return new ArrayList<>(SpiLoader.cached(Filter.class)
-                    .getByGroup(restlight.name(), true));
-        }
     }
 
     /**
@@ -580,7 +509,7 @@ public abstract class BaseDeployments<R extends BaseRestlightServer<R, D, O, CTX
 
         @Override
         public void rejectedExecution(Runnable r, ThreadPoolExecutor executor) {
-            final DispatcherHandler<CTX> h;
+            final DispatcherHandler h;
             if (r instanceof RequestTask && ((h = dispatcher) != null)) {
                 String reason;
                 if (executor.isShutdown()) {
