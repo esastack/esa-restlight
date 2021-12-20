@@ -23,39 +23,61 @@ import java.util.function.Supplier;
 @Internal
 public class NameAndValue<T> {
 
-    public final String name;
-    public final boolean required;
-    public final T defaultValue;
-    public final boolean hasDefaultValue;
+    private final String name;
+    private final boolean required;
+    private final Supplier<T> defaultValue;
 
     public NameAndValue(String name, boolean required) {
         this(name, required, null);
     }
 
     public NameAndValue(String name, boolean required, T defaultValue) {
-        this(name, required, defaultValue, defaultValue != null);
+        this(name, required, defaultValue == null ? null : () -> defaultValue, false);
     }
 
-    public NameAndValue(String name, boolean required, T defaultValue, boolean hasDefaultValue) {
+    public NameAndValue(String name,
+                        boolean required,
+                        Supplier<T> defaultValue,
+                        boolean isLazy) {
         this.name = name;
         this.required = required;
-        this.defaultValue = defaultValue;
-        this.hasDefaultValue = hasDefaultValue;
+        if (defaultValue == null) {
+            this.defaultValue = null;
+            return;
+        }
+
+        if (isLazy) {
+            this.defaultValue = new LazyDefaultValue<>(defaultValue);
+        } else {
+            this.defaultValue = defaultValue;
+        }
     }
 
-    public static class LazyDefaultValue implements Supplier<Object> {
+    public String name() {
+        return name;
+    }
 
-        private final Supplier<Object> supplier;
-        private volatile Object value;
+    public boolean required() {
+        return required;
+    }
+
+    public Supplier<T> defaultValue() {
+        return defaultValue;
+    }
+
+    private static class LazyDefaultValue<T> implements Supplier<T> {
+
+        private final Supplier<T> supplier;
+        private volatile T value;
         //Because the value may be null,so there need a flag which declare whether the value had been loaded
         private volatile boolean loaded = false;
 
-        public LazyDefaultValue(Supplier<Object> supplier) {
-            this.supplier = Checks.checkNotNull(supplier);
+        public LazyDefaultValue(Supplier<T> supplier) {
+            this.supplier = Checks.checkNotNull(supplier, "supplier");
         }
 
         @Override
-        public Object get() {
+        public T get() {
             if (loaded) {
                 return value;
             }

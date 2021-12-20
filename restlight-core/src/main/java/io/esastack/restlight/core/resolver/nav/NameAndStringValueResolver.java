@@ -7,6 +7,7 @@ import io.esastack.restlight.core.resolver.HandlerResolverFactory;
 import io.esastack.restlight.core.resolver.StringConverter;
 
 import java.util.function.BiFunction;
+import java.util.function.Supplier;
 
 public class NameAndStringValueResolver implements NameAndValueResolver {
 
@@ -23,14 +24,16 @@ public class NameAndStringValueResolver implements NameAndValueResolver {
                 param.genericType(),
                 param), "converter");
         this.valueExtractor = Checks.checkNotNull(valueExtractor, "valueExtractor");
-        Object defaultValue;
-        if (converter.isLazy()) {
-            defaultValue = new NameAndValue.LazyDefaultValue(() ->
-                    converter.fromString(nav.defaultValue));
+
+        Supplier<String> defaultValue = nav.defaultValue();
+        if (defaultValue == null) {
+            this.nav = new NameAndValue<>(nav.name(), nav.required(), null);
         } else {
-            defaultValue = converter.fromString(nav.defaultValue);
+            this.nav = new NameAndValue<>(nav.name(),
+                    nav.required(),
+                    () -> converter.fromString(defaultValue.get()),
+                    converter.isLazy());
         }
-        this.nav = new NameAndValue<>(nav.name, nav.required, defaultValue, nav.hasDefaultValue);
     }
 
     @Override

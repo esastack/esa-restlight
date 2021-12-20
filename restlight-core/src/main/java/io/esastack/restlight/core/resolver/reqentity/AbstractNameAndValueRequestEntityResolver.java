@@ -31,17 +31,17 @@ public abstract class AbstractNameAndValueRequestEntityResolver extends Abstract
 
     @Override
     public HandledValue<Object> readFrom(Param param, RequestEntity entity, RequestContext context) throws Exception {
-        return readFrom0(nav.name, param, entity);
+        return readFrom0(nav.name(), param, entity);
     }
 
     /**
      * Try to read object from the given {@link RequestEntity}.
      *
-     * @param name      name
-     * @param param     param
-     * @param entity    request entity
-     * @return          resolved value
-     * @throws Exception    any exception
+     * @param name   name
+     * @param param  param
+     * @param entity request entity
+     * @return resolved value
+     * @throws Exception any exception
      */
     protected abstract HandledValue<Object> readFrom0(String name, Param param, RequestEntity entity) throws Exception;
 

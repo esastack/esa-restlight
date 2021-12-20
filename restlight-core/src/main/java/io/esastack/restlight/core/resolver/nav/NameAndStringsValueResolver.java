@@ -9,8 +9,10 @@ import io.esastack.restlight.core.util.ConverterUtils;
 
 import java.lang.reflect.Type;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 public class NameAndStringsValueResolver implements NameAndValueResolver {
 
@@ -42,10 +44,23 @@ public class NameAndStringsValueResolver implements NameAndValueResolver {
             throw BOTH_CONVERTERS_ARE_NULL;
         }
 
-        this.nav = new NameAndValue<>(nav.name,
-                nav.required,
-                resolveDefault(nav.defaultValue),
-                nav.hasDefaultValue);
+        Supplier<String> defaultValue = nav.defaultValue();
+        if (defaultValue == null) {
+            this.nav = new NameAndValue<>(nav.name(),
+                    nav.required(),
+                    null);
+        } else {
+            if (strConverter == null) {
+                this.nav = new NameAndValue<>(nav.name(),
+                        nav.required(),
+                        strsConverter.apply(Collections.singletonList(nav.defaultValue().get())));
+            } else {
+                this.nav = new NameAndValue<>(nav.name(),
+                        nav.required(),
+                        () -> strConverter.fromString(defaultValue.get()),
+                        strConverter.isLazy());
+            }
+        }
     }
 
     @Override
@@ -70,19 +85,6 @@ public class NameAndStringsValueResolver implements NameAndValueResolver {
             }
         } else {
             return strConverter.fromString(values.iterator().next());
-        }
-    }
-
-    private Object resolveDefault(String defaultValue) {
-        if (defaultValue == null || strConverter == null) {
-            return null;
-        }
-
-        if (strConverter.isLazy()) {
-            return new NameAndValue.LazyDefaultValue(() ->
-                    strConverter.fromString(defaultValue));
-        } else {
-            return strConverter.fromString(defaultValue);
         }
     }
 }
