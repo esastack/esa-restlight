@@ -15,6 +15,7 @@
  */
 package io.esastack.restlight.core.configure;
 
+import esa.commons.Checks;
 import esa.commons.collection.Attributes;
 import io.esastack.restlight.core.resolver.ContextResolverFactory;
 import io.esastack.restlight.core.resolver.ParamConverterFactory;
@@ -25,13 +26,13 @@ import io.esastack.restlight.core.resolver.RequestEntityResolverFactory;
 import io.esastack.restlight.core.resolver.ResponseEntityResolverAdviceFactory;
 import io.esastack.restlight.core.resolver.ResponseEntityResolverFactory;
 import io.esastack.restlight.core.spi.RouteFilterFactory;
-import io.esastack.restlight.server.core.impl.AttributesProxy;
 
 import java.util.Collection;
 import java.util.List;
 
-public class HandlerConfiguration extends AttributesProxy implements Attributes {
+public class HandlerConfiguration {
 
+    private final Attributes attributes;
     private final List<RouteFilterFactory> routeFilters;
     private final List<ParamConverterFactory> paramConverters;
     private final List<ParamResolverFactory> paramResolvers;
@@ -52,7 +53,8 @@ public class HandlerConfiguration extends AttributesProxy implements Attributes 
                                 List<RequestEntityResolverAdviceFactory> requestEntityResolverAdvices,
                                 List<ResponseEntityResolverFactory> responseEntityResolvers,
                                 List<ResponseEntityResolverAdviceFactory> responseEntityResolverAdvices) {
-        super(attributes);
+        Checks.checkNotNull(attributes, "attributes");
+        this.attributes = attributes;
         this.routeFilters = routeFilters;
         this.paramConverters = paramConverters;
         this.paramResolvers = paramResolvers;
@@ -62,6 +64,10 @@ public class HandlerConfiguration extends AttributesProxy implements Attributes 
         this.requestEntityResolverAdvices = requestEntityResolverAdvices;
         this.responseEntityResolvers = responseEntityResolvers;
         this.responseEntityResolverAdvices = responseEntityResolverAdvices;
+    }
+
+    public Attributes attrs() {
+        return attributes;
     }
 
     public List<ParamConverterFactory> getParamConverts() {

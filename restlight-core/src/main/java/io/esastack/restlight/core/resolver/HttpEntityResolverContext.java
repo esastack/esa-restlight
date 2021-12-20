@@ -15,11 +15,10 @@
  */
 package io.esastack.restlight.core.resolver;
 
-import esa.commons.collection.Attributes;
 import io.esastack.restlight.core.method.Param;
 import io.esastack.restlight.server.context.RequestContext;
 
-public interface HttpEntityResolverContext extends Attributes {
+public interface HttpEntityResolverContext {
 
     /**
      * Obtains current {@link RequestContext}.
@@ -33,7 +32,7 @@ public interface HttpEntityResolverContext extends Attributes {
      *
      * @return  param
      */
-    HttpEntity entityInfo();
+    HttpEntity httpEntity();
 
 }
 

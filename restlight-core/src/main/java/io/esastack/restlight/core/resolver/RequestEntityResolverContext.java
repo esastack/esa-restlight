@@ -25,10 +25,10 @@ public interface RequestEntityResolverContext extends HttpEntityResolverContext 
      * @return  param
      */
     @Override
-    RequestEntity entityInfo();
+    RequestEntity httpEntity();
 
     /**
-     * Resolves the {@link #entityInfo()} by given {@link #context()}.
+     * Resolves the {@link #httpEntity()} by given {@link #context()}.
      *
      * @return object resolved value
      * @throws Exception exception

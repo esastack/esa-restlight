@@ -42,10 +42,10 @@ public class BeanValidationHandlerAdviceFactory implements HandlerAdviceFactory 
 
     @Override
     public Optional<HandlerAdvice> handlerAdvice(DeployContext<? extends RestlightOptions> ctx, Handler handler) {
-        Optional<Validator> validator = ctx.attr(VALIDATION_VALIDATOR).get();
+        Optional<Validator> validator = ctx.attrs().attr(VALIDATION_VALIDATOR).get();
         if (validator == null) {
             validator = doCreate(ctx);
-            ctx.attr(VALIDATION_VALIDATOR).set(validator);
+            ctx.attrs().attr(VALIDATION_VALIDATOR).set(validator);
         }
 
         if (!validator.isPresent()) {

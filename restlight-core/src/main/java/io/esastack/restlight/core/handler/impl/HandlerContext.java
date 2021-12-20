@@ -15,7 +15,6 @@
  */
 package io.esastack.restlight.core.handler.impl;
 
-import esa.commons.collection.Attribute;
 import esa.commons.collection.AttributeKey;
 import esa.commons.collection.AttributeMap;
 import esa.commons.collection.Attributes;
@@ -30,7 +29,6 @@ import io.esastack.restlight.core.method.HandlerMethod;
 import io.esastack.restlight.core.resolver.HandlerResolverFactory;
 
 import java.util.Optional;
-import java.util.function.BiConsumer;
 
 import static io.esastack.restlight.core.resolver.HandlerResolverFactoryImpl.buildConfiguration;
 import static io.esastack.restlight.core.resolver.HandlerResolverFactoryImpl.getHandlerResolverFactory;
@@ -43,8 +41,8 @@ public class HandlerContext<O extends RestlightOptions> extends DelegatingDeploy
 
     public static <C extends RestlightOptions> HandlerContext<C> build(DeployContext<C> ctx,
                                                                        HandlerMethod method) {
-        Attributes attributes = new AttributeMap(ctx.size());
-        ctx.forEach((name, value) -> attributes.attr(AttributeKey.valueOf(name.name())).set(value.get()));
+        Attributes attributes = new AttributeMap(ctx.attrs().size());
+        ctx.attrs().forEach((name, value) -> attributes.attr(AttributeKey.valueOf(name.name())).set(value.get()));
 
         assert ctx.resolverFactory().isPresent();
         HandlerConfiguration configuration = buildConfiguration(ctx.resolverFactory().get(), attributes);
@@ -62,28 +60,8 @@ public class HandlerContext<O extends RestlightOptions> extends DelegatingDeploy
             }
 
             @Override
-            public <V> Attribute<V> attr(AttributeKey<V> key) {
-                return configuration.attr(key);
-            }
-
-            @Override
-            public boolean hasAttr(AttributeKey<?> key) {
-                return configuration.hasAttr(key);
-            }
-
-            @Override
-            public void forEach(BiConsumer<? super AttributeKey<?>, ? super Attribute<?>> consumer) {
-                configuration.forEach(consumer);
-            }
-
-            @Override
-            public int size() {
-                return configuration.size();
-            }
-
-            @Override
-            public boolean isEmpty() {
-                return configuration.isEmpty();
+            public Attributes attrs() {
+                return configuration.attrs();
             }
         };
     }
