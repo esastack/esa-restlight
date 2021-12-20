@@ -31,9 +31,6 @@ import java.util.function.Supplier;
 
 public class NameAndStringsValueResolver implements NameAndValueResolver {
 
-    private static final NullPointerException BOTH_CONVERTERS_ARE_NULL = new NullPointerException(
-            "Both strConverter and strsConverter are null");
-
     private final StringConverter strConverter;
     private final Function<Collection<String>, Object> strsConverter;
     private final BiFunction<String, RequestContext, Collection<String>> valueExtractor;
@@ -57,7 +54,7 @@ public class NameAndStringsValueResolver implements NameAndValueResolver {
                 converterLookup.andThen((converter) -> converter::fromString));
 
         if (strConverter == null && strsConverter == null) {
-            throw BOTH_CONVERTERS_ARE_NULL;
+            throw new IllegalStateException("There is no suitable StringConverter for param named " + param.name());
         }
 
         Supplier<String> defaultValue = nav.defaultValue();
