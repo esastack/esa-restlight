@@ -25,10 +25,9 @@ public interface HeaderDelegateFactory {
     /**
      * Creates an {@link RuntimeDelegate.HeaderDelegate}.
      *
-     * @param <T>   generic type
      * @return      delegate
      */
-    <T> RuntimeDelegate.HeaderDelegate<T> headerDelegate();
+    RuntimeDelegate.HeaderDelegate<?> headerDelegate();
 
 }
 

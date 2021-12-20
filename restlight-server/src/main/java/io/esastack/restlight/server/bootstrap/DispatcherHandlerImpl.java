@@ -158,6 +158,8 @@ public class DispatcherHandlerImpl implements DispatcherHandler {
         if (dispatchException != null) {
             exceptionHandler.handle(context, dispatchException)
                     .whenComplete((v, th) -> completeRequest(context, completionHandler, promise, th));
+        } else {
+            completeRequest(context, completionHandler, promise, null);
         }
     }
 

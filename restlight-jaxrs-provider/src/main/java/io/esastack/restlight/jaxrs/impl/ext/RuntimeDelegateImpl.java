@@ -15,7 +15,9 @@
  */
 package io.esastack.restlight.jaxrs.impl.ext;
 
+import esa.commons.Checks;
 import esa.commons.ClassUtils;
+import esa.commons.annotation.Beta;
 import esa.commons.spi.SpiLoader;
 import io.esastack.restlight.jaxrs.impl.core.LinkBuilderImpl;
 import io.esastack.restlight.jaxrs.impl.core.ResponseBuilderImpl;
@@ -85,6 +87,27 @@ public class RuntimeDelegateImpl extends RuntimeDelegate {
         return new LinkBuilderImpl();
     }
 
+    @Beta
+    public static void addHeaderDelegate(Class<?> type, HeaderDelegate<?> delegate) {
+        Checks.checkNotNull(type, "type");
+        Checks.checkNotNull(delegate, "delegate");
+        ((RuntimeDelegateImpl) RuntimeDelegate.getInstance()).headerDelegates.put(type, delegate);
+    }
+
+    @Beta
+    public static void addHeaderDelegate(HeaderDelegate<?> delegate) {
+        addHeaderDelegate(getGenericType(delegate), delegate);
+    }
+
+    @Beta
+    public static void addHeaderDelegateFactory(HeaderDelegateFactory factory) {
+        Checks.checkNotNull(factory, "factory");
+        HeaderDelegate<?> delegate = factory.headerDelegate();
+        if (delegate != null) {
+            addHeaderDelegate(delegate);
+        }
+    }
+
     @SuppressWarnings("unchecked")
     private <T> HeaderDelegate<T> findHeaderDelegateRecursively(Class<T> type) {
         if (Object.class.equals(type)) {
@@ -113,8 +136,13 @@ public class RuntimeDelegateImpl extends RuntimeDelegate {
                 .getAll()
                 .stream().map(HeaderDelegateFactory::headerDelegate)
                 .collect(Collectors.toList())
-                .forEach(delegate -> delegates.put(ClassUtils.getRawType(ClassUtils.getUserType(delegate)), delegate));
+                .forEach(delegate -> delegates.put(getGenericType(delegate), delegate));
         return delegates;
     }
+
+    private static Class<?> getGenericType(HeaderDelegate<?> delegate) {
+        return ClassUtils.findFirstGenericType(ClassUtils.getUserType(delegate)).orElse(Object.class);
+    }
+
 }
 

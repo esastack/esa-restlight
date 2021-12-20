@@ -40,8 +40,10 @@ import io.esastack.restlight.jaxrs.impl.core.ConfigurableImpl;
 import io.esastack.restlight.jaxrs.impl.core.ConfigurationImpl;
 import io.esastack.restlight.jaxrs.impl.core.FeatureContextImpl;
 import io.esastack.restlight.jaxrs.impl.ext.ProvidersImpl;
+import io.esastack.restlight.jaxrs.impl.ext.RuntimeDelegateImpl;
 import io.esastack.restlight.jaxrs.resolver.context.ApplicationResolverAdapter;
 import io.esastack.restlight.jaxrs.resolver.param.ResourceContextParamResolver;
+import io.esastack.restlight.jaxrs.spi.HeaderDelegateFactory;
 import io.esastack.restlight.jaxrs.util.JaxrsUtils;
 import io.esastack.restlight.server.util.LoggerUtils;
 import jakarta.ws.rs.ApplicationPath;
@@ -59,6 +61,7 @@ import jakarta.ws.rs.ext.MessageBodyWriter;
 import jakarta.ws.rs.ext.ParamConverterProvider;
 import jakarta.ws.rs.ext.Providers;
 import jakarta.ws.rs.ext.ReaderInterceptor;
+import jakarta.ws.rs.ext.RuntimeDelegate;
 import jakarta.ws.rs.ext.WriterInterceptor;
 
 import java.lang.annotation.Annotation;
@@ -165,6 +168,15 @@ public class JaxrsExtensionsHandler implements ExtensionsHandler {
                     configuration.addProviderClass(userType, JaxrsUtils.extractContracts(userType,
                             JaxrsUtils.defaultOrder()));
                 } else {
+                    // handle HeaderDelegate and HeaderDelegateFactory here.
+                    if (extension instanceof RuntimeDelegate.HeaderDelegate) {
+                        RuntimeDelegateImpl.addHeaderDelegate((RuntimeDelegate.HeaderDelegate<?>) extension);
+                        continue;
+                    }
+                    if (extension instanceof HeaderDelegateFactory) {
+                        RuntimeDelegateImpl.addHeaderDelegateFactory((HeaderDelegateFactory) extension);
+                        continue;
+                    }
                     configuration.addProviderInstance(extension, JaxrsUtils.extractContracts(extension,
                             JaxrsUtils.defaultOrder()));
                 }

@@ -55,7 +55,8 @@ public final class RuntimeDelegateUtils {
     }
 
     public static void addHeadersFromMap(HttpHeaders headers,
-                                         MultivaluedMap<String, Object> values, boolean clearDest) {
+                                         MultivaluedMap<String, Object> values,
+                                         boolean clearDest) {
         if (values == null || values.isEmpty()) {
             return;
         }
