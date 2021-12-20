@@ -83,18 +83,18 @@ public class NameAndValue<T> {
         @Override
         public T get() {
             if (loaded != null) {
-                return getValue();
+                return getLoaded();
             }
             synchronized (this) {
                 if (loaded != null) {
-                    return getValue();
+                    return getLoaded();
                 }
                 loaded = Optional.ofNullable(supplier.get());
-                return getValue();
+                return getLoaded();
             }
         }
 
-        private T getValue() {
+        private T getLoaded() {
             if (loaded == Optional.empty()) {
                 return null;
             } else {
