@@ -26,7 +26,7 @@ public interface StringConverter {
     Object fromString(String value);
 
     /**
-     * Declare weather a conversion of any default value delegated to this {@link StringConverter string
+     * Declare whether a conversion of any default value delegated to this {@link StringConverter string
      * converter} is lazy.
      * <p>
      * If {@code true},it will occur only once the default value is actually required (e.g. to be injected for
