@@ -4,6 +4,7 @@ import io.esastack.restlight.core.DeployContext;
 import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.core.method.Param;
 import io.esastack.restlight.core.resolver.HandlerResolverFactory;
+import io.esastack.restlight.core.resolver.ParamPredicate;
 import io.esastack.restlight.core.resolver.ParamResolverFactory;
 import io.esastack.restlight.core.serialize.HttpRequestSerializer;
 import io.esastack.restlight.core.spi.ParamResolverProvider;
@@ -12,7 +13,7 @@ import io.esastack.restlight.core.util.Ordered;
 import java.util.List;
 import java.util.Optional;
 
-public abstract class NameAndValueResolverFactory implements ParamResolverProvider, Ordered {
+public abstract class NameAndValueResolverFactory implements ParamResolverProvider, ParamPredicate, Ordered {
 
     /**
      * Produces a an optional instance of {@link ParamResolverFactory}.
@@ -45,7 +46,12 @@ public abstract class NameAndValueResolverFactory implements ParamResolverProvid
         });
     }
 
+    /**
+     * Creates an instance of {@link NameAndValueResolver} for given handler method.
+     *
+     * @param param           method
+     * @param resolverFactory the {@link HandlerResolverFactory} of current context
+     * @return resolver
+     */
     public abstract NameAndValueResolver createResolver(Param param, HandlerResolverFactory resolverFactory);
-
-    public abstract boolean supports(Param param);
 }
