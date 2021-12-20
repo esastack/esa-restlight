@@ -21,8 +21,8 @@ public class NameAndStringsValueResolver implements NameAndValueResolver {
 
     private final StringConverter strConverter;
     private final Function<Collection<String>, Object> strsConverter;
-    public final BiFunction<String, RequestContext, Collection<String>> valueExtractor;
-    public final NameAndValue<Object> nav;
+    private final BiFunction<String, RequestContext, Collection<String>> valueExtractor;
+    private final NameAndValue<Object> nav;
 
     public NameAndStringsValueResolver(Param param,
                                        HandlerResolverFactory resolverFactory,

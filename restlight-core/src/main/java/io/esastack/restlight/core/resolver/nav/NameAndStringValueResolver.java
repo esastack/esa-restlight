@@ -12,8 +12,8 @@ import java.util.function.Supplier;
 public class NameAndStringValueResolver implements NameAndValueResolver {
 
     private final StringConverter converter;
-    public final BiFunction<String, RequestContext, String> valueExtractor;
-    public final NameAndValue<Object> nav;
+    private final BiFunction<String, RequestContext, String> valueExtractor;
+    private final NameAndValue<Object> nav;
 
     public NameAndStringValueResolver(Param param,
                                       HandlerResolverFactory resolverFactory,

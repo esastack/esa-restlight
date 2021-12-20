@@ -13,7 +13,7 @@ public class DefaultStringConverterFactory implements StringConverterFactory {
 
     @Override
     public Optional<StringConverter> createConverter(Class<?> type, Type genericType, Param relatedParam) {
-        Function<String, Object> converter = ConverterUtils.str2ObjectConverter(type);
+        Function<String, Object> converter = ConverterUtils.str2ObjectConverter(genericType);
 
         if (converter == null) {
             return Optional.empty();
