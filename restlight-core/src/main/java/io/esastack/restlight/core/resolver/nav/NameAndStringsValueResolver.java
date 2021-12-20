@@ -40,6 +40,7 @@ public class NameAndStringsValueResolver implements NameAndValueResolver {
         this.strsConverter = ConverterUtils.strs2ObjectConverter(param.type(),
                 param.genericType(),
                 converterLookup.andThen((converter) -> converter::fromString));
+
         if (strConverter == null && strsConverter == null) {
             throw BOTH_CONVERTERS_ARE_NULL;
         }
@@ -65,15 +66,7 @@ public class NameAndStringsValueResolver implements NameAndValueResolver {
 
     @Override
     public Object resolve(String name, RequestContext ctx) {
-        return resolve(valueExtractor.apply(name, ctx));
-    }
-
-    @Override
-    public NameAndValue<Object> createNameAndValue(Param param) {
-        return nav;
-    }
-
-    private Object resolve(Collection<String> values) {
+        Collection<String> values = valueExtractor.apply(name, ctx);
         if (values == null || values.isEmpty()) {
             return null;
         }
@@ -86,5 +79,10 @@ public class NameAndStringsValueResolver implements NameAndValueResolver {
         } else {
             return strConverter.fromString(values.iterator().next());
         }
+    }
+
+    @Override
+    public NameAndValue<Object> createNameAndValue(Param param) {
+        return nav;
     }
 }
