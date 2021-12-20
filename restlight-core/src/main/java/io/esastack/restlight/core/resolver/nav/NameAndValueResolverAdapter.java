@@ -33,7 +33,7 @@ public class NameAndValueResolverAdapter implements ParamResolver {
     public NameAndValueResolverAdapter(Param param,
                                        NameAndValueResolver resolver) {
         Checks.checkNotNull(param, "param");
-        this.resolver = Checks.checkNotNull(resolver, "converter");
+        this.resolver = Checks.checkNotNull(resolver, "resolver");
         this.nav = getNameAndValue(param, resolver.createNameAndValue(param));
     }
 
