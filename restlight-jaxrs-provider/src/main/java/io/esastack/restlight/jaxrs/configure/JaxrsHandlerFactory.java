@@ -20,7 +20,6 @@ import esa.commons.reflect.ReflectionUtils;
 import io.esastack.restlight.core.DeployContext;
 import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.core.configure.Handlers;
-import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.handler.impl.HandlerContext;
 import io.esastack.restlight.core.handler.impl.HandlerFactoryImpl;
 import io.esastack.restlight.core.method.ConstructorParam;
@@ -35,6 +34,7 @@ import io.esastack.restlight.core.resolver.ContextResolver;
 import io.esastack.restlight.core.resolver.HandlerResolverFactory;
 import io.esastack.restlight.core.util.ConstructorUtils;
 import io.esastack.restlight.server.bootstrap.WebServerException;
+import io.esastack.restlight.server.context.RequestContext;
 
 import java.lang.reflect.Constructor;
 import java.util.LinkedList;

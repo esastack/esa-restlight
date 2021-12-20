@@ -15,8 +15,6 @@
  */
 package io.esastack.restlight.core.serialize;
 
-import io.esastack.httpserver.core.HttpOutputStream;
-
 /**
  * This serializer is used to serialize the data to byte[] for http response.
  */
@@ -31,15 +29,5 @@ public interface TxSerializer {
      * @throws Exception error
      */
     byte[] serialize(Object target) throws Exception;
-
-    /**
-     * serialize the object to byte array
-     *
-     * @param target       target
-     * @param outputStream out
-     *
-     * @throws Exception error
-     */
-    void serialize(Object target, HttpOutputStream outputStream) throws Exception;
 
 }

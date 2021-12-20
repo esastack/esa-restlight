@@ -16,8 +16,6 @@
 package io.esastack.restlight.core;
 
 import io.esastack.restlight.core.config.RestlightOptions;
-import io.esastack.restlight.core.context.FilterContext;
-import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.server.BaseRestlightServer;
 import io.esastack.restlight.server.bootstrap.RestlightServer;
 
@@ -31,8 +29,8 @@ import io.esastack.restlight.server.bootstrap.RestlightServer;
  * @param <D> type of Deployments
  */
 public abstract class AbstractRestlight<R extends AbstractRestlight<R, D, O>,
-        D extends Deployments<R, D, O>, O extends RestlightOptions> extends BaseRestlightServer<R, D, O,
-        RequestContext, FilterContext> implements RestlightServer {
+        D extends Deployments<R, D, O>, O extends RestlightOptions> extends BaseRestlightServer<R, D, O> implements
+        RestlightServer {
 
     protected AbstractRestlight(O options) {
         super(options);

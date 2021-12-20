@@ -16,7 +16,7 @@
 package io.esastack.restlight.core.interceptor;
 
 import esa.commons.spi.SPI;
-import io.esastack.httpserver.core.HttpRequest;
+import io.esastack.restlight.server.core.HttpRequest;
 
 /**
  * This implementation of {@link InternalInterceptor} is used to match to a {@link HttpRequest}

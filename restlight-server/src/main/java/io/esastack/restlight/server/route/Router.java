@@ -15,7 +15,7 @@
  */
 package io.esastack.restlight.server.route;
 
-import io.esastack.httpserver.core.RequestContext;
+import io.esastack.restlight.server.context.RequestContext;
 
 /**
  * This {@link Router} is used to match {@link Route} with given {@link RequestContext}.

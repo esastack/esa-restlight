@@ -62,7 +62,7 @@ public class ReaderInterceptorContextImpl extends InterceptorContextImpl impleme
 
     @Override
     public void setInputStream(InputStream is) {
-        underlying.inputStream(is);
+        underlying.httpEntity().inputStream(is);
     }
 
     @Override

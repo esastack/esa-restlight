@@ -15,7 +15,6 @@
  */
 package io.esastack.restlight.test.bootstrap;
 
-import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.server.handler.RestlightHandler;
 import org.junit.jupiter.api.Test;
 
@@ -32,8 +31,8 @@ class FakeServerTest {
 
     @Test
     void testAll() {
-        final RestlightHandler<RequestContext> handler = mock(RestlightHandler.class);
-        final FakeServer fake = new FakeServer(handler, new ArrayList<>(), null, null);
+        final RestlightHandler handler = mock(RestlightHandler.class);
+        final FakeServer fake = new FakeServer(handler, new ArrayList<>(), null);
         assertFalse(fake.isStarted());
         fake.start();
         assertTrue(fake.isStarted());

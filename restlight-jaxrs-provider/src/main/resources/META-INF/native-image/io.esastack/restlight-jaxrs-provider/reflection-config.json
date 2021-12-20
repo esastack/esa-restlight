@@ -98,5 +98,29 @@
   {
     "name":"io.esastack.restlight.jaxrs.spi.RouteTrackingFilterFactory",
     "methods":[{"name":"<init>","parameterTypes":[] }]
+  },
+  {
+    "name":"io.esastack.restlight.jaxrs.spi.headerdelegate.CookieHeaderDelegateFactory",
+    "methods":[{"name":"<init>","parameterTypes":[] }]
+  },
+  {
+    "name":"io.esastack.restlight.jaxrs.spi.headerdelegate.DateDelegateFactory",
+    "methods":[{"name":"<init>","parameterTypes":[] }]
+  },
+  {
+    "name":"io.esastack.restlight.jaxrs.spi.headerdelegate.LocaleHeaderDelegateFactory",
+    "methods":[{"name":"<init>","parameterTypes":[] }]
+  },
+  {
+    "name":"io.esastack.restlight.jaxrs.spi.headerdelegate.MediaTypeHeaderDelegateFactory",
+    "methods":[{"name":"<init>","parameterTypes":[] }]
+  },
+  {
+    "name":"io.esastack.restlight.jaxrs.spi.headerdelegate.NewCookieHeaderDelegateFactory",
+    "methods":[{"name":"<init>","parameterTypes":[] }]
+  },
+  {
+    "name":"io.esastack.restlight.jaxrs.spi.headerdelegate.URIDelegateFactory",
+    "methods":[{"name":"<init>","parameterTypes":[] }]
   }
 ]

@@ -15,16 +15,15 @@
  */
 package io.esastack.restlight.ext.multipart.spi;
 
-import io.esastack.httpserver.core.HttpRequest;
-import io.esastack.restlight.core.context.impl.HttpResponseAdapter;
-import io.esastack.restlight.core.context.impl.RequestContextImpl;
 import io.esastack.restlight.core.method.MethodParam;
 import io.esastack.restlight.core.resolver.HandlerResolverFactory;
 import io.esastack.restlight.core.resolver.ParamResolver;
 import io.esastack.restlight.core.resolver.nav.NameAndValueResolverAdapter;
 import io.esastack.restlight.core.spi.impl.DefaultStringConverterFactory;
 import io.esastack.restlight.server.bootstrap.WebServerException;
-import io.esastack.restlight.test.mock.MockHttpResponse;
+import io.esastack.restlight.server.core.HttpRequest;
+import io.esastack.restlight.server.context.impl.RequestContextImpl;
+import io.esastack.restlight.server.mock.MockHttpResponse;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -51,7 +50,7 @@ class MultipartAttrArgumentResolverTest extends AbstractMultipartResolverTest {
         final ParamResolver resolver = new NameAndValueResolverAdapter(parameter,
                 attrResolver.createResolver(parameter, resolverFactory));
         return resolver.resolve(parameter, new RequestContextImpl(request,
-                new HttpResponseAdapter(MockHttpResponse.aMockResponse().build())));
+                MockHttpResponse.aMockResponse().build()));
     }
 
     @Test

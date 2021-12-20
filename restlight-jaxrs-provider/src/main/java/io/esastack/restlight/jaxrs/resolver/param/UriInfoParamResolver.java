@@ -15,12 +15,12 @@
  */
 package io.esastack.restlight.jaxrs.resolver.param;
 
-import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.method.Param;
 import io.esastack.restlight.core.resolver.ParamResolver;
 import io.esastack.restlight.core.resolver.ParamResolverFactory;
 import io.esastack.restlight.core.serialize.HttpRequestSerializer;
 import io.esastack.restlight.jaxrs.impl.JaxrsContextUtils;
+import io.esastack.restlight.server.context.RequestContext;
 import jakarta.ws.rs.core.UriInfo;
 
 import java.util.List;

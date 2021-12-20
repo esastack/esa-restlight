@@ -18,12 +18,12 @@ package io.esastack.restlight.jaxrs.resolver.param;
 import esa.commons.Checks;
 import io.esastack.restlight.core.DeployContext;
 import io.esastack.restlight.core.config.RestlightOptions;
-import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.method.Param;
 import io.esastack.restlight.core.resolver.ParamResolver;
 import io.esastack.restlight.core.resolver.ParamResolverFactory;
 import io.esastack.restlight.core.serialize.HttpRequestSerializer;
 import io.esastack.restlight.jaxrs.impl.container.ResourceContextImpl;
+import io.esastack.restlight.server.context.RequestContext;
 import jakarta.ws.rs.container.ResourceContext;
 
 import java.util.List;

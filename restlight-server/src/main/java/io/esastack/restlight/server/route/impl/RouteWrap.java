@@ -16,7 +16,7 @@
 package io.esastack.restlight.server.route.impl;
 
 import esa.commons.Checks;
-import io.esastack.httpserver.core.RequestContext;
+import io.esastack.restlight.server.context.RequestContext;
 import io.esastack.restlight.server.route.ExecutionHandlerFactory;
 import io.esastack.restlight.server.route.Mapping;
 import io.esastack.restlight.server.route.Route;

@@ -16,7 +16,6 @@
 package io.esastack.restlight.core.resolver.exception;
 
 import esa.commons.Checks;
-import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.handler.Handler;
 import io.esastack.restlight.core.handler.HandlerValueResolver;
 import io.esastack.restlight.core.handler.impl.ExceptionHandlerExecution;
@@ -24,6 +23,7 @@ import io.esastack.restlight.core.handler.impl.ExecutionImpl;
 import io.esastack.restlight.core.handler.impl.HandlerMethodAdapter;
 import io.esastack.restlight.core.method.HandlerMethod;
 import io.esastack.restlight.core.resolver.ExceptionResolver;
+import io.esastack.restlight.server.context.RequestContext;
 import io.esastack.restlight.server.util.Futures;
 
 import java.util.concurrent.CompletableFuture;

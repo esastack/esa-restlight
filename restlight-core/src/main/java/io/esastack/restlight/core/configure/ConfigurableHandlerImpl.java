@@ -16,7 +16,7 @@
 package io.esastack.restlight.core.configure;
 
 import esa.commons.Checks;
-import io.esastack.httpserver.impl.AttributesProxy;
+import esa.commons.collection.Attributes;
 import io.esastack.restlight.core.handler.RouteFilter;
 import io.esastack.restlight.core.method.HandlerMethod;
 import io.esastack.restlight.core.resolver.ContextResolverAdapter;
@@ -41,17 +41,21 @@ import java.util.Collections;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class ConfigurableHandlerImpl extends AttributesProxy implements ConfigurableHandler {
+public class ConfigurableHandlerImpl implements ConfigurableHandler {
 
     private final HandlerMethod method;
     private final HandlerConfiguration configuration;
 
     public ConfigurableHandlerImpl(HandlerMethod method, HandlerConfiguration configuration) {
-        super(configuration);
         Checks.checkNotNull(method, "method");
         Checks.checkNotNull(configuration, "configuration");
         this.method = method;
         this.configuration = configuration;
+    }
+
+    @Override
+    public Attributes attrs() {
+        return configuration.attrs();
     }
 
     @Override

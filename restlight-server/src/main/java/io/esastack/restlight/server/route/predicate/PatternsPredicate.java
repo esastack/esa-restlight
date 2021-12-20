@@ -18,7 +18,7 @@ package io.esastack.restlight.server.route.predicate;
 import esa.commons.Checks;
 import esa.commons.UrlUtils;
 import esa.commons.collection.AttributeKey;
-import io.esastack.httpserver.core.RequestContext;
+import io.esastack.restlight.server.context.RequestContext;
 import io.esastack.restlight.server.util.PathMatcher;
 
 import java.util.Arrays;

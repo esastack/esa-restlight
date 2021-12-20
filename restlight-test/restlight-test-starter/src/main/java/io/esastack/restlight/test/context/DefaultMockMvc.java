@@ -16,13 +16,12 @@
 package io.esastack.restlight.test.context;
 
 import esa.commons.collection.AttributeKey;
-import io.esastack.restlight.core.context.RequestContext;
-import io.esastack.restlight.core.context.impl.HttpResponseAdapter;
-import io.esastack.restlight.core.context.impl.RequestContextImpl;
 import io.esastack.restlight.core.util.FutureUtils;
+import io.esastack.restlight.server.context.RequestContext;
+import io.esastack.restlight.server.context.impl.RequestContextImpl;
 import io.esastack.restlight.server.handler.RestlightHandler;
-import io.esastack.restlight.test.mock.MockHttpRequest;
-import io.esastack.restlight.test.mock.MockHttpResponse;
+import io.esastack.restlight.server.mock.MockHttpRequest;
+import io.esastack.restlight.server.mock.MockHttpResponse;
 import io.esastack.restlight.test.result.DefaultMvcResult;
 import io.esastack.restlight.test.result.MvcResult;
 import io.esastack.restlight.test.result.ResultActions;
@@ -33,16 +32,16 @@ public class DefaultMockMvc implements MockMvc {
 
     public static final AttributeKey<Object> RETURN_VALUE_KEY = AttributeKey.valueOf("$mock.result");
 
-    private final RestlightHandler<RequestContext> handler;
+    private final RestlightHandler handler;
 
-    public DefaultMockMvc(RestlightHandler<RequestContext> handler) {
+    public DefaultMockMvc(RestlightHandler handler) {
         this.handler = handler;
     }
 
     @Override
     public ResultActions perform(MockHttpRequest request) {
         final MockHttpResponse response = MockHttpResponse.aMockResponse().build();
-        RequestContext context = new RequestContextImpl(request, new HttpResponseAdapter(response));
+        RequestContext context = new RequestContextImpl(request, response);
         handler.process(context).join();
         return new DefaultResultActions(new DefaultMvcResult(request, response, getResultAndClear(context)));
     }

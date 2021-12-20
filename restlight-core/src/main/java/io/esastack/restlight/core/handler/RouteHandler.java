@@ -16,10 +16,11 @@
 package io.esastack.restlight.core.handler;
 
 import io.esastack.restlight.core.method.RouteHandlerMethod;
+import io.esastack.restlight.server.context.RequestContext;
 
 /**
  * This interface defines the invocation to the handler method(controller).
- * @see RouteHandler#invoke(io.esastack.restlight.core.context.RequestContext, Object...)
+ * @see RouteHandler#invoke(RequestContext, Object...)
  */
 public interface RouteHandler extends Handler {
 

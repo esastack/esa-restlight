@@ -34,7 +34,7 @@ public class DefaultValidatorFactory implements ValidatorFactory {
 
     @Override
     public Optional<Validator> validator(DeployContext<? extends RestlightOptions> ctx) {
-        final ValidationOptions options = ctx.attr(VALIDATION_OPTIONS).getAndRemove();
+        final ValidationOptions options = ctx.attrs().attr(VALIDATION_OPTIONS).getAndRemove();
         if (options == null || StringUtils.isEmpty(options.getMessageFile())) {
             return Optional.of(Validation.buildDefaultValidatorFactory().getValidator());
         } else {

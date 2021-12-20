@@ -16,7 +16,7 @@
 package io.esastack.restlight.core.resolver;
 
 import esa.commons.spi.SPI;
-import io.esastack.httpserver.core.RequestContext;
+import io.esastack.restlight.server.context.RequestContext;
 import io.esastack.restlight.core.method.Param;
 import io.esastack.restlight.core.util.Ordered;
 

@@ -57,7 +57,7 @@ public class DynamicFeatureAdapter implements HandlerConfigure {
 
     private final DeployContext<? extends RestlightOptions> context;
     private final List<Class<? extends Annotation>> appNameBindings;
-    private final List<DynamicFeature> features;
+    private final DynamicFeature[] features;
     private final ConfigurationImpl parent;
 
     public DynamicFeatureAdapter(DeployContext<? extends RestlightOptions> context,
@@ -68,8 +68,8 @@ public class DynamicFeatureAdapter implements HandlerConfigure {
         Checks.checkNotNull(context, "context");
         this.context = context;
         this.appNameBindings = appNameBindings;
-        this.features = features == null || features.isEmpty() ? Collections.emptyList()
-                : Collections.unmodifiableList(features);
+        this.features = features == null || features.isEmpty() ? new DynamicFeature[0]
+                : features.toArray(new DynamicFeature[0]);
         this.parent = parent;
     }
 

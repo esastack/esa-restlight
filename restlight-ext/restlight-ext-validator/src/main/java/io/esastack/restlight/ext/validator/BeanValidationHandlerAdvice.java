@@ -16,9 +16,9 @@
 package io.esastack.restlight.ext.validator;
 
 import esa.commons.reflect.AnnotationUtils;
-import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.handler.HandlerAdvice;
 import io.esastack.restlight.core.handler.HandlerInvoker;
+import io.esastack.restlight.server.context.RequestContext;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;

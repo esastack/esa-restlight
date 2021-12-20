@@ -17,13 +17,14 @@ package io.esastack.restlight.core.resolver.rspentity;
 
 import esa.commons.collection.AttributeKey;
 import io.esastack.commons.net.http.MediaType;
-import io.esastack.httpserver.core.RequestContext;
 import io.esastack.restlight.core.method.HandlerMethod;
 import io.esastack.restlight.core.resolver.HandledValue;
 import io.esastack.restlight.core.resolver.ResponseEntity;
+import io.esastack.restlight.core.resolver.ResponseEntityChannel;
 import io.esastack.restlight.core.serialize.HttpResponseSerializer;
 import io.esastack.restlight.core.serialize.Serializers;
 import io.esastack.restlight.core.util.FutureUtils;
+import io.esastack.restlight.server.context.RequestContext;
 
 import java.lang.reflect.Modifier;
 import java.util.Collections;
@@ -43,7 +44,9 @@ public abstract class FixedResponseEntityResolver extends AbstractResponseEntity
     }
 
     @Override
-    public HandledValue<Void> writeTo(ResponseEntity entity, RequestContext context) throws Exception {
+    public HandledValue<Void> writeTo(ResponseEntity entity,
+                                      ResponseEntityChannel channel,
+                                      RequestContext context) throws Exception {
         if (!supports(entity)) {
             return HandledValue.failed();
         }
@@ -61,7 +64,7 @@ public abstract class FixedResponseEntityResolver extends AbstractResponseEntity
                     .orElseThrow(() -> new IllegalArgumentException("Could not findFor ResponseBody serializer. " +
                             "target type:" + target.getName()));
             context.attr(MATCHED_SERIALIZER).set(serializer);
-            return super.writeTo(entity, context);
+            return super.writeTo(entity, channel, context);
         } else {
             return HandledValue.failed();
         }

@@ -15,7 +15,7 @@
  */
 package io.esastack.restlight.server.context;
 
-import io.esastack.httpserver.core.RequestContext;
+import io.esastack.restlight.server.core.FilteringRequest;
 
 public interface FilterContext extends RequestContext {
 

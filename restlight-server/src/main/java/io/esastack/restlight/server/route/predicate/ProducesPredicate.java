@@ -18,8 +18,8 @@ package io.esastack.restlight.server.route.predicate;
 import esa.commons.collection.AttributeKey;
 import io.esastack.commons.net.http.MediaType;
 import io.esastack.commons.net.http.MediaTypeUtil;
-import io.esastack.httpserver.core.HttpRequest;
-import io.esastack.httpserver.core.RequestContext;
+import io.esastack.restlight.server.core.HttpRequest;
+import io.esastack.restlight.server.context.RequestContext;
 import io.esastack.restlight.server.util.MappingUtils;
 import io.netty.util.concurrent.FastThreadLocal;
 

@@ -15,7 +15,7 @@
  */
 package io.esastack.restlight.jaxrs.impl.container;
 
-import io.esastack.httpserver.core.RequestContext;
+import io.esastack.restlight.server.context.RequestContext;
 
 import java.io.InputStream;
 import java.net.URI;

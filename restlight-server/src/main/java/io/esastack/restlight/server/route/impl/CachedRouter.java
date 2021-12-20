@@ -16,7 +16,7 @@
 package io.esastack.restlight.server.route.impl;
 
 import esa.commons.concurrent.UnsafeUtils;
-import io.esastack.httpserver.core.RequestContext;
+import io.esastack.restlight.server.context.RequestContext;
 
 class CachedRouter extends AbstractRouter<CountedRoute> {
 

@@ -16,7 +16,7 @@
 package io.esastack.restlight.core.interceptor;
 
 import esa.commons.spi.SPI;
-import io.esastack.httpserver.core.HttpRequest;
+import io.esastack.restlight.server.core.HttpRequest;
 import io.esastack.restlight.core.DeployContext;
 import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.core.handler.impl.RouteHandlerMethodAdapter;

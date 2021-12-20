@@ -16,7 +16,7 @@
 package io.esastack.restlight.core.resolver.rspentity;
 
 import io.esastack.commons.net.http.MediaType;
-import io.esastack.httpserver.core.RequestContext;
+import io.esastack.restlight.server.context.RequestContext;
 import io.esastack.restlight.core.resolver.ResponseEntity;
 import io.esastack.restlight.core.resolver.ResponseEntityResolver;
 import io.esastack.restlight.core.resolver.ResponseEntityResolverFactory;
@@ -51,8 +51,8 @@ public class PrimitiveEntityResolverFactory implements ResponseEntityResolverFac
         protected byte[] serialize(ResponseEntity entity,
                                    List<MediaType> mediaTypes,
                                    RequestContext context) throws Exception {
-            return Serializers.serializePrimitives(entity.response().entity(),
-                    entity.response(),
+            return Serializers.serializePrimitives(context.response().entity(),
+                    context.response(),
                     selectMediaType(mediaTypes));
         }
 

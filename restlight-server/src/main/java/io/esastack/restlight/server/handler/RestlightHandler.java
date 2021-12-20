@@ -15,14 +15,14 @@
  */
 package io.esastack.restlight.server.handler;
 
-import io.esastack.httpserver.core.RequestContext;
+import io.esastack.restlight.server.context.RequestContext;
 import io.esastack.restlight.server.schedule.Scheduler;
 import io.netty.channel.Channel;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-public interface RestlightHandler<CTX extends RequestContext> {
+public interface RestlightHandler {
 
     /**
      * Processes the given {@link RequestContext}.
@@ -30,7 +30,7 @@ public interface RestlightHandler<CTX extends RequestContext> {
      * @param context  context
      * @return future
      */
-    CompletableFuture<Void> process(CTX context);
+    CompletableFuture<Void> process(RequestContext context);
 
     /**
      * tcp connect event

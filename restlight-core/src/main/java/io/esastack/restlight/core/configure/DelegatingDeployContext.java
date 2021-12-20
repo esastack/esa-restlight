@@ -16,9 +16,7 @@
 package io.esastack.restlight.core.configure;
 
 import esa.commons.Checks;
-import esa.commons.collection.Attribute;
-import esa.commons.collection.AttributeKey;
-import io.esastack.httpserver.core.RequestContext;
+import esa.commons.collection.Attributes;
 import io.esastack.restlight.core.DeployContext;
 import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.core.handler.HandlerAdvicesFactory;
@@ -38,7 +36,6 @@ import io.esastack.restlight.server.schedule.Scheduler;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.BiConsumer;
 
 public class DelegatingDeployContext<O extends RestlightOptions> implements DeployContext<O> {
 
@@ -47,6 +44,11 @@ public class DelegatingDeployContext<O extends RestlightOptions> implements Depl
     public DelegatingDeployContext(DeployContext<O> underlying) {
         Checks.checkNotNull(underlying, "underlying");
         this.underlying = underlying;
+    }
+
+    @Override
+    public Attributes attrs() {
+        return underlying.attrs();
     }
 
     @Override
@@ -130,7 +132,7 @@ public class DelegatingDeployContext<O extends RestlightOptions> implements Depl
     }
 
     @Override
-    public Optional<DispatcherHandler<? extends RequestContext>> dispatcherHandler() {
+    public Optional<DispatcherHandler> dispatcherHandler() {
         return underlying.dispatcherHandler();
     }
 
@@ -157,31 +159,6 @@ public class DelegatingDeployContext<O extends RestlightOptions> implements Depl
     @Override
     public Optional<HandlerFactory> handlerFactory() {
         return underlying.handlerFactory();
-    }
-
-    @Override
-    public <V> Attribute<V> attr(AttributeKey<V> key) {
-        return underlying.attr(key);
-    }
-
-    @Override
-    public boolean hasAttr(AttributeKey<?> key) {
-        return underlying.hasAttr(key);
-    }
-
-    @Override
-    public void forEach(BiConsumer<? super AttributeKey<?>, ? super Attribute<?>> consumer) {
-        underlying.forEach(consumer);
-    }
-
-    @Override
-    public int size() {
-        return underlying.size();
-    }
-
-    @Override
-    public boolean isEmpty() {
-        return underlying.isEmpty();
     }
 
     public DeployContext<O> unwrap() {

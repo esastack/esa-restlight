@@ -15,7 +15,7 @@
  */
 package io.esastack.restlight.core.resolver;
 
-import io.esastack.httpserver.core.RequestContext;
+import io.esastack.restlight.server.context.RequestContext;
 
 /**
  * Allows customizing the return value of handler before resolving it to byte array.
@@ -23,7 +23,8 @@ import io.esastack.httpserver.core.RequestContext;
 public interface ResponseEntityResolverAdvice {
 
     /**
-     * This method will be called around {@link ResponseEntityResolver#writeTo(ResponseEntity, RequestContext)}.
+     * This method will be called around
+     * {@link ResponseEntityResolver#writeTo(ResponseEntity, ResponseEntityChannel, RequestContext)}.
      *
      * @param context   context
      * @throws Exception exception

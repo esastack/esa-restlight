@@ -15,9 +15,9 @@
  */
 package io.esastack.restlight.core.resolver;
 
-import io.esastack.restlight.core.context.HttpResponse;
-import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.handler.Handler;
+import io.esastack.restlight.server.context.RequestContext;
+import io.esastack.restlight.server.core.HttpResponse;
 
 /**
  * The handled value which maybe obtained from {@link Handler#invoke(RequestContext, Object[])} or

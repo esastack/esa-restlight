@@ -18,8 +18,8 @@ package io.esastack.restlight.server.route.predicate;
 import esa.commons.Checks;
 import esa.commons.MathUtils;
 import io.esastack.commons.net.http.HttpMethod;
-import io.esastack.httpserver.core.HttpRequest;
-import io.esastack.httpserver.core.RequestContext;
+import io.esastack.restlight.server.core.HttpRequest;
+import io.esastack.restlight.server.context.RequestContext;
 import io.esastack.restlight.server.util.MappingUtils;
 
 import java.util.Arrays;

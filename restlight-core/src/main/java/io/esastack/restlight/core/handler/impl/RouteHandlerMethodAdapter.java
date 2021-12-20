@@ -18,7 +18,6 @@ package io.esastack.restlight.core.handler.impl;
 import esa.commons.Checks;
 import esa.commons.collection.MultiValueMap;
 import io.esastack.restlight.core.config.RestlightOptions;
-import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.handler.HandlerMapping;
 import io.esastack.restlight.core.handler.HandlerValueResolver;
 import io.esastack.restlight.core.handler.RouteFilter;
@@ -31,6 +30,7 @@ import io.esastack.restlight.core.resolver.ExceptionResolver;
 import io.esastack.restlight.core.resolver.HandlerResolverFactory;
 import io.esastack.restlight.core.util.Ordered;
 import io.esastack.restlight.core.util.OrderedComparator;
+import io.esastack.restlight.server.context.RequestContext;
 import io.esastack.restlight.server.route.RouteExecution;
 import io.esastack.restlight.server.route.predicate.RequestPredicate;
 import io.netty.util.concurrent.FastThreadLocal;
@@ -75,13 +75,13 @@ public abstract class RouteHandlerMethodAdapter extends HandlerMethodAdapter<Rou
      * @param context   context
      * @return  execution
      */
-    public abstract RouteExecution<RequestContext> toExecution(RequestContext context);
+    public abstract RouteExecution toExecution(RequestContext context);
 
     List<RouteFilter> getMatchingFilters(HandlerResolverFactory handlerFactory, HandlerMethod method) {
         return handlerFactory.getRouteFilters(method);
     }
 
-    List<InternalInterceptor> getMatchingInterceptors(io.esastack.httpserver.core.RequestContext context) {
+    List<InternalInterceptor> getMatchingInterceptors(io.esastack.restlight.server.context.RequestContext context) {
         if (handlerMethod().intercepted()) {
             return interceptorMatcher.match(context);
         }
@@ -156,7 +156,7 @@ public abstract class RouteHandlerMethodAdapter extends HandlerMethodAdapter<Rou
             this.interceptorMappings = interceptorMappings;
         }
 
-        List<InternalInterceptor> match(io.esastack.httpserver.core.RequestContext context) {
+        List<InternalInterceptor> match(io.esastack.restlight.server.context.RequestContext context) {
             //if lookup map is empty -> just return the all mapping interceptors
             if (interceptorMappings.isEmpty()) {
                 return null;
@@ -167,7 +167,7 @@ public abstract class RouteHandlerMethodAdapter extends HandlerMethodAdapter<Rou
             return doMatch(context);
         }
 
-        protected List<InternalInterceptor> doMatch(io.esastack.httpserver.core.RequestContext context) {
+        protected List<InternalInterceptor> doMatch(io.esastack.restlight.server.context.RequestContext context) {
             // match interceptors by order
             final List<InternalInterceptor> matchedInterceptors =
                     new LinkedList<>();
@@ -197,7 +197,7 @@ public abstract class RouteHandlerMethodAdapter extends HandlerMethodAdapter<Rou
         }
 
         @Override
-        protected List<InternalInterceptor> doMatch(io.esastack.httpserver.core.RequestContext context) {
+        protected List<InternalInterceptor> doMatch(io.esastack.restlight.server.context.RequestContext context) {
             try {
                 return super.doMatch(context);
             } finally {
@@ -219,7 +219,7 @@ public abstract class RouteHandlerMethodAdapter extends HandlerMethodAdapter<Rou
         }
 
         @Override
-        public boolean test(io.esastack.httpserver.core.RequestContext context) {
+        public boolean test(io.esastack.restlight.server.context.RequestContext context) {
             return predicate.test(context);
         }
 
@@ -243,7 +243,7 @@ public abstract class RouteHandlerMethodAdapter extends HandlerMethodAdapter<Rou
         }
 
         @Override
-        public boolean test(io.esastack.httpserver.core.RequestContext context) {
+        public boolean test(io.esastack.restlight.server.context.RequestContext context) {
             Boolean isMatched = matched.getIfExists();
             if (isMatched == null) {
                 boolean matchResult = super.test(context);

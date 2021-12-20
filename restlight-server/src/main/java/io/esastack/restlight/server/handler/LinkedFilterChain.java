@@ -17,24 +17,23 @@ package io.esastack.restlight.server.handler;
 
 import esa.commons.Checks;
 import io.esastack.restlight.server.context.FilterContext;
-import io.esastack.restlight.server.internal.InternalFilter;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 
 /**
- * Implementation of {@link FilterChain} which maintains a reference of {@link InternalFilter} and a reference of the
- * next {@link FilterChain} which would be passed to the {@link InternalFilter#doFilter(FilterContext, FilterChain)}
+ * Implementation of {@link FilterChain} which maintains a reference of {@link Filter} and a reference of the
+ * next {@link FilterChain} which would be passed to the {@link Filter#doFilter(FilterContext, FilterChain)}
  * function of {@link #current} as the third argument.
  */
-public class LinkedFilterChain<FCTX extends FilterContext> implements FilterChain<FCTX> {
+public class LinkedFilterChain implements FilterChain {
 
-    private final InternalFilter<FCTX> current;
-    private final FilterChain<FCTX> next;
+    private final Filter current;
+    private final FilterChain next;
 
-    private LinkedFilterChain(InternalFilter<FCTX> current,
-                              FilterChain<FCTX> next) {
+    private LinkedFilterChain(Filter current,
+                              FilterChain next) {
         Checks.checkNotNull(current, "current");
         Checks.checkNotNull(next, "next");
         this.current = current;
@@ -48,23 +47,22 @@ public class LinkedFilterChain<FCTX extends FilterContext> implements FilterChai
      *
      * @return filter chain
      */
-    public static <FC extends FilterContext> LinkedFilterChain<FC> immutable(List<InternalFilter<FC>> filters,
-                                                                             Function<FC, CompletableFuture<Void>>
-                                                                                     action) {
+    public static LinkedFilterChain immutable(List<Filter> filters,
+                                              Function<FilterContext, CompletableFuture<Void>> action) {
         Checks.checkNotEmptyArg(filters, "filters must not be empty");
         // link all the filter and the given action(last)
-        FilterChain<FC> next = action::apply;
-        LinkedFilterChain<FC> chain;
+        FilterChain next = action::apply;
+        LinkedFilterChain chain;
         int i = filters.size() - 1;
         do {
-            chain = new LinkedFilterChain<>(filters.get(i), next);
+            chain = new LinkedFilterChain(filters.get(i), next);
             next = chain;
         } while (--i >= 0);
         return chain;
     }
 
     @Override
-    public CompletableFuture<Void> doFilter(FCTX context) {
+    public CompletableFuture<Void> doFilter(FilterContext context) {
         return current.doFilter(context, next);
     }
 }

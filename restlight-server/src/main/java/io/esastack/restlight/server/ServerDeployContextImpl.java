@@ -16,11 +16,8 @@
 package io.esastack.restlight.server;
 
 import esa.commons.Checks;
-import esa.commons.collection.Attribute;
-import esa.commons.collection.AttributeKey;
 import esa.commons.collection.AttributeMap;
 import esa.commons.collection.Attributes;
-import io.esastack.httpserver.core.RequestContext;
 import io.esastack.restlight.server.bootstrap.DispatcherHandler;
 import io.esastack.restlight.server.config.ServerOptions;
 import io.esastack.restlight.server.route.RouteRegistry;
@@ -30,7 +27,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.BiConsumer;
 
 public class ServerDeployContextImpl<O extends ServerOptions> implements ServerDeployContext<O> {
 
@@ -40,7 +36,7 @@ public class ServerDeployContextImpl<O extends ServerOptions> implements ServerD
     private final Attributes attributes;
     private final Map<String, Scheduler> schedulers = new HashMap<>(16);
     private volatile RouteRegistry registry;
-    private volatile DispatcherHandler<? extends RequestContext> dispatcherHandler;
+    private volatile DispatcherHandler dispatcherHandler;
 
     protected ServerDeployContextImpl(String name, O options) {
         Checks.checkNotNull(options, "name");
@@ -53,6 +49,11 @@ public class ServerDeployContextImpl<O extends ServerOptions> implements ServerD
     @Override
     public String name() {
         return name;
+    }
+
+    @Override
+    public Attributes attrs() {
+        return this.attributes;
     }
 
     @Override
@@ -71,33 +72,8 @@ public class ServerDeployContextImpl<O extends ServerOptions> implements ServerD
     }
 
     @Override
-    public Optional<DispatcherHandler<? extends RequestContext>> dispatcherHandler() {
+    public Optional<DispatcherHandler> dispatcherHandler() {
         return Optional.of(dispatcherHandler);
-    }
-
-    @Override
-    public <V> Attribute<V> attr(AttributeKey<V> key) {
-        return attributes.attr(key);
-    }
-
-    @Override
-    public boolean hasAttr(AttributeKey<?> key) {
-        return attributes.hasAttr(key);
-    }
-
-    @Override
-    public void forEach(BiConsumer<? super AttributeKey<?>, ? super Attribute<?>> consumer) {
-        attributes.forEach(consumer);
-    }
-
-    @Override
-    public int size() {
-        return attributes.size();
-    }
-
-    @Override
-    public boolean isEmpty() {
-        return attributes.isEmpty();
     }
 
     Map<String, Scheduler> mutableSchedulers() {
@@ -108,7 +84,7 @@ public class ServerDeployContextImpl<O extends ServerOptions> implements ServerD
         this.registry = registry;
     }
 
-    void setDispatcherHandler(DispatcherHandler<? extends RequestContext> dispatcherHandler) {
+    void setDispatcherHandler(DispatcherHandler dispatcherHandler) {
         this.dispatcherHandler = dispatcherHandler;
     }
 }

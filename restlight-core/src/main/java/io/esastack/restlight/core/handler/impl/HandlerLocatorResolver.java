@@ -20,7 +20,6 @@ import esa.commons.ClassUtils;
 import io.esastack.restlight.core.DeployContext;
 import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.core.configure.DelegatingDeployContext;
-import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.handler.HandlerMapping;
 import io.esastack.restlight.core.handler.HandlerValueResolver;
 import io.esastack.restlight.core.handler.RouterRegistries;
@@ -28,6 +27,7 @@ import io.esastack.restlight.core.method.HandlerMethodImpl;
 import io.esastack.restlight.core.util.RouteUtils;
 import io.esastack.restlight.server.bootstrap.DispatcherHandlerImpl;
 import io.esastack.restlight.server.bootstrap.WebServerException;
+import io.esastack.restlight.server.context.RequestContext;
 import io.esastack.restlight.server.route.Route;
 import io.esastack.restlight.server.route.RouteExecution;
 import io.esastack.restlight.server.route.RouteFailureException;
@@ -85,7 +85,7 @@ public class HandlerLocatorResolver implements HandlerValueResolver {
             return Futures.completedExceptionally(new RouteFailureException(DispatcherHandlerImpl.notFound(context)));
         }
 
-        final RouteExecution<io.esastack.httpserver.core.RequestContext> execution;
+        final RouteExecution execution;
         try {
             execution = route.executionFactory().create(context);
         } catch (Throwable th) {

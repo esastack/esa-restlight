@@ -16,13 +16,13 @@
 package io.esastack.restlight.jaxrs.adapter;
 
 import esa.commons.Checks;
-import io.esastack.restlight.core.context.RouteContext;
 import io.esastack.restlight.core.handler.HandlerMapping;
 import io.esastack.restlight.core.handler.RouteFilter;
 import io.esastack.restlight.core.handler.RouteFilterChain;
 import io.esastack.restlight.core.util.Ordered;
 import io.esastack.restlight.jaxrs.impl.JaxrsContextUtils;
 import io.esastack.restlight.jaxrs.impl.container.AbstractContainerRequestContext;
+import io.esastack.restlight.server.context.RouteContext;
 import io.esastack.restlight.server.util.Futures;
 import jakarta.ws.rs.container.ContainerRequestFilter;
 

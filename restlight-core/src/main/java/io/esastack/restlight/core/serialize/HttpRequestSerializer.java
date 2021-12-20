@@ -17,8 +17,9 @@ package io.esastack.restlight.core.serialize;
 
 import io.esastack.restlight.core.resolver.HandledValue;
 import io.esastack.restlight.core.resolver.RequestEntity;
+import io.esastack.restlight.core.util.Ordered;
 
-public interface HttpRequestSerializer extends BaseHttpSerializer {
+public interface HttpRequestSerializer extends Ordered {
 
     /**
      * Deserialize the data from byte array to the object.

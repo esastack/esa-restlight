@@ -15,8 +15,7 @@
  */
 package io.esastack.restlight.core.resolver;
 
-import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.server.route.ExceptionHandler;
 
-public interface ExceptionResolver<T extends Throwable> extends ExceptionHandler<RequestContext, T> {
+public interface ExceptionResolver<T extends Throwable> extends ExceptionHandler<T> {
 }

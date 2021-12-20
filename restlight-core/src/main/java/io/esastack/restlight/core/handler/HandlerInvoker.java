@@ -15,7 +15,7 @@
  */
 package io.esastack.restlight.core.handler;
 
-import io.esastack.restlight.core.context.RequestContext;
+import io.esastack.restlight.server.context.RequestContext;
 
 /**
  * Interface defines the invoking of handler.

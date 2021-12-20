@@ -18,12 +18,12 @@ package io.esastack.restlight.core.spi.impl;
 import com.google.common.util.concurrent.ListenableFuture;
 import esa.commons.annotation.Internal;
 import esa.commons.spi.Feature;
-import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.handler.FutureTransfer;
 import io.esastack.restlight.core.method.HandlerMethod;
 import io.esastack.restlight.core.spi.FutureTransferFactory;
 import io.esastack.restlight.core.util.Constants;
 import io.esastack.restlight.core.util.FutureUtils;
+import io.esastack.restlight.server.context.RequestContext;
 
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;

@@ -16,9 +16,9 @@
 package io.esastack.restlight.core.spi.impl;
 
 import esa.commons.Checks;
+import io.esastack.commons.net.http.HttpStatus;
 import io.esastack.restlight.core.DeployContext;
 import io.esastack.restlight.core.config.RestlightOptions;
-import io.esastack.restlight.core.context.FilterContext;
 import io.esastack.restlight.core.method.HandlerMethod;
 import io.esastack.restlight.core.resolver.HandlerResolverFactory;
 import io.esastack.restlight.core.resolver.ResponseEntity;
@@ -26,11 +26,14 @@ import io.esastack.restlight.core.resolver.ResponseEntityImpl;
 import io.esastack.restlight.core.resolver.ResponseEntityResolverAdvice;
 import io.esastack.restlight.core.resolver.ResponseEntityResolverContext;
 import io.esastack.restlight.core.resolver.ResponseEntityResolverContextImpl;
-import io.esastack.restlight.core.spi.Filter;
 import io.esastack.restlight.core.util.Ordered;
 import io.esastack.restlight.core.util.ResponseEntityUtils;
 import io.esastack.restlight.server.bootstrap.WebServerException;
+import io.esastack.restlight.server.context.FilterContext;
+import io.esastack.restlight.server.handler.Filter;
 import io.esastack.restlight.server.handler.FilterChain;
+import io.esastack.restlight.server.util.ErrorDetail;
+import io.esastack.restlight.server.util.LoggerUtils;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -46,24 +49,26 @@ public class ResponseEntityWriterFilter implements Filter {
     }
 
     @Override
-    public CompletableFuture<Void> doFilter(FilterContext context, FilterChain<FilterContext> chain) {
+    public CompletableFuture<Void> doFilter(FilterContext context, FilterChain chain) {
         HandlerResolverFactory resolverFactory = getResolverFactory();
-        return chain.doFilter(context).thenApply(v -> {
-            if (!context.response().isCommitted()) {
-                HandlerMethod method = ResponseEntityUtils.getHandledMethod(context);
-                ResponseEntity entity = new ResponseEntityImpl(method, context.response());
-                ResponseEntityResolverContext rspCtx = new ResponseEntityResolverContextImpl(context,
-                        entity, resolverFactory.getResponseEntityResolvers(),
-                        resolverFactory.getResponseEntityResolverAdvices(entity)
-                                .toArray(new ResponseEntityResolverAdvice[0]));
-                try {
-                    rspCtx.proceed();
-                } catch (Throwable th) {
-                    // wrapIfNecessary
-                    throw new WebServerException("Error while resolving return value: " + th.getMessage(), th);
-                }
+        return chain.doFilter(context).whenComplete((v, th) -> {
+            if (th != null) {
+                context.response().entity(new ErrorDetail<>(context.request().path(),
+                        HttpStatus.INTERNAL_SERVER_ERROR.reasonPhrase()));
+                LoggerUtils.logger().error("Unexpected exception caught before writing response to client.", th);
             }
-            return v;
+            HandlerMethod method = ResponseEntityUtils.getHandledMethod(context);
+            ResponseEntity entity = new ResponseEntityImpl(method, context.response());
+            ResponseEntityResolverContext rspCtx = new ResponseEntityResolverContextImpl(context,
+                    entity, resolverFactory.getResponseEntityResolvers(),
+                    resolverFactory.getResponseEntityResolverAdvices(entity)
+                            .toArray(new ResponseEntityResolverAdvice[0]));
+            try {
+                rspCtx.proceed();
+            } catch (Throwable ex) {
+                // wrapIfNecessary
+                throw new WebServerException("Error while resolving return value: " + ex.getMessage(), ex);
+            }
         });
     }
 

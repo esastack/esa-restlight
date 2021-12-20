@@ -17,7 +17,6 @@ package io.esastack.restlight.starter.actuator.endpoint;
 
 import esa.commons.logging.Logger;
 import esa.commons.logging.LoggerFactory;
-import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.util.Constants;
 import io.esastack.restlight.server.bootstrap.NettyRestlightServer;
 import io.esastack.restlight.server.bootstrap.RestlightServer;
@@ -52,20 +51,20 @@ public class TerminationEndpoint {
         if (server != null) {
             RestlightServer theServer = findServer(server);
             if (theServer instanceof NettyRestlightServer) {
-                RestlightHandler<RequestContext> handler =
+                RestlightHandler handler =
                         findField(theServer, "handler", RestlightHandler.class)
                                 .orElse(null);
                 if (handler instanceof ScheduledRestlightHandler) {
-                    ScheduledRestlightHandler<RequestContext> dispatcherHandler =
-                            (ScheduledRestlightHandler<RequestContext>) handler;
+                    ScheduledRestlightHandler dispatcherHandler =
+                            (ScheduledRestlightHandler) handler;
                     dispatcherHandler.setTerminationTimeoutSeconds(timeout);
                     logger.info("Change termination timeout of dispatcher handler to {}s", timeout);
                     return "Success";
                 } else if (handler instanceof FilteredHandler) {
                     handler = findField(handler, "delegate", RestlightHandler.class).orElse(null);
                     if (handler instanceof ScheduledRestlightHandler) {
-                        ScheduledRestlightHandler<RequestContext> dispatcherHandler =
-                                (ScheduledRestlightHandler<RequestContext>) handler;
+                        ScheduledRestlightHandler dispatcherHandler =
+                                (ScheduledRestlightHandler) handler;
                         dispatcherHandler.setTerminationTimeoutSeconds(timeout);
                         logger.info("Change termination timeout of dispatcher handler to {}s", timeout);
                         return "Success";

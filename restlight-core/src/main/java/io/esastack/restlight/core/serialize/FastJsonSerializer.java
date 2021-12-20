@@ -17,8 +17,6 @@ package io.esastack.restlight.core.serialize;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializerFeature;
-import io.esastack.httpserver.core.HttpInputStream;
-import io.esastack.httpserver.core.HttpOutputStream;
 
 import java.lang.reflect.Type;
 
@@ -36,17 +34,8 @@ public class FastJsonSerializer implements JsonSerializer {
     }
 
     @Override
-    public void serialize(Object target, HttpOutputStream outputStream) throws Exception {
-        JSON.writeJSONString(outputStream, target);
-    }
-
-    @Override
     public <T> T deserialize(byte[] data, Type type) {
         return JSON.parseObject(data, type);
     }
 
-    @Override
-    public <T> T deserialize(HttpInputStream inputStream, Type type) throws Exception {
-        return JSON.parseObject(inputStream, type);
-    }
 }

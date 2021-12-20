@@ -16,7 +16,6 @@
 package io.esastack.restlight.server;
 
 import esa.commons.collection.Attributes;
-import io.esastack.httpserver.core.RequestContext;
 import io.esastack.restlight.server.bootstrap.DispatcherHandler;
 import io.esastack.restlight.server.config.ServerOptions;
 import io.esastack.restlight.server.route.RouteRegistry;
@@ -32,7 +31,7 @@ import java.util.Optional;
  *
  * @param <O> type of options
  */
-public interface ServerDeployContext<O extends ServerOptions> extends Attributes {
+public interface ServerDeployContext<O extends ServerOptions> {
 
     /**
      * Name of the Restlight server.
@@ -40,6 +39,13 @@ public interface ServerDeployContext<O extends ServerOptions> extends Attributes
      * @return name
      */
     String name();
+
+    /**
+     * Obtains {@link Attributes}.
+     *
+     * @return  attrs
+     */
+    Attributes attrs();
 
     /**
      * Returns options of current server.
@@ -69,6 +75,6 @@ public interface ServerDeployContext<O extends ServerOptions> extends Attributes
      *
      * @return optional value
      */
-    Optional<DispatcherHandler<? extends RequestContext>> dispatcherHandler();
+    Optional<DispatcherHandler> dispatcherHandler();
 
 }

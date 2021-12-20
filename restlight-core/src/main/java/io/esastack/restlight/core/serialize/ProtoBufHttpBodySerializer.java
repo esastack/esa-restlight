@@ -17,9 +17,9 @@ package io.esastack.restlight.core.serialize;
 
 import com.google.protobuf.Message;
 import io.esastack.commons.net.http.MediaType;
-import io.esastack.httpserver.core.HttpResponse;
 import io.esastack.restlight.core.resolver.RequestEntity;
 import io.esastack.restlight.core.resolver.ResponseEntity;
+import io.esastack.restlight.server.core.HttpResponse;
 import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.util.AsciiString;
 

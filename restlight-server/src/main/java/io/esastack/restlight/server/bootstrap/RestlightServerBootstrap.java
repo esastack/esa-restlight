@@ -16,16 +16,12 @@
 package io.esastack.restlight.server.bootstrap;
 
 import esa.commons.annotation.Beta;
-import io.esastack.httpserver.core.RequestContext;
 import io.esastack.restlight.core.util.OrderedComparator;
 import io.esastack.restlight.server.config.ServerOptions;
 import io.esastack.restlight.server.config.ServerOptionsConfigure;
-import io.esastack.restlight.server.context.FilterContext;
 import io.esastack.restlight.server.handler.FilteredHandler;
 import io.esastack.restlight.server.handler.RestlightHandler;
-import io.esastack.restlight.server.internal.FilterContextFactory;
-import io.esastack.restlight.server.internal.InternalFilter;
-import io.esastack.restlight.server.internal.RequestContextFactory;
+import io.esastack.restlight.server.handler.Filter;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.unix.DomainSocketAddress;
@@ -40,14 +36,12 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-public class RestlightServerBootstrap<CTX extends RequestContext, FCTX extends FilterContext> {
+public class RestlightServerBootstrap {
 
     private final ServerOptions options;
-    private final RestlightHandler<CTX> handler;
-    private final RequestContextFactory<CTX> requestContext;
-    private final FilterContextFactory<CTX, FCTX> filterContext;
-    private final ExceptionHandlerChain<CTX> exceptionHandler;
-    private final List<InternalFilter<FCTX>> filters;
+    private final RestlightHandler handler;
+    private final ExceptionHandlerChain exceptionHandler;
+    private final List<Filter> filters;
     private final Map<ChannelOption<?>, Object> channelOptions = new LinkedHashMap<>();
     private final Map<ChannelOption<?>, Object> childChannelOptions = new LinkedHashMap<>();
     @Beta
@@ -57,57 +51,50 @@ public class RestlightServerBootstrap<CTX extends RequestContext, FCTX extends F
     private SocketAddress address;
 
     private RestlightServerBootstrap(ServerOptions options,
-                                     RestlightHandler<CTX> handler,
-                                     RequestContextFactory<CTX> requestContext,
-                                     FilterContextFactory<CTX, FCTX> filterContext,
-                                     List<InternalFilter<FCTX>> filters,
-                                     ExceptionHandlerChain<CTX> exceptionHandler) {
+                                     RestlightHandler handler,
+                                     List<Filter> filters,
+                                     ExceptionHandlerChain exceptionHandler) {
         this.options = options;
         this.handler = handler;
-        this.requestContext = requestContext;
-        this.filterContext = filterContext;
         this.filters = filters;
         this.exceptionHandler = exceptionHandler;
     }
 
-    public static <C extends RequestContext, FC extends FilterContext> RestlightServerBootstrap<C, FC> from(
-            RestlightHandler<C> handler, RequestContextFactory<C> requestContext, List<InternalFilter<FC>> filters,
-            FilterContextFactory<C, FC> filterContext, ExceptionHandlerChain<C> exceptionHandler) {
-        return from(ServerOptionsConfigure.defaultOpts(), handler, requestContext, filterContext,
-                filters, exceptionHandler);
+    public static RestlightServerBootstrap from(RestlightHandler handler, List<Filter> filters,
+                                                ExceptionHandlerChain exceptionHandler) {
+        return from(ServerOptionsConfigure.defaultOpts(), handler, filters, exceptionHandler);
     }
 
-    public static <C extends RequestContext, FC extends FilterContext> RestlightServerBootstrap<C, FC> from(
-            ServerOptions options, RestlightHandler<C> handler, RequestContextFactory<C> requestContext,
-            FilterContextFactory<C, FC> filterContext, List<InternalFilter<FC>> filters,
-            ExceptionHandlerChain<C> exceptionHandler) {
-        return new RestlightServerBootstrap<>(options, handler, requestContext, filterContext, filters,
+    public static RestlightServerBootstrap from(
+            ServerOptions options, RestlightHandler handler, List<Filter> filters,
+            ExceptionHandlerChain exceptionHandler) {
+        return new RestlightServerBootstrap(options, handler, filters,
                 exceptionHandler);
     }
 
-    public RestlightServerBootstrap<CTX, FCTX> withAddress(SocketAddress address) {
+    public RestlightServerBootstrap withAddress(SocketAddress address) {
         this.address = address;
         return this;
     }
 
-    public RestlightServerBootstrap<CTX, FCTX> withAddress(int port) {
+    public RestlightServerBootstrap withAddress(int port) {
         return withAddress(new InetSocketAddress(port));
     }
 
-    public RestlightServerBootstrap<CTX, FCTX> withAddress(String host, int port) {
+    public RestlightServerBootstrap withAddress(String host, int port) {
         return withAddress(SocketUtils.socketAddress(host, port));
     }
 
-    public RestlightServerBootstrap<CTX, FCTX> withDomainSocketAddress(String path) {
+    public RestlightServerBootstrap withDomainSocketAddress(String path) {
         return withAddress(new DomainSocketAddress(path));
     }
 
-    public RestlightServerBootstrap<CTX, FCTX> daemon(boolean daemon) {
+    public RestlightServerBootstrap daemon(boolean daemon) {
         this.daemon = daemon;
         return this;
     }
 
-    public RestlightServerBootstrap<CTX, FCTX> withOptions(Map<ChannelOption<?>, Object> options) {
+    public RestlightServerBootstrap withOptions(Map<ChannelOption<?>, Object> options) {
         if (options != null && !options.isEmpty()) {
             this.channelOptions.clear();
             this.channelOptions.putAll(options);
@@ -115,12 +102,12 @@ public class RestlightServerBootstrap<CTX extends RequestContext, FCTX extends F
         return this;
     }
 
-    public <T> RestlightServerBootstrap<CTX, FCTX> withOption(ChannelOption<T> option, T value) {
+    public <T> RestlightServerBootstrap withOption(ChannelOption<T> option, T value) {
         this.channelOptions.put(option, value);
         return this;
     }
 
-    public RestlightServerBootstrap<CTX, FCTX> withChildOptions(Map<ChannelOption<?>, Object> options) {
+    public RestlightServerBootstrap withChildOptions(Map<ChannelOption<?>, Object> options) {
         if (options != null && !options.isEmpty()) {
             this.childChannelOptions.clear();
             this.childChannelOptions.putAll(options);
@@ -128,13 +115,13 @@ public class RestlightServerBootstrap<CTX extends RequestContext, FCTX extends F
         return this;
     }
 
-    public <T> RestlightServerBootstrap<CTX, FCTX> withChildOption(ChannelOption<T> option, T value) {
+    public <T> RestlightServerBootstrap withChildOption(ChannelOption<T> option, T value) {
         this.childChannelOptions.put(option, value);
         return this;
     }
 
     @Beta
-    public RestlightServerBootstrap<CTX, FCTX> withChannelHandler(ChannelHandler channelHandler) {
+    public RestlightServerBootstrap withChannelHandler(ChannelHandler channelHandler) {
         if (channelHandler != null) {
             this.channelHandlers.add(channelHandler);
         }
@@ -142,7 +129,7 @@ public class RestlightServerBootstrap<CTX extends RequestContext, FCTX extends F
     }
 
     @Beta
-    public RestlightServerBootstrap<CTX, FCTX> withChannelHandlers(ChannelHandler... channelHandlers) {
+    public RestlightServerBootstrap withChannelHandlers(ChannelHandler... channelHandlers) {
         if (channelHandlers == null || channelHandlers.length == 0) {
             return this;
         }
@@ -150,8 +137,7 @@ public class RestlightServerBootstrap<CTX extends RequestContext, FCTX extends F
     }
 
     @Beta
-    public RestlightServerBootstrap<CTX, FCTX> withChannelHandlers(Collection<? extends ChannelHandler>
-                                                                                channelHandlers) {
+    public RestlightServerBootstrap withChannelHandlers(Collection<? extends ChannelHandler> channelHandlers) {
         if (channelHandlers != null && !channelHandlers.isEmpty()) {
             this.channelHandlers.addAll(channelHandlers);
         }
@@ -161,13 +147,12 @@ public class RestlightServerBootstrap<CTX extends RequestContext, FCTX extends F
     public RestlightServer forServer() {
         // keep filters in sort
         OrderedComparator.sort(this.filters);
-        RestlightHandler<CTX> handler = this.handler;
+        RestlightHandler handler = this.handler;
         if (!this.filters.isEmpty()) {
-            handler = new FilteredHandler<>(handler, this.filters, this.filterContext, this.exceptionHandler);
+            handler = new FilteredHandler(handler, this.filters, this.exceptionHandler);
         }
-        return new NettyRestlightServer<>(options,
+        return new NettyRestlightServer(options,
                 handler,
-                requestContext,
                 address,
                 daemon,
                 channelOptions,

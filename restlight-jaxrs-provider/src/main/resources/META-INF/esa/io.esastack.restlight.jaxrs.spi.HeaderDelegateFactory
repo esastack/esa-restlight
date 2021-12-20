@@ -1,0 +1,6 @@
+io.esastack.restlight.jaxrs.spi.headerdelegate.CookieHeaderDelegateFactory
+io.esastack.restlight.jaxrs.spi.headerdelegate.DateDelegateFactory
+io.esastack.restlight.jaxrs.spi.headerdelegate.LocaleHeaderDelegateFactory
+io.esastack.restlight.jaxrs.spi.headerdelegate.MediaTypeHeaderDelegateFactory
+io.esastack.restlight.jaxrs.spi.headerdelegate.NewCookieHeaderDelegateFactory
+io.esastack.restlight.jaxrs.spi.headerdelegate.URIDelegateFactory

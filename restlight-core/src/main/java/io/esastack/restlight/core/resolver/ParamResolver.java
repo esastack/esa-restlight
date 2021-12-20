@@ -15,8 +15,8 @@
  */
 package io.esastack.restlight.core.resolver;
 
-import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.method.Param;
+import io.esastack.restlight.server.context.RequestContext;
 
 /**
  * Interface for resolving {@link Param} to the real values of the handler method base on the current context.

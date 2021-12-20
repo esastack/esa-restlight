@@ -17,30 +17,28 @@ package io.esastack.restlight.server.bootstrap;
 
 import esa.commons.Checks;
 import esa.commons.annotation.Internal;
-import io.esastack.httpserver.core.RequestContext;
-import io.esastack.restlight.server.internal.InternalExceptionHandler;
+import io.esastack.restlight.server.context.RequestContext;
 import io.esastack.restlight.server.util.Futures;
 
 import java.util.concurrent.CompletableFuture;
 
 @Internal
-public class LinkedExceptionHandlerChain<CTX extends RequestContext> implements ExceptionHandlerChain<CTX> {
+public class LinkedExceptionHandlerChain implements ExceptionHandlerChain {
 
-    private final InternalExceptionHandler<CTX> handler;
-    private final ExceptionHandlerChain<CTX> next;
+    private final IExceptionHandler handler;
+    private final ExceptionHandlerChain next;
 
-    private LinkedExceptionHandlerChain(InternalExceptionHandler<CTX> handler, ExceptionHandlerChain<CTX> next) {
+    private LinkedExceptionHandlerChain(IExceptionHandler handler, ExceptionHandlerChain next) {
         this.handler = handler;
         this.next = next;
     }
 
-    public static <C extends RequestContext> ExceptionHandlerChain<C> immutable(
-            InternalExceptionHandler<C>[] handlers) {
+    public static ExceptionHandlerChain immutable(IExceptionHandler[] handlers) {
         Checks.checkNotNull(handlers, "handlers");
-        ExceptionHandlerChain<C> chain = (context, th) -> Futures.completedExceptionally(th);
+        ExceptionHandlerChain chain = (context, th) -> Futures.completedExceptionally(th);
         int i = handlers.length - 1;
         while (i >= 0) {
-            chain = new LinkedExceptionHandlerChain<>(handlers[i], chain);
+            chain = new LinkedExceptionHandlerChain(handlers[i], chain);
             i--;
         }
 
@@ -48,7 +46,7 @@ public class LinkedExceptionHandlerChain<CTX extends RequestContext> implements 
     }
 
     @Override
-    public CompletableFuture<Void> handle(CTX context, Throwable th) {
+    public CompletableFuture<Void> handle(RequestContext context, Throwable th) {
         return handler.handle(context, th, next);
     }
 }
