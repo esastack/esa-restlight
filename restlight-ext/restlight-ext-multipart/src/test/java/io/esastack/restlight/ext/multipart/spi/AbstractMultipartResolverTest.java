@@ -40,8 +40,8 @@ public abstract class AbstractMultipartResolverTest {
     private static final String CONTENT_TYPE = "multipart/form-data; boundary=---1234";
     private static final ResolverSubject SUBJECT = new ResolverSubject();
     private static final MultipartConfig config = new MultipartConfig(false);
-    static MultipartAttrArgumentResolver attrResolver = new MultipartAttrArgumentResolver();
-    static MultipartFileArgumentResolver fileResolver = new MultipartFileArgumentResolver();
+    static MultipartAttrParamResolver attrResolver = new MultipartAttrParamResolver();
+    static MultipartFileParamResolver fileResolver = new MultipartFileParamResolver();
     {
         attrResolver.initFactory(config);
         fileResolver.initFactory(config);

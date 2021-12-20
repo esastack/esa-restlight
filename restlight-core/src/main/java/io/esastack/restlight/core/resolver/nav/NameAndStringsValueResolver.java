@@ -16,11 +16,11 @@
 package io.esastack.restlight.core.resolver.nav;
 
 import esa.commons.Checks;
-import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.method.Param;
 import io.esastack.restlight.core.resolver.HandlerResolverFactory;
 import io.esastack.restlight.core.resolver.StringConverter;
 import io.esastack.restlight.core.util.ConverterUtils;
+import io.esastack.restlight.server.context.RequestContext;
 
 import java.lang.reflect.Type;
 import java.util.Collection;

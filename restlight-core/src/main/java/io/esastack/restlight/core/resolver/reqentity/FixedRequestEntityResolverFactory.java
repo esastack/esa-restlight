@@ -23,8 +23,8 @@ import io.esastack.restlight.core.resolver.HandledValue;
 import io.esastack.restlight.core.resolver.RequestEntity;
 import io.esastack.restlight.core.resolver.RequestEntityResolver;
 import io.esastack.restlight.core.resolver.RequestEntityResolverFactory;
-import io.esastack.restlight.core.resolver.nav.NameAndValue;
 import io.esastack.restlight.core.serialize.HttpRequestSerializer;
+import io.esastack.restlight.server.context.RequestContext;
 
 import java.lang.reflect.Modifier;
 import java.util.List;
@@ -61,22 +61,13 @@ public abstract class FixedRequestEntityResolverFactory implements RequestEntity
                 .orElseThrow(() -> new IllegalArgumentException("Could not findFor RequestBody serializer. " +
                         "target type:" + target.getName()));
 
-        return new Resolver(serializer, param);
+        return new Resolver(serializer);
     }
 
     protected boolean supports0(Param param) {
         // current parameter only
         return param.isMethodParam() && param.methodParam().method().getParameterCount() == 1;
     }
-
-    /**
-     * Create an instance of {@link NameAndValue} for the parameter.
-     *
-     * @param param parameter
-     *
-     * @return name and value
-     */
-    protected abstract NameAndValue createNameAndValue(Param param);
 
     private Class<? extends HttpRequestSerializer> findRequestSerializer(Param param) {
         Class<? extends HttpRequestSerializer> target = null;
@@ -109,24 +100,18 @@ public abstract class FixedRequestEntityResolverFactory implements RequestEntity
         return target;
     }
 
-    private class Resolver extends AbstractNameAndValueRequestEntityResolver {
+    private static class Resolver implements RequestEntityResolver {
 
         private final HttpRequestSerializer serializer;
 
-        private Resolver(HttpRequestSerializer serializer, Param param) {
-            super(param);
+        private Resolver(HttpRequestSerializer serializer) {
             this.serializer = serializer;
         }
 
         @Override
-        protected HandledValue<Object> readFrom0(String name, Param param,
-                                                 RequestEntity entity) throws Exception {
+        public HandledValue<Object> readFrom(Param param, RequestEntity entity,
+                                             RequestContext context) throws Exception {
             return serializer.deserialize(entity);
-        }
-
-        @Override
-        protected NameAndValue createNameAndValue(Param param) {
-            return FixedRequestEntityResolverFactory.this.createNameAndValue(param);
         }
     }
 }

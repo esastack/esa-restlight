@@ -35,7 +35,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-class MultipartAttrArgumentResolverTest extends AbstractMultipartResolverTest {
+class MultipartAttrParamResolverTest extends AbstractMultipartResolverTest {
 
     private static final DefaultStringConverterFactory CONVERTER_FACTORY = new DefaultStringConverterFactory();
 

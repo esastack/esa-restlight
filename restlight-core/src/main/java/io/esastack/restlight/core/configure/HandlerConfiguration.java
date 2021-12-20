@@ -15,8 +15,8 @@
  */
 package io.esastack.restlight.core.configure;
 
+import esa.commons.Checks;
 import esa.commons.collection.Attributes;
-import io.esastack.httpserver.impl.AttributesProxy;
 import io.esastack.restlight.core.resolver.ContextResolverFactory;
 import io.esastack.restlight.core.resolver.ParamResolverAdviceFactory;
 import io.esastack.restlight.core.resolver.ParamResolverFactory;
@@ -66,12 +66,11 @@ public class HandlerConfiguration {
         this.responseEntityResolverAdvices = responseEntityResolverAdvices;
     }
 
-    public List<StringConverterFactory> getParamConverts() {
     public Attributes attrs() {
         return attributes;
     }
 
-    public List<ParamConverterFactory> getParamConverts() {
+    public List<StringConverterFactory> getParamConverts() {
         return paramConverters;
     }
 

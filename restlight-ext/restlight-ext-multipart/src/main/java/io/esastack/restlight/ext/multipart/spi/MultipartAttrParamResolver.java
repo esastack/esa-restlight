@@ -24,7 +24,7 @@ import io.esastack.restlight.core.resolver.nav.NameAndValueResolver;
 import io.esastack.restlight.core.util.ConverterUtils;
 import io.esastack.restlight.ext.multipart.annotation.FormParam;
 
-public class MultipartAttrArgumentResolver extends AbstractMultipartParamResolver {
+public class MultipartAttrParamResolver extends AbstractMultipartParamResolver {
 
     @Override
     public boolean supports(Param param) {

@@ -16,7 +16,6 @@
 package io.esastack.restlight.springmvc.reqentity;
 
 import io.esastack.restlight.core.method.Param;
-import io.esastack.restlight.core.resolver.nav.NameAndValue;
 import io.esastack.restlight.core.resolver.reqentity.FixedRequestEntityResolverFactory;
 import io.esastack.restlight.springmvc.annotation.shaded.RequestBody0;
 
@@ -25,13 +24,6 @@ public class FixedRequestEntityResolverFactoryImpl extends FixedRequestEntityRes
     @Override
     protected boolean supports0(Param param) {
         return super.supports0(param) || param.hasAnnotation(RequestBody0.shadedClass());
-    }
-
-    @Override
-    protected NameAndValue createNameAndValue(Param param) {
-        return new NameAndValue(param.name(), param.hasAnnotation(RequestBody0.shadedClass())
-                && RequestBody0.fromShade(param.getAnnotation(RequestBody0.shadedClass())).required(),
-                null);
     }
 
     @Override

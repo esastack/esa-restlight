@@ -16,9 +16,7 @@
 package io.esastack.restlight.jaxrs.resolver.reqentity;
 
 import io.esastack.restlight.core.method.Param;
-import io.esastack.restlight.core.resolver.nav.NameAndValue;
 import io.esastack.restlight.core.resolver.reqentity.FixedRequestEntityResolverFactory;
-import io.esastack.restlight.jaxrs.util.JaxrsMappingUtils;
 import jakarta.ws.rs.core.Context;
 
 public class FixedRequestEntityResolverFactoryImpl extends FixedRequestEntityResolverFactory {
@@ -29,11 +27,6 @@ public class FixedRequestEntityResolverFactoryImpl extends FixedRequestEntityRes
         // All of the parameters which is not annotated by argument annotation like @QueryParam and @HeaderParam will
         // be regarded as a body parameter.
         return param.isMethodParam() && !param.hasAnnotation(Context.class);
-    }
-
-    @Override
-    protected NameAndValue createNameAndValue(Param param) {
-        return new NameAndValue(param.name(), false, JaxrsMappingUtils.extractDefaultValue(param));
     }
 
     @Override
