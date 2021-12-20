@@ -15,41 +15,49 @@
  */
 package io.esastack.restlight.core.resolver.nav;
 
+import esa.commons.Checks;
 import esa.commons.ObjectUtils;
+import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.method.Param;
+import io.esastack.restlight.core.resolver.ParamResolver;
+import io.esastack.restlight.server.bootstrap.WebServerException;
 
 import java.util.Optional;
 import java.util.function.Supplier;
 
-//TODO need delete
-public abstract class AbstractNameAndValueResolver {
+public class NameAndValueResolverAdapter implements ParamResolver {
 
-    protected final Param param;
-    protected final NameAndValue nav;
+    private final NameAndValue<?> nav;
+    private final NameAndValueResolver resolver;
 
-    public AbstractNameAndValueResolver(Param param) {
-        this.param = param;
-        this.nav = getNameAndValue(param);
+    public NameAndValueResolverAdapter(Param param,
+                                       NameAndValueResolver resolver) {
+        Checks.checkNotNull(param, "param");
+        this.resolver = Checks.checkNotNull(resolver, "resolver");
+        this.nav = getNameAndValue(param, resolver.createNameAndValue(param));
     }
 
-    protected NameAndValue getNameAndValue(Param param) {
-        NameAndValue nav = createNameAndValue(param);
+    @Override
+    public Object resolve(Param param, RequestContext ctx) {
+        Object arg = resolver.resolve(nav.name(), ctx);
+        if (arg == null) {
+            Supplier<?> defaultValue = nav.defaultValue();
+            if (defaultValue != null) {
+                arg = defaultValue.get();
+            }
+            if (nav.required() && arg == null) {
+                throw WebServerException.badRequest("Missing required value: " + nav.name());
+            }
+        }
+        return arg;
+    }
+
+    private NameAndValue<?> getNameAndValue(Param param, NameAndValue<?> nav) {
+        Checks.checkNotNull(nav);
         return updatedNamedValue(param, nav);
     }
 
-    /**
-     * Create an instance of {@link NameAndValue} for the parameter.
-     *
-     * @param param parameter
-     * @return name and value
-     */
-    protected abstract NameAndValue createNameAndValue(Param param);
-
-    protected boolean useObjectDefaultValueIfRequired(Param param, NameAndValue info) {
-        return !param.isFieldParam();
-    }
-
-    private NameAndValue updatedNamedValue(Param param, NameAndValue nav) {
+    private NameAndValue<?> updatedNamedValue(Param param, NameAndValue<?> nav) {
         String name = nav.name();
         if (name.isEmpty()) {
             name = param.name();
@@ -72,6 +80,10 @@ public abstract class AbstractNameAndValueResolver {
         return new NameAndValue<>(name, nav.required(), defaultValue, false);
     }
 
+    private boolean useObjectDefaultValueIfRequired(Param param) {
+        return !param.isFieldParam();
+    }
+
     private static Object defaultValue(Class<?> type) {
         if (Optional.class.equals(type)) {
             return Optional.empty();
@@ -79,10 +91,4 @@ public abstract class AbstractNameAndValueResolver {
 
         return ObjectUtils.defaultValue(type);
     }
-
-    private boolean useObjectDefaultValueIfRequired(Param param) {
-        return !param.isFieldParam();
-    }
-
 }
-

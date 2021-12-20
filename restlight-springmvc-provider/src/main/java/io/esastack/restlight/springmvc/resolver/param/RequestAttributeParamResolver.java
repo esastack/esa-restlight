@@ -18,52 +18,45 @@ package io.esastack.restlight.springmvc.resolver.param;
 import esa.commons.collection.AttributeKey;
 import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.method.Param;
-import io.esastack.restlight.core.resolver.ParamResolver;
+import io.esastack.restlight.core.resolver.HandlerResolverFactory;
 import io.esastack.restlight.core.resolver.ParamResolverFactory;
+import io.esastack.restlight.core.resolver.StringConverter;
 import io.esastack.restlight.core.resolver.nav.NameAndValue;
-import io.esastack.restlight.core.resolver.param.AbstractNameAndValueParamResolver;
-import io.esastack.restlight.core.serialize.HttpRequestSerializer;
-import io.esastack.restlight.core.util.ConverterUtils;
+import io.esastack.restlight.core.resolver.nav.NameAndValueResolver;
+import io.esastack.restlight.core.resolver.nav.NameAndValueResolverFactory;
 import io.esastack.restlight.springmvc.annotation.shaded.RequestAttribute0;
-
-import java.util.List;
-import java.util.function.Function;
 
 /**
  * Implementation of {@link ParamResolverFactory} for resolving argument that annotated by the RequestAttribute.
  */
-public class RequestAttributeParamResolver implements ParamResolverFactory {
-
-    @Override
-    public ParamResolver createResolver(Param param,
-                                        List<? extends HttpRequestSerializer> serializers) {
-        return new AbstractNameAndValueParamResolver(param) {
-
-            final Function<String, Object> converter =
-                    ConverterUtils.str2ObjectConverter(param.genericType(), p -> p);
-
-            @Override
-            protected Object resolveName(String name, RequestContext context) {
-                Object v = context.attr(AttributeKey.valueOf(name)).get();
-                if (converter != null && v instanceof String) {
-                    return converter.apply((String) v);
-                }
-                return v;
-            }
-
-            @Override
-            protected NameAndValue createNameAndValue(Param param) {
-                RequestAttribute0 requestAttribute
-                        = RequestAttribute0.fromShade(param.getAnnotation(RequestAttribute0.shadedClass()));
-                assert requestAttribute != null;
-                return new NameAndValue(requestAttribute.value(), requestAttribute.required());
-            }
-        };
-    }
+public class RequestAttributeParamResolver extends NameAndValueResolverFactory {
 
     @Override
     public boolean supports(Param param) {
         return param.hasAnnotation(RequestAttribute0.shadedClass());
+    }
+
+    @Override
+    public NameAndValueResolver createResolver(Param param, HandlerResolverFactory resolverFactory) {
+        final StringConverter converter = resolverFactory.getStringConverter(param.type(), param.genericType(), param);
+        return new NameAndValueResolver() {
+            @Override
+            public Object resolve(String name, RequestContext ctx) {
+                Object value = ctx.attr(AttributeKey.valueOf(name)).get();
+                if (converter != null && (value instanceof String)) {
+                    return converter.fromString((String) value);
+                }
+                return value;
+            }
+
+            @Override
+            public NameAndValue<Object> createNameAndValue(Param param) {
+                RequestAttribute0 requestAttribute
+                        = RequestAttribute0.fromShade(param.getAnnotation(RequestAttribute0.shadedClass()));
+                assert requestAttribute != null;
+                return new NameAndValue<>(requestAttribute.value(), requestAttribute.required());
+            }
+        };
     }
 
     @Override

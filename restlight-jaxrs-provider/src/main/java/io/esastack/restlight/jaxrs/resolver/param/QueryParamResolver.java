@@ -34,18 +34,25 @@ public class QueryParamResolver extends AbstractParamResolver {
     }
 
     @Override
-    protected NameAndValue createNameAndValue(Param parameter) {
+    protected NameAndValue<String> createNameAndValue(Param param) {
         QueryParam queryParam
-                = parameter.getAnnotation(QueryParam.class);
+                = param.getAnnotation(QueryParam.class);
         assert queryParam != null;
-        return new NameAndValue(queryParam.value(),
+        return new NameAndValue<>(queryParam.value(),
                 false,
-                JaxrsMappingUtils.extractDefaultValue(parameter));
+                JaxrsMappingUtils.extractDefaultValue(param));
+    }
+
+    @Override
+    protected String extractName(Param param) {
+        QueryParam queryParam
+                = param.getAnnotation(QueryParam.class);
+        assert queryParam != null;
+        return queryParam.value();
     }
 
     @Override
     public int getOrder() {
         return 10;
     }
-
 }

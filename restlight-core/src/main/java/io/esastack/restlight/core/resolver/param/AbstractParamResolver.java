@@ -19,113 +19,72 @@ import esa.commons.ClassUtils;
 import esa.commons.StringUtils;
 import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.method.Param;
-import io.esastack.restlight.core.resolver.ParamResolver;
-import io.esastack.restlight.core.resolver.ParamResolverFactory;
+import io.esastack.restlight.core.resolver.HandlerResolverFactory;
+import io.esastack.restlight.core.resolver.nav.NameAndStringsValueResolver;
 import io.esastack.restlight.core.resolver.nav.NameAndValue;
-import io.esastack.restlight.core.serialize.HttpRequestSerializer;
-import io.esastack.restlight.core.util.ConverterUtils;
+import io.esastack.restlight.core.resolver.nav.NameAndValueResolver;
+import io.esastack.restlight.core.resolver.nav.NameAndValueResolverFactory;
 
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 
 /**
- * Implementation of {@link ParamResolverFactory} for resolving argument that annotated by the RequestParam.
+ * Implementation of {@link NameAndValueResolverFactory} for resolving argument that annotated by
+ * the RequestParam.
  */
-public abstract class AbstractParamResolver implements ParamResolverFactory {
+public abstract class AbstractParamResolver extends NameAndValueResolverFactory {
 
     @Override
-    public ParamResolver createResolver(Param param,
-                                        List<? extends HttpRequestSerializer> serializers) {
-        NameAndValue nameAndValue = createNameAndValue(param);
-        if (StringUtils.isEmpty(nameAndValue.name)
+    public NameAndValueResolver createResolver(Param param, HandlerResolverFactory resolverFactory) {
+        String name = extractName(param);
+        if (StringUtils.isEmpty(name)
                 && Map.class.equals(param.type())) {
             Class<?>[] types = ClassUtils.retrieveGenericTypes(param.genericType());
             if (types.length == 2) {
                 Class<?> valueType = types[1];
                 if (String.class.equals(valueType)) {
                     // Map<String, String>
-                    return new SingleValueMapResolver(param, nameAndValue);
+                    return new SingleMapResolver();
                 } else if (List.class.equals(valueType)) {
                     // Map<String, List<String>>
-                    return new MapResolver(param, nameAndValue);
+                    return new ListMapResolver();
                 }
             }
         }
-        return new StringOrListResolver(param, nameAndValue);
+
+        return new NameAndStringsValueResolver(param,
+                resolverFactory,
+                this::extractValue,
+                createNameAndValue(param));
     }
 
-    protected abstract NameAndValue createNameAndValue(Param param);
+    protected abstract String extractName(Param param);
 
-    private abstract static class BaseResolver extends AbstractNameAndValueParamResolver {
+    protected abstract NameAndValue<String> createNameAndValue(Param param);
 
-        private final NameAndValue nav0;
+    private Collection<String> extractValue(String name, RequestContext ctx) {
+        return ctx.request().paramsMap().get(name);
+    }
 
-        private BaseResolver(Param param, NameAndValue nav0) {
-            super(param, nav0);
-            this.nav0 = nav0;
+    private class SingleMapResolver implements NameAndValueResolver {
+        @Override
+        public Object resolve(String name, RequestContext ctx) {
+            return ctx.request().paramsMap();
         }
 
         @Override
-        protected NameAndValue createNameAndValue(Param param) {
-            return nav0;
+        public NameAndValue<String> createNameAndValue(Param param) {
+            return AbstractParamResolver.this.createNameAndValue(param);
         }
     }
 
-    /**
-     * Implementation for resolving argument type of {@link String}
-     */
-    private static class StringOrListResolver extends BaseResolver {
-
-        private final Function<String, Object> converter;
-        private final Function<Collection<String>, Object> strsConverter;
-
-        private StringOrListResolver(Param param, NameAndValue nav) {
-            super(param, nav);
-            this.converter = ConverterUtils.str2ObjectConverter(param.genericType(), p -> p);
-            this.strsConverter = ConverterUtils.strs2ObjectConverter(param.genericType());
-        }
-
+    private class ListMapResolver implements NameAndValueResolver {
         @Override
-        protected Object resolveName(String name, RequestContext context) {
-            final List<String> values = context.request().getParams(name);
-            if (values == null || values.isEmpty()) {
-                return null;
-            }
-            if (values.size() > 1 && strsConverter != null) {
-                return strsConverter.apply(values);
-            }
-            return converter.apply(values.get(0));
-        }
-    }
-
-    /**
-     * Implementation for resolving argument type of {@link Map}
-     */
-    private static class MapResolver extends BaseResolver {
-
-        private MapResolver(Param param, NameAndValue nav) {
-            super(param, nav);
-        }
-
-        @Override
-        protected Map<String, List<String>> resolveName(String name, RequestContext context) {
-            return context.request().paramsMap();
-        }
-    }
-
-    private static class SingleValueMapResolver extends BaseResolver {
-
-        private SingleValueMapResolver(Param param, NameAndValue nav0) {
-            super(param, nav0);
-        }
-
-        @Override
-        protected Map<String, String> resolveName(String name, RequestContext context) {
-            Map<String, List<String>> p = context.request().paramsMap();
+        public Object resolve(String name, RequestContext ctx) {
+            Map<String, List<String>> p = ctx.request().paramsMap();
             if (p.isEmpty()) {
                 return Collections.emptyMap();
             }
@@ -137,6 +96,10 @@ public abstract class AbstractParamResolver implements ParamResolverFactory {
             });
             return m;
         }
-    }
 
+        @Override
+        public NameAndValue<String> createNameAndValue(Param param) {
+            return AbstractParamResolver.this.createNameAndValue(param);
+        }
+    }
 }

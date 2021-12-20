@@ -28,21 +28,21 @@ import jakarta.ws.rs.PathParam;
 public class PathParamResolver extends AbstractPathVariableParamResolver {
 
     @Override
-    protected NameAndValue createNameAndValue(Param parameter) {
-        PathParam pathParam =
-                parameter.getAnnotation(PathParam.class);
-        assert pathParam != null;
-        return new NameAndValue(pathParam.value(), false,
-                JaxrsMappingUtils.extractDefaultValue(parameter));
+    public boolean supports(Param parameter) {
+        return parameter.hasAnnotation(PathParam.class);
     }
 
     @Override
-    public boolean supports(Param parameter) {
-        return parameter.hasAnnotation(PathParam.class);
+    protected NameAndValue<String> createNameAndValue(Param param) {
+        PathParam pathParam =
+                param.getAnnotation(PathParam.class);
+        assert pathParam != null;
+        return new NameAndValue<>(pathParam.value(), false, JaxrsMappingUtils.extractDefaultValue(param));
     }
 
     @Override
     public int getOrder() {
         return 10;
     }
+
 }

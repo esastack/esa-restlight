@@ -1,12 +1,5 @@
-io.esastack.restlight.jaxrs.resolver.param.CookieValueParamResolver
-io.esastack.restlight.jaxrs.resolver.param.DefaultValueParamResolver
-io.esastack.restlight.jaxrs.resolver.param.FormParamResolver
-io.esastack.restlight.jaxrs.resolver.param.RequestHeaderParamResolver
-io.esastack.restlight.jaxrs.resolver.param.MatrixVariableParamResolver
-io.esastack.restlight.jaxrs.resolver.param.PathParamResolver
-io.esastack.restlight.jaxrs.resolver.param.QueryParamResolver
-io.esastack.restlight.jaxrs.resolver.param.HttpHeadersParamResolver
 io.esastack.restlight.jaxrs.resolver.param.RequestParamResolver
 io.esastack.restlight.jaxrs.resolver.param.SecurityContextParamResolver
 io.esastack.restlight.jaxrs.resolver.param.UriInfoParamResolver
 io.esastack.restlight.jaxrs.resolver.param.AsyncResponseParamResolver
+io.esastack.restlight.jaxrs.resolver.param.DefaultValueParamResolver

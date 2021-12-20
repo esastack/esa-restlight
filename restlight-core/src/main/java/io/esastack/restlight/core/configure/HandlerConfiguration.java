@@ -18,13 +18,13 @@ package io.esastack.restlight.core.configure;
 import esa.commons.collection.Attributes;
 import io.esastack.httpserver.impl.AttributesProxy;
 import io.esastack.restlight.core.resolver.ContextResolverFactory;
-import io.esastack.restlight.core.resolver.ParamConverterFactory;
 import io.esastack.restlight.core.resolver.ParamResolverAdviceFactory;
 import io.esastack.restlight.core.resolver.ParamResolverFactory;
 import io.esastack.restlight.core.resolver.RequestEntityResolverAdviceFactory;
 import io.esastack.restlight.core.resolver.RequestEntityResolverFactory;
 import io.esastack.restlight.core.resolver.ResponseEntityResolverAdviceFactory;
 import io.esastack.restlight.core.resolver.ResponseEntityResolverFactory;
+import io.esastack.restlight.core.resolver.StringConverterFactory;
 import io.esastack.restlight.core.spi.RouteFilterFactory;
 
 import java.util.Collection;
@@ -33,7 +33,7 @@ import java.util.List;
 public class HandlerConfiguration extends AttributesProxy implements Attributes {
 
     private final List<RouteFilterFactory> routeFilters;
-    private final List<ParamConverterFactory> paramConverters;
+    private final List<StringConverterFactory> paramConverters;
     private final List<ParamResolverFactory> paramResolvers;
     private final List<ParamResolverAdviceFactory> paramResolverAdvices;
     private final List<ContextResolverFactory> contextResolvers;
@@ -44,7 +44,7 @@ public class HandlerConfiguration extends AttributesProxy implements Attributes 
 
     public HandlerConfiguration(Attributes attributes,
                                 List<RouteFilterFactory> routeFilters,
-                                List<ParamConverterFactory> paramConverters,
+                                List<StringConverterFactory> paramConverters,
                                 List<ParamResolverFactory> paramResolvers,
                                 List<ParamResolverAdviceFactory> paramResolverAdvices,
                                 List<ContextResolverFactory> contextResolvers,
@@ -64,7 +64,7 @@ public class HandlerConfiguration extends AttributesProxy implements Attributes 
         this.responseEntityResolverAdvices = responseEntityResolverAdvices;
     }
 
-    public List<ParamConverterFactory> getParamConverts() {
+    public List<StringConverterFactory> getParamConverts() {
         return paramConverters;
     }
 

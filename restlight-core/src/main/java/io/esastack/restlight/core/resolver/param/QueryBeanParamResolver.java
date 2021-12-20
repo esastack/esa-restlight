@@ -24,6 +24,7 @@ import io.esastack.restlight.core.method.Param;
 import io.esastack.restlight.core.resolver.HandlerResolverFactory;
 import io.esastack.restlight.core.resolver.ParamResolver;
 import io.esastack.restlight.core.resolver.nav.NameAndValue;
+import io.esastack.restlight.core.resolver.nav.NameAndValueResolverAdapter;
 
 /**
  * @see QueryBean
@@ -57,7 +58,8 @@ public class QueryBeanParamResolver extends RequestBeanParamResolver {
 
         @Override
         protected ParamResolver findResolver(FieldParam fieldParam, HandlerResolverFactory resolverFactory) {
-            return AlwaysUseParamArgumentResolver.INSTANCE.createResolver(fieldParam, resolverFactory.rxSerializers());
+            return new NameAndValueResolverAdapter(
+                    fieldParam, AlwaysUseParamArgumentResolver.INSTANCE.createResolver(fieldParam, resolverFactory));
         }
     }
 
@@ -66,7 +68,23 @@ public class QueryBeanParamResolver extends RequestBeanParamResolver {
         private static final AlwaysUseParamArgumentResolver INSTANCE = new AlwaysUseParamArgumentResolver();
 
         @Override
-        protected NameAndValue createNameAndValue(Param param) {
+        public boolean supports(Param param) {
+            // always return true
+            return true;
+        }
+
+        @Override
+        protected String extractName(Param param) {
+            QueryBean.Name alia = param.getAnnotation(QueryBean.Name.class);
+            if (alia != null && !StringUtils.isEmpty(alia.value())) {
+                return alia.value();
+            } else {
+                return param.name();
+            }
+        }
+
+        @Override
+        protected NameAndValue<String> createNameAndValue(Param param) {
             String name;
             QueryBean.Name alia = param.getAnnotation(QueryBean.Name.class);
             if (alia != null && !StringUtils.isEmpty(alia.value())) {
@@ -74,13 +92,7 @@ public class QueryBeanParamResolver extends RequestBeanParamResolver {
             } else {
                 name = param.name();
             }
-            return new NameAndValue(name, false, null);
-        }
-
-        @Override
-        public boolean supports(Param param) {
-            // always return true
-            return true;
+            return new NameAndValue<>(name, false, null);
         }
     }
 }

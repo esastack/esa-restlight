@@ -33,13 +33,21 @@ public class RequestParamResolver extends AbstractParamResolver {
     }
 
     @Override
-    protected NameAndValue createNameAndValue(Param param) {
+    protected NameAndValue<String> createNameAndValue(Param param) {
         RequestParam0 requestParam
                 = RequestParam0.fromShade(param.getAnnotation(RequestParam0.shadedClass()));
         assert requestParam != null;
-        return new NameAndValue(requestParam.value(),
+        return new NameAndValue<>(requestParam.value(),
                 requestParam.required(),
                 RequestMappingUtils.normaliseDefaultValue(requestParam.defaultValue()));
+    }
+
+    @Override
+    protected String extractName(Param param) {
+        RequestParam0 requestParam
+                = RequestParam0.fromShade(param.getAnnotation(RequestParam0.shadedClass()));
+        assert requestParam != null;
+        return requestParam.value();
     }
 
     @Override

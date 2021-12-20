@@ -21,11 +21,11 @@ import esa.commons.collection.LinkedMultiValueMap;
 import esa.commons.collection.MultiValueMap;
 import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.method.Param;
-import io.esastack.restlight.core.resolver.ParamResolver;
-import io.esastack.restlight.core.resolver.ParamResolverFactory;
+import io.esastack.restlight.core.resolver.HandlerResolverFactory;
+import io.esastack.restlight.core.resolver.nav.NameAndStringsValueResolver;
 import io.esastack.restlight.core.resolver.nav.NameAndValue;
-import io.esastack.restlight.core.serialize.HttpRequestSerializer;
-import io.esastack.restlight.core.util.ConverterUtils;
+import io.esastack.restlight.core.resolver.nav.NameAndValueResolver;
+import io.esastack.restlight.core.resolver.nav.NameAndValueResolverFactory;
 import io.esastack.restlight.server.bootstrap.WebServerException;
 import io.esastack.restlight.server.util.PathVariableUtils;
 
@@ -33,89 +33,106 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 
 /**
- * Implementation of {@link ParamResolverFactory} for resolving argument that annotated by the MatrixVariable
+ * Implementation of {@link NameAndValueResolverFactory} for resolving argument that annotated by
+ * the MatrixVariable
  */
-public abstract class AbstractMatrixParamResolver implements ParamResolverFactory {
+public abstract class AbstractMatrixParamResolver extends NameAndValueResolverFactory {
 
     @Override
-    public ParamResolver createResolver(Param param,
-                                        List<? extends HttpRequestSerializer> serializers) {
-        return new Resolver(param);
+    public NameAndValueResolver createResolver(Param param, HandlerResolverFactory resolverFactory) {
+
+        String pathVar = getPathVar(param);
+        if (isMatrixVariableMap(param, extractName(param))) {
+            return new MapResolver(pathVar, isSingleValueMap(param));
+        }
+
+        return new NameAndStringsValueResolver(param,
+                resolverFactory,
+                (name, ctx) -> extractValues(name, ctx, pathVar, param),
+                createNameAndValue(param));
     }
 
-    @Override
-    public boolean supports(Param param) {
-        return false;
+    protected List<String> extractValues(String name, RequestContext ctx, String pathVar, Param param) {
+
+        Map<String, MultiValueMap<String, String>> pathParameters =
+                PathVariableUtils.getMatrixVariables(ctx);
+
+        if (pathParameters.isEmpty()) {
+            return null;
+        }
+
+        List<String> paramValues = null;
+
+        if (pathVar != null) {
+            MultiValueMap<String, String> m = pathParameters.get(pathVar);
+            if (m != null) {
+                paramValues = m.get(name);
+            }
+        } else {
+            boolean found = false;
+            paramValues = new LinkedList<>();
+            for (MultiValueMap<String, String> params : pathParameters.values()) {
+                if (params.containsKey(name)) {
+                    if (found) {
+                        String paramType = param.type().getName();
+                        throw WebServerException.badRequest("Found more than one match for URI path parameter '"
+                                + name + "' for parameter type ["
+                                + paramType + "]. Use 'pathVar' attribute to disambiguate.");
+                    }
+                    paramValues.addAll(params.get(name));
+                    found = true;
+                }
+            }
+        }
+
+        return paramValues;
     }
 
-    protected class Resolver extends AbstractNameAndValueParamResolver {
+    protected abstract String extractName(Param param);
 
-        private final Function<String, Object> converter;
-        private String pathVar;
-        private boolean matrixVariableMap;
-        private boolean singleValueMap;
+    /**
+     * Obtains path variable from the given {@code param}.
+     *
+     * @param param param
+     * @return value
+     */
+    protected abstract String getPathVar(Param param);
 
-        protected Resolver(Param param) {
-            super(param);
-            this.converter = ConverterUtils.str2ObjectConverter(param.genericType(), p -> p);
+    /**
+     * Constructs an {@link NameAndValue} from the given {@code param}.
+     *
+     * @param param param
+     * @return name and value
+     */
+    protected abstract NameAndValue<String> createNameAndValue(Param param);
+
+    private class MapResolver implements NameAndValueResolver {
+
+        private final String pathVar;
+        private final boolean singleValueMap;
+
+        public MapResolver(String pathVar, boolean singleValueMap) {
+            this.pathVar = pathVar;
+            this.singleValueMap = singleValueMap;
         }
 
         @Override
-        protected Object resolveName(String name, RequestContext context) {
+        public Object resolve(String name, RequestContext ctx) {
             Map<String, MultiValueMap<String, String>> pathParameters =
-                    PathVariableUtils.getMatrixVariables(context);
+                    PathVariableUtils.getMatrixVariables(ctx);
 
             if (pathParameters.isEmpty()) {
-                return matrixVariableMap ? Collections.emptyMap() : null;
+                return Collections.emptyMap();
             }
 
-            List<String> paramValues = null;
-            // Handle matrixVariableMap
-            if (matrixVariableMap) {
-                return getMatrixVariableMap(pathParameters);
-            }
-
-            if (pathVar != null) {
-                MultiValueMap<String, String> m = pathParameters.get(pathVar);
-                if (m != null) {
-                    paramValues = m.get(name);
-                }
-            } else {
-                boolean found = false;
-                paramValues = new LinkedList<>();
-                for (MultiValueMap<String, String> params : pathParameters.values()) {
-                    if (params.containsKey(name)) {
-                        if (found) {
-                            String paramType = param.type().getName();
-                            throw WebServerException.badRequest("Found more than one match for URI path parameter '"
-                                    + name + "' for parameter type ["
-                                    + paramType + "]. Use 'pathVar' attribute to disambiguate.");
-                        }
-                        paramValues.addAll(params.get(name));
-                        found = true;
-                    }
-                }
-            }
-
-            if (paramValues == null || paramValues.isEmpty()) {
-                return null;
-            } else if (paramValues.size() == 1) {
-                return converter.apply(paramValues.get(0));
-            } else {
-                return paramValues;
-            }
+            return getMatrixVariableMap(pathParameters);
         }
 
         @Override
-        protected NameAndValue createNameAndValue(Param param) {
-            NameAndValue nav = AbstractMatrixParamResolver.this.createNameAndValue(param);
-            this.matrixVariableMap = isMatrixVariableMap(param, nav.name);
-            this.singleValueMap = isSingleValueMap(param);
-            this.pathVar = AbstractMatrixParamResolver.this.getPathVar(param);
-            return nav;
+        public NameAndValue<String> createNameAndValue(Param param) {
+            return AbstractMatrixParamResolver.this.createNameAndValue(param);
         }
 
         private Object getMatrixVariableMap(Map<String, MultiValueMap<String, String>> matrixVariables) {
@@ -139,7 +156,6 @@ public abstract class AbstractMatrixParamResolver implements ParamResolverFactor
 
             return singleValueMap ? map.toSingleValueMap() : map;
         }
-
     }
 
     private static boolean isMatrixVariableMap(Param param, String matrixName) {
@@ -157,19 +173,4 @@ public abstract class AbstractMatrixParamResolver implements ParamResolverFactor
         return false;
     }
 
-    /**
-     * Obtains path variable from the given {@code param}.
-     *
-     * @param param param
-     * @return  value
-     */
-    protected abstract String getPathVar(Param param);
-
-    /**
-     * Constructs an {@link NameAndValue} from the given {@code param}.
-     *
-     * @param param param
-     * @return  name and value
-     */
-    protected abstract NameAndValue createNameAndValue(Param param);
 }

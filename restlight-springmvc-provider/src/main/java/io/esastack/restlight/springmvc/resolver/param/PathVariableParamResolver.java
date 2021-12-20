@@ -27,20 +27,21 @@ import io.esastack.restlight.springmvc.annotation.shaded.PathVariable0;
 public class PathVariableParamResolver extends AbstractPathVariableParamResolver {
 
     @Override
-    protected NameAndValue createNameAndValue(Param param) {
-        PathVariable0 pathVariable =
-                PathVariable0.fromShade(param.getAnnotation(PathVariable0.shadedClass()));
-        assert pathVariable != null;
-        return new NameAndValue(pathVariable.value(), pathVariable.required());
+    public boolean supports(Param param) {
+        return param.hasAnnotation(PathVariable0.shadedClass());
     }
 
     @Override
-    public boolean supports(Param param) {
-        return param.hasAnnotation(PathVariable0.shadedClass());
+    protected NameAndValue<String> createNameAndValue(Param param) {
+        PathVariable0 pathVariable =
+                PathVariable0.fromShade(param.getAnnotation(PathVariable0.shadedClass()));
+        assert pathVariable != null;
+        return new NameAndValue<>(pathVariable.value(), pathVariable.required());
     }
 
     @Override
     public int getOrder() {
         return 0;
     }
+
 }

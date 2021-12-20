@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.esastack.restlight.ext.multipart.resolver;
+package io.esastack.restlight.ext.multipart.spi;
 
 import esa.commons.Checks;
 import esa.commons.StringUtils;
@@ -24,9 +24,15 @@ import io.esastack.commons.net.buffer.BufferUtil;
 import io.esastack.commons.net.netty.http.Http1HeadersAdaptor;
 import io.esastack.commons.net.netty.http.Http1HeadersImpl;
 import io.esastack.httpserver.core.HttpRequest;
+import io.esastack.restlight.core.DeployContext;
+import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.method.Param;
-import io.esastack.restlight.core.resolver.param.AbstractNameAndValueParamResolver;
+import io.esastack.restlight.core.resolver.HandlerResolverFactory;
+import io.esastack.restlight.core.resolver.ParamResolverFactory;
+import io.esastack.restlight.core.resolver.nav.NameAndValue;
+import io.esastack.restlight.core.resolver.nav.NameAndValueResolver;
+import io.esastack.restlight.core.resolver.nav.NameAndValueResolverFactory;
 import io.esastack.restlight.ext.multipart.core.MultipartConfig;
 import io.esastack.restlight.ext.multipart.core.MultipartFile;
 import io.esastack.restlight.ext.multipart.core.MultipartFileImpl;
@@ -46,47 +52,69 @@ import io.netty.handler.codec.http.multipart.HttpPostRequestDecoder;
 import io.netty.handler.codec.http.multipart.InterfaceHttpData;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
-abstract class AbstractMultipartParamResolver extends AbstractNameAndValueParamResolver {
+abstract class AbstractMultipartParamResolver extends NameAndValueResolverFactory {
 
-    static final String PREFIX = "$multipart.attr.";
-    private static final AttributeKey<HttpPostMultipartRequestDecoder> MULTIPART_DECODER = AttributeKey
-            .valueOf("$multipart.decoder");
+    static final AttributeKey<String> PREFIX = AttributeKey.stringKey("$multipart.attr.");
+    private static final AttributeKey<HttpPostMultipartRequestDecoder> MULTIPART_DECODER =
+            AttributeKey.valueOf("$multipart.decoder");
+
+    private static final String ENCODING_KEY = "multipart.charset";
+    private static final String USE_DISK_KEY = "multipart.use-disk";
+    private static final String MEM_THRESHOLD_KEY = "multipart.memory-threshold";
+    private static final String MAX_SIZE_KEY = "multipart.max-size";
+    private static final String TEMP_DIR_KEY = "multipart.temp-dir";
 
     private static final Logger logger =
             LoggerFactory.getLogger(AbstractMultipartParamResolver.class);
 
     private static final AttributeKey<Boolean> MULTIPART_BODY_RESOLVED = AttributeKey.valueOf("$multipart.resolved");
-    private static final AttributeKey<String> CLEANER_LISTENER = AttributeKey.valueOf("$multipart.cleaner");
-    static AttributeKey<List<MultipartFile>> MULTIPART_FILES = AttributeKey.valueOf("$multipart.files");
+    private static final AttributeKey<String> CLEANER_LISTENER = AttributeKey.stringKey("$multipart.cleaner");
+    static final AttributeKey<List<MultipartFile>> MULTIPART_FILES = AttributeKey.valueOf("$multipart.files");
 
-    private final HttpDataFactory factory;
-
-    AbstractMultipartParamResolver(Param param, MultipartConfig config) {
-        super(param);
-        Checks.checkNotNull(config, "config");
-        this.factory = buildFactory(config);
-    }
+    private HttpDataFactory factory;
 
     @Override
-    public Object resolve(Param param, RequestContext context) throws Exception {
-        try {
-            return super.resolve(param, context);
-        } finally {
-            tryAddCleaner(context);
-        }
+    public Optional<ParamResolverFactory> factoryBean(DeployContext<? extends RestlightOptions> ctx) {
+        initFactory(Checks.checkNotNull(buildConfig(ctx), "config"));
+        return super.factoryBean(ctx);
     }
 
+    @SuppressWarnings("rawtypes")
     @Override
-    protected Object resolveName(String name, RequestContext context) throws Exception {
-        if (!context.hasAttr(MULTIPART_BODY_RESOLVED)) {
-            final io.netty.handler.codec.http.HttpRequest request0 = formattedReq(context.request());
+    public NameAndValueResolver createResolver(Param param, HandlerResolverFactory resolverFactory) {
+        final NameAndValueResolver resolver = doCreateResolver(param, resolverFactory);
+        Checks.checkNotNull(resolver, "resolver");
+        return new NameAndValueResolver() {
+            @Override
+            public Object resolve(String name, RequestContext ctx) {
+                try {
+                    fillMultipart(ctx);
+                    return resolver.resolve(name, ctx);
+                } finally {
+                    tryAddCleaner(ctx);
+                }
+            }
+
+            @Override
+            public NameAndValue createNameAndValue(Param param) {
+                return resolver.createNameAndValue(param);
+            }
+        };
+    }
+
+    private void fillMultipart(RequestContext ctx) {
+        HttpRequest request = ctx.request();
+        if (!ctx.hasAttr(MULTIPART_BODY_RESOLVED)) {
+            final io.netty.handler.codec.http.HttpRequest request0 = formattedReq(request);
 
             if (!HttpPostRequestDecoder.isMultipart(request0)) {
                 throw new IllegalStateException("You excepted to accept a multipart file or attribute," +
-                        " but Content-Type is: " + context.request().headers().get(HttpHeaderNames.CONTENT_TYPE));
+                        " but Content-Type is: " + request.headers().get(HttpHeaderNames.CONTENT_TYPE));
             }
 
             final HttpPostMultipartRequestDecoder decoder = new HttpPostMultipartRequestDecoder(factory, request0);
@@ -96,32 +124,52 @@ abstract class AbstractMultipartParamResolver extends AbstractNameAndValueParamR
             for (InterfaceHttpData item : resolvedData) {
                 InterfaceHttpData.HttpDataType type = item.getHttpDataType();
                 if (type == InterfaceHttpData.HttpDataType.Attribute) {
-                    context.attr(AttributeKey.valueOf(PREFIX + item.getName())).set(getAndClean((Attribute) item));
+                    try {
+                        ctx.attr(AttributeKey.stringKey(PREFIX + item.getName()))
+                                .set(getAndClean((Attribute) item));
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
                 } else if (type == InterfaceHttpData.HttpDataType.FileUpload) {
                     files.add(parse((FileUpload) item));
                 }
             }
-            context.attr(MULTIPART_FILES).set(files);
-            context.attr(MULTIPART_BODY_RESOLVED).set(true);
-            context.attr(MULTIPART_DECODER).set(decoder);
+            ctx.attr(MULTIPART_FILES).set(files);
+            ctx.attr(MULTIPART_BODY_RESOLVED).set(true);
+            ctx.attr(MULTIPART_DECODER).set(decoder);
         }
-
-        return getParamValue(name, context);
     }
 
-    private static HttpDataFactory buildFactory(final MultipartConfig config) {
-        HttpDataFactory factory;
+    protected abstract NameAndValueResolver doCreateResolver(Param param, HandlerResolverFactory resolverFactory);
+
+    MultipartConfig buildConfig(DeployContext<? extends RestlightOptions> ctx) {
+        MultipartConfig config;
+
+        // Try to get useDiskValue from options, if absent then try to get minSizeValue.
+        final Optional<String> useDiskValue = ctx.options().extOption(USE_DISK_KEY);
+        config = useDiskValue.map(s -> new MultipartConfig(Boolean.parseBoolean(s)))
+                .orElseGet(() -> new MultipartConfig(ctx.options()
+                        .extOption(MEM_THRESHOLD_KEY)
+                        .map(Long::valueOf)
+                        .orElse(0L)));
+
+        ctx.options().extOption(MAX_SIZE_KEY).ifPresent((s) -> config.setMaxSize(Long.parseLong(s)));
+        ctx.options().extOption(ENCODING_KEY).ifPresent((s) -> config.setCharset(Charset.forName(s)));
+        ctx.options().extOption(TEMP_DIR_KEY).ifPresent((s) -> config.setTempDir(StringUtils.trim(s)));
+        return config;
+    }
+
+    void initFactory(final MultipartConfig config) {
         if (config.isUseDisk()) {
-            factory = new DefaultHttpDataFactory(config.isUseDisk(), config.getCharset());
+            this.factory = new DefaultHttpDataFactory(config.isUseDisk(), config.getCharset());
         } else {
-            factory = new DefaultHttpDataFactory(config.getMemoryThreshold(), config.getCharset());
+            this.factory = new DefaultHttpDataFactory(config.getMemoryThreshold(), config.getCharset());
         }
-        factory.setMaxLimit(config.getMaxSize());
+        this.factory.setMaxLimit(config.getMaxSize());
         final String tempDir = config.getTempDir();
         if (StringUtils.isNotEmpty(tempDir)) {
             DiskFileUpload.baseDirectory = tempDir;
         }
-        return factory;
     }
 
     private static String getAndClean(Attribute attr) throws IOException {
@@ -132,14 +180,14 @@ abstract class AbstractMultipartParamResolver extends AbstractNameAndValueParamR
         }
     }
 
-    private void tryAddCleaner(RequestContext context) {
-        final List<MultipartFile> files = context.attr(MULTIPART_FILES).get();
+    private void tryAddCleaner(RequestContext ctx) {
+        final List<MultipartFile> files = ctx.attr(MULTIPART_FILES).get();
 
         // Note: decoder.destroy() is only allowed to invoke once.
-        final HttpPostMultipartRequestDecoder decoder = context.attr(MULTIPART_DECODER).getAndRemove();
-        if (context.attr(CLEANER_LISTENER).get() == null && files != null && decoder != null) {
-            context.attr(CLEANER_LISTENER).set("");
-            context.response().onEnd((r) -> {
+        final HttpPostMultipartRequestDecoder decoder = ctx.attr(MULTIPART_DECODER).getAndRemove();
+        if (ctx.attr(CLEANER_LISTENER).get() == null && files != null && decoder != null) {
+            ctx.attr(CLEANER_LISTENER).set("");
+            ctx.response().onEnd((r) -> {
                 for (MultipartFile file : files) {
                     try {
                         file.delete();
@@ -163,7 +211,6 @@ abstract class AbstractMultipartParamResolver extends AbstractNameAndValueParamR
      * try to get it by reflection by default.
      *
      * @param request request
-     *
      * @return original http request
      */
     protected io.netty.handler.codec.http.HttpRequest formattedReq(HttpRequest request) {
@@ -177,22 +224,11 @@ abstract class AbstractMultipartParamResolver extends AbstractNameAndValueParamR
      * Parse the target {@link FileUpload} to {@link MultipartFile}.
      *
      * @param fileUpload source fileUpload
-     *
      * @return target multipartFile
      */
     protected MultipartFile parse(FileUpload fileUpload) {
         return new MultipartFileImpl(fileUpload);
     }
-
-    /**
-     * Get parameter value from request's attribute.
-     *
-     * @param name    name
-     * @param context context
-     *
-     * @return obj
-     */
-    protected abstract Object getParamValue(String name, RequestContext context);
 
     private static HttpVersion convertToNetty(io.esastack.commons.net.http.HttpVersion version) {
         if (version == io.esastack.commons.net.http.HttpVersion.HTTP_1_0) {

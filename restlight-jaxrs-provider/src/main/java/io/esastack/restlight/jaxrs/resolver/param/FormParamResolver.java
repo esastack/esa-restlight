@@ -34,18 +34,25 @@ public class FormParamResolver extends AbstractParamResolver {
     }
 
     @Override
-    protected NameAndValue createNameAndValue(Param parameter) {
+    protected NameAndValue<String> createNameAndValue(Param param) {
         FormParam formParam
-                = parameter.getAnnotation(FormParam.class);
+                = param.getAnnotation(FormParam.class);
         assert formParam != null;
-        return new NameAndValue(formParam.value(),
+        return new NameAndValue<>(formParam.value(),
                 false,
-                JaxrsMappingUtils.extractDefaultValue(parameter));
+                JaxrsMappingUtils.extractDefaultValue(param));
+    }
+
+    @Override
+    protected String extractName(Param param) {
+        FormParam formParam
+                = param.getAnnotation(FormParam.class);
+        assert formParam != null;
+        return formParam.value();
     }
 
     @Override
     public int getOrder() {
         return 20;
     }
-
 }

@@ -15,50 +15,50 @@
  */
 package io.esastack.restlight.core.resolver.param;
 
-import esa.commons.StringUtils;
+import io.esastack.commons.net.http.HttpHeaders;
 import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.method.Param;
 import io.esastack.restlight.core.resolver.HandlerResolverFactory;
-import io.esastack.restlight.core.resolver.nav.NameAndStringValueResolver;
+import io.esastack.restlight.core.resolver.nav.NameAndStringsValueResolver;
 import io.esastack.restlight.core.resolver.nav.NameAndValue;
 import io.esastack.restlight.core.resolver.nav.NameAndValueResolver;
 import io.esastack.restlight.core.resolver.nav.NameAndValueResolverFactory;
-import io.esastack.restlight.server.util.PathVariableUtils;
+
+import java.util.List;
 
 /**
  * Implementation of {@link NameAndValueResolverFactory} for resolving argument that annotated by
- * the PathVariable.
+ * the RequestHeader.
  */
-public abstract class AbstractPathVariableParamResolver extends NameAndValueResolverFactory {
+public abstract class AbstractHeaderResolver extends NameAndValueResolverFactory {
 
     @Override
     public NameAndValueResolver createResolver(Param param, HandlerResolverFactory resolverFactory) {
-        return new NameAndStringValueResolver(param,
+        if (HttpHeaders.class.equals(param.type())) {
+            return new HeadersResolver();
+        }
+        return new NameAndStringsValueResolver(param,
                 resolverFactory,
-                this::extractValue,
+                this::extractHeaderValues,
                 createNameAndValue(param));
+    }
+
+    private List<String> extractHeaderValues(String name, RequestContext ctx) {
+        return ctx.request().headers().getAll(name);
     }
 
     protected abstract NameAndValue<String> createNameAndValue(Param param);
 
-    protected String extractValue(String name, RequestContext ctx) {
-        String value = PathVariableUtils.getPathVariable(ctx, name);
-        return StringUtils.isEmpty(value) ? value : cleanTemplateValueIfNecessary(value);
-    }
+    private class HeadersResolver implements NameAndValueResolver {
 
-    /**
-     * Remove matrix variables from template if necessary. eg: the url template looks like: /abc/{def}, and the real
-     * request url is: /abc/xyz;a=b;c=d ok the template's real value is "xyz;a=b;c=d", just clan the url and return
-     * xyz.
-     *
-     * @param templateVariable template variable
-     * @return clean template variable
-     */
-    private static String cleanTemplateValueIfNecessary(String templateVariable) {
-        final int pos = templateVariable.indexOf(";");
-        if (pos == -1) {
-            return templateVariable;
+        @Override
+        public Object resolve(String name, RequestContext ctx) {
+            return ctx.request().headers();
         }
-        return templateVariable.substring(0, pos);
+
+        @Override
+        public NameAndValue<String> createNameAndValue(Param param) {
+            return AbstractHeaderResolver.this.createNameAndValue(param);
+        }
     }
 }

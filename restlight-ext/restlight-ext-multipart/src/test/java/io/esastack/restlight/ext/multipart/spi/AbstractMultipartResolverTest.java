@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.esastack.restlight.ext.multipart.resolver;
+package io.esastack.restlight.ext.multipart.spi;
 
 import esa.commons.ClassUtils;
 import io.esastack.commons.net.http.HttpHeaderNames;
@@ -40,9 +40,12 @@ public abstract class AbstractMultipartResolverTest {
     private static final String CONTENT_TYPE = "multipart/form-data; boundary=---1234";
     private static final ResolverSubject SUBJECT = new ResolverSubject();
     private static final MultipartConfig config = new MultipartConfig(false);
-
-    static MultipartAttrArgumentResolver attrResolver = new MultipartAttrArgumentResolver(config);
-    static MultipartFileArgumentResolver fileResolver = new MultipartFileArgumentResolver(config);
+    static MultipartAttrArgumentResolver attrResolver = new MultipartAttrArgumentResolver();
+    static MultipartFileArgumentResolver fileResolver = new MultipartFileArgumentResolver();
+    {
+        attrResolver.initFactory(config);
+        fileResolver.initFactory(config);
+    }
 
     static Map<String, RouteHandlerMethod> handlerMethods;
 

@@ -1,1 +1,8 @@
 io.esastack.restlight.jaxrs.spi.BeanParamResolverProvider
+io.esastack.restlight.jaxrs.resolver.param.CookieValueResolver
+io.esastack.restlight.jaxrs.resolver.param.FormParamResolver
+io.esastack.restlight.jaxrs.resolver.param.RequestHeaderResolver
+io.esastack.restlight.jaxrs.resolver.param.MatrixVariableParamResolver
+io.esastack.restlight.jaxrs.resolver.param.PathParamResolver
+io.esastack.restlight.jaxrs.resolver.param.QueryParamResolver
+io.esastack.restlight.jaxrs.resolver.param.HttpHeadersParamResolver

@@ -18,23 +18,14 @@ package io.esastack.restlight.springmvc.resolver.param;
 import io.esastack.restlight.core.method.Param;
 import io.esastack.restlight.core.resolver.ParamResolverFactory;
 import io.esastack.restlight.core.resolver.nav.NameAndValue;
-import io.esastack.restlight.core.resolver.param.AbstractCookieValueParamResolver;
+import io.esastack.restlight.core.resolver.param.AbstractCookieValueResolver;
 import io.esastack.restlight.springmvc.annotation.shaded.CookieValue0;
 import io.esastack.restlight.springmvc.util.RequestMappingUtils;
 
 /**
  * Implementation of {@link ParamResolverFactory} for resolving argument that annotated by the CookieValue
  */
-public class CookieValueParamResolver extends AbstractCookieValueParamResolver {
-
-    @Override
-    protected NameAndValue createNameAndValue(Param param) {
-        CookieValue0 cookieValue =
-                CookieValue0.fromShade(param.getAnnotation(CookieValue0.shadedClass()));
-        assert cookieValue != null;
-        return new NameAndValue(cookieValue.value(), cookieValue.required(),
-                RequestMappingUtils.normaliseDefaultValue(cookieValue.defaultValue()));
-    }
+public class CookieValueResolver extends AbstractCookieValueResolver {
 
     @Override
     public boolean supports(Param param) {
@@ -42,7 +33,18 @@ public class CookieValueParamResolver extends AbstractCookieValueParamResolver {
     }
 
     @Override
+    protected NameAndValue<String> createNameAndValue(Param param) {
+        CookieValue0 cookieValue =
+                CookieValue0.fromShade(param.getAnnotation(CookieValue0.shadedClass()));
+        assert cookieValue != null;
+        return new NameAndValue<>(cookieValue.value(),
+                cookieValue.required(),
+                RequestMappingUtils.normaliseDefaultValue(cookieValue.defaultValue()));
+    }
+
+    @Override
     public int getOrder() {
         return 0;
     }
+
 }

@@ -18,14 +18,14 @@ package io.esastack.restlight.springmvc.resolver.param;
 import io.esastack.restlight.core.method.Param;
 import io.esastack.restlight.core.resolver.ParamResolverFactory;
 import io.esastack.restlight.core.resolver.nav.NameAndValue;
-import io.esastack.restlight.core.resolver.param.AbstractHeaderParamResolver;
+import io.esastack.restlight.core.resolver.param.AbstractHeaderResolver;
 import io.esastack.restlight.springmvc.annotation.shaded.RequestHeader0;
 import io.esastack.restlight.springmvc.util.RequestMappingUtils;
 
 /**
  * Implementation of {@link ParamResolverFactory} for resolving argument that annotated by the RequestHeader.
  */
-public class RequestHeaderParamResolver extends AbstractHeaderParamResolver {
+public class RequestHeaderResolver extends AbstractHeaderResolver {
 
     @Override
     public boolean supports(Param param) {
@@ -33,11 +33,11 @@ public class RequestHeaderParamResolver extends AbstractHeaderParamResolver {
     }
 
     @Override
-    protected NameAndValue createNameAndValue(Param param) {
+    protected NameAndValue<String> createNameAndValue(Param param) {
         RequestHeader0 requestHeader =
                 RequestHeader0.fromShade(param.getAnnotation(RequestHeader0.shadedClass()));
         assert requestHeader != null;
-        return new NameAndValue(requestHeader.value(),
+        return new NameAndValue<>(requestHeader.value(),
                 requestHeader.required(),
                 RequestMappingUtils.normaliseDefaultValue(requestHeader.defaultValue()));
     }
@@ -46,5 +46,4 @@ public class RequestHeaderParamResolver extends AbstractHeaderParamResolver {
     public int getOrder() {
         return 0;
     }
-
 }

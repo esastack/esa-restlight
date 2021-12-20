@@ -18,33 +18,32 @@ package io.esastack.restlight.jaxrs.resolver.param;
 import io.esastack.restlight.core.method.Param;
 import io.esastack.restlight.core.resolver.ParamResolverFactory;
 import io.esastack.restlight.core.resolver.nav.NameAndValue;
-import io.esastack.restlight.core.resolver.param.AbstractCookieValueParamResolver;
+import io.esastack.restlight.core.resolver.param.AbstractHeaderResolver;
 import io.esastack.restlight.jaxrs.util.JaxrsMappingUtils;
-import jakarta.ws.rs.CookieParam;
+import jakarta.ws.rs.HeaderParam;
 
 /**
- * Implementation of {@link ParamResolverFactory} for resolving argument that annotated by the
- * {@link CookieParam}
+ * Implementation of {@link ParamResolverFactory} for resolving argument that annotated by the RequestHeader.
  */
-public class CookieValueParamResolver extends AbstractCookieValueParamResolver {
+public class RequestHeaderResolver extends AbstractHeaderResolver {
 
     @Override
-    protected NameAndValue createNameAndValue(Param parameter) {
-        CookieParam cookieParam = parameter.getAnnotation(CookieParam.class);
-        assert cookieParam != null;
-        return new NameAndValue(cookieParam.value(),
-                false,
-                JaxrsMappingUtils.extractDefaultValue(parameter));
+    public boolean supports(Param param) {
+        return param.hasAnnotation(HeaderParam.class);
     }
 
     @Override
-    public boolean supports(Param parameter) {
-        return parameter.hasAnnotation(CookieParam.class);
+    protected NameAndValue<String> createNameAndValue(Param param) {
+        HeaderParam headerParam =
+                param.getAnnotation(HeaderParam.class);
+        assert headerParam != null;
+        return new NameAndValue<>(headerParam.value(),
+                false,
+                JaxrsMappingUtils.extractDefaultValue(param));
     }
 
     @Override
     public int getOrder() {
         return 10;
     }
-
 }

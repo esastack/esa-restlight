@@ -23,6 +23,7 @@ import io.esastack.restlight.core.serialize.HttpRequestSerializer;
 import io.esastack.restlight.core.serialize.HttpResponseSerializer;
 import io.esastack.restlight.core.spi.FutureTransferFactory;
 
+import java.lang.reflect.Type;
 import java.util.List;
 
 public interface HandlerResolverFactory {
@@ -30,8 +31,8 @@ public interface HandlerResolverFactory {
     /**
      * Obtains the {@link FutureTransfer} for given {@link HandlerMethod}.
      *
-     * @param method    method
-     * @return          future transfer
+     * @param method method
+     * @return future transfer
      */
     FutureTransfer getFutureTransfer(HandlerMethod method);
 
@@ -39,23 +40,24 @@ public interface HandlerResolverFactory {
      * Obtains the {@link RouteFilter}s for given {@code route}.
      *
      * @param method handler method
-     * @return      filters
+     * @return filters
      */
     List<RouteFilter> getRouteFilters(HandlerMethod method);
 
     /**
      * Obtains the {@link ParamResolver} for given {@code param} which is used to convert a {@link String} to object.
      *
-     * @param param param
-     * @return      converter
+     * @param type         type
+     * @param genericType  genericType
+     * @param relatedParam relatedParams
+     * @return StringConverter
      */
-    ParamConverter getParamConverter(Param param);
+    StringConverter getStringConverter(Class<?> type, Type genericType, Param relatedParam);
 
     /**
      * Get the {@link ParamResolver} for given parameter.
      *
      * @param param parameter
-     *
      * @return resolver
      */
     ParamResolver getParamResolver(Param param);
@@ -64,7 +66,7 @@ public interface HandlerResolverFactory {
      * Obtains the {@link ContextResolver} for given {@code param}.
      *
      * @param param param
-     * @return  context resolver
+     * @return context resolver
      */
     ContextResolver getContextResolver(Param param);
 
@@ -72,7 +74,7 @@ public interface HandlerResolverFactory {
      * Obtains the {@link ParamResolverAdvice}s for given parameter.
      *
      * @param param param
-     * @return      advices
+     * @return advices
      */
     List<ParamResolverAdvice> getParamResolverAdvices(Param param, ParamResolver resolver);
 
@@ -80,7 +82,7 @@ public interface HandlerResolverFactory {
      * Obtains request entity resolvers, must not be {@code null}.
      *
      * @param param param
-     * @return  resolvers
+     * @return resolvers
      */
     List<RequestEntityResolver> getRequestEntityResolvers(Param param);
 
@@ -88,7 +90,7 @@ public interface HandlerResolverFactory {
      * Obtains the {@link RequestEntityResolverAdvice}s for given {@link HandlerMethod}.
      *
      * @param handlerMethod handlerMethod
-     * @return  advices
+     * @return advices
      */
     List<RequestEntityResolverAdvice> getRequestEntityResolverAdvices(HandlerMethod handlerMethod);
 
@@ -103,7 +105,7 @@ public interface HandlerResolverFactory {
      * Obtains the {@link ResponseEntityResolverAdvice}s for given {@link ResponseEntity}.
      *
      * @param entity response entity
-     * @return  advices
+     * @return advices
      */
     List<ResponseEntityResolverAdvice> getResponseEntityResolverAdvices(ResponseEntity entity);
 
@@ -124,7 +126,7 @@ public interface HandlerResolverFactory {
     /**
      * Obtains all the {@link FutureTransferFactory}s in this factory.
      *
-     * @return  immutable factories
+     * @return immutable factories
      */
     List<FutureTransferFactory> futureTransfers();
 

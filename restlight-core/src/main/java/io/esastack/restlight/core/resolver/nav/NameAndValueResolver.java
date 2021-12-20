@@ -13,18 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.esastack.restlight.core.resolver;
+package io.esastack.restlight.core.resolver.nav;
 
-@FunctionalInterface
-public interface ParamConverter {
+import io.esastack.restlight.core.context.RequestContext;
+import io.esastack.restlight.core.method.Param;
+
+public interface NameAndValueResolver {
 
     /**
-     * Converts the given {@code value} to an object.
+     * Resolves method parameter into an argument value.
      *
-     * @param value value
-     * @return      object
+     * @param name name of parameter
+     * @param ctx  context of request
+     * @return resolved
      */
-    Object fromString(String value);
+    Object resolve(String name, RequestContext ctx);
 
+    /**
+     * Create an instance of {@link NameAndValue} for the parameter.
+     *
+     * @param param parameter
+     * @return name and value
+     */
+    NameAndValue<?> createNameAndValue(Param param);
 }
-

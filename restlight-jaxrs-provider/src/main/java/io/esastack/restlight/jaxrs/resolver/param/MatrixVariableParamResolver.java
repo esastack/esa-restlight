@@ -28,17 +28,24 @@ import jakarta.ws.rs.MatrixParam;
 public class MatrixVariableParamResolver extends AbstractMatrixParamResolver {
 
     @Override
-    protected NameAndValue createNameAndValue(Param parameter) {
-        MatrixParam matrixParam =
-                parameter.getAnnotation(MatrixParam.class);
-        assert matrixParam != null;
-        return new NameAndValue(matrixParam.value(), false,
-                JaxrsMappingUtils.extractDefaultValue(parameter));
+    public boolean supports(Param parameter) {
+        return parameter.hasAnnotation(MatrixParam.class);
     }
 
     @Override
-    public boolean supports(Param parameter) {
-        return parameter.hasAnnotation(MatrixParam.class);
+    protected NameAndValue<String> createNameAndValue(Param param) {
+        MatrixParam matrixParam =
+                param.getAnnotation(MatrixParam.class);
+        assert matrixParam != null;
+        return new NameAndValue<>(matrixParam.value(), false, JaxrsMappingUtils.extractDefaultValue(param));
+    }
+
+    @Override
+    protected String extractName(Param param) {
+        MatrixParam matrixParam =
+                param.getAnnotation(MatrixParam.class);
+        assert matrixParam != null;
+        return matrixParam.value();
     }
 
     @Override

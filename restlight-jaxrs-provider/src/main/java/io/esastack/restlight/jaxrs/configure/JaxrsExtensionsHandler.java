@@ -32,9 +32,9 @@ import io.esastack.restlight.jaxrs.adapter.JaxrsContextResolverAdapter;
 import io.esastack.restlight.jaxrs.adapter.JaxrsExceptionMapperAdapter;
 import io.esastack.restlight.jaxrs.adapter.MessageBodyReaderAdapter;
 import io.esastack.restlight.jaxrs.adapter.MessageBodyWriterAdapter;
-import io.esastack.restlight.jaxrs.adapter.ParamConverterProviderAdapter;
 import io.esastack.restlight.jaxrs.adapter.PreMatchRequestFiltersAdapter;
 import io.esastack.restlight.jaxrs.adapter.ReaderInterceptorsAdapter;
+import io.esastack.restlight.jaxrs.adapter.StringConverterProviderAdapter;
 import io.esastack.restlight.jaxrs.adapter.WriterInterceptorsAdapter;
 import io.esastack.restlight.jaxrs.impl.core.ConfigurableImpl;
 import io.esastack.restlight.jaxrs.impl.core.ConfigurationImpl;
@@ -116,7 +116,7 @@ public class JaxrsExtensionsHandler implements ExtensionsHandler {
 
         if (application != null) {
             ApplicationPath pathAnn = AnnotationUtils.findAnnotation(ClassUtils
-                            .getUserType(application.underlying()), ApplicationPath.class);
+                    .getUserType(application.underlying()), ApplicationPath.class);
             if (pathAnn != null) {
                 /*
                  * NOTE: If the external context-path is empty, try to use the value defined in @ApplicationPath.
@@ -209,7 +209,7 @@ public class JaxrsExtensionsHandler implements ExtensionsHandler {
             deployments.addContextResolver(new JaxrsContextResolverAdapter(entry.getValue()));
         }
         for (ProxyComponent<ParamConverterProvider> provider : factory.paramConverterProviders()) {
-            deployments.addParamConverter(new ParamConverterProviderAdapter(provider.proxied()));
+            deployments.addStringConverter(new StringConverterProviderAdapter(provider.proxied()));
         }
 
         this.covertThenAddFilters(appNameBindings);

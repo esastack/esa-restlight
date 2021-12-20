@@ -15,8 +15,12 @@
  */
 package io.esastack.restlight.core.util;
 
+import esa.commons.Checks;
+import esa.commons.ClassUtils;
 import org.junit.jupiter.api.Test;
+import org.mockito.internal.util.collections.Sets;
 
+import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -31,6 +35,7 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.function.Function;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -189,7 +194,7 @@ class ConverterUtilsTest {
     void testConvertString2Optional() throws NoSuchMethodException {
         final Optional<String> optional0 = (Optional<String>)
                 ConverterUtils.str2ObjectConverter(Subject.class.getDeclaredMethod("optionalString")
-                .getGenericReturnType()).apply(null);
+                        .getGenericReturnType()).apply(null);
         assertFalse(optional0.isPresent());
 
         final Optional<Long> optional1 = (Optional<Long>)
@@ -224,33 +229,51 @@ class ConverterUtilsTest {
     void testConvertStringCollection2PrimitiveArray() {
         final List<String> forTest = Arrays.asList("1", "2", "3", "4");
         assertArrayEquals(new byte[]{1, 2, 3, 4},
-                (byte[]) ConverterUtils.strs2ObjectConverter(byte[].class).apply(forTest));
+                (byte[]) strs2ObjectConverter(byte[].class).apply(forTest));
         assertArrayEquals(new Byte[]{1, 2, 3, 4},
-                (Byte[]) ConverterUtils.strs2ObjectConverter(Byte[].class).apply(forTest));
+                (Byte[]) strs2ObjectConverter(Byte[].class).apply(forTest));
         assertArrayEquals(new Character[]{"1".charAt(0), "2".charAt(0), "3".charAt(0), "4".charAt(0)},
-                (Character[]) ConverterUtils.strs2ObjectConverter(Character[].class).apply(forTest));
+                (Character[]) strs2ObjectConverter(Character[].class).apply(forTest));
         assertArrayEquals(new char[]{"1".charAt(0), "2".charAt(0), "3".charAt(0), "4".charAt(0)},
-                (char[]) ConverterUtils.strs2ObjectConverter(char[].class).apply(forTest));
+                (char[]) strs2ObjectConverter(char[].class).apply(forTest));
         assertArrayEquals(new short[]{1, 2, 3, 4},
-                (short[]) ConverterUtils.strs2ObjectConverter(short[].class).apply(forTest));
+                (short[]) strs2ObjectConverter(short[].class).apply(forTest));
         assertArrayEquals(new Short[]{1, 2, 3, 4},
-                (Short[]) ConverterUtils.strs2ObjectConverter(Short[].class).apply(forTest));
+                (Short[]) strs2ObjectConverter(Short[].class).apply(forTest));
         assertArrayEquals(new int[]{1, 2, 3, 4},
-                (int[]) ConverterUtils.strs2ObjectConverter(int[].class).apply(forTest));
+                (int[]) strs2ObjectConverter(int[].class).apply(forTest));
         assertArrayEquals(new Integer[]{1, 2, 3, 4},
-                (Integer[]) ConverterUtils.strs2ObjectConverter(Integer[].class).apply(forTest));
+                (Integer[]) strs2ObjectConverter(Integer[].class).apply(forTest));
         assertArrayEquals(new long[]{1L, 2L, 3L, 4L},
-                (long[]) ConverterUtils.strs2ObjectConverter(long[].class).apply(forTest));
+                (long[]) strs2ObjectConverter(long[].class).apply(forTest));
         assertArrayEquals(new Long[]{1L, 2L, 3L, 4L},
-                (Long[]) ConverterUtils.strs2ObjectConverter(Long[].class).apply(forTest));
+                (Long[]) strs2ObjectConverter(Long[].class).apply(forTest));
         assertArrayEquals(new double[]{1D, 2D, 3D, 4D},
-                (double[]) ConverterUtils.strs2ObjectConverter(double[].class).apply(forTest));
+                (double[]) strs2ObjectConverter(double[].class).apply(forTest));
         assertArrayEquals(new Double[]{1D, 2D, 3D, 4D},
-                (Double[]) ConverterUtils.strs2ObjectConverter(Double[].class).apply(forTest));
+                (Double[]) strs2ObjectConverter(Double[].class).apply(forTest));
         assertArrayEquals(new float[]{1f, 2f, 3f, 4f},
-                (float[]) ConverterUtils.strs2ObjectConverter(float[].class).apply(forTest));
+                (float[]) strs2ObjectConverter(float[].class).apply(forTest));
         assertArrayEquals(new Float[]{1f, 2f, 3f, 4f},
-                (Float[]) ConverterUtils.strs2ObjectConverter(Float[].class).apply(forTest));
+                (Float[]) strs2ObjectConverter(Float[].class).apply(forTest));
+    }
+
+    @Test
+    void testConvertStringCollection2Collection() throws NoSuchMethodException {
+        final List<String> forTest = Arrays.asList("1", "2", "3", "4");
+        assertEquals(Arrays.asList("1".charAt(0), "2".charAt(0), "3".charAt(0), "4".charAt(0)),
+                strs2ObjectConverter(Subject.class.getDeclaredMethod("charList")
+                        .getGenericReturnType()).apply(forTest));
+
+        assertEquals(Sets.newSet("1".charAt(0), "2".charAt(0), "3".charAt(0), "4".charAt(0)),
+                strs2ObjectConverter(Subject.class.getDeclaredMethod("charSet")
+                        .getGenericReturnType()).apply(forTest));
+    }
+
+    private static Function<Collection<String>, Object> strs2ObjectConverter(Type requiredType) {
+        Checks.checkNotNull(requiredType, "requiredType");
+        final Class<?> requiredClass = ClassUtils.getRawType(requiredType);
+        return ConverterUtils.strs2ObjectConverter(requiredClass, requiredType, ConverterUtils::getStr2ObjectConverter);
     }
 
     private static class MyList extends ArrayList {
@@ -260,6 +283,10 @@ class ConverterUtilsTest {
 
     private interface Subject {
         Collection<Short> shortCollection();
+
+        List<Character> charList();
+
+        Set<Character> charSet();
 
         Set<Integer> intSet();
 

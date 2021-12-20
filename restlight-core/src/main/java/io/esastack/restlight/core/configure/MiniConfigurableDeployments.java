@@ -31,8 +31,6 @@ import io.esastack.restlight.core.resolver.ContextResolverAdapter;
 import io.esastack.restlight.core.resolver.ContextResolverFactory;
 import io.esastack.restlight.core.resolver.ExceptionResolver;
 import io.esastack.restlight.core.resolver.HandlerResolverFactory;
-import io.esastack.restlight.core.resolver.ParamConverterAdapter;
-import io.esastack.restlight.core.resolver.ParamConverterFactory;
 import io.esastack.restlight.core.resolver.ParamResolverAdapter;
 import io.esastack.restlight.core.resolver.ParamResolverAdviceAdapter;
 import io.esastack.restlight.core.resolver.ParamResolverAdviceFactory;
@@ -45,6 +43,7 @@ import io.esastack.restlight.core.resolver.ResponseEntityResolver;
 import io.esastack.restlight.core.resolver.ResponseEntityResolverAdviceAdapter;
 import io.esastack.restlight.core.resolver.ResponseEntityResolverAdviceFactory;
 import io.esastack.restlight.core.resolver.ResponseEntityResolverFactory;
+import io.esastack.restlight.core.resolver.StringConverterFactory;
 import io.esastack.restlight.core.serialize.HttpBodySerializer;
 import io.esastack.restlight.core.serialize.HttpRequestSerializer;
 import io.esastack.restlight.core.serialize.HttpResponseSerializer;
@@ -368,38 +367,26 @@ public class MiniConfigurableDeployments {
     }
 
     /**
-     * Adds {@link ParamConverterAdapter} which will be registered in the {@link HandlerResolverFactory}
+     * Adds {@link StringConverterFactory} which will be registered in the {@link HandlerResolverFactory}
      *
      * @param converter resolver
      *
      * @return this deployments
      */
-    public MiniConfigurableDeployments addParamConverter(ParamConverterAdapter converter) {
-        deployments.addParamConverter(converter);
+    public MiniConfigurableDeployments addStringConverter(StringConverterFactory converter) {
+        deployments.addStringConverter(converter);
         return self();
     }
 
     /**
-     * Adds {@link ParamConverterFactory} which will be registered in the {@link HandlerResolverFactory}
-     *
-     * @param converter resolver
-     *
-     * @return this deployments
-     */
-    public MiniConfigurableDeployments addParamConverter(ParamConverterFactory converter) {
-        deployments.addParamConverter(converter);
-        return self();
-    }
-
-    /**
-     * Adds {@link ParamConverterFactory}s which will be registered in the {@link HandlerResolverFactory}
+     * Adds {@link StringConverterFactory}s which will be registered in the {@link HandlerResolverFactory}
      *
      * @param converters converters
      *
      * @return this deployments
      */
-    public MiniConfigurableDeployments addParamConverters(Collection<? extends ParamConverterFactory> converters) {
-        deployments.addParamConverters(converters);
+    public MiniConfigurableDeployments addStringConverters(Collection<? extends StringConverterFactory> converters) {
+        deployments.addStringConverters(converters);
         return self();
     }
 
