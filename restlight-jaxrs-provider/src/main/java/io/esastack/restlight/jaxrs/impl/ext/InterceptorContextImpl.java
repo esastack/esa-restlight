@@ -39,24 +39,24 @@ public class InterceptorContextImpl implements InterceptorContext {
 
     @Override
     public Object getProperty(String name) {
-        return underlying.context().attr(AttributeKey.valueOf(name)).get();
+        return underlying.context().attrs().attr(AttributeKey.valueOf(name)).get();
     }
 
     @Override
     public Collection<String> getPropertyNames() {
-        List<String> names = new ArrayList<>(underlying.context().size());
-        underlying.context().forEach((name, value) -> names.add(name.name()));
+        List<String> names = new ArrayList<>(underlying.context().attrs().size());
+        underlying.context().attrs().forEach((name, value) -> names.add(name.name()));
         return names;
     }
 
     @Override
     public void setProperty(String name, Object object) {
-        underlying.context().attr(AttributeKey.valueOf(name)).set(object);
+        underlying.context().attrs().attr(AttributeKey.valueOf(name)).set(object);
     }
 
     @Override
     public void removeProperty(String name) {
-        underlying.context().attr(AttributeKey.valueOf(name)).remove();
+        underlying.context().attrs().attr(AttributeKey.valueOf(name)).remove();
     }
 
     @Override

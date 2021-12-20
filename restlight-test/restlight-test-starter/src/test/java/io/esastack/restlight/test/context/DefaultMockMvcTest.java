@@ -41,7 +41,7 @@ class DefaultMockMvcTest {
         when(handler.process(any())).then(mock -> {
             final RequestContext context = mock.getArgument(0, RequestContext.class);
             final HttpResponse res = context.response();
-            context.attr(DefaultMockMvc.RETURN_VALUE_KEY).set("foo");
+            context.attrs().attr(DefaultMockMvc.RETURN_VALUE_KEY).set("foo");
             res.status(200);
             res.entity("foo".getBytes());
             return Futures.completedFuture();
@@ -65,7 +65,7 @@ class DefaultMockMvcTest {
         final MockHttpRequest request = MockHttpRequest.aMockRequest().build();
         when(handler.process(any())).then(mock -> {
             final RequestContext ctx = mock.getArgument(0, RequestContext.class);
-            ctx.attr(DefaultMockMvc.RETURN_VALUE_KEY).set(Futures.completedFuture("foo"));
+            ctx.attrs().attr(DefaultMockMvc.RETURN_VALUE_KEY).set(Futures.completedFuture("foo"));
             return Futures.completedFuture();
         });
         mockMvc.perform(request)

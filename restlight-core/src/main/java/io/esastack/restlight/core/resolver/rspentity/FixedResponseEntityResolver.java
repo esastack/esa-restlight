@@ -63,7 +63,7 @@ public abstract class FixedResponseEntityResolver extends AbstractResponseEntity
                     .findFirst()
                     .orElseThrow(() -> new IllegalArgumentException("Could not findFor ResponseBody serializer. " +
                             "target type:" + target.getName()));
-            context.attr(MATCHED_SERIALIZER).set(serializer);
+            context.attrs().attr(MATCHED_SERIALIZER).set(serializer);
             return super.writeTo(entity, channel, context);
         } else {
             return HandledValue.failed();
@@ -74,7 +74,7 @@ public abstract class FixedResponseEntityResolver extends AbstractResponseEntity
     protected byte[] serialize(ResponseEntity entity,
                                List<MediaType> mediaTypes,
                                RequestContext context) throws Exception {
-        final HttpResponseSerializer serializer = context.attr(MATCHED_SERIALIZER).getAndRemove();
+        final HttpResponseSerializer serializer = context.attrs().attr(MATCHED_SERIALIZER).getAndRemove();
         HandledValue<byte[]> value = Serializers.serializeBySerializer(serializer, entity);
         if (value.isSuccess()) {
             return value.value();

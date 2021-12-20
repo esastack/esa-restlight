@@ -41,15 +41,15 @@ public final class PathVariableUtils {
     }
 
     public static Map<String, String> getPathVariables(RequestContext context) {
-        return context.attr(PatternsPredicate.TEMPLATE_VARIABLES).get();
+        return context.attrs().attr(PatternsPredicate.TEMPLATE_VARIABLES).get();
     }
 
     public static Map<String, MultiValueMap<String, String>> getMatrixVariables(RequestContext context) {
         Map<String, MultiValueMap<String, String>> matrixVars =
-                context.attr(MATRIX_VARIABLES_ATTRIBUTE).get();
+                context.attrs().attr(MATRIX_VARIABLES_ATTRIBUTE).get();
         if (matrixVars == null) {
             matrixVars = extractMatrixVariables(getPathVariables(context));
-            context.attr(MATRIX_VARIABLES_ATTRIBUTE).set(matrixVars);
+            context.attrs().attr(MATRIX_VARIABLES_ATTRIBUTE).set(matrixVars);
         }
 
         return matrixVars;

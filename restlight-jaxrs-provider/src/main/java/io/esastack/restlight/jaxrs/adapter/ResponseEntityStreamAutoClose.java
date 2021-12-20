@@ -23,8 +23,8 @@ import io.esastack.restlight.server.context.FilterContext;
 import io.esastack.restlight.server.context.RequestContext;
 import io.esastack.restlight.server.core.HttpOutputStream;
 import io.esastack.restlight.server.core.impl.HttpOutputStreamImpl;
-import io.esastack.restlight.server.handler.FilterChain;
 import io.esastack.restlight.server.handler.Filter;
+import io.esastack.restlight.server.handler.FilterChain;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -38,7 +38,7 @@ public class ResponseEntityStreamAutoClose implements Filter {
     public CompletableFuture<Void> doFilter(FilterContext context, FilterChain chain) {
         return chain.doFilter(context).whenComplete((v, th) -> {
             HttpOutputStream closable;
-            if ((closable = context.attr(CLOSURE_STREAM).get()) != null) {
+            if ((closable = context.attrs().attr(CLOSURE_STREAM).get()) != null) {
                 IOUtils.closeQuietly(closable);
             }
         });
@@ -51,8 +51,8 @@ public class ResponseEntityStreamAutoClose implements Filter {
 
     static HttpOutputStreamClosure getNonClosableOutputStream(RequestContext context) {
         HttpOutputStream outputStream = ResponseEntityStreamChannelImpl.get(context).outputStream();
-        if (!context.hasAttr(CLOSURE_STREAM)) {
-            context.attr(CLOSURE_STREAM).set(outputStream);
+        if (!context.attrs().hasAttr(CLOSURE_STREAM)) {
+            context.attrs().attr(CLOSURE_STREAM).set(outputStream);
         }
         return new HttpOutputStreamClosure(outputStream);
     }

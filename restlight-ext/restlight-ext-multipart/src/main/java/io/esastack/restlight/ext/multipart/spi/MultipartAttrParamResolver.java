@@ -36,7 +36,7 @@ public class MultipartAttrParamResolver extends AbstractMultipartParamResolver {
         return new NameAndStringValueResolver(
                 param,
                 resolverFactory,
-                (name, ctx) -> ctx.attr(AttributeKey.stringKey(PREFIX + name)).get(),
+                (name, ctx) -> ctx.attrs().attr(AttributeKey.stringKey(PREFIX + name)).get(),
                 createNameAndValue(param)
         );
     }

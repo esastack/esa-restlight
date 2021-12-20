@@ -109,7 +109,7 @@ abstract class AbstractMultipartParamResolver extends NameAndValueResolverFactor
 
     private void fillMultipart(RequestContext ctx) {
         HttpRequest request = ctx.request();
-        if (!ctx.hasAttr(MULTIPART_BODY_RESOLVED)) {
+        if (!ctx.attrs().hasAttr(MULTIPART_BODY_RESOLVED)) {
             final io.netty.handler.codec.http.HttpRequest request0 = formattedReq(request);
 
             if (!HttpPostRequestDecoder.isMultipart(request0)) {
@@ -125,7 +125,7 @@ abstract class AbstractMultipartParamResolver extends NameAndValueResolverFactor
                 InterfaceHttpData.HttpDataType type = item.getHttpDataType();
                 if (type == InterfaceHttpData.HttpDataType.Attribute) {
                     try {
-                        ctx.attr(AttributeKey.stringKey(PREFIX + item.getName()))
+                        ctx.attrs().attr(AttributeKey.stringKey(PREFIX + item.getName()))
                                 .set(getAndClean((Attribute) item));
                     } catch (IOException e) {
                         throw new RuntimeException(e);
@@ -134,9 +134,9 @@ abstract class AbstractMultipartParamResolver extends NameAndValueResolverFactor
                     files.add(parse((FileUpload) item));
                 }
             }
-            ctx.attr(MULTIPART_FILES).set(files);
-            ctx.attr(MULTIPART_BODY_RESOLVED).set(true);
-            ctx.attr(MULTIPART_DECODER).set(decoder);
+            ctx.attrs().attr(MULTIPART_FILES).set(files);
+            ctx.attrs().attr(MULTIPART_BODY_RESOLVED).set(true);
+            ctx.attrs().attr(MULTIPART_DECODER).set(decoder);
         }
     }
 
@@ -181,12 +181,12 @@ abstract class AbstractMultipartParamResolver extends NameAndValueResolverFactor
     }
 
     private void tryAddCleaner(RequestContext ctx) {
-        final List<MultipartFile> files = ctx.attr(MULTIPART_FILES).get();
+        final List<MultipartFile> files = ctx.attrs().attr(MULTIPART_FILES).get();
 
         // Note: decoder.destroy() is only allowed to invoke once.
-        final HttpPostMultipartRequestDecoder decoder = ctx.attr(MULTIPART_DECODER).getAndRemove();
-        if (ctx.attr(CLEANER_LISTENER).get() == null && files != null && decoder != null) {
-            ctx.attr(CLEANER_LISTENER).set("");
+        final HttpPostMultipartRequestDecoder decoder = ctx.attrs().attr(MULTIPART_DECODER).getAndRemove();
+        if (ctx.attrs().attr(CLEANER_LISTENER).get() == null && files != null && decoder != null) {
+            ctx.attrs().attr(CLEANER_LISTENER).set("");
             ctx.response().onEnd((r) -> {
                 for (MultipartFile file : files) {
                     try {

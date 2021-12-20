@@ -31,7 +31,7 @@ public class ResponseEntityChannelImpl implements ResponseEntityChannel {
 
     public ResponseEntityChannelImpl(RequestContext context) {
         Checks.checkNotNull(context, "context");
-        this.response = Checks.checkNotNull(context.attr(RequestContextImpl.UNDERLYING_RESPONSE).get(),
+        this.response = Checks.checkNotNull(context.attrs().attr(RequestContextImpl.UNDERLYING_RESPONSE).get(),
                 "response");
     }
 

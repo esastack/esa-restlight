@@ -21,8 +21,8 @@ import io.esastack.restlight.core.handler.LinkedRouteFilterChain;
 import io.esastack.restlight.core.handler.RouteFilter;
 import io.esastack.restlight.core.interceptor.InternalInterceptor;
 import io.esastack.restlight.core.resolver.ExceptionResolver;
-import io.esastack.restlight.server.core.RoutedRequest;
 import io.esastack.restlight.server.context.impl.RouteContextImpl;
+import io.esastack.restlight.server.core.RoutedRequest;
 import io.esastack.restlight.server.core.impl.RoutedRequestImpl;
 import io.esastack.restlight.server.route.CompletionHandler;
 import io.esastack.restlight.server.route.ExceptionHandler;
@@ -75,7 +75,7 @@ public class RouteExecutionImpl implements RouteExecution {
         LinkedRouteFilterChain chain = LinkedRouteFilterChain.immutable(filters, execution::handle);
         return context -> {
             RoutedRequest request = new RoutedRequestImpl(context.request());
-            return chain.doNext(mapping, new RouteContextImpl(context, request, context.response()));
+            return chain.doNext(mapping, new RouteContextImpl(context.attrs(), request, context.response()));
         };
     }
 

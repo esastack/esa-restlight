@@ -58,7 +58,7 @@ public class FilteredHandler implements RestlightHandler {
     @Override
     public CompletableFuture<Void> process(RequestContext context) {
         CompletableFuture<Void> promise = new CompletableFuture<>();
-        filterChain.doFilter(new FilterContextImpl(context, new FilteringRequestImpl(context.request()),
+        filterChain.doFilter(new FilterContextImpl(context.attrs(), new FilteringRequestImpl(context.request()),
                 context.response()))
                 .whenComplete((v, th) -> {
                     if (th != null) {

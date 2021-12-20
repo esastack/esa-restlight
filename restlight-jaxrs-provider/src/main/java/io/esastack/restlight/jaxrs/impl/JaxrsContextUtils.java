@@ -18,7 +18,6 @@ package io.esastack.restlight.jaxrs.impl;
 import esa.commons.collection.AttributeKey;
 import esa.commons.reflect.AnnotationUtils;
 import esa.commons.reflect.ReflectionUtils;
-import io.esastack.restlight.server.context.RequestContext;
 import io.esastack.restlight.core.method.MethodParam;
 import io.esastack.restlight.core.method.Param;
 import io.esastack.restlight.jaxrs.impl.container.AbstractContainerRequestContext;
@@ -29,6 +28,7 @@ import io.esastack.restlight.jaxrs.impl.core.RequestImpl;
 import io.esastack.restlight.jaxrs.impl.core.ResponseImpl;
 import io.esastack.restlight.jaxrs.impl.core.UriInfoImpl;
 import io.esastack.restlight.server.context.FilterContext;
+import io.esastack.restlight.server.context.RequestContext;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.Request;
@@ -61,47 +61,47 @@ public final class JaxrsContextUtils {
     }
 
     public static Request getRequest(RequestContext context) {
-        Request request = context.attr(REQUEST_KEY).get();
+        Request request = context.attrs().attr(REQUEST_KEY).get();
         if (request == null) {
             request = new RequestImpl(context.request(), context.response());
-            context.attr(REQUEST_KEY).set(request);
+            context.attrs().attr(REQUEST_KEY).set(request);
         }
         return request;
     }
 
     public static UriInfoImpl getUriInfo(RequestContext context) {
-        UriInfoImpl uriInfo = context.attr(URI_KEY).get();
+        UriInfoImpl uriInfo = context.attrs().attr(URI_KEY).get();
         if (uriInfo == null) {
             uriInfo = new UriInfoImpl(extractURI(context), context);
-            context.attr(URI_KEY).set(uriInfo);
+            context.attrs().attr(URI_KEY).set(uriInfo);
         }
         return uriInfo;
     }
 
     public static HttpHeaders getHeaders(RequestContext context) {
-        HttpHeaders headers = context.attr(REQUEST_HEADERS_KEY).get();
+        HttpHeaders headers = context.attrs().attr(REQUEST_HEADERS_KEY).get();
         if (headers == null) {
             headers = new HttpRequestHeaders(context.request());
-            context.attr(REQUEST_HEADERS_KEY).set(headers);
+            context.attrs().attr(REQUEST_HEADERS_KEY).set(headers);
         }
         return headers;
     }
 
     public static AbstractContainerRequestContext getRequestContext(RequestContext context) {
-        AbstractContainerRequestContext ctx = context.attr(REQUEST_CONTEXT_KEY).get();
+        AbstractContainerRequestContext ctx = context.attrs().attr(REQUEST_CONTEXT_KEY).get();
         if (ctx == null) {
             if (context instanceof FilterContext) {
                 ctx = new PreMatchContainerRequestContext((FilterContext) context);
             } else {
                 ctx = new PostMatchContainerRequestContext(context);
             }
-            context.attr(REQUEST_CONTEXT_KEY).set(ctx);
+            context.attrs().attr(REQUEST_CONTEXT_KEY).set(ctx);
         }
         return ctx;
     }
 
     public static ResponseImpl getResponse(RequestContext context) {
-        Response response = context.attr(RESPONSE_KEY).get();
+        Response response = context.attrs().attr(RESPONSE_KEY).get();
         ResponseImpl rsp;
         if (response == null) {
             rsp = (ResponseImpl) RuntimeDelegate.getInstance().createResponseBuilder().build();
@@ -112,23 +112,23 @@ public final class JaxrsContextUtils {
     }
 
     public static void setResponse(RequestContext context, Response response) {
-        context.attr(RESPONSE_KEY).set(response);
+        context.attrs().attr(RESPONSE_KEY).set(response);
     }
 
     public static SecurityContext getSecurityContext(RequestContext context) {
-        return context.attr(SECURITY_CONTEXT_KEY).get();
+        return context.attrs().attr(SECURITY_CONTEXT_KEY).get();
     }
 
     public static void setSecurityContext(RequestContext context, SecurityContext sCtx) {
-        context.attr(SECURITY_CONTEXT_KEY).set(sCtx);
+        context.attrs().attr(SECURITY_CONTEXT_KEY).set(sCtx);
     }
 
     public static void setAsyncResponse(RequestContext context, CompletableFuture<Object> response) {
-        context.attr(ASYNC_RESPONSE_KEY).set(response);
+        context.attrs().attr(ASYNC_RESPONSE_KEY).set(response);
     }
 
     public static CompletableFuture<Object> getAsyncResponse(RequestContext context) {
-        return context.attr(ASYNC_RESPONSE_KEY).get();
+        return context.attrs().attr(ASYNC_RESPONSE_KEY).get();
     }
 
     public static URI extractURI(RequestContext context) {

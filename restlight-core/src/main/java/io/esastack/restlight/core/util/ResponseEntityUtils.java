@@ -26,11 +26,11 @@ public final class ResponseEntityUtils {
     private static final AttributeKey<HandlerMethod> HANDLED_METHOD = AttributeKey.valueOf("$internal.handled.method");
 
     public static void setHandledMethod(RequestContext context, HandlerMethod method) {
-        context.attr(HANDLED_METHOD).set(method);
+        context.attrs().attr(HANDLED_METHOD).set(method);
     }
 
     public static HandlerMethod getHandledMethod(RequestContext context) {
-        return context.attr(HANDLED_METHOD).get();
+        return context.attrs().attr(HANDLED_METHOD).get();
     }
 
     public static boolean isAssignableFrom(ResponseEntity entity, Class<?> target) {

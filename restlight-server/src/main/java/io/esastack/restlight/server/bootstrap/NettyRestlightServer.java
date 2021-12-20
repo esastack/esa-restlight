@@ -26,9 +26,9 @@ import io.esastack.restlight.core.util.RestlightVer;
 import io.esastack.restlight.server.config.ServerOptions;
 import io.esastack.restlight.server.config.SslOptions;
 import io.esastack.restlight.server.context.RequestContext;
+import io.esastack.restlight.server.context.impl.RequestContextImpl;
 import io.esastack.restlight.server.core.impl.HttResponseImpl;
 import io.esastack.restlight.server.core.impl.HttpRequestImpl;
-import io.esastack.restlight.server.context.impl.RequestContextImpl;
 import io.esastack.restlight.server.handler.RestlightHandler;
 import io.esastack.restlight.server.schedule.ExecutorScheduler;
 import io.esastack.restlight.server.schedule.Schedulers;
@@ -238,7 +238,7 @@ public class NettyRestlightServer implements RestlightServer {
                         .onEnd(promise -> {
                             HttResponseImpl response = new HttResponseImpl(req.response());
                             RequestContext context = new RequestContextImpl(new HttpRequestImpl(req), response);
-                            context.attr(UNDERLYING_RESPONSE).set(response.underlying());
+                            context.attrs().attr(UNDERLYING_RESPONSE).set(response.underlying());
                             handler.process(context)
                                     .whenComplete((r, t) -> {
                                         if (t == null) {

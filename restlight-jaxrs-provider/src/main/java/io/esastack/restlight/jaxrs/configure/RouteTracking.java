@@ -16,11 +16,11 @@
 package io.esastack.restlight.jaxrs.configure;
 
 import esa.commons.collection.AttributeKey;
-import io.esastack.restlight.server.context.RequestContext;
-import io.esastack.restlight.server.context.RouteContext;
 import io.esastack.restlight.core.handler.HandlerMapping;
 import io.esastack.restlight.core.handler.RouteFilter;
 import io.esastack.restlight.core.handler.RouteFilterChain;
+import io.esastack.restlight.server.context.RequestContext;
+import io.esastack.restlight.server.context.RouteContext;
 
 import java.util.Collections;
 import java.util.LinkedList;
@@ -46,19 +46,19 @@ public class RouteTracking implements RouteFilter {
     @Override
     public CompletableFuture<Void> routed(HandlerMapping mapping, RouteContext context, RouteFilterChain next) {
         if (!mapping.methodInfo().isLocator()) {
-            context.attr(HANDLER_METHOD_MATCHED).set(true);
+            context.attrs().attr(HANDLER_METHOD_MATCHED).set(true);
         }
-        List<HandlerMapping> mappings = context.attr(ROUTE_TRACKING_KEY).get();
+        List<HandlerMapping> mappings = context.attrs().attr(ROUTE_TRACKING_KEY).get();
         if (mappings == null) {
             mappings = new LinkedList<>();
-            context.attr(ROUTE_TRACKING_KEY).set(mappings);
+            context.attrs().attr(ROUTE_TRACKING_KEY).set(mappings);
         }
         mappings.add(mapping);
         return next.doNext(mapping, context);
     }
 
     public static List<HandlerMapping> tracking(RequestContext context) {
-        List<HandlerMapping> mappings = context.attr(ROUTE_TRACKING_KEY).get();
+        List<HandlerMapping> mappings = context.attrs().attr(ROUTE_TRACKING_KEY).get();
         if (mappings == null) {
             return Collections.emptyList();
         } else {
@@ -67,7 +67,7 @@ public class RouteTracking implements RouteFilter {
     }
 
     public static boolean isMethodMatched(RequestContext context) {
-        return context.attr(HANDLER_METHOD_MATCHED).get();
+        return context.attrs().attr(HANDLER_METHOD_MATCHED).get();
     }
 
 }

@@ -42,7 +42,7 @@ public class RequestAttributeParamResolver extends NameAndValueResolverFactory {
         return new NameAndValueResolver() {
             @Override
             public Object resolve(String name, RequestContext ctx) {
-                Object value = ctx.attr(AttributeKey.valueOf(name)).get();
+                Object value = ctx.attrs().attr(AttributeKey.valueOf(name)).get();
                 if (converter != null && (value instanceof String)) {
                     return converter.fromString((String) value);
                 }

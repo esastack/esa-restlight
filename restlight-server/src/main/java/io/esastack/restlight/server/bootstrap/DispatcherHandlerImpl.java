@@ -143,7 +143,7 @@ public class DispatcherHandlerImpl implements DispatcherHandler {
         HttpRequest request = context.request();
         LoggerUtils.logger().warn("No mapping for request(url={}, method={})",
                 request.path(), request.method());
-        RouteFailureException.RouteFailure cause = context.attr(RoutePredicate.MISMATCH_ERR).getAndRemove();
+        RouteFailureException.RouteFailure cause = context.attrs().attr(RoutePredicate.MISMATCH_ERR).getAndRemove();
         if (cause == null) {
             cause = RouteFailureException.RouteFailure.PATTERN_MISMATCH;
         }

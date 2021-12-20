@@ -47,7 +47,7 @@ public class DefaultMockMvc implements MockMvc {
     }
 
     private Object getResultAndClear(RequestContext context) {
-        return FutureUtils.getFutureResult(context.attr(RETURN_VALUE_KEY).get());
+        return FutureUtils.getFutureResult(context.attrs().attr(RETURN_VALUE_KEY).get());
     }
 
     private static class DefaultResultActions implements ResultActions {

@@ -16,8 +16,8 @@
 package io.esastack.restlight.test.result;
 
 import io.esastack.restlight.server.context.RequestContext;
-import io.esastack.restlight.server.core.HttpRequest;
 import io.esastack.restlight.server.context.impl.RequestContextImpl;
+import io.esastack.restlight.server.core.HttpRequest;
 import io.esastack.restlight.server.mock.MockHttpRequest;
 import io.esastack.restlight.server.mock.MockHttpResponse;
 import org.junit.jupiter.api.Test;
@@ -37,7 +37,7 @@ class MvcResultHandlerAdviceTest {
                 null,
                 (ctx, args) -> "foo"));
 
-        assertEquals("foo", context.attr(RETURN_VALUE_KEY).get());
+        assertEquals("foo", context.attrs().attr(RETURN_VALUE_KEY).get());
     }
 
 }

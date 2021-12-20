@@ -19,7 +19,14 @@ import esa.commons.collection.Attributes;
 import io.esastack.restlight.server.core.HttpRequest;
 import io.esastack.restlight.server.core.HttpResponse;
 
-public interface RequestContext extends Attributes {
+public interface RequestContext {
+
+    /**
+     * Obtains {@link Attributes} corresponding with current {@link RequestContext}.
+     *
+     * @return  attributes
+     */
+    Attributes attrs();
 
     /**
      * Obtains current {@code request}.

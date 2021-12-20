@@ -109,7 +109,7 @@ public abstract class AbstractResponseEntityResolver implements ResponseEntityRe
     }
 
     protected List<MediaType> getMediaTypes(RequestContext context) {
-        List<MediaType> compatibleTypes = context.attr(ProducesPredicate.COMPATIBLE_MEDIA_TYPES).get();
+        List<MediaType> compatibleTypes = context.attrs().attr(ProducesPredicate.COMPATIBLE_MEDIA_TYPES).get();
         if (compatibleTypes == null) {
             String accept = context.request().headers().get(HttpHeaderNames.ACCEPT);
             if (!StringUtils.isEmpty(accept)) {

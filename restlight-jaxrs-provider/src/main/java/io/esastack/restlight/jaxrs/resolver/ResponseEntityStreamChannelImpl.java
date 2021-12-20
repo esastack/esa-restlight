@@ -42,7 +42,7 @@ public class ResponseEntityStreamChannelImpl extends ResponseEntityChannelImpl
     private HttpOutputStream outputStream;
 
     public static ResponseEntityStreamChannel get(RequestContext context) {
-        ResponseEntityStreamChannel channel = context.attr(RESPONSE_STREAM_ENTITY_CHANNEL).get();
+        ResponseEntityStreamChannel channel = context.attrs().attr(RESPONSE_STREAM_ENTITY_CHANNEL).get();
         if (channel != null) {
             return channel;
         }

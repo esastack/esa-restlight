@@ -23,12 +23,12 @@ import io.esastack.httpserver.core.Response;
 import io.esastack.restlight.server.context.RequestContext;
 import io.esastack.restlight.server.core.HttpRequest;
 import io.esastack.restlight.server.core.HttpResponse;
-import io.esastack.restlight.server.core.impl.AttributesProxy;
 
-public class RequestContextImpl extends AttributesProxy implements RequestContext {
+public class RequestContextImpl implements RequestContext {
 
     public static final AttributeKey<Response> UNDERLYING_RESPONSE = AttributeKey.valueOf("$underlying.response");
 
+    private final Attributes attributes;
     private final HttpRequest request;
     private final HttpResponse response;
 
@@ -37,11 +37,17 @@ public class RequestContextImpl extends AttributesProxy implements RequestContex
     }
 
     protected RequestContextImpl(Attributes attributes, HttpRequest request, HttpResponse response) {
-        super(attributes);
+        Checks.checkNotNull(attributes, "attributes");
         Checks.checkNotNull(request, "request");
         Checks.checkNotNull(response, "response");
+        this.attributes = attributes;
         this.request = request;
         this.response = response;
+    }
+
+    @Override
+    public Attributes attrs() {
+        return attributes;
     }
 
     @Override

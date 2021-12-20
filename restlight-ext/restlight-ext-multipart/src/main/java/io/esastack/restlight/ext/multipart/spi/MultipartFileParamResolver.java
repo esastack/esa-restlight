@@ -54,7 +54,7 @@ public class MultipartFileParamResolver extends AbstractMultipartParamResolver {
     }
 
     private List<MultipartFile> extractFiles(String name, RequestContext ctx) {
-        final List<MultipartFile> files = ctx.attr(MULTIPART_FILES).get();
+        final List<MultipartFile> files = ctx.attrs().attr(MULTIPART_FILES).get();
         if (files == null) {
             return null;
         }

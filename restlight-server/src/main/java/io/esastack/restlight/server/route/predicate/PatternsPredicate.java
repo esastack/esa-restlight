@@ -60,7 +60,7 @@ public class PatternsPredicate implements RequestPredicate {
         Map<String, String> uriVariables = this.match(context.request().path());
         if (uriVariables != null) {
             //set matched template variables
-            context.attr(TEMPLATE_VARIABLES).set(uriVariables);
+            context.attrs().attr(TEMPLATE_VARIABLES).set(uriVariables);
             return true;
         }
         return false;
