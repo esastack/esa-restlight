@@ -28,16 +28,22 @@ public class DefaultStringConverterFactory implements StringConverterFactory {
 
     @Override
     public Optional<StringConverter> createConverter(Class<?> type, Type genericType, Param relatedParam) {
-        Function<String, Object> converter = ConverterUtils.str2ObjectConverter(genericType);
+        Function<String, Object> converter = null;
+        if (genericType != null) {
+            converter = ConverterUtils.str2ObjectConverter(genericType);
+        } else if (type != null) {
+            converter = ConverterUtils.str2ObjectConverter(type);
+        }
 
         if (converter == null) {
             return Optional.empty();
         }
 
+        Function<String, Object> finalConverter = converter;
         return Optional.of(new StringConverter() {
             @Override
             public Object fromString(String value) {
-                return converter.apply(value);
+                return finalConverter.apply(value);
             }
 
             @Override

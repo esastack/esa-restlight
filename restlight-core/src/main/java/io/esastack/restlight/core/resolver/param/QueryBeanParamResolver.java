@@ -85,14 +85,7 @@ public class QueryBeanParamResolver extends RequestBeanParamResolver {
 
         @Override
         protected NameAndValue<String> createNameAndValue(Param param) {
-            String name;
-            QueryBean.Name alia = param.getAnnotation(QueryBean.Name.class);
-            if (alia != null && !StringUtils.isEmpty(alia.value())) {
-                name = alia.value();
-            } else {
-                name = param.name();
-            }
-            return new NameAndValue<>(name, false, null);
+            return new NameAndValue<>(extractName(param), false);
         }
     }
 }

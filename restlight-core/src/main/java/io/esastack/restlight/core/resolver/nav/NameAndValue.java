@@ -27,6 +27,7 @@ public class NameAndValue<T> {
     private final String name;
     private final boolean required;
     private final Supplier<T> defaultValue;
+    private final boolean isLazy;
 
     public NameAndValue(String name, boolean required) {
         this(name, required, null);
@@ -42,6 +43,7 @@ public class NameAndValue<T> {
                         boolean isLazy) {
         this.name = name;
         this.required = required;
+        this.isLazy = isLazy;
         if (defaultValue == null) {
             this.defaultValue = null;
             return;
@@ -50,7 +52,8 @@ public class NameAndValue<T> {
         if (isLazy) {
             this.defaultValue = new LazyDefaultValue<>(defaultValue);
         } else {
-            this.defaultValue = defaultValue;
+            T loaded = defaultValue.get();
+            this.defaultValue = () -> loaded;
         }
     }
 
@@ -64,6 +67,10 @@ public class NameAndValue<T> {
 
     public Supplier<T> defaultValue() {
         return defaultValue;
+    }
+
+    public boolean isLazy() {
+        return isLazy;
     }
 
     private static class LazyDefaultValue<T> implements Supplier<T> {

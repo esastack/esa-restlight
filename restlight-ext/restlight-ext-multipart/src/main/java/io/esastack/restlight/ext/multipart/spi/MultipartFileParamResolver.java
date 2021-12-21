@@ -50,7 +50,7 @@ public class MultipartFileParamResolver extends AbstractMultipartParamResolver {
     private NameAndValue<Object> createNameAndValue(Param param) {
         UploadFile uploadFile = param.getAnnotation(UploadFile.class);
         assert uploadFile != null;
-        return new NameAndValue<>(uploadFile.value(), uploadFile.required(), null);
+        return new NameAndValue<>(uploadFile.value(), uploadFile.required());
     }
 
     private List<MultipartFile> extractFiles(String name, RequestContext ctx) {

@@ -258,7 +258,7 @@ public final class ConverterUtils {
                                                       Type,
                                                       Function<String, Object>> str2ObjectConverterProvider) {
             final Class<?> elementType = requiredClass.getComponentType();
-            Function<String, Object> elementConverter = str2ObjectConverterProvider.apply(elementType, null);
+            Function<String, Object> elementConverter = str2ObjectConverterProvider.apply(elementType, elementType);
             if (elementConverter == null) {
                 // we don't know how to convert the elements
                 return null;
@@ -336,8 +336,9 @@ public final class ConverterUtils {
                 return null;
             }
 
+            final Class<?> elementType = retrieveElementType(requiredType);
             Function<String, Object> elementConverter =
-                    str2ObjectConverterProvider.apply(retrieveElementType(requiredType), null);
+                    str2ObjectConverterProvider.apply(elementType, elementType);
             if (elementConverter == null) {
                 // we don't know how to convert the elements
                 return null;

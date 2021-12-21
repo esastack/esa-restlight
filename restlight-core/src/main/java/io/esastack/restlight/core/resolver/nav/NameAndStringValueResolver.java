@@ -35,10 +35,14 @@ public class NameAndStringValueResolver implements NameAndValueResolver {
                                       BiFunction<String, RequestContext, String> valueExtractor,
                                       NameAndValue<String> nav) {
         Checks.checkNotNull(resolverFactory, "resolverFactory");
-        this.converter = Checks.checkNotNull(resolverFactory.getStringConverter(param.type(),
-                param.genericType(),
-                param), "converter");
         this.valueExtractor = Checks.checkNotNull(valueExtractor, "valueExtractor");
+
+        this.converter = resolverFactory.getStringConverter(param.type(),
+                param.genericType(),
+                param);
+        if (this.converter == null) {
+            throw new IllegalStateException("There is no suitable StringConverter for param(" + param + ").");
+        }
 
         Supplier<String> defaultValue = nav.defaultValue();
         if (defaultValue == null) {
