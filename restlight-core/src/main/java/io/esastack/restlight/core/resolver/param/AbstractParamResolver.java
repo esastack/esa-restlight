@@ -72,18 +72,6 @@ public abstract class AbstractParamResolver extends NameAndValueResolverFactory 
     private class SingleMapResolver implements NameAndValueResolver {
         @Override
         public Object resolve(String name, RequestContext ctx) {
-            return ctx.request().paramsMap();
-        }
-
-        @Override
-        public NameAndValue<String> createNameAndValue(Param param) {
-            return AbstractParamResolver.this.createNameAndValue(param);
-        }
-    }
-
-    private class ListMapResolver implements NameAndValueResolver {
-        @Override
-        public Object resolve(String name, RequestContext ctx) {
             Map<String, List<String>> p = ctx.request().paramsMap();
             if (p.isEmpty()) {
                 return Collections.emptyMap();
@@ -95,6 +83,18 @@ public abstract class AbstractParamResolver extends NameAndValueResolverFactory 
                 }
             });
             return m;
+        }
+
+        @Override
+        public NameAndValue<String> createNameAndValue(Param param) {
+            return AbstractParamResolver.this.createNameAndValue(param);
+        }
+    }
+
+    private class ListMapResolver implements NameAndValueResolver {
+        @Override
+        public Object resolve(String name, RequestContext ctx) {
+            return ctx.request().paramsMap();
         }
 
         @Override
