@@ -18,8 +18,8 @@ package io.esastack.restlight.server.route.predicate;
 import esa.commons.Checks;
 import esa.commons.MathUtils;
 import io.esastack.commons.net.http.HttpMethod;
-import io.esastack.restlight.server.core.HttpRequest;
 import io.esastack.restlight.server.context.RequestContext;
+import io.esastack.restlight.server.core.HttpRequest;
 import io.esastack.restlight.server.util.MappingUtils;
 
 import java.util.Arrays;
@@ -32,14 +32,15 @@ public class MethodPredicate implements RequestPredicate {
             = new HttpMethod[MathUtils.nextPowerOfTwo(HttpMethod.values().length)];
     private final int mask = methods.length - 1;
     private final boolean containsGet;
+
     private String str;
 
-    MethodPredicate(HttpMethod... requestMethods) {
-        Checks.checkNotEmptyArg(requestMethods, "HttpMethods must not be null or empty");
+    MethodPredicate(HttpMethod... methods) {
+        Checks.checkNotEmptyArg(methods, "HttpMethods must not be null or empty");
         boolean containsGet = false;
-        for (HttpMethod requestMethod : requestMethods) {
-            fill(requestMethod);
-            if (requestMethod == HttpMethod.GET) {
+        for (HttpMethod method : methods) {
+            fill(method);
+            if (method == HttpMethod.GET) {
                 containsGet = true;
             }
         }

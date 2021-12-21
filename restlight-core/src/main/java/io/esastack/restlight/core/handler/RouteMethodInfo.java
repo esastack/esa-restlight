@@ -22,8 +22,8 @@ public class RouteMethodInfo extends HandlerMethodInfo {
 
     public RouteMethodInfo(RouteHandlerMethod handlerMethod,
                            boolean locator,
-                           HttpStatus customResponse) {
-        super(handlerMethod, locator, customResponse);
+                           HttpStatus customStatus) {
+        super(handlerMethod, locator, customStatus);
     }
 
     @Override

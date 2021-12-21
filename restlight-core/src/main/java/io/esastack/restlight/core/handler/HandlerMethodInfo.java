@@ -25,17 +25,17 @@ public class HandlerMethodInfo {
 
     private final boolean locator;
     private final HandlerMethod handlerMethod;
-    private final HttpStatus customResponse;
+    private final HttpStatus customStatus;
 
     private String strVal;
 
     public HandlerMethodInfo(HandlerMethod handlerMethod,
                              boolean locator,
-                             HttpStatus customResponse) {
+                             HttpStatus customStatus) {
         Checks.checkNotNull(handlerMethod, "handlerMethod");
         this.handlerMethod = handlerMethod;
         this.locator = locator;
-        this.customResponse = customResponse;
+        this.customStatus = customStatus;
     }
 
     public boolean isLocator() {
@@ -46,8 +46,8 @@ public class HandlerMethodInfo {
         return handlerMethod;
     }
 
-    public HttpStatus customResponse() {
-        return customResponse;
+    public HttpStatus customStatus() {
+        return customStatus;
     }
 
     @Override
@@ -60,12 +60,12 @@ public class HandlerMethodInfo {
         }
         HandlerMethodInfo that = (HandlerMethodInfo) o;
         return locator == that.locator && Objects.equals(handlerMethod, that.handlerMethod)
-                && Objects.equals(customResponse, that.customResponse);
+                && Objects.equals(customStatus, that.customStatus);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(locator, handlerMethod, customResponse);
+        return Objects.hash(locator, handlerMethod, customStatus);
     }
 
     @Override
@@ -74,7 +74,7 @@ public class HandlerMethodInfo {
             final StringBuilder sb = new StringBuilder("HandlerMethodInfo{");
             sb.append("locator=").append(locator);
             sb.append(", handlerMethod=").append(handlerMethod);
-            sb.append(", customResponse=").append(customResponse);
+            sb.append(", customStatus=").append(customStatus);
             sb.append('}');
             strVal = sb.toString();
         }

@@ -302,7 +302,7 @@ public class JaxrsExtensionsHandler implements ExtensionsHandler {
         int index = 0;
         for (Parameter parameter : constructor.getParameters()) {
             if (!parameter.isAnnotationPresent(Context.class)) {
-                throw new IllegalArgumentException("Failed to instantiate class: [" + userType + "] caused by" +
+                throw new IllegalStateException("Failed to instantiate class: [" + userType + "] caused by" +
                         " unresolvable parameter: [" + parameter.getName() + "], maybe @Context is absent?");
             }
             if (Configuration.class.isAssignableFrom(parameter.getType())) {
@@ -310,15 +310,18 @@ public class JaxrsExtensionsHandler implements ExtensionsHandler {
             } else if (Providers.class.isAssignableFrom(parameter.getType())) {
                 args[index++] = this.providers;
             } else {
-                throw new IllegalArgumentException("Failed to instantiate class: [" + userType + "] caused by" +
+                throw new IllegalStateException("Failed to instantiate class: [" + userType + "] caused by" +
                         " unsupported parameter: [" + parameter.getName() + "], only Application and Providers are" +
-                        " supported");
+                        " supported!");
             }
         }
         try {
             return new ProxyComponent<>(object, (Application) constructor.newInstance(args));
-        } catch (InstantiationException | IllegalAccessException | InvocationTargetException ex) {
-            throw new IllegalArgumentException("Failed to instantiate class: [" + userType + "]", ex);
+        } catch (InvocationTargetException ex) {
+            throw new IllegalStateException("Failed to instantiate class: [" + userType + "]",
+                    ex.getTargetException());
+        } catch (Exception ex) {
+            throw new IllegalStateException("Failed to instantiate class: [" + userType + "]", ex);
         }
     }
 

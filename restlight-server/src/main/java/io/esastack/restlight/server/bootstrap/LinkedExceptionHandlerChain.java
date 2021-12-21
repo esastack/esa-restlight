@@ -21,6 +21,7 @@ import io.esastack.restlight.server.context.RequestContext;
 import io.esastack.restlight.server.util.Futures;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.function.BiFunction;
 
 @Internal
 public class LinkedExceptionHandlerChain implements ExceptionHandlerChain {
@@ -33,9 +34,30 @@ public class LinkedExceptionHandlerChain implements ExceptionHandlerChain {
         this.next = next;
     }
 
+    public static ExceptionHandlerChain applyToExecutionHandler(IExceptionHandler[] applicableHandlers,
+                                                                BiFunction<RequestContext, Throwable,
+                                                                        CompletableFuture<Void>> action) {
+        Checks.checkNotNull(applicableHandlers, "applicableHandlers");
+        ExceptionHandlerChain chain = action::apply;
+        int i = applicableHandlers.length - 1;
+        while (i >= 0) {
+            chain = new LinkedExceptionHandlerChain(applicableHandlers[i], chain);
+            i--;
+        }
+
+        return chain;
+    }
+
     public static ExceptionHandlerChain immutable(IExceptionHandler[] handlers) {
         Checks.checkNotNull(handlers, "handlers");
-        ExceptionHandlerChain chain = (context, th) -> Futures.completedExceptionally(th);
+        ExceptionHandlerChain chain = (context, th) -> {
+            if (th != null) {
+                return Futures.completedExceptionally(th);
+            } else {
+                return Futures.completedFuture();
+            }
+        };
+
         int i = handlers.length - 1;
         while (i >= 0) {
             chain = new LinkedExceptionHandlerChain(handlers[i], chain);

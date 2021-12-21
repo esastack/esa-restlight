@@ -40,8 +40,8 @@ public class ConfigurableManagementRestlight {
 
     ConfigurableManagementRestlight(Restlight restlight,
                                     ManagementOptions options) {
-        Checks.checkNotNull(restlight);
-        Checks.checkNotNull(options);
+        Checks.checkNotNull(restlight, "restlight");
+        Checks.checkNotNull(options, "options");
         this.options = options;
         this.restlight = restlight;
     }

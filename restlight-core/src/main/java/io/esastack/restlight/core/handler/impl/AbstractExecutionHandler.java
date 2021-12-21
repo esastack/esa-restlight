@@ -19,7 +19,6 @@ import esa.commons.Checks;
 import esa.commons.StringUtils;
 import esa.commons.logging.Logger;
 import esa.commons.logging.LoggerFactory;
-import io.esastack.commons.net.http.HttpStatus;
 import io.esastack.restlight.core.handler.FutureTransfer;
 import io.esastack.restlight.core.handler.HandlerInvoker;
 import io.esastack.restlight.core.handler.HandlerValueResolver;
@@ -29,7 +28,6 @@ import io.esastack.restlight.core.method.ResolvableParam;
 import io.esastack.restlight.core.resolver.HandlerResolverFactory;
 import io.esastack.restlight.server.bootstrap.WebServerException;
 import io.esastack.restlight.server.context.RequestContext;
-import io.esastack.restlight.server.core.HttpResponse;
 import io.esastack.restlight.server.route.ExecutionHandler;
 import io.esastack.restlight.server.route.Mapping;
 import io.esastack.restlight.server.util.Futures;
@@ -50,8 +48,7 @@ abstract class AbstractExecutionHandler<H extends HandlerMethodAdapter> implemen
     private final HandlerValueResolver handlerResolver;
     private final H handlerMethod;
 
-    AbstractExecutionHandler(HandlerValueResolver handlerResolver,
-                             H handlerMethod) {
+    AbstractExecutionHandler(HandlerValueResolver handlerResolver, H handlerMethod) {
         Checks.checkNotNull(handlerResolver, "handlerResolver");
         Checks.checkNotNull(handlerMethod, "handlerMethod");
         assert handlerMethod.context().resolverFactory().isPresent();
@@ -136,9 +133,8 @@ abstract class AbstractExecutionHandler<H extends HandlerMethodAdapter> implemen
             if (handlerMethod.isConcurrent() && returnValue == null) {
                 // null return value in handler controller is not allowed
                 logger.error(getDetailedMessage("Unexpected null return value of concurrent handler."));
-                HttpResponse response = context.response();
-                response.status(HttpStatus.INTERNAL_SERVER_ERROR.code());
-                return Futures.completedFuture();
+                return Futures.completedExceptionally(new
+                        IllegalStateException("Unexpected null return value of concurrent handler"));
             } else {
                 future = transfer.transferTo(context, returnValue);
             }

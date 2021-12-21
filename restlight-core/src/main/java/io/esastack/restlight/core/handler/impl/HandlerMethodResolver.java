@@ -38,7 +38,7 @@ public class HandlerMethodResolver implements HandlerValueResolver {
     @Override
     public CompletableFuture<Void> handle(Object value, RequestContext context) {
         final HttpResponse response = context.response();
-        HttpStatus status = methodInfo.customResponse();
+        HttpStatus status = methodInfo.customStatus();
         if (status != null) {
             response.status(status.code());
         }

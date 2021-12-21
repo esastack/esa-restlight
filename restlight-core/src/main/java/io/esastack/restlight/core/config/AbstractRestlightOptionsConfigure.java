@@ -22,19 +22,14 @@ import java.util.Map;
 
 public abstract class AbstractRestlightOptionsConfigure<C extends AbstractRestlightOptionsConfigure<C, O>,
         O extends RestlightOptions> extends AbstractServerOptionsConfigure<C, O> {
+
     private String contextPath;
-    private String validationMessageFile;
     private SerializesOptions serialize
             = SerializesOptionsConfigure.defaultOpts();
     private Map<String, String> ext = new LinkedHashMap<>();
 
     public C contextPath(String contextPath) {
         this.contextPath = contextPath;
-        return self();
-    }
-
-    public C validationMessageFile(String validationMessageFile) {
-        this.validationMessageFile = validationMessageFile;
         return self();
     }
 

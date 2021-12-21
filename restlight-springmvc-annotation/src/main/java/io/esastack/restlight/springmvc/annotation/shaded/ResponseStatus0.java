@@ -27,7 +27,6 @@ import static io.esastack.restlight.springmvc.annotation.shaded.AliasUtils.getFr
 public class ResponseStatus0 {
 
     private final int code;
-
     private final String reason;
 
     public ResponseStatus0(HttpStatus code, String reason) {

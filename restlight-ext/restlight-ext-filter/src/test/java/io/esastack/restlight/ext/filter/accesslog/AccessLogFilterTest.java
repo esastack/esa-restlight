@@ -17,8 +17,8 @@ package io.esastack.restlight.ext.filter.accesslog;
 
 import esa.commons.collection.AttributeMap;
 import esa.commons.logging.InternalLogger;
-import io.esastack.restlight.server.core.HttpRequest;
 import io.esastack.restlight.server.context.impl.FilterContextImpl;
+import io.esastack.restlight.server.core.HttpRequest;
 import io.esastack.restlight.server.core.impl.FilteringRequestImpl;
 import io.esastack.restlight.server.handler.FilterChain;
 import io.esastack.restlight.server.mock.MockHttpRequest;

@@ -16,7 +16,6 @@
 package io.esastack.restlight.core.resolver.rspentity;
 
 import io.esastack.commons.net.http.MediaType;
-import io.esastack.restlight.server.context.RequestContext;
 import io.esastack.restlight.core.resolver.HandledValue;
 import io.esastack.restlight.core.resolver.ParamResolverFactory;
 import io.esastack.restlight.core.resolver.ResponseEntity;
@@ -24,6 +23,7 @@ import io.esastack.restlight.core.serialize.HttpResponseSerializer;
 import io.esastack.restlight.core.serialize.Serializers;
 import io.esastack.restlight.core.util.FutureUtils;
 import io.esastack.restlight.server.bootstrap.WebServerException;
+import io.esastack.restlight.server.context.RequestContext;
 
 import java.util.List;
 
@@ -43,7 +43,7 @@ public abstract class FlexibleResponseEntityResolver extends AbstractResponseEnt
     protected byte[] serialize(ResponseEntity entity, List<MediaType> mediaTypes, RequestContext context)
             throws Exception {
         if (serializers.isEmpty()) {
-            throw WebServerException.badRequest("Could not find any compatible serializer to handle " +
+            throw WebServerException.notAcceptable("Could not find any compatible serializer to handle " +
                     "the return value(type=" + entity.type().getName() +
                     "), acceptMediaTypes: " + mediaTypes);
         }
@@ -68,7 +68,7 @@ public abstract class FlexibleResponseEntityResolver extends AbstractResponseEnt
             }
         }
 
-        throw WebServerException.badRequest("Could not find any compatible serializer to handle " +
+        throw WebServerException.notAcceptable("Could not find any compatible serializer to handle " +
                 "the return value(type=" + entity.type().getName() +
                 "), acceptMediaTypes: " + mediaTypes);
     }

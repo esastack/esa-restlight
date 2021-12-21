@@ -17,7 +17,6 @@ package io.esastack.restlight.core.handler.impl;
 
 import esa.commons.Checks;
 import esa.commons.ClassUtils;
-import esa.commons.StringUtils;
 import esa.commons.reflect.BeanUtils;
 import esa.commons.reflect.ReflectionUtils;
 import io.esastack.restlight.core.DeployContext;
@@ -44,6 +43,7 @@ import io.esastack.restlight.server.bootstrap.WebServerException;
 import io.esastack.restlight.server.context.RequestContext;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.LinkedList;
 import java.util.List;
@@ -137,22 +137,15 @@ public class HandlerFactoryImpl implements HandlerFactory, HandlerContexts {
                     //wrap exception
                     throw WebServerException.wrap(e);
                 }
-                continue;
-            }
-            if (args[i] == null) {
-                throw WebServerException.badRequest(
-                        StringUtils.concat("Could not resolve constructor parameter at index ",
-                                String.valueOf(param.index()), " in ", resolvable.constructor +
-                                        ": No suitable resolver for argument of type '",
-                                param.type().getName(), "'"));
             }
         }
 
         try {
             return resolvable.constructor.newInstance(args);
-        } catch (Throwable th) {
-            throw WebServerException.badRequest("Could not instantiate class: [" + clazz + "]",
-                    th);
+        } catch (InvocationTargetException ex) {
+            throw new IllegalStateException("Could not instantiate class: [" + clazz + "]", ex.getTargetException());
+        } catch (Exception ex) {
+            throw new IllegalStateException("Could not instantiate class: [" + clazz + "]", ex);
         }
     }
 
@@ -167,8 +160,7 @@ public class HandlerFactoryImpl implements HandlerFactory, HandlerContexts {
             if (r.resolver() != null) {
                 //it may return a null value
                 try {
-                    BeanUtils.setFieldValue(instance, param.name(),
-                            r.resolver().resolve(handlerCtx, param, context));
+                    BeanUtils.setFieldValue(instance, param.name(), r.resolver().resolve(handlerCtx, param, context));
                 } catch (Exception e) {
                     //wrap exception
                     throw WebServerException.wrap(e);
@@ -185,9 +177,11 @@ public class HandlerFactoryImpl implements HandlerFactory, HandlerContexts {
                 try {
                     Object arg = r.resolver().resolve(handlerCtx, param, context);
                     ReflectionUtils.invokeMethod(param.method(), instance, arg);
-                } catch (Exception e) {
-                    //wrap exception
-                    throw WebServerException.wrap(e);
+                } catch (InvocationTargetException ex) {
+                    throw new IllegalArgumentException("Error occurred while invoking method: [" +
+                            param.method() + "]", ex.getTargetException());
+                } catch (Exception ex) {
+                    throw WebServerException.wrap(ex);
                 }
             }
         }
@@ -291,11 +285,11 @@ public class HandlerFactoryImpl implements HandlerFactory, HandlerContexts {
                 if (contextResolver != null) {
                     return new ResolvableParam<>(param, new ContextResolverWrap(contextResolver));
                 } else {
-                    throw new IllegalArgumentException("There is no resolver to handle [" + param.toString() + "]");
+                    throw new IllegalArgumentException("There is no resolver to handle param: ["
+                            + param.toString() + "]");
                 }
             }
         }
-
     }
 }
 

@@ -50,7 +50,6 @@ import io.esastack.restlight.core.serialize.GsonHttpBodySerializer;
 import io.esastack.restlight.core.serialize.HttpRequestSerializer;
 import io.esastack.restlight.core.serialize.HttpResponseSerializer;
 import io.esastack.restlight.core.spi.ContextResolverProvider;
-import io.esastack.restlight.core.spi.FilterFactory;
 import io.esastack.restlight.core.spi.ParamResolverAdviceProvider;
 import io.esastack.restlight.core.spi.ParamResolverProvider;
 import io.esastack.restlight.core.spi.RequestEntityResolverAdviceProvider;
@@ -61,6 +60,7 @@ import io.esastack.restlight.core.spi.RouteFilterFactory;
 import io.esastack.restlight.core.spi.impl.JacksonDefaultSerializerFactory;
 import io.esastack.restlight.core.util.Constants;
 import io.esastack.restlight.core.util.OrderedComparator;
+import io.esastack.restlight.server.bootstrap.IExceptionHandler;
 import io.esastack.restlight.server.handler.ConnectionHandler;
 import io.esastack.restlight.server.handler.DisConnectionHandler;
 import io.esastack.restlight.server.handler.Filter;
@@ -69,6 +69,7 @@ import io.esastack.restlight.server.schedule.RequestTaskHook;
 import io.esastack.restlight.server.schedule.Scheduler;
 import io.esastack.restlight.server.spi.ConnectionHandlerFactory;
 import io.esastack.restlight.server.spi.DisConnectionHandlerFactory;
+import io.esastack.restlight.server.spi.ExceptionHandlerFactory;
 import io.esastack.restlight.server.spi.RequestTaskHookFactory;
 import io.esastack.restlight.server.spi.RouteRegistryAware;
 import io.esastack.restlight.server.spi.RouteRegistryAwareFactory;
@@ -113,6 +114,7 @@ public class Deployments4Spring<R extends AbstractRestlight4Spring<R, D, O>, D e
         configureConnectionHandler(context);
         configureDisConnectionHandler(context);
         configureFilters(context);
+        configureExceptionHandlers(context);
         configureRouteRegistryAwareness(context);
         configureRequestTaskHooks(context);
 
@@ -177,15 +179,17 @@ public class Deployments4Spring<R extends AbstractRestlight4Spring<R, D, O>, D e
     private void configureFilters(ApplicationContext context) {
         Map<String, Filter> filters = beansOfType(context, Filter.class);
         if (!filters.isEmpty()) {
-            filters.values().forEach(filter -> this.addFilter(
-                    (c, next) -> filter.doFilter(c, ctx -> next.doFilter(c))));
+            this.addFilters(filters.values());
         }
-        this.addFilters(beansOfType(context, FilterFactory.class).values()
-                .stream()
-                .map(factory -> factory.filter(deployContext()))
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .collect(Collectors.toList()));
+    }
+
+    private void configureExceptionHandlers(ApplicationContext context) {
+        Map<String, IExceptionHandler> exceptionHandlers = beansOfType(context, IExceptionHandler.class);
+        if (!exceptionHandlers.isEmpty()) {
+            this.addExceptionHandlers(exceptionHandlers.values());
+        }
+        beansOfType(context, ExceptionHandlerFactory.class).values()
+                .forEach(this::addExceptionHandler);
     }
 
     private void configureRouteRegistryAwareness(ApplicationContext context) {

@@ -21,7 +21,7 @@ import io.esastack.restlight.server.context.RequestContext;
 import java.util.concurrent.CompletableFuture;
 
 /**
- * This is a chained {@link IExceptionHandler} which is used to handle throwable.
+ * This is a chained {@link IExceptionHandler} which is used to handle {@link Throwable}.
  */
 @Internal
 public interface ExceptionHandlerChain {

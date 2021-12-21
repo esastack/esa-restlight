@@ -63,7 +63,7 @@ public class NameAndValueResolverAdapter implements ParamResolver {
             name = param.name();
             if (name == null) {
                 throw new IllegalArgumentException(
-                        "Name for argument type [" + param.type().getName() +
+                        "Name for param type [" + param.type().getName() +
                                 "] not available, and parameter name information not found in class file either.");
             }
         }

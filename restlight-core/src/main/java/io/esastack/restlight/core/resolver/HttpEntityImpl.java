@@ -86,6 +86,19 @@ public class HttpEntityImpl implements HttpEntity {
         this.mediaType = mediaType;
     }
 
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("HttpEntityImpl{");
+        sb.append("type=").append(type);
+        sb.append(", genericType=").append(genericType);
+        sb.append(", mediaType=").append(mediaType);
+        if (handler != null) {
+            sb.append(", handler=").append(handler);
+        }
+        sb.append('}');
+        return sb.toString();
+    }
+
     static MediaType parseMediaType(String mediaType) {
         if (StringUtils.isEmpty(mediaType)) {
             return null;

@@ -15,8 +15,8 @@
  */
 package io.esastack.restlight.starter.actuator.adapt;
 
-import io.esastack.restlight.server.context.RequestContext;
 import io.esastack.restlight.core.method.HandlerMethod;
+import io.esastack.restlight.server.context.RequestContext;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.actuate.autoconfigure.endpoint.web.WebEndpointProperties;
 import org.springframework.boot.actuate.endpoint.web.WebEndpointsSupplier;

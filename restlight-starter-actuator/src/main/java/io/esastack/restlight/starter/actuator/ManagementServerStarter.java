@@ -44,8 +44,7 @@ public class ManagementServerStarter extends AbstractDelegatedRestlightServer
         implements SmartInitializingSingleton, RestlightServer, ApplicationContextAware,
         ApplicationListener<ContextClosedEvent> {
 
-    private static final Logger logger =
-            LoggerFactory.getLogger(ManagementServerStarter.class);
+    private static final Logger logger = LoggerFactory.getLogger(ManagementServerStarter.class);
 
     private final ManagementOptions managementOptions;
     private volatile ApplicationContext context;

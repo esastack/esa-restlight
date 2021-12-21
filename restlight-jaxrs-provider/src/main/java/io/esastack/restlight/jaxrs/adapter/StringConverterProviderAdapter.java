@@ -16,6 +16,8 @@
 package io.esastack.restlight.jaxrs.adapter;
 
 import esa.commons.Checks;
+import esa.commons.ClassUtils;
+import esa.commons.reflect.AnnotationUtils;
 import io.esastack.restlight.core.method.Param;
 import io.esastack.restlight.core.resolver.StringConverter;
 import io.esastack.restlight.core.resolver.StringConverterFactory;
@@ -35,14 +37,14 @@ public class StringConverterProviderAdapter implements StringConverterFactory {
     }
 
     @Override
-    public Optional<StringConverter> createConverter(Class<?> type, Type genericType, Param relatedParam) {
+    public Optional<StringConverter> createConverter(Class<?> type, Type genericType, Param param) {
         jakarta.ws.rs.ext.ParamConverter<?> converter = underlying.getConverter(type,
-                genericType, relatedParam.annotations());
+                genericType, param.annotations());
         if (converter == null) {
             return Optional.empty();
         }
 
-        final boolean isLazy = (converter.getClass().getAnnotation(ParamConverter.Lazy.class) != null);
+        boolean isLazy = AnnotationUtils.hasAnnotation(ClassUtils.getUserType(converter), ParamConverter.Lazy.class);
         return Optional.of(new StringConverter() {
             @Override
             public Object fromString(String value) {

@@ -40,7 +40,7 @@ public abstract class AbstractRouteMethodLocator implements RouteMethodLocator {
         return Optional.of(new RouteMethodInfo(RouteHandlerMethodImpl.of(handlerMethod,
                 InterceptorUtils.isIntercepted(handlerMethod),
                 RouteUtils.scheduling(handlerMethod, defaultScheduling)),
-                isLocator(handlerMethod), getCustomResponse(handlerMethod)));
+                isLocator(handlerMethod), getCustomStatus(handlerMethod)));
     }
 
     /**
@@ -59,5 +59,5 @@ public abstract class AbstractRouteMethodLocator implements RouteMethodLocator {
      * @param handlerMethod handlerMethod
      * @return HttpStatus
      */
-    protected abstract HttpStatus getCustomResponse(HandlerMethod handlerMethod);
+    protected abstract HttpStatus getCustomStatus(HandlerMethod handlerMethod);
 }

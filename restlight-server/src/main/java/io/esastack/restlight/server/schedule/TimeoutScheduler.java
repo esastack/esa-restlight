@@ -17,15 +17,13 @@ package io.esastack.restlight.server.schedule;
 
 import esa.commons.Checks;
 import io.esastack.commons.net.http.HttpStatus;
-import io.esastack.commons.net.http.MediaType;
+import io.esastack.restlight.server.config.TimeoutOptions;
+import io.esastack.restlight.server.context.RequestContext;
 import io.esastack.restlight.server.core.HttpRequest;
 import io.esastack.restlight.server.core.HttpResponse;
-import io.esastack.restlight.server.context.RequestContext;
-import io.esastack.restlight.server.config.TimeoutOptions;
 import io.esastack.restlight.server.util.ErrorDetail;
 import io.esastack.restlight.server.util.LoggerUtils;
 import io.esastack.restlight.server.util.PromiseUtils;
-import io.netty.handler.codec.http.HttpHeaderNames;
 
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
@@ -145,7 +143,6 @@ class TimeoutScheduler implements Scheduler {
 
         void failFast() {
             HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
-            delegate.response().headers().set(HttpHeaderNames.CONTENT_TYPE, MediaType.TEXT_PLAIN.value());
             delegate.response().status(status.code());
             delegate.response().entity(new ErrorDetail<>(delegate.request().path(),
                     "Out of scheduler(" + schedulerName + ") timeout(" + timeout + ")ms"));

@@ -98,7 +98,4 @@ public class HttResponseImpl implements HttpResponse {
         return res.toString();
     }
 
-    public Response underlying() {
-        return res;
-    }
 }

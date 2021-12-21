@@ -24,8 +24,8 @@ import esa.commons.logging.LoggerFactory;
 import io.esastack.restlight.server.context.FilterContext;
 import io.esastack.restlight.server.core.HttpRequest;
 import io.esastack.restlight.server.core.HttpResponse;
-import io.esastack.restlight.server.handler.FilterChain;
 import io.esastack.restlight.server.handler.Filter;
+import io.esastack.restlight.server.handler.FilterChain;
 import io.esastack.restlight.server.util.DateUtils;
 
 import java.io.File;
@@ -50,7 +50,7 @@ public class AccessLogFilter implements Filter {
     }
 
     static InternalLoggers.Builder forLogger(AccessLogOptions options) {
-        InternalLoggers.Builder builder = InternalLoggers.logger("esa.restlight.accesslog",
+        InternalLoggers.Builder builder = InternalLoggers.logger("io.esastack.restlight.accesslog",
                 new File(options.getDirectory(), options.getFileName()))
                 .pattern("%msg%n");
         if (options.isRolling() && options.getMaxHistory() > 0) {

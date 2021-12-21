@@ -21,7 +21,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
  * ManagementOptions
- *
  */
 @ConfigurationProperties(prefix = "management.server.restlight")
 public class ManagementOptions extends RestlightOptions {
