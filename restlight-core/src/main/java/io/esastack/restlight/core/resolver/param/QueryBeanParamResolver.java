@@ -85,7 +85,7 @@ public class QueryBeanParamResolver extends RequestBeanParamResolver {
 
         @Override
         protected NameAndValue<String> createNameAndValue(Param param) {
-            return new NameAndValue<>(extractName(param), false, null);
+            return new NameAndValue<>(extractName(param), false);
         }
     }
 }
