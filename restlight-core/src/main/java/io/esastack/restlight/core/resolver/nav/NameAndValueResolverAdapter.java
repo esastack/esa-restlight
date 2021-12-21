@@ -77,7 +77,7 @@ public class NameAndValueResolverAdapter implements ParamResolver {
             }
         }
 
-        return new NameAndValue<>(name, nav.required(), defaultValue, false);
+        return new NameAndValue<>(name, nav.required(), defaultValue, nav.isLazy());
     }
 
     private boolean useObjectDefaultValueIfRequired(Param param) {
