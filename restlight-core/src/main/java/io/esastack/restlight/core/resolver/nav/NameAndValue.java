@@ -52,8 +52,8 @@ public class NameAndValue<T> {
         if (isLazy) {
             this.defaultValue = new LazyDefaultValue<>(defaultValue);
         } else {
-            T defaultValueObj = defaultValue.get();
-            this.defaultValue = () -> defaultValueObj;
+            T loaded = defaultValue.get();
+            this.defaultValue = () -> loaded;
         }
     }
 
