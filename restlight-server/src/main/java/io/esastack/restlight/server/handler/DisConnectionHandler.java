@@ -15,10 +15,11 @@
  */
 package io.esastack.restlight.server.handler;
 
+import io.esastack.restlight.core.util.Ordered;
 import io.netty.channel.Channel;
 
 @FunctionalInterface
-public interface DisConnectionHandler {
+public interface DisConnectionHandler extends Ordered {
 
     /**
      * This callback notification method is invoked in case the existed {@link Channel} has disconnected.

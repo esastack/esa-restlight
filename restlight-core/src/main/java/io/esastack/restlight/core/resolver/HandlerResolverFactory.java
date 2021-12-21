@@ -49,10 +49,10 @@ public interface HandlerResolverFactory {
      *
      * @param type         type
      * @param genericType  genericType
-     * @param relatedParam relatedParams
+     * @param param        related Param, which may be {@code null}.
      * @return StringConverter
      */
-    StringConverter getStringConverter(Class<?> type, Type genericType, Param relatedParam);
+    StringConverter getStringConverter(Class<?> type, Type genericType, Param param);
 
     /**
      * Get the {@link ParamResolver} for given parameter.

@@ -188,7 +188,6 @@ public class DispatcherHandlerImpl implements DispatcherHandler {
                         }
                         completeRequest0(request, response, promise);
                     });
-
         } catch (Throwable throwable) {
             logger.error("Error while triggering afterCompletion() for request(url={},method={})",
                     request.path(), request.method(), throwable);

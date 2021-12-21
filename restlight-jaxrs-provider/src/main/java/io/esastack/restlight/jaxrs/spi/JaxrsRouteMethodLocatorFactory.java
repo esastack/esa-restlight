@@ -43,7 +43,7 @@ public class JaxrsRouteMethodLocatorFactory implements RouteMethodLocatorFactory
         }
 
         @Override
-        protected HttpStatus getCustomResponse(HandlerMethod handlerMethod) {
+        protected HttpStatus getCustomStatus(HandlerMethod handlerMethod) {
             return null;
         }
 

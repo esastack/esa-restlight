@@ -35,7 +35,14 @@ public class LinkedExceptionHandlerChain implements ExceptionHandlerChain {
 
     public static ExceptionHandlerChain immutable(IExceptionHandler[] handlers) {
         Checks.checkNotNull(handlers, "handlers");
-        ExceptionHandlerChain chain = (context, th) -> Futures.completedExceptionally(th);
+        ExceptionHandlerChain chain = (context, th) -> {
+            if (th != null) {
+                return Futures.completedExceptionally(th);
+            } else {
+                return Futures.completedFuture();
+            }
+        };
+
         int i = handlers.length - 1;
         while (i >= 0) {
             chain = new LinkedExceptionHandlerChain(handlers[i], chain);
