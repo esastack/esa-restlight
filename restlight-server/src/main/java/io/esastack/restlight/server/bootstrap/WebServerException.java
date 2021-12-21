@@ -65,24 +65,8 @@ public class WebServerException extends RuntimeException {
         return new WebServerException(HttpStatus.NOT_ACCEPTABLE, message);
     }
 
-    public static WebServerException notAcceptable(Throwable cause) {
-        return new WebServerException(HttpStatus.NOT_ACCEPTABLE, cause);
-    }
-
-    public static WebServerException notAcceptable(String message, Throwable cause) {
-        return new WebServerException(HttpStatus.NOT_ACCEPTABLE, message, cause);
-    }
-
     public static WebServerException notSupported(String message) {
         return new WebServerException(HttpStatus.UNSUPPORTED_MEDIA_TYPE, message);
-    }
-
-    public static WebServerException notSupported(Throwable cause) {
-        return new WebServerException(HttpStatus.UNSUPPORTED_MEDIA_TYPE, cause);
-    }
-
-    public static WebServerException notSupported(String message, Throwable cause) {
-        return new WebServerException(HttpStatus.UNSUPPORTED_MEDIA_TYPE, message, cause);
     }
 
     public static WebServerException badRequest(String message) {

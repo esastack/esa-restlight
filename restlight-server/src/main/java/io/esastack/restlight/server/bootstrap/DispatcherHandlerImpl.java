@@ -51,15 +51,19 @@ public class DispatcherHandlerImpl implements DispatcherHandler {
     private static final Logger logger = LoggerFactory.getLogger(DispatcherHandlerImpl.class);
 
     private final AbstractRouteRegistry registry;
+    private final IExceptionHandler[] applyToExecutionsHandlers;
     private final ExceptionHandlerChain exceptionHandler;
 
     private final LongAdder rejectCount = new LongAdder();
 
     public DispatcherHandlerImpl(AbstractRouteRegistry registry,
+                                 IExceptionHandler[] applyToExecutionsHandlers,
                                  ExceptionHandlerChain exceptionHandler) {
         Checks.checkNotNull(registry, "registry");
+        Checks.checkNotNull(applyToExecutionsHandlers, "applyToExecutionsHandlers");
         Checks.checkNotNull(exceptionHandler, "exceptionHandler");
         this.registry = registry;
+        this.applyToExecutionsHandlers = applyToExecutionsHandlers;
         this.exceptionHandler = exceptionHandler;
     }
 
@@ -87,7 +91,8 @@ public class DispatcherHandlerImpl implements DispatcherHandler {
                         final ExceptionHandler<Throwable> exHandler;
                         if (ex != null && (exHandler = execution.exceptionHandler()) != null) {
                             try {
-                                exHandler.handleException(context, ex)
+                                LinkedExceptionHandlerChain.applyToExecutionHandler(applyToExecutionsHandlers,
+                                        exHandler::handleException).handle(context, ex)
                                         .whenComplete((voidRet, err) ->
                                                 cleanUp(context, execution.completionHandler(), promise,
                                                         Futures.unwrapCompletionException(err)));
