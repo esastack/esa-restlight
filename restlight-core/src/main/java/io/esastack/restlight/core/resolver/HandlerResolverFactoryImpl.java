@@ -237,7 +237,7 @@ public class HandlerResolverFactoryImpl implements HandlerResolverFactory {
         return paramResolvers.stream().filter(r -> r.supports(param))
                 .findFirst()
                 .map(factory -> Checks.checkNotNull(factory.createResolver(param, rxSerializers),
-                        "Failed to create param resolver for parameter: " + param))
+                        "Failed to create ParamResolver for parameter: " + param))
                 .orElse(null);
     }
 
@@ -248,7 +248,7 @@ public class HandlerResolverFactoryImpl implements HandlerResolverFactory {
                     paramResolverAdvices.stream()
                             .filter(advice -> advice.supports(param))
                             .map(factory -> Checks.checkNotNull(factory.createResolverAdvice(param, resolver),
-                                    "Failed to create param resolver advice for parameter: " + param))
+                                    "Failed to create ParamResolverAdvice for parameter: " + param))
                             .collect(Collectors.toList());
 
             if (!advices.isEmpty()) {
@@ -264,7 +264,7 @@ public class HandlerResolverFactoryImpl implements HandlerResolverFactory {
         return contextResolvers.stream().filter(r -> r.supports(param))
                 .findFirst()
                 .map(factory -> Checks.checkNotNull(factory.createResolver(param),
-                        "Failed to create context resolver for parameter: " + param))
+                        "Failed to create ContextResolver for parameter: " + param))
                 .orElse(null);
     }
 
@@ -286,7 +286,7 @@ public class HandlerResolverFactoryImpl implements HandlerResolverFactory {
                     requestEntityResolverAdvices.stream()
                             .filter(advice -> advice.supports(handlerMethod))
                             .map(factory -> Checks.checkNotNull(factory.createResolverAdvice(handlerMethod),
-                                    "Failed to create request entity resolver advice for handler: "
+                                    "Failed to create RequestEntityResolverAdvice for handler: "
                                             + handlerMethod))
                             .collect(Collectors.toList());
             if (!advices.isEmpty()) {
@@ -308,7 +308,7 @@ public class HandlerResolverFactoryImpl implements HandlerResolverFactory {
                     responseEntityResolverAdvices.stream()
                             .filter(advice -> advice.supports(entity.handler().orElse(null)))
                             .map(factory -> Checks.checkNotNull(factory.createResolverAdvice(entity),
-                                    "Failed to create response entity resolver advice for response entity: "
+                                    "Failed to create ResponseEntityResolverAdvice for response entity: "
                                             + entity))
                             .collect(Collectors.toList());
             if (!advices.isEmpty()) {

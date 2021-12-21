@@ -42,7 +42,7 @@ public class RequestEntityImpl extends HttpEntityImpl implements RequestEntity {
         super(handler, context.request().contentType());
         Checks.checkNotNull(handler, "handler");
         Checks.checkNotNull(param, "param");
-        Checks.checkNotNull(context, "request");
+        Checks.checkNotNull(context, "context");
         this.request = context.request();
         this.param = param;
         this.type = param.type();

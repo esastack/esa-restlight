@@ -160,7 +160,7 @@ public class RequestBeanParamResolver implements ParamResolverFactory {
                     try {
                         f.set(obj, arg);
                     } catch (IllegalAccessException e) {
-                        LoggerUtils.logger().warn("Failed to set value to @QueryBean field " + f.toString(), e);
+                        LoggerUtils.logger().warn("Failed to set value to @QueryBean field " + f, e);
                     }
                 };
             }

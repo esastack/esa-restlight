@@ -28,6 +28,7 @@ import io.esastack.restlight.core.util.RouteUtils;
 import io.esastack.restlight.server.bootstrap.DispatcherHandlerImpl;
 import io.esastack.restlight.server.bootstrap.WebServerException;
 import io.esastack.restlight.server.context.RequestContext;
+import io.esastack.restlight.server.route.CompletionHandler;
 import io.esastack.restlight.server.route.Route;
 import io.esastack.restlight.server.route.RouteExecution;
 import io.esastack.restlight.server.route.RouteFailureException;
@@ -59,9 +60,8 @@ public class HandlerLocatorResolver implements HandlerValueResolver {
     @Override
     public CompletableFuture<Void> handle(Object value, RequestContext context) {
         if (value == null) {
-            throw new WebServerException("Unexpected 'null' returned by resource locator: ["
-                    + handlerMapping.methodInfo().handlerMethod() + "], uri: " +
-                    context.request().uri() + ", method: " + context.request().method());
+            return Futures.completedExceptionally(new WebServerException("Unexpected 'null' returned by" +
+                    " resource locator: [" + handlerMapping.methodInfo().handlerMethod() + "]"));
         }
 
         final Class<?> userType = ClassUtils.getUserType(value);
@@ -91,29 +91,41 @@ public class HandlerLocatorResolver implements HandlerValueResolver {
         } catch (Throwable th) {
             return Futures.completedExceptionally(th);
         }
+
+        final CompletableFuture<Void> promise = new CompletableFuture<>();
         try {
             return execution.executionHandler().handle(context).whenComplete((v, th) -> {
                 if (th != null && execution.exceptionHandler() != null) {
                     execution.exceptionHandler().handleException(context, th)
                             .whenComplete((v0, th0) -> {
-                                if (execution.completionHandler() != null) {
-                                    execution.completionHandler().onComplete(context, th0);
-                                }
+                                complete(context, execution.completionHandler(), th0, promise);
                             });
                 } else {
-                    if (execution.completionHandler() != null) {
-                        execution.completionHandler().onComplete(context, null);
-                    }
+                    complete(context, execution.completionHandler(), null, promise);
                 }
             });
         } catch (Throwable th) {
-            return Futures.completedExceptionally(th);
+            complete(context, execution.completionHandler(), th, promise);
         }
+
+        return promise;
     }
 
     @Override
     public int getOrder() {
         return 100;
+    }
+
+    private void complete(RequestContext context, CompletionHandler completionHandler,
+                          Throwable th, CompletableFuture<Void> promise) {
+        if (completionHandler != null) {
+            completionHandler.onComplete(context, th);
+        }
+        if (th != null) {
+            promise.completeExceptionally(th);
+        } else {
+            promise.complete(null);
+        }
     }
 
     private static Object extractBean(Object value) {

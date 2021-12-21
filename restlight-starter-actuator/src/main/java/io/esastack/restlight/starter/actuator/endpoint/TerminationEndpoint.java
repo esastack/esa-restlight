@@ -42,7 +42,6 @@ public class TerminationEndpoint {
     @Qualifier(Constants.SERVER)
     private ServerStarter server;
 
-    @SuppressWarnings("unchecked")
     @WriteOperation
     public String setTerminationTimeout(long timeout) {
         if (timeout < 0) {

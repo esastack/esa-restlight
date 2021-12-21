@@ -204,7 +204,6 @@ public class RestlightBizThreadPoolEndpoint implements RestlightBizExecutorAware
         }
     }
 
-
     @Override
     public void setRestlightBizExecutor(Executor bizExecutor) {
         this.bizExecutor = bizExecutor;

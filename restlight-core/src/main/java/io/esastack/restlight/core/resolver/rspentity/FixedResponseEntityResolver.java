@@ -80,8 +80,7 @@ public abstract class FixedResponseEntityResolver extends AbstractResponseEntity
             return value.value();
         } else {
             throw new IllegalStateException("Could not resolve the return value(type=" + entity.type().getName()
-                    + ") by specified HttpResponseSerializer: " + serializer.getClass().getName() + ", handler method:"
-                    + " " + Objects.requireNonNull(entity.handler().orElse(null)).method().getName());
+                    + ") by specified HttpResponseSerializer: " + serializer.getClass().getName());
         }
     }
 

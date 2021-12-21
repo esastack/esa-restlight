@@ -19,7 +19,7 @@ import java.util.Objects;
 
 public class DefaultNamedAndValueAlias extends NamedAndValueAlias {
 
-    private String defaultValue;
+    private final String defaultValue;
 
     protected DefaultNamedAndValueAlias(String name, boolean required, String defaultValue) {
         super(name, required);
