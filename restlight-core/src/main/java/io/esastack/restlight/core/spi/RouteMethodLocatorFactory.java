@@ -19,11 +19,11 @@ import esa.commons.annotation.Internal;
 import esa.commons.spi.SPI;
 import io.esastack.restlight.core.DeployContext;
 import io.esastack.restlight.core.config.RestlightOptions;
+import io.esastack.restlight.core.handler.RouteHandler;
 import io.esastack.restlight.core.handler.locate.RouteMethodLocator;
 
 /**
- * Produces an instance of {@link RouteMethodLocator} for locating
- * {@link io.esastack.restlight.core.handler.RouteHandler}s.
+ * Produces an instance of {@link RouteMethodLocator} for locating {@link RouteHandler}s.
  */
 @SPI
 @Internal

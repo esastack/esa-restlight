@@ -18,16 +18,10 @@ package io.esastack.restlight.server.bootstrap;
 import io.esastack.commons.net.http.HttpStatus;
 
 public class WebServerException extends RuntimeException {
+
     private static final long serialVersionUID = -132910193006756089L;
 
-    public static final WebServerException BAD_REQUEST
-            = new WebServerException(HttpStatus.BAD_REQUEST);
-
     private final HttpStatus status;
-
-    public WebServerException() {
-        this((HttpStatus) null);
-    }
 
     public WebServerException(String message) {
         this(null, message);
@@ -67,20 +61,24 @@ public class WebServerException extends RuntimeException {
         return new WebServerException(t);
     }
 
-    public static WebServerException badRequest() {
-        return new WebServerException(HttpStatus.BAD_REQUEST);
+    public static WebServerException notAcceptable(String message) {
+        return new WebServerException(HttpStatus.NOT_ACCEPTABLE, message);
+    }
+
+    public static WebServerException notSupported(String message) {
+        return new WebServerException(HttpStatus.UNSUPPORTED_MEDIA_TYPE, message);
     }
 
     public static WebServerException badRequest(String message) {
         return new WebServerException(HttpStatus.BAD_REQUEST, message);
     }
 
-    public static WebServerException badRequest(String message, Throwable cause) {
-        return new WebServerException(HttpStatus.BAD_REQUEST, message, cause);
-    }
-
     public static WebServerException badRequest(Throwable cause) {
         return new WebServerException(HttpStatus.BAD_REQUEST, cause);
+    }
+
+    public static WebServerException badRequest(String message, Throwable cause) {
+        return new WebServerException(HttpStatus.BAD_REQUEST, message, cause);
     }
 
     public HttpStatus status() {

@@ -356,7 +356,7 @@
                                 <sourceDirectory>${project.build.testSourceDirectory}</sourceDirectory>
                             </sourceDirectories>
                             <excludes>
-                                esa/restlight/**/PojoProtobuf*
+                                io.esastack/restlight/**/PojoProtobuf*
                             </excludes>
                         </configuration>
                         <goals>
@@ -390,7 +390,7 @@
                         </goals>
                         <configuration>
                             <excludes>
-                                <exclude>esa/restlight/jmh/**</exclude>
+                                <exclude>io.esastack/restlight/jmh/**</exclude>
                             </excludes>
                         </configuration>
                     </execution>

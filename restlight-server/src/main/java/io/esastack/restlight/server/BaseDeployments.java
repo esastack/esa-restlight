@@ -54,6 +54,7 @@ import io.esastack.restlight.server.spi.RouteRegistryAware;
 import io.esastack.restlight.server.spi.RouteRegistryAwareFactory;
 import io.esastack.restlight.server.util.LoggerUtils;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -79,7 +80,7 @@ public abstract class BaseDeployments<R extends BaseRestlightServer<R, D, O>, D 
     protected final R restlight;
     private final List<Route> routes = new LinkedList<>();
     private final List<Filter> filters = new LinkedList<>();
-    private final List<IExceptionHandler> exceptionHandlers = new LinkedList<>();
+    private final List<ExceptionHandlerFactory> exceptionHandlers = new LinkedList<>();
     private final List<ConnectionHandlerFactory> connectionHandlers = new LinkedList<>();
     private final List<DisConnectionHandlerFactory> disConnectionHandlers = new LinkedList<>();
     private final List<RequestTaskHookFactory> requestTaskHooks = new LinkedList<>();
@@ -259,7 +260,7 @@ public abstract class BaseDeployments<R extends BaseRestlightServer<R, D, O>, D 
     public D addExceptionHandler(IExceptionHandler handler) {
         checkImmutable();
         Checks.checkNotNull(handler, "handler");
-        this.exceptionHandlers.add(handler);
+        this.exceptionHandlers.add(ctx -> Optional.of(handler));
         return self();
     }
 
@@ -269,6 +270,14 @@ public abstract class BaseDeployments<R extends BaseRestlightServer<R, D, O>, D 
         if (handlers != null && !handlers.isEmpty()) {
             handlers.forEach(this::addExceptionHandler);
         }
+        return self();
+    }
+
+    @Internal
+    public D addExceptionHandler(ExceptionHandlerFactory handler) {
+        checkImmutable();
+        Checks.checkNotNull(handler, "handler");
+        this.exceptionHandlers.add(handler);
         return self();
     }
 
@@ -407,19 +416,14 @@ public abstract class BaseDeployments<R extends BaseRestlightServer<R, D, O>, D 
                 .forEach(aware -> aware.setRegistry(routeRegistry));
 
         // init ExceptionHandlerChain
-        this.exceptionHandlers.addAll(SpiLoader.cached(ExceptionHandlerFactory.class)
-                .getByFeature(restlight.name(),
-                        true,
-                        Collections.singletonMap(Constants.INTERNAL, StringUtils.empty()),
-                        false)
-                .stream().map(factory -> factory.handler(ctx())).filter(Optional::isPresent)
-                .map(Optional::get).collect(Collectors.toList()));
-        OrderedComparator.sort(exceptionHandlers);
-        IExceptionHandler[] iExceptionHandlers = exceptionHandlers.toArray(new IExceptionHandler[0]);
+        IExceptionHandler[] iExceptionHandlers = getExceptionHandlers();
         this.exceptionHandler = LinkedExceptionHandlerChain.immutable(iExceptionHandlers);
 
         // init DispatcherHandler
-        this.dispatcher = new DispatcherHandlerImpl(routeRegistry, exceptionHandler);
+        this.dispatcher = new DispatcherHandlerImpl(routeRegistry,
+                Arrays.stream(iExceptionHandlers).filter(IExceptionHandler::alsoApplyToExecutionHandler)
+                        .toArray(IExceptionHandler[]::new),
+                exceptionHandler);
 
         // load RequestTaskHookFactory by spi
         SpiLoader.cached(RequestTaskHookFactory.class)
@@ -467,6 +471,19 @@ public abstract class BaseDeployments<R extends BaseRestlightServer<R, D, O>, D 
         } else {
             return new SimpleRouteRegistry();
         }
+    }
+
+    private IExceptionHandler[] getExceptionHandlers() {
+        this.exceptionHandlers.addAll(SpiLoader.cached(ExceptionHandlerFactory.class)
+                .getByFeature(restlight.name(),
+                        true,
+                        Collections.singletonMap(Constants.INTERNAL, StringUtils.empty()),
+                        false));
+        List<IExceptionHandler> exImpls = this.exceptionHandlers
+                .stream().map(factory -> factory.handler(ctx())).filter(Optional::isPresent)
+                .map(Optional::get).collect(Collectors.toList());
+        OrderedComparator.sort(exImpls);
+        return exImpls.toArray(new IExceptionHandler[0]);
     }
 
     /**

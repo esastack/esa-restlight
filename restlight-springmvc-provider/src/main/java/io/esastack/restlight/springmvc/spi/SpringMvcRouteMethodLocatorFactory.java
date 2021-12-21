@@ -43,7 +43,7 @@ public class SpringMvcRouteMethodLocatorFactory implements RouteMethodLocatorFac
         }
 
         @Override
-        protected HttpStatus getCustomResponse(HandlerMethod handlerMethod) {
+        protected HttpStatus getCustomStatus(HandlerMethod handlerMethod) {
             return ResponseStatusUtils.getCustomResponse(handlerMethod.beanType(),
                     handlerMethod.method());
         }

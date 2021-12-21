@@ -46,8 +46,7 @@ public class ProtoBufSerializer implements Serializer {
             Message message = (Message) target;
             return message.toByteArray();
         }
-        throw new UnsupportedOperationException("Could not serialize class: " +
-                target.getClass().getName());
+        throw new UnsupportedOperationException("Could not serialize class: " + target.getClass().getName());
     }
 
     @SuppressWarnings("unchecked")

@@ -49,7 +49,7 @@ public class HandlerResolverFactoryImpl implements HandlerResolverFactory {
     private final List<FutureTransferFactory> futureTransfers;
     private final List<RouteFilterFactory> routeFilters;
 
-    private final List<StringConverterFactory> paramConverters;
+    private final List<StringConverterFactory> stringConverters;
     private final List<ParamResolverFactory> paramResolvers;
     private final List<ParamResolverAdviceFactory> paramResolverAdvices;
     private final List<ContextResolverFactory> contextResolvers;
@@ -70,7 +70,7 @@ public class HandlerResolverFactoryImpl implements HandlerResolverFactory {
                                       Collection<? extends HttpResponseSerializer> txSerializers,
                                       Collection<? extends FutureTransferFactory> futureTransfers,
                                       Collection<? extends RouteFilterFactory> routeFilters,
-                                      Collection<? extends StringConverterFactory> paramConverterFactories,
+                                      Collection<? extends StringConverterFactory> stringConverters,
                                       Collection<? extends ParamResolverAdapter> paramResolvers,
                                       Collection<? extends ParamResolverFactory> paramResolverFactories,
                                       Collection<? extends ParamResolverAdviceAdapter> paramResolverAdvices,
@@ -96,7 +96,7 @@ public class HandlerResolverFactoryImpl implements HandlerResolverFactory {
 
         this.futureTransfers = sortForUnmodifiableList(futureTransfers);
         this.routeFilters = sortForUnmodifiableList(routeFilters);
-        this.paramConverters = sortForUnmodifiableList(paramConverterFactories);
+        this.stringConverters = sortForUnmodifiableList(stringConverters);
         this.paramResolvers = getParamResolvers(paramResolvers, paramResolverFactories);
         this.paramResolverAdvices = getParamResolverAdvices(paramResolverAdvices,
                 paramResolverAdviceFactories);
@@ -220,11 +220,11 @@ public class HandlerResolverFactoryImpl implements HandlerResolverFactory {
     }
 
     @Override
-    public StringConverter getStringConverter(Class<?> type, Type genericType, Param relatedParam) {
+    public StringConverter getStringConverter(Class<?> type, Type genericType, Param param) {
         //resolve the fixed parameter resolver
         Optional<StringConverter> converter;
-        for (StringConverterFactory factory : paramConverters) {
-            if ((converter = factory.createConverter(type, genericType, relatedParam)).isPresent()) {
+        for (StringConverterFactory factory : stringConverters) {
+            if ((converter = factory.createConverter(type, genericType, param)).isPresent()) {
                 return converter.get();
             }
         }
@@ -237,7 +237,7 @@ public class HandlerResolverFactoryImpl implements HandlerResolverFactory {
         return paramResolvers.stream().filter(r -> r.supports(param))
                 .findFirst()
                 .map(factory -> Checks.checkNotNull(factory.createResolver(param, rxSerializers),
-                        "Failed to create param resolver for parameter: " + param))
+                        "Failed to create ParamResolver for parameter: " + param))
                 .orElse(null);
     }
 
@@ -248,7 +248,7 @@ public class HandlerResolverFactoryImpl implements HandlerResolverFactory {
                     paramResolverAdvices.stream()
                             .filter(advice -> advice.supports(param))
                             .map(factory -> Checks.checkNotNull(factory.createResolverAdvice(param, resolver),
-                                    "Failed to create param resolver advice for parameter: " + param))
+                                    "Failed to create ParamResolverAdvice for parameter: " + param))
                             .collect(Collectors.toList());
 
             if (!advices.isEmpty()) {
@@ -264,7 +264,7 @@ public class HandlerResolverFactoryImpl implements HandlerResolverFactory {
         return contextResolvers.stream().filter(r -> r.supports(param))
                 .findFirst()
                 .map(factory -> Checks.checkNotNull(factory.createResolver(param),
-                        "Failed to create context resolver for parameter: " + param))
+                        "Failed to create ContextResolver for parameter: " + param))
                 .orElse(null);
     }
 
@@ -286,7 +286,7 @@ public class HandlerResolverFactoryImpl implements HandlerResolverFactory {
                     requestEntityResolverAdvices.stream()
                             .filter(advice -> advice.supports(handlerMethod))
                             .map(factory -> Checks.checkNotNull(factory.createResolverAdvice(handlerMethod),
-                                    "Failed to create request entity resolver advice for handler: "
+                                    "Failed to create RequestEntityResolverAdvice for handler: "
                                             + handlerMethod))
                             .collect(Collectors.toList());
             if (!advices.isEmpty()) {
@@ -308,7 +308,7 @@ public class HandlerResolverFactoryImpl implements HandlerResolverFactory {
                     responseEntityResolverAdvices.stream()
                             .filter(advice -> advice.supports(entity.handler().orElse(null)))
                             .map(factory -> Checks.checkNotNull(factory.createResolverAdvice(entity),
-                                    "Failed to create request entity resolver advice for response entity: "
+                                    "Failed to create ResponseEntityResolverAdvice for response entity: "
                                             + entity))
                             .collect(Collectors.toList());
             if (!advices.isEmpty()) {
@@ -342,7 +342,7 @@ public class HandlerResolverFactoryImpl implements HandlerResolverFactory {
                     .add(ResponseEntityResolverFactory.singleton(resolver)));
             return new HandlerConfiguration(attributes,
                     new LinkedList<>(factory.routeFilters),
-                    new LinkedList<>(factory.paramConverters),
+                    new LinkedList<>(factory.stringConverters),
                     new LinkedList<>(factory.paramResolvers),
                     new LinkedList<>(factory.paramResolverAdvices),
                     new LinkedList<>(factory.contextResolvers),
@@ -380,7 +380,7 @@ public class HandlerResolverFactoryImpl implements HandlerResolverFactory {
                 factory.txSerializers(),
                 factory.futureTransfers(),
                 configuration.getRouteFilters(),
-                configuration.getParamConverts(),
+                configuration.getStringConverts(),
                 null,
                 configuration.getParamResolvers(),
                 null,

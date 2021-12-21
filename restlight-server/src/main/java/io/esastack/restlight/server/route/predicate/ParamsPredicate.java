@@ -15,8 +15,8 @@
  */
 package io.esastack.restlight.server.route.predicate;
 
-import io.esastack.restlight.server.core.HttpRequest;
 import io.esastack.restlight.server.context.RequestContext;
+import io.esastack.restlight.server.core.HttpRequest;
 import io.esastack.restlight.server.util.MappingUtils;
 
 import java.util.Collection;
@@ -75,6 +75,11 @@ public class ParamsPredicate implements RequestPredicate {
         return MappingUtils.isIntersect(this.expressions, ((ParamsPredicate) another).expressions);
     }
 
+    @Override
+    public String toString() {
+        return "{params=" + expressions + '}';
+    }
+
     private static class Expression extends AbstractNameValueExpression {
 
         private Expression(String expression) {
@@ -107,8 +112,4 @@ public class ParamsPredicate implements RequestPredicate {
         }
     }
 
-    @Override
-    public String toString() {
-        return "{params=" + expressions + '}';
-    }
 }

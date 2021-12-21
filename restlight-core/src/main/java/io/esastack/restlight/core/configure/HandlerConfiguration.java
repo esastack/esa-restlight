@@ -34,7 +34,7 @@ public class HandlerConfiguration {
 
     private final Attributes attributes;
     private final List<RouteFilterFactory> routeFilters;
-    private final List<StringConverterFactory> paramConverters;
+    private final List<StringConverterFactory> stringConverters;
     private final List<ParamResolverFactory> paramResolvers;
     private final List<ParamResolverAdviceFactory> paramResolverAdvices;
     private final List<ContextResolverFactory> contextResolvers;
@@ -45,7 +45,7 @@ public class HandlerConfiguration {
 
     public HandlerConfiguration(Attributes attributes,
                                 List<RouteFilterFactory> routeFilters,
-                                List<StringConverterFactory> paramConverters,
+                                List<StringConverterFactory> stringConverters,
                                 List<ParamResolverFactory> paramResolvers,
                                 List<ParamResolverAdviceFactory> paramResolverAdvices,
                                 List<ContextResolverFactory> contextResolvers,
@@ -56,7 +56,7 @@ public class HandlerConfiguration {
         Checks.checkNotNull(attributes, "attributes");
         this.attributes = attributes;
         this.routeFilters = routeFilters;
-        this.paramConverters = paramConverters;
+        this.stringConverters = stringConverters;
         this.paramResolvers = paramResolvers;
         this.paramResolverAdvices = paramResolverAdvices;
         this.contextResolvers = contextResolvers;
@@ -70,8 +70,8 @@ public class HandlerConfiguration {
         return attributes;
     }
 
-    public List<StringConverterFactory> getParamConverts() {
-        return paramConverters;
+    public List<StringConverterFactory> getStringConverts() {
+        return stringConverters;
     }
 
     public List<ParamResolverFactory> getParamResolvers() {

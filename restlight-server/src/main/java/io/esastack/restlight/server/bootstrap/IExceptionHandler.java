@@ -18,6 +18,7 @@ package io.esastack.restlight.server.bootstrap;
 import esa.commons.annotation.Internal;
 import io.esastack.restlight.core.util.Ordered;
 import io.esastack.restlight.server.context.RequestContext;
+import io.esastack.restlight.server.route.RouteExecution;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -38,6 +39,17 @@ public interface IExceptionHandler extends Ordered {
      * @return          handled result
      */
     CompletableFuture<Void> handle(RequestContext context, Throwable th, ExceptionHandlerChain next);
+
+    /**
+     * Whether the {@link IExceptionHandler} supports to handle the {@link Throwable} before it's handled
+     * by {@link RouteExecution#exceptionHandler()}.
+     *
+     * @return whether apply this {@link IExceptionHandler} to handle {@link Throwable} before
+     * {@link RouteExecution#exceptionHandler()}, default {@code false}.
+     */
+    default boolean alsoApplyToExecutionHandler() {
+        return false;
+    }
 
 }
 

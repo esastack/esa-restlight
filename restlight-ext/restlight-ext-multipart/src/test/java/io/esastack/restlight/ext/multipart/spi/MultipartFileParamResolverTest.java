@@ -22,8 +22,8 @@ import io.esastack.restlight.core.resolver.nav.NameAndValueResolverAdapter;
 import io.esastack.restlight.core.spi.impl.DefaultStringConverterFactory;
 import io.esastack.restlight.ext.multipart.core.MultipartFile;
 import io.esastack.restlight.server.bootstrap.WebServerException;
-import io.esastack.restlight.server.core.HttpRequest;
 import io.esastack.restlight.server.context.impl.RequestContextImpl;
+import io.esastack.restlight.server.core.HttpRequest;
 import io.esastack.restlight.server.mock.MockHttpResponse;
 import org.junit.jupiter.api.Test;
 

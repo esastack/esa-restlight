@@ -15,8 +15,8 @@
  */
 package io.esastack.restlight.server.route.predicate;
 
-import io.esastack.restlight.server.core.HttpRequest;
 import io.esastack.restlight.server.context.RequestContext;
+import io.esastack.restlight.server.core.HttpRequest;
 import io.esastack.restlight.server.util.MappingUtils;
 import io.netty.handler.codec.http.HttpHeaderNames;
 
@@ -87,6 +87,11 @@ public class HeadersPredicate implements RequestPredicate {
         return MappingUtils.isIntersect(this.expressions, ((HeadersPredicate) another).expressions);
     }
 
+    @Override
+    public String toString() {
+        return "{headers=" + Arrays.toString(expressions) + '}';
+    }
+
     public static class Expression extends AbstractNameValueExpression {
 
         public Expression(String expression) {
@@ -119,8 +124,4 @@ public class HeadersPredicate implements RequestPredicate {
         }
     }
 
-    @Override
-    public String toString() {
-        return "{headers=" + Arrays.toString(expressions) + '}';
-    }
 }

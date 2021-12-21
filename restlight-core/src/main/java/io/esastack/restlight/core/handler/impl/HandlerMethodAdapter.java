@@ -47,8 +47,7 @@ public class HandlerMethodAdapter<H extends HandlerMethod> implements HandlerMet
     private final ResolvableParam<MethodParam, ResolverWrap>[] methodParamResolvers;
     private final boolean concurrent;
 
-    public HandlerMethodAdapter(HandlerContext<? extends RestlightOptions> context,
-                                H handlerMethod) {
+    public HandlerMethodAdapter(HandlerContext<? extends RestlightOptions> context, H handlerMethod) {
         Checks.checkNotNull(context, "context");
         Checks.checkNotNull(handlerMethod, "handlerMethod");
         this.handlerMethod = handlerMethod;
@@ -123,7 +122,8 @@ public class HandlerMethodAdapter<H extends HandlerMethod> implements HandlerMet
             } else {
                 List<RequestEntityResolver> requestEntityResolvers = factory.getRequestEntityResolvers(param);
                 if (requestEntityResolvers.isEmpty()) {
-                    throw new IllegalArgumentException("There is no resolver to handle [" + param.toString() + "]");
+                    throw new IllegalArgumentException("There is no resolver to handle param: ["
+                            + param.toString() + "]");
                 } else {
                     return new ResolvableParam<>(param, new AdvisedRequestEntityResolver(handlerMethod, param,
                             requestEntityResolvers, factory.getRequestEntityResolverAdvices(handlerMethod)));

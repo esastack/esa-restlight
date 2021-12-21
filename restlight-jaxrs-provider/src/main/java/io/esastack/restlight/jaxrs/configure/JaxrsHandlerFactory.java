@@ -37,6 +37,7 @@ import io.esastack.restlight.server.bootstrap.WebServerException;
 import io.esastack.restlight.server.context.RequestContext;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
@@ -70,8 +71,11 @@ public class JaxrsHandlerFactory extends HandlerFactoryImpl {
             }
             try {
                 return resolvable.constructor.newInstance(consArgs);
-            } catch (Throwable th) {
-                throw WebServerException.badRequest("Could not instantiate class: [" + clazz + "]", th);
+            } catch (InvocationTargetException ex) {
+                throw new IllegalStateException("Could not instantiate provider class: [" + clazz + "]",
+                        ex.getTargetException());
+            } catch (Exception ex) {
+                throw new IllegalStateException("Could not instantiate provider class: [" + clazz + "]", ex);
             }
         }
     }
@@ -91,9 +95,11 @@ public class JaxrsHandlerFactory extends HandlerFactoryImpl {
                     try {
                         Object arg = r.resolver().resolve(param, handlerCtx);
                         ReflectionUtils.invokeMethod(param.method(), instance, arg);
-                    } catch (Exception e) {
-                        //wrap exception
-                        throw WebServerException.wrap(e);
+                    } catch (InvocationTargetException ex) {
+                        throw new IllegalStateException("Failed to invoke method: [" + param.method() + "]",
+                                ex.getTargetException());
+                    } catch (Exception ex) {
+                        throw WebServerException.wrap(ex);
                     }
                 }
             }

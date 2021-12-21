@@ -21,7 +21,7 @@ import java.lang.annotation.Annotation;
 
 public class RequestBody0 {
 
-    private boolean required;
+    private final boolean required;
 
     public RequestBody0(boolean required) {
         this.required = required;

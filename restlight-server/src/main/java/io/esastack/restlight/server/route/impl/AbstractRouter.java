@@ -15,8 +15,8 @@
  */
 package io.esastack.restlight.server.route.impl;
 
-import io.esastack.restlight.server.core.HttpRequest;
 import io.esastack.restlight.server.context.RequestContext;
+import io.esastack.restlight.server.core.HttpRequest;
 import io.esastack.restlight.server.route.Mapping;
 import io.esastack.restlight.server.route.Route;
 import io.esastack.restlight.server.route.Router;
@@ -46,7 +46,6 @@ abstract class AbstractRouter<R extends RouteWrap> implements Router {
 
     @Override
     public Route route(RequestContext context) {
-        HttpRequest request = context.request();
         // find from url lookup
         R route = matchByUri(context);
         if (route == null) {

@@ -39,9 +39,9 @@ import org.springframework.context.annotation.Configuration;
 public class SameManagementPortAutoConfiguration {
 
     static final String SPRING_MVC_MARK =
-            "esa.restlight.springmvc.spi.SpringMvcRouteHandlerLocatorFactory";
+            "io.esastack.restlight.springmvc.spi.SpringMvcRouteMethodLocatorFactory";
     static final String JAX_RS_MARK =
-            "esa.restlight.jaxrs.spi.JaxrsRouteHandlerLocatorFactory";
+            "io.esastack.restlight.jaxrs.spi.JaxrsRouteMethodLocatorFactory";
 
     @Bean
     @ConditionalOnMissingBean(BaseHandlerMappingProvider.class)

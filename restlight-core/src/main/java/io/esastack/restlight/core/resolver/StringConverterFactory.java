@@ -43,10 +43,10 @@ public interface StringConverterFactory extends Ordered {
      *
      * @param type         type
      * @param genericType  genericType
-     * @param relatedParam relatedParam
+     * @param param        related Param
      * @return StringConverter
      */
-    Optional<StringConverter> createConverter(Class<?> type, Type genericType, Param relatedParam);
+    Optional<StringConverter> createConverter(Class<?> type, Type genericType, Param param);
 
     /**
      * Default to use the 0.
@@ -68,7 +68,7 @@ public interface StringConverterFactory extends Ordered {
         }
 
         @Override
-        public Optional<StringConverter> createConverter(Class<?> type, Type genericType, Param relatedParam) {
+        public Optional<StringConverter> createConverter(Class<?> type, Type genericType, Param param) {
             return Optional.of(converter);
         }
     }
