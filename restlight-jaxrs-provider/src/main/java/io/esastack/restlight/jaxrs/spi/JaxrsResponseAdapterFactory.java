@@ -15,8 +15,6 @@
  */
 package io.esastack.restlight.jaxrs.spi;
 
-import esa.commons.ClassUtils;
-import io.esastack.restlight.core.method.HandlerMethod;
 import io.esastack.restlight.core.resolver.ResponseEntity;
 import io.esastack.restlight.core.resolver.ResponseEntityResolverAdvice;
 import io.esastack.restlight.core.resolver.ResponseEntityResolverAdviceFactory;
@@ -24,14 +22,21 @@ import io.esastack.restlight.core.resolver.ResponseEntityResolverContext;
 import jakarta.ws.rs.core.GenericEntity;
 import jakarta.ws.rs.core.Response;
 
+/**
+ * This factory is designed for converting {@link GenericEntity}, {@link Response}, {@link Response.ResponseBuilder}
+ * purpose.
+ */
 public class JaxrsResponseAdapterFactory implements ResponseEntityResolverAdviceFactory {
 
     @Override
-    public boolean supports(HandlerMethod handlerMethod) {
-        Class<?> returnType = ClassUtils.getRawType(handlerMethod.method().getReturnType());
-        return Response.class.isAssignableFrom(returnType)
-                || Response.ResponseBuilder.class.isAssignableFrom(returnType)
-                || GenericEntity.class.isAssignableFrom(returnType);
+    public boolean supports(ResponseEntity entity) {
+        Class<?> type = entity.type();
+        if (type == null) {
+            return false;
+        }
+        return Response.class.isAssignableFrom(type)
+                || Response.ResponseBuilder.class.isAssignableFrom(type)
+                || GenericEntity.class.isAssignableFrom(type);
     }
 
     @Override

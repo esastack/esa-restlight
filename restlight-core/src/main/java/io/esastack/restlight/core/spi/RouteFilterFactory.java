@@ -58,8 +58,8 @@ public interface RouteFilterFactory extends HandlerPredicate {
         }
 
         @Override
-        public boolean supports(HandlerMethod handlerMethod) {
-            return filter.supports(handlerMethod);
+        public boolean supports(HandlerMethod method) {
+            return filter.supports(method);
         }
 
         @Override

@@ -16,7 +16,6 @@
 package io.esastack.restlight.test.bootstrap;
 
 import io.esastack.restlight.core.interceptor.HandlerInterceptor;
-import io.esastack.restlight.core.method.HandlerMethod;
 import io.esastack.restlight.core.method.Param;
 import io.esastack.restlight.core.resolver.HandledValue;
 import io.esastack.restlight.core.resolver.ParamResolverAdapter;
@@ -121,7 +120,7 @@ class MinorityMockMvcBuilderTest {
         }
 
         @Override
-        public boolean supports(HandlerMethod handlerMethod) {
+        public boolean supports(ResponseEntity entity) {
             return false;
         }
     }

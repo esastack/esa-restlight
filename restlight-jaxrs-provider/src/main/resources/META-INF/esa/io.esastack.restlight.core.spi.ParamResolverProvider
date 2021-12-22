@@ -5,4 +5,4 @@ io.esastack.restlight.jaxrs.resolver.param.RequestHeaderResolver
 io.esastack.restlight.jaxrs.resolver.param.MatrixVariableParamResolver
 io.esastack.restlight.jaxrs.resolver.param.PathParamResolver
 io.esastack.restlight.jaxrs.resolver.param.QueryParamResolver
-io.esastack.restlight.jaxrs.resolver.param.HttpHeadersParamResolver
+

@@ -29,8 +29,8 @@ import jakarta.ws.rs.FormParam;
 public class FormParamResolver extends AbstractParamResolver {
 
     @Override
-    public boolean supports(Param parameter) {
-        return parameter.hasAnnotation(FormParam.class);
+    public boolean supports(Param param) {
+        return param.hasAnnotation(FormParam.class);
     }
 
     @Override

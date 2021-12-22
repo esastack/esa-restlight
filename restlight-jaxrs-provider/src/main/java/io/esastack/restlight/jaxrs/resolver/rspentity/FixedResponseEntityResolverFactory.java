@@ -38,7 +38,7 @@ public class FixedResponseEntityResolverFactory implements ResponseEntityResolve
 
         @Override
         protected boolean supports(ResponseEntity entity) {
-            return true;
+            return entity.handler().isPresent();
         }
 
         @Override

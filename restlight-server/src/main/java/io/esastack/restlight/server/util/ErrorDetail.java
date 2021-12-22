@@ -15,18 +15,19 @@
  */
 package io.esastack.restlight.server.util;
 
+import java.util.Date;
 import java.util.Objects;
 
 public class ErrorDetail<T> {
 
     private final String path;
     private final T message;
-    private final long time;
+    private final Date time;
 
     public ErrorDetail(String path, T message) {
         this.path = path;
         this.message = message;
-        this.time = System.currentTimeMillis();
+        this.time = new Date();
     }
 
     public String getPath() {
@@ -37,7 +38,7 @@ public class ErrorDetail<T> {
         return message;
     }
 
-    public long getTime() {
+    public Date getTime() {
         return time;
     }
 
