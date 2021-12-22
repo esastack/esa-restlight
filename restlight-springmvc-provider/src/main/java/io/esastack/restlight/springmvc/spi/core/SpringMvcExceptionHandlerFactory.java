@@ -16,24 +16,19 @@
 package io.esastack.restlight.springmvc.spi.core;
 
 import esa.commons.annotation.Internal;
-import esa.commons.logging.Logger;
-import esa.commons.logging.LoggerFactory;
 import esa.commons.spi.Feature;
 import io.esastack.commons.net.http.HttpStatus;
-import io.esastack.commons.net.http.MediaType;
 import io.esastack.restlight.core.util.Constants;
 import io.esastack.restlight.server.ServerDeployContext;
 import io.esastack.restlight.server.bootstrap.ExceptionHandlerChain;
 import io.esastack.restlight.server.bootstrap.IExceptionHandler;
 import io.esastack.restlight.server.config.ServerOptions;
 import io.esastack.restlight.server.context.RequestContext;
-import io.esastack.restlight.server.core.HttpRequest;
 import io.esastack.restlight.server.core.HttpResponse;
 import io.esastack.restlight.server.spi.ExceptionHandlerFactory;
 import io.esastack.restlight.server.util.ErrorDetail;
 import io.esastack.restlight.server.util.Futures;
 import io.esastack.restlight.springmvc.util.ResponseStatusUtils;
-import io.netty.handler.codec.http.HttpHeaderNames;
 
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
@@ -49,8 +44,6 @@ public class SpringMvcExceptionHandlerFactory implements ExceptionHandlerFactory
 
     private static class SpringMvcIExceptionHandler implements IExceptionHandler {
 
-        private static final Logger logger = LoggerFactory.getLogger(SpringMvcIExceptionHandler.class);
-
         @Override
         public CompletableFuture<Void> handle(RequestContext context, Throwable th,
                                               ExceptionHandlerChain next) {
@@ -59,14 +52,9 @@ public class SpringMvcExceptionHandlerFactory implements ExceptionHandlerFactory
                 return next.handle(context, th);
             }
 
-            final HttpRequest request = context.request();
             final HttpResponse response = context.response();
-            response.headers().set(HttpHeaderNames.CONTENT_TYPE, MediaType.TEXT_PLAIN.value());
             response.status(status.code());
             response.entity(new ErrorDetail<>(context.request().path(), status.reasonPhrase()));
-
-            logger.error("Error occurred when doing request(url={}, method={})",
-                    request.path(), request.method(), th);
 
             return Futures.completedFuture();
         }

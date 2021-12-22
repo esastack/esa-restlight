@@ -16,7 +16,6 @@
 package io.esastack.restlight.server.handler;
 
 import esa.commons.Checks;
-import io.esastack.restlight.server.bootstrap.ExceptionHandlerChain;
 import io.esastack.restlight.server.context.RequestContext;
 import io.esastack.restlight.server.context.impl.FilterContextImpl;
 import io.esastack.restlight.server.core.impl.FilteringRequestImpl;
@@ -26,22 +25,15 @@ import io.netty.channel.Channel;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-import static io.esastack.restlight.server.schedule.ScheduledRestlightHandler.handleException;
-
 public class FilteredHandler implements RestlightHandler {
 
     private final RestlightHandler delegate;
-    private final ExceptionHandlerChain exceptionHandler;
     private final FilterChain filterChain;
 
-    public FilteredHandler(RestlightHandler delegate,
-                           List<Filter> filters,
-                           ExceptionHandlerChain exceptionHandler) {
+    public FilteredHandler(RestlightHandler delegate, List<Filter> filters) {
         Checks.checkNotNull(delegate, "delegate");
         Checks.checkNotNull(filters, "filters");
-        Checks.checkNotNull(exceptionHandler, "exceptionHandler");
         this.delegate = delegate;
-        this.exceptionHandler = exceptionHandler;
         this.filterChain = LinkedFilterChain.immutable(filters, (delegate::process));
     }
 
@@ -57,17 +49,8 @@ public class FilteredHandler implements RestlightHandler {
 
     @Override
     public CompletableFuture<Void> process(RequestContext context) {
-        CompletableFuture<Void> promise = new CompletableFuture<>();
-        filterChain.doFilter(new FilterContextImpl(context.attrs(), new FilteringRequestImpl(context.request()),
-                context.response()))
-                .whenComplete((v, th) -> {
-                    if (th != null) {
-                        handleException(exceptionHandler, context, th, promise);
-                    } else {
-                        promise.complete(v);
-                    }
-                });
-        return promise;
+        return filterChain.doFilter(new FilterContextImpl(context.attrs(),
+                new FilteringRequestImpl(context.request()), context.response()));
     }
 
     @Override

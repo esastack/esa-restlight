@@ -87,7 +87,6 @@ public abstract class BaseDeployments<R extends BaseRestlightServer<R, D, O>, D 
     private final List<RouteRegistryAwareFactory> registryAwareness = new LinkedList<>();
     private final ServerDeployContext<O> deployContext;
 
-    private ExceptionHandlerChain exceptionHandler;
     private DispatcherHandler dispatcher;
     private RestlightHandler handler;
 
@@ -362,15 +361,6 @@ public abstract class BaseDeployments<R extends BaseRestlightServer<R, D, O>, D 
     }
 
     /**
-     * Obtains the {@link ExceptionHandlerChain}.
-     *
-     * @return exceptionHandler
-     */
-    protected ExceptionHandlerChain exceptionHandler() {
-        return exceptionHandler;
-    }
-
-    /**
      * Obtains all {@link Filter}s.
      *
      * @return filters
@@ -416,8 +406,8 @@ public abstract class BaseDeployments<R extends BaseRestlightServer<R, D, O>, D 
                 .forEach(aware -> aware.setRegistry(routeRegistry));
 
         // init ExceptionHandlerChain
-        IExceptionHandler[] iExceptionHandlers = getExceptionHandlers();
-        this.exceptionHandler = LinkedExceptionHandlerChain.immutable(iExceptionHandlers);
+        final IExceptionHandler[] iExceptionHandlers = getExceptionHandlers();
+        final ExceptionHandlerChain exceptionHandler = LinkedExceptionHandlerChain.immutable(iExceptionHandlers);
 
         // init DispatcherHandler
         this.dispatcher = new DispatcherHandlerImpl(routeRegistry,

@@ -16,7 +16,6 @@
 package io.esastack.restlight.test.bootstrap;
 
 import io.esastack.restlight.core.config.RestlightOptions;
-import io.esastack.restlight.server.bootstrap.ExceptionHandlerChain;
 import io.esastack.restlight.spring.Deployments4Spring;
 import org.springframework.context.ApplicationContext;
 
@@ -27,8 +26,4 @@ class Deployments4SpringTest extends Deployments4Spring<Restlight4SpringTest, De
         super(restlight, context, options);
     }
 
-    @Override
-    protected ExceptionHandlerChain exceptionHandler() {
-        return super.exceptionHandler();
-    }
 }

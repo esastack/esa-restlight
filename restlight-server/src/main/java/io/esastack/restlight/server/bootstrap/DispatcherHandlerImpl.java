@@ -173,14 +173,13 @@ public class DispatcherHandlerImpl implements DispatcherHandler {
                                  CompletableFuture<Void> promise,
                                  Throwable dispatchException) {
         final HttpRequest request = context.request();
-        final HttpResponse response = context.response();
         if (dispatchException != null) {
             logger.error("Error occurred when doing request(url={}, method={})",
                     request.path(), request.method(), dispatchException);
         }
 
         if (completionHandler == null) {
-            completeRequest0(request, response, promise);
+            completeRequest0(context, promise, dispatchException);
             return;
         }
 
@@ -191,19 +190,24 @@ public class DispatcherHandlerImpl implements DispatcherHandler {
                             logger.error("Error while triggering afterCompletion() for request(url={},method={})",
                                     request.path(), request.method(), t);
                         }
-                        completeRequest0(request, response, promise);
+                        completeRequest0(context, promise, t);
                     });
         } catch (Throwable throwable) {
             logger.error("Error while triggering afterCompletion() for request(url={},method={})",
                     request.path(), request.method(), throwable);
-            completeRequest0(request, response, promise);
+            completeRequest0(context, promise, throwable);
         }
     }
 
-    private void completeRequest0(HttpRequest request, HttpResponse response, CompletableFuture<Void> promise) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("Request(url={}, method={}) completed. {}",
-                    request.path(), request.method(), response.status());
+    private void completeRequest0(RequestContext context, CompletableFuture<Void> promise, Throwable th) {
+        final HttpRequest request = context.request();
+        if (th != null) {
+            // Due that the exception has been handled by ExceptionHandlerChain here, we set the
+            // HttpStatus.INTERNAL_SERVER_ERROR immediately which will avoiding duplicate
+            // handling in ScheduledRestlightHandler.
+            HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
+            context.response().status(status.code());
+            context.response().entity(new ErrorDetail<>(request.path(), status.reasonPhrase()));
         }
         PromiseUtils.setSuccess(promise);
     }

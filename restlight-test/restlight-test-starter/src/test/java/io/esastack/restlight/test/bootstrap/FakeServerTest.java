@@ -32,7 +32,7 @@ class FakeServerTest {
     @Test
     void testAll() {
         final RestlightHandler handler = mock(RestlightHandler.class);
-        final FakeServer fake = new FakeServer(handler, new ArrayList<>(), null);
+        final FakeServer fake = new FakeServer(handler, new ArrayList<>());
         assertFalse(fake.isStarted());
         fake.start();
         assertTrue(fake.isStarted());

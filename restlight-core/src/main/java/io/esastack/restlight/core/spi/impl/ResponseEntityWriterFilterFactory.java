@@ -16,6 +16,8 @@
 package io.esastack.restlight.core.spi.impl;
 
 import esa.commons.Checks;
+import esa.commons.logging.Logger;
+import esa.commons.logging.LoggerFactory;
 import io.esastack.commons.net.http.HttpStatus;
 import io.esastack.restlight.core.DeployContext;
 import io.esastack.restlight.core.config.RestlightOptions;
@@ -29,12 +31,11 @@ import io.esastack.restlight.core.resolver.ResponseEntityResolverContextImpl;
 import io.esastack.restlight.core.spi.FilterFactory;
 import io.esastack.restlight.core.util.Ordered;
 import io.esastack.restlight.core.util.ResponseEntityUtils;
-import io.esastack.restlight.server.bootstrap.WebServerException;
 import io.esastack.restlight.server.context.FilterContext;
+import io.esastack.restlight.server.core.HttpRequest;
 import io.esastack.restlight.server.handler.Filter;
 import io.esastack.restlight.server.handler.FilterChain;
 import io.esastack.restlight.server.util.ErrorDetail;
-import io.esastack.restlight.server.util.LoggerUtils;
 
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
@@ -48,8 +49,9 @@ public class ResponseEntityWriterFilterFactory implements FilterFactory {
 
     private static class ResponseEntityWriterFilter implements Filter {
 
-        private final DeployContext<? extends RestlightOptions> ctx;
+        private static final Logger logger = LoggerFactory.getLogger(ResponseEntityWriterFilter.class);
 
+        private final DeployContext<? extends RestlightOptions> ctx;
         private HandlerResolverFactory resolverFactory;
 
         public ResponseEntityWriterFilter(DeployContext<? extends RestlightOptions> ctx) {
@@ -62,22 +64,41 @@ public class ResponseEntityWriterFilterFactory implements FilterFactory {
             HandlerResolverFactory resolverFactory = getResolverFactory();
             return chain.doFilter(context).whenComplete((v, th) -> {
                 if (th != null) {
-                    context.response().entity(new ErrorDetail<>(context.request().path(),
-                            HttpStatus.INTERNAL_SERVER_ERROR.reasonPhrase()));
-                    LoggerUtils.logger().error("Unexpected exception caught before writing response to client.",
-                            th);
+                    HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
+                    context.response().status(status.code());
+                    context.response().entity(new ErrorDetail<>(context.request().path(), status.reasonPhrase()));
                 }
-                HandlerMethod method = ResponseEntityUtils.getHandledMethod(context);
-                ResponseEntity entity = new ResponseEntityImpl(method, context.response());
-                ResponseEntityResolverContext rspCtx = new ResponseEntityResolverContextImpl(context,
+
+                final HandlerMethod method = ResponseEntityUtils.getHandledMethod(context);
+                final ResponseEntity entity = new ResponseEntityImpl(method, context.response());
+                final ResponseEntityResolverContext rspCtx = new ResponseEntityResolverContextImpl(context,
                         entity, resolverFactory.getResponseEntityResolvers(),
                         resolverFactory.getResponseEntityResolverAdvices(entity)
                                 .toArray(new ResponseEntityResolverAdvice[0]));
+                final HttpRequest request = context.request();
                 try {
                     rspCtx.proceed();
+                    if (!rspCtx.channel().isCommitted()) {
+                        logger.error("There is no suitable ResponseEntityResolver to write response entity: {}," +
+                                        " request(url={}, method={})", entity, request.path(), request.method());
+                        rspCtx.context().response().status(HttpStatus.NOT_ACCEPTABLE.code());
+                        rspCtx.channel().end();
+                    }
                 } catch (Throwable ex) {
-                    // wrapIfNecessary
-                    throw new WebServerException("Error while resolving return value: " + ex.getMessage(), ex);
+                    if (!rspCtx.channel().isCommitted()) {
+                        logger.error("Error occurred when writing response entity: {}, request(url={}, method={})",
+                                entity, request.path(), request.method(), ex);
+                        rspCtx.context().response().status(HttpStatus.INTERNAL_SERVER_ERROR.code());
+                        rspCtx.channel().end();
+                    } else {
+                        logger.error("Unexpected error occurred after committing response entity: {}," +
+                                " request(url={}, method={})", entity, request.path(), request.method(), th);
+                    }
+                }
+
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Request(url={}, method={}) completed. {}",
+                            request.path(), request.method(), context.response().status());
                 }
             });
         }

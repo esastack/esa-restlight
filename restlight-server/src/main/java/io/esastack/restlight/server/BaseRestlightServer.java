@@ -212,10 +212,7 @@ public abstract class BaseRestlightServer<R extends BaseRestlightServer<R, D, O>
     }
 
     protected RestlightServer doBuildServer(RestlightHandler handler, List<Filter> fs) {
-        return RestlightServerBootstrap.from(options,
-                handler,
-                fs,
-                deployments().exceptionHandler())
+        return RestlightServerBootstrap.from(options, handler, fs)
                 .withAddress(address)
                 .withOptions(channelOptions)
                 .withChildOptions(childChannelOptions)
