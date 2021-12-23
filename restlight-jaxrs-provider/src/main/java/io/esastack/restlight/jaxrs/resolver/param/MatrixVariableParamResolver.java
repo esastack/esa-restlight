@@ -20,6 +20,7 @@ import io.esastack.restlight.core.resolver.ParamResolverFactory;
 import io.esastack.restlight.core.resolver.nav.NameAndValue;
 import io.esastack.restlight.core.resolver.param.AbstractMatrixParamResolver;
 import io.esastack.restlight.jaxrs.util.JaxrsMappingUtils;
+import io.esastack.restlight.jaxrs.util.JaxrsUtils;
 import jakarta.ws.rs.MatrixParam;
 
 /**
@@ -28,23 +29,19 @@ import jakarta.ws.rs.MatrixParam;
 public class MatrixVariableParamResolver extends AbstractMatrixParamResolver {
 
     @Override
-    public boolean supports(Param parameter) {
-        return parameter.hasAnnotation(MatrixParam.class);
+    public boolean supports(Param param) {
+        return JaxrsUtils.hasAnnotation(param, MatrixParam.class);
     }
 
     @Override
     protected NameAndValue<String> createNameAndValue(Param param) {
-        MatrixParam matrixParam =
-                param.getAnnotation(MatrixParam.class);
-        assert matrixParam != null;
+        MatrixParam matrixParam = JaxrsUtils.getAnnotation(param, MatrixParam.class);
         return new NameAndValue<>(matrixParam.value(), false, JaxrsMappingUtils.extractDefaultValue(param));
     }
 
     @Override
     protected String extractName(Param param) {
-        MatrixParam matrixParam =
-                param.getAnnotation(MatrixParam.class);
-        assert matrixParam != null;
+        MatrixParam matrixParam = JaxrsUtils.getAnnotation(param, MatrixParam.class);
         return matrixParam.value();
     }
 

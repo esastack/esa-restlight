@@ -17,13 +17,14 @@ package io.esastack.restlight.jaxrs.resolver.context;
 
 import io.esastack.restlight.core.method.Param;
 import io.esastack.restlight.core.resolver.ContextResolverAdapter;
-import io.esastack.restlight.jaxrs.impl.JaxrsContextUtils;
+import io.esastack.restlight.jaxrs.util.JaxrsUtils;
+import jakarta.ws.rs.core.Context;
 
 abstract class AbstractContextResolverAdapter implements ContextResolverAdapter {
 
     @Override
     public boolean supports(Param param) {
-        return JaxrsContextUtils.hasContextAnnotation(param) && supports0(param);
+        return JaxrsUtils.hasAnnotation(param, Context.class) && supports0(param);
     }
 
     /**

@@ -21,19 +21,19 @@ import io.esastack.restlight.core.resolver.ParamResolverFactory;
 import io.esastack.restlight.core.serialize.HttpRequestSerializer;
 import io.esastack.restlight.jaxrs.impl.JaxrsContextUtils;
 import io.esastack.restlight.jaxrs.impl.container.AsyncResponseImpl;
+import io.esastack.restlight.jaxrs.util.JaxrsUtils;
 import io.esastack.restlight.server.context.RequestContext;
 import jakarta.ws.rs.container.AsyncResponse;
+import jakarta.ws.rs.core.Context;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-
-import static io.esastack.restlight.jaxrs.impl.JaxrsContextUtils.hasContextAnnotation;
 
 public class AsyncResponseParamResolver implements ParamResolverFactory {
 
     @Override
     public boolean supports(Param param) {
-        return hasContextAnnotation(param) && AsyncResponse.class.equals(param.type());
+        return JaxrsUtils.hasAnnotation(param, Context.class) && AsyncResponse.class.equals(param.type());
     }
 
     @Override

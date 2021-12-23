@@ -20,6 +20,7 @@ import io.esastack.restlight.core.resolver.ParamResolverFactory;
 import io.esastack.restlight.core.resolver.nav.NameAndValue;
 import io.esastack.restlight.core.resolver.param.AbstractHeaderResolver;
 import io.esastack.restlight.jaxrs.util.JaxrsMappingUtils;
+import io.esastack.restlight.jaxrs.util.JaxrsUtils;
 import jakarta.ws.rs.HeaderParam;
 
 /**
@@ -29,14 +30,12 @@ public class RequestHeaderResolver extends AbstractHeaderResolver {
 
     @Override
     public boolean supports(Param param) {
-        return param.hasAnnotation(HeaderParam.class);
+        return JaxrsUtils.hasAnnotation(param, HeaderParam.class);
     }
 
     @Override
     protected NameAndValue<String> createNameAndValue(Param param) {
-        HeaderParam headerParam =
-                param.getAnnotation(HeaderParam.class);
-        assert headerParam != null;
+        HeaderParam headerParam = JaxrsUtils.getAnnotation(param, HeaderParam.class);
         return new NameAndValue<>(headerParam.value(),
                 false,
                 JaxrsMappingUtils.extractDefaultValue(param));

@@ -19,6 +19,7 @@ import io.esastack.restlight.core.DeployContext;
 import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.core.method.Param;
 import io.esastack.restlight.core.resolver.param.RequestBeanParamResolver;
+import io.esastack.restlight.jaxrs.util.JaxrsUtils;
 import jakarta.ws.rs.BeanParam;
 
 public class BeanParamResolver extends RequestBeanParamResolver {
@@ -29,7 +30,7 @@ public class BeanParamResolver extends RequestBeanParamResolver {
 
     @Override
     public boolean supports(Param param) {
-        return param.hasAnnotation(BeanParam.class);
+        return JaxrsUtils.hasAnnotation(param, BeanParam.class);
     }
 
     @Override
