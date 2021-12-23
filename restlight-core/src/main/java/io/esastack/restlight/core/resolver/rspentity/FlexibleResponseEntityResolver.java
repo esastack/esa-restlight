@@ -78,8 +78,12 @@ public abstract class FlexibleResponseEntityResolver extends AbstractResponseEnt
         // try to extract the real type of the return value instance in every request and serialize it if
         // the response entity type is Object.class(maybe the real type of the response entity instance would
         // be String, byte[], ByteBuf, or primitives...)
-        return Object.class.equals(entity.type())
-                || Object.class.equals(FutureUtils.retrieveFirstGenericTypeOfFutureReturnType(entity.type(),
+        Class<?> entityType = entity.type();
+        if (entityType == null) {
+            return false;
+        }
+        return Object.class.equals(entityType)
+                || Object.class.equals(FutureUtils.retrieveFirstGenericTypeOfFutureReturnType(entityType,
                 entity.genericType()));
     }
 }

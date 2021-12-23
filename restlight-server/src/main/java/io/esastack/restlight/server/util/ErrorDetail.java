@@ -15,6 +15,9 @@
  */
 package io.esastack.restlight.server.util;
 
+import esa.commons.StringUtils;
+import io.esastack.commons.net.http.HttpStatus;
+
 import java.util.Date;
 import java.util.Objects;
 
@@ -40,6 +43,15 @@ public class ErrorDetail<T> {
 
     public Date getTime() {
         return time;
+    }
+
+    public static String getMessage(HttpStatus status, Throwable th) {
+        String message;
+        if (StringUtils.isEmpty(message = th.getMessage())) {
+            return status.reasonPhrase();
+        } else {
+            return message;
+        }
     }
 
     @Override

@@ -40,10 +40,10 @@ public class RouteFailureExceptionHandlerFactory implements ExceptionHandlerFact
 
     @Override
     public Optional<IExceptionHandler> handler(ServerDeployContext<? extends ServerOptions> ctx) {
-        return Optional.of(new RouteFailureIExceptionHandler());
+        return Optional.of(new RouteFailureExceptionHandler());
     }
 
-    private static class RouteFailureIExceptionHandler implements IExceptionHandler {
+    private static class RouteFailureExceptionHandler implements IExceptionHandler {
 
         @Override
         public CompletableFuture<Void> handle(RequestContext context, Throwable th,

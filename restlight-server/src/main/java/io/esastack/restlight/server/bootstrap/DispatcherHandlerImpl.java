@@ -42,6 +42,8 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.LongAdder;
 
+import static io.esastack.restlight.server.util.ErrorDetail.getMessage;
+
 /**
  * Default implementation of {@link DispatcherHandler}.
  */
@@ -190,7 +192,7 @@ public class DispatcherHandlerImpl implements DispatcherHandler {
                             logger.error("Error while triggering afterCompletion() for request(url={},method={})",
                                     request.path(), request.method(), t);
                         }
-                        completeRequest0(context, promise, t);
+                        completeRequest0(context, promise, dispatchException);
                     });
         } catch (Throwable throwable) {
             logger.error("Error while triggering afterCompletion() for request(url={},method={})",
@@ -200,14 +202,18 @@ public class DispatcherHandlerImpl implements DispatcherHandler {
     }
 
     private void completeRequest0(RequestContext context, CompletableFuture<Void> promise, Throwable th) {
-        final HttpRequest request = context.request();
         if (th != null) {
             // Due that the exception has been handled by ExceptionHandlerChain here, we set the
             // HttpStatus.INTERNAL_SERVER_ERROR immediately which will avoiding duplicate
             // handling in ScheduledRestlightHandler.
-            HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
+            final HttpStatus status;
+            if (th instanceof WebServerException) {
+                status = ((WebServerException) th).status();
+            } else {
+                status = HttpStatus.INTERNAL_SERVER_ERROR;
+            }
             context.response().status(status.code());
-            context.response().entity(new ErrorDetail<>(request.path(), status.reasonPhrase()));
+            context.response().entity(new ErrorDetail<>(context.request().path(), getMessage(status, th)));
         }
         PromiseUtils.setSuccess(promise);
     }
