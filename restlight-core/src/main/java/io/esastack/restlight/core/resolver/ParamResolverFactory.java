@@ -68,7 +68,7 @@ public interface ParamResolverFactory extends ParamPredicate, Ordered {
         }
 
         @Override
-        public ParamResolver createResolver(Param parameter,
+        public ParamResolver createResolver(Param param,
                                             List<? extends HttpRequestSerializer> serializers) {
             return resolver;
         }
