@@ -17,7 +17,6 @@ package io.esastack.restlight.test.bootstrap;
 
 import esa.commons.Checks;
 import io.esastack.restlight.core.util.OrderedComparator;
-import io.esastack.restlight.server.bootstrap.ExceptionHandlerChain;
 import io.esastack.restlight.server.bootstrap.RestlightServer;
 import io.esastack.restlight.server.handler.Filter;
 import io.esastack.restlight.server.handler.FilteredHandler;
@@ -33,15 +32,11 @@ class FakeServer implements RestlightServer {
     final RestlightHandler handler;
     private volatile CompletableFuture<Void> stopFuture;
 
-    FakeServer(RestlightHandler handler,
-               List<Filter> fs,
-               ExceptionHandlerChain exceptionHandler) {
+    FakeServer(RestlightHandler handler, List<Filter> fs) {
         Checks.checkNotNull(handler);
         if (!fs.isEmpty()) {
             OrderedComparator.sort(fs);
-            handler = new FilteredHandler(handler,
-                    fs,
-                    exceptionHandler);
+            handler = new FilteredHandler(handler, fs);
         }
         this.handler = handler;
     }

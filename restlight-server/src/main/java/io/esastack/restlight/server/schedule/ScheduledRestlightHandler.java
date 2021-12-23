@@ -115,8 +115,7 @@ public class ScheduledRestlightHandler implements RestlightHandler {
         CompletableFuture<Void> processed = new CompletableFuture<>();
         promise.whenComplete((v, th) -> {
             if (th != null) {
-                // handle exception occurred in Filter.
-                handleException(exceptionHandler, context, th, processed);
+                handleException(context, th, processed);
             } else {
                 processed.complete(v);
             }
@@ -279,10 +278,8 @@ public class ScheduledRestlightHandler implements RestlightHandler {
         }
     }
 
-    public static void handleException(ExceptionHandlerChain exceptionHandler,
-                                       RequestContext context, Throwable th,
-                                       CompletableFuture<Void> promise) {
-        Checks.checkNotNull(exceptionHandler, "exceptionHandler");
+    private void handleException(RequestContext context, Throwable th,
+                                 CompletableFuture<Void> promise) {
         exceptionHandler.handle(context, th).whenComplete((v, t) -> {
             if (t != null) {
                 PromiseUtils.setFailure(promise, th);

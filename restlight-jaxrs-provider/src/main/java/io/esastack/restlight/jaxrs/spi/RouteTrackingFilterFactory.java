@@ -30,7 +30,7 @@ public class RouteTrackingFilterFactory implements RouteFilterFactory {
     }
 
     @Override
-    public boolean supports(HandlerMethod handlerMethod) {
+    public boolean supports(HandlerMethod method) {
         return true;
     }
 }

@@ -15,18 +15,22 @@
  */
 package io.esastack.restlight.server.util;
 
+import esa.commons.StringUtils;
+import io.esastack.commons.net.http.HttpStatus;
+
+import java.util.Date;
 import java.util.Objects;
 
 public class ErrorDetail<T> {
 
     private final String path;
     private final T message;
-    private final long time;
+    private final Date time;
 
     public ErrorDetail(String path, T message) {
         this.path = path;
         this.message = message;
-        this.time = System.currentTimeMillis();
+        this.time = new Date();
     }
 
     public String getPath() {
@@ -37,8 +41,17 @@ public class ErrorDetail<T> {
         return message;
     }
 
-    public long getTime() {
+    public Date getTime() {
         return time;
+    }
+
+    public static String getMessage(HttpStatus status, Throwable th) {
+        String message;
+        if (StringUtils.isEmpty(message = th.getMessage())) {
+            return status.reasonPhrase();
+        } else {
+            return message;
+        }
     }
 
     @Override

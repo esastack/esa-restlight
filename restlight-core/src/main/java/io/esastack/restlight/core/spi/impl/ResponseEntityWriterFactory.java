@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 OPPO ESA Stack Project
+ * Copyright 2021 OPPO ESA Stack Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,20 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.esastack.restlight.test.bootstrap;
+package io.esastack.restlight.core.spi.impl;
 
-import io.esastack.restlight.core.Deployments;
+import io.esastack.restlight.core.DeployContext;
 import io.esastack.restlight.core.config.RestlightOptions;
-import io.esastack.restlight.server.handler.RestlightHandler;
+import io.esastack.restlight.core.spi.FilterFactory;
+import io.esastack.restlight.server.handler.Filter;
 
-class Deployments4SpringMvcTest extends Deployments<Restlight4SpringMvcTest,
-        Deployments4SpringMvcTest, RestlightOptions> {
+import java.util.Optional;
 
-    Deployments4SpringMvcTest(Restlight4SpringMvcTest restlight, RestlightOptions options) {
-        super(restlight, options);
+public class ResponseEntityWriterFactory implements FilterFactory {
+
+    @Override
+    public Optional<Filter> filter(DeployContext<? extends RestlightOptions> ctx) {
+        return Optional.of(new ResponseEntityWriter(ctx));
     }
 
-    RestlightHandler handler() {
-        return getRestlightHandler();
-    }
 }
+

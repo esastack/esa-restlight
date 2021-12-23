@@ -45,7 +45,7 @@ public class ReaderInterceptorsAdapter implements RequestEntityResolverAdviceAda
     }
 
     @Override
-    public boolean supports(HandlerMethod handlerMethod) {
+    public boolean supports(HandlerMethod method) {
         return true;
     }
 }

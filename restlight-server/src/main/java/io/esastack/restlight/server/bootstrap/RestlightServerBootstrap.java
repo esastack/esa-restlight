@@ -40,7 +40,6 @@ public class RestlightServerBootstrap {
 
     private final ServerOptions options;
     private final RestlightHandler handler;
-    private final ExceptionHandlerChain exceptionHandler;
     private final List<Filter> filters;
     private final Map<ChannelOption<?>, Object> channelOptions = new LinkedHashMap<>();
     private final Map<ChannelOption<?>, Object> childChannelOptions = new LinkedHashMap<>();
@@ -52,24 +51,19 @@ public class RestlightServerBootstrap {
 
     private RestlightServerBootstrap(ServerOptions options,
                                      RestlightHandler handler,
-                                     List<Filter> filters,
-                                     ExceptionHandlerChain exceptionHandler) {
+                                     List<Filter> filters) {
         this.options = options;
         this.handler = handler;
         this.filters = filters;
-        this.exceptionHandler = exceptionHandler;
     }
 
-    public static RestlightServerBootstrap from(RestlightHandler handler, List<Filter> filters,
-                                                ExceptionHandlerChain exceptionHandler) {
-        return from(ServerOptionsConfigure.defaultOpts(), handler, filters, exceptionHandler);
+    public static RestlightServerBootstrap from(RestlightHandler handler, List<Filter> filters) {
+        return from(ServerOptionsConfigure.defaultOpts(), handler, filters);
     }
 
     public static RestlightServerBootstrap from(
-            ServerOptions options, RestlightHandler handler, List<Filter> filters,
-            ExceptionHandlerChain exceptionHandler) {
-        return new RestlightServerBootstrap(options, handler, filters,
-                exceptionHandler);
+            ServerOptions options, RestlightHandler handler, List<Filter> filters) {
+        return new RestlightServerBootstrap(options, handler, filters);
     }
 
     public RestlightServerBootstrap withAddress(SocketAddress address) {
@@ -149,7 +143,7 @@ public class RestlightServerBootstrap {
         OrderedComparator.sort(this.filters);
         RestlightHandler handler = this.handler;
         if (!this.filters.isEmpty()) {
-            handler = new FilteredHandler(handler, this.filters, this.exceptionHandler);
+            handler = new FilteredHandler(handler, this.filters);
         }
         return new NettyRestlightServer(options,
                 handler,

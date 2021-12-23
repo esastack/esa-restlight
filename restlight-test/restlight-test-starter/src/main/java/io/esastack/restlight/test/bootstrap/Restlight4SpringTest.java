@@ -49,8 +49,7 @@ class Restlight4SpringTest extends AbstractRestlight4Spring<Restlight4SpringTest
     }
 
     @Override
-    protected final RestlightServer doBuildServer(RestlightHandler handler,
-                                                  List<Filter> fs) {
-        return new FakeServer(handler, fs, deployments().exceptionHandler());
+    protected final RestlightServer doBuildServer(RestlightHandler handler, List<Filter> fs) {
+        return new FakeServer(handler, fs);
     }
 }

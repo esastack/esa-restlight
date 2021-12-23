@@ -1,1 +1,1 @@
-io.esastack.restlight.core.spi.impl.ResponseEntityWriterFilterFactory
+io.esastack.restlight.core.spi.impl.ResponseEntityWriterFactory

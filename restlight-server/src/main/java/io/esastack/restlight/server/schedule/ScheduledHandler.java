@@ -15,7 +15,6 @@
  */
 package io.esastack.restlight.server.schedule;
 
-import io.esastack.commons.net.http.HttpStatus;
 import io.esastack.restlight.server.bootstrap.DispatcherHandler;
 import io.esastack.restlight.server.bootstrap.DispatcherHandlerImpl;
 import io.esastack.restlight.server.context.RequestContext;
@@ -74,12 +73,13 @@ class ScheduledHandler {
                     final CompletableFuture<Route> route = route(ctx);
                     route.whenComplete((r, th) -> {
                         if (th != null) {
-                            ctx.response().status(HttpStatus.NOT_FOUND.code());
                             promise.completeExceptionally(th);
                         } else {
-                            LoggerUtils.logger().debug("Mapping request(url={}, method={}) to {}",
-                                    ctx.request().path(),
-                                    ctx.request().method(), r);
+                            if (LoggerUtils.logger().isDebugEnabled()) {
+                                LoggerUtils.logger().debug("Mapping request(url={}, method={}) to {}",
+                                        ctx.request().path(),
+                                        ctx.request().method(), r);
+                            }
                             dispatcher.service(ctx, promise, r);
                         }
                     });
@@ -94,12 +94,13 @@ class ScheduledHandler {
         final CompletableFuture<Route> route = route(ctx);
         route.whenComplete((r, th) -> {
             if (th != null) {
-                ctx.response().status(HttpStatus.NOT_FOUND.code());
                 promise.completeExceptionally(th);
             } else {
-                LoggerUtils.logger().debug("Mapping request(url={}, method={}) to {}",
-                        ctx.request().path(),
-                        ctx.request().method(), r);
+                if (LoggerUtils.logger().isDebugEnabled()) {
+                    LoggerUtils.logger().debug("Mapping request(url={}, method={}) to {}",
+                            ctx.request().path(),
+                            ctx.request().method(), r);
+                }
 
                 RequestTask task = hook.onRequest(newRequestTask(ctx,
                         promise,

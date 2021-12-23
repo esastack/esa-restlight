@@ -18,7 +18,6 @@ package io.esastack.restlight.server.spi.impl;
 import esa.commons.annotation.Internal;
 import esa.commons.spi.Feature;
 import io.esastack.commons.net.http.HttpStatus;
-import io.esastack.commons.net.http.MediaType;
 import io.esastack.restlight.core.util.Constants;
 import io.esastack.restlight.core.util.Ordered;
 import io.esastack.restlight.server.ServerDeployContext;
@@ -31,7 +30,6 @@ import io.esastack.restlight.server.route.RouteFailureException;
 import io.esastack.restlight.server.spi.ExceptionHandlerFactory;
 import io.esastack.restlight.server.util.ErrorDetail;
 import io.esastack.restlight.server.util.Futures;
-import io.netty.handler.codec.http.HttpHeaderNames;
 
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
@@ -42,10 +40,10 @@ public class RouteFailureExceptionHandlerFactory implements ExceptionHandlerFact
 
     @Override
     public Optional<IExceptionHandler> handler(ServerDeployContext<? extends ServerOptions> ctx) {
-        return Optional.of(new RouteFailureIExceptionHandler());
+        return Optional.of(new RouteFailureExceptionHandler());
     }
 
-    private static class RouteFailureIExceptionHandler implements IExceptionHandler {
+    private static class RouteFailureExceptionHandler implements IExceptionHandler {
 
         @Override
         public CompletableFuture<Void> handle(RequestContext context, Throwable th,
@@ -53,7 +51,6 @@ public class RouteFailureExceptionHandlerFactory implements ExceptionHandlerFact
             if (th instanceof RouteFailureException) {
                 HttpResponse response = context.response();
                 HttpStatus status = toStatus(((RouteFailureException) th).getFailureType());
-                response.headers().set(HttpHeaderNames.CONTENT_TYPE, MediaType.TEXT_PLAIN.value());
                 response.status(status.code());
                 response.entity(new ErrorDetail<>(context.request().path(), status.reasonPhrase()));
                 return Futures.completedFuture();

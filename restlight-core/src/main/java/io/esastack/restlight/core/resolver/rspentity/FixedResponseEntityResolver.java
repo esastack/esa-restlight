@@ -29,7 +29,6 @@ import io.esastack.restlight.server.context.RequestContext;
 import java.lang.reflect.Modifier;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
 public abstract class FixedResponseEntityResolver extends AbstractResponseEntityResolver {
 
@@ -47,11 +46,10 @@ public abstract class FixedResponseEntityResolver extends AbstractResponseEntity
     public HandledValue<Void> writeTo(ResponseEntity entity,
                                       ResponseEntityChannel channel,
                                       RequestContext context) throws Exception {
-        if (!supports(entity)) {
+        if (!supports(entity) || !entity.handler().isPresent()) {
             return HandledValue.failed();
         }
-        final Class<? extends HttpResponseSerializer> target =
-                Objects.requireNonNull(entity.handler().orElse(null)).serializer();
+        Class<? extends HttpResponseSerializer> target = entity.handler().get().serializer();
         if (target != null && target != HttpResponseSerializer.class) {
             if (target.isInterface() || Modifier.isAbstract(target.getModifiers())) {
                 throw new IllegalArgumentException("Could not resolve ResponseBody serializer class. target type " +

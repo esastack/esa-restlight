@@ -3,3 +3,4 @@ io.esastack.restlight.jaxrs.resolver.param.SecurityContextParamResolver
 io.esastack.restlight.jaxrs.resolver.param.UriInfoParamResolver
 io.esastack.restlight.jaxrs.resolver.param.AsyncResponseParamResolver
 io.esastack.restlight.jaxrs.resolver.param.DefaultValueParamResolver
+io.esastack.restlight.jaxrs.resolver.param.HttpHeadersParamResolver

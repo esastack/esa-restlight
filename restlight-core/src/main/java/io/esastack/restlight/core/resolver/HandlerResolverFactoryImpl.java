@@ -280,14 +280,14 @@ public class HandlerResolverFactoryImpl implements HandlerResolverFactory {
     }
 
     @Override
-    public List<RequestEntityResolverAdvice> getRequestEntityResolverAdvices(HandlerMethod handlerMethod) {
+    public List<RequestEntityResolverAdvice> getRequestEntityResolverAdvices(HandlerMethod method) {
         if (requestEntityResolverAdvices != null && !requestEntityResolverAdvices.isEmpty()) {
             List<RequestEntityResolverAdvice> advices =
                     requestEntityResolverAdvices.stream()
-                            .filter(advice -> advice.supports(handlerMethod))
-                            .map(factory -> Checks.checkNotNull(factory.createResolverAdvice(handlerMethod),
+                            .filter(advice -> advice.supports(method))
+                            .map(factory -> Checks.checkNotNull(factory.createResolverAdvice(method),
                                     "Failed to create RequestEntityResolverAdvice for handler: "
-                                            + handlerMethod))
+                                            + method))
                             .collect(Collectors.toList());
             if (!advices.isEmpty()) {
                 return Collections.unmodifiableList(advices);
@@ -306,7 +306,7 @@ public class HandlerResolverFactoryImpl implements HandlerResolverFactory {
         if (responseEntityResolverAdvices != null && !responseEntityResolverAdvices.isEmpty()) {
             List<ResponseEntityResolverAdvice> advices =
                     responseEntityResolverAdvices.stream()
-                            .filter(advice -> advice.supports(entity.handler().orElse(null)))
+                            .filter(advice -> advice.supports(entity))
                             .map(factory -> Checks.checkNotNull(factory.createResolverAdvice(entity),
                                     "Failed to create ResponseEntityResolverAdvice for response entity: "
                                             + entity))

@@ -28,8 +28,8 @@ import jakarta.ws.rs.PathParam;
 public class PathParamResolver extends AbstractPathVariableParamResolver {
 
     @Override
-    public boolean supports(Param parameter) {
-        return parameter.hasAnnotation(PathParam.class);
+    public boolean supports(Param param) {
+        return param.hasAnnotation(PathParam.class);
     }
 
     @Override

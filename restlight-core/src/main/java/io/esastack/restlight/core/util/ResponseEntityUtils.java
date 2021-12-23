@@ -34,11 +34,15 @@ public final class ResponseEntityUtils {
     }
 
     public static boolean isAssignableFrom(ResponseEntity entity, Class<?> target) {
-        if (target.isAssignableFrom(entity.type())) {
+        Class<?> entityType = entity.type();
+        if (entityType == null) {
+            return false;
+        }
+        if (target.isAssignableFrom(entityType)) {
             return true;
         }
         // find return type from generic type of Future(CompletableFuture<T>, ListenableFuture<T>, Netty#Future<T>)
-        Class<?> type = FutureUtils.retrieveFirstGenericTypeOfFutureReturnType(entity.type(), entity.genericType());
+        Class<?> type = FutureUtils.retrieveFirstGenericTypeOfFutureReturnType(entityType, entity.genericType());
         if (type != null) {
             return target.isAssignableFrom(type);
         }
@@ -46,11 +50,15 @@ public final class ResponseEntityUtils {
     }
 
     public static boolean isPrimitiveOrWrapperType(ResponseEntity entity) {
-        if (Primitives.isPrimitiveOrWraperType(entity.type())) {
+        Class<?> entityType = entity.type();
+        if (entityType == null) {
+            return false;
+        }
+        if (Primitives.isPrimitiveOrWraperType(entityType)) {
             return true;
         }
         // find return type from generic type of Future(CompletableFuture<T>, ListenableFuture<T>, Netty#Future<T>)
-        Class<?> type = FutureUtils.retrieveFirstGenericTypeOfFutureReturnType(entity.type(), entity.genericType());
+        Class<?> type = FutureUtils.retrieveFirstGenericTypeOfFutureReturnType(entityType, entity.genericType());
         if (type != null) {
             return Primitives.isPrimitiveOrWraperType(type);
         }

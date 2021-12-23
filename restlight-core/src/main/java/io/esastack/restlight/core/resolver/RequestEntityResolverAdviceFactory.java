@@ -56,8 +56,8 @@ public interface RequestEntityResolverAdviceFactory extends HandlerPredicate {
         }
 
         @Override
-        public boolean supports(HandlerMethod handlerMethod) {
-            return resolver.supports(handlerMethod);
+        public boolean supports(HandlerMethod method) {
+            return resolver.supports(method);
         }
     }
 }
