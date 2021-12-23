@@ -38,5 +38,14 @@ public class MatchedResource {
     public Optional<Object> bean() {
         return Optional.ofNullable(bean);
     }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("MatchedResource{");
+        sb.append("method=").append(method);
+        bean().ifPresent(b -> sb.append(", bean=").append(bean.getClass()));
+        sb.append('}');
+        return sb.toString();
+    }
 }
 

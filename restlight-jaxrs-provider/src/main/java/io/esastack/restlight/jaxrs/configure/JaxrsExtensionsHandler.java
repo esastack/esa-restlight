@@ -42,6 +42,8 @@ import io.esastack.restlight.jaxrs.impl.core.FeatureContextImpl;
 import io.esastack.restlight.jaxrs.impl.ext.ProvidersImpl;
 import io.esastack.restlight.jaxrs.impl.ext.RuntimeDelegateImpl;
 import io.esastack.restlight.jaxrs.resolver.context.ApplicationResolverAdapter;
+import io.esastack.restlight.jaxrs.resolver.context.ConfigurationResolverAdapter;
+import io.esastack.restlight.jaxrs.resolver.context.ProvidersResolverAdapter;
 import io.esastack.restlight.jaxrs.resolver.param.ResourceContextParamResolver;
 import io.esastack.restlight.jaxrs.spi.HeaderDelegateFactory;
 import io.esastack.restlight.jaxrs.util.JaxrsUtils;
@@ -149,6 +151,13 @@ public class JaxrsExtensionsHandler implements ExtensionsHandler {
                 properties.forEach(configuration::setProperty);
             }
             deployments.addContextResolver(new ApplicationResolverAdapter(application.proxied()));
+
+            // be different from same resolvers added at DynamicFeatureAdapter, you can think
+            // the between two as fallback which have no configurations corresponding with specified resource method.
+            // eg. if there are some providers and configurations added by DynamicFeatures, then those
+            // information can't be known here.
+            deployments.addContextResolver(new ConfigurationResolverAdapter(configuration));
+            deployments.addContextResolver(new ProvidersResolverAdapter(providers));
         }
         deployments.addParamResolver(new ResourceContextParamResolver(deployments.deployContext()));
 

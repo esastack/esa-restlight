@@ -28,7 +28,7 @@ public interface ContextResolverAdapter extends ContextResolver, ParamPredicate,
      */
     @Override
     default int getOrder() {
-        return HIGHEST_PRECEDENCE;
+        return LOWEST_PRECEDENCE;
     }
 
 }

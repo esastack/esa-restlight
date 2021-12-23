@@ -33,5 +33,10 @@ abstract class AbstractContextResolverAdapter implements ContextResolverAdapter 
      * @return      {@code true} if supports given {@code param}, otherwise {@code false}.
      */
     protected abstract boolean supports0(Param param);
+
+    @Override
+    public int getOrder() {
+        return 1000;
+    }
 }
 
