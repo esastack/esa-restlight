@@ -20,6 +20,14 @@ import esa.commons.spi.Feature;
 import io.esastack.restlight.core.method.Param;
 import io.esastack.restlight.core.method.ResolvableParamPredicate;
 import io.esastack.restlight.core.util.Constants;
+import io.esastack.restlight.jaxrs.util.JaxrsUtils;
+import jakarta.ws.rs.BeanParam;
+import jakarta.ws.rs.CookieParam;
+import jakarta.ws.rs.FormParam;
+import jakarta.ws.rs.HeaderParam;
+import jakarta.ws.rs.MatrixParam;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.Context;
 
 @Internal
@@ -31,7 +39,28 @@ public class JaxrsResolvableParamPredicate implements ResolvableParamPredicate {
         if (param.isMethodParam()) {
             return true;
         }
-        return param.hasAnnotation(Context.class);
+        if (isInRootResource(param)) {
+            return param.hasAnnotation(Context.class)
+                || param.hasAnnotation(BeanParam.class)
+                || param.hasAnnotation(CookieParam.class)
+                || param.hasAnnotation(FormParam.class)
+                || param.hasAnnotation(HeaderParam.class)
+                || param.hasAnnotation(MatrixParam.class)
+                || param.hasAnnotation(PathParam.class)
+                || param.hasAnnotation(QueryParam.class);
+        } else {
+            return param.hasAnnotation(Context.class);
+        }
+    }
+
+    private static boolean isInRootResource(Param param) {
+        Class<?> declaringClassType;
+        if (param.isConstructorParam()) {
+            declaringClassType = param.constructorParam().declaringClass();
+        } else {
+            declaringClassType = param.fieldParam().declaringClass();
+        }
+        return JaxrsUtils.isRootResource(declaringClassType);
     }
 
 }

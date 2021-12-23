@@ -305,8 +305,11 @@ public class JaxrsExtensionsHandler implements ExtensionsHandler {
         }
         Constructor<?> constructor = ConstructorUtils.extractResolvable(userType, deployments.deployContext()
                 .paramPredicate().get());
+        if (constructor == null) {
+            throw new IllegalStateException("There is no suitable constructor to instantiate class: "
+                    + userType.getName());
+        }
 
-        assert constructor != null;
         Object[] args = new Object[constructor.getParameterCount()];
         int index = 0;
         for (Parameter parameter : constructor.getParameters()) {

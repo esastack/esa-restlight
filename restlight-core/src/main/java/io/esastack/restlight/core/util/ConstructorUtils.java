@@ -15,16 +15,21 @@
  */
 package io.esastack.restlight.core.util;
 
+import esa.commons.logging.Logger;
+import esa.commons.logging.LoggerFactory;
 import io.esastack.restlight.core.method.ConstructorParam;
 import io.esastack.restlight.core.method.ConstructorParamImpl;
 import io.esastack.restlight.core.method.ResolvableParamPredicate;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
 public class ConstructorUtils {
+
+    private static final Logger logger = LoggerFactory.getLogger(ConstructorUtils.class);
 
     public static Constructor<?> extractResolvable(Class<?> clazz, ResolvableParamPredicate resolvable) {
         Constructor<?> matched = null;
@@ -36,7 +41,7 @@ public class ConstructorUtils {
         return matched;
     }
 
-    public static List<Constructor<?>> extractAllResolvable(Class<?> clazz, ResolvableParamPredicate resolvable) {
+    private static List<Constructor<?>> extractAllResolvable(Class<?> clazz, ResolvableParamPredicate resolvable) {
         List<Constructor<?>> constructors = new LinkedList<>();
         if (clazz.isInterface()) {
             return constructors;
@@ -58,6 +63,11 @@ public class ConstructorUtils {
         for (int i = 0; i < constructor.getParameterCount(); i++) {
             ConstructorParam param = new ConstructorParamImpl(constructor, i);
             if (!resolvable.test(param)) {
+                logger.warn("Constructor: {} can't be used to instantiate class: {}, due to unresolvable" +
+                        " param: {}", constructor.getName() + " => " +
+                        Arrays.toString(constructor.getParameterTypes()),
+                        constructor.getDeclaringClass().getName(),
+                        param);
                 return false;
             }
         }
