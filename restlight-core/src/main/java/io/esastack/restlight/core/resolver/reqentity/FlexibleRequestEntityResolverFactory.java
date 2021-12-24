@@ -80,7 +80,7 @@ public abstract class FlexibleRequestEntityResolverFactory implements RequestEnt
             //convert argument if content-type is text/plain or missing.
             if (contentType == null || MediaType.TEXT_PLAIN.isCompatibleWith(contentType)) {
                 //ignore empty body.
-                if (entity.inputStream().readBytes() == 0) {
+                if (entity.inputStream().available() == 0) {
                     return HandledValue.succeed(null);
                 }
                 return HandledValue.succeed(converter.apply(entity.body().string(StandardCharsets.UTF_8)));

@@ -119,7 +119,6 @@ public class HandlerResolverFactoryImpl implements HandlerResolverFactory {
         txSerializers0.addAll(txSerializers);
         final List<ResponseEntityResolver> resolvers = new ArrayList<>(factories.size());
         factories.forEach(factory -> resolvers.add(factory.createResolver(txSerializers0)));
-        OrderedComparator.sort(resolvers);
         return resolvers;
     }
 
@@ -180,7 +179,6 @@ public class HandlerResolverFactoryImpl implements HandlerResolverFactory {
                     .collect(Collectors.toList()));
         }
 
-        // sort for custom argument resolvers
         OrderedComparator.sort(arguments);
 
         return Collections.unmodifiableList(arguments);
@@ -276,7 +274,7 @@ public class HandlerResolverFactoryImpl implements HandlerResolverFactory {
                 resolvers.add(factory.createResolver(param, rxSerializers));
             }
         });
-        return sortForUnmodifiableList(resolvers);
+        return Collections.unmodifiableList(resolvers);
     }
 
     @Override
@@ -367,6 +365,8 @@ public class HandlerResolverFactoryImpl implements HandlerResolverFactory {
     public static HandlerResolverFactory getHandlerResolverFactory(HandlerResolverFactory factory,
                                                                    HandlerConfiguration configuration) {
         // keep in order.
+        OrderedComparator.sort(configuration.getRouteFilters());
+        OrderedComparator.sort(configuration.getStringConverts());
         OrderedComparator.sort(configuration.getParamResolvers());
         OrderedComparator.sort(configuration.getContextResolvers());
         OrderedComparator.sort(configuration.getParamResolverAdvices());

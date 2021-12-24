@@ -1055,6 +1055,7 @@ public abstract class Deployments<R extends AbstractRestlight<R, D, O>, D extend
         OrderedComparator.sort(responseEntityResolvers);
         OrderedComparator.sort(responseEntityResolverAdvices);
         OrderedComparator.sort(routeFilters);
+        OrderedComparator.sort(stringConverters);
 
         List<FutureTransferFactory> futureTransfers = SpiLoader.cached(FutureTransferFactory.class)
                 .getByFeature(restlight.name(),
@@ -1062,6 +1063,7 @@ public abstract class Deployments<R extends AbstractRestlight<R, D, O>, D extend
                         Collections.singletonMap(Constants.INTERNAL, StringUtils.empty()),
                         false);
         OrderedComparator.sort(futureTransfers);
+
         return new HandlerResolverFactoryImpl(
                 rxSerializers,
                 txSerializers,
