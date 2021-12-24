@@ -15,6 +15,14 @@
  */
 package io.esastack.restlight.core.resolver;
 
-public interface RequestEntityResolverAdapter extends RequestEntityResolver, ParamPredicate {
+import io.esastack.restlight.core.util.Ordered;
+
+public interface RequestEntityResolverAdapter extends RequestEntityResolver, ParamPredicate, Ordered {
+
+    @Override
+    default int getOrder() {
+        return Ordered.HIGHEST_PRECEDENCE;
+    }
+
 }
 

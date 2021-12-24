@@ -17,9 +17,10 @@ package io.esastack.restlight.core.resolver;
 
 import esa.commons.Checks;
 import esa.commons.spi.SPI;
+import io.esastack.restlight.core.util.Ordered;
 
 @SPI
-public interface ResponseEntityResolverAdviceFactory extends ResponseEntityPredicate {
+public interface ResponseEntityResolverAdviceFactory extends ResponseEntityPredicate, Ordered {
 
     /**
      * Converts given {@link ResponseEntityResolverAdviceAdapter} to {@link ResponseEntityResolverAdviceFactory} which
@@ -41,6 +42,11 @@ public interface ResponseEntityResolverAdviceFactory extends ResponseEntityPredi
      */
     ResponseEntityResolverAdvice createResolverAdvice(ResponseEntity entity);
 
+    @Override
+    default int getOrder() {
+        return Ordered.HIGHEST_PRECEDENCE;
+    }
+
     class Singleton implements ResponseEntityResolverAdviceFactory {
 
         private final ResponseEntityResolverAdviceAdapter resolver;
@@ -58,6 +64,11 @@ public interface ResponseEntityResolverAdviceFactory extends ResponseEntityPredi
         @Override
         public boolean supports(ResponseEntity entity) {
             return resolver.supports(entity);
+        }
+
+        @Override
+        public int getOrder() {
+            return resolver.getOrder();
         }
     }
 }

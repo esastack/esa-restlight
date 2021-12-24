@@ -58,6 +58,11 @@ public abstract class FlexibleRequestEntityResolverFactory implements RequestEnt
                 : new DefaultResolver(serializers, param);
     }
 
+    @Override
+    public int getOrder() {
+        return 100;
+    }
+
     private static class DefaultResolver implements RequestEntityResolver {
 
         private final List<? extends HttpRequestSerializer> serializers;

@@ -24,4 +24,8 @@ public interface ParamResolverAdviceAdapter extends ParamPredicate, ParamResolve
         return context.proceed();
     }
 
+    @Override
+    default int getOrder() {
+        return Ordered.HIGHEST_PRECEDENCE;
+    }
 }

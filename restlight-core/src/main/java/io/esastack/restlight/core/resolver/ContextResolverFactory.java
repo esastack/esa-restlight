@@ -18,9 +18,10 @@ package io.esastack.restlight.core.resolver;
 import esa.commons.Checks;
 import esa.commons.spi.SPI;
 import io.esastack.restlight.core.method.Param;
+import io.esastack.restlight.core.util.Ordered;
 
 @SPI
-public interface ContextResolverFactory extends ParamPredicate {
+public interface ContextResolverFactory extends ParamPredicate, Ordered {
 
     /**
      * Converts given {@link ContextResolverAdapter} to {@link ContextResolverFactory} which
@@ -42,6 +43,11 @@ public interface ContextResolverFactory extends ParamPredicate {
      */
     ContextResolver createResolver(Param param);
 
+    @Override
+    default int getOrder() {
+        return Ordered.HIGHEST_PRECEDENCE;
+    }
+
     class Singleton implements ContextResolverFactory {
 
         private final ContextResolverAdapter resolver;
@@ -59,6 +65,11 @@ public interface ContextResolverFactory extends ParamPredicate {
         @Override
         public boolean supports(Param param) {
             return resolver.supports(param);
+        }
+
+        @Override
+        public int getOrder() {
+            return resolver.getOrder();
         }
     }
 

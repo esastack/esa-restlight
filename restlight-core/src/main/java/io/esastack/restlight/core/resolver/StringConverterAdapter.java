@@ -15,16 +15,13 @@
  */
 package io.esastack.restlight.core.resolver;
 
-public interface ResponseEntityPredicate {
+import io.esastack.restlight.core.util.Ordered;
 
-    /**
-     * Judge whether should apply current component to resolve the {@link ResponseEntity}.
-     *
-     * @param entity response entity.
-     *
-     * @return {@code true} or {@code false}.
-     */
-    boolean supports(ResponseEntity entity);
+public interface StringConverterAdapter extends StringConverter, Ordered {
 
+    @Override
+    default int getOrder() {
+        return Ordered.HIGHEST_PRECEDENCE;
+    }
 }
 

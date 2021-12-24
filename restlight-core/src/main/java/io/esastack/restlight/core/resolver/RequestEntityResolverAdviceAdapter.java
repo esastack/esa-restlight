@@ -25,5 +25,10 @@ public interface RequestEntityResolverAdviceAdapter extends RequestEntityResolve
     default Object aroundRead(RequestEntityResolverContext context) throws Exception {
         return context.proceed();
     }
+
+    @Override
+    default int getOrder() {
+        return Ordered.HIGHEST_PRECEDENCE;
+    }
 }
 

@@ -17,14 +17,13 @@ package io.esastack.restlight.core.resolver;
 
 import esa.commons.spi.SPI;
 import io.esastack.restlight.core.method.Param;
-import io.esastack.restlight.core.util.Ordered;
 import io.esastack.restlight.server.context.RequestContext;
 
 /**
  * This resolver will deserialize the {@link RequestEntity} to an instance.
  */
 @SPI
-public interface RequestEntityResolver extends Resolver, Ordered {
+public interface RequestEntityResolver extends Resolver {
 
     /**
      * Deserialize the given {@code entity} to result.
@@ -37,14 +36,5 @@ public interface RequestEntityResolver extends Resolver, Ordered {
      */
     HandledValue<Object> readFrom(Param param, RequestEntity entity, RequestContext context) throws Exception;
 
-    /**
-     * Default to HIGHEST_PRECEDENCE.
-     *
-     * @return order
-     */
-    @Override
-    default int getOrder() {
-        return HIGHEST_PRECEDENCE;
-    }
 }
 

@@ -18,11 +18,12 @@ package io.esastack.restlight.core.resolver;
 import esa.commons.Checks;
 import esa.commons.spi.SPI;
 import io.esastack.restlight.core.serialize.HttpResponseSerializer;
+import io.esastack.restlight.core.util.Ordered;
 
 import java.util.List;
 
 @SPI
-public interface ResponseEntityResolverFactory {
+public interface ResponseEntityResolverFactory extends Ordered {
 
     /**
      * Converts given {@link ResponseEntityResolver} to {@link ResponseEntityResolverFactory} which
@@ -44,6 +45,11 @@ public interface ResponseEntityResolverFactory {
      */
     ResponseEntityResolver createResolver(List<? extends HttpResponseSerializer> serializers);
 
+    @Override
+    default int getOrder() {
+        return Ordered.HIGHEST_PRECEDENCE;
+    }
+
     class Singleton implements ResponseEntityResolverFactory {
 
         private final ResponseEntityResolver resolver;
@@ -56,6 +62,11 @@ public interface ResponseEntityResolverFactory {
         @Override
         public ResponseEntityResolver createResolver(List<? extends HttpResponseSerializer> serializers) {
             return resolver;
+        }
+
+        @Override
+        public int getOrder() {
+            return resolver.getOrder();
         }
     }
 }

@@ -27,14 +27,14 @@ import java.util.Optional;
 public interface StringConverterFactory extends Ordered {
 
     /**
-     * Converts given {@link StringConverter} to {@link StringConverterFactory} which
-     * always use the given {@link StringConverter} as the result of
+     * Converts given {@link StringConverterAdapter} to {@link StringConverterFactory} which
+     * always use the given {@link StringConverterAdapter} as the result of
      * {@link #createConverter(Class, Type, Param)}
      *
      * @param converter converter
      * @return of factory bean
      */
-    static StringConverterFactory singleton(StringConverter converter) {
+    static StringConverterFactory singleton(StringConverterAdapter converter) {
         return new StringConverterFactory.Singleton(converter);
     }
 
@@ -55,14 +55,14 @@ public interface StringConverterFactory extends Ordered {
      */
     @Override
     default int getOrder() {
-        return 0;
+        return Ordered.HIGHEST_PRECEDENCE;
     }
 
     class Singleton implements StringConverterFactory {
 
-        private final StringConverter converter;
+        private final StringConverterAdapter converter;
 
-        Singleton(StringConverter converter) {
+        Singleton(StringConverterAdapter converter) {
             Checks.checkNotNull(converter, "resolver");
             this.converter = converter;
         }
@@ -70,6 +70,11 @@ public interface StringConverterFactory extends Ordered {
         @Override
         public Optional<StringConverter> createConverter(Class<?> type, Type genericType, Param param) {
             return Optional.of(converter);
+        }
+
+        @Override
+        public int getOrder() {
+            return converter.getOrder();
         }
     }
 }
