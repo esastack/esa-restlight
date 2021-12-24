@@ -18,25 +18,26 @@ package io.esastack.restlight.jaxrs.configure;
 import esa.commons.Checks;
 import io.esastack.restlight.core.DeployContext;
 import io.esastack.restlight.core.config.RestlightOptions;
-import io.esastack.restlight.core.handler.HandlerFactory;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 
 class LazyInstantiateHandler implements InvocationHandler {
 
-    private final HandlerFactory factory;
+    private final DeployContext<? extends RestlightOptions> context;
     private final Class<?> clazz;
-    private Object target;
-    private boolean initialized;
+    private final Object instantiateLock = new Object();
+    private final Object initLock = new Object();
+
+    private volatile Object target;
+    private volatile boolean initialized;
 
     LazyInstantiateHandler(Class<?> clazz,
                            DeployContext<? extends RestlightOptions> context) {
         Checks.checkNotNull(clazz, "clazz");
         Checks.checkNotNull(context, "context");
-        assert context.handlerFactory().isPresent();
         this.clazz = clazz;
-        this.factory = context.handlerFactory().get();
+        this.context = context;
     }
 
     @Override
@@ -46,16 +47,30 @@ class LazyInstantiateHandler implements InvocationHandler {
 
     private Object getInstanceThenInit() {
         Object instance = getInstance();
-        if (initialized) {
-            factory.doInit(instance, null);
-            initialized = true;
+        if (!initialized) {
+            synchronized (initLock) {
+                if (!initialized) {
+                    context.handlerFactory().orElseThrow(() ->
+                            new IllegalStateException("HandlerFactory is not present while initializing object," +
+                                    " clazz: " + clazz))
+                            .doInit(instance, null);
+                    initialized = true;
+                }
+            }
         }
         return instance;
     }
 
     protected Object getInstance() {
-        if (target == null) {
-            target = factory.instantiate(clazz, null);
+        if (target != null) {
+            return target;
+        }
+        synchronized (instantiateLock) {
+            if (target == null) {
+                target = context.handlerFactory().orElseThrow(() ->
+                        new IllegalStateException("HandlerFactory is not present while instantiating class: " + clazz))
+                        .instantiate(clazz, null);
+            }
         }
         return target;
     }
