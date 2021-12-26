@@ -53,10 +53,11 @@ import io.esastack.restlight.core.resolver.RequestEntityResolverAdapter;
 import io.esastack.restlight.core.resolver.RequestEntityResolverAdviceAdapter;
 import io.esastack.restlight.core.resolver.RequestEntityResolverAdviceFactory;
 import io.esastack.restlight.core.resolver.RequestEntityResolverFactory;
-import io.esastack.restlight.core.resolver.ResponseEntityResolver;
+import io.esastack.restlight.core.resolver.ResponseEntityResolverAdapter;
 import io.esastack.restlight.core.resolver.ResponseEntityResolverAdviceAdapter;
 import io.esastack.restlight.core.resolver.ResponseEntityResolverAdviceFactory;
 import io.esastack.restlight.core.resolver.ResponseEntityResolverFactory;
+import io.esastack.restlight.core.resolver.StringConverterAdapter;
 import io.esastack.restlight.core.resolver.StringConverterFactory;
 import io.esastack.restlight.core.resolver.exception.DefaultExceptionMapper;
 import io.esastack.restlight.core.resolver.exception.DefaultExceptionResolverFactory;
@@ -64,6 +65,7 @@ import io.esastack.restlight.core.resolver.exception.ExceptionResolverFactory;
 import io.esastack.restlight.core.serialize.HttpBodySerializer;
 import io.esastack.restlight.core.serialize.HttpRequestSerializer;
 import io.esastack.restlight.core.serialize.HttpResponseSerializer;
+import io.esastack.restlight.core.spi.ContextResolverProvider;
 import io.esastack.restlight.core.spi.DefaultSerializerFactory;
 import io.esastack.restlight.core.spi.ExceptionResolverFactoryProvider;
 import io.esastack.restlight.core.spi.ExtensionsHandlerFactory;
@@ -78,6 +80,7 @@ import io.esastack.restlight.core.spi.RequestEntityResolverProvider;
 import io.esastack.restlight.core.spi.ResponseEntityResolverAdviceProvider;
 import io.esastack.restlight.core.spi.ResponseEntityResolverProvider;
 import io.esastack.restlight.core.spi.RouteFilterFactory;
+import io.esastack.restlight.core.spi.StringConverterProvider;
 import io.esastack.restlight.core.util.Constants;
 import io.esastack.restlight.core.util.OrderedComparator;
 import io.esastack.restlight.core.util.RouteUtils;
@@ -444,6 +447,18 @@ public abstract class Deployments<R extends AbstractRestlight<R, D, O>, D extend
     }
 
     /**
+     * Adds {@link StringConverterAdapter} which will be registered in the {@link HandlerResolverFactory}
+     *
+     * @param converter resolver
+     * @return this deployments
+     */
+    public D addStringConverter(StringConverterAdapter converter) {
+        checkImmutable();
+        Checks.checkNotNull(converter, "converter");
+        return addStringConverter(StringConverterFactory.singleton(converter));
+    }
+
+    /**
      * Adds {@link StringConverterFactory} which will be registered in the {@link HandlerResolverFactory}
      *
      * @param converter resolver
@@ -665,7 +680,7 @@ public abstract class Deployments<R extends AbstractRestlight<R, D, O>, D extend
         return self();
     }
 
-    public D addResponseEntityResolver(ResponseEntityResolver resolver) {
+    public D addResponseEntityResolver(ResponseEntityResolverAdapter resolver) {
         checkImmutable();
         Checks.checkNotNull(resolver, "resolver");
         return addResponseEntityResolver(ResponseEntityResolverFactory.singleton(resolver));
@@ -1047,15 +1062,15 @@ public abstract class Deployments<R extends AbstractRestlight<R, D, O>, D extend
         // keep in order.
         OrderedComparator.sort(rxSerializers);
         OrderedComparator.sort(txSerializers);
+        OrderedComparator.sort(routeFilters);
+        OrderedComparator.sort(stringConverters);
         OrderedComparator.sort(paramResolvers);
-        OrderedComparator.sort(contextResolvers);
         OrderedComparator.sort(paramResolverAdvices);
+        OrderedComparator.sort(contextResolvers);
         OrderedComparator.sort(requestEntityResolvers);
         OrderedComparator.sort(requestEntityResolverAdvices);
         OrderedComparator.sort(responseEntityResolvers);
         OrderedComparator.sort(responseEntityResolverAdvices);
-        OrderedComparator.sort(routeFilters);
-        OrderedComparator.sort(stringConverters);
 
         List<FutureTransferFactory> futureTransfers = SpiLoader.cached(FutureTransferFactory.class)
                 .getByFeature(restlight.name(),
@@ -1069,6 +1084,7 @@ public abstract class Deployments<R extends AbstractRestlight<R, D, O>, D extend
                 txSerializers,
                 futureTransfers,
                 routeFilters,
+                null,
                 stringConverters,
                 null,
                 paramResolvers,
@@ -1076,9 +1092,11 @@ public abstract class Deployments<R extends AbstractRestlight<R, D, O>, D extend
                 paramResolverAdvices,
                 null,
                 contextResolvers,
+                null,
                 requestEntityResolvers,
                 null,
                 requestEntityResolverAdvices,
+                null,
                 responseEntityResolvers,
                 null,
                 responseEntityResolverAdvices);
@@ -1104,8 +1122,18 @@ public abstract class Deployments<R extends AbstractRestlight<R, D, O>, D extend
 
     private void loadResolversFromSpi() {
         // load StringConverter from spi
+        SpiLoader.cached(StringConverterAdapter.class)
+                .getByGroup(restlight.name(), true)
+                .forEach(this::addStringConverter);
         addStringConverters(SpiLoader.cached(StringConverterFactory.class)
                 .getByGroup(restlight.name(), true));
+        addStringConverters(SpiLoader.cached(StringConverterProvider.class)
+                .getByGroup(restlight.name(), true)
+                .stream()
+                .map(provider -> provider.factoryBean(ctx()))
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .collect(Collectors.toList()));
 
         // load ParamResolver from spi
         SpiLoader.cached(ParamResolverAdapter.class)
@@ -1128,6 +1156,20 @@ public abstract class Deployments<R extends AbstractRestlight<R, D, O>, D extend
         addParamResolverAdvices(SpiLoader.cached(ParamResolverAdviceFactory.class)
                 .getByGroup(restlight.name(), true));
         addParamResolverAdvices(SpiLoader.cached(ParamResolverAdviceProvider.class)
+                .getByGroup(restlight.name(), true)
+                .stream()
+                .map(provider -> provider.factoryBean(ctx()))
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .collect(Collectors.toList()));
+
+        // load ContextResolver from spi
+        SpiLoader.cached(ContextResolverAdapter.class)
+                .getByGroup(restlight.name(), true)
+                .forEach(this::addContextResolver);
+        addContextResolvers(SpiLoader.cached(ContextResolverFactory.class)
+                .getByGroup(restlight.name(), true));
+        addContextResolvers(SpiLoader.cached(ContextResolverProvider.class)
                 .getByGroup(restlight.name(), true)
                 .stream()
                 .map(provider -> provider.factoryBean(ctx()))
@@ -1164,6 +1206,9 @@ public abstract class Deployments<R extends AbstractRestlight<R, D, O>, D extend
                 .collect(Collectors.toList()));
 
         // load ResponseEntityResolver from spi
+        SpiLoader.cached(ResponseEntityResolverAdapter.class)
+                .getByGroup(restlight.name(), true)
+                .forEach(this::addResponseEntityResolver);
         addResponseEntityResolvers(SpiLoader.cached(ResponseEntityResolverFactory.class)
                 .getByGroup(restlight.name(), true));
         addResponseEntityResolvers(SpiLoader.cached(ResponseEntityResolverProvider.class)

@@ -21,7 +21,7 @@ import io.esastack.restlight.core.config.RestlightOptionsConfigure;
 import io.esastack.restlight.core.interceptor.HandlerInterceptor;
 import io.esastack.restlight.core.resolver.ParamResolverAdapter;
 import io.esastack.restlight.core.resolver.ParamResolverAdviceAdapter;
-import io.esastack.restlight.core.resolver.ResponseEntityResolver;
+import io.esastack.restlight.core.resolver.ResponseEntityResolverAdapter;
 import io.esastack.restlight.core.resolver.ResponseEntityResolverAdviceAdapter;
 import io.esastack.restlight.core.serialize.HttpBodySerializer;
 import io.esastack.restlight.core.serialize.JacksonHttpBodySerializer;
@@ -77,7 +77,8 @@ public class MinorityMockMvcBuilder implements MockMvcBuilder {
         return this;
     }
 
-    public MinorityMockMvcBuilder responseEntityResolvers(List<ResponseEntityResolver> responseEntityResolvers) {
+    public MinorityMockMvcBuilder responseEntityResolvers(List<ResponseEntityResolverAdapter>
+                                                                  responseEntityResolvers) {
         if (responseEntityResolvers == null) {
             return this;
         }

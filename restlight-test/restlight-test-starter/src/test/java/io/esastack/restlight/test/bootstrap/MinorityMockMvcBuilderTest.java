@@ -23,7 +23,7 @@ import io.esastack.restlight.core.resolver.ParamResolverAdviceAdapter;
 import io.esastack.restlight.core.resolver.RequestEntity;
 import io.esastack.restlight.core.resolver.ResponseEntity;
 import io.esastack.restlight.core.resolver.ResponseEntityChannel;
-import io.esastack.restlight.core.resolver.ResponseEntityResolver;
+import io.esastack.restlight.core.resolver.ResponseEntityResolverAdapter;
 import io.esastack.restlight.core.resolver.ResponseEntityResolverAdviceAdapter;
 import io.esastack.restlight.core.serialize.HttpBodySerializer;
 import io.esastack.restlight.server.context.RequestContext;
@@ -102,7 +102,7 @@ class MinorityMockMvcBuilderTest {
         }
     }
 
-    private static class RetResolver implements ResponseEntityResolver {
+    private static class RetResolver implements ResponseEntityResolverAdapter {
 
         private RetResolver() {
         }

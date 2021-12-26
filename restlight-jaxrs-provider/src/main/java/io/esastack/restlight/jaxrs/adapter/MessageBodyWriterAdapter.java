@@ -19,7 +19,7 @@ import esa.commons.Checks;
 import io.esastack.restlight.core.resolver.HandledValue;
 import io.esastack.restlight.core.resolver.ResponseEntity;
 import io.esastack.restlight.core.resolver.ResponseEntityChannel;
-import io.esastack.restlight.core.resolver.ResponseEntityResolver;
+import io.esastack.restlight.core.resolver.ResponseEntityResolverAdapter;
 import io.esastack.restlight.jaxrs.util.MediaTypeUtils;
 import io.esastack.restlight.jaxrs.util.RuntimeDelegateUtils;
 import io.esastack.restlight.server.context.RequestContext;
@@ -30,7 +30,7 @@ import jakarta.ws.rs.ext.MessageBodyWriter;
 
 import java.util.List;
 
-public class MessageBodyWriterAdapter<T> implements ResponseEntityResolver {
+public class MessageBodyWriterAdapter<T> implements ResponseEntityResolverAdapter {
 
     private final MessageBodyWriter<T> underlying;
     private final List<MediaType> produces;

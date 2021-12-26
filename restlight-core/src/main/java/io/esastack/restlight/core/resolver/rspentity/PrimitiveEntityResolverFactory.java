@@ -33,6 +33,11 @@ public class PrimitiveEntityResolverFactory implements ResponseEntityResolverFac
         return new PrimitiveResolver();
     }
 
+    @Override
+    public int getOrder() {
+        return 130;
+    }
+
     /**
      * Implementation for resolving response entity type of Primitives
      */
@@ -54,11 +59,6 @@ public class PrimitiveEntityResolverFactory implements ResponseEntityResolverFac
             return Serializers.serializePrimitives(context.response().entity(),
                     context.response(),
                     selectMediaType(mediaTypes));
-        }
-
-        @Override
-        public int getOrder() {
-            return 130;
         }
     }
 }

@@ -26,14 +26,14 @@ import java.util.List;
 public interface ResponseEntityResolverFactory extends Ordered {
 
     /**
-     * Converts given {@link ResponseEntityResolver} to {@link ResponseEntityResolverFactory} which
-     * always use the given {@link ResponseEntityResolver} as the result of
+     * Converts given {@link ResponseEntityResolverAdapter} to {@link ResponseEntityResolverFactory} which
+     * always use the given {@link ResponseEntityResolverAdapter} as the result of
      * {@link #createResolver(List)}
      *
      * @param resolver resolver
      * @return of factory bean
      */
-    static ResponseEntityResolverFactory singleton(ResponseEntityResolver resolver) {
+    static ResponseEntityResolverFactory singleton(ResponseEntityResolverAdapter resolver) {
         return new ResponseEntityResolverFactory.Singleton(resolver);
     }
 
@@ -52,9 +52,9 @@ public interface ResponseEntityResolverFactory extends Ordered {
 
     class Singleton implements ResponseEntityResolverFactory {
 
-        private final ResponseEntityResolver resolver;
+        private final ResponseEntityResolverAdapter resolver;
 
-        Singleton(ResponseEntityResolver resolver) {
+        Singleton(ResponseEntityResolverAdapter resolver) {
             Checks.checkNotNull(resolver, "resolver");
             this.resolver = resolver;
         }

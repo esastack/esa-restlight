@@ -15,14 +15,12 @@
  */
 package io.esastack.restlight.core.resolver;
 
-import esa.commons.spi.SPI;
 import io.esastack.restlight.core.method.Param;
 import io.esastack.restlight.server.context.RequestContext;
 
 /**
  * This resolver will deserialize the {@link RequestEntity} to an instance.
  */
-@SPI
 public interface RequestEntityResolver extends Resolver {
 
     /**

@@ -33,6 +33,11 @@ public class ByteArrayEntityResolverFactory implements ResponseEntityResolverFac
         return new ByteArrayResolver();
     }
 
+    @Override
+    public int getOrder() {
+        return 110;
+    }
+
     /**
      * Implementation for resolving response entity type of byte array
      */
@@ -54,11 +59,6 @@ public class ByteArrayEntityResolverFactory implements ResponseEntityResolverFac
             return Serializers.serializeByteArray((byte[]) context.response().entity(),
                     context.response(),
                     selectMediaType(mediaTypes));
-        }
-
-        @Override
-        public int getOrder() {
-            return 110;
         }
     }
 }

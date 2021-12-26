@@ -30,6 +30,11 @@ public class FlexibleResponseEntityResolverFactory implements ResponseEntityReso
         return new FlexibleResponseEntityResolver0(serializers);
     }
 
+    @Override
+    public int getOrder() {
+        return 310;
+    }
+
     private static class FlexibleResponseEntityResolver0 extends FlexibleResponseEntityResolver {
 
         private FlexibleResponseEntityResolver0(List<? extends HttpResponseSerializer> serializers) {
@@ -41,10 +46,6 @@ public class FlexibleResponseEntityResolverFactory implements ResponseEntityReso
             return true;
         }
 
-        @Override
-        public int getOrder() {
-            return 310;
-        }
     }
 
 }
