@@ -41,10 +41,10 @@ public class ValidationExceptionHandlerFactory implements ExceptionHandlerFactor
 
     @Override
     public Optional<IExceptionHandler> handler(ServerDeployContext<? extends ServerOptions> ctx) {
-        return Optional.of(new ValidationIExceptionHandler());
+        return Optional.of(new ValidationExceptionHandler());
     }
 
-    private static class ValidationIExceptionHandler implements IExceptionHandler {
+    private static class ValidationExceptionHandler implements IExceptionHandler {
 
         @Override
         public CompletableFuture<Void> handle(RequestContext context, Throwable th,

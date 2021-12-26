@@ -39,10 +39,10 @@ public class SpringMvcExceptionHandlerFactory implements ExceptionHandlerFactory
 
     @Override
     public Optional<IExceptionHandler> handler(ServerDeployContext<? extends ServerOptions> ctx) {
-        return Optional.of(new SpringMvcIExceptionHandler());
+        return Optional.of(new SpringMvcExceptionHandler());
     }
 
-    private static class SpringMvcIExceptionHandler implements IExceptionHandler {
+    private static class SpringMvcExceptionHandler implements IExceptionHandler {
 
         @Override
         public CompletableFuture<Void> handle(RequestContext context, Throwable th,
