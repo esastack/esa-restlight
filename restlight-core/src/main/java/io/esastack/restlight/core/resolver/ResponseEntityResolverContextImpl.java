@@ -21,6 +21,7 @@ import esa.commons.spi.SpiLoader;
 import io.esastack.restlight.core.spi.ResponseEntityChannelFactory;
 import io.esastack.restlight.core.util.Constants;
 import io.esastack.restlight.core.util.OrderedComparator;
+import io.esastack.restlight.server.bootstrap.WebServerException;
 import io.esastack.restlight.server.context.RequestContext;
 
 import java.util.Collections;
@@ -83,7 +84,8 @@ public class ResponseEntityResolverContextImpl implements ResponseEntityResolver
                     return;
                 }
             }
-            return;
+            throw WebServerException.notAcceptable("There is no suitable resolver to resolve response entity: "
+                    + entity);
         }
 
         advices[index++].aroundWrite(this);

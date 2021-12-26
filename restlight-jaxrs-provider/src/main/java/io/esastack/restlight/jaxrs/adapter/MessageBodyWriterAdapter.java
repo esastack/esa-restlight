@@ -16,6 +16,7 @@
 package io.esastack.restlight.jaxrs.adapter;
 
 import esa.commons.Checks;
+import esa.commons.ClassUtils;
 import io.esastack.restlight.core.resolver.HandledValue;
 import io.esastack.restlight.core.resolver.ResponseEntity;
 import io.esastack.restlight.core.resolver.ResponseEntityChannel;
@@ -33,14 +34,20 @@ import java.util.List;
 public class MessageBodyWriterAdapter<T> implements ResponseEntityResolverAdapter {
 
     private final MessageBodyWriter<T> underlying;
+    private final Class<?> matchableType;
     private final List<MediaType> produces;
     private final int order;
 
-    public MessageBodyWriterAdapter(MessageBodyWriter<T> underlying, List<MediaType> produces, int order) {
+    public MessageBodyWriterAdapter(MessageBodyWriter<T> underlying,
+                                    Class<?> matchableType,
+                                    List<MediaType> produces,
+                                    int order) {
         Checks.checkNotNull(underlying, "underlying");
+        Checks.checkNotNull(matchableType, "matchableType");
         Checks.checkNotNull(produces, "produces");
-        this.produces = produces;
         this.underlying = underlying;
+        this.matchableType = matchableType;
+        this.produces = produces;
         this.order = order;
     }
 
@@ -48,9 +55,19 @@ public class MessageBodyWriterAdapter<T> implements ResponseEntityResolverAdapte
     public HandledValue<Void> writeTo(ResponseEntity entity,
                                       ResponseEntityChannel channel,
                                       RequestContext context) throws Exception {
+        if (entity.response().entity() == null) {
+            return HandledValue.failed();
+        }
+        Class<?> type = entity.type();
+        if (type == null) {
+            type = ClassUtils.getUserType(entity.response().entity());
+        }
+        if (!matchableType.isAssignableFrom(type)) {
+            return HandledValue.failed();
+        }
+
         MediaType mediaType = MediaTypeUtils.convert(entity.mediaType());
-        if (entity.response().entity() == null
-                || !isCompatible(mediaType)
+        if (!isCompatible(mediaType)
                 || !underlying.isWriteable(entity.type(), entity.genericType(), entity.annotations(), mediaType)) {
             return HandledValue.failed();
         }

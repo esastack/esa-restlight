@@ -219,6 +219,7 @@ public class JaxrsExtensionsHandler implements ExtensionsHandler {
         }
         for (ProxyComponent<MessageBodyWriter<?>> writer : factory.messageBodyWriters()) {
             deployments.addResponseEntityResolver(new MessageBodyWriterAdapter<>(writer.proxied(),
+                    ClassUtils.findFirstGenericType(writer.underlying().getClass()).orElse(Object.class),
                     JaxrsUtils.produces(writer.underlying()), JaxrsUtils.getOrder(writer.underlying())));
         }
         for (Map.Entry<Class<Throwable>, ProxyComponent<ExceptionMapper<Throwable>>> entry :

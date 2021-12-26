@@ -20,6 +20,7 @@ import esa.commons.ClassUtils;
 import esa.commons.logging.Logger;
 import esa.commons.logging.LoggerFactory;
 import io.esastack.commons.net.http.HttpStatus;
+import io.esastack.commons.net.http.MediaType;
 import io.esastack.restlight.core.DeployContext;
 import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.core.method.HandlerMethod;
@@ -38,6 +39,7 @@ import io.esastack.restlight.server.handler.Filter;
 import io.esastack.restlight.server.handler.FilterChain;
 import io.esastack.restlight.server.util.ErrorDetail;
 
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 import static io.esastack.restlight.server.util.ErrorDetail.getMessage;
@@ -65,7 +67,9 @@ class ResponseEntityWriter implements Filter {
             }
 
             final HandlerMethod method = ResponseEntityUtils.getHandledMethod(context);
-            final ResponseEntity entity = new ResponseEntityImpl(method, context.response());
+            final List<MediaType> mediaTypes = ResponseEntityUtils.getMediaTypes(context);
+            final ResponseEntity entity = new ResponseEntityImpl(method, context.response(), mediaTypes.isEmpty()
+                    ? null : mediaTypes.get(0));
             final ResponseEntityResolverContext rspCtx = new ResponseEntityResolverContextImpl(context,
                     entity, resolverFactory.getResponseEntityResolvers(),
                     resolverFactory.getResponseEntityResolverAdvices(entity)

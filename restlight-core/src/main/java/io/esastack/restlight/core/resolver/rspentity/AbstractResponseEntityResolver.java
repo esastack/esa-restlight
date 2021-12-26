@@ -16,22 +16,17 @@
 package io.esastack.restlight.core.resolver.rspentity;
 
 import esa.commons.Primitives;
-import esa.commons.StringUtils;
 import io.esastack.commons.net.http.MediaType;
-import io.esastack.commons.net.http.MediaTypeUtil;
 import io.esastack.restlight.core.resolver.HandledValue;
 import io.esastack.restlight.core.resolver.ResponseEntity;
 import io.esastack.restlight.core.resolver.ResponseEntityChannel;
 import io.esastack.restlight.core.resolver.ResponseEntityResolver;
 import io.esastack.restlight.core.serialize.Serializers;
+import io.esastack.restlight.core.util.ResponseEntityUtils;
 import io.esastack.restlight.server.context.RequestContext;
 import io.esastack.restlight.server.core.HttpResponse;
-import io.esastack.restlight.server.route.predicate.ProducesPredicate;
 import io.netty.buffer.ByteBuf;
-import io.netty.handler.codec.http.HttpHeaderNames;
-import io.netty.util.internal.InternalThreadLocalMap;
 
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -109,18 +104,7 @@ public abstract class AbstractResponseEntityResolver implements ResponseEntityRe
     }
 
     protected List<MediaType> getMediaTypes(RequestContext context) {
-        List<MediaType> compatibleTypes = context.attrs().attr(ProducesPredicate.COMPATIBLE_MEDIA_TYPES).get();
-        if (compatibleTypes == null) {
-            String accept = context.request().headers().get(HttpHeaderNames.ACCEPT);
-            if (!StringUtils.isEmpty(accept)) {
-                List<MediaType> ret = InternalThreadLocalMap.get().arrayList();
-                MediaTypeUtil.parseMediaTypes(accept, ret);
-                return ret;
-            }
-        } else {
-            return compatibleTypes;
-        }
-        return Collections.emptyList();
+        return ResponseEntityUtils.getMediaTypes(context);
     }
 
     /**

@@ -16,10 +16,19 @@
 package io.esastack.restlight.core.util;
 
 import esa.commons.Primitives;
+import esa.commons.StringUtils;
 import esa.commons.collection.AttributeKey;
+import io.esastack.commons.net.http.MediaType;
+import io.esastack.commons.net.http.MediaTypeUtil;
 import io.esastack.restlight.core.method.HandlerMethod;
 import io.esastack.restlight.core.resolver.ResponseEntity;
 import io.esastack.restlight.server.context.RequestContext;
+import io.esastack.restlight.server.route.predicate.ProducesPredicate;
+import io.netty.handler.codec.http.HttpHeaderNames;
+import io.netty.util.internal.InternalThreadLocalMap;
+
+import java.util.Collections;
+import java.util.List;
 
 public final class ResponseEntityUtils {
 
@@ -31,6 +40,21 @@ public final class ResponseEntityUtils {
 
     public static HandlerMethod getHandledMethod(RequestContext context) {
         return context.attrs().attr(HANDLED_METHOD).get();
+    }
+
+    public static List<MediaType> getMediaTypes(RequestContext context) {
+        List<MediaType> compatibleTypes = context.attrs().attr(ProducesPredicate.COMPATIBLE_MEDIA_TYPES).get();
+        if (compatibleTypes == null) {
+            String accept = context.request().headers().get(HttpHeaderNames.ACCEPT);
+            if (!StringUtils.isEmpty(accept)) {
+                List<MediaType> ret = InternalThreadLocalMap.get().arrayList();
+                MediaTypeUtil.parseMediaTypes(accept, ret);
+                return ret;
+            }
+        } else {
+            return compatibleTypes;
+        }
+        return Collections.emptyList();
     }
 
     public static boolean isAssignableFrom(ResponseEntity entity, Class<?> target) {
