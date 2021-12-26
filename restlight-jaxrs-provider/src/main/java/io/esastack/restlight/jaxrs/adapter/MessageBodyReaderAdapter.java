@@ -31,12 +31,18 @@ import java.util.List;
 public class MessageBodyReaderAdapter<T> implements RequestEntityResolverAdapter {
 
     private final MessageBodyReader<T> underlying;
+    private final Class<?> matchableType;
     private final List<MediaType> consumes;
     private final int order;
 
-    public MessageBodyReaderAdapter(MessageBodyReader<T> underlying, List<MediaType> consumes, int order) {
+    public MessageBodyReaderAdapter(MessageBodyReader<T> underlying,
+                                    Class<?> matchableType,
+                                    List<MediaType> consumes,
+                                    int order) {
         Checks.checkNotNull(underlying, "underlying");
+        Checks.checkNotNull(matchableType, "matchableType");
         Checks.checkNotNull(consumes, "consumes");
+        this.matchableType = matchableType;
         this.consumes = consumes;
         this.underlying = underlying;
         this.order = order;
@@ -44,21 +50,34 @@ public class MessageBodyReaderAdapter<T> implements RequestEntityResolverAdapter
 
     @Override
     public HandledValue<Object> readFrom(Param param, RequestEntity entity, RequestContext context) throws Exception {
-        MediaType mediaType = MediaTypeUtils.convert(entity.mediaType());
+        final Class<?> clazz = entity.type();
+        // match by type firstly.
+        if (entity.type() == null || !matchableType.isAssignableFrom(clazz)) {
+            return HandledValue.failed();
+        }
+
+        // match by mediaType secondly.
+        // follow the spec, use APPLICATION_OCTET_STREAM as default
+        MediaType mediaType = MediaTypeUtils.convert(entity.mediaType() == null
+                ? io.esastack.commons.net.http.MediaType.APPLICATION_OCTET_STREAM : entity.mediaType());
         if (!isCompatible(mediaType)) {
             return HandledValue.failed();
         }
-        if (!underlying.isReadable(entity.type(), entity.genericType(), entity.annotations(), mediaType)) {
+
+        if (!underlying.isReadable(clazz, entity.genericType(), entity.annotations(), mediaType)) {
             return HandledValue.failed();
         }
+
         @SuppressWarnings("unchecked")
-        Class<T> clazz = (Class<T>) entity.type();
-        return HandledValue.succeed(underlying.readFrom(clazz, entity.genericType(), entity.annotations(),
-                mediaType, new ModifiableMultivaluedMap(context.request().headers()), entity.inputStream()));
+        T value = underlying.readFrom((Class<T>) clazz, entity.genericType(), entity.annotations(),
+                mediaType, new ModifiableMultivaluedMap(context.request().headers()), entity.inputStream());
+        return HandledValue.succeed(value);
     }
 
     @Override
     public boolean supports(Param param) {
+        // because the mediaType、type、genericType may be updated during ReaderInterceptor, so we can't
+        // bind this to param at the starting time.
         return true;
     }
 

@@ -26,10 +26,8 @@ import io.esastack.restlight.core.serialize.HttpRequestSerializer;
 import io.esastack.restlight.core.serialize.ProtoBufHttpBodySerializer;
 import io.esastack.restlight.core.util.Constants;
 import io.esastack.restlight.core.util.ConverterUtils;
-import io.esastack.restlight.server.bootstrap.WebServerException;
 import io.esastack.restlight.server.context.RequestContext;
 
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.function.Function;
 
@@ -83,7 +81,7 @@ public abstract class FlexibleRequestEntityResolverFactory implements RequestEnt
                 if (entity.inputStream().available() == 0) {
                     return HandledValue.succeed(null);
                 }
-                return HandledValue.succeed(converter.apply(entity.body().string(StandardCharsets.UTF_8)));
+                return HandledValue.failed();
             }
 
             //search serializer to resolve argument
@@ -93,7 +91,7 @@ public abstract class FlexibleRequestEntityResolverFactory implements RequestEnt
                     return handled;
                 }
             }
-            throw WebServerException.notSupported("Unsupported media type:" + contentType);
+            return HandledValue.failed();
         }
 
         protected MediaType getMediaType(RequestEntity entity) {

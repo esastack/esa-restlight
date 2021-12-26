@@ -26,6 +26,7 @@ import io.esastack.restlight.core.resolver.RequestEntityImpl;
 import io.esastack.restlight.core.resolver.RequestEntityResolver;
 import io.esastack.restlight.core.resolver.RequestEntityResolverAdvice;
 import io.esastack.restlight.core.resolver.RequestEntityResolverContextImpl;
+import io.esastack.restlight.server.bootstrap.WebServerException;
 import io.esastack.restlight.server.context.RequestContext;
 
 import java.util.List;
@@ -62,7 +63,8 @@ class AdvisedRequestEntityResolver implements ResolverWrap {
                     return handled.value();
                 }
             }
-            return null;
+            throw WebServerException.notSupported("There is no suitable resolver to resolve param: " + param
+                    + ", content-type: " + context.request().contentType());
         }
         return new RequestEntityResolverContextImpl(this.param, context, entity, resolvers, advices).proceed();
     }

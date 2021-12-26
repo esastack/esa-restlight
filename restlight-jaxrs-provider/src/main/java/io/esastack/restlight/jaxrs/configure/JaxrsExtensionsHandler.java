@@ -214,6 +214,7 @@ public class JaxrsExtensionsHandler implements ExtensionsHandler {
 
         for (ProxyComponent<MessageBodyReader<?>> reader : factory.messageBodyReaders()) {
             deployments.addRequestEntityResolver(new MessageBodyReaderAdapter<>(reader.proxied(),
+                    ClassUtils.findFirstGenericType(reader.underlying().getClass()).orElse(Object.class),
                     JaxrsUtils.consumes(reader.underlying()), JaxrsUtils.getOrder(reader.underlying())));
         }
         for (ProxyComponent<MessageBodyWriter<?>> writer : factory.messageBodyWriters()) {
