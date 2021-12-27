@@ -44,7 +44,7 @@ public class PostMatchRequestFilters implements RouteFilter {
             for (ContainerRequestFilter filter : filters) {
                 filter.filter(ctx);
                 if (ctx.isAborted()) {
-                    break;
+                    return Futures.completedFuture();
                 }
             }
         } catch (Throwable th) {
