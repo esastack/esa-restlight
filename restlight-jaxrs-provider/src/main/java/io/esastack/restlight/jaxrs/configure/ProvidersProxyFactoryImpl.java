@@ -81,11 +81,11 @@ public class ProvidersProxyFactoryImpl implements ProvidersProxyFactory {
     public Map<Class<Throwable>, ProxyComponent<ExceptionMapper<Throwable>>> exceptionMappers() {
         Map<Class<Throwable>, ProxyComponent<ExceptionMapper<Throwable>>> mappers = new HashMap<>();
         getFromClasses(configuration.getProviderClasses(), ExceptionMapper.class).forEach((clazz, instance) ->
-                mappers.put((Class<Throwable>) ClassUtils.getRawType(clazz),
+                mappers.put((Class<Throwable>) ClassUtils.findFirstGenericType(clazz).orElse(Throwable.class),
                         new ProxyComponent<>(instance.underlying(),
                                 (ExceptionMapper<Throwable>) instance.proxied())));
         getFromInstances(configuration.getProviderInstances(), ExceptionMapper.class).forEach((clazz, instance) ->
-                mappers.put((Class<Throwable>) ClassUtils.getRawType(clazz),
+                mappers.put((Class<Throwable>) ClassUtils.findFirstGenericType(clazz).orElse(Throwable.class),
                         new ProxyComponent<>(instance.underlying(),
                                 (ExceptionMapper<Throwable>) instance.proxied())));
         return Collections.unmodifiableMap(mappers);

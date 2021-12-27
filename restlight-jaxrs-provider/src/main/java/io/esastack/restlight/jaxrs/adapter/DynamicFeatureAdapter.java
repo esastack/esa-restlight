@@ -95,7 +95,6 @@ public class DynamicFeatureAdapter implements HandlerConfigure {
         // add context resolvers, which should have higher precedence than those added at
         // JaxrsExtensionsHandler which have no providers and configuration corresponding
         // with current method.
-
         configurable.addContextResolver(new ConfigurationResolverAdapter(current) {
             @Override
             public int getOrder() {

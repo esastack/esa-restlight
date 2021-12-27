@@ -17,7 +17,6 @@ package io.esastack.restlight.jaxrs.adapter;
 
 import esa.commons.Checks;
 import io.esastack.restlight.core.resolver.ExceptionResolver;
-import io.esastack.restlight.jaxrs.impl.JaxrsContextUtils;
 import io.esastack.restlight.server.context.RequestContext;
 import io.esastack.restlight.server.util.Futures;
 import jakarta.ws.rs.core.Response;
@@ -48,7 +47,7 @@ public class JaxrsExceptionMapperAdapter<T extends Throwable> implements Excepti
         } catch (Throwable th) {
             response = Response.status(INTERNAL_SERVER_ERROR).build();
         }
-        JaxrsContextUtils.setResponse(context, response);
+        context.response().entity(response);
         return Futures.completedFuture();
     }
 }
