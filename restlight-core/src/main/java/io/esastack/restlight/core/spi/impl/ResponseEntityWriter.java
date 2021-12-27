@@ -100,7 +100,7 @@ class ResponseEntityWriter implements Filter {
                     rspCtx.channel().end();
                 } else {
                     logger.error("Unexpected error occurred after committing response entity: {}," +
-                            " request(url={}, method={})", entity, request.path(), request.method(), th);
+                            " request(url={}, method={})", entity, request.path(), request.method(), ex);
                 }
             }
 
