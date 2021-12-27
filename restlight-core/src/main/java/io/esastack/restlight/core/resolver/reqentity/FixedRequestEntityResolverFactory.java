@@ -69,6 +69,11 @@ public abstract class FixedRequestEntityResolverFactory implements RequestEntity
         return param.isMethodParam() && param.methodParam().method().getParameterCount() == 1;
     }
 
+    @Override
+    public int getOrder() {
+        return 0;
+    }
+
     private Class<? extends HttpRequestSerializer> findRequestSerializer(Param param) {
         Class<? extends HttpRequestSerializer> target = null;
 

@@ -30,6 +30,11 @@ public class FixedResponseEntityResolverFactory implements ResponseEntityResolve
         return new FixedResponseEntityResolver0(serializers);
     }
 
+    @Override
+    public int getOrder() {
+        return 210;
+    }
+
     private static class FixedResponseEntityResolver0 extends FixedResponseEntityResolver {
 
         private FixedResponseEntityResolver0(List<? extends HttpResponseSerializer> serializers) {
@@ -41,10 +46,6 @@ public class FixedResponseEntityResolverFactory implements ResponseEntityResolve
             return entity.handler().isPresent();
         }
 
-        @Override
-        public int getOrder() {
-            return 210;
-        }
     }
 
 }

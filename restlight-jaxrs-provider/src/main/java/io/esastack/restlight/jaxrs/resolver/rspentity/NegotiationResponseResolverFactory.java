@@ -36,6 +36,11 @@ public class NegotiationResponseResolverFactory implements ResponseEntityResolve
         return new NegotiationResponseResolver0(paramName, serializers);
     }
 
+    @Override
+    public int getOrder() {
+        return 310;
+    }
+
     private static class NegotiationResponseResolver0 extends NegotiationResponseResolver {
 
         private NegotiationResponseResolver0(String paramName,
@@ -46,11 +51,6 @@ public class NegotiationResponseResolverFactory implements ResponseEntityResolve
         @Override
         protected boolean supports(ResponseEntity entity) {
             return true;
-        }
-
-        @Override
-        public int getOrder() {
-            return 310;
         }
     }
 

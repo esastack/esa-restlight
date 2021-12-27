@@ -15,15 +15,22 @@
  */
 package io.esastack.restlight.core.resolver;
 
+import esa.commons.spi.SPI;
 import io.esastack.restlight.core.handler.HandlerPredicate;
 import io.esastack.restlight.core.util.Ordered;
 
+@SPI
 public interface RequestEntityResolverAdviceAdapter extends RequestEntityResolverAdvice,
         HandlerPredicate, Ordered {
 
     @Override
     default Object aroundRead(RequestEntityResolverContext context) throws Exception {
         return context.proceed();
+    }
+
+    @Override
+    default int getOrder() {
+        return Ordered.HIGHEST_PRECEDENCE;
     }
 }
 

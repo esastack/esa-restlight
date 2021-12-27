@@ -47,7 +47,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class HandlerFactoryImpl implements HandlerFactory, HandlerContexts {
@@ -211,11 +210,13 @@ public class HandlerFactoryImpl implements HandlerFactory, HandlerContexts {
         private final ResolvableParam<FieldParam, ResolverWrap>[] fieldParamResolvers;
 
         private ResolvableHandler(Class<?> clazz, HandlerContext<? extends RestlightOptions> context) {
-            assert context.paramPredicate().isPresent();
             assert context.resolverFactory().isPresent();
+            assert context.paramPredicate().isPresent();
             ResolvableParamPredicate resolvable = context.paramPredicate().get();
             HandlerResolverFactory resolverFactory = context.resolverFactory().get();
-            this.constructor = Objects.requireNonNull(ConstructorUtils.extractResolvable(clazz, resolvable));
+            this.constructor = ConstructorUtils.extractResolvable(clazz, resolvable);
+            Checks.checkState(this.constructor != null,
+                    "There is no suitable constructor to instantiate class: " + clazz.getName());
             ReflectionUtils.makeConstructorAccessible(this.constructor);
             this.consParamResolvers = mergeConsParamResolvers(constructor, resolvable, resolverFactory);
             this.setterParamResolvers = mergeSetterParamResolvers(clazz, resolvable, resolverFactory);

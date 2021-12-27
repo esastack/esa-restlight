@@ -39,7 +39,7 @@ import io.esastack.restlight.core.resolver.RequestEntityResolverAdapter;
 import io.esastack.restlight.core.resolver.RequestEntityResolverAdviceAdapter;
 import io.esastack.restlight.core.resolver.RequestEntityResolverAdviceFactory;
 import io.esastack.restlight.core.resolver.RequestEntityResolverFactory;
-import io.esastack.restlight.core.resolver.ResponseEntityResolver;
+import io.esastack.restlight.core.resolver.ResponseEntityResolverAdapter;
 import io.esastack.restlight.core.resolver.ResponseEntityResolverAdviceAdapter;
 import io.esastack.restlight.core.resolver.ResponseEntityResolverAdviceFactory;
 import io.esastack.restlight.core.resolver.ResponseEntityResolverFactory;
@@ -573,7 +573,7 @@ public class MiniConfigurableDeployments {
         return self();
     }
 
-    public MiniConfigurableDeployments addResponseEntityResolver(ResponseEntityResolver resolver) {
+    public MiniConfigurableDeployments addResponseEntityResolver(ResponseEntityResolverAdapter resolver) {
         deployments.addResponseEntityResolver(resolver);
         return self();
     }

@@ -38,9 +38,9 @@ public class HttpInputStreamImpl extends HttpInputStream {
     @Override
     public int readBytes() {
         try {
-            return underlying.available();
+            return dataIns.readByte();
         } catch (IOException ex) {
-            throw new RuntimeException("Failed to read from given InputStream", ex);
+            throw new RuntimeException("Failed to get readBytes from given InputStream", ex);
         }
     }
 

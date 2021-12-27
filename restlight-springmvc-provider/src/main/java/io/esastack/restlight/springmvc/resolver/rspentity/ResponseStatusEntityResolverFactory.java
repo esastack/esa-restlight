@@ -44,6 +44,11 @@ public class ResponseStatusEntityResolverFactory implements ResponseEntityResolv
         return new Resolver();
     }
 
+    @Override
+    public int getOrder() {
+        return 0;
+    }
+
     private static ResponseStatus0 getResponseStatus(HandlerMethod handlerMethod) {
         ResponseStatus0 anno =
                 ResponseStatus0.fromShade(handlerMethod.getMethodAnnotation(ResponseStatus0.shadedClass()));
@@ -77,11 +82,6 @@ public class ResponseStatusEntityResolverFactory implements ResponseEntityResolv
             entity.response().headers().set(HttpHeaderNames.CONTENT_TYPE, MediaType.TEXT_PLAIN.value());
             return getResponseStatus(Objects.requireNonNull(entity.handler().orElse(null))).reason()
                     .getBytes(StandardCharsets.UTF_8);
-        }
-
-        @Override
-        public int getOrder() {
-            return 0;
         }
     }
 

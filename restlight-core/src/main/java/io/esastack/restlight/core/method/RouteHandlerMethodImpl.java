@@ -52,7 +52,7 @@ public class RouteHandlerMethodImpl extends HandlerMethodImpl implements RouteHa
 
     @Override
     public String toString() {
-        return "RouteHandlerMethod: {" + beanType().getName() + " => " + method().toGenericString()
+        return "RouteHandlerMethod: {" + beanType().getName() + " => " + method().getName()
                 + ", intercepted: " + intercepted + ", scheduler: " + scheduler + "}";
     }
 }

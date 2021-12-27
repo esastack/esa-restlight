@@ -13,39 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.esastack.restlight.springmvc.resolver.rspentity;
+package io.esastack.restlight.core.resolver.rspentity;
 
-import io.esastack.restlight.core.resolver.ResponseEntity;
 import io.esastack.restlight.core.resolver.ResponseEntityResolver;
 import io.esastack.restlight.core.resolver.ResponseEntityResolverFactory;
-import io.esastack.restlight.core.resolver.rspentity.FlexibleResponseEntityResolver;
 import io.esastack.restlight.core.serialize.HttpResponseSerializer;
 
 import java.util.List;
 
-public class FlexibleResponseEntityResolverFactory implements ResponseEntityResolverFactory {
+public class ResponseFileEntityResolverFactory implements ResponseEntityResolverFactory {
 
     @Override
     public ResponseEntityResolver createResolver(List<? extends HttpResponseSerializer> serializers) {
-        return new FlexibleResponseEntityResolver0(serializers);
+        return new ResponseFileEntityResolver();
     }
 
     @Override
     public int getOrder() {
-        return 300;
-    }
-
-    private static class FlexibleResponseEntityResolver0 extends FlexibleResponseEntityResolver {
-
-        private FlexibleResponseEntityResolver0(List<? extends HttpResponseSerializer> serializers) {
-            super(serializers);
-        }
-
-        @Override
-        protected boolean supports(ResponseEntity entity) {
-            return true;
-        }
-
+        return 500;
     }
 }
 

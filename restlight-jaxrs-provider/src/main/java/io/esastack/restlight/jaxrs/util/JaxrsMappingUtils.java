@@ -18,7 +18,6 @@ package io.esastack.restlight.jaxrs.util;
 import esa.commons.StringUtils;
 import esa.commons.UrlUtils;
 import esa.commons.reflect.AnnotationUtils;
-import io.esastack.restlight.core.method.MethodParam;
 import io.esastack.restlight.core.method.Param;
 import io.esastack.restlight.core.util.ConverterUtils;
 import io.esastack.restlight.server.route.Mapping;
@@ -47,17 +46,17 @@ public final class JaxrsMappingUtils {
     }
 
     /**
-     * Extracts the default value from given {@link MethodParam} which may be annotated by the JAX-RS annotation {@link
+     * Extracts the default value from given {@link Param} which may be annotated by the JAX-RS annotation {@link
      * DefaultValue}.
      *
-     * @param parameter parameter
+     * @param param param
      * @return default value
      */
-    public static String extractDefaultValue(Param parameter) {
-        if (parameter == null) {
+    public static String extractDefaultValue(Param param) {
+        if (param == null) {
             return null;
         }
-        DefaultValue defaultValueAnn = parameter.getAnnotation(DefaultValue.class);
+        DefaultValue defaultValueAnn = JaxrsUtils.getAnnotation(param, DefaultValue.class);
         String defaultValue = null;
         if (defaultValueAnn != null) {
             defaultValue = defaultValueAnn.value();

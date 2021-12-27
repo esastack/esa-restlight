@@ -23,12 +23,12 @@ import io.esastack.restlight.core.resolver.ParamResolver;
 import io.esastack.restlight.core.resolver.ParamResolverFactory;
 import io.esastack.restlight.core.serialize.HttpRequestSerializer;
 import io.esastack.restlight.jaxrs.impl.container.ResourceContextImpl;
+import io.esastack.restlight.jaxrs.util.JaxrsUtils;
 import io.esastack.restlight.server.context.RequestContext;
 import jakarta.ws.rs.container.ResourceContext;
+import jakarta.ws.rs.core.Context;
 
 import java.util.List;
-
-import static io.esastack.restlight.jaxrs.impl.JaxrsContextUtils.hasContextAnnotation;
 
 public class ResourceContextParamResolver implements ParamResolverFactory {
 
@@ -41,7 +41,7 @@ public class ResourceContextParamResolver implements ParamResolverFactory {
 
     @Override
     public boolean supports(Param param) {
-        return hasContextAnnotation(param) && ResourceContext.class.equals(param.type());
+        return JaxrsUtils.hasAnnotation(param, Context.class) && ResourceContext.class.equals(param.type());
     }
 
     @Override

@@ -46,7 +46,9 @@ public class ResponseEntityStreamChannelImpl extends ResponseEntityChannelImpl
         if (channel != null) {
             return channel;
         }
-        return new ResponseEntityStreamChannelImpl(context);
+        channel = new ResponseEntityStreamChannelImpl(context);
+        context.attrs().attr(RESPONSE_STREAM_ENTITY_CHANNEL).set(channel);
+        return channel;
     }
 
     private ResponseEntityStreamChannelImpl(RequestContext context) {
@@ -93,6 +95,11 @@ public class ResponseEntityStreamChannelImpl extends ResponseEntityChannelImpl
             outputStream = new ByteBufHttpOutputStream(4094, response);
         }
         return outputStream;
+    }
+
+    @Override
+    public boolean isCommitted() {
+        return outputStream != null || super.isCommitted();
     }
 
     private void checkCommitted() {

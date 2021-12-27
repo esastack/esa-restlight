@@ -50,8 +50,13 @@ public class UriBuilderImpl extends UriBuilder {
     public UriBuilderImpl() {
     }
 
-    private UriBuilderImpl(String scheme, String userInfo, String host, int port,
-                           String path, String query, String fragment) {
+    private UriBuilderImpl(String scheme,
+                           String userInfo,
+                           String host,
+                           int port,
+                           String path,
+                           String query,
+                           String fragment) {
         this.scheme = scheme;
         this.userInfo = userInfo;
         this.host = host;
@@ -470,6 +475,20 @@ public class UriBuilderImpl extends UriBuilder {
             sb.append("#").append(fragment);
         }
 
+        return sb.toString();
+    }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("UriBuilderImpl{");
+        sb.append("scheme='").append(scheme).append('\'');
+        sb.append(", userInfo='").append(userInfo).append('\'');
+        sb.append(", host='").append(host).append('\'');
+        sb.append(", port=").append(port);
+        sb.append(", path='").append(path).append('\'');
+        sb.append(", query='").append(query).append('\'');
+        sb.append(", fragment='").append(fragment).append('\'');
+        sb.append('}');
         return sb.toString();
     }
 

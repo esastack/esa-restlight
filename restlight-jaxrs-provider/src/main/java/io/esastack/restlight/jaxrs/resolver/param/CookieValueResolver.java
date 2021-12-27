@@ -20,6 +20,7 @@ import io.esastack.restlight.core.resolver.ParamResolverFactory;
 import io.esastack.restlight.core.resolver.nav.NameAndValue;
 import io.esastack.restlight.core.resolver.param.AbstractCookieValueResolver;
 import io.esastack.restlight.jaxrs.util.JaxrsMappingUtils;
+import io.esastack.restlight.jaxrs.util.JaxrsUtils;
 import jakarta.ws.rs.CookieParam;
 
 /**
@@ -29,14 +30,13 @@ import jakarta.ws.rs.CookieParam;
 public class CookieValueResolver extends AbstractCookieValueResolver {
 
     @Override
-    public boolean supports(Param parameter) {
-        return parameter.hasAnnotation(CookieParam.class);
+    public boolean supports(Param param) {
+        return JaxrsUtils.hasAnnotation(param, CookieParam.class);
     }
 
     @Override
     protected NameAndValue<String> createNameAndValue(Param param) {
-        CookieParam cookieParam = param.getAnnotation(CookieParam.class);
-        assert cookieParam != null;
+        CookieParam cookieParam = JaxrsUtils.getAnnotation(param, CookieParam.class);
         return new NameAndValue<>(cookieParam.value(),
                 false,
                 JaxrsMappingUtils.extractDefaultValue(param));

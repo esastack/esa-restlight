@@ -64,25 +64,30 @@ public class HandlerResolverFactoryImpl implements HandlerResolverFactory {
      * Customize response entity resolvers
      */
     private final List<ResponseEntityResolver> responseEntityResolvers;
+    private final List<ResponseEntityResolverFactory> responseEntityResolverFactories;
     private final List<ResponseEntityResolverAdviceFactory> responseEntityResolverAdvices;
 
     public HandlerResolverFactoryImpl(Collection<? extends HttpRequestSerializer> rxSerializers,
                                       Collection<? extends HttpResponseSerializer> txSerializers,
                                       Collection<? extends FutureTransferFactory> futureTransfers,
                                       Collection<? extends RouteFilterFactory> routeFilters,
-                                      Collection<? extends StringConverterFactory> stringConverters,
+                                      Collection<? extends StringConverterAdapter> stringConverters,
+                                      Collection<? extends StringConverterFactory> stringConverterFactories,
                                       Collection<? extends ParamResolverAdapter> paramResolvers,
                                       Collection<? extends ParamResolverFactory> paramResolverFactories,
                                       Collection<? extends ParamResolverAdviceAdapter> paramResolverAdvices,
                                       Collection<? extends ParamResolverAdviceFactory> paramResolverAdviceFactories,
                                       Collection<? extends ContextResolverAdapter> contextResolvers,
                                       Collection<? extends ContextResolverFactory> contextResolverFactories,
+                                      Collection<? extends RequestEntityResolverAdapter> requestEntityResolvers,
                                       Collection<? extends RequestEntityResolverFactory>
                                               requestEntityResolverFactories,
                                       Collection<? extends RequestEntityResolverAdviceAdapter>
                                               requestEntityResolverAdvices,
                                       Collection<? extends RequestEntityResolverAdviceFactory>
                                               requestEntityResolverAdviceFactories,
+                                      Collection<? extends ResponseEntityResolverAdapter>
+                                              responseEntityResolvers,
                                       Collection<? extends ResponseEntityResolverFactory>
                                               responseEntityResolverFactories,
                                       Collection<? extends ResponseEntityResolverAdviceAdapter>
@@ -96,16 +101,19 @@ public class HandlerResolverFactoryImpl implements HandlerResolverFactory {
 
         this.futureTransfers = sortForUnmodifiableList(futureTransfers);
         this.routeFilters = sortForUnmodifiableList(routeFilters);
-        this.stringConverters = sortForUnmodifiableList(stringConverters);
+        this.stringConverters = getStringConverters(stringConverters, stringConverterFactories);
         this.paramResolvers = getParamResolvers(paramResolvers, paramResolverFactories);
         this.paramResolverAdvices = getParamResolverAdvices(paramResolverAdvices,
                 paramResolverAdviceFactories);
         this.contextResolvers = getContextResolvers(contextResolvers, contextResolverFactories);
-        this.requestEntityResolvers = sortForUnmodifiableList(requestEntityResolverFactories);
+        this.requestEntityResolvers = getRequestEntityResolvers(requestEntityResolvers,
+                requestEntityResolverFactories);
         this.requestEntityResolverAdvices = getRequestEntityResolverAdvices(requestEntityResolverAdvices,
                 requestEntityResolverAdviceFactories);
-        this.responseEntityResolvers = instantiateResponseEntityResolvers(
-                sortForUnmodifiableList(responseEntityResolverFactories), txSerializers);
+        this.responseEntityResolverFactories = getResponseEntityResolvers(responseEntityResolvers,
+                responseEntityResolverFactories);
+        this.responseEntityResolvers = instantiateResponseEntityResolvers(this.responseEntityResolverFactories,
+                txSerializers);
         this.responseEntityResolverAdvices = getResponseEntityResolverAdvices(responseEntityResolverAdvices,
                 responseEntityResolverAdviceFactories);
     }
@@ -119,8 +127,16 @@ public class HandlerResolverFactoryImpl implements HandlerResolverFactory {
         txSerializers0.addAll(txSerializers);
         final List<ResponseEntityResolver> resolvers = new ArrayList<>(factories.size());
         factories.forEach(factory -> resolvers.add(factory.createResolver(txSerializers0)));
-        OrderedComparator.sort(resolvers);
         return resolvers;
+    }
+
+    private static List<RequestEntityResolverFactory> getRequestEntityResolvers(
+            Collection<? extends RequestEntityResolverAdapter> resolvers,
+            Collection<? extends RequestEntityResolverFactory> factories) {
+
+        return mergeResolvers(resolvers,
+                factories,
+                RequestEntityResolverFactory::singleton);
     }
 
     private static List<RequestEntityResolverAdviceFactory> getRequestEntityResolverAdvices(
@@ -132,6 +148,15 @@ public class HandlerResolverFactoryImpl implements HandlerResolverFactory {
                 RequestEntityResolverAdviceFactory::singleton);
     }
 
+    private static List<ResponseEntityResolverFactory> getResponseEntityResolvers(
+            Collection<? extends ResponseEntityResolverAdapter> resolvers,
+            Collection<? extends ResponseEntityResolverFactory> factories) {
+
+        return mergeResolvers(resolvers,
+                factories,
+                ResponseEntityResolverFactory::singleton);
+    }
+
     private static List<ResponseEntityResolverAdviceFactory> getResponseEntityResolverAdvices(
             Collection<? extends ResponseEntityResolverAdviceAdapter> resolvers,
             Collection<? extends ResponseEntityResolverAdviceFactory> factories) {
@@ -139,6 +164,15 @@ public class HandlerResolverFactoryImpl implements HandlerResolverFactory {
         return mergeResolvers(resolvers,
                 factories,
                 ResponseEntityResolverAdviceFactory::singleton);
+    }
+
+    private static List<StringConverterFactory> getStringConverters(
+            Collection<? extends StringConverterAdapter> resolvers,
+            Collection<? extends StringConverterFactory> factories) {
+
+        return mergeResolvers(resolvers,
+                factories,
+                StringConverterFactory::singleton);
     }
 
     private static List<ParamResolverFactory> getParamResolvers(
@@ -180,7 +214,6 @@ public class HandlerResolverFactoryImpl implements HandlerResolverFactory {
                     .collect(Collectors.toList()));
         }
 
-        // sort for custom argument resolvers
         OrderedComparator.sort(arguments);
 
         return Collections.unmodifiableList(arguments);
@@ -276,7 +309,7 @@ public class HandlerResolverFactoryImpl implements HandlerResolverFactory {
                 resolvers.add(factory.createResolver(param, rxSerializers));
             }
         });
-        return sortForUnmodifiableList(resolvers);
+        return Collections.unmodifiableList(resolvers);
     }
 
     @Override
@@ -337,9 +370,6 @@ public class HandlerResolverFactoryImpl implements HandlerResolverFactory {
                                                           Attributes attributes) {
         if (resolverFactory instanceof HandlerResolverFactoryImpl) {
             HandlerResolverFactoryImpl factory = (HandlerResolverFactoryImpl) resolverFactory;
-            List<ResponseEntityResolverFactory> responseEntityResolvers = new LinkedList<>();
-            factory.responseEntityResolvers.forEach(resolver -> responseEntityResolvers
-                    .add(ResponseEntityResolverFactory.singleton(resolver)));
             return new HandlerConfiguration(attributes,
                     new LinkedList<>(factory.routeFilters),
                     new LinkedList<>(factory.stringConverters),
@@ -348,7 +378,7 @@ public class HandlerResolverFactoryImpl implements HandlerResolverFactory {
                     new LinkedList<>(factory.contextResolvers),
                     new LinkedList<>(factory.requestEntityResolvers),
                     new LinkedList<>(factory.requestEntityResolverAdvices),
-                    responseEntityResolvers,
+                    new LinkedList<>(factory.responseEntityResolverFactories),
                     new LinkedList<>(factory.responseEntityResolverAdvices));
         } else {
             return new HandlerConfiguration(attributes,
@@ -367,6 +397,8 @@ public class HandlerResolverFactoryImpl implements HandlerResolverFactory {
     public static HandlerResolverFactory getHandlerResolverFactory(HandlerResolverFactory factory,
                                                                    HandlerConfiguration configuration) {
         // keep in order.
+        OrderedComparator.sort(configuration.getRouteFilters());
+        OrderedComparator.sort(configuration.getStringConverts());
         OrderedComparator.sort(configuration.getParamResolvers());
         OrderedComparator.sort(configuration.getContextResolvers());
         OrderedComparator.sort(configuration.getParamResolverAdvices());
@@ -380,6 +412,7 @@ public class HandlerResolverFactoryImpl implements HandlerResolverFactory {
                 factory.txSerializers(),
                 factory.futureTransfers(),
                 configuration.getRouteFilters(),
+                null,
                 configuration.getStringConverts(),
                 null,
                 configuration.getParamResolvers(),
@@ -387,9 +420,11 @@ public class HandlerResolverFactoryImpl implements HandlerResolverFactory {
                 configuration.getParamResolverAdvices(),
                 null,
                 configuration.getContextResolvers(),
+                null,
                 configuration.getRequestEntityResolvers(),
                 null,
                 configuration.getRequestEntityResolverAdvices(),
+                null,
                 configuration.getResponseEntityResolvers(),
                 null,
                 configuration.getResponseEntityResolverAdvices());

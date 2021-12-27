@@ -15,17 +15,14 @@
  */
 package io.esastack.restlight.core.resolver;
 
-import esa.commons.spi.SPI;
 import io.esastack.commons.net.buffer.Buffer;
-import io.esastack.restlight.core.util.Ordered;
 import io.esastack.restlight.server.context.RequestContext;
 import io.esastack.restlight.server.core.HttpResponse;
 
 /**
  * This resolver will serialize the {@link ResponseEntity} and write the serialized result to given {@link Buffer}.
  */
-@SPI
-public interface ResponseEntityResolver extends Ordered {
+public interface ResponseEntityResolver {
 
     /**
      * Writes the given {@code value} to {@link HttpResponse}.
@@ -40,14 +37,5 @@ public interface ResponseEntityResolver extends Ordered {
                                ResponseEntityChannel channel,
                                RequestContext context) throws Exception;
 
-    /**
-     * Default to HIGHEST_PRECEDENCE.
-     *
-     * @return order
-     */
-    @Override
-    default int getOrder() {
-        return HIGHEST_PRECEDENCE;
-    }
 }
 

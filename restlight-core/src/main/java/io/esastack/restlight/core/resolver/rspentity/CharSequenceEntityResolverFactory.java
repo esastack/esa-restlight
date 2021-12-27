@@ -33,6 +33,11 @@ public class CharSequenceEntityResolverFactory implements ResponseEntityResolver
         return new CharSequenceResolver();
     }
 
+    @Override
+    public int getOrder() {
+        return 100;
+    }
+
     /**
      * Implementation for resolving response entity type of {@link CharSequence}
      */
@@ -56,10 +61,6 @@ public class CharSequenceEntityResolverFactory implements ResponseEntityResolver
                     selectMediaType(mediaTypes));
         }
 
-        @Override
-        public int getOrder() {
-            return 100;
-        }
     }
 }
 

@@ -16,10 +16,13 @@
 package io.esastack.restlight.core.resolver;
 
 import esa.commons.Checks;
+import esa.commons.spi.SPI;
 import io.esastack.restlight.core.handler.HandlerPredicate;
 import io.esastack.restlight.core.method.HandlerMethod;
+import io.esastack.restlight.core.util.Ordered;
 
-public interface RequestEntityResolverAdviceFactory extends HandlerPredicate {
+@SPI
+public interface RequestEntityResolverAdviceFactory extends HandlerPredicate, Ordered {
 
     /**
      * Converts given {@link RequestEntityResolverAdviceAdapter} to {@link RequestEntityResolverAdviceFactory} which
@@ -41,6 +44,11 @@ public interface RequestEntityResolverAdviceFactory extends HandlerPredicate {
      */
     RequestEntityResolverAdvice createResolverAdvice(HandlerMethod method);
 
+    @Override
+    default int getOrder() {
+        return Ordered.HIGHEST_PRECEDENCE;
+    }
+
     class Singleton implements RequestEntityResolverAdviceFactory {
 
         private final RequestEntityResolverAdviceAdapter resolver;
@@ -58,6 +66,11 @@ public interface RequestEntityResolverAdviceFactory extends HandlerPredicate {
         @Override
         public boolean supports(HandlerMethod method) {
             return resolver.supports(method);
+        }
+
+        @Override
+        public int getOrder() {
+            return resolver.getOrder();
         }
     }
 }

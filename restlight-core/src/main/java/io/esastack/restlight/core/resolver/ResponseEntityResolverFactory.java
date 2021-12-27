@@ -18,21 +18,22 @@ package io.esastack.restlight.core.resolver;
 import esa.commons.Checks;
 import esa.commons.spi.SPI;
 import io.esastack.restlight.core.serialize.HttpResponseSerializer;
+import io.esastack.restlight.core.util.Ordered;
 
 import java.util.List;
 
 @SPI
-public interface ResponseEntityResolverFactory {
+public interface ResponseEntityResolverFactory extends Ordered {
 
     /**
-     * Converts given {@link ResponseEntityResolver} to {@link ResponseEntityResolverFactory} which
-     * always use the given {@link ResponseEntityResolver} as the result of
+     * Converts given {@link ResponseEntityResolverAdapter} to {@link ResponseEntityResolverFactory} which
+     * always use the given {@link ResponseEntityResolverAdapter} as the result of
      * {@link #createResolver(List)}
      *
      * @param resolver resolver
      * @return of factory bean
      */
-    static ResponseEntityResolverFactory singleton(ResponseEntityResolver resolver) {
+    static ResponseEntityResolverFactory singleton(ResponseEntityResolverAdapter resolver) {
         return new ResponseEntityResolverFactory.Singleton(resolver);
     }
 
@@ -44,11 +45,16 @@ public interface ResponseEntityResolverFactory {
      */
     ResponseEntityResolver createResolver(List<? extends HttpResponseSerializer> serializers);
 
+    @Override
+    default int getOrder() {
+        return Ordered.HIGHEST_PRECEDENCE;
+    }
+
     class Singleton implements ResponseEntityResolverFactory {
 
-        private final ResponseEntityResolver resolver;
+        private final ResponseEntityResolverAdapter resolver;
 
-        Singleton(ResponseEntityResolver resolver) {
+        Singleton(ResponseEntityResolverAdapter resolver) {
             Checks.checkNotNull(resolver, "resolver");
             this.resolver = resolver;
         }
@@ -56,6 +62,11 @@ public interface ResponseEntityResolverFactory {
         @Override
         public ResponseEntityResolver createResolver(List<? extends HttpResponseSerializer> serializers) {
             return resolver;
+        }
+
+        @Override
+        public int getOrder() {
+            return resolver.getOrder();
         }
     }
 }

@@ -27,7 +27,7 @@ import io.esastack.restlight.core.configure.MiniConfigurableDeployments;
 import io.esastack.restlight.core.method.ResolvableParamPredicate;
 import io.esastack.restlight.core.util.ConstructorUtils;
 import io.esastack.restlight.jaxrs.adapter.DynamicFeatureAdapter;
-import io.esastack.restlight.jaxrs.adapter.FilteredIExceptionHandler;
+import io.esastack.restlight.jaxrs.adapter.FilteredExceptionHandler;
 import io.esastack.restlight.jaxrs.adapter.JaxrsContextResolverAdapter;
 import io.esastack.restlight.jaxrs.adapter.JaxrsExceptionMapperAdapter;
 import io.esastack.restlight.jaxrs.adapter.MessageBodyReaderAdapter;
@@ -42,6 +42,8 @@ import io.esastack.restlight.jaxrs.impl.core.FeatureContextImpl;
 import io.esastack.restlight.jaxrs.impl.ext.ProvidersImpl;
 import io.esastack.restlight.jaxrs.impl.ext.RuntimeDelegateImpl;
 import io.esastack.restlight.jaxrs.resolver.context.ApplicationResolverAdapter;
+import io.esastack.restlight.jaxrs.resolver.context.ConfigurationResolverAdapter;
+import io.esastack.restlight.jaxrs.resolver.context.ProvidersResolverAdapter;
 import io.esastack.restlight.jaxrs.resolver.param.ResourceContextParamResolver;
 import io.esastack.restlight.jaxrs.spi.HeaderDelegateFactory;
 import io.esastack.restlight.jaxrs.util.JaxrsUtils;
@@ -149,6 +151,13 @@ public class JaxrsExtensionsHandler implements ExtensionsHandler {
                 properties.forEach(configuration::setProperty);
             }
             deployments.addContextResolver(new ApplicationResolverAdapter(application.proxied()));
+
+            // be different from same resolvers added at DynamicFeatureAdapter, you can think
+            // the between two as fallback which have no configurations corresponding with specified resource method.
+            // eg. if there are some providers and configurations added by DynamicFeatures, then those
+            // information can't be known here.
+            deployments.addContextResolver(new ConfigurationResolverAdapter(configuration));
+            deployments.addContextResolver(new ProvidersResolverAdapter(providers));
         }
         deployments.addParamResolver(new ResourceContextParamResolver(deployments.deployContext()));
 
@@ -205,10 +214,12 @@ public class JaxrsExtensionsHandler implements ExtensionsHandler {
 
         for (ProxyComponent<MessageBodyReader<?>> reader : factory.messageBodyReaders()) {
             deployments.addRequestEntityResolver(new MessageBodyReaderAdapter<>(reader.proxied(),
+                    ClassUtils.findFirstGenericType(reader.underlying().getClass()).orElse(Object.class),
                     JaxrsUtils.consumes(reader.underlying()), JaxrsUtils.getOrder(reader.underlying())));
         }
         for (ProxyComponent<MessageBodyWriter<?>> writer : factory.messageBodyWriters()) {
             deployments.addResponseEntityResolver(new MessageBodyWriterAdapter<>(writer.proxied(),
+                    ClassUtils.findFirstGenericType(writer.underlying().getClass()).orElse(Object.class),
                     JaxrsUtils.produces(writer.underlying()), JaxrsUtils.getOrder(writer.underlying())));
         }
         for (Map.Entry<Class<Throwable>, ProxyComponent<ExceptionMapper<Throwable>>> entry :
@@ -252,7 +263,7 @@ public class JaxrsExtensionsHandler implements ExtensionsHandler {
             }
         }
         if (!rspFilters.isEmpty()) {
-            deployments.addExceptionHandler(new FilteredIExceptionHandler(descendingOrder(rspFilters)
+            deployments.addExceptionHandler(new FilteredExceptionHandler(descendingOrder(rspFilters)
                     .toArray(new ContainerResponseFilter[0])));
         }
     }
@@ -296,8 +307,11 @@ public class JaxrsExtensionsHandler implements ExtensionsHandler {
         }
         Constructor<?> constructor = ConstructorUtils.extractResolvable(userType, deployments.deployContext()
                 .paramPredicate().get());
+        if (constructor == null) {
+            throw new IllegalStateException("There is no suitable constructor to instantiate class: "
+                    + userType.getName());
+        }
 
-        assert constructor != null;
         Object[] args = new Object[constructor.getParameterCount()];
         int index = 0;
         for (Parameter parameter : constructor.getParameters()) {

@@ -20,18 +20,18 @@ import io.esastack.restlight.core.resolver.ParamResolver;
 import io.esastack.restlight.core.resolver.ParamResolverFactory;
 import io.esastack.restlight.core.serialize.HttpRequestSerializer;
 import io.esastack.restlight.jaxrs.impl.JaxrsContextUtils;
+import io.esastack.restlight.jaxrs.util.JaxrsUtils;
 import io.esastack.restlight.server.context.RequestContext;
+import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.SecurityContext;
 
 import java.util.List;
-
-import static io.esastack.restlight.jaxrs.impl.JaxrsContextUtils.hasContextAnnotation;
 
 public class SecurityContextParamResolver implements ParamResolverFactory {
 
     @Override
     public boolean supports(Param param) {
-        return hasContextAnnotation(param) && SecurityContext.class.equals(param.type());
+        return JaxrsUtils.hasAnnotation(param, Context.class) && SecurityContext.class.equals(param.type());
     }
 
     @Override

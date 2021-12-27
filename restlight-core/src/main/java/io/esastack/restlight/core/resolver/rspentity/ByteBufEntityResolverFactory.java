@@ -34,6 +34,11 @@ public class ByteBufEntityResolverFactory implements ResponseEntityResolverFacto
         return new ByteBufResolver();
     }
 
+    @Override
+    public int getOrder() {
+        return 120;
+    }
+
     /**
      * Implementation for resolving response entity type of {@link ByteBuf}.
      */
@@ -57,10 +62,6 @@ public class ByteBufEntityResolverFactory implements ResponseEntityResolverFacto
                     selectMediaType(mediaTypes));
         }
 
-        @Override
-        public int getOrder() {
-            return 120;
-        }
     }
 
 }

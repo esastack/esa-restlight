@@ -26,10 +26,8 @@ import io.esastack.restlight.core.serialize.HttpRequestSerializer;
 import io.esastack.restlight.core.serialize.ProtoBufHttpBodySerializer;
 import io.esastack.restlight.core.util.Constants;
 import io.esastack.restlight.core.util.ConverterUtils;
-import io.esastack.restlight.server.bootstrap.WebServerException;
 import io.esastack.restlight.server.context.RequestContext;
 
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.function.Function;
 
@@ -58,6 +56,11 @@ public abstract class FlexibleRequestEntityResolverFactory implements RequestEnt
                 : new DefaultResolver(serializers, param);
     }
 
+    @Override
+    public int getOrder() {
+        return 100;
+    }
+
     private static class DefaultResolver implements RequestEntityResolver {
 
         private final List<? extends HttpRequestSerializer> serializers;
@@ -75,10 +78,10 @@ public abstract class FlexibleRequestEntityResolverFactory implements RequestEnt
             //convert argument if content-type is text/plain or missing.
             if (contentType == null || MediaType.TEXT_PLAIN.isCompatibleWith(contentType)) {
                 //ignore empty body.
-                if (entity.inputStream().readBytes() == 0) {
+                if (entity.inputStream().available() == 0) {
                     return HandledValue.succeed(null);
                 }
-                return HandledValue.succeed(converter.apply(entity.body().string(StandardCharsets.UTF_8)));
+                return HandledValue.failed();
             }
 
             //search serializer to resolve argument
@@ -88,7 +91,7 @@ public abstract class FlexibleRequestEntityResolverFactory implements RequestEnt
                     return handled;
                 }
             }
-            throw WebServerException.notSupported("Unsupported media type:" + contentType);
+            return HandledValue.failed();
         }
 
         protected MediaType getMediaType(RequestEntity entity) {

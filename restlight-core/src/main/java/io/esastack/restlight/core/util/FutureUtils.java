@@ -54,27 +54,12 @@ public final class FutureUtils {
                 return ((CompletableFuture) obj).get();
             } else if (hasGuavaFuture() && ListenableFuture.class.isAssignableFrom(type)) {
                 return ((ListenableFuture) obj).get();
-            } else if (Future.class.isAssignableFrom(type)) {
-                return ((Future) obj).get();
             } else {
                 return obj;
             }
         } catch (InterruptedException | ExecutionException ignored) {
             return obj;
         }
-    }
-
-    @SuppressWarnings("unchecked")
-    public static <T> CompletableFuture<T> transferNettyFuture(Future<T> future) {
-        final CompletableFuture<T> transfer = new CompletableFuture<>();
-        future.addListener(f -> {
-            if (f.isSuccess()) {
-                transfer.complete((T) f.getNow());
-            } else {
-                transfer.completeExceptionally(f.cause());
-            }
-        });
-        return transfer;
     }
 
     public static <T> CompletableFuture<T> transferListenableFuture(ListenableFuture<T> future) {

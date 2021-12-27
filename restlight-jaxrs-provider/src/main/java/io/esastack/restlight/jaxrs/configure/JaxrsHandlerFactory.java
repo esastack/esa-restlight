@@ -15,6 +15,7 @@
  */
 package io.esastack.restlight.jaxrs.configure;
 
+import esa.commons.Checks;
 import esa.commons.reflect.BeanUtils;
 import esa.commons.reflect.ReflectionUtils;
 import io.esastack.restlight.core.DeployContext;
@@ -40,7 +41,6 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class JaxrsHandlerFactory extends HandlerFactoryImpl {
@@ -137,7 +137,9 @@ public class JaxrsHandlerFactory extends HandlerFactoryImpl {
             assert context.resolverFactory().isPresent();
             ResolvableParamPredicate resolvable = context.paramPredicate().get();
             HandlerResolverFactory resolverFactory = context.resolverFactory().get();
-            this.constructor = Objects.requireNonNull(ConstructorUtils.extractResolvable(clazz, resolvable));
+            this.constructor = ConstructorUtils.extractResolvable(clazz, resolvable);
+            Checks.checkState(this.constructor != null,
+                    "There is no suitable constructor to instantiate class: " + clazz.getName());
             this.consParamResolvers = contextResolversOfCons(constructor, resolvable, resolverFactory);
             this.setterParamResolvers = contextResolversOfSetter(clazz, resolvable, resolverFactory);
             this.fieldParamResolvers = contextResolversOfField(clazz, resolvable, resolverFactory);

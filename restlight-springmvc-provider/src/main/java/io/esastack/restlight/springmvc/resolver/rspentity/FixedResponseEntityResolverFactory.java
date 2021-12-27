@@ -33,6 +33,11 @@ public class FixedResponseEntityResolverFactory implements ResponseEntityResolve
         return new FixedResponseEntityResolver0(serializers);
     }
 
+    @Override
+    public int getOrder() {
+        return 200;
+    }
+
     private static class FixedResponseEntityResolver0 extends FixedResponseEntityResolver {
 
         private FixedResponseEntityResolver0(List<? extends HttpResponseSerializer> serializers) {
@@ -49,10 +54,6 @@ public class FixedResponseEntityResolverFactory implements ResponseEntityResolve
                     || handlerMethod.hasMethodAnnotation(ResponseBody0.shadedClass());
         }
 
-        @Override
-        public int getOrder() {
-            return 200;
-        }
     }
 }
 

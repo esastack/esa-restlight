@@ -17,6 +17,9 @@ package io.esastack.restlight.jaxrs.util;
 
 import esa.commons.ClassUtils;
 import esa.commons.reflect.AnnotationUtils;
+import esa.commons.reflect.ReflectionUtils;
+import io.esastack.restlight.core.method.MethodParam;
+import io.esastack.restlight.core.method.Param;
 import io.esastack.restlight.core.util.OrderedComparator;
 import io.esastack.restlight.jaxrs.configure.OrderComponent;
 import io.esastack.restlight.server.util.LoggerUtils;
@@ -89,6 +92,28 @@ public final class JaxrsUtils {
 
     public static boolean isPreMatched(Object obj) {
         return AnnotationUtils.hasAnnotation(ClassUtils.getUserType(obj), PreMatching.class);
+    }
+
+    public static boolean hasAnnotation(Param param, Class<? extends Annotation> target) {
+        if (param == null || target == null) {
+            return false;
+        }
+        return param.hasAnnotation(target) || isSetterParam(param, target);
+    }
+
+    public static <T extends Annotation> T getAnnotation(Param param, Class<T> target) {
+        if (param == null || target == null) {
+            return null;
+        }
+        T annotation = param.getAnnotation(target);
+        if (annotation != null) {
+            return annotation;
+        }
+        if (param.isMethodParam()) {
+            return AnnotationUtils.findAnnotation(param.methodParam().method(), target);
+        } else {
+            return null;
+        }
     }
 
     public static List<MediaType> consumes(Object obj) {
@@ -229,6 +254,20 @@ public final class JaxrsUtils {
         List<Class<?>> classes = new LinkedList<>();
         getComponentsRecursively(clazz, classes);
         return classes;
+    }
+
+    private static boolean isSetterParam(Param param, Class<? extends Annotation> target) {
+        if (!param.isMethodParam()) {
+            return false;
+        }
+        MethodParam mParam = param.methodParam();
+        if (!ReflectionUtils.isSetter(mParam.method())) {
+            return false;
+        }
+        if (mParam.method().getParameterCount() != 1) {
+            return false;
+        }
+        return AnnotationUtils.hasAnnotation(mParam.method(), target);
     }
 
     private static void getComponentsRecursively(Class<?> clazz, List<Class<?>> classes) {

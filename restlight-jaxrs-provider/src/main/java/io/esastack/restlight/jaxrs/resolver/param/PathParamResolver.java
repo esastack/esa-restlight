@@ -20,6 +20,7 @@ import io.esastack.restlight.core.resolver.ParamResolverFactory;
 import io.esastack.restlight.core.resolver.nav.NameAndValue;
 import io.esastack.restlight.core.resolver.param.AbstractPathVariableParamResolver;
 import io.esastack.restlight.jaxrs.util.JaxrsMappingUtils;
+import io.esastack.restlight.jaxrs.util.JaxrsUtils;
 import jakarta.ws.rs.PathParam;
 
 /**
@@ -29,14 +30,12 @@ public class PathParamResolver extends AbstractPathVariableParamResolver {
 
     @Override
     public boolean supports(Param param) {
-        return param.hasAnnotation(PathParam.class);
+        return JaxrsUtils.hasAnnotation(param, PathParam.class);
     }
 
     @Override
     protected NameAndValue<String> createNameAndValue(Param param) {
-        PathParam pathParam =
-                param.getAnnotation(PathParam.class);
-        assert pathParam != null;
+        PathParam pathParam = JaxrsUtils.getAnnotation(param, PathParam.class);
         return new NameAndValue<>(pathParam.value(), false, JaxrsMappingUtils.extractDefaultValue(param));
     }
 

@@ -39,6 +39,11 @@ public class NegotiationResponseResolverFactory implements ResponseEntityResolve
         return new NegotiationResponseResolver0(paramName, serializers);
     }
 
+    @Override
+    public int getOrder() {
+        return 300;
+    }
+
     private static class NegotiationResponseResolver0 extends NegotiationResponseResolver {
 
         private NegotiationResponseResolver0(String paramName,
@@ -54,11 +59,6 @@ public class NegotiationResponseResolverFactory implements ResponseEntityResolve
             }
             return AnnotationUtils.hasAnnotation(handlerMethod.beanType(), ResponseBody0.shadedClass())
                     || handlerMethod.hasMethodAnnotation(ResponseBody0.shadedClass());
-        }
-
-        @Override
-        public int getOrder() {
-            return 300;
         }
     }
 

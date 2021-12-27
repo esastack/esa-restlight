@@ -36,6 +36,10 @@
     "methods":[{"name":"<init>","parameterTypes":[] }]
   },
   {
+    "name":"io.esastack.restlight.core.resolver.rspentity.ResponseFileEntityResolverFactory",
+    "methods":[{"name":"<init>","parameterTypes":[] }]
+  },
+  {
     "name":"io.esastack.restlight.core.spi.impl.CompletableFutureTransferFactory",
     "methods":[{"name":"<init>","parameterTypes":[] }]
   },

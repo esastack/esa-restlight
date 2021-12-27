@@ -25,7 +25,6 @@ public interface ResponseEntityPredicate {
      * @return {@code true} or {@code false}.
      */
     boolean supports(ResponseEntity entity);
-    
-    
+
 }
 

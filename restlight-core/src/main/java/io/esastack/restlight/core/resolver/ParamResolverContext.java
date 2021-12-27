@@ -15,8 +15,8 @@
  */
 package io.esastack.restlight.core.resolver;
 
-import io.esastack.restlight.server.context.RequestContext;
 import io.esastack.restlight.core.method.Param;
+import io.esastack.restlight.server.context.RequestContext;
 
 /**
  * This {@link ParamResolverContext} is designed to hold context which is passed among

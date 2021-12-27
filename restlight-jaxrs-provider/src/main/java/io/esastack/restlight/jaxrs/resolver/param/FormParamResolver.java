@@ -20,6 +20,7 @@ import io.esastack.restlight.core.resolver.ParamResolverFactory;
 import io.esastack.restlight.core.resolver.nav.NameAndValue;
 import io.esastack.restlight.core.resolver.param.AbstractParamResolver;
 import io.esastack.restlight.jaxrs.util.JaxrsMappingUtils;
+import io.esastack.restlight.jaxrs.util.JaxrsUtils;
 import jakarta.ws.rs.FormParam;
 
 /**
@@ -30,14 +31,12 @@ public class FormParamResolver extends AbstractParamResolver {
 
     @Override
     public boolean supports(Param param) {
-        return param.hasAnnotation(FormParam.class);
+        return JaxrsUtils.hasAnnotation(param, FormParam.class);
     }
 
     @Override
     protected NameAndValue<String> createNameAndValue(Param param) {
-        FormParam formParam
-                = param.getAnnotation(FormParam.class);
-        assert formParam != null;
+        FormParam formParam = JaxrsUtils.getAnnotation(param, FormParam.class);
         return new NameAndValue<>(formParam.value(),
                 false,
                 JaxrsMappingUtils.extractDefaultValue(param));
@@ -45,9 +44,7 @@ public class FormParamResolver extends AbstractParamResolver {
 
     @Override
     protected String extractName(Param param) {
-        FormParam formParam
-                = param.getAnnotation(FormParam.class);
-        assert formParam != null;
+        FormParam formParam = JaxrsUtils.getAnnotation(param, FormParam.class);
         return formParam.value();
     }
 

@@ -47,6 +47,11 @@ public interface RequestEntityResolverFactory extends ParamPredicate, Ordered {
      */
     RequestEntityResolver createResolver(Param param, List<? extends HttpRequestSerializer> serializers);
 
+    @Override
+    default int getOrder() {
+        return Ordered.HIGHEST_PRECEDENCE;
+    }
+
     class Singleton implements RequestEntityResolverFactory {
 
         private final RequestEntityResolverAdapter resolver;
@@ -65,6 +70,11 @@ public interface RequestEntityResolverFactory extends ParamPredicate, Ordered {
         public RequestEntityResolver createResolver(Param param,
                                                     List<? extends HttpRequestSerializer> serializers) {
             return resolver;
+        }
+
+        @Override
+        public int getOrder() {
+            return resolver.getOrder();
         }
     }
 }

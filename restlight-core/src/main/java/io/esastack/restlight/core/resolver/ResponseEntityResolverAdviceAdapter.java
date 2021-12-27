@@ -27,4 +27,8 @@ public interface ResponseEntityResolverAdviceAdapter
         context.proceed();
     }
 
+    @Override
+    default int getOrder() {
+        return Ordered.HIGHEST_PRECEDENCE;
+    }
 }

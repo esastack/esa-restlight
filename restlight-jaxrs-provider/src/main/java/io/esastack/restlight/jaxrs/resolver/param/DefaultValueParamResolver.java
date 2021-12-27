@@ -20,6 +20,7 @@ import io.esastack.restlight.core.resolver.ParamResolver;
 import io.esastack.restlight.core.resolver.ParamResolverFactory;
 import io.esastack.restlight.core.serialize.HttpRequestSerializer;
 import io.esastack.restlight.core.util.ConverterUtils;
+import io.esastack.restlight.jaxrs.util.JaxrsUtils;
 import jakarta.ws.rs.DefaultValue;
 
 import java.util.List;
@@ -29,7 +30,7 @@ public class DefaultValueParamResolver implements ParamResolverFactory {
     @Override
     public ParamResolver createResolver(Param param,
                                         List<? extends HttpRequestSerializer> serializers) {
-        DefaultValue ann = param.getAnnotation(DefaultValue.class);
+        DefaultValue ann = JaxrsUtils.getAnnotation(param, DefaultValue.class);
         final Object defaultValue =
                 ConverterUtils.forceConvertStringValue(ann.value(), param.genericType());
         return (request, response) -> defaultValue;
@@ -37,7 +38,7 @@ public class DefaultValueParamResolver implements ParamResolverFactory {
 
     @Override
     public boolean supports(Param param) {
-        return param.hasAnnotation(DefaultValue.class);
+        return JaxrsUtils.hasAnnotation(param, DefaultValue.class);
     }
 
     @Override

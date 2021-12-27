@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 OPPO ESA Stack Project
+ * Copyright 2021 OPPO ESA Stack Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,28 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.esastack.restlight.jaxrs.resolver.param;
+package io.esastack.restlight.jaxrs.spi;
 
 import io.esastack.restlight.core.DeployContext;
 import io.esastack.restlight.core.config.RestlightOptions;
-import io.esastack.restlight.core.method.Param;
-import io.esastack.restlight.core.resolver.param.RequestBeanParamResolver;
-import io.esastack.restlight.jaxrs.util.JaxrsUtils;
-import jakarta.ws.rs.BeanParam;
+import io.esastack.restlight.core.spi.FilterFactory;
+import io.esastack.restlight.jaxrs.adapter.ResponseEntityStreamAutoClose;
+import io.esastack.restlight.server.handler.Filter;
 
-public class BeanParamResolver extends RequestBeanParamResolver {
+import java.util.Optional;
 
-    public BeanParamResolver(DeployContext<? extends RestlightOptions> ctx) {
-        super(ctx);
-    }
+public class ResponseEntityStreamAutoCloseFactory implements FilterFactory {
 
     @Override
-    public boolean supports(Param param) {
-        return JaxrsUtils.hasAnnotation(param, BeanParam.class);
+    public Optional<Filter> filter(DeployContext<? extends RestlightOptions> ctx) {
+        return Optional.of(new ResponseEntityStreamAutoClose());
     }
 
-    @Override
-    public int getOrder() {
-        return 10;
-    }
 }
+
