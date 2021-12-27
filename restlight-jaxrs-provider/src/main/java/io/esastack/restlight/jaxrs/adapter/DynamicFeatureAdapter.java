@@ -109,30 +109,42 @@ public class DynamicFeatureAdapter implements HandlerConfigure {
         });
 
         // bound ReaderInterceptors(only be active when handler method has matched)
-        configurable.addRequestEntityResolverAdvices(Collections.singleton(
-                new ReaderInterceptorsAdapter(ascendingOrdered(filterByNameBindings(handlerMethod,
-                        current, providers.readerInterceptors(), false))
-                .toArray(new ReaderInterceptor[0]), true)));
+        List<OrderComponent<ReaderInterceptor>> readerInterceptors = filterByNameBindings(handlerMethod,
+                current, providers.readerInterceptors(), false);
+        if (!readerInterceptors.isEmpty()) {
+            configurable.addRequestEntityResolverAdvices(Collections.singleton(
+                    new ReaderInterceptorsAdapter(ascendingOrdered(readerInterceptors)
+                            .toArray(new ReaderInterceptor[0]), true)));
+        }
 
         // bound WriterInterceptors(only be active when handler method has matched)
-        configurable.addResponseEntityResolverAdvices(Collections.singleton(
-                new WriterInterceptorsAdapter(ascendingOrdered(filterByNameBindings(handlerMethod,
-                        current, providers.writerInterceptors(), false))
-                .toArray(new WriterInterceptor[0]), true)));
+        List<OrderComponent<WriterInterceptor>> writerInterceptors = filterByNameBindings(handlerMethod,
+                current, providers.writerInterceptors(), false);
+        if (!writerInterceptors.isEmpty()) {
+            configurable.addResponseEntityResolverAdvices(Collections.singleton(
+                    new WriterInterceptorsAdapter(ascendingOrdered(writerInterceptors)
+                            .toArray(new WriterInterceptor[0]), true)));
+        }
 
         // handle bound postMatch ContainerRequestFilters (only apply to resource method)
         if (JaxrsMappingUtils.getMethod(handlerMethod.method()) != null) {
-            configurable.addRouteFilters(Collections.singleton(new PostMatchRequestFilters(
-                    ascendingOrdered(filterByNameBindings(handlerMethod, current, providers.requestFilters(),
-                            true))
-                    .toArray(new ContainerRequestFilter[0]))));
+            List<OrderComponent<ContainerRequestFilter>> filters =
+                    filterByNameBindings(handlerMethod, current, providers.requestFilters(),
+                    true);
+            if (!filters.isEmpty()) {
+                configurable.addRouteFilters(Collections.singleton(new PostMatchRequestFilters(
+                        ascendingOrdered(filters).toArray(new ContainerRequestFilter[0]))));
+            }
         }
 
         // handle bound ContainerResponseFilters (only apply to resource method)
         if (JaxrsMappingUtils.getMethod(handlerMethod.method()) != null) {
-            configurable.addRouteFilters(Collections.singleton(new JaxrsResponseFilters(descendingOrder(
+            ContainerResponseFilter[] filters = descendingOrder(
                     filterByNameBindings(handlerMethod, current, providers.responseFilters(), false))
-                    .toArray(new ContainerResponseFilter[0]))));
+                    .toArray(new ContainerResponseFilter[0]);
+            if (filters.length > 0) {
+                configurable.addRouteFilters(Collections.singleton(new JaxrsResponseFilters(filters)));
+            }
         }
     }
 
