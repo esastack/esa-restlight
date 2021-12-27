@@ -35,7 +35,7 @@ public class MessageBodyWriterAdapter<T> implements ResponseEntityResolverAdapte
 
     private final MessageBodyWriter<T> underlying;
     private final Class<?> matchableType;
-    private final List<MediaType> produces;
+    private final MediaType[] produces;
     private final int order;
 
     public MessageBodyWriterAdapter(MessageBodyWriter<T> underlying,
@@ -47,7 +47,7 @@ public class MessageBodyWriterAdapter<T> implements ResponseEntityResolverAdapte
         Checks.checkNotNull(produces, "produces");
         this.underlying = underlying;
         this.matchableType = matchableType;
-        this.produces = produces;
+        this.produces = produces.toArray(new MediaType[0]);
         this.order = order;
     }
 
@@ -91,7 +91,7 @@ public class MessageBodyWriterAdapter<T> implements ResponseEntityResolverAdapte
     }
 
     private boolean isCompatible(MediaType current) {
-        if (produces.isEmpty()) {
+        if (produces.length == 0) {
             return true;
         }
         for (MediaType type : produces) {
