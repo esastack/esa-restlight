@@ -18,7 +18,6 @@ package io.esastack.restlight.jaxrs.resolver;
 import esa.commons.Checks;
 import esa.commons.ExceptionUtils;
 import esa.commons.collection.AttributeKey;
-import io.esastack.commons.net.buffer.Buffer;
 import io.esastack.httpserver.core.Response;
 import io.esastack.restlight.core.resolver.ResponseEntityChannelImpl;
 import io.esastack.restlight.server.context.RequestContext;
@@ -29,7 +28,6 @@ import io.netty.util.AsciiString;
 import io.netty.util.CharsetUtil;
 import io.netty.util.internal.MathUtil;
 
-import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
 
@@ -56,36 +54,6 @@ public class ResponseEntityStreamChannelImpl extends ResponseEntityChannelImpl
     }
 
     @Override
-    public void write(byte[] data) {
-        checkOutputStream();
-        super.write(data);
-    }
-
-    @Override
-    public void write(Buffer buffer) {
-        checkOutputStream();
-        super.write(buffer);
-    }
-
-    @Override
-    public void writeThenEnd(byte[] data) {
-        checkOutputStream();
-        super.writeThenEnd(data);
-    }
-
-    @Override
-    public void writeThenEnd(Buffer buffer) {
-        checkOutputStream();
-        super.writeThenEnd(buffer);
-    }
-
-    @Override
-    public void writeThenEnd(File file) {
-        checkOutputStream();
-        super.writeThenEnd(file);
-    }
-
-    @Override
     public HttpOutputStream outputStream() {
         if (response.isEnded()) {
             throw new IllegalStateException("Already ended");
@@ -105,13 +73,6 @@ public class ResponseEntityStreamChannelImpl extends ResponseEntityChannelImpl
     private void checkCommitted() {
         if (isCommitted()) {
             throw new IllegalStateException("Already committed.");
-        }
-    }
-
-    private void checkOutputStream() {
-        // only one of output stream and write() is allowed.
-        if (outputStream != null) {
-            throw new IllegalStateException("OutputStream has already opened. use it please.");
         }
     }
 
@@ -277,8 +238,17 @@ public class ResponseEntityStreamChannelImpl extends ResponseEntityChannelImpl
             if (!CLOSED_UPDATER.compareAndSet(this, 0, 1)) {
                 return;
             }
-            flush(true);
-            resp.end();
+            if (resp.isEnded()) {
+                // if the response has ended, we must make sure the current byteBuf should be released.
+                // NOTE: this is important, due to that even if the output stream has been opened, the end user
+                // can also end the response by Response. In this case, when we want to end the response
+                // by closing the output stream, it may has been closed before. You can get more information at
+                // ResponseEntityStreamChannelImpl.
+                byteBuf.release();
+            } else {
+                flush(true);
+                resp.end();
+            }
         }
 
         @Override
