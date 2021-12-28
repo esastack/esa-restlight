@@ -32,6 +32,7 @@ import io.esastack.restlight.core.handler.HandlerMapping;
 import io.esastack.restlight.core.handler.HandlerMappingProvider;
 import io.esastack.restlight.core.handler.RouteFilterAdapter;
 import io.esastack.restlight.core.handler.impl.HandlerAdvicesFactoryImpl;
+import io.esastack.restlight.core.handler.impl.HandlerContextsImpl;
 import io.esastack.restlight.core.handler.locate.HandlerValueResolverLocator;
 import io.esastack.restlight.core.handler.locate.MappingLocator;
 import io.esastack.restlight.core.handler.locate.RouteMethodLocator;
@@ -883,6 +884,7 @@ public abstract class Deployments<R extends AbstractRestlight<R, D, O>, D extend
 
     @Override
     protected RestlightHandler doGetRestlightHandler() {
+        ctx().setHandlerContextProvider(new HandlerContextsImpl());
         // set the ResolvableParamPredicate immediately due to it may be used when resolving extensions.
         ctx().setParamPredicate(RouteUtils.loadResolvableParamPredicate(ctx()));
 

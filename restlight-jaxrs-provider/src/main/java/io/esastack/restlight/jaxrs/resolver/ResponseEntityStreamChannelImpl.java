@@ -65,11 +65,6 @@ public class ResponseEntityStreamChannelImpl extends ResponseEntityChannelImpl
         return outputStream;
     }
 
-    @Override
-    public boolean isCommitted() {
-        return outputStream != null || super.isCommitted();
-    }
-
     private void checkCommitted() {
         if (isCommitted()) {
             throw new IllegalStateException("Already committed.");

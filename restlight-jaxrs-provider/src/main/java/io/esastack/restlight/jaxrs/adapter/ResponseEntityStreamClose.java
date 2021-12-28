@@ -26,21 +26,17 @@ import io.esastack.restlight.server.core.impl.HttpOutputStreamImpl;
 import io.esastack.restlight.server.handler.Filter;
 import io.esastack.restlight.server.handler.FilterChain;
 
-import java.io.IOException;
 import java.io.OutputStream;
 import java.util.concurrent.CompletableFuture;
 
-public class ResponseEntityStreamAutoClose implements Filter {
+public class ResponseEntityStreamClose implements Filter {
 
     private static final AttributeKey<HttpOutputStream> CLOSURE_STREAM = AttributeKey.valueOf("$closure.stream");
 
     @Override
     public CompletableFuture<Void> doFilter(FilterContext context, FilterChain chain) {
         return chain.doFilter(context).whenComplete((v, th) -> {
-            HttpOutputStream closable;
-            if ((closable = context.attrs().attr(CLOSURE_STREAM).get()) != null) {
-                IOUtils.closeQuietly(closable);
-            }
+            close(context);
         });
     }
 
@@ -57,6 +53,13 @@ public class ResponseEntityStreamAutoClose implements Filter {
         return new HttpOutputStreamClosure(outputStream);
     }
 
+    static void close(RequestContext context) {
+        HttpOutputStream closable;
+        if ((closable = context.attrs().attr(CLOSURE_STREAM).getAndRemove()) != null) {
+            IOUtils.closeQuietly(closable);
+        }
+    }
+
     private static class HttpOutputStreamClosure extends HttpOutputStreamImpl {
 
         private HttpOutputStreamClosure(OutputStream underlying) {
@@ -64,7 +67,7 @@ public class ResponseEntityStreamAutoClose implements Filter {
         }
 
         @Override
-        public void close() throws IOException {
+        public void close() {
             // do nothing
             // NOTE: the close should only be invoked when the request has ended.
         }

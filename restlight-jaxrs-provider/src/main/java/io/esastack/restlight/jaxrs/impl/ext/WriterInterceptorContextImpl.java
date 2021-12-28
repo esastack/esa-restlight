@@ -16,7 +16,9 @@
 package io.esastack.restlight.jaxrs.impl.ext;
 
 import esa.commons.Checks;
+import esa.commons.ClassUtils;
 import io.esastack.restlight.core.resolver.ResponseEntityResolverContext;
+import io.esastack.restlight.jaxrs.util.RuntimeDelegateUtils;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.container.ContainerResponseFilter;
 import jakarta.ws.rs.core.MultivaluedMap;
@@ -26,6 +28,7 @@ import jakarta.ws.rs.ext.WriterInterceptorContext;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.lang.reflect.Type;
 
 /**
  * This context is used to transmit custom properties among {@link WriterInterceptor}s.
@@ -59,7 +62,10 @@ public class WriterInterceptorContextImpl extends InterceptorContextImpl impleme
     public void proceed() throws IOException, WebApplicationException {
         if (index >= interceptorsSize) {
             try {
+                RuntimeDelegateUtils.addHeadersFromMap(underlying.context().response().headers(),
+                        headers, true);
                 underlying.proceed();
+                return;
             } catch (IOException ex) {
                 throw ex;
             } catch (Exception ex) {
@@ -78,6 +84,12 @@ public class WriterInterceptorContextImpl extends InterceptorContextImpl impleme
     @Override
     public void setEntity(Object entity) {
         underlying.context().response().entity(entity);
+        if (entity != null) {
+            Class<?> type = ClassUtils.getUserType(entity);
+            Type genericType = ClassUtils.getRawType(type);
+            setType(type);
+            setGenericType(genericType);
+        }
     }
 
     @Override

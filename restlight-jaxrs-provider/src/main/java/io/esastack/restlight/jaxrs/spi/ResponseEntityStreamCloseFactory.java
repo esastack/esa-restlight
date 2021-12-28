@@ -18,16 +18,16 @@ package io.esastack.restlight.jaxrs.spi;
 import io.esastack.restlight.core.DeployContext;
 import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.core.spi.FilterFactory;
-import io.esastack.restlight.jaxrs.adapter.ResponseEntityStreamAutoClose;
+import io.esastack.restlight.jaxrs.adapter.ResponseEntityStreamClose;
 import io.esastack.restlight.server.handler.Filter;
 
 import java.util.Optional;
 
-public class ResponseEntityStreamAutoCloseFactory implements FilterFactory {
+public class ResponseEntityStreamCloseFactory implements FilterFactory {
 
     @Override
     public Optional<Filter> filter(DeployContext<? extends RestlightOptions> ctx) {
-        return Optional.of(new ResponseEntityStreamAutoClose());
+        return Optional.of(new ResponseEntityStreamClose());
     }
 
 }

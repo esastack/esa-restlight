@@ -77,11 +77,12 @@ public class MessageBodyWriterAdapter<T> implements ResponseEntityResolverAdapte
         RuntimeDelegateUtils.addHeadersToMap(context.response().headers(), headers);
         try {
             underlying.writeTo(value, entity.type(), entity.genericType(), entity.annotations(),
-                    mediaType, headers, ResponseEntityStreamAutoClose.getNonClosableOutputStream(context));
+                    mediaType, headers, ResponseEntityStreamClose.getNonClosableOutputStream(context));
         } finally {
             RuntimeDelegateUtils.addHeadersFromMap(context.response().headers(), headers, true);
         }
 
+        ResponseEntityStreamClose.close(context);
         return HandledValue.succeed(null);
     }
 

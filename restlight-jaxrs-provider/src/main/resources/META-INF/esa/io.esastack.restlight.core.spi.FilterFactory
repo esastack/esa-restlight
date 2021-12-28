@@ -1,1 +1,1 @@
-io.esastack.restlight.jaxrs.spi.ResponseEntityStreamAutoCloseFactory
+io.esastack.restlight.jaxrs.spi.ResponseEntityStreamCloseFactory

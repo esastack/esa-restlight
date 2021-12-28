@@ -27,11 +27,12 @@ import io.esastack.restlight.core.configure.HandlerConfiguration;
 import io.esastack.restlight.core.configure.HandlerConfigure;
 import io.esastack.restlight.core.method.HandlerMethod;
 import io.esastack.restlight.core.resolver.HandlerResolverFactory;
+import io.esastack.restlight.core.resolver.HandlerResolverFactoryImpl;
+import io.esastack.restlight.core.util.OrderedComparator;
 
 import java.util.Optional;
 
 import static io.esastack.restlight.core.resolver.HandlerResolverFactoryImpl.buildConfiguration;
-import static io.esastack.restlight.core.resolver.HandlerResolverFactoryImpl.getHandlerResolverFactory;
 
 public class HandlerContext<O extends RestlightOptions> extends DelegatingDeployContext<O> {
 
@@ -64,6 +65,42 @@ public class HandlerContext<O extends RestlightOptions> extends DelegatingDeploy
                 return configuration.attrs();
             }
         };
+    }
+
+    private static HandlerResolverFactory getHandlerResolverFactory(HandlerResolverFactory factory,
+                                                                    HandlerConfiguration configuration) {
+        // keep in order.
+        OrderedComparator.sort(configuration.getRouteFilters());
+        OrderedComparator.sort(configuration.getStringConverts());
+        OrderedComparator.sort(configuration.getParamResolvers());
+        OrderedComparator.sort(configuration.getContextResolvers());
+        OrderedComparator.sort(configuration.getParamResolverAdvices());
+        OrderedComparator.sort(configuration.getRequestEntityResolvers());
+        OrderedComparator.sort(configuration.getRequestEntityResolverAdvices());
+        OrderedComparator.sort(configuration.getResponseEntityResolvers());
+        OrderedComparator.sort(configuration.getResponseEntityResolverAdvices());
+
+        return new HandlerResolverFactoryImpl(
+                factory.rxSerializers(),
+                factory.txSerializers(),
+                factory.futureTransfers(),
+                configuration.getRouteFilters(),
+                null,
+                configuration.getStringConverts(),
+                null,
+                configuration.getParamResolvers(),
+                null,
+                configuration.getParamResolverAdvices(),
+                null,
+                configuration.getContextResolvers(),
+                null,
+                configuration.getRequestEntityResolvers(),
+                null,
+                configuration.getRequestEntityResolverAdvices(),
+                null,
+                configuration.getResponseEntityResolvers(),
+                null,
+                configuration.getResponseEntityResolverAdvices());
     }
 }
 

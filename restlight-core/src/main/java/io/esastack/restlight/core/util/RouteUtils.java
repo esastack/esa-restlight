@@ -23,8 +23,8 @@ import io.esastack.restlight.core.DeployContext;
 import io.esastack.restlight.core.annotation.Scheduled;
 import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.core.handler.Handler;
+import io.esastack.restlight.core.handler.HandlerContextProvider;
 import io.esastack.restlight.core.handler.HandlerContexts;
-import io.esastack.restlight.core.handler.HandlerFactory;
 import io.esastack.restlight.core.handler.HandlerMapping;
 import io.esastack.restlight.core.handler.HandlerValueResolver;
 import io.esastack.restlight.core.handler.RouteMethodInfo;
@@ -187,9 +187,10 @@ public class RouteUtils {
                     exceptionResolver.createResolver(methodInfo.handlerMethod()));
         }
 
-        HandlerFactory factory = context.handlerFactory().get();
-        if (factory instanceof HandlerContexts) {
-            ((HandlerContexts) factory).addContext(methodInfo.handlerMethod(), context);
+        HandlerContextProvider handlerContexts = context.handlerContextProvider().orElseThrow(() ->
+                new IllegalStateException("HandlerContextProvider is absent"));
+        if (handlerContexts instanceof HandlerContexts) {
+            ((HandlerContexts) handlerContexts).addContext(methodInfo.handlerMethod(), context);
         }
         final Scheduler scheduler = context.schedulers().get(methodInfo.handlerMethod().scheduler());
         Checks.checkNotNull(scheduler,

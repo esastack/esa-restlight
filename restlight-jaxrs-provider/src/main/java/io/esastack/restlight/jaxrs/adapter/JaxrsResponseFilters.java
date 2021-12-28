@@ -49,7 +49,7 @@ public class JaxrsResponseFilters implements RouteFilter {
             final ContainerRequestContext reqCtx = new ResponseContainerContext(JaxrsContextUtils
                     .getRequestContext(context));
             final ContainerResponseContextImpl rspCtx = new ContainerResponseContextImpl(
-                    ResponseEntityStreamAutoClose.getNonClosableOutputStream(context), rsp);
+                    ResponseEntityStreamClose.getNonClosableOutputStream(context), rsp);
             for (ContainerResponseFilter filter : filters) {
                 try {
                     filter.filter(reqCtx, rspCtx);

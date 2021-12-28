@@ -13,24 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.esastack.restlight.core.handler;
+package io.esastack.restlight.core.handler.impl;
 
 import io.esastack.restlight.core.config.RestlightOptions;
-import io.esastack.restlight.core.handler.impl.HandlerContext;
+import io.esastack.restlight.core.handler.HandlerContexts;
 import io.esastack.restlight.core.method.HandlerMethod;
 
-/**
- * This {@link HandlerContexts} is used to save {@link HandlerContext} of given {@link HandlerMethod}.
- */
-public interface HandlerContexts extends HandlerContextProvider {
+import java.lang.reflect.Method;
+import java.util.concurrent.ConcurrentHashMap;
 
-    /**
-     * Adds {@link HandlerContext} of given {@link HandlerMethod}.
-     *
-     * @param method    handler method
-     * @param context   context
-     */
-    void addContext(HandlerMethod method, HandlerContext<? extends RestlightOptions> context);
+public class HandlerContextsImpl implements HandlerContexts {
 
+    private final ConcurrentHashMap<Method, HandlerContext<?>> contexts = new ConcurrentHashMap<>();
+
+    @Override
+    public void addContext(HandlerMethod method, HandlerContext<? extends RestlightOptions> context) {
+        this.contexts.putIfAbsent(method.method(), context);
+    }
+
+    @Override
+    public HandlerContext<? extends RestlightOptions> getContext(HandlerMethod method) {
+        return this.contexts.get(method.method());
+    }
 }
 

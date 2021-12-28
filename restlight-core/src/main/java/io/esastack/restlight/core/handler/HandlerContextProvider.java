@@ -20,17 +20,19 @@ import io.esastack.restlight.core.handler.impl.HandlerContext;
 import io.esastack.restlight.core.method.HandlerMethod;
 
 /**
- * This {@link HandlerContexts} is used to save {@link HandlerContext} of given {@link HandlerMethod}.
+ * You can use this {@link HandlerContextProvider} to get the {@link HandlerContext} which have configured by
+ * {@link io.esastack.restlight.core.configure.HandlerConfigure}.
  */
-public interface HandlerContexts extends HandlerContextProvider {
+@FunctionalInterface
+public interface HandlerContextProvider {
 
     /**
-     * Adds {@link HandlerContext} of given {@link HandlerMethod}.
+     * Obtains {@link HandlerContext} of given {@link HandlerMethod}.
      *
-     * @param method    handler method
-     * @param context   context
+     * @param method handler method
+     * @return  context of given {@link HandlerMethod}.
      */
-    void addContext(HandlerMethod method, HandlerContext<? extends RestlightOptions> context);
+    HandlerContext<? extends RestlightOptions> getContext(HandlerMethod method);
 
 }
 

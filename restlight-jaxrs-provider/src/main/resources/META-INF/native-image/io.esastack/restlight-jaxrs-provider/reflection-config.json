@@ -124,7 +124,7 @@
     "methods":[{"name":"<init>","parameterTypes":[] }]
   },
   {
-    "name":"io.esastack.restlight.jaxrs.spi.ResponseEntityStreamAutoCloseFactory",
+    "name":"io.esastack.restlight.jaxrs.spi.ResponseEntityStreamCloseFactory",
     "methods":[{"name":"<init>","parameterTypes":[] }]
   }
 ]
