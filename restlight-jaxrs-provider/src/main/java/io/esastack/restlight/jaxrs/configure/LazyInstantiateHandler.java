@@ -20,6 +20,7 @@ import io.esastack.restlight.core.DeployContext;
 import io.esastack.restlight.core.config.RestlightOptions;
 
 import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 class LazyInstantiateHandler implements InvocationHandler {
@@ -42,7 +43,11 @@ class LazyInstantiateHandler implements InvocationHandler {
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        return method.invoke(getInstanceThenInit(), args);
+        try {
+            return method.invoke(getInstanceThenInit(), args);
+        } catch (InvocationTargetException ex) {
+            throw ex.getTargetException();
+        }
     }
 
     private Object getInstanceThenInit() {

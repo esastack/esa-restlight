@@ -132,7 +132,7 @@ public class DynamicFeatureAdapter implements HandlerConfigure {
                     filterByNameBindings(handlerMethod, current, providers.requestFilters(),
                     true);
             if (!filters.isEmpty()) {
-                configurable.addRouteFilters(Collections.singleton(new PostMatchRequestFilters(
+                configurable.addRouteFilters(Collections.singleton(new PostMatchRequestFiltersAdapter(
                         ascendingOrdered(filters).toArray(new ContainerRequestFilter[0]))));
             }
         }
