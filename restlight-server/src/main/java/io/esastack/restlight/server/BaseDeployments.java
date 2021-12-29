@@ -363,10 +363,7 @@ public abstract class BaseDeployments<R extends BaseRestlightServer<R, D, O>, D 
      *
      * @return filters
      */
-    protected List<Filter> filters() {
-        this.filters.addAll(SpiLoader.cached(Filter.class)
-                .getByGroup(restlight.name(), true));
-        OrderedComparator.sort(this.filters);
+    List<Filter> filters() {
         return filters;
     }
 

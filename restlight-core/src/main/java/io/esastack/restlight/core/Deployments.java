@@ -70,7 +70,6 @@ import io.esastack.restlight.core.spi.ContextResolverProvider;
 import io.esastack.restlight.core.spi.DefaultSerializerFactory;
 import io.esastack.restlight.core.spi.ExceptionResolverFactoryProvider;
 import io.esastack.restlight.core.spi.ExtensionsHandlerFactory;
-import io.esastack.restlight.core.spi.FilterFactory;
 import io.esastack.restlight.core.spi.FutureTransferFactory;
 import io.esastack.restlight.core.spi.HandlerAdviceFactory;
 import io.esastack.restlight.core.spi.HandlerFactoryProvider;
@@ -87,7 +86,6 @@ import io.esastack.restlight.core.util.OrderedComparator;
 import io.esastack.restlight.core.util.RouteUtils;
 import io.esastack.restlight.server.BaseDeployments;
 import io.esastack.restlight.server.ServerDeployContext;
-import io.esastack.restlight.server.handler.Filter;
 import io.esastack.restlight.server.handler.RestlightHandler;
 import io.esastack.restlight.server.route.RouteRegistry;
 import io.esastack.restlight.server.spi.RouteRegistryAwareFactory;
@@ -851,16 +849,6 @@ public abstract class Deployments<R extends AbstractRestlight<R, D, O>, D extend
                     "': '" + prev.getClass().getName() + ", '" + resolver.getClass().getName() + "'");
         }
         return self();
-    }
-
-    @Override
-    protected List<Filter> filters() {
-        List<Filter> filters = super.filters();
-        SpiLoader.cached(FilterFactory.class)
-                .getByGroup(restlight.name(), true)
-                .forEach(factory -> factory.filter(ctx()).ifPresent(filters::add));
-        OrderedComparator.sort(filters);
-        return filters;
     }
 
     @Override

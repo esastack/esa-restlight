@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.esastack.restlight.core.spi;
+package io.esastack.restlight.server.spi;
 
 import esa.commons.spi.SPI;
-import io.esastack.restlight.core.DeployContext;
-import io.esastack.restlight.core.config.RestlightOptions;
+import io.esastack.restlight.server.ServerDeployContext;
+import io.esastack.restlight.server.config.ServerOptions;
 import io.esastack.restlight.server.handler.Filter;
 
 import java.util.Optional;
@@ -35,7 +35,7 @@ public interface FilterFactory {
      *
      * @return optional value of {@link Filter}
      */
-    Optional<Filter> filter(DeployContext<? extends RestlightOptions> ctx);
+    Optional<Filter> filter(ServerDeployContext<? extends ServerOptions> ctx);
 
 }
 

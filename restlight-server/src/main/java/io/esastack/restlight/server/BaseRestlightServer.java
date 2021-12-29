@@ -17,6 +17,7 @@ package io.esastack.restlight.server;
 
 import esa.commons.Checks;
 import esa.commons.annotation.Beta;
+import esa.commons.spi.SpiLoader;
 import io.esastack.restlight.core.util.Constants;
 import io.esastack.restlight.core.util.OrderedComparator;
 import io.esastack.restlight.server.bootstrap.AbstractDelegatedRestlightServer;
@@ -29,6 +30,7 @@ import io.esastack.restlight.server.handler.Filter;
 import io.esastack.restlight.server.handler.FilteredHandler;
 import io.esastack.restlight.server.handler.RestlightHandler;
 import io.esastack.restlight.server.schedule.HandleableRestlightHandler;
+import io.esastack.restlight.server.spi.FilterFactory;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.unix.DomainSocketAddress;
@@ -213,6 +215,7 @@ public abstract class BaseRestlightServer<R extends BaseRestlightServer<R, D, O>
     private RestlightServer buildServer() {
         RestlightHandler handler = deployments().applyDeployments();
         List<Filter> filters = new LinkedList<>(deployments().filters());
+        filters.addAll(loadFiltersBySpi());
         if (!filters.isEmpty()) {
             // keep filters in sort
             OrderedComparator.sort(filters);
@@ -240,6 +243,15 @@ public abstract class BaseRestlightServer<R extends BaseRestlightServer<R, D, O>
         if (immutable.get()) {
             throw new IllegalStateException("Illegal operation, server has been immutable.");
         }
+    }
+
+    private List<Filter> loadFiltersBySpi() {
+        List<Filter> filters = new LinkedList<>(SpiLoader.cached(Filter.class)
+                .getByGroup(deployments().restlight.name(), true));
+        SpiLoader.cached(FilterFactory.class)
+                .getByGroup(deployments().restlight.name(), true)
+                .forEach(factory -> factory.filter(deployments.ctx()).ifPresent(filters::add));
+        return filters;
     }
 
     protected abstract D createDeployments();
