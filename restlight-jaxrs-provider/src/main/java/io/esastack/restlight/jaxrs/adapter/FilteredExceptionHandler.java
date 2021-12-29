@@ -16,9 +16,6 @@
 package io.esastack.restlight.jaxrs.adapter;
 
 import esa.commons.Checks;
-import esa.commons.annotation.Internal;
-import esa.commons.spi.Feature;
-import io.esastack.restlight.core.util.Constants;
 import io.esastack.restlight.jaxrs.impl.JaxrsContextUtils;
 import io.esastack.restlight.jaxrs.impl.container.ContainerResponseContextImpl;
 import io.esastack.restlight.jaxrs.impl.container.ResponseContainerContext;
@@ -33,8 +30,6 @@ import jakarta.ws.rs.container.ContainerResponseFilter;
 
 import java.util.concurrent.CompletableFuture;
 
-@Internal
-@Feature(tags = Constants.INTERNAL)
 public class FilteredExceptionHandler implements IExceptionHandler {
 
     private final ContainerResponseFilter[] filters;
