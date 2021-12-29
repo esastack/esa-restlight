@@ -13,20 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.esastack.restlight.jaxrs.spi;
+package io.esastack.restlight.core.spi.impl;
 
 import io.esastack.restlight.core.handler.RouteFilter;
 import io.esastack.restlight.core.method.HandlerMethod;
 import io.esastack.restlight.core.spi.RouteFilterFactory;
-import io.esastack.restlight.jaxrs.configure.RouteTracking;
 
 import java.util.Optional;
 
 public class RouteTrackingFilterFactory implements RouteFilterFactory {
 
+    private static final RouteFilter SINGLETON = new RouteTracking();
+
     @Override
     public Optional<RouteFilter> create(HandlerMethod method) {
-        return Optional.of(RouteTracking.singleton());
+        return Optional.of(SINGLETON);
     }
 
     @Override

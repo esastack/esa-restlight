@@ -19,7 +19,7 @@ import esa.commons.Checks;
 import io.esastack.restlight.core.resolver.ResponseEntity;
 import io.esastack.restlight.core.resolver.ResponseEntityResolverAdviceAdapter;
 import io.esastack.restlight.core.resolver.ResponseEntityResolverContext;
-import io.esastack.restlight.jaxrs.configure.RouteTracking;
+import io.esastack.restlight.core.spi.impl.RouteTracking;
 import io.esastack.restlight.jaxrs.impl.ext.WriterInterceptorContextImpl;
 import io.esastack.restlight.jaxrs.util.RuntimeDelegateUtils;
 import jakarta.ws.rs.core.MultivaluedHashMap;

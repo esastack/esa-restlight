@@ -17,10 +17,8 @@ package io.esastack.restlight.core.util;
 
 import esa.commons.Primitives;
 import esa.commons.StringUtils;
-import esa.commons.collection.AttributeKey;
 import io.esastack.commons.net.http.MediaType;
 import io.esastack.commons.net.http.MediaTypeUtil;
-import io.esastack.restlight.core.method.HandlerMethod;
 import io.esastack.restlight.core.resolver.ResponseEntity;
 import io.esastack.restlight.server.context.RequestContext;
 import io.esastack.restlight.server.route.predicate.ProducesPredicate;
@@ -31,16 +29,6 @@ import java.util.Collections;
 import java.util.List;
 
 public final class ResponseEntityUtils {
-
-    private static final AttributeKey<HandlerMethod> HANDLED_METHOD = AttributeKey.valueOf("$internal.handled.method");
-
-    public static void setHandledMethod(RequestContext context, HandlerMethod method) {
-        context.attrs().attr(HANDLED_METHOD).set(method);
-    }
-
-    public static HandlerMethod getHandledMethod(RequestContext context) {
-        return context.attrs().attr(HANDLED_METHOD).get();
-    }
 
     public static List<MediaType> getMediaTypes(RequestContext context) {
         List<MediaType> compatibleTypes = context.attrs().attr(ProducesPredicate.COMPATIBLE_MEDIA_TYPES).get();

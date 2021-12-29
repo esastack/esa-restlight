@@ -31,6 +31,7 @@ import io.esastack.restlight.core.resolver.ResponseEntityImpl;
 import io.esastack.restlight.core.resolver.ResponseEntityResolverAdvice;
 import io.esastack.restlight.core.resolver.ResponseEntityResolverContext;
 import io.esastack.restlight.core.resolver.ResponseEntityResolverContextImpl;
+import io.esastack.restlight.core.spi.impl.RouteTracking;
 import io.esastack.restlight.core.util.ResponseEntityUtils;
 import io.esastack.restlight.server.bootstrap.ExceptionHandlerChain;
 import io.esastack.restlight.server.bootstrap.WebServerException;
@@ -72,7 +73,7 @@ public class WritableRestlightHandler extends HandleableRestlightHandler {
                 handleException(context, Futures.unwrapCompletionException(th));
             }
 
-            final HandlerMethod method = ResponseEntityUtils.getHandledMethod(context);
+            final HandlerMethod method = RouteTracking.handlerMethod(context);
             final List<MediaType> mediaTypes = ResponseEntityUtils.getMediaTypes(context);
             final ResponseEntity entity = new ResponseEntityImpl(method, context.response(),
                     mediaTypes.isEmpty() ? null : mediaTypes.get(0));

@@ -19,7 +19,7 @@ import esa.commons.Checks;
 import io.esastack.restlight.core.method.HandlerMethod;
 import io.esastack.restlight.core.resolver.RequestEntityResolverAdviceAdapter;
 import io.esastack.restlight.core.resolver.RequestEntityResolverContext;
-import io.esastack.restlight.jaxrs.configure.RouteTracking;
+import io.esastack.restlight.core.spi.impl.RouteTracking;
 import io.esastack.restlight.jaxrs.impl.ext.ReaderInterceptorContextImpl;
 import jakarta.ws.rs.ext.ReaderInterceptor;
 
