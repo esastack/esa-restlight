@@ -17,38 +17,22 @@ package io.esastack.restlight.jaxrs.adapter;
 
 import esa.commons.collection.AttributeKey;
 import esa.commons.io.IOUtils;
-import io.esastack.restlight.core.util.Ordered;
 import io.esastack.restlight.jaxrs.resolver.ResponseEntityStreamChannelImpl;
-import io.esastack.restlight.server.context.FilterContext;
 import io.esastack.restlight.server.context.RequestContext;
 import io.esastack.restlight.server.core.HttpOutputStream;
 import io.esastack.restlight.server.core.impl.HttpOutputStreamImpl;
-import io.esastack.restlight.server.handler.Filter;
-import io.esastack.restlight.server.handler.FilterChain;
 
 import java.io.OutputStream;
-import java.util.concurrent.CompletableFuture;
 
-public class ResponseEntityStreamClose implements Filter {
+class ResponseEntityStreamClose {
 
     private static final AttributeKey<HttpOutputStream> CLOSURE_STREAM = AttributeKey.valueOf("$closure.stream");
-
-    @Override
-    public CompletableFuture<Void> doFilter(FilterContext context, FilterChain chain) {
-        return chain.doFilter(context).whenComplete((v, th) -> {
-            close(context);
-        });
-    }
-
-    @Override
-    public int getOrder() {
-        return Ordered.HIGHEST_PRECEDENCE;
-    }
 
     static HttpOutputStreamClosure getNonClosableOutputStream(RequestContext context) {
         HttpOutputStream outputStream = ResponseEntityStreamChannelImpl.get(context).outputStream();
         if (!context.attrs().hasAttr(CLOSURE_STREAM)) {
             context.attrs().attr(CLOSURE_STREAM).set(outputStream);
+            context.response().onEnd((rsp) -> close(context));
         }
         return new HttpOutputStreamClosure(outputStream);
     }

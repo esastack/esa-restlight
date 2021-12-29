@@ -242,7 +242,7 @@ public class NettyRestlightServer implements RestlightServer {
                             context.attrs().attr(UNDERLYING_RESPONSE).set(req.response());
                             handler.process(context)
                                     .whenComplete((r, t) -> {
-                                        if (t == null) {
+                                        if (t == null || req.response().isEnded()) {
                                             PromiseUtils.setSuccess(promise);
                                         } else {
                                             PromiseUtils.setFailure(promise, t);

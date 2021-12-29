@@ -26,7 +26,6 @@ import io.esastack.restlight.server.config.ServerOptions;
 import io.esastack.restlight.server.context.RequestContext;
 import io.esastack.restlight.server.spi.ExceptionHandlerFactory;
 import io.esastack.restlight.server.util.ErrorDetail;
-import io.esastack.restlight.server.util.Futures;
 import io.netty.util.internal.InternalThreadLocalMap;
 
 import javax.validation.ConstraintViolation;
@@ -49,35 +48,41 @@ public class ValidationExceptionHandlerFactory implements ExceptionHandlerFactor
         @Override
         public CompletableFuture<Void> handle(RequestContext context, Throwable th,
                                               ExceptionHandlerChain next) {
-            if (th instanceof ConstraintViolationException) {
-                //400 bad request
-
-                ConstraintViolationException error = (ConstraintViolationException) th;
-                Set<ConstraintViolation<?>> cs = error.getConstraintViolations();
-                if (cs == null || cs.isEmpty()) {
-                    context.response().status(HttpStatus.BAD_REQUEST.code());
-                    context.response().entity(new ErrorDetail<>(context.request().path(), error));
-                } else {
-                    final StringBuilder sb = InternalThreadLocalMap.get().stringBuilder();
-                    for (ConstraintViolation<?> c : cs) {
-                        sb.append("{property='").append(c.getPropertyPath()).append('\'');
-                        sb.append(",invalidValue='").append(c.getInvalidValue()).append('\'');
-                        sb.append(",message='").append(c.getMessage()).append("'}");
-                    }
-                    sb.append('}');
-
-                    context.response().status(HttpStatus.BAD_REQUEST.code());
-                    context.response().entity(new ErrorDetail<>(context.request().path(), sb.toString()));
+            final CompletableFuture<Void> handled = new CompletableFuture<>();
+            next.handle(context, th).whenComplete((v, ex) -> {
+                if (ex == null) {
+                    handled.complete(null);
+                    return;
                 }
-                return Futures.completedExceptionally(th);
-            }
-
-            return next.handle(context, th);
+                if (ex instanceof ConstraintViolationException) {
+                    //400 bad request
+                    ConstraintViolationException error = (ConstraintViolationException) ex;
+                    Set<ConstraintViolation<?>> cs = error.getConstraintViolations();
+                    if (cs == null || cs.isEmpty()) {
+                        context.response().status(HttpStatus.BAD_REQUEST.code());
+                        context.response().entity(new ErrorDetail<>(context.request().path(), error));
+                    } else {
+                        final StringBuilder sb = InternalThreadLocalMap.get().stringBuilder();
+                        for (ConstraintViolation<?> c : cs) {
+                            sb.append("{property='").append(c.getPropertyPath()).append('\'');
+                            sb.append(",invalidValue='").append(c.getInvalidValue()).append('\'');
+                            sb.append(",message='").append(c.getMessage()).append("'}");
+                        }
+                        sb.append('}');
+                        context.response().status(HttpStatus.BAD_REQUEST.code());
+                        context.response().entity(new ErrorDetail<>(context.request().path(), sb.toString()));
+                    }
+                    handled.complete(null);
+                } else {
+                    handled.completeExceptionally(ex);
+                }
+            });
+            return handled;
         }
 
         @Override
         public int getOrder() {
-            return -100;
+            return 100;
         }
 
     }

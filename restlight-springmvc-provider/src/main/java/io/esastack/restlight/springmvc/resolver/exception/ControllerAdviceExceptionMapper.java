@@ -71,8 +71,7 @@ public class ControllerAdviceExceptionMapper extends DefaultExceptionMapper {
         Class<?> beanType = handler.beanType();
         // ignore the advice in the same controller because we expect that this handler should be applicable with the
         // advice in its own controller.
-        if (isController
-                && this.handlerType.equals(beanType)) {
+        if (isController && this.handlerType.equals(beanType)) {
             return false;
         }
 

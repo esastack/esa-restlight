@@ -24,7 +24,6 @@ import jakarta.ws.rs.ext.ExceptionMapper;
 
 import java.util.concurrent.CompletableFuture;
 
-import static jakarta.ws.rs.core.Response.Status.INTERNAL_SERVER_ERROR;
 import static jakarta.ws.rs.core.Response.Status.NO_CONTENT;
 
 public class JaxrsExceptionMapperAdapter<T extends Throwable> implements ExceptionResolver<T> {
@@ -44,11 +43,11 @@ public class JaxrsExceptionMapperAdapter<T extends Throwable> implements Excepti
             if (response == null) {
                 response = Response.status(NO_CONTENT).build();
             }
+            context.response().entity(response);
+            return Futures.completedFuture();
         } catch (Throwable th) {
-            response = Response.status(INTERNAL_SERVER_ERROR).build();
+            return Futures.completedExceptionally(th);
         }
-        context.response().entity(response);
-        return Futures.completedFuture();
     }
 }
 

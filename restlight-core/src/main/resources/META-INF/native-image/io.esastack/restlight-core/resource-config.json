@@ -8,7 +8,6 @@
       {"pattern":".*/io.esastack.restlight.core.spi.HandlerValueResolverLocatorFactory$"},
       {"pattern":".*/io.esastack.restlight.core.resolver.ParamResolverFactory$"},
       {"pattern":".*/io.esastack.restlight.core.resolver.ResponseEntityResolverFactory$"},
-      {"pattern":".*/io.esastack.restlight.core.spi.FilterFactory$"},
       {"pattern":".*/io.esastack.restlight.core.spi.ParamResolverProvider$"}
     ]},
   "bundles":[]

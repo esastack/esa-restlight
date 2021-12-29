@@ -78,9 +78,5 @@
   {
     "name":"io.esastack.restlight.core.spi.impl.RequestBeanParamResolverProvider",
     "methods":[{"name":"<init>","parameterTypes":[] }]
-  },
-  {
-    "name":"io.esastack.restlight.core.spi.impl.ResponseEntityWriterFilterFactory",
-    "methods":[{"name":"<init>","parameterTypes":[] }]
   }
 ]

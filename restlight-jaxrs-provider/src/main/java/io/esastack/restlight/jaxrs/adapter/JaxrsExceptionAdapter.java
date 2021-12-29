@@ -45,11 +45,6 @@ public class JaxrsExceptionAdapter implements IExceptionHandler {
     }
 
     @Override
-    public boolean alsoApplyToExecutionHandler() {
-        return true;
-    }
-
-    @Override
     public int getOrder() {
         return Ordered.HIGHEST_PRECEDENCE;
     }

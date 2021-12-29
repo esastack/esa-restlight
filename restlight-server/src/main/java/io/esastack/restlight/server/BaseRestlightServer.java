@@ -18,12 +18,17 @@ package io.esastack.restlight.server;
 import esa.commons.Checks;
 import esa.commons.annotation.Beta;
 import io.esastack.restlight.core.util.Constants;
+import io.esastack.restlight.core.util.OrderedComparator;
 import io.esastack.restlight.server.bootstrap.AbstractDelegatedRestlightServer;
+import io.esastack.restlight.server.bootstrap.IExceptionHandler;
+import io.esastack.restlight.server.bootstrap.LinkedExceptionHandlerChain;
 import io.esastack.restlight.server.bootstrap.RestlightServer;
 import io.esastack.restlight.server.bootstrap.RestlightServerBootstrap;
 import io.esastack.restlight.server.config.ServerOptions;
 import io.esastack.restlight.server.handler.Filter;
+import io.esastack.restlight.server.handler.FilteredHandler;
 import io.esastack.restlight.server.handler.RestlightHandler;
+import io.esastack.restlight.server.schedule.HandleableRestlightHandler;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.unix.DomainSocketAddress;
@@ -207,12 +212,22 @@ public abstract class BaseRestlightServer<R extends BaseRestlightServer<R, D, O>
 
     private RestlightServer buildServer() {
         RestlightHandler handler = deployments().applyDeployments();
-        List<Filter> fs = new LinkedList<>(deployments().filters());
-        return doBuildServer(handler, fs);
+        List<Filter> filters = new LinkedList<>(deployments().filters());
+        if (!filters.isEmpty()) {
+            // keep filters in sort
+            OrderedComparator.sort(filters);
+            handler = new FilteredHandler(handler, filters);
+        }
+        return doBuildServer(buildHandleable(handler, deployments().exceptionHandlers));
     }
 
-    protected RestlightServer doBuildServer(RestlightHandler handler, List<Filter> fs) {
-        return RestlightServerBootstrap.from(options, handler, fs)
+    protected HandleableRestlightHandler buildHandleable(RestlightHandler handler,
+                                                         IExceptionHandler[] exceptionHandlers) {
+        return new HandleableRestlightHandler(handler, LinkedExceptionHandlerChain.immutable(exceptionHandlers));
+    }
+
+    protected RestlightServer doBuildServer(HandleableRestlightHandler handler) {
+        return RestlightServerBootstrap.from(options, handler)
                 .withAddress(address)
                 .withOptions(channelOptions)
                 .withChildOptions(childChannelOptions)

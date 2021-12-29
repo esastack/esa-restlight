@@ -27,6 +27,7 @@ import io.esastack.restlight.jaxrs.util.RuntimeDelegateUtils;
 import io.esastack.restlight.server.bootstrap.ExceptionHandlerChain;
 import io.esastack.restlight.server.bootstrap.IExceptionHandler;
 import io.esastack.restlight.server.context.RequestContext;
+import io.esastack.restlight.server.util.Futures;
 import jakarta.ws.rs.container.ContainerRequestContext;
 import jakarta.ws.rs.container.ContainerResponseFilter;
 
@@ -47,6 +48,15 @@ public class FilteredExceptionHandler implements IExceptionHandler {
     public CompletableFuture<Void> handle(RequestContext context,
                                           Throwable th,
                                           ExceptionHandlerChain next) {
+        return next.handle(context, th).thenCompose(v -> applyResponseFilters(context, filters));
+    }
+
+    @Override
+    public int getOrder() {
+        return 1000;
+    }
+
+    static CompletableFuture<Void> applyResponseFilters(RequestContext context, ContainerResponseFilter[] filters) {
         ResponseImpl rsp = JaxrsContextUtils.getResponse(context);
         RuntimeDelegateUtils.addMetadataToJakarta(context.response(), rsp);
         final ContainerRequestContext reqCtx = new ResponseContainerContext(JaxrsContextUtils
@@ -58,11 +68,11 @@ public class FilteredExceptionHandler implements IExceptionHandler {
                 filter.filter(reqCtx, rspCtx);
             } catch (Throwable ex) {
                 RuntimeDelegateUtils.addMetadataToNetty(rsp, context.response(), true);
-                return next.handle(context, ex);
+                return Futures.completedExceptionally(ex);
             }
         }
         RuntimeDelegateUtils.addMetadataToNetty(rsp, context.response(), true);
-        return next.handle(context, th);
+        return Futures.completedFuture();
     }
 }
 

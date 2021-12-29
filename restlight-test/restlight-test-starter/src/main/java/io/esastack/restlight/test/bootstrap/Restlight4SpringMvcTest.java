@@ -18,10 +18,7 @@ package io.esastack.restlight.test.bootstrap;
 import io.esastack.restlight.core.AbstractRestlight;
 import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.server.bootstrap.RestlightServer;
-import io.esastack.restlight.server.handler.Filter;
-import io.esastack.restlight.server.handler.RestlightHandler;
-
-import java.util.List;
+import io.esastack.restlight.server.schedule.HandleableRestlightHandler;
 
 class Restlight4SpringMvcTest extends AbstractRestlight<Restlight4SpringMvcTest,
         Deployments4SpringMvcTest, RestlightOptions> {
@@ -40,7 +37,7 @@ class Restlight4SpringMvcTest extends AbstractRestlight<Restlight4SpringMvcTest,
     }
 
     @Override
-    protected final RestlightServer doBuildServer(RestlightHandler handler, List<Filter> fs) {
-        return new FakeServer(handler, fs);
+    protected final RestlightServer doBuildServer(HandleableRestlightHandler handler) {
+        return new FakeServer(handler);
     }
 }

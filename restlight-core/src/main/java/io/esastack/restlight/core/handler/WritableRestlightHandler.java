@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.esastack.restlight.core.spi.impl;
+package io.esastack.restlight.core.handler;
 
 import esa.commons.Checks;
 import esa.commons.ClassUtils;
@@ -23,7 +23,6 @@ import io.esastack.commons.net.http.HttpStatus;
 import io.esastack.commons.net.http.MediaType;
 import io.esastack.restlight.core.DeployContext;
 import io.esastack.restlight.core.config.RestlightOptions;
-import io.esastack.restlight.core.handler.HandlerContextProvider;
 import io.esastack.restlight.core.handler.impl.HandlerContext;
 import io.esastack.restlight.core.method.HandlerMethod;
 import io.esastack.restlight.core.resolver.HandlerResolverFactory;
@@ -32,47 +31,51 @@ import io.esastack.restlight.core.resolver.ResponseEntityImpl;
 import io.esastack.restlight.core.resolver.ResponseEntityResolverAdvice;
 import io.esastack.restlight.core.resolver.ResponseEntityResolverContext;
 import io.esastack.restlight.core.resolver.ResponseEntityResolverContextImpl;
-import io.esastack.restlight.core.util.Ordered;
 import io.esastack.restlight.core.util.ResponseEntityUtils;
+import io.esastack.restlight.server.bootstrap.ExceptionHandlerChain;
 import io.esastack.restlight.server.bootstrap.WebServerException;
-import io.esastack.restlight.server.context.FilterContext;
 import io.esastack.restlight.server.context.RequestContext;
 import io.esastack.restlight.server.core.HttpRequest;
 import io.esastack.restlight.server.core.HttpResponse;
-import io.esastack.restlight.server.handler.Filter;
-import io.esastack.restlight.server.handler.FilterChain;
+import io.esastack.restlight.server.handler.RestlightHandler;
+import io.esastack.restlight.server.schedule.HandleableRestlightHandler;
 import io.esastack.restlight.server.util.ErrorDetail;
+import io.esastack.restlight.server.util.Futures;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 import static io.esastack.restlight.server.util.ErrorDetail.getMessage;
 
-class ResponseEntityWriter implements Filter {
+public class WritableRestlightHandler extends HandleableRestlightHandler {
 
-    private static final Logger logger = LoggerFactory.getLogger(ResponseEntityWriter.class);
+    private static final Logger logger = LoggerFactory.getLogger(WritableRestlightHandler.class);
 
-    private final DeployContext<? extends RestlightOptions> context;
+    private final HandlerResolverFactory resolverFactory;
     private final HandlerContextProvider handlerContextProvider;
 
-    ResponseEntityWriter(DeployContext<? extends RestlightOptions> context) {
+    public WritableRestlightHandler(RestlightHandler underlying,
+                                    ExceptionHandlerChain handlerChain,
+                                    DeployContext<? extends RestlightOptions> context) {
+        super(underlying, handlerChain);
         Checks.checkNotNull(context, "context");
+        this.resolverFactory = context.resolverFactory().orElseThrow(() ->
+                new IllegalStateException("HandlerResolverFactory is absent"));
         this.handlerContextProvider = context.handlerContextProvider().orElseThrow(() ->
                 new IllegalStateException("HandlerContextProvider is absent"));
-        this.context = context;
     }
 
     @Override
-    public CompletableFuture<Void> doFilter(FilterContext context, FilterChain chain) {
-        return chain.doFilter(context).whenComplete((v, th) -> {
+    public CompletableFuture<Void> process(RequestContext context) {
+        return super.process(context).whenComplete((v, th) -> {
             if (th != null) {
-                handleException(context, th);
+                handleException(context, Futures.unwrapCompletionException(th));
             }
 
             final HandlerMethod method = ResponseEntityUtils.getHandledMethod(context);
             final List<MediaType> mediaTypes = ResponseEntityUtils.getMediaTypes(context);
-            final ResponseEntity entity = new ResponseEntityImpl(method, context.response(), mediaTypes.isEmpty()
-                    ? null : mediaTypes.get(0));
+            final ResponseEntity entity = new ResponseEntityImpl(method, context.response(),
+                    mediaTypes.isEmpty() ? null : mediaTypes.get(0));
             HandlerResolverFactory resolverFactory = getResolverFactory(method);
             final ResponseEntityResolverContext rspCtx = new ResponseEntityResolverContextImpl(context,
                     entity, resolverFactory.getResponseEntityResolvers(),
@@ -115,13 +118,13 @@ class ResponseEntityWriter implements Filter {
         });
     }
 
-    @Override
-    public int getOrder() {
-        return Ordered.HIGHEST_PRECEDENCE;
-    }
-
     private void handleException(RequestContext context, Throwable th) {
-        HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
+        HttpStatus status;
+        if (th instanceof WebServerException) {
+            status = ((WebServerException) th).status();
+        } else {
+            status = HttpStatus.INTERNAL_SERVER_ERROR;
+        }
         context.response().status(status.code());
         context.response().entity(new ErrorDetail<>(context.request().path(), getMessage(status, th)));
     }
@@ -136,8 +139,7 @@ class ResponseEntityWriter implements Filter {
 
     private HandlerResolverFactory getResolverFactory(HandlerMethod method) {
         if (method == null) {
-            return this.context.resolverFactory().orElseThrow(() ->
-                    new IllegalStateException("HandlerResolverFactory is absent"));
+            return resolverFactory;
         }
 
         HandlerContext<?> context = handlerContextProvider.getContext(method);
@@ -145,8 +147,9 @@ class ResponseEntityWriter implements Filter {
             return context.resolverFactory().orElseThrow(() ->
                     new IllegalStateException("HandlerResolverFactory is absent"));
         } else {
-            return this.context.resolverFactory().orElseThrow(() ->
-                    new IllegalStateException("HandlerResolverFactory is absent"));
+            return resolverFactory;
         }
     }
+
 }
+

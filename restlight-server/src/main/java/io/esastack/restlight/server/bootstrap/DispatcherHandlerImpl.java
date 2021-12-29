@@ -53,20 +53,15 @@ public class DispatcherHandlerImpl implements DispatcherHandler {
     private static final Logger logger = LoggerFactory.getLogger(DispatcherHandlerImpl.class);
 
     private final AbstractRouteRegistry registry;
-    private final IExceptionHandler[] applyToExecutionsHandlers;
-    private final ExceptionHandlerChain exceptionHandler;
+    private final IExceptionHandler[] exceptionHandlers;
 
     private final LongAdder rejectCount = new LongAdder();
 
-    public DispatcherHandlerImpl(AbstractRouteRegistry registry,
-                                 IExceptionHandler[] applyToExecutionsHandlers,
-                                 ExceptionHandlerChain exceptionHandler) {
+    public DispatcherHandlerImpl(AbstractRouteRegistry registry, IExceptionHandler[] exceptionHandlers) {
         Checks.checkNotNull(registry, "registry");
-        Checks.checkNotNull(applyToExecutionsHandlers, "applyToExecutionsHandlers");
-        Checks.checkNotNull(exceptionHandler, "exceptionHandler");
+        Checks.checkNotNull(exceptionHandlers, "exceptionHandlers");
         this.registry = registry;
-        this.applyToExecutionsHandlers = applyToExecutionsHandlers;
-        this.exceptionHandler = exceptionHandler;
+        this.exceptionHandlers = exceptionHandlers;
     }
 
     @Override
@@ -90,25 +85,34 @@ public class DispatcherHandlerImpl implements DispatcherHandler {
                     // wind up
                     .whenComplete((r, t) -> {
                         final Throwable ex = Futures.unwrapCompletionException(t);
-                        final ExceptionHandler<Throwable> exHandler;
-                        if (ex != null && (exHandler = execution.exceptionHandler()) != null) {
+                        if (ex != null) {
                             try {
-                                LinkedExceptionHandlerChain.applyToExecutionHandler(applyToExecutionsHandlers,
-                                        exHandler::handleException).handle(context, ex)
-                                        .whenComplete((voidRet, err) ->
-                                                cleanUp(context, execution.completionHandler(), promise,
-                                                        Futures.unwrapCompletionException(err)));
+                                final ExceptionHandler<Throwable> exHandler = execution.exceptionHandler();
+                                LinkedExceptionHandlerChain.immutable(exceptionHandlers, (ctx, th) -> {
+                                    if (th == null) {
+                                        return Futures.completedFuture();
+                                    } else {
+                                        if (exHandler != null) {
+                                            return exHandler.handleException(ctx, th);
+                                        } else {
+                                            return Futures.completedExceptionally(th);
+                                        }
+                                    }
+                                }).handle(context, ex)
+                                        .whenComplete((voidRet, err) -> completeRequest(context,
+                                                execution.completionHandler(), promise,
+                                                Futures.unwrapCompletionException(err)));
                             } catch (Throwable e) {
-                                cleanUp(context, execution.completionHandler(), promise, e);
+                                completeRequest(context, execution.completionHandler(), promise, e);
                             }
                         } else {
-                            cleanUp(context, execution.completionHandler(), promise, ex);
+                            completeRequest(context, execution.completionHandler(), promise, ex);
                         }
                     });
         } catch (Throwable throwable) {
             logger.error("Unexpected error occurred in asynchronous execution.", throwable);
             // error while invoking route or apply postHandle()
-            cleanUp(context, execution.completionHandler(), promise, throwable);
+            completeRequest(context, execution.completionHandler(), promise, throwable);
         }
     }
 
@@ -157,19 +161,6 @@ public class DispatcherHandlerImpl implements DispatcherHandler {
         return cause;
     }
 
-    private void cleanUp(RequestContext context,
-                         CompletionHandler completionHandler,
-                         CompletableFuture<Void> promise,
-                         Throwable dispatchException) {
-        //clean up response.
-        if (dispatchException != null) {
-            exceptionHandler.handle(context, dispatchException)
-                    .whenComplete((v, th) -> completeRequest(context, completionHandler, promise, th));
-        } else {
-            completeRequest(context, completionHandler, promise, null);
-        }
-    }
-
     private void completeRequest(RequestContext context,
                                  CompletionHandler completionHandler,
                                  CompletableFuture<Void> promise,
@@ -203,9 +194,6 @@ public class DispatcherHandlerImpl implements DispatcherHandler {
 
     private void completeRequest0(RequestContext context, CompletableFuture<Void> promise, Throwable th) {
         if (th != null) {
-            // Due that the exception has been handled by ExceptionHandlerChain here, we set the
-            // HttpStatus.INTERNAL_SERVER_ERROR immediately which will avoiding duplicate
-            // handling in ScheduledRestlightHandler.
             final HttpStatus status;
             if (th instanceof WebServerException) {
                 status = ((WebServerException) th).status();

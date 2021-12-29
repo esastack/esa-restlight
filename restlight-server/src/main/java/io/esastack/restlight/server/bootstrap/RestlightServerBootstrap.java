@@ -16,11 +16,8 @@
 package io.esastack.restlight.server.bootstrap;
 
 import esa.commons.annotation.Beta;
-import io.esastack.restlight.core.util.OrderedComparator;
 import io.esastack.restlight.server.config.ServerOptions;
 import io.esastack.restlight.server.config.ServerOptionsConfigure;
-import io.esastack.restlight.server.handler.Filter;
-import io.esastack.restlight.server.handler.FilteredHandler;
 import io.esastack.restlight.server.handler.RestlightHandler;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelOption;
@@ -40,7 +37,6 @@ public class RestlightServerBootstrap {
 
     private final ServerOptions options;
     private final RestlightHandler handler;
-    private final List<Filter> filters;
     private final Map<ChannelOption<?>, Object> channelOptions = new LinkedHashMap<>();
     private final Map<ChannelOption<?>, Object> childChannelOptions = new LinkedHashMap<>();
     @Beta
@@ -49,21 +45,17 @@ public class RestlightServerBootstrap {
     private boolean daemon = true;
     private SocketAddress address;
 
-    private RestlightServerBootstrap(ServerOptions options,
-                                     RestlightHandler handler,
-                                     List<Filter> filters) {
+    private RestlightServerBootstrap(ServerOptions options, RestlightHandler handler) {
         this.options = options;
         this.handler = handler;
-        this.filters = filters;
     }
 
-    public static RestlightServerBootstrap from(RestlightHandler handler, List<Filter> filters) {
-        return from(ServerOptionsConfigure.defaultOpts(), handler, filters);
+    public static RestlightServerBootstrap from(RestlightHandler handler) {
+        return from(ServerOptionsConfigure.defaultOpts(), handler);
     }
 
-    public static RestlightServerBootstrap from(
-            ServerOptions options, RestlightHandler handler, List<Filter> filters) {
-        return new RestlightServerBootstrap(options, handler, filters);
+    public static RestlightServerBootstrap from(ServerOptions options, RestlightHandler handler) {
+        return new RestlightServerBootstrap(options, handler);
     }
 
     public RestlightServerBootstrap withAddress(SocketAddress address) {
@@ -139,12 +131,6 @@ public class RestlightServerBootstrap {
     }
 
     public RestlightServer forServer() {
-        // keep filters in sort
-        OrderedComparator.sort(this.filters);
-        RestlightHandler handler = this.handler;
-        if (!this.filters.isEmpty()) {
-            handler = new FilteredHandler(handler, this.filters);
-        }
         return new NettyRestlightServer(options,
                 handler,
                 address,
