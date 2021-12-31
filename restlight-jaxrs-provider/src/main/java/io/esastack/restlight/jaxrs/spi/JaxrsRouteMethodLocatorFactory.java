@@ -49,7 +49,7 @@ public class JaxrsRouteMethodLocatorFactory implements RouteMethodLocatorFactory
 
         @Override
         protected boolean isLocator(HandlerMethod handlerMethod) {
-            return JaxrsMappingUtils.getMethod(handlerMethod.method()) == null;
+            return JaxrsMappingUtils.isLocator(handlerMethod.method());
         }
     }
 }

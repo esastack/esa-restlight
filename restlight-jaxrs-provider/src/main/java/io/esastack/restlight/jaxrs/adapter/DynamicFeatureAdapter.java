@@ -127,7 +127,7 @@ public class DynamicFeatureAdapter implements HandlerConfigure {
         }
 
         // handle bound postMatch ContainerRequestFilters (only apply to resource method)
-        if (JaxrsMappingUtils.getMethod(handlerMethod.method()) != null) {
+        if (JaxrsMappingUtils.isLocator(handlerMethod.method())) {
             List<OrderComponent<ContainerRequestFilter>> filters =
                     filterByNameBindings(handlerMethod, current, providers.requestFilters(),
                     true);
@@ -138,7 +138,7 @@ public class DynamicFeatureAdapter implements HandlerConfigure {
         }
 
         // handle bound ContainerResponseFilters (only apply to resource method)
-        if (JaxrsMappingUtils.getMethod(handlerMethod.method()) != null) {
+        if (JaxrsMappingUtils.isLocator(handlerMethod.method())) {
             ContainerResponseFilter[] filters = descendingOrder(
                     filterByNameBindings(handlerMethod, current, providers.responseFilters(), false))
                     .toArray(new ContainerResponseFilter[0]);

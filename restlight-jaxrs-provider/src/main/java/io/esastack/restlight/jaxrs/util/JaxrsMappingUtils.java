@@ -123,7 +123,11 @@ public final class JaxrsMappingUtils {
         }
     }
 
-    public static String getMethod(AnnotatedElement element) {
+    public static boolean isLocator(AnnotatedElement element) {
+        return JaxrsMappingUtils.getMethod(element) == null;
+    }
+
+    private static String getMethod(AnnotatedElement element) {
         String method =
                 getAnnotation(element, HttpMethod.class)
                         .map(HttpMethod::value)
