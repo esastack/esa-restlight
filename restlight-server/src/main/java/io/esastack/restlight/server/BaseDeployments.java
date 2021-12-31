@@ -293,7 +293,7 @@ public abstract class BaseDeployments<R extends BaseRestlightServer<R, D, O>, D 
     public D addRouteRegistryAwareness(Collection<? extends RouteRegistryAwareFactory> awareness) {
         checkImmutable();
         if (awareness != null && !awareness.isEmpty()) {
-            awareness.forEach(this::addRouteRegistryAware);
+            this.registryAwareness.addAll(awareness);
         }
         return self();
     }
