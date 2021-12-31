@@ -63,7 +63,7 @@ abstract class AbstractRouteHandler extends AbstractExecutionHandler<RouteHandle
                     .thenCompose(returnValue -> applyPostHandle(context, bean)
                             .thenApply(v -> returnValue))
                     // handle return value
-                    .thenAccept(returnValue -> resolveReturnValue(returnValue, context))
+                    .thenCompose(returnValue -> resolveReturnValue(returnValue, context))
                     .exceptionally(t -> {
                         if (t == EXECUTION_NOT_ALLOWED) {
                             // ignore it
