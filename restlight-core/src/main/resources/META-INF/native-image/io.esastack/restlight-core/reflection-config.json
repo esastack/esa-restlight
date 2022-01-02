@@ -44,7 +44,7 @@
     "methods":[{"name":"<init>","parameterTypes":[] }]
   },
   {
-    "name":"io.esastack.restlight.core.spi.impl.CompletableFutureTransferFactory",
+    "name":"io.esastack.restlight.core.spi.impl.CompletionStageTransferFactory",
     "methods":[{"name":"<init>","parameterTypes":[] }]
   },
   {

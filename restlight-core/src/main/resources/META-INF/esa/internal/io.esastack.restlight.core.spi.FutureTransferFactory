@@ -1,3 +1,3 @@
-io.esastack.restlight.core.spi.impl.CompletableFutureTransferFactory
+io.esastack.restlight.core.spi.impl.CompletionStageTransferFactory
 io.esastack.restlight.core.spi.impl.DefaultFutureTransferFactory
 io.esastack.restlight.core.spi.impl.ListenableFutureTransferFactory
