@@ -21,7 +21,7 @@ import io.esastack.restlight.core.spi.RouteFilterFactory;
 
 import java.util.Optional;
 
-public class RouteTrackingFilterFactory implements RouteFilterFactory {
+public class RouteTrackingFactory implements RouteFilterFactory {
 
     private static final RouteFilter SINGLETON = new RouteTracking();
 

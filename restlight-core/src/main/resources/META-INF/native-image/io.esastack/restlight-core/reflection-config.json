@@ -1,6 +1,6 @@
 [
   {
-    "name":"io.esastack.restlight.core.spi.impl.RouteTrackingFilterFactory",
+    "name":"io.esastack.restlight.core.spi.impl.RouteTrackingFactory",
     "methods":[{"name":"<init>","parameterTypes":[] }]
   },
   {
