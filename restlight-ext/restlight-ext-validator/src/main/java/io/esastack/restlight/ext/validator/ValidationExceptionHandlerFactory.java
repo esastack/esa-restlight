@@ -17,7 +17,6 @@ package io.esastack.restlight.ext.validator;
 
 import esa.commons.annotation.Internal;
 import esa.commons.spi.Feature;
-import io.esastack.commons.net.http.HttpStatus;
 import io.esastack.restlight.core.util.Constants;
 import io.esastack.restlight.server.ServerDeployContext;
 import io.esastack.restlight.server.bootstrap.ExceptionHandlerChain;
@@ -30,6 +29,7 @@ import io.netty.util.internal.InternalThreadLocalMap;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
@@ -55,22 +55,17 @@ public class ValidationExceptionHandlerFactory implements ExceptionHandlerFactor
                     return;
                 }
                 if (ex instanceof ConstraintViolationException) {
-                    //400 bad request
-                    ConstraintViolationException error = (ConstraintViolationException) ex;
-                    Set<ConstraintViolation<?>> cs = error.getConstraintViolations();
-                    if (cs == null || cs.isEmpty()) {
-                        context.response().status(HttpStatus.BAD_REQUEST.code());
-                        context.response().entity(new ErrorDetail<>(context.request().path(), error));
+                    Set<ConstraintViolation<?>> constraints = ((ConstraintViolationException) ex)
+                            .getConstraintViolations();
+                    if (constraints == null || constraints.isEmpty()) {
+                        context.response().entity(new ErrorDetail<>(context.request().path(), ex.getMessage()));
                     } else {
-                        final StringBuilder sb = InternalThreadLocalMap.get().stringBuilder();
-                        for (ConstraintViolation<?> c : cs) {
-                            sb.append("{property='").append(c.getPropertyPath()).append('\'');
-                            sb.append(",invalidValue='").append(c.getInvalidValue()).append('\'');
-                            sb.append(",message='").append(c.getMessage()).append("'}");
+                        List<ConstraintDetail> details = InternalThreadLocalMap.get().arrayList();
+                        for (ConstraintViolation<?> c : constraints) {
+                            details.add(new ConstraintDetail(c.getPropertyPath().toString(),
+                                    c.getInvalidValue().toString(), c.getMessage()));
                         }
-                        sb.append('}');
-                        context.response().status(HttpStatus.BAD_REQUEST.code());
-                        context.response().entity(new ErrorDetail<>(context.request().path(), sb.toString()));
+                        context.response().entity(new ErrorDetail<>(context.request().path(), details.toString()));
                     }
                     handled.complete(null);
                 } else {
