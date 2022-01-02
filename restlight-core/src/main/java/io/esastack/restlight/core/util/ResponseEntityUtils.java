@@ -15,6 +15,7 @@
  */
 package io.esastack.restlight.core.util;
 
+import esa.commons.ClassUtils;
 import esa.commons.Primitives;
 import esa.commons.StringUtils;
 import io.esastack.commons.net.http.MediaType;
@@ -46,7 +47,7 @@ public final class ResponseEntityUtils {
     }
 
     public static boolean isAssignableFrom(ResponseEntity entity, Class<?> target) {
-        Class<?> entityType = entity.type();
+        Class<?> entityType = ClassUtils.getUserType(entity.response().entity());
         if (entityType == null) {
             return false;
         }
@@ -62,7 +63,7 @@ public final class ResponseEntityUtils {
     }
 
     public static boolean isPrimitiveOrWrapperType(ResponseEntity entity) {
-        Class<?> entityType = entity.type();
+        Class<?> entityType = ClassUtils.getUserType(entity.response().entity());
         if (entityType == null) {
             return false;
         }
