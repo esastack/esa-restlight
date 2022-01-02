@@ -18,6 +18,7 @@ package io.esastack.restlight.server.mock;
 import esa.commons.Checks;
 import esa.commons.logging.Logger;
 import esa.commons.logging.LoggerFactory;
+import io.esastack.commons.net.buffer.Buffer;
 import io.esastack.commons.net.http.Cookie;
 import io.esastack.commons.net.http.HttpHeaderNames;
 import io.esastack.commons.net.http.HttpHeaders;
@@ -36,11 +37,21 @@ public class MockHttpResponse implements HttpResponse {
     private final List<Consumer<HttpResponse>> endListeners = new ArrayList<>(1);
     private final HttpHeaders headers = new Http1HeadersImpl();
     private final HttpHeaders trailingHeaders = new Http1HeadersImpl();
+    private final Buffer content;
     private int status = 200;
     private Object entity;
 
+    private MockHttpResponse(Buffer content) {
+        this.content = content;
+    }
+
+    public static Builder aMockResponse(Buffer content) {
+        Checks.checkNotNull(content, "content");
+        return new Builder(content);
+    }
+
     public static Builder aMockResponse() {
-        return new Builder();
+        return aMockResponse(Buffer.defaultAlloc().empty());
     }
 
     @Override
@@ -98,6 +109,10 @@ public class MockHttpResponse implements HttpResponse {
         return this.trailingHeaders;
     }
 
+    public Buffer content() {
+        return content;
+    }
+
     public void callEndListener() {
         for (Consumer<HttpResponse> endListener : endListeners) {
             try {
@@ -116,9 +131,12 @@ public class MockHttpResponse implements HttpResponse {
     }
 
     public static final class Builder {
-        private final List<Consumer<HttpResponse>> endListeners = new ArrayList<>();
 
-        private Builder() {
+        private final List<Consumer<HttpResponse>> endListeners = new ArrayList<>();
+        private final Buffer content;
+
+        private Builder(Buffer content) {
+            this.content = content;
         }
 
         public Builder withEndListeners(List<Consumer<HttpResponse>> endListeners) {
@@ -136,7 +154,7 @@ public class MockHttpResponse implements HttpResponse {
         }
 
         public MockHttpResponse build() {
-            MockHttpResponse mockHttpResponse = new MockHttpResponse();
+            MockHttpResponse mockHttpResponse = new MockHttpResponse(content);
             endListeners.forEach(mockHttpResponse::onEnd);
             return mockHttpResponse;
         }

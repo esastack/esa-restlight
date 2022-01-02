@@ -18,8 +18,9 @@ package io.esastack.restlight.jaxrs.resolver;
 import esa.commons.Checks;
 import esa.commons.ExceptionUtils;
 import esa.commons.collection.AttributeKey;
-import io.esastack.httpserver.core.Response;
+import io.esastack.commons.net.buffer.BufferUtil;
 import io.esastack.restlight.core.resolver.ResponseEntityChannelImpl;
+import io.esastack.restlight.server.bootstrap.ResponseContent;
 import io.esastack.restlight.server.context.RequestContext;
 import io.esastack.restlight.server.core.HttpOutputStream;
 import io.netty.buffer.ByteBuf;
@@ -55,12 +56,12 @@ public class ResponseEntityStreamChannelImpl extends ResponseEntityChannelImpl
 
     @Override
     public HttpOutputStream outputStream() {
-        if (response.isEnded()) {
+        if (content.isEnded()) {
             throw new IllegalStateException("Already ended");
         }
         if (outputStream == null) {
             checkCommitted();
-            outputStream = new ByteBufHttpOutputStream(4094, response);
+            outputStream = new ByteBufHttpOutputStream(4094, content);
         }
         return outputStream;
     }
@@ -76,12 +77,12 @@ public class ResponseEntityStreamChannelImpl extends ResponseEntityChannelImpl
         private static final int MIN_BUFFER_SIZE = 8;
 
         private final ByteBuf byteBuf;
-        private final Response resp;
+        private final ResponseContent content;
         private volatile int closed;
         private static final AtomicIntegerFieldUpdater<ByteBufHttpOutputStream> CLOSED_UPDATER =
                 AtomicIntegerFieldUpdater.newUpdater(ByteBufHttpOutputStream.class, "closed");
 
-        ByteBufHttpOutputStream(int bufferSize, Response resp) {
+        ByteBufHttpOutputStream(int bufferSize, ResponseContent content) {
             if (bufferSize < MIN_BUFFER_SIZE) {
                 throw new IllegalArgumentException("buffer size must be over than "
                         + MIN_BUFFER_SIZE + ". actual: " + bufferSize);
@@ -89,8 +90,8 @@ public class ResponseEntityStreamChannelImpl extends ResponseEntityChannelImpl
             // use buffer size as the max capacity of the ByteBuf
             // also it means the buffer size is the max chunk size of http response.
             // initialCapacity = 0 => user had opened a ByteBufHttpOutputStream but did not write any data.
-            this.byteBuf = resp.alloc().buffer(0, bufferSize);
-            this.resp = resp;
+            this.byteBuf = content.alloc().buffer(0, bufferSize);
+            this.content = content;
         }
 
         @Override
@@ -233,7 +234,7 @@ public class ResponseEntityStreamChannelImpl extends ResponseEntityChannelImpl
             if (!CLOSED_UPDATER.compareAndSet(this, 0, 1)) {
                 return;
             }
-            if (resp.isEnded()) {
+            if (content.isEnded()) {
                 // if the response has ended, we must make sure the current byteBuf should be released.
                 // NOTE: this is important, due to that even if the output stream has been opened, the end user
                 // can also end the response by Response. In this case, when we want to end the response
@@ -242,7 +243,7 @@ public class ResponseEntityStreamChannelImpl extends ResponseEntityChannelImpl
                 byteBuf.release();
             } else {
                 flush(true);
-                resp.end();
+                content.end();
             }
         }
 
@@ -260,11 +261,11 @@ public class ResponseEntityStreamChannelImpl extends ResponseEntityChannelImpl
             }
 
             if (isLast) {
-                resp.write(byteBuf);
+                content.write(BufferUtil.wrap(byteBuf));
             } else {
                 final ByteBuf copy = byteBuf.copy();
                 try {
-                    resp.write(copy);
+                    content.write(BufferUtil.wrap(copy));
                 } catch (Exception e) {
                     copy.release();
                     ExceptionUtils.throwException(e);

@@ -16,6 +16,7 @@
 package io.esastack.restlight.jaxrs.resolver;
 
 import io.esastack.httpserver.core.Response;
+import io.esastack.restlight.server.bootstrap.ResponseContentImpl;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
 import io.netty.buffer.ByteBufUtil;
@@ -43,7 +44,8 @@ class ResponseEntityStreamChannelTest {
         final Response response = mock(Response.class);
         when(response.alloc()).thenReturn(Unpooled.EMPTY_BUFFER.alloc());
         final ResponseEntityStreamChannelImpl.ByteBufHttpOutputStream out =
-                new ResponseEntityStreamChannelImpl.ByteBufHttpOutputStream(8, response);
+                new ResponseEntityStreamChannelImpl.ByteBufHttpOutputStream(8,
+                        new ResponseContentImpl(response));
         final ByteBuf buf = Unpooled.buffer();
         final ByteBuf write = Unpooled.buffer();
 
@@ -122,7 +124,8 @@ class ResponseEntityStreamChannelTest {
         });
         when(response.alloc()).thenReturn(alloc);
         final ResponseEntityStreamChannelImpl.ByteBufHttpOutputStream out =
-                new ResponseEntityStreamChannelImpl.ByteBufHttpOutputStream(8, response);
+                new ResponseEntityStreamChannelImpl.ByteBufHttpOutputStream(8,
+                        new ResponseContentImpl(response));
 
         final AtomicReference<ByteBuf> written = new AtomicReference<>();
         when(response.write(any(ByteBuf.class))).then(invocation -> {

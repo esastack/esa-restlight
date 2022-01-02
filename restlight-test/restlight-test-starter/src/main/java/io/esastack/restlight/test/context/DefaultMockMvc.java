@@ -15,13 +15,12 @@
  */
 package io.esastack.restlight.test.context;
 
-import esa.commons.collection.AttributeKey;
-import io.esastack.restlight.core.util.FutureUtils;
+import io.esastack.commons.net.buffer.Buffer;
 import io.esastack.restlight.server.context.RequestContext;
 import io.esastack.restlight.server.context.impl.RequestContextImpl;
-import io.esastack.restlight.server.handler.RestlightHandler;
 import io.esastack.restlight.server.mock.MockHttpRequest;
 import io.esastack.restlight.server.mock.MockHttpResponse;
+import io.esastack.restlight.server.schedule.HandleableRestlightHandler;
 import io.esastack.restlight.test.result.DefaultMvcResult;
 import io.esastack.restlight.test.result.MvcResult;
 import io.esastack.restlight.test.result.ResultActions;
@@ -30,24 +29,22 @@ import io.esastack.restlight.test.result.ResultMatcher;
 
 public class DefaultMockMvc implements MockMvc {
 
-    public static final AttributeKey<Object> RETURN_VALUE_KEY = AttributeKey.valueOf("$mock.result");
+    private final HandleableRestlightHandler handler;
 
-    private final RestlightHandler handler;
-
-    public DefaultMockMvc(RestlightHandler handler) {
+    public DefaultMockMvc(HandleableRestlightHandler handler) {
         this.handler = handler;
     }
 
     @Override
     public ResultActions perform(MockHttpRequest request) {
-        final MockHttpResponse response = MockHttpResponse.aMockResponse().build();
-        RequestContext context = new RequestContextImpl(request, response);
-        handler.process(context).join();
-        return new DefaultResultActions(new DefaultMvcResult(request, response, getResultAndClear(context)));
-    }
+        Buffer buffer = Buffer.defaultAlloc().buffer();
 
-    private Object getResultAndClear(RequestContext context) {
-        return FutureUtils.getFutureResult(context.attrs().attr(RETURN_VALUE_KEY).get());
+        final MockHttpResponse response = MockHttpResponse.aMockResponse(buffer).build();
+        RequestContext context = new RequestContextImpl(request, response);
+        context.attrs().attr(RequestContextImpl.RESPONSE_CONTENT).set(new MockResponseContent(buffer));
+
+        handler.process(context).join();
+        return new DefaultResultActions(new DefaultMvcResult(request, response));
     }
 
     private static class DefaultResultActions implements ResultActions {

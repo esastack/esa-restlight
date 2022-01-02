@@ -15,10 +15,16 @@
  */
 package io.esastack.restlight.core;
 
+import esa.commons.Checks;
+import esa.commons.StringUtils;
+import esa.commons.spi.SpiLoader;
 import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.core.handler.WritableRestlightHandler;
 import io.esastack.restlight.core.resolver.ExceptionResolver;
 import io.esastack.restlight.core.resolver.exception.DefaultExceptionResolverFactory;
+import io.esastack.restlight.core.spi.ResponseEntityChannelFactory;
+import io.esastack.restlight.core.util.Constants;
+import io.esastack.restlight.core.util.OrderedComparator;
 import io.esastack.restlight.server.BaseRestlightServer;
 import io.esastack.restlight.server.bootstrap.ExceptionHandlerChain;
 import io.esastack.restlight.server.bootstrap.IExceptionHandler;
@@ -26,6 +32,9 @@ import io.esastack.restlight.server.bootstrap.LinkedExceptionHandlerChain;
 import io.esastack.restlight.server.bootstrap.RestlightServer;
 import io.esastack.restlight.server.handler.RestlightHandler;
 import io.esastack.restlight.server.schedule.HandleableRestlightHandler;
+
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Abstract implementation for a Restlight server bootstrap. This class allows to set some server-level configurations
@@ -55,7 +64,19 @@ public abstract class AbstractRestlight<R extends AbstractRestlight<R, D, O>,
             handlerChain = LinkedExceptionHandlerChain.immutable(exceptionHandlers,
                     exceptionResolver::handleException);
         }
-        return new WritableRestlightHandler(handler, handlerChain, deployments().deployContext());
+        return new WritableRestlightHandler(handler, handlerChain, extractChannelFactory(),
+                deployments().deployContext());
+    }
+
+    private ResponseEntityChannelFactory extractChannelFactory() {
+        List<ResponseEntityChannelFactory> factories = SpiLoader.cached(ResponseEntityChannelFactory.class)
+                .getByFeature(deployments().server().name(),
+                        true,
+                        Collections.singletonMap(Constants.INTERNAL, StringUtils.empty()),
+                        false);
+        Checks.checkNotEmptyArg(factories, "factories must not be empty");
+        OrderedComparator.sort(factories);
+        return factories.get(0);
     }
 
     private ExceptionResolver<Throwable> getExceptionResolver() {

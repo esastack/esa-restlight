@@ -20,20 +20,19 @@ import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.server.bootstrap.RestlightServer;
 import io.esastack.restlight.server.schedule.HandleableRestlightHandler;
 
-class Restlight4SpringMvcTest extends AbstractRestlight<Restlight4SpringMvcTest,
-        Deployments4SpringMvcTest, RestlightOptions> {
+class Restlight4Test extends AbstractRestlight<Restlight4Test, Deployments4Test, RestlightOptions> {
 
-    private Restlight4SpringMvcTest(RestlightOptions options) {
+    private Restlight4Test(RestlightOptions options) {
         super(options);
     }
 
-    static Restlight4SpringMvcTest forServer(RestlightOptions options) {
-        return new Restlight4SpringMvcTest(options);
+    static Restlight4Test forServer(RestlightOptions options) {
+        return new Restlight4Test(options);
     }
 
     @Override
-    protected Deployments4SpringMvcTest createDeployments() {
-        return new Deployments4SpringMvcTest(this, options);
+    protected Deployments4Test createDeployments() {
+        return new Deployments4Test(this, options);
     }
 
     @Override

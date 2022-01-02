@@ -31,8 +31,10 @@ import io.esastack.restlight.core.resolver.ResponseEntityImpl;
 import io.esastack.restlight.core.resolver.ResponseEntityResolverAdvice;
 import io.esastack.restlight.core.resolver.ResponseEntityResolverContext;
 import io.esastack.restlight.core.resolver.ResponseEntityResolverContextImpl;
+import io.esastack.restlight.core.spi.ResponseEntityChannelFactory;
 import io.esastack.restlight.core.spi.impl.RouteTracking;
 import io.esastack.restlight.core.util.ResponseEntityUtils;
+import io.esastack.restlight.server.bootstrap.DispatcherHandlerImpl;
 import io.esastack.restlight.server.bootstrap.ExceptionHandlerChain;
 import io.esastack.restlight.server.bootstrap.WebServerException;
 import io.esastack.restlight.server.context.RequestContext;
@@ -40,26 +42,27 @@ import io.esastack.restlight.server.core.HttpRequest;
 import io.esastack.restlight.server.core.HttpResponse;
 import io.esastack.restlight.server.handler.RestlightHandler;
 import io.esastack.restlight.server.schedule.HandleableRestlightHandler;
-import io.esastack.restlight.server.util.ErrorDetail;
 import io.esastack.restlight.server.util.Futures;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-
-import static io.esastack.restlight.server.util.ErrorDetail.getMessage;
 
 public class WritableRestlightHandler extends HandleableRestlightHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(WritableRestlightHandler.class);
 
     private final HandlerResolverFactory resolverFactory;
+    private final ResponseEntityChannelFactory channelFactory;
     private final HandlerContextProvider handlerContextProvider;
 
     public WritableRestlightHandler(RestlightHandler underlying,
                                     ExceptionHandlerChain handlerChain,
+                                    ResponseEntityChannelFactory channelFactory,
                                     DeployContext<? extends RestlightOptions> context) {
         super(underlying, handlerChain);
+        Checks.checkNotNull(channelFactory, "channelFactory");
         Checks.checkNotNull(context, "context");
+        this.channelFactory = channelFactory;
         this.resolverFactory = context.resolverFactory().orElseThrow(() ->
                 new IllegalStateException("HandlerResolverFactory is absent"));
         this.handlerContextProvider = context.handlerContextProvider().orElseThrow(() ->
@@ -70,7 +73,7 @@ public class WritableRestlightHandler extends HandleableRestlightHandler {
     public CompletableFuture<Void> process(RequestContext context) {
         return super.process(context).whenComplete((v, th) -> {
             if (th != null) {
-                handleException(context, Futures.unwrapCompletionException(th));
+                DispatcherHandlerImpl.handleException(context, Futures.unwrapCompletionException(th));
             }
 
             final HandlerMethod method = RouteTracking.handlerMethod(context);
@@ -79,7 +82,7 @@ public class WritableRestlightHandler extends HandleableRestlightHandler {
                     mediaTypes.isEmpty() ? null : mediaTypes.get(0));
             HandlerResolverFactory resolverFactory = getResolverFactory(method);
             final ResponseEntityResolverContext rspCtx = new ResponseEntityResolverContextImpl(context,
-                    entity, resolverFactory.getResponseEntityResolvers(),
+                    entity, channelFactory.create(context), resolverFactory.getResponseEntityResolvers(),
                     resolverFactory.getResponseEntityResolverAdvices(entity)
                             .toArray(new ResponseEntityResolverAdvice[0]));
 
@@ -117,17 +120,6 @@ public class WritableRestlightHandler extends HandleableRestlightHandler {
                         request.path(), request.method(), context.response().status());
             }
         });
-    }
-
-    private void handleException(RequestContext context, Throwable th) {
-        HttpStatus status;
-        if (th instanceof WebServerException) {
-            status = ((WebServerException) th).status();
-        } else {
-            status = HttpStatus.INTERNAL_SERVER_ERROR;
-        }
-        context.response().status(status.code());
-        context.response().entity(new ErrorDetail<>(context.request().path(), getMessage(status, th)));
     }
 
     private void setEntityTypeIfNecessary(ResponseEntityResolverContext rspCtx, HttpResponse response) {

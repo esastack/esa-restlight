@@ -17,7 +17,7 @@ package io.esastack.restlight.test.bootstrap;
 
 import esa.commons.Checks;
 import io.esastack.restlight.server.bootstrap.RestlightServer;
-import io.esastack.restlight.server.handler.RestlightHandler;
+import io.esastack.restlight.server.schedule.HandleableRestlightHandler;
 
 import java.net.SocketAddress;
 import java.util.concurrent.CompletableFuture;
@@ -25,11 +25,11 @@ import java.util.concurrent.Executor;
 
 class FakeServer implements RestlightServer {
 
-    final RestlightHandler handler;
+    final HandleableRestlightHandler handler;
     private volatile CompletableFuture<Void> stopFuture;
 
-    FakeServer(RestlightHandler handler) {
-        Checks.checkNotNull(handler);
+    FakeServer(HandleableRestlightHandler handler) {
+        Checks.checkNotNull(handler, "handler");
         this.handler = handler;
     }
 

@@ -19,14 +19,14 @@ import esa.commons.Checks;
 import esa.commons.collection.AttributeKey;
 import esa.commons.collection.AttributeMap;
 import esa.commons.collection.Attributes;
-import io.esastack.httpserver.core.Response;
+import io.esastack.restlight.server.bootstrap.ResponseContent;
 import io.esastack.restlight.server.context.RequestContext;
 import io.esastack.restlight.server.core.HttpRequest;
 import io.esastack.restlight.server.core.HttpResponse;
 
 public class RequestContextImpl implements RequestContext {
 
-    public static final AttributeKey<Response> UNDERLYING_RESPONSE = AttributeKey.valueOf("$underlying.response");
+    public static final AttributeKey<ResponseContent> RESPONSE_CONTENT = AttributeKey.valueOf("$response.content");
 
     private final Attributes attributes;
     private final HttpRequest request;

@@ -194,15 +194,19 @@ public class DispatcherHandlerImpl implements DispatcherHandler {
 
     private void completeRequest0(RequestContext context, CompletableFuture<Void> promise, Throwable th) {
         if (th != null) {
-            final HttpStatus status;
-            if (th instanceof WebServerException) {
-                status = ((WebServerException) th).status();
-            } else {
-                status = HttpStatus.INTERNAL_SERVER_ERROR;
-            }
-            context.response().status(status.code());
-            context.response().entity(new ErrorDetail<>(context.request().path(), getMessage(status, th)));
+            handleException(context, th);
         }
         PromiseUtils.setSuccess(promise);
+    }
+
+    public static void handleException(RequestContext context, Throwable th) {
+        final HttpStatus status;
+        if (th instanceof WebServerException) {
+            status = ((WebServerException) th).status();
+        } else {
+            status = HttpStatus.INTERNAL_SERVER_ERROR;
+        }
+        context.response().status(status.code());
+        context.response().entity(new ErrorDetail<>(context.request().path(), getMessage(status, th)));
     }
 }

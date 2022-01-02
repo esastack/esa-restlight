@@ -35,11 +35,11 @@ import java.util.List;
 
 public class MinorityMockMvcBuilder implements MockMvcBuilder {
 
-    private final Deployments4SpringMvcTest deployments;
+    private final Deployments4Test deployments;
 
     MinorityMockMvcBuilder(Object... controllers) {
         Checks.checkNotNull(controllers, "controllers");
-        this.deployments = Restlight4SpringMvcTest.forServer(RestlightOptionsConfigure.defaultOpts())
+        this.deployments = Restlight4Test.forServer(RestlightOptionsConfigure.defaultOpts())
                 .deployments();
         deployments.addSerializers(Collections.singletonList(
                 new JacksonHttpBodySerializer(JacksonSerializer.getDefaultMapper())));
@@ -105,9 +105,9 @@ public class MinorityMockMvcBuilder implements MockMvcBuilder {
 
     @Override
     public MockMvc build() {
-        final Restlight4SpringMvcTest server = deployments.server();
+        final Restlight4Test server = deployments.server();
         server.start();
-        return new DefaultMockMvc(server.deployments().handler());
+        return new DefaultMockMvc(((FakeServer) server.unWrap()).handler);
     }
 
     private List<Object> instantiateIfNecessary(Object[] target) {

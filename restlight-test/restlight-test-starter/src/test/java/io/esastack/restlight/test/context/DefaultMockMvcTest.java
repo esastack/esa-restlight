@@ -17,8 +17,8 @@ package io.esastack.restlight.test.context;
 
 import io.esastack.restlight.server.context.RequestContext;
 import io.esastack.restlight.server.core.HttpResponse;
-import io.esastack.restlight.server.handler.RestlightHandler;
 import io.esastack.restlight.server.mock.MockHttpRequest;
+import io.esastack.restlight.server.schedule.HandleableRestlightHandler;
 import io.esastack.restlight.server.util.Futures;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -34,14 +34,14 @@ class DefaultMockMvcTest {
 
     @Test
     void testPerform() {
-        final RestlightHandler handler = mock(RestlightHandler.class);
+        final HandleableRestlightHandler handler = mock(HandleableRestlightHandler.class);
         final DefaultMockMvc mockMvc = new DefaultMockMvc(handler);
 
         final MockHttpRequest request = MockHttpRequest.aMockRequest().build();
         when(handler.process(any())).then(mock -> {
             final RequestContext context = mock.getArgument(0, RequestContext.class);
             final HttpResponse res = context.response();
-            context.attrs().attr(DefaultMockMvc.RETURN_VALUE_KEY).set("foo");
+            res.entity("foo");
             res.status(200);
             res.entity("foo".getBytes());
             return Futures.completedFuture();
@@ -59,18 +59,18 @@ class DefaultMockMvcTest {
 
     @Test
     void testPerformAsync() {
-        final RestlightHandler handler = mock(RestlightHandler.class);
+        final HandleableRestlightHandler handler = mock(HandleableRestlightHandler.class);
         final DefaultMockMvc mockMvc = new DefaultMockMvc(handler);
 
         final MockHttpRequest request = MockHttpRequest.aMockRequest().build();
         when(handler.process(any())).then(mock -> {
             final RequestContext ctx = mock.getArgument(0, RequestContext.class);
-            ctx.attrs().attr(DefaultMockMvc.RETURN_VALUE_KEY).set(Futures.completedFuture("foo"));
+            ctx.response().entity("foo");
             return Futures.completedFuture();
         });
         mockMvc.perform(request)
-                .addExpect(r -> Assertions.assertEquals("foo", r.result()))
-                .then(r -> Assertions.assertEquals("foo", r.result()));
+                .addExpect(r -> Assertions.assertEquals("foo", r.response().entity()))
+                .then(r -> Assertions.assertEquals("foo", r.response().entity()));
     }
 
 }
