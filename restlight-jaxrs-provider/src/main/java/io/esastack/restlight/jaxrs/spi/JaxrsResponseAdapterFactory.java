@@ -15,6 +15,7 @@
  */
 package io.esastack.restlight.jaxrs.spi;
 
+import esa.commons.ClassUtils;
 import io.esastack.restlight.core.resolver.ResponseEntity;
 import io.esastack.restlight.core.resolver.ResponseEntityResolverAdvice;
 import io.esastack.restlight.core.resolver.ResponseEntityResolverAdviceFactory;
@@ -33,7 +34,7 @@ public class JaxrsResponseAdapterFactory implements ResponseEntityResolverAdvice
 
     @Override
     public boolean supports(ResponseEntity entity) {
-        Class<?> type = entity.type();
+        Class<?> type = ClassUtils.getUserType(entity.response().entity());
         if (type == null) {
             return false;
         }
