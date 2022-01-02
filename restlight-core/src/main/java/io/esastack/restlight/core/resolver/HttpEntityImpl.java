@@ -15,9 +15,7 @@
  */
 package io.esastack.restlight.core.resolver;
 
-import esa.commons.StringUtils;
 import io.esastack.commons.net.http.MediaType;
-import io.esastack.commons.net.http.MediaTypeUtil;
 import io.esastack.restlight.core.method.HandlerMethod;
 
 import java.lang.annotation.Annotation;
@@ -37,7 +35,7 @@ public class HttpEntityImpl implements HttpEntity {
     private MediaType mediaType;
 
     public HttpEntityImpl(HandlerMethod handler, MediaType mediaType) {
-        this.mediaType = mediaType;
+        this.mediaType = (mediaType != null ? mediaType : MediaType.ALL);
         this.handler = handler;
     }
 
@@ -97,13 +95,6 @@ public class HttpEntityImpl implements HttpEntity {
         }
         sb.append('}');
         return sb.toString();
-    }
-
-    static MediaType parseMediaType(String mediaType) {
-        if (StringUtils.isEmpty(mediaType)) {
-            return null;
-        }
-        return MediaTypeUtil.parseMediaType(mediaType);
     }
 }
 
