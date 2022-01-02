@@ -16,6 +16,7 @@
 package io.esastack.restlight.core.handler.locate;
 
 import esa.commons.Checks;
+import io.esastack.restlight.core.handler.HandlerMapping;
 import io.esastack.restlight.core.handler.RouteMethodInfo;
 
 import java.lang.reflect.Method;
@@ -46,10 +47,10 @@ public class CompositeRouteMethodLocator implements RouteMethodLocator {
     }
 
     @Override
-    public Optional<RouteMethodInfo> getRouteHandlerInfo(Class<?> userType, Method method) {
+    public Optional<RouteMethodInfo> getRouteMethodInfo(HandlerMapping parent, Class<?> userType, Method method) {
         Optional<RouteMethodInfo> routeMethod = Optional.empty();
         for (RouteMethodLocator locator : locators) {
-            routeMethod = locator.getRouteHandlerInfo(userType, method);
+            routeMethod = locator.getRouteMethodInfo(parent, userType, method);
             if (routeMethod.isPresent()) {
                 break;
             }

@@ -15,6 +15,7 @@
  */
 package io.esastack.restlight.core.handler.locate;
 
+import io.esastack.restlight.core.handler.HandlerMapping;
 import io.esastack.restlight.server.route.Mapping;
 
 import java.lang.reflect.Method;
@@ -28,11 +29,12 @@ public interface MappingLocator {
     /**
      * Locates an optional instance of {@link Mapping} by given target {@link Method} and type if necessary.
      *
+     * @param parent   parent handler mapping if exist, which may be {@code null} for root method.
      * @param userType type of given method
      * @param method   target method
      *
      * @return mapping
      */
-    Optional<Mapping> getMapping(Class<?> userType, Method method);
+    Optional<Mapping> getMapping(HandlerMapping parent, Class<?> userType, Method method);
 
 }

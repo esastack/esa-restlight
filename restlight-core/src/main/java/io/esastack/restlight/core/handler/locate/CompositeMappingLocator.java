@@ -16,6 +16,7 @@
 package io.esastack.restlight.core.handler.locate;
 
 import esa.commons.Checks;
+import io.esastack.restlight.core.handler.HandlerMapping;
 import io.esastack.restlight.server.route.Mapping;
 
 import java.lang.reflect.Method;
@@ -46,9 +47,9 @@ public class CompositeMappingLocator implements MappingLocator {
     }
 
     @Override
-    public Optional<Mapping> getMapping(Class<?> userType, Method method) {
+    public Optional<Mapping> getMapping(HandlerMapping parent, Class<?> userType, Method method) {
         for (MappingLocator locator : locators) {
-            Optional<Mapping> mapping = locator.getMapping(userType, method);
+            Optional<Mapping> mapping = locator.getMapping(parent, userType, method);
             if (mapping.isPresent()) {
                 return mapping;
             }

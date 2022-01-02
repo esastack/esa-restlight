@@ -117,7 +117,7 @@ public class SpringMvcExceptionResolverFactory extends AbstractExceptionResolver
                                           Method method,
                                           Map<Class<? extends Throwable>, ExceptionResolver<Throwable>> mappings) {
         for (Class<? extends Throwable> exceptionType : detectExceptionMappings(method)) {
-            locator.getHandlerInfo(ClassUtils.getUserType(bean), method).ifPresent(handler -> {
+            locator.getHandlerMethodInfo(null, ClassUtils.getUserType(bean), method).ifPresent(handler -> {
                 ExceptionResolver<Throwable> resolver =
                         new ExecutionExceptionResolver(new HandlerMethodAdapter<>(
                                 new HandlerContext<>(context), handler.handlerMethod()),

@@ -15,6 +15,7 @@
  */
 package io.esastack.restlight.core.handler.locate;
 
+import io.esastack.restlight.core.handler.HandlerMapping;
 import io.esastack.restlight.core.handler.HandlerMethodInfo;
 import io.esastack.restlight.core.handler.RouteMethodInfo;
 
@@ -30,16 +31,17 @@ public interface RouteMethodLocator extends HandlerMethodLocator {
     /**
      * Gets an an {@link Optional} instance of {@link RouteMethodInfo} if possible.
      *
+     * @param parent   parent handler mapping if exist, which may be {@code null} for root method.
      * @param userType user type
      * @param method   target method
      *
      * @return optional value of route handler.
      */
-    Optional<RouteMethodInfo> getRouteHandlerInfo(Class<?> userType, Method method);
+    Optional<RouteMethodInfo> getRouteMethodInfo(HandlerMapping parent, Class<?> userType, Method method);
 
     @Override
-    default Optional<HandlerMethodInfo> getHandlerInfo(Class<?> userType, Method method) {
-        return Optional.ofNullable(getRouteHandlerInfo(userType, method).orElse(null));
+    default Optional<HandlerMethodInfo> getHandlerMethodInfo(HandlerMapping parent, Class<?> userType, Method method) {
+        return Optional.ofNullable(getRouteMethodInfo(parent, userType, method).orElse(null));
     }
 
 }

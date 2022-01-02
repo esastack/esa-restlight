@@ -30,9 +30,9 @@ public class JaxrsMappingLocatorFactory implements MappingLocatorFactory {
 
     @Override
     public MappingLocator locator(DeployContext<? extends RestlightOptions> ctx) {
-        return ((userType, method) ->
+        return ((parent, userType, method) ->
                 JaxrsMappingUtils.extractMapping(userType,
                         method,
-                        ctx.options().getContextPath()));
+                        parent != null ? null : ctx.options().getContextPath()));
     }
 }
