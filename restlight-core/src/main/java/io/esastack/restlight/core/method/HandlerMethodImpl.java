@@ -17,9 +17,6 @@ package io.esastack.restlight.core.method;
 
 import esa.commons.Checks;
 import esa.commons.reflect.AnnotationUtils;
-import io.esastack.restlight.core.annotation.ResponseSerializer;
-import io.esastack.restlight.core.annotation.Serializer;
-import io.esastack.restlight.core.serialize.HttpResponseSerializer;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -30,15 +27,13 @@ public class HandlerMethodImpl implements HandlerMethod {
     private final Class<?> beanType;
     private final Method method;
     private final MethodParam[] parameters;
-    private final Class<? extends HttpResponseSerializer> serializer;
 
     protected HandlerMethodImpl(Class<?> userType, Method method) {
         Checks.checkNotNull(userType, "userType");
         Checks.checkNotNull(method, "method");
         this.beanType = userType;
         this.method = method;
-        this.serializer = findResponseSerializer();
-        this.parameters = initMethodParameters();
+        this.parameters = initMethodParams();
     }
 
     public static HandlerMethodImpl of(Class<?> userType, Method method) {
@@ -50,7 +45,7 @@ public class HandlerMethodImpl implements HandlerMethod {
      *
      * @return parameters
      */
-    private MethodParam[] initMethodParameters() {
+    private MethodParam[] initMethodParams() {
         int count = this.method.getParameterCount();
         MethodParam[] result = new MethodParam[count];
 
@@ -104,35 +99,6 @@ public class HandlerMethodImpl implements HandlerMethod {
     @Override
     public MethodParam[] parameters() {
         return this.parameters;
-    }
-
-    @Override
-    public Class<? extends HttpResponseSerializer> serializer() {
-        return serializer;
-    }
-
-    private Class<? extends HttpResponseSerializer> findResponseSerializer() {
-        Class<? extends HttpResponseSerializer> target = null;
-
-        // find @ResponseSerializer from the method and class
-        ResponseSerializer responseSerializer;
-        if ((responseSerializer = getMethodAnnotation(ResponseSerializer.class)) != null
-                || (responseSerializer = AnnotationUtils.findAnnotation(beanType,
-                ResponseSerializer.class)) != null) {
-            target = responseSerializer.value();
-        }
-
-        // find @Serializer from the method and class
-        if (target == null) {
-            Serializer serializer;
-            if ((serializer = getMethodAnnotation(Serializer.class)) != null
-                    || (serializer = AnnotationUtils.findAnnotation(beanType,
-                    Serializer.class)) != null) {
-                target = serializer.value();
-            }
-
-        }
-        return target;
     }
 
     @Override

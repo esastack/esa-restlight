@@ -16,7 +16,10 @@
 package io.esastack.restlight.core.resolver.rspentity;
 
 import esa.commons.collection.AttributeKey;
+import esa.commons.reflect.AnnotationUtils;
 import io.esastack.commons.net.http.MediaType;
+import io.esastack.restlight.core.annotation.ResponseSerializer;
+import io.esastack.restlight.core.annotation.Serializer;
 import io.esastack.restlight.core.method.HandlerMethod;
 import io.esastack.restlight.core.resolver.HandledValue;
 import io.esastack.restlight.core.resolver.ResponseEntity;
@@ -49,7 +52,7 @@ public abstract class FixedResponseEntityResolver extends AbstractResponseEntity
         if (!supports(entity) || !entity.handler().isPresent()) {
             return HandledValue.failed();
         }
-        Class<? extends HttpResponseSerializer> target = entity.handler().get().serializer();
+        Class<? extends HttpResponseSerializer> target = findResponseSerializer(entity.handler().get());
         if (target != null && target != HttpResponseSerializer.class) {
             if (target.isInterface() || Modifier.isAbstract(target.getModifiers())) {
                 throw new IllegalArgumentException("Could not resolve ResponseBody serializer class. target type " +
@@ -95,6 +98,30 @@ public abstract class FixedResponseEntityResolver extends AbstractResponseEntity
     @Override
     protected List<MediaType> getMediaTypes(RequestContext context) {
         return Collections.emptyList();
+    }
+
+    private Class<? extends HttpResponseSerializer> findResponseSerializer(HandlerMethod method) {
+        Class<? extends HttpResponseSerializer> target = null;
+
+        // find @ResponseSerializer from the method and class
+        ResponseSerializer responseSerializer;
+        if ((responseSerializer = method.getMethodAnnotation(ResponseSerializer.class)) != null
+                || (responseSerializer = AnnotationUtils.findAnnotation(method.beanType(),
+                ResponseSerializer.class)) != null) {
+            target = responseSerializer.value();
+        }
+
+        // find @Serializer from the method and class
+        if (target == null) {
+            Serializer serializer;
+            if ((serializer = method.getMethodAnnotation(Serializer.class)) != null
+                    || (serializer = AnnotationUtils.findAnnotation(method.beanType(),
+                    Serializer.class)) != null) {
+                target = serializer.value();
+            }
+
+        }
+        return target;
     }
 
 }
