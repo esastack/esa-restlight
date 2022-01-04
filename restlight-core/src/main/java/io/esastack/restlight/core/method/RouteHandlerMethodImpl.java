@@ -19,6 +19,7 @@ import esa.commons.StringUtils;
 import io.esastack.restlight.server.schedule.Schedulers;
 
 import java.lang.reflect.Method;
+import java.util.Objects;
 
 public class RouteHandlerMethodImpl extends HandlerMethodImpl implements RouteHandlerMethod {
 
@@ -48,6 +49,26 @@ public class RouteHandlerMethodImpl extends HandlerMethodImpl implements RouteHa
     @Override
     public String scheduler() {
         return scheduler;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
+        RouteHandlerMethodImpl that = (RouteHandlerMethodImpl) o;
+        return intercepted == that.intercepted && Objects.equals(scheduler, that.scheduler);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), intercepted, scheduler);
     }
 
     @Override

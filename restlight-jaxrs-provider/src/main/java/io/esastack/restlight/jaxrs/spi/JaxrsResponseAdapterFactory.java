@@ -15,10 +15,12 @@
  */
 package io.esastack.restlight.jaxrs.spi;
 
+import esa.commons.ClassUtils;
 import io.esastack.restlight.core.resolver.ResponseEntity;
 import io.esastack.restlight.core.resolver.ResponseEntityResolverAdvice;
 import io.esastack.restlight.core.resolver.ResponseEntityResolverAdviceFactory;
-import io.esastack.restlight.core.resolver.ResponseEntityResolverContext;
+import io.esastack.restlight.core.util.Ordered;
+import io.esastack.restlight.jaxrs.adapter.JaxrsResponseAdapter;
 import jakarta.ws.rs.core.GenericEntity;
 import jakarta.ws.rs.core.Response;
 
@@ -28,9 +30,11 @@ import jakarta.ws.rs.core.Response;
  */
 public class JaxrsResponseAdapterFactory implements ResponseEntityResolverAdviceFactory {
 
+    private static final ResponseEntityResolverAdvice SINGLETON = new JaxrsResponseAdapter();
+
     @Override
     public boolean supports(ResponseEntity entity) {
-        Class<?> type = entity.type();
+        Class<?> type = ClassUtils.getUserType(entity.response().entity());
         if (type == null) {
             return false;
         }
@@ -41,38 +45,12 @@ public class JaxrsResponseAdapterFactory implements ResponseEntityResolverAdvice
 
     @Override
     public ResponseEntityResolverAdvice createResolverAdvice(ResponseEntity entity) {
-        return JaxrsResponseAdapter.SINGLETON;
+        return SINGLETON;
     }
 
-    private static class JaxrsResponseAdapter implements ResponseEntityResolverAdvice {
-
-        private static final ResponseEntityResolverAdvice SINGLETON = new JaxrsResponseAdapter();
-
-        private JaxrsResponseAdapter() {
-        }
-
-        @Override
-        public void aroundWrite(ResponseEntityResolverContext context) {
-            Object entity = context.context().response().entity();
-            if (entity == null) {
-                return;
-            }
-            if (entity instanceof GenericEntity) {
-                GenericEntity<?> gEntity = (GenericEntity<?>) entity;
-                entity = gEntity.getEntity();
-                context.httpEntity().type(gEntity.getRawType());
-                context.httpEntity().genericType(gEntity.getType());
-            }
-            Response response = null;
-            if (entity instanceof Response) {
-                response = (Response) entity;
-            } else if (entity instanceof Response.ResponseBuilder) {
-                response = ((Response.ResponseBuilder) entity).build();
-            }
-            if (response != null) {
-                context.context().response().entity(response);
-            }
-        }
+    @Override
+    public int getOrder() {
+        return Ordered.HIGHEST_PRECEDENCE;
     }
 
 }

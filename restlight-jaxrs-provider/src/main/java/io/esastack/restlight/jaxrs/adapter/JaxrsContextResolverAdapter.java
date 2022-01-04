@@ -17,31 +17,50 @@ package io.esastack.restlight.jaxrs.adapter;
 
 import esa.commons.Checks;
 import esa.commons.ClassUtils;
-import io.esastack.restlight.core.DeployContext;
-import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.core.method.Param;
-import io.esastack.restlight.core.resolver.ContextResolverAdapter;
+import io.esastack.restlight.core.resolver.ParamResolverAdapter;
+import io.esastack.restlight.core.util.ResponseEntityUtils;
 import io.esastack.restlight.jaxrs.configure.ProxyComponent;
+import io.esastack.restlight.jaxrs.util.JaxrsUtils;
+import io.esastack.restlight.server.context.RequestContext;
 
-public class JaxrsContextResolverAdapter implements ContextResolverAdapter {
+import java.util.List;
+
+public class JaxrsContextResolverAdapter implements ParamResolverAdapter {
 
     private final jakarta.ws.rs.ext.ContextResolver<?> delegating;
-    private final Class<?> targetClass;
+    private final io.esastack.commons.net.http.MediaType[] produces;
+    private final int order;
+    private final Class<?> matchableType;
 
     public JaxrsContextResolverAdapter(ProxyComponent<jakarta.ws.rs.ext.ContextResolver<?>> delegating) {
         Checks.checkNotNull(delegating, "delegating");
         this.delegating = delegating.proxied();
-        this.targetClass = ClassUtils.getRawType(ClassUtils.getUserType(delegating.underlying()));
+        this.produces = MediaTypes.covert(JaxrsUtils.produces(delegating.underlying()));
+        this.order = JaxrsUtils.getOrder(delegating.underlying());
+        this.matchableType = ClassUtils.findFirstGenericType(ClassUtils.getUserType(delegating.underlying()))
+                .orElse(Object.class);
     }
 
     @Override
-    public Object resolve(Param param, DeployContext<? extends RestlightOptions> context) throws Exception {
-        return delegating.getContext(param.type());
+    public Object resolve(Param param, RequestContext context) throws Exception {
+        final List<io.esastack.commons.net.http.MediaType> mediaTypes = ResponseEntityUtils.getMediaTypes(context);
+        if (MediaTypes.isCompatibleWith(produces, mediaTypes)) {
+            return delegating.getContext(param.type());
+        } else {
+            return null;
+        }
     }
 
     @Override
     public boolean supports(Param param) {
-        return targetClass.equals(param.type());
+        return matchableType.isAssignableFrom(param.type());
     }
+
+    @Override
+    public int getOrder() {
+        return order;
+    }
+
 }
 

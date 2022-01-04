@@ -14,8 +14,6 @@
       {"pattern":".*/io.esastack.restlight.core.spi.ParamResolverProvider$"},
       {"pattern":".*/io.esastack.restlight.core.spi.RequestEntityResolverProvider$"},
       {"pattern":".*/io.esastack.restlight.core.spi.ResponseEntityResolverProvider$"},
-      {"pattern":".*/io.esastack.restlight.core.spi.RouteFilterFactory$"},
-      {"pattern":".*/io.esastack.restlight.core.spi.FilterFactory$"},
       {"pattern":".*/io.esastack.restlight.jaxrs.spi.HeaderDelegateFactory$"},
       {"pattern":".*/jakarta.ws.rs.ext.RuntimeDelegate$"}
     ]},

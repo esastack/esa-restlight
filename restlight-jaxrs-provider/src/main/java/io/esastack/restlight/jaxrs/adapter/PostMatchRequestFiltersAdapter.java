@@ -28,11 +28,11 @@ import jakarta.ws.rs.container.ContainerRequestFilter;
 
 import java.util.concurrent.CompletableFuture;
 
-public class PostMatchRequestFilters implements RouteFilter {
+public class PostMatchRequestFiltersAdapter implements RouteFilter {
 
     private final ContainerRequestFilter[] filters;
 
-    public PostMatchRequestFilters(ContainerRequestFilter[] filters) {
+    public PostMatchRequestFiltersAdapter(ContainerRequestFilter[] filters) {
         Checks.checkNotNull(filters, "filters");
         this.filters = filters;
     }
@@ -44,7 +44,7 @@ public class PostMatchRequestFilters implements RouteFilter {
             for (ContainerRequestFilter filter : filters) {
                 filter.filter(ctx);
                 if (ctx.isAborted()) {
-                    break;
+                    return Futures.completedFuture();
                 }
             }
         } catch (Throwable th) {

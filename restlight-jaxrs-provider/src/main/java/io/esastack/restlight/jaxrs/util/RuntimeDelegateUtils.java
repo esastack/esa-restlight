@@ -22,6 +22,7 @@ import io.esastack.commons.net.http.HttpHeaders;
 import io.esastack.restlight.jaxrs.impl.core.ResponseImpl;
 import io.esastack.restlight.server.core.HttpResponse;
 import jakarta.ws.rs.core.MultivaluedMap;
+import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.RuntimeDelegate;
 
 import java.util.ArrayList;
@@ -77,8 +78,13 @@ public final class RuntimeDelegateUtils {
         if (from == null || to == null) {
             return;
         }
-        to.setStatus(from.status());
-        to.setEntity(from.entity());
+
+        // when the from.entity instanceof Response which means the to is generated from from.entity,
+        // we should avoid endless loop setting.
+        if (!(from.entity() instanceof Response)) {
+            to.setEntity(from.entity());
+            to.setStatus(from.status());
+        }
 
         MultiValueMap<String, Object> headers = new LinkedMultiValueMap<>();
         for (String name : from.headers().names()) {
@@ -92,7 +98,12 @@ public final class RuntimeDelegateUtils {
             return;
         }
         to.status(from.getStatus());
-        to.entity(from.getEntity());
+
+        // when the from.entity instanceof Response which means the to is generated from from.entity,
+        // we should avoid endless loop setting.
+        if (!(to.entity() instanceof Response)) {
+            to.entity(from.getEntity());
+        }
 
         if (clearSource) {
             to.headers().clear();

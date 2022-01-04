@@ -72,7 +72,7 @@ public class ConfigurableHandlerImpl implements ConfigurableHandler {
 
             @Override
             public boolean supports(HandlerMethod method) {
-                return ConfigurableHandlerImpl.this.method.equals(method);
+                return ConfigurableHandlerImpl.this.method.method().equals(method.method());
             }
         }).collect(Collectors.toList()));
 
@@ -127,7 +127,7 @@ public class ConfigurableHandlerImpl implements ConfigurableHandler {
                 new RequestEntityResolverAdviceFactory() {
             @Override
             public boolean supports(HandlerMethod method) {
-                return ConfigurableHandlerImpl.this.method.equals(method);
+                return ConfigurableHandlerImpl.this.method.method().equals(method.method());
             }
 
             @Override
@@ -164,7 +164,7 @@ public class ConfigurableHandlerImpl implements ConfigurableHandler {
                     public boolean supports(ResponseEntity entity) {
                         HandlerMethod method;
                         if ((method = entity.handler().orElse(null)) != null) {
-                            return ConfigurableHandlerImpl.this.method.equals(method);
+                            return ConfigurableHandlerImpl.this.method.method().equals(method.method());
                         } else {
                             return false;
                         }

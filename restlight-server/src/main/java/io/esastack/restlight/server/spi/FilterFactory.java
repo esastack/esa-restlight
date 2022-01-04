@@ -13,25 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.esastack.restlight.jaxrs.spi;
+package io.esastack.restlight.server.spi;
 
-import io.esastack.restlight.core.handler.RouteFilter;
-import io.esastack.restlight.core.method.HandlerMethod;
-import io.esastack.restlight.core.spi.RouteFilterFactory;
-import io.esastack.restlight.jaxrs.configure.RouteTracking;
+import esa.commons.spi.SPI;
+import io.esastack.restlight.server.ServerDeployContext;
+import io.esastack.restlight.server.config.ServerOptions;
+import io.esastack.restlight.server.handler.Filter;
 
 import java.util.Optional;
 
-public class RouteTrackingFilterFactory implements RouteFilterFactory {
+/**
+ * The factory to create {@link Filter}.
+ */
+@SPI
+public interface FilterFactory {
 
-    @Override
-    public Optional<RouteFilter> create(HandlerMethod method) {
-        return Optional.of(RouteTracking.singleton());
-    }
+    /**
+     * Creates an optional instance of {@link Filter} for give target handler.
+     *
+     * @param ctx     deploy context
+     *
+     * @return optional value of {@link Filter}
+     */
+    Optional<Filter> filter(ServerDeployContext<? extends ServerOptions> ctx);
 
-    @Override
-    public boolean supports(HandlerMethod method) {
-        return true;
-    }
 }
 

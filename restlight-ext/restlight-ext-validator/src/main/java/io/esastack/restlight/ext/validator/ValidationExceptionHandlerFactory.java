@@ -17,7 +17,6 @@ package io.esastack.restlight.ext.validator;
 
 import esa.commons.annotation.Internal;
 import esa.commons.spi.Feature;
-import io.esastack.commons.net.http.HttpStatus;
 import io.esastack.restlight.core.util.Constants;
 import io.esastack.restlight.server.ServerDeployContext;
 import io.esastack.restlight.server.bootstrap.ExceptionHandlerChain;
@@ -26,11 +25,11 @@ import io.esastack.restlight.server.config.ServerOptions;
 import io.esastack.restlight.server.context.RequestContext;
 import io.esastack.restlight.server.spi.ExceptionHandlerFactory;
 import io.esastack.restlight.server.util.ErrorDetail;
-import io.esastack.restlight.server.util.Futures;
 import io.netty.util.internal.InternalThreadLocalMap;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
@@ -49,35 +48,36 @@ public class ValidationExceptionHandlerFactory implements ExceptionHandlerFactor
         @Override
         public CompletableFuture<Void> handle(RequestContext context, Throwable th,
                                               ExceptionHandlerChain next) {
-            if (th instanceof ConstraintViolationException) {
-                //400 bad request
-
-                ConstraintViolationException error = (ConstraintViolationException) th;
-                Set<ConstraintViolation<?>> cs = error.getConstraintViolations();
-                if (cs == null || cs.isEmpty()) {
-                    context.response().status(HttpStatus.BAD_REQUEST.code());
-                    context.response().entity(new ErrorDetail<>(context.request().path(), error));
-                } else {
-                    final StringBuilder sb = InternalThreadLocalMap.get().stringBuilder();
-                    for (ConstraintViolation<?> c : cs) {
-                        sb.append("{property='").append(c.getPropertyPath()).append('\'');
-                        sb.append(",invalidValue='").append(c.getInvalidValue()).append('\'');
-                        sb.append(",message='").append(c.getMessage()).append("'}");
-                    }
-                    sb.append('}');
-
-                    context.response().status(HttpStatus.BAD_REQUEST.code());
-                    context.response().entity(new ErrorDetail<>(context.request().path(), sb.toString()));
+            final CompletableFuture<Void> handled = new CompletableFuture<>();
+            next.handle(context, th).whenComplete((v, ex) -> {
+                if (ex == null) {
+                    handled.complete(null);
+                    return;
                 }
-                return Futures.completedExceptionally(th);
-            }
-
-            return next.handle(context, th);
+                if (ex instanceof ConstraintViolationException) {
+                    Set<ConstraintViolation<?>> constraints = ((ConstraintViolationException) ex)
+                            .getConstraintViolations();
+                    if (constraints == null || constraints.isEmpty()) {
+                        context.response().entity(new ErrorDetail<>(context.request().path(), ex.getMessage()));
+                    } else {
+                        List<ConstraintDetail> details = InternalThreadLocalMap.get().arrayList();
+                        for (ConstraintViolation<?> c : constraints) {
+                            details.add(new ConstraintDetail(c.getPropertyPath().toString(),
+                                    c.getInvalidValue().toString(), c.getMessage()));
+                        }
+                        context.response().entity(new ErrorDetail<>(context.request().path(), details.toString()));
+                    }
+                    handled.complete(null);
+                } else {
+                    handled.completeExceptionally(ex);
+                }
+            });
+            return handled;
         }
 
         @Override
         public int getOrder() {
-            return -100;
+            return 100;
         }
 
     }

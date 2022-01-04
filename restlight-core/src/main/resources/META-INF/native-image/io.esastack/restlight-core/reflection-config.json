@@ -1,5 +1,9 @@
 [
   {
+    "name":"io.esastack.restlight.core.spi.impl.RouteTrackingFactory",
+    "methods":[{"name":"<init>","parameterTypes":[] }]
+  },
+  {
     "name":"com.fasterxml.jackson.databind.ext.Java7HandlersImpl",
     "methods":[{"name":"<init>","parameterTypes":[] }]
   },
@@ -40,7 +44,7 @@
     "methods":[{"name":"<init>","parameterTypes":[] }]
   },
   {
-    "name":"io.esastack.restlight.core.spi.impl.CompletableFutureTransferFactory",
+    "name":"io.esastack.restlight.core.spi.impl.CompletionStageTransferFactory",
     "methods":[{"name":"<init>","parameterTypes":[] }]
   },
   {
@@ -77,10 +81,6 @@
   },
   {
     "name":"io.esastack.restlight.core.spi.impl.RequestBeanParamResolverProvider",
-    "methods":[{"name":"<init>","parameterTypes":[] }]
-  },
-  {
-    "name":"io.esastack.restlight.core.spi.impl.ResponseEntityWriterFilterFactory",
     "methods":[{"name":"<init>","parameterTypes":[] }]
   }
 ]

@@ -16,9 +16,6 @@
 package io.esastack.restlight.jaxrs.adapter;
 
 import esa.commons.Checks;
-import esa.commons.annotation.Internal;
-import esa.commons.spi.Feature;
-import io.esastack.restlight.core.util.Constants;
 import io.esastack.restlight.jaxrs.impl.JaxrsContextUtils;
 import io.esastack.restlight.jaxrs.impl.container.ContainerResponseContextImpl;
 import io.esastack.restlight.jaxrs.impl.container.ResponseContainerContext;
@@ -27,13 +24,12 @@ import io.esastack.restlight.jaxrs.util.RuntimeDelegateUtils;
 import io.esastack.restlight.server.bootstrap.ExceptionHandlerChain;
 import io.esastack.restlight.server.bootstrap.IExceptionHandler;
 import io.esastack.restlight.server.context.RequestContext;
+import io.esastack.restlight.server.util.Futures;
 import jakarta.ws.rs.container.ContainerRequestContext;
 import jakarta.ws.rs.container.ContainerResponseFilter;
 
 import java.util.concurrent.CompletableFuture;
 
-@Internal
-@Feature(tags = Constants.INTERNAL)
 public class FilteredExceptionHandler implements IExceptionHandler {
 
     private final ContainerResponseFilter[] filters;
@@ -47,22 +43,31 @@ public class FilteredExceptionHandler implements IExceptionHandler {
     public CompletableFuture<Void> handle(RequestContext context,
                                           Throwable th,
                                           ExceptionHandlerChain next) {
+        return next.handle(context, th).thenCompose(v -> applyResponseFilters(context, filters));
+    }
+
+    @Override
+    public int getOrder() {
+        return 1000;
+    }
+
+    static CompletableFuture<Void> applyResponseFilters(RequestContext context, ContainerResponseFilter[] filters) {
         ResponseImpl rsp = JaxrsContextUtils.getResponse(context);
         RuntimeDelegateUtils.addMetadataToJakarta(context.response(), rsp);
         final ContainerRequestContext reqCtx = new ResponseContainerContext(JaxrsContextUtils
                 .getRequestContext(context));
         final ContainerResponseContextImpl rspCtx = new ContainerResponseContextImpl(
-                ResponseEntityStreamAutoClose.getNonClosableOutputStream(context), rsp);
+                ResponseEntityStreamClose.getNonClosableOutputStream(context), rsp);
         for (ContainerResponseFilter filter : filters) {
             try {
                 filter.filter(reqCtx, rspCtx);
             } catch (Throwable ex) {
                 RuntimeDelegateUtils.addMetadataToNetty(rsp, context.response(), true);
-                return next.handle(context, ex);
+                return Futures.completedExceptionally(ex);
             }
         }
         RuntimeDelegateUtils.addMetadataToNetty(rsp, context.response(), true);
-        return next.handle(context, th);
+        return Futures.completedFuture();
     }
 }
 

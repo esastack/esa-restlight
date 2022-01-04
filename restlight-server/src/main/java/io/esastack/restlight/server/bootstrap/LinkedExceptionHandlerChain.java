@@ -34,20 +34,6 @@ public class LinkedExceptionHandlerChain implements ExceptionHandlerChain {
         this.next = next;
     }
 
-    public static ExceptionHandlerChain applyToExecutionHandler(IExceptionHandler[] applicableHandlers,
-                                                                BiFunction<RequestContext, Throwable,
-                                                                        CompletableFuture<Void>> action) {
-        Checks.checkNotNull(applicableHandlers, "applicableHandlers");
-        ExceptionHandlerChain chain = action::apply;
-        int i = applicableHandlers.length - 1;
-        while (i >= 0) {
-            chain = new LinkedExceptionHandlerChain(applicableHandlers[i], chain);
-            i--;
-        }
-
-        return chain;
-    }
-
     public static ExceptionHandlerChain immutable(IExceptionHandler[] handlers) {
         Checks.checkNotNull(handlers, "handlers");
         ExceptionHandlerChain chain = (context, th) -> {
@@ -57,6 +43,21 @@ public class LinkedExceptionHandlerChain implements ExceptionHandlerChain {
                 return Futures.completedFuture();
             }
         };
+
+        int i = handlers.length - 1;
+        while (i >= 0) {
+            chain = new LinkedExceptionHandlerChain(handlers[i], chain);
+            i--;
+        }
+
+        return chain;
+    }
+
+    public static ExceptionHandlerChain immutable(IExceptionHandler[] handlers,
+                                                  BiFunction<RequestContext, Throwable,
+                                                          CompletableFuture<Void>> action) {
+        Checks.checkNotNull(handlers, "handlers");
+        ExceptionHandlerChain chain = action::apply;
 
         int i = handlers.length - 1;
         while (i >= 0) {

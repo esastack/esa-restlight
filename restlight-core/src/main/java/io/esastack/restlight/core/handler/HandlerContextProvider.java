@@ -13,29 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.esastack.restlight.core.spi;
+package io.esastack.restlight.core.handler;
 
-import esa.commons.spi.SPI;
-import io.esastack.restlight.core.DeployContext;
 import io.esastack.restlight.core.config.RestlightOptions;
-import io.esastack.restlight.server.handler.Filter;
-
-import java.util.Optional;
+import io.esastack.restlight.core.handler.impl.HandlerContext;
+import io.esastack.restlight.core.method.HandlerMethod;
 
 /**
- * The factory to create {@link Filter}.
+ * You can use this {@link HandlerContextProvider} to get the {@link HandlerContext} which have configured by
+ * {@link io.esastack.restlight.core.configure.HandlerConfigure}.
  */
-@SPI
-public interface FilterFactory {
+@FunctionalInterface
+public interface HandlerContextProvider {
 
     /**
-     * Creates an optional instance of {@link Filter} for give target handler.
+     * Obtains {@link HandlerContext} of given {@link HandlerMethod}.
      *
-     * @param ctx     deploy context
-     *
-     * @return optional value of {@link Filter}
+     * @param method handler method
+     * @return  context of given {@link HandlerMethod}.
      */
-    Optional<Filter> filter(DeployContext<? extends RestlightOptions> ctx);
+    HandlerContext<? extends RestlightOptions> getContext(HandlerMethod method);
 
 }
 

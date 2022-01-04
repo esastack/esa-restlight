@@ -20,6 +20,7 @@ import io.esastack.restlight.core.configure.HandlerConfigure;
 import io.esastack.restlight.core.configure.HandlerRegistry;
 import io.esastack.restlight.core.configure.Handlers;
 import io.esastack.restlight.core.handler.HandlerAdvicesFactory;
+import io.esastack.restlight.core.handler.HandlerContextProvider;
 import io.esastack.restlight.core.handler.HandlerFactory;
 import io.esastack.restlight.core.handler.locate.HandlerValueResolverLocator;
 import io.esastack.restlight.core.handler.locate.MappingLocator;
@@ -167,6 +168,14 @@ public interface DeployContext<O extends RestlightOptions> extends ServerDeployC
      * @return  an optional value of {@link HandlerFactory}.
      */
     Optional<HandlerFactory> handlerFactory();
+
+    /**
+     * Obtains the {@link HandlerContextProvider}. It should be instantiate when server is about to starting
+     * and initializing.
+     *
+     * @return  an optional value of {@link HandlerContextProvider}.
+     */
+    Optional<HandlerContextProvider> handlerContextProvider();
 
     /**
      * Gets the {@link Handlers}. It should be instantiate when server is about to starting

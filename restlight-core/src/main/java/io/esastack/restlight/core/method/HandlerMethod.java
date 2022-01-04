@@ -15,8 +15,6 @@
  */
 package io.esastack.restlight.core.method;
 
-import io.esastack.restlight.core.serialize.HttpResponseSerializer;
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 
@@ -62,12 +60,5 @@ public interface HandlerMethod {
      * @return method parameters
      */
     MethodParam[] parameters();
-
-    /**
-     * Obtains the {@link HttpResponseSerializer} which is bound to current handler method.
-     *
-     * @return  response serializer
-     */
-    Class<? extends HttpResponseSerializer> serializer();
 }
 

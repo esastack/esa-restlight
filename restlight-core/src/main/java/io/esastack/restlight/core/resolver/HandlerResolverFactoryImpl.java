@@ -393,40 +393,4 @@ public class HandlerResolverFactoryImpl implements HandlerResolverFactory {
                     Collections.emptyList());
         }
     }
-
-    public static HandlerResolverFactory getHandlerResolverFactory(HandlerResolverFactory factory,
-                                                                   HandlerConfiguration configuration) {
-        // keep in order.
-        OrderedComparator.sort(configuration.getRouteFilters());
-        OrderedComparator.sort(configuration.getStringConverts());
-        OrderedComparator.sort(configuration.getParamResolvers());
-        OrderedComparator.sort(configuration.getContextResolvers());
-        OrderedComparator.sort(configuration.getParamResolverAdvices());
-        OrderedComparator.sort(configuration.getRequestEntityResolvers());
-        OrderedComparator.sort(configuration.getRequestEntityResolverAdvices());
-        OrderedComparator.sort(configuration.getResponseEntityResolvers());
-        OrderedComparator.sort(configuration.getResponseEntityResolverAdvices());
-
-        return new HandlerResolverFactoryImpl(
-                factory.rxSerializers(),
-                factory.txSerializers(),
-                factory.futureTransfers(),
-                configuration.getRouteFilters(),
-                null,
-                configuration.getStringConverts(),
-                null,
-                configuration.getParamResolvers(),
-                null,
-                configuration.getParamResolverAdvices(),
-                null,
-                configuration.getContextResolvers(),
-                null,
-                configuration.getRequestEntityResolvers(),
-                null,
-                configuration.getRequestEntityResolverAdvices(),
-                null,
-                configuration.getResponseEntityResolvers(),
-                null,
-                configuration.getResponseEntityResolverAdvices());
-    }
 }

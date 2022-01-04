@@ -17,13 +17,20 @@ package io.esastack.restlight.server;
 
 import esa.commons.Checks;
 import esa.commons.annotation.Beta;
+import esa.commons.spi.SpiLoader;
 import io.esastack.restlight.core.util.Constants;
+import io.esastack.restlight.core.util.OrderedComparator;
 import io.esastack.restlight.server.bootstrap.AbstractDelegatedRestlightServer;
+import io.esastack.restlight.server.bootstrap.IExceptionHandler;
+import io.esastack.restlight.server.bootstrap.LinkedExceptionHandlerChain;
 import io.esastack.restlight.server.bootstrap.RestlightServer;
 import io.esastack.restlight.server.bootstrap.RestlightServerBootstrap;
 import io.esastack.restlight.server.config.ServerOptions;
 import io.esastack.restlight.server.handler.Filter;
+import io.esastack.restlight.server.handler.FilteredHandler;
 import io.esastack.restlight.server.handler.RestlightHandler;
+import io.esastack.restlight.server.schedule.ExceptionHandledRestlightHandler;
+import io.esastack.restlight.server.spi.FilterFactory;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.unix.DomainSocketAddress;
@@ -207,12 +214,23 @@ public abstract class BaseRestlightServer<R extends BaseRestlightServer<R, D, O>
 
     private RestlightServer buildServer() {
         RestlightHandler handler = deployments().applyDeployments();
-        List<Filter> fs = new LinkedList<>(deployments().filters());
-        return doBuildServer(handler, fs);
+        List<Filter> filters = new LinkedList<>(deployments().filters());
+        filters.addAll(loadFiltersBySpi());
+        if (!filters.isEmpty()) {
+            // keep filters in sort
+            OrderedComparator.sort(filters);
+            handler = new FilteredHandler(handler, filters);
+        }
+        return doBuildServer(buildExceptionHandled(handler, deployments().exceptionHandlers));
     }
 
-    protected RestlightServer doBuildServer(RestlightHandler handler, List<Filter> fs) {
-        return RestlightServerBootstrap.from(options, handler, fs)
+    protected ExceptionHandledRestlightHandler buildExceptionHandled(RestlightHandler handler,
+                                                                     IExceptionHandler[] exceptionHandlers) {
+        return new ExceptionHandledRestlightHandler(handler, LinkedExceptionHandlerChain.immutable(exceptionHandlers));
+    }
+
+    protected RestlightServer doBuildServer(ExceptionHandledRestlightHandler handler) {
+        return RestlightServerBootstrap.from(options, handler)
                 .withAddress(address)
                 .withOptions(channelOptions)
                 .withChildOptions(childChannelOptions)
@@ -225,6 +243,15 @@ public abstract class BaseRestlightServer<R extends BaseRestlightServer<R, D, O>
         if (immutable.get()) {
             throw new IllegalStateException("Illegal operation, server has been immutable.");
         }
+    }
+
+    private List<Filter> loadFiltersBySpi() {
+        List<Filter> filters = new LinkedList<>(SpiLoader.cached(Filter.class)
+                .getByGroup(deployments().restlight.name(), true));
+        SpiLoader.cached(FilterFactory.class)
+                .getByGroup(deployments().restlight.name(), true)
+                .forEach(factory -> factory.filter(deployments.ctx()).ifPresent(filters::add));
+        return filters;
     }
 
     protected abstract D createDeployments();

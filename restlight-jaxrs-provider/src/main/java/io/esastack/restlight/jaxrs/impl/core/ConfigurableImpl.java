@@ -110,13 +110,13 @@ public class ConfigurableImpl implements Configurable<ConfigurableImpl> {
         return this;
     }
 
-    private static Map<Class<?>, Integer> effectiveContracts(Class<?> clazz, Class<?>... contracts) {
-        int order = JaxrsUtils.getOrder(clazz);
+    private static Map<Class<?>, Integer> effectiveContracts(Class<?> target, Class<?>... contracts) {
+        int order = JaxrsUtils.getOrder(target);
         Map<Class<?>, Integer> effectiveContracts = new HashMap<>();
         for (Class<?> contract : contracts) {
-            if (!contract.isAssignableFrom(clazz)) {
+            if (!target.isAssignableFrom(contract)) {
                 LoggerUtils.logger().warn("The contract: [" + contract + "] which isn't assignable from :[" +
-                        clazz + "] has been ignored.");
+                        target + "] has been ignored.");
             } else {
                 effectiveContracts.put(contract, order);
             }

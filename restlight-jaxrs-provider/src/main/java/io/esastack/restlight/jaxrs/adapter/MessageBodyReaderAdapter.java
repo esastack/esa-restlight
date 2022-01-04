@@ -32,7 +32,7 @@ public class MessageBodyReaderAdapter<T> implements RequestEntityResolverAdapter
 
     private final MessageBodyReader<T> underlying;
     private final Class<?> matchableType;
-    private final List<MediaType> consumes;
+    private final MediaType[] consumes;
     private final int order;
 
     public MessageBodyReaderAdapter(MessageBodyReader<T> underlying,
@@ -43,7 +43,7 @@ public class MessageBodyReaderAdapter<T> implements RequestEntityResolverAdapter
         Checks.checkNotNull(matchableType, "matchableType");
         Checks.checkNotNull(consumes, "consumes");
         this.matchableType = matchableType;
-        this.consumes = consumes;
+        this.consumes = consumes.toArray(new MediaType[0]);
         this.underlying = underlying;
         this.order = order;
     }
@@ -87,7 +87,7 @@ public class MessageBodyReaderAdapter<T> implements RequestEntityResolverAdapter
     }
 
     private boolean isCompatible(MediaType current) {
-        if (consumes.isEmpty()) {
+        if (consumes.length == 0) {
             return true;
         }
         for (MediaType type : consumes) {

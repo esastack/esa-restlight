@@ -18,7 +18,6 @@ package io.esastack.restlight.server.schedule;
 import esa.commons.Checks;
 import io.esastack.restlight.core.util.OrderedComparator;
 import io.esastack.restlight.server.bootstrap.DispatcherHandler;
-import io.esastack.restlight.server.bootstrap.ExceptionHandlerChain;
 import io.esastack.restlight.server.config.ServerOptions;
 import io.esastack.restlight.server.context.RequestContext;
 import io.esastack.restlight.server.handler.ConnectionHandler;
@@ -45,7 +44,6 @@ import java.util.stream.Collectors;
 public class ScheduledRestlightHandler implements RestlightHandler {
 
     private final DispatcherHandler dispatcher;
-    private final ExceptionHandlerChain exceptionHandler;
     private ScheduledHandler handler;
     private final List<Scheduler> schedulers = new LinkedList<>();
     private final RequestTaskHook hook;
@@ -55,23 +53,19 @@ public class ScheduledRestlightHandler implements RestlightHandler {
     private volatile long terminationTimeoutSeconds;
 
     public ScheduledRestlightHandler(ServerOptions options,
-                                     DispatcherHandler dispatcher,
-                                     ExceptionHandlerChain exceptionHandler) {
-        this(options, dispatcher, exceptionHandler, Collections.emptyList(),
+                                     DispatcherHandler dispatcher) {
+        this(options, dispatcher, Collections.emptyList(),
                 Collections.emptyList(), Collections.emptyList());
     }
 
     public ScheduledRestlightHandler(ServerOptions options,
                                      DispatcherHandler dispatcher,
-                                     ExceptionHandlerChain exceptionHandler,
                                      List<RequestTaskHook> hooks,
                                      List<ConnectionHandler> connections,
                                      List<DisConnectionHandler> disConnections) {
         Checks.checkNotNull(options, "options");
         Checks.checkNotNull(dispatcher, "dispatcher");
-        Checks.checkNotNull(exceptionHandler, "exceptionHandler");
         this.dispatcher = dispatcher;
-        this.exceptionHandler = exceptionHandler;
         this.hook = hooks == null || hooks.isEmpty() ? t -> t : toRequestTaskHook(hooks);
         this.terminationTimeoutSeconds = options.getBizTerminationTimeoutSeconds();
         if (connections != null) {
@@ -111,16 +105,7 @@ public class ScheduledRestlightHandler implements RestlightHandler {
     public CompletableFuture<Void> process(RequestContext context) {
         CompletableFuture<Void> promise = new CompletableFuture<>();
         handler.process(context, promise);
-
-        CompletableFuture<Void> processed = new CompletableFuture<>();
-        promise.whenComplete((v, th) -> {
-            if (th != null) {
-                handleException(context, th, processed);
-            } else {
-                processed.complete(v);
-            }
-        });
-        return processed;
+        return promise;
     }
 
     @Override
@@ -276,17 +261,6 @@ public class ScheduledRestlightHandler implements RestlightHandler {
                 return maybeWrapped;
             };
         }
-    }
-
-    private void handleException(RequestContext context, Throwable th,
-                                 CompletableFuture<Void> promise) {
-        exceptionHandler.handle(context, th).whenComplete((v, t) -> {
-            if (t != null) {
-                PromiseUtils.setFailure(promise, th);
-            } else {
-                PromiseUtils.setSuccess(promise);
-            }
-        });
     }
 
     private static void handleUncommitted(RequestTask task) {

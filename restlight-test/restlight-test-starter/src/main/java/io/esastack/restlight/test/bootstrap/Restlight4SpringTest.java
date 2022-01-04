@@ -18,13 +18,10 @@ package io.esastack.restlight.test.bootstrap;
 import esa.commons.Checks;
 import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.server.bootstrap.RestlightServer;
-import io.esastack.restlight.server.handler.Filter;
-import io.esastack.restlight.server.handler.RestlightHandler;
+import io.esastack.restlight.server.schedule.ExceptionHandledRestlightHandler;
 import io.esastack.restlight.spring.AbstractRestlight4Spring;
 import io.esastack.restlight.test.autoconfig.AutoMockMvcOptions;
 import org.springframework.context.ApplicationContext;
-
-import java.util.List;
 
 import static io.esastack.restlight.spring.util.SpringContextUtils.getBean;
 
@@ -49,7 +46,7 @@ class Restlight4SpringTest extends AbstractRestlight4Spring<Restlight4SpringTest
     }
 
     @Override
-    protected final RestlightServer doBuildServer(RestlightHandler handler, List<Filter> fs) {
-        return new FakeServer(handler, fs);
+    protected final RestlightServer doBuildServer(ExceptionHandledRestlightHandler handler) {
+        return new FakeServer(handler);
     }
 }

@@ -27,12 +27,10 @@ class DefaultMvcResultTest {
     void testProps() {
         final MockHttpRequest request = MockHttpRequest.aMockRequest().build();
         final MockHttpResponse response = MockHttpResponse.aMockResponse().build();
-        final Object ret = new Object();
-        final DefaultMvcResult result = new DefaultMvcResult(request, response, ret);
+        final DefaultMvcResult result = new DefaultMvcResult(request, response);
 
         assertSame(request, result.request());
         assertSame(response, result.response());
-        assertSame(ret, result.result());
     }
 
 }

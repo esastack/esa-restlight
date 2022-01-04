@@ -42,10 +42,10 @@ class MinorityMockMvcBuilderTest {
         final MinorityMockMvcBuilder builder = new MinorityMockMvcBuilder(new Object());
         builder.controllerAdvices(A.class, new B());
         builder.serializers(Collections.singletonList(new HttpBodySerializerImpl()));
-        builder.paramResolvers(Collections.singletonList(new ArgResolver()));
-        builder.paramResolverAdvices(Collections.singletonList(new ArgResolverAdvice()));
-        builder.responseEntityResolvers(Collections.singletonList(new RetResolver()));
-        builder.responseEntityResolverAdvices(Collections.singletonList(new RetResolverAdvice()));
+        builder.paramResolvers(Collections.singletonList(new ParamResolverImpl()));
+        builder.paramResolverAdvices(Collections.singletonList(new ParamResolverAdviceImpl()));
+        builder.responseEntityResolvers(Collections.singletonList(new ResponseEntityResolverImpl()));
+        builder.responseEntityResolverAdvices(Collections.singletonList(new ResponseEntityResolverAdviceImpl()));
         builder.interceptors(Collections.singletonList(new InterceptorImpl()));
 
         final MockMvc mvc = builder.build();
@@ -74,11 +74,16 @@ class MinorityMockMvcBuilderTest {
         public HandledValue<byte[]> serialize(ResponseEntity entity) {
             return HandledValue.succeed(new byte[0]);
         }
+
+        @Override
+        public int getOrder() {
+            return 10000;
+        }
     }
 
-    private static class ArgResolver implements ParamResolverAdapter {
+    private static class ParamResolverImpl implements ParamResolverAdapter {
 
-        private ArgResolver() {
+        private ParamResolverImpl() {
         }
 
         @Override
@@ -92,8 +97,9 @@ class MinorityMockMvcBuilderTest {
         }
     }
 
-    private static class ArgResolverAdvice implements ParamResolverAdviceAdapter {
-        private ArgResolverAdvice() {
+    private static class ParamResolverAdviceImpl implements ParamResolverAdviceAdapter {
+
+        private ParamResolverAdviceImpl() {
         }
 
         @Override
@@ -102,9 +108,9 @@ class MinorityMockMvcBuilderTest {
         }
     }
 
-    private static class RetResolver implements ResponseEntityResolverAdapter {
+    private static class ResponseEntityResolverImpl implements ResponseEntityResolverAdapter {
 
-        private RetResolver() {
+        private ResponseEntityResolverImpl() {
         }
 
         @Override
@@ -113,10 +119,16 @@ class MinorityMockMvcBuilderTest {
                                           RequestContext context) {
             return HandledValue.succeed(null);
         }
+
+        @Override
+        public int getOrder() {
+            return 10000;
+        }
     }
 
-    private static class RetResolverAdvice implements ResponseEntityResolverAdviceAdapter {
-        private RetResolverAdvice() {
+    private static class ResponseEntityResolverAdviceImpl implements ResponseEntityResolverAdviceAdapter {
+
+        private ResponseEntityResolverAdviceImpl() {
         }
 
         @Override

@@ -20,14 +20,7 @@ import io.esastack.restlight.core.handler.HandlerMapping;
 import io.esastack.restlight.core.handler.RouteFilter;
 import io.esastack.restlight.core.handler.RouteFilterChain;
 import io.esastack.restlight.core.util.Ordered;
-import io.esastack.restlight.jaxrs.impl.JaxrsContextUtils;
-import io.esastack.restlight.jaxrs.impl.container.ContainerResponseContextImpl;
-import io.esastack.restlight.jaxrs.impl.container.ResponseContainerContext;
-import io.esastack.restlight.jaxrs.impl.core.ResponseImpl;
-import io.esastack.restlight.jaxrs.util.RuntimeDelegateUtils;
 import io.esastack.restlight.server.context.RouteContext;
-import io.esastack.restlight.server.util.Futures;
-import jakarta.ws.rs.container.ContainerRequestContext;
 import jakarta.ws.rs.container.ContainerResponseFilter;
 
 import java.util.concurrent.CompletableFuture;
@@ -43,24 +36,8 @@ public class JaxrsResponseFilters implements RouteFilter {
 
     @Override
     public CompletableFuture<Void> routed(HandlerMapping mapping, RouteContext context, RouteFilterChain next) {
-        return next.doNext(mapping, context).thenCompose(v -> {
-            final ResponseImpl rsp = JaxrsContextUtils.getResponse(context);
-            RuntimeDelegateUtils.addMetadataToJakarta(context.response(), rsp);
-            final ContainerRequestContext reqCtx = new ResponseContainerContext(JaxrsContextUtils
-                    .getRequestContext(context));
-            final ContainerResponseContextImpl rspCtx = new ContainerResponseContextImpl(
-                    ResponseEntityStreamAutoClose.getNonClosableOutputStream(context), rsp);
-            for (ContainerResponseFilter filter : filters) {
-                try {
-                    filter.filter(reqCtx, rspCtx);
-                } catch (Throwable th) {
-                    RuntimeDelegateUtils.addMetadataToNetty(rsp, context.response(), true);
-                    return Futures.completedExceptionally(th);
-                }
-            }
-            RuntimeDelegateUtils.addMetadataToNetty(rsp, context.response(), true);
-            return Futures.completedFuture();
-        });
+        return next.doNext(mapping, context).thenCompose(v -> FilteredExceptionHandler
+                .applyResponseFilters(context, filters));
     }
 
     @Override

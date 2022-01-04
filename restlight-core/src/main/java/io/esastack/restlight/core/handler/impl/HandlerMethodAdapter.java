@@ -26,7 +26,6 @@ import io.esastack.restlight.core.resolver.ContextResolver;
 import io.esastack.restlight.core.resolver.HandlerResolverFactory;
 import io.esastack.restlight.core.resolver.ParamResolver;
 import io.esastack.restlight.core.resolver.RequestEntityResolver;
-import io.esastack.restlight.core.serialize.HttpResponseSerializer;
 import io.esastack.restlight.core.util.RouteUtils;
 
 import java.lang.annotation.Annotation;
@@ -82,11 +81,6 @@ public class HandlerMethodAdapter<H extends HandlerMethod> implements HandlerMet
     @Override
     public MethodParam[] parameters() {
         return handlerMethod.parameters();
-    }
-
-    @Override
-    public Class<? extends HttpResponseSerializer> serializer() {
-        return handlerMethod.serializer();
     }
 
     @Override

@@ -27,7 +27,6 @@ import io.esastack.restlight.server.context.RequestContext;
 import io.esastack.restlight.server.core.HttpResponse;
 import io.esastack.restlight.server.spi.ExceptionHandlerFactory;
 import io.esastack.restlight.server.util.ErrorDetail;
-import io.esastack.restlight.server.util.Futures;
 import io.esastack.restlight.springmvc.util.ResponseStatusUtils;
 
 import java.util.Optional;
@@ -47,21 +46,29 @@ public class SpringMvcExceptionHandlerFactory implements ExceptionHandlerFactory
         @Override
         public CompletableFuture<Void> handle(RequestContext context, Throwable th,
                                               ExceptionHandlerChain next) {
-            final HttpStatus status = ResponseStatusUtils.getCustomResponse(th);
-            if (status == null) {
-                return next.handle(context, th);
-            }
+            final CompletableFuture<Void> handled = new CompletableFuture<>();
+            next.handle(context, th).whenComplete((v, ex) -> {
+                if (ex == null) {
+                    handled.complete(null);
+                    return;
+                }
+                final HttpStatus status = ResponseStatusUtils.getCustomResponse(ex);
+                if (status == null) {
+                    handled.completeExceptionally(ex);
+                } else {
+                    final HttpResponse response = context.response();
+                    response.status(status.code());
+                    response.entity(new ErrorDetail<>(context.request().path(), status.reasonPhrase()));
+                    handled.complete(null);
+                }
+            });
 
-            final HttpResponse response = context.response();
-            response.status(status.code());
-            response.entity(new ErrorDetail<>(context.request().path(), status.reasonPhrase()));
-
-            return Futures.completedFuture();
+            return handled;
         }
 
         @Override
         public int getOrder() {
-            return -200;
+            return 0;
         }
     }
 

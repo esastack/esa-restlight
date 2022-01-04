@@ -23,8 +23,8 @@ import io.esastack.restlight.core.DeployContext;
 import io.esastack.restlight.core.annotation.Scheduled;
 import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.core.handler.Handler;
+import io.esastack.restlight.core.handler.HandlerContextProvider;
 import io.esastack.restlight.core.handler.HandlerContexts;
-import io.esastack.restlight.core.handler.HandlerFactory;
 import io.esastack.restlight.core.handler.HandlerMapping;
 import io.esastack.restlight.core.handler.HandlerValueResolver;
 import io.esastack.restlight.core.handler.RouteMethodInfo;
@@ -66,7 +66,7 @@ import java.util.stream.Collectors;
 
 import static io.esastack.restlight.core.util.InterceptorUtils.filter;
 
-public class RouteUtils {
+public final class RouteUtils {
 
     public static boolean isHandlerMethod(Method method) {
         return Modifier.isPublic(method.getModifiers()) && !method.isBridge();
@@ -136,9 +136,9 @@ public class RouteUtils {
             return Optional.empty();
         }
 
-        final Optional<Mapping> mapping = mappingLocator.get().getMapping(userType, method);
+        final Optional<Mapping> mapping = mappingLocator.get().getMapping(parent, userType, method);
         if (mapping.isPresent()) {
-            Optional<RouteMethodInfo> handlerMethod = methodLocator.get().getRouteHandlerInfo(userType, method);
+            Optional<RouteMethodInfo> handlerMethod = methodLocator.get().getRouteMethodInfo(parent, userType, method);
             if (!handlerMethod.isPresent()) {
                 LoggerUtils.logger().debug("Found Mapping but could not generate" +
                                 " RouteMethodInfo for it. userType: {}, method: {}",
@@ -187,16 +187,17 @@ public class RouteUtils {
                     exceptionResolver.createResolver(methodInfo.handlerMethod()));
         }
 
-        HandlerFactory factory = context.handlerFactory().get();
-        if (factory instanceof HandlerContexts) {
-            ((HandlerContexts) factory).addContext(methodInfo.handlerMethod(), context);
+        HandlerContextProvider handlerContexts = context.handlerContextProvider().orElseThrow(() ->
+                new IllegalStateException("HandlerContextProvider is absent"));
+        if (handlerContexts instanceof HandlerContexts) {
+            ((HandlerContexts) handlerContexts).addContext(methodInfo.handlerMethod(), context);
         }
         final Scheduler scheduler = context.schedulers().get(methodInfo.handlerMethod().scheduler());
         Checks.checkNotNull(scheduler,
                 "Could not find any scheduler named '" + methodInfo.handlerMethod().scheduler() + "'");
 
         return Optional.of(Route.route()
-                .mapping(buildMapping(methodInfo.isLocator(), mapping))
+                .mapping(computeFullyMapping(mapping))
                 .scheduler(scheduler)
                 .handler(handler)
                 .executionFactory(routeMethod::toExecution)
@@ -265,18 +266,21 @@ public class RouteUtils {
         return CompositeHandlerValueResolverLocator.wrapIfNecessary(handlerValueResolverLocators);
     }
 
-    private static Mapping buildMapping(boolean locator, HandlerMapping mapping) {
+    private static Mapping computeFullyMapping(HandlerMapping mapping) {
         Mapping value = mapping.mapping();
-        if (locator) {
+        if (mapping.methodInfo().isLocator()) {
             value = MappingUtils.combine(mapping.mapping(), Mapping.mapping("/**"));
         }
 
-        Optional<HandlerMapping> cursor = mapping.parent();
-        while (cursor.isPresent()) {
-            value = MappingUtils.combine(cursor.get().mapping(), value);
-            cursor = cursor.get().parent();
+        Optional<HandlerMapping> parent = mapping.parent();
+        while (parent.isPresent()) {
+            value = MappingUtils.combine(parent.get().mapping(), value);
+            parent = parent.get().parent();
         }
 
         return value;
+    }
+
+    private RouteUtils() {
     }
 }

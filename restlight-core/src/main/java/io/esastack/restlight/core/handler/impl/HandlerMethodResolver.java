@@ -19,7 +19,6 @@ import esa.commons.Checks;
 import io.esastack.commons.net.http.HttpStatus;
 import io.esastack.restlight.core.handler.HandlerMethodInfo;
 import io.esastack.restlight.core.handler.HandlerValueResolver;
-import io.esastack.restlight.core.util.ResponseEntityUtils;
 import io.esastack.restlight.server.context.RequestContext;
 import io.esastack.restlight.server.core.HttpResponse;
 import io.esastack.restlight.server.util.Futures;
@@ -43,7 +42,6 @@ public class HandlerMethodResolver implements HandlerValueResolver {
             response.status(status.code());
         }
         context.response().entity(value);
-        ResponseEntityUtils.setHandledMethod(context, methodInfo.handlerMethod());
         return Futures.completedFuture();
     }
 

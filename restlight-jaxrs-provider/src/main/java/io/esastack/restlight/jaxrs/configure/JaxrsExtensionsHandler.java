@@ -229,7 +229,7 @@ public class JaxrsExtensionsHandler implements ExtensionsHandler {
         }
         for (Map.Entry<Class<?>, ProxyComponent<ContextResolver<?>>> entry :
                 factory.contextResolvers().entrySet()) {
-            deployments.addContextResolver(new JaxrsContextResolverAdapter(entry.getValue()));
+            deployments.addParamResolver(new JaxrsContextResolverAdapter(entry.getValue()));
         }
         for (ProxyComponent<ParamConverterProvider> provider : factory.paramConverterProviders()) {
             deployments.addStringConverter(new StringConverterProviderAdapter(provider.proxied()));

@@ -148,7 +148,7 @@ public final class JaxrsUtils {
             return Collections.emptyList();
         }
 
-        List<Class<? extends Annotation>> result = new LinkedList<>();
+        List<Class<? extends Annotation>> result = new ArrayList<>(obj.getDeclaredAnnotations().length);
         for (Annotation declaredAnn : obj.getDeclaredAnnotations()) {
             Class<? extends Annotation> type = declaredAnn.annotationType();
             if (type.getDeclaredAnnotation(NameBinding.class) != null) {

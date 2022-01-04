@@ -43,7 +43,7 @@ public class PreMatchRequestFiltersAdapter implements Filter {
             for (ContainerRequestFilter filter : filters) {
                 filter.filter(ctx);
                 if (ctx.isAborted()) {
-                    break;
+                    return Futures.completedFuture();
                 }
             }
         } catch (Throwable th) {

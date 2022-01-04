@@ -17,16 +17,11 @@ package io.esastack.restlight.test.bootstrap;
 
 import io.esastack.restlight.core.Deployments;
 import io.esastack.restlight.core.config.RestlightOptions;
-import io.esastack.restlight.server.handler.RestlightHandler;
 
-class Deployments4SpringMvcTest extends Deployments<Restlight4SpringMvcTest,
-        Deployments4SpringMvcTest, RestlightOptions> {
+class Deployments4Test extends Deployments<Restlight4Test, Deployments4Test, RestlightOptions> {
 
-    Deployments4SpringMvcTest(Restlight4SpringMvcTest restlight, RestlightOptions options) {
+    Deployments4Test(Restlight4Test restlight, RestlightOptions options) {
         super(restlight, options);
     }
 
-    RestlightHandler handler() {
-        return getRestlightHandler();
-    }
 }

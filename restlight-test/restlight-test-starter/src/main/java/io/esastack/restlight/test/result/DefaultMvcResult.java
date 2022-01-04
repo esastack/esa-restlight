@@ -23,14 +23,12 @@ public class DefaultMvcResult implements MvcResult {
 
     private final MockHttpRequest request;
     private final MockHttpResponse response;
-    private final Object result;
 
-    public DefaultMvcResult(MockHttpRequest request, MockHttpResponse response, Object result) {
+    public DefaultMvcResult(MockHttpRequest request, MockHttpResponse response) {
         Checks.checkNotNull(request, "request");
         Checks.checkNotNull(response, "response");
         this.request = request;
         this.response = response;
-        this.result = result;
     }
 
     @Override
@@ -43,8 +41,4 @@ public class DefaultMvcResult implements MvcResult {
         return response;
     }
 
-    @Override
-    public Object result() {
-        return result;
-    }
 }

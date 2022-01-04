@@ -13,66 +13,69 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.esastack.restlight.core.resolver;
+package io.esastack.restlight.server.bootstrap;
 
 import esa.commons.Checks;
 import io.esastack.commons.net.buffer.Buffer;
-import io.esastack.restlight.server.bootstrap.ResponseContent;
-import io.esastack.restlight.server.context.RequestContext;
-import io.esastack.restlight.server.context.impl.RequestContextImpl;
+import io.esastack.commons.net.buffer.BufferUtil;
+import io.esastack.httpserver.core.Response;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufAllocator;
 
 import java.io.File;
 
-public class ResponseEntityChannelImpl implements ResponseEntityChannel {
+public class ResponseContentImpl implements ResponseContent {
 
-    protected final ResponseContent content;
+    private final Response response;
 
-    public ResponseEntityChannelImpl(RequestContext context) {
-        Checks.checkNotNull(context, "context");
-        this.content = Checks.checkNotNull(context.attrs().attr(RequestContextImpl.RESPONSE_CONTENT).get(),
-                "response");
+    public ResponseContentImpl(Response response) {
+        Checks.checkNotNull(response, "response");
+        this.response = response;
     }
 
     @Override
     public void write(byte[] data) {
-        content.write(data);
+        response.write(data);
     }
 
     @Override
     public void write(Buffer buffer) {
-        content.write(buffer);
-    }
-
-    @Override
-    public void writeThenEnd(byte[] data) {
-        content.write(data);
-        content.end();
-    }
-
-    @Override
-    public void writeThenEnd(Buffer buffer) {
         if (buffer == null) {
-            end();
             return;
         }
-        write(buffer);
-        end();
+        Object unwrap = BufferUtil.unwrap(buffer);
+        if (unwrap instanceof ByteBuf) {
+            response.write((ByteBuf) unwrap);
+        }
+        byte[] data = new byte[buffer.readableBytes()];
+        buffer.readBytes(data);
+        write(data);
     }
 
     @Override
     public void writeThenEnd(File file) {
-        content.writeThenEnd(file);
+        response.sendFile(file);
+        response.end();
     }
 
     @Override
     public void end() {
-        content.end();
+        response.end();
     }
 
     @Override
     public boolean isCommitted() {
-        return content.isCommitted();
+        return response.isCommitted();
     }
 
+    @Override
+    public boolean isEnded() {
+        return response.isEnded();
+    }
+
+    @Override
+    public ByteBufAllocator alloc() {
+        return response.alloc();
+    }
 }
 

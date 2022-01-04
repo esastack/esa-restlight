@@ -34,10 +34,4 @@ public interface MvcResult {
      */
     MockHttpResponse response();
 
-    /**
-     * Get original return value.
-     *
-     * @return return value
-     */
-    Object result();
 }

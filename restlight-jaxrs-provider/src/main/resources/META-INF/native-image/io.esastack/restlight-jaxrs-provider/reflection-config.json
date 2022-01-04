@@ -96,10 +96,6 @@
     "methods":[{"name":"<init>","parameterTypes":[] }]
   },
   {
-    "name":"io.esastack.restlight.jaxrs.spi.RouteTrackingFilterFactory",
-    "methods":[{"name":"<init>","parameterTypes":[] }]
-  },
-  {
     "name":"io.esastack.restlight.jaxrs.spi.headerdelegate.CookieHeaderDelegateFactory",
     "methods":[{"name":"<init>","parameterTypes":[] }]
   },
@@ -121,10 +117,6 @@
   },
   {
     "name":"io.esastack.restlight.jaxrs.spi.headerdelegate.URIDelegateFactory",
-    "methods":[{"name":"<init>","parameterTypes":[] }]
-  },
-  {
-    "name":"io.esastack.restlight.jaxrs.spi.ResponseEntityStreamAutoCloseFactory",
     "methods":[{"name":"<init>","parameterTypes":[] }]
   }
 ]

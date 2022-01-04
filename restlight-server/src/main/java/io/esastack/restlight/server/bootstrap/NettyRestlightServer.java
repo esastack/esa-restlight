@@ -47,7 +47,7 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import static io.esastack.restlight.server.context.impl.RequestContextImpl.UNDERLYING_RESPONSE;
+import static io.esastack.restlight.server.context.impl.RequestContextImpl.RESPONSE_CONTENT;
 
 public class NettyRestlightServer implements RestlightServer {
 
@@ -239,10 +239,10 @@ public class NettyRestlightServer implements RestlightServer {
                         .onEnd(promise -> {
                             HttpResponse response = new HttResponseImpl(req.response());
                             RequestContext context = new RequestContextImpl(new HttpRequestImpl(req), response);
-                            context.attrs().attr(UNDERLYING_RESPONSE).set(req.response());
+                            context.attrs().attr(RESPONSE_CONTENT).set(new ResponseContentImpl(req.response()));
                             handler.process(context)
                                     .whenComplete((r, t) -> {
-                                        if (t == null) {
+                                        if (t == null || req.response().isEnded()) {
                                             PromiseUtils.setSuccess(promise);
                                         } else {
                                             PromiseUtils.setFailure(promise, t);

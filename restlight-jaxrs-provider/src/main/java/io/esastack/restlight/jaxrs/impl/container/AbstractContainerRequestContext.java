@@ -165,7 +165,7 @@ public abstract class AbstractContainerRequestContext implements ContainerReques
     @Override
     public void abortWith(Response response) {
         aborted = true;
-        JaxrsContextUtils.setResponse(context, response);
+        this.context.response().entity(response);
     }
 
     public boolean isAborted() {

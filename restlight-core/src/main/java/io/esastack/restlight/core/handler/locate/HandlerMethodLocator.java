@@ -15,6 +15,7 @@
  */
 package io.esastack.restlight.core.handler.locate;
 
+import io.esastack.restlight.core.handler.HandlerMapping;
 import io.esastack.restlight.core.handler.HandlerMethodInfo;
 import io.esastack.restlight.core.util.Ordered;
 
@@ -29,11 +30,12 @@ public interface HandlerMethodLocator extends Ordered {
     /**
      * Gets an an {@link Optional} instance of {@link HandlerMethodInfo} if possible.
      *
+     * @param parent   parent handler mapping if exist, which may be {@code null} for root method.
      * @param userType user type
      * @param method   target method
      *
      * @return optional value of handler.
      */
-    Optional<HandlerMethodInfo> getHandlerInfo(Class<?> userType, Method method);
+    Optional<HandlerMethodInfo> getHandlerMethodInfo(HandlerMapping parent, Class<?> userType, Method method);
 
 }

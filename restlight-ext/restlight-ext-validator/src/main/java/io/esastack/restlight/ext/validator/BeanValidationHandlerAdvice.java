@@ -16,6 +16,7 @@
 package io.esastack.restlight.ext.validator;
 
 import esa.commons.reflect.AnnotationUtils;
+import io.esastack.commons.net.http.HttpStatus;
 import io.esastack.restlight.core.handler.HandlerAdvice;
 import io.esastack.restlight.core.handler.HandlerInvoker;
 import io.esastack.restlight.server.context.RequestContext;
@@ -64,6 +65,7 @@ class BeanValidationHandlerAdvice implements HandlerAdvice {
                     validator.forExecutables().validateParameters(object,
                             method, args, groups);
             if (constraintViolations != null && !constraintViolations.isEmpty()) {
+                context.response().status(HttpStatus.BAD_REQUEST.code());
                 throw new ConstraintViolationException("Failed to validate parameters of method '" + this.method + "'",
                         constraintViolations);
             }
@@ -75,6 +77,7 @@ class BeanValidationHandlerAdvice implements HandlerAdvice {
             Set<ConstraintViolation<Object>> constraintViolations1 =
                     validator.forExecutables().validateReturnValue(object, method, result, groups);
             if (constraintViolations1 != null && !constraintViolations1.isEmpty()) {
+                context.response().status(HttpStatus.INTERNAL_SERVER_ERROR.code());
                 throw new ConstraintViolationException("Failed to validate method[" + this.method + "]'s return value",
                         constraintViolations1);
             }

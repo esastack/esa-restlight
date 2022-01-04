@@ -13,12 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.esastack.restlight.jaxrs.configure;
+package io.esastack.restlight.core.spi.impl;
 
+import esa.commons.annotation.Beta;
+import esa.commons.annotation.Internal;
 import esa.commons.collection.AttributeKey;
 import io.esastack.restlight.core.handler.HandlerMapping;
 import io.esastack.restlight.core.handler.RouteFilter;
 import io.esastack.restlight.core.handler.RouteFilterChain;
+import io.esastack.restlight.core.method.HandlerMethod;
 import io.esastack.restlight.server.context.RequestContext;
 import io.esastack.restlight.server.context.RouteContext;
 
@@ -27,26 +30,20 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
+@Internal
+@Beta
 public class RouteTracking implements RouteFilter {
 
     private static final AttributeKey<List<HandlerMapping>> ROUTE_TRACKING_KEY = AttributeKey
-            .valueOf("$jakarta.route.tracking");
-    private static final AttributeKey<Boolean> HANDLER_METHOD_MATCHED = AttributeKey
-            .valueOf("$jakarta.handler.matched");
+            .valueOf("internal.route.tracking");
 
-    private static final RouteTracking SINGLETON = new RouteTracking();
-
-    private RouteTracking() {
-    }
-
-    public static RouteTracking singleton() {
-        return SINGLETON;
-    }
+    private static final AttributeKey<HandlerMethod> HANDLED_METHOD =
+            AttributeKey.valueOf("$internal.handled.method");
 
     @Override
     public CompletableFuture<Void> routed(HandlerMapping mapping, RouteContext context, RouteFilterChain next) {
         if (!mapping.methodInfo().isLocator()) {
-            context.attrs().attr(HANDLER_METHOD_MATCHED).set(true);
+            context.attrs().attr(HANDLED_METHOD).set(mapping.methodInfo().handlerMethod());
         }
         List<HandlerMapping> mappings = context.attrs().attr(ROUTE_TRACKING_KEY).get();
         if (mappings == null) {
@@ -67,7 +64,11 @@ public class RouteTracking implements RouteFilter {
     }
 
     public static boolean isMethodMatched(RequestContext context) {
-        return context.attrs().attr(HANDLER_METHOD_MATCHED).get();
+        return handlerMethod(context) != null;
+    }
+
+    public static HandlerMethod handlerMethod(RequestContext context) {
+        return context.attrs().attr(HANDLED_METHOD).get();
     }
 
 }

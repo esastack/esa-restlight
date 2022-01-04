@@ -30,8 +30,7 @@ public class SpringMvcMappingLocatorFactory implements MappingLocatorFactory {
 
     @Override
     public MappingLocator locator(DeployContext<? extends RestlightOptions> ctx) {
-        return (userType, method) ->
-                RequestMappingUtils.extractMapping(userType, method,
-                        ctx.options().getContextPath());
+        return (parent, userType, method) ->
+                RequestMappingUtils.extractMapping(userType, method, ctx.options().getContextPath());
     }
 }

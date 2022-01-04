@@ -45,11 +45,6 @@ public class JaxrsExceptionAdapter implements IExceptionHandler {
     }
 
     @Override
-    public boolean alsoApplyToExecutionHandler() {
-        return true;
-    }
-
-    @Override
     public int getOrder() {
         return Ordered.HIGHEST_PRECEDENCE;
     }
@@ -61,13 +56,13 @@ public class JaxrsExceptionAdapter implements IExceptionHandler {
         if (th instanceof WebServerException) {
             WebServerException underlying = (WebServerException) th;
             if (HttpStatus.BAD_REQUEST == underlying.status()) {
-                return new BadRequestException(th.getMessage(), tryToGetCause(underlying));
+                return new BadRequestException(th.getMessage(), extractCause(underlying));
             }
             if (HttpStatus.NOT_ACCEPTABLE == underlying.status()) {
-                return new NotAcceptableException(underlying.getMessage(), tryToGetCause(underlying));
+                return new NotAcceptableException(underlying.getMessage(), extractCause(underlying));
             }
             if (HttpStatus.UNSUPPORTED_MEDIA_TYPE == underlying.status()) {
-                return new NotAcceptableException(underlying.getMessage(), tryToGetCause(underlying));
+                return new NotAcceptableException(underlying.getMessage(), extractCause(underlying));
             }
             if (HttpStatus.NOT_FOUND == underlying.status()) {
                 RouteFailureException.RouteFailure routeFailure;
@@ -76,26 +71,26 @@ public class JaxrsExceptionAdapter implements IExceptionHandler {
                         case METHOD_MISMATCH:
                             return new NotAllowedException(Response.status(HttpStatus.NOT_FOUND.code()).build());
                         case CONSUMES_MISMATCH:
-                            return new NotSupportedException(underlying.getMessage(), tryToGetCause(underlying));
+                            return new NotSupportedException(underlying.getMessage(), extractCause(underlying));
                         case PRODUCES_MISMATCH:
-                            return new NotAcceptableException(underlying.getMessage(), tryToGetCause(underlying));
+                            return new NotAcceptableException(underlying.getMessage(), extractCause(underlying));
                         case PATTERN_MISMATCH:
                         case HEADER_MISMATCH:
-                            return new BadRequestException(underlying.getMessage(), tryToGetCause(underlying));
+                            return new BadRequestException(underlying.getMessage(), extractCause(underlying));
                         default:
-                            return new NotFoundException(underlying.getMessage(), tryToGetCause(underlying));
+                            return new NotFoundException(underlying.getMessage(), extractCause(underlying));
                     }
                 }
-                return new NotFoundException(underlying.getMessage(), tryToGetCause(underlying));
+                return new NotFoundException(underlying.getMessage(), extractCause(underlying));
             }
             if (HttpStatus.INTERNAL_SERVER_ERROR == underlying.status()) {
-                return new InternalServerErrorException(underlying.getMessage(), tryToGetCause(underlying));
+                return new InternalServerErrorException(underlying.getMessage(), extractCause(underlying));
             }
         }
         return new InternalServerErrorException(th.getMessage(), th);
     }
 
-    private Throwable tryToGetCause(WebServerException ex) {
+    private Throwable extractCause(WebServerException ex) {
         if (ex.getCause() != null) {
             return ex.getCause();
         } else {

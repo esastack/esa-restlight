@@ -37,7 +37,6 @@ import java.util.concurrent.CompletableFuture;
 public final class JaxrsContextUtils {
 
     private static final AttributeKey<Request> REQUEST_KEY = AttributeKey.valueOf("$jakarta.request");
-    private static final AttributeKey<Response> RESPONSE_KEY = AttributeKey.valueOf("$jakarta.response");
     private static final AttributeKey<UriInfoImpl> URI_KEY = AttributeKey.valueOf("$jakarta.uriInfo");
     private static final AttributeKey<HttpHeaders> REQUEST_HEADERS_KEY = AttributeKey
             .valueOf("$jakarta.request.headers");
@@ -89,18 +88,21 @@ public final class JaxrsContextUtils {
     }
 
     public static ResponseImpl getResponse(RequestContext context) {
-        Response response = context.attrs().attr(RESPONSE_KEY).get();
+        final Response response;
+        if (context.response().entity() instanceof Response) {
+            response = (Response) context.response().entity();
+        } else {
+            response = null;
+        }
         ResponseImpl rsp;
         if (response == null) {
             rsp = (ResponseImpl) RuntimeDelegate.getInstance().createResponseBuilder().build();
+        } else if (response instanceof ResponseImpl) {
+            rsp = (ResponseImpl) response;
         } else {
             rsp = (ResponseImpl) Response.fromResponse(response).build();
         }
         return rsp;
-    }
-
-    public static void setResponse(RequestContext context, Response response) {
-        context.attrs().attr(RESPONSE_KEY).set(response);
     }
 
     public static SecurityContext getSecurityContext(RequestContext context) {

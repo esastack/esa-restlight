@@ -22,13 +22,12 @@ import esa.commons.reflect.ReflectionUtils;
 import io.esastack.restlight.core.DeployContext;
 import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.core.configure.Handlers;
-import io.esastack.restlight.core.handler.HandlerContexts;
+import io.esastack.restlight.core.handler.HandlerContextProvider;
 import io.esastack.restlight.core.handler.HandlerFactory;
 import io.esastack.restlight.core.method.ConstructorParam;
 import io.esastack.restlight.core.method.ConstructorParamImpl;
 import io.esastack.restlight.core.method.FieldParam;
 import io.esastack.restlight.core.method.FieldParamImpl;
-import io.esastack.restlight.core.method.HandlerMethod;
 import io.esastack.restlight.core.method.HandlerMethodImpl;
 import io.esastack.restlight.core.method.MethodParam;
 import io.esastack.restlight.core.method.MethodParamImpl;
@@ -49,16 +48,18 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class HandlerFactoryImpl implements HandlerFactory, HandlerContexts {
+public class HandlerFactoryImpl implements HandlerFactory {
 
-    private final ConcurrentHashMap<HandlerMethod, HandlerContext<?>> contexts = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<Class<?>, ResolvableHandler> resolvableHandlers = new ConcurrentHashMap<>();
+    private final HandlerContextProvider handlerContextProvider;
     private final HandlerContext<? extends RestlightOptions> defaultContext;
     private final Handlers handlers;
 
     public HandlerFactoryImpl(DeployContext<? extends RestlightOptions> defaultContext, Handlers handlers) {
         Checks.checkNotNull(defaultContext, "defaultContext");
         Checks.checkNotNull(handlers, "handlers");
+        this.handlerContextProvider = defaultContext.handlerContextProvider().orElseThrow(() ->
+                new IllegalStateException("HandlerContextProvider is absent"));
         this.defaultContext = new HandlerContext<>(defaultContext);
         this.handlers = handlers;
     }
@@ -109,15 +110,6 @@ public class HandlerFactoryImpl implements HandlerFactory, HandlerContexts {
         doInit0(instance, userType, getOrDefaultContext(userType, method), context);
     }
 
-    @Override
-    public void addContext(HandlerMethod handlerMethod, HandlerContext<? extends RestlightOptions> context) {
-        this.contexts.putIfAbsent(HandlerMethodImpl.of(handlerMethod.beanType(), handlerMethod.method()), context);
-    }
-
-    @Override
-    public HandlerContext<? extends RestlightOptions> getContext(HandlerMethod handlerMethod) {
-        return this.contexts.get(handlerMethod);
-    }
 
     protected Object doInstantiate(Class<?> clazz, HandlerContext<? extends RestlightOptions> handlerCtx,
                                    RequestContext context) {
@@ -194,7 +186,8 @@ public class HandlerFactoryImpl implements HandlerFactory, HandlerContexts {
         if (clazz == null || method == null) {
             return defaultContext;
         }
-        HandlerContext<? extends RestlightOptions> context = getContext(HandlerMethodImpl.of(clazz, method));
+        HandlerContext<? extends RestlightOptions> context = handlerContextProvider
+                .getContext(HandlerMethodImpl.of(clazz, method));
         if (context != null) {
             return context;
         } else {

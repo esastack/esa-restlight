@@ -16,6 +16,7 @@
 package io.esastack.restlight.core.handler.locate;
 
 import io.esastack.commons.net.http.HttpStatus;
+import io.esastack.restlight.core.handler.HandlerMapping;
 import io.esastack.restlight.core.handler.RouteMethodInfo;
 import io.esastack.restlight.core.method.HandlerMethod;
 import io.esastack.restlight.core.method.HandlerMethodImpl;
@@ -35,7 +36,7 @@ public abstract class AbstractRouteMethodLocator implements RouteMethodLocator {
     }
 
     @Override
-    public Optional<RouteMethodInfo> getRouteHandlerInfo(Class<?> userType, Method method) {
+    public Optional<RouteMethodInfo> getRouteMethodInfo(HandlerMapping parent, Class<?> userType, Method method) {
         HandlerMethod handlerMethod = HandlerMethodImpl.of(userType, method);
         return Optional.of(new RouteMethodInfo(RouteHandlerMethodImpl.of(handlerMethod,
                 InterceptorUtils.isIntercepted(handlerMethod),

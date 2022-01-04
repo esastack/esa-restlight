@@ -24,9 +24,7 @@ import io.esastack.restlight.core.util.Constants;
 import io.esastack.restlight.core.util.OrderedComparator;
 import io.esastack.restlight.server.bootstrap.DispatcherHandler;
 import io.esastack.restlight.server.bootstrap.DispatcherHandlerImpl;
-import io.esastack.restlight.server.bootstrap.ExceptionHandlerChain;
 import io.esastack.restlight.server.bootstrap.IExceptionHandler;
-import io.esastack.restlight.server.bootstrap.LinkedExceptionHandlerChain;
 import io.esastack.restlight.server.bootstrap.RestlightThreadFactory;
 import io.esastack.restlight.server.config.BizThreadsOptions;
 import io.esastack.restlight.server.config.ServerOptions;
@@ -54,7 +52,6 @@ import io.esastack.restlight.server.spi.RouteRegistryAware;
 import io.esastack.restlight.server.spi.RouteRegistryAwareFactory;
 import io.esastack.restlight.server.util.LoggerUtils;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -80,13 +77,14 @@ public abstract class BaseDeployments<R extends BaseRestlightServer<R, D, O>, D 
     protected final R restlight;
     private final List<Route> routes = new LinkedList<>();
     private final List<Filter> filters = new LinkedList<>();
-    private final List<ExceptionHandlerFactory> exceptionHandlers = new LinkedList<>();
+    private final List<ExceptionHandlerFactory> exceptionHandlerFactories = new LinkedList<>();
     private final List<ConnectionHandlerFactory> connectionHandlers = new LinkedList<>();
     private final List<DisConnectionHandlerFactory> disConnectionHandlers = new LinkedList<>();
     private final List<RequestTaskHookFactory> requestTaskHooks = new LinkedList<>();
     private final List<RouteRegistryAwareFactory> registryAwareness = new LinkedList<>();
     private final ServerDeployContext<O> deployContext;
 
+    IExceptionHandler[] exceptionHandlers;
     private DispatcherHandler dispatcher;
     private RestlightHandler handler;
 
@@ -259,7 +257,7 @@ public abstract class BaseDeployments<R extends BaseRestlightServer<R, D, O>, D 
     public D addExceptionHandler(IExceptionHandler handler) {
         checkImmutable();
         Checks.checkNotNull(handler, "handler");
-        this.exceptionHandlers.add(ctx -> Optional.of(handler));
+        this.exceptionHandlerFactories.add(ctx -> Optional.of(handler));
         return self();
     }
 
@@ -276,7 +274,7 @@ public abstract class BaseDeployments<R extends BaseRestlightServer<R, D, O>, D 
     public D addExceptionHandler(ExceptionHandlerFactory handler) {
         checkImmutable();
         Checks.checkNotNull(handler, "handler");
-        this.exceptionHandlers.add(handler);
+        this.exceptionHandlerFactories.add(handler);
         return self();
     }
 
@@ -295,7 +293,7 @@ public abstract class BaseDeployments<R extends BaseRestlightServer<R, D, O>, D 
     public D addRouteRegistryAwareness(Collection<? extends RouteRegistryAwareFactory> awareness) {
         checkImmutable();
         if (awareness != null && !awareness.isEmpty()) {
-            awareness.forEach(this::addRouteRegistryAware);
+            this.registryAwareness.addAll(awareness);
         }
         return self();
     }
@@ -365,10 +363,7 @@ public abstract class BaseDeployments<R extends BaseRestlightServer<R, D, O>, D 
      *
      * @return filters
      */
-    protected List<Filter> filters() {
-        this.filters.addAll(SpiLoader.cached(Filter.class)
-                .getByGroup(restlight.name(), true));
-        OrderedComparator.sort(this.filters);
+    List<Filter> filters() {
         return filters;
     }
 
@@ -407,13 +402,10 @@ public abstract class BaseDeployments<R extends BaseRestlightServer<R, D, O>, D 
 
         // init ExceptionHandlerChain
         final IExceptionHandler[] iExceptionHandlers = getExceptionHandlers();
-        final ExceptionHandlerChain exceptionHandler = LinkedExceptionHandlerChain.immutable(iExceptionHandlers);
+        this.exceptionHandlers = iExceptionHandlers;
 
         // init DispatcherHandler
-        this.dispatcher = new DispatcherHandlerImpl(routeRegistry,
-                Arrays.stream(iExceptionHandlers).filter(IExceptionHandler::alsoApplyToExecutionHandler)
-                        .toArray(IExceptionHandler[]::new),
-                exceptionHandler);
+        this.dispatcher = new DispatcherHandlerImpl(routeRegistry, iExceptionHandlers);
 
         // load RequestTaskHookFactory by spi
         SpiLoader.cached(RequestTaskHookFactory.class)
@@ -436,7 +428,6 @@ public abstract class BaseDeployments<R extends BaseRestlightServer<R, D, O>, D 
 
         return new ScheduledRestlightHandler(deployContext.options(),
                 dispatcher,
-                exceptionHandler,
                 requestTaskHooks.stream()
                         .map(f -> f.hook(ctx()))
                         .filter(Optional::isPresent)
@@ -464,12 +455,12 @@ public abstract class BaseDeployments<R extends BaseRestlightServer<R, D, O>, D 
     }
 
     private IExceptionHandler[] getExceptionHandlers() {
-        this.exceptionHandlers.addAll(SpiLoader.cached(ExceptionHandlerFactory.class)
+        this.exceptionHandlerFactories.addAll(SpiLoader.cached(ExceptionHandlerFactory.class)
                 .getByFeature(restlight.name(),
                         true,
                         Collections.singletonMap(Constants.INTERNAL, StringUtils.empty()),
                         false));
-        List<IExceptionHandler> exImpls = this.exceptionHandlers
+        List<IExceptionHandler> exImpls = this.exceptionHandlerFactories
                 .stream().map(factory -> factory.handler(ctx())).filter(Optional::isPresent)
                 .map(Optional::get).collect(Collectors.toList());
         OrderedComparator.sort(exImpls);
@@ -492,14 +483,6 @@ public abstract class BaseDeployments<R extends BaseRestlightServer<R, D, O>, D 
     @SuppressWarnings("unchecked")
     protected D self() {
         return (D) this;
-    }
-
-    public static class Impl extends BaseDeployments<Restlite, Impl, ServerOptions> {
-
-        Impl(Restlite restlight, ServerOptions options) {
-            super(restlight, options);
-        }
-
     }
 
     /**

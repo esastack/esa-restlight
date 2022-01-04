@@ -25,15 +25,16 @@ import io.esastack.restlight.server.context.RequestContext;
 
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 
 @Internal
 @Feature(tags = Constants.INTERNAL)
-public class CompletableFutureTransferFactory implements FutureTransferFactory {
+public class CompletionStageTransferFactory implements FutureTransferFactory {
 
     @Override
     public Optional<FutureTransfer> futureTransfer(HandlerMethod method) {
-        if (CompletableFuture.class.isAssignableFrom(method.method().getReturnType())) {
-            return Optional.of(CompletableFutureTransfer.SINGLETON);
+        if (CompletionStage.class.isAssignableFrom(method.method().getReturnType())) {
+            return Optional.of(CompletionStageTransfer.SINGLETON);
         } else {
             return Optional.empty();
         }
@@ -44,11 +45,11 @@ public class CompletableFutureTransferFactory implements FutureTransferFactory {
         return 100;
     }
 
-    private static class CompletableFutureTransfer implements FutureTransfer {
+    private static class CompletionStageTransfer implements FutureTransfer {
 
-        private static final FutureTransfer SINGLETON = new CompletableFutureTransfer();
+        private static final FutureTransfer SINGLETON = new CompletionStageTransfer();
 
-        private CompletableFutureTransfer() {
+        private CompletionStageTransfer() {
         }
 
         @SuppressWarnings("unchecked")
