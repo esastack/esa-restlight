@@ -25,8 +25,8 @@ import java.util.Map;
 import java.util.Optional;
 
 /**
- * ServerDeployContext is a container that holds the contexts of a Restlight such as {@link BaseRestlightServer}, {@link
- * Restlite}. Some of the methods in this interface will return an {@link Optional} value which means this value maybe a
+ * ServerDeployContext is a container that holds the contexts of a Restlight such as {@link BaseRestlightServer}.
+ * Some of the methods in this interface will return an {@link Optional} value which means this value maybe a
  * {@code null} or this value may be instantiate later.
  *
  * @param <O> type of options

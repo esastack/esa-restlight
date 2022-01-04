@@ -485,14 +485,6 @@ public abstract class BaseDeployments<R extends BaseRestlightServer<R, D, O>, D 
         return (D) this;
     }
 
-    public static class Impl extends BaseDeployments<Restlite, Impl, ServerOptions> {
-
-        Impl(Restlite restlight, ServerOptions options) {
-            super(restlight, options);
-        }
-
-    }
-
     /**
      * Custom task rejected route: write 429 to response
      */
