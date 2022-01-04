@@ -18,7 +18,7 @@ package io.esastack.restlight.test.context;
 import io.esastack.restlight.server.context.RequestContext;
 import io.esastack.restlight.server.core.HttpResponse;
 import io.esastack.restlight.server.mock.MockHttpRequest;
-import io.esastack.restlight.server.schedule.HandleableRestlightHandler;
+import io.esastack.restlight.server.schedule.ExceptionHandledRestlightHandler;
 import io.esastack.restlight.server.util.Futures;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -34,7 +34,7 @@ class DefaultMockMvcTest {
 
     @Test
     void testPerform() {
-        final HandleableRestlightHandler handler = mock(HandleableRestlightHandler.class);
+        final ExceptionHandledRestlightHandler handler = mock(ExceptionHandledRestlightHandler.class);
         final DefaultMockMvc mockMvc = new DefaultMockMvc(handler);
 
         final MockHttpRequest request = MockHttpRequest.aMockRequest().build();
@@ -59,7 +59,7 @@ class DefaultMockMvcTest {
 
     @Test
     void testPerformAsync() {
-        final HandleableRestlightHandler handler = mock(HandleableRestlightHandler.class);
+        final ExceptionHandledRestlightHandler handler = mock(ExceptionHandledRestlightHandler.class);
         final DefaultMockMvc mockMvc = new DefaultMockMvc(handler);
 
         final MockHttpRequest request = MockHttpRequest.aMockRequest().build();

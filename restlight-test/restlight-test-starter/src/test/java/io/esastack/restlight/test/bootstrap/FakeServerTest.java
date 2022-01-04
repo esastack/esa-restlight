@@ -15,7 +15,7 @@
  */
 package io.esastack.restlight.test.bootstrap;
 
-import io.esastack.restlight.server.schedule.HandleableRestlightHandler;
+import io.esastack.restlight.server.schedule.ExceptionHandledRestlightHandler;
 import org.junit.jupiter.api.Test;
 
 import java.util.concurrent.CompletableFuture;
@@ -30,7 +30,7 @@ class FakeServerTest {
 
     @Test
     void testAll() {
-        final HandleableRestlightHandler handler = mock(HandleableRestlightHandler.class);
+        final ExceptionHandledRestlightHandler handler = mock(ExceptionHandledRestlightHandler.class);
         final FakeServer fake = new FakeServer(handler);
         assertFalse(fake.isStarted());
         fake.start();

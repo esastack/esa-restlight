@@ -18,7 +18,7 @@ package io.esastack.restlight.test.bootstrap;
 import io.esastack.restlight.core.AbstractRestlight;
 import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.server.bootstrap.RestlightServer;
-import io.esastack.restlight.server.schedule.HandleableRestlightHandler;
+import io.esastack.restlight.server.schedule.ExceptionHandledRestlightHandler;
 
 class Restlight4Test extends AbstractRestlight<Restlight4Test, Deployments4Test, RestlightOptions> {
 
@@ -36,7 +36,7 @@ class Restlight4Test extends AbstractRestlight<Restlight4Test, Deployments4Test,
     }
 
     @Override
-    protected final RestlightServer doBuildServer(HandleableRestlightHandler handler) {
+    protected final RestlightServer doBuildServer(ExceptionHandledRestlightHandler handler) {
         return new FakeServer(handler);
     }
 }

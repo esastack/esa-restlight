@@ -41,13 +41,13 @@ import io.esastack.restlight.server.context.RequestContext;
 import io.esastack.restlight.server.core.HttpRequest;
 import io.esastack.restlight.server.core.HttpResponse;
 import io.esastack.restlight.server.handler.RestlightHandler;
-import io.esastack.restlight.server.schedule.HandleableRestlightHandler;
+import io.esastack.restlight.server.schedule.ExceptionHandledRestlightHandler;
 import io.esastack.restlight.server.util.Futures;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-public class WritableRestlightHandler extends HandleableRestlightHandler {
+public class WritableRestlightHandler extends ExceptionHandledRestlightHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(WritableRestlightHandler.class);
 

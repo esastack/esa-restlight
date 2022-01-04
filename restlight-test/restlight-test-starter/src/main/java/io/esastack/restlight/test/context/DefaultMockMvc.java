@@ -20,7 +20,7 @@ import io.esastack.restlight.server.context.RequestContext;
 import io.esastack.restlight.server.context.impl.RequestContextImpl;
 import io.esastack.restlight.server.mock.MockHttpRequest;
 import io.esastack.restlight.server.mock.MockHttpResponse;
-import io.esastack.restlight.server.schedule.HandleableRestlightHandler;
+import io.esastack.restlight.server.schedule.ExceptionHandledRestlightHandler;
 import io.esastack.restlight.test.result.DefaultMvcResult;
 import io.esastack.restlight.test.result.MvcResult;
 import io.esastack.restlight.test.result.ResultActions;
@@ -29,9 +29,9 @@ import io.esastack.restlight.test.result.ResultMatcher;
 
 public class DefaultMockMvc implements MockMvc {
 
-    private final HandleableRestlightHandler handler;
+    private final ExceptionHandledRestlightHandler handler;
 
-    public DefaultMockMvc(HandleableRestlightHandler handler) {
+    public DefaultMockMvc(ExceptionHandledRestlightHandler handler) {
         this.handler = handler;
     }
 

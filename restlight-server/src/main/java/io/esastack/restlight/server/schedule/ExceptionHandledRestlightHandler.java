@@ -26,13 +26,13 @@ import io.netty.channel.Channel;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-public class HandleableRestlightHandler implements RestlightHandler {
+public class ExceptionHandledRestlightHandler implements RestlightHandler {
 
     private final RestlightHandler underlying;
     private final ExceptionHandlerChain exceptionHandler;
 
-    public HandleableRestlightHandler(RestlightHandler underlying,
-                                      ExceptionHandlerChain handlerChain) {
+    public ExceptionHandledRestlightHandler(RestlightHandler underlying,
+                                            ExceptionHandlerChain handlerChain) {
         Checks.checkNotNull(underlying, "underlying");
         Checks.checkNotNull(handlerChain, "handlerChain");
         this.underlying = underlying;

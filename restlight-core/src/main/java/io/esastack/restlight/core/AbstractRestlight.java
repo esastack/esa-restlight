@@ -31,7 +31,7 @@ import io.esastack.restlight.server.bootstrap.IExceptionHandler;
 import io.esastack.restlight.server.bootstrap.LinkedExceptionHandlerChain;
 import io.esastack.restlight.server.bootstrap.RestlightServer;
 import io.esastack.restlight.server.handler.RestlightHandler;
-import io.esastack.restlight.server.schedule.HandleableRestlightHandler;
+import io.esastack.restlight.server.schedule.ExceptionHandledRestlightHandler;
 
 import java.util.Collections;
 import java.util.List;
@@ -54,8 +54,8 @@ public abstract class AbstractRestlight<R extends AbstractRestlight<R, D, O>,
     }
 
     @Override
-    protected HandleableRestlightHandler buildHandleable(RestlightHandler handler,
-                                                         IExceptionHandler[] exceptionHandlers) {
+    protected ExceptionHandledRestlightHandler buildExceptionHandled(RestlightHandler handler,
+                                                                     IExceptionHandler[] exceptionHandlers) {
         ExceptionResolver<Throwable> exceptionResolver = getExceptionResolver();
         final ExceptionHandlerChain handlerChain;
         if (exceptionResolver == null) {
