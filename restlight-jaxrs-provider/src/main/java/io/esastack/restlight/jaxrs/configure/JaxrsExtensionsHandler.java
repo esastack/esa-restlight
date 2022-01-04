@@ -232,7 +232,8 @@ public class JaxrsExtensionsHandler implements ExtensionsHandler {
             deployments.addParamResolver(new JaxrsContextResolverAdapter(entry.getValue()));
         }
         for (ProxyComponent<ParamConverterProvider> provider : factory.paramConverterProviders()) {
-            deployments.addStringConverter(new StringConverterProviderAdapter(provider.proxied()));
+            deployments.addStringConverter(new StringConverterProviderAdapter(provider.proxied(),
+                    JaxrsUtils.getOrder(provider.underlying())));
         }
 
         this.covertThenAddFilters(appNameBindings);
