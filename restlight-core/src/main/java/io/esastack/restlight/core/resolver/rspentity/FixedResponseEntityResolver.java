@@ -29,14 +29,20 @@ import io.esastack.restlight.core.serialize.Serializers;
 import io.esastack.restlight.core.util.FutureUtils;
 import io.esastack.restlight.server.context.RequestContext;
 
+import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 
 public abstract class FixedResponseEntityResolver extends AbstractResponseEntityResolver {
 
     private static final AttributeKey<HttpResponseSerializer> MATCHED_SERIALIZER = AttributeKey
             .valueOf("$matched_response_serializer");
+
+    private final ConcurrentHashMap<Method, Optional<Class<? extends HttpResponseSerializer>>> cachedSerializers =
+            new ConcurrentHashMap<>(64);
 
     private final List<? extends HttpResponseSerializer> serializers;
 
@@ -52,7 +58,7 @@ public abstract class FixedResponseEntityResolver extends AbstractResponseEntity
         if (!supports(entity) || !entity.handler().isPresent()) {
             return HandledValue.failed();
         }
-        Class<? extends HttpResponseSerializer> target = findResponseSerializer(entity.handler().get());
+        Class<? extends HttpResponseSerializer> target = getResponseSerializer(entity.handler().get());
         if (target != null && target != HttpResponseSerializer.class) {
             if (target.isInterface() || Modifier.isAbstract(target.getModifiers())) {
                 throw new IllegalArgumentException("Could not resolve ResponseBody serializer class. target type " +
@@ -100,7 +106,12 @@ public abstract class FixedResponseEntityResolver extends AbstractResponseEntity
         return Collections.emptyList();
     }
 
-    private Class<? extends HttpResponseSerializer> findResponseSerializer(HandlerMethod method) {
+    private Class<? extends HttpResponseSerializer> getResponseSerializer(HandlerMethod method) {
+        return cachedSerializers.computeIfAbsent(method.method(), (m) -> findResponseSerializer(method))
+                .orElse(null);
+    }
+
+    private Optional<Class<? extends HttpResponseSerializer>> findResponseSerializer(HandlerMethod method) {
         Class<? extends HttpResponseSerializer> target = null;
 
         // find @ResponseSerializer from the method and class
@@ -121,7 +132,7 @@ public abstract class FixedResponseEntityResolver extends AbstractResponseEntity
             }
 
         }
-        return target;
+        return Optional.ofNullable(target);
     }
 
 }
