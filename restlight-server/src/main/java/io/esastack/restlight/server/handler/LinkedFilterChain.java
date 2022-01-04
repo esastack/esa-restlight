@@ -19,7 +19,7 @@ import esa.commons.Checks;
 import io.esastack.restlight.server.context.FilterContext;
 
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 import java.util.function.Function;
 
 /**
@@ -48,7 +48,7 @@ public class LinkedFilterChain implements FilterChain {
      * @return filter chain
      */
     public static LinkedFilterChain immutable(List<Filter> filters,
-                                              Function<FilterContext, CompletableFuture<Void>> action) {
+                                              Function<FilterContext, CompletionStage<Void>> action) {
         Checks.checkNotEmptyArg(filters, "filters must not be empty");
         // link all the filter and the given action(last)
         FilterChain next = action::apply;
@@ -62,7 +62,7 @@ public class LinkedFilterChain implements FilterChain {
     }
 
     @Override
-    public CompletableFuture<Void> doFilter(FilterContext context) {
+    public CompletionStage<Void> doFilter(FilterContext context) {
         return current.doFilter(context, next);
     }
 }

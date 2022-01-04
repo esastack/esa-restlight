@@ -18,7 +18,7 @@ package io.esastack.restlight.core.handler;
 import io.esastack.restlight.core.util.Ordered;
 import io.esastack.restlight.server.context.RouteContext;
 
-import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 
 public interface RouteFilterChain extends Ordered {
 
@@ -32,7 +32,7 @@ public interface RouteFilterChain extends Ordered {
      * @param context  context
      * @return future
      */
-    CompletableFuture<Void> doNext(HandlerMapping mapping, RouteContext context);
+    CompletionStage<Void> doNext(HandlerMapping mapping, RouteContext context);
 
 }
 

@@ -19,6 +19,7 @@ import esa.commons.annotation.Internal;
 import io.esastack.restlight.server.context.RequestContext;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 
 /**
  * The {@link FutureTransfer} is designed to transfer the given value to {@link CompletableFuture} format.
@@ -34,7 +35,7 @@ public interface FutureTransfer {
      * @param value value
      * @return  transferred value
      */
-    CompletableFuture<Object> transferTo(RequestContext context, Object value);
+    CompletionStage<Object> transferTo(RequestContext context, Object value);
 
 }
 

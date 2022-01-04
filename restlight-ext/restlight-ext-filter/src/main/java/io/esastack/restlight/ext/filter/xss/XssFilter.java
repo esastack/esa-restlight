@@ -40,7 +40,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 import java.util.function.Function;
 import java.util.regex.Pattern;
 
@@ -92,7 +92,7 @@ public class XssFilter implements Filter {
     }
 
     @Override
-    public CompletableFuture<Void> doFilter(FilterContext context, FilterChain chain) {
+    public CompletionStage<Void> doFilter(FilterContext context, FilterChain chain) {
         return chain.doFilter(new FilterContextImpl(context.attrs(), wrapper.apply(context.request()),
                 context.response()));
     }

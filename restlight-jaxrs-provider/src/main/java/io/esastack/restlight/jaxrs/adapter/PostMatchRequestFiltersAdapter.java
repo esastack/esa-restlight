@@ -26,7 +26,7 @@ import io.esastack.restlight.server.context.RouteContext;
 import io.esastack.restlight.server.util.Futures;
 import jakarta.ws.rs.container.ContainerRequestFilter;
 
-import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 
 public class PostMatchRequestFiltersAdapter implements RouteFilter {
 
@@ -38,7 +38,7 @@ public class PostMatchRequestFiltersAdapter implements RouteFilter {
     }
 
     @Override
-    public CompletableFuture<Void> routed(HandlerMapping mapping, RouteContext context, RouteFilterChain next) {
+    public CompletionStage<Void> routed(HandlerMapping mapping, RouteContext context, RouteFilterChain next) {
         AbstractContainerRequestContext ctx = JaxrsContextUtils.getRequestContext(context);
         try {
             for (ContainerRequestFilter filter : filters) {

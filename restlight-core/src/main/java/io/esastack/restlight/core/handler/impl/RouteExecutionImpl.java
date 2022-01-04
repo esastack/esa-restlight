@@ -21,6 +21,7 @@ import io.esastack.restlight.core.handler.LinkedRouteFilterChain;
 import io.esastack.restlight.core.handler.RouteFilter;
 import io.esastack.restlight.core.interceptor.InternalInterceptor;
 import io.esastack.restlight.core.resolver.ExceptionResolver;
+import io.esastack.restlight.server.context.RequestContext;
 import io.esastack.restlight.server.context.impl.RouteContextImpl;
 import io.esastack.restlight.server.core.RoutedRequest;
 import io.esastack.restlight.server.core.impl.RoutedRequestImpl;
@@ -31,7 +32,7 @@ import io.esastack.restlight.server.route.RouteExecution;
 import io.esastack.restlight.server.util.Futures;
 
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 
 public class RouteExecutionImpl implements RouteExecution {
 
@@ -79,8 +80,7 @@ public class RouteExecutionImpl implements RouteExecution {
         };
     }
 
-    private CompletableFuture<Void> triggerAfterCompletion(io.esastack.restlight.server.context.RequestContext context,
-                                                           Throwable t) {
+    private CompletionStage<Void> triggerAfterCompletion(RequestContext context, Throwable t) {
         if (handler.interceptorAbsent) {
             return Futures.completedFuture();
         }
@@ -99,7 +99,7 @@ public class RouteExecutionImpl implements RouteExecution {
         if (i < 0) {
             return Futures.completedFuture();
         }
-        CompletableFuture<Void> future = null;
+        CompletionStage<Void> future = null;
         do {
             final InternalInterceptor interceptor = handler.interceptors.get(i);
             if (future == null) {

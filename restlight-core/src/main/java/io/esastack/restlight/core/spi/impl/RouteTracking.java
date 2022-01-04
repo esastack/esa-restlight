@@ -28,7 +28,7 @@ import io.esastack.restlight.server.context.RouteContext;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 
 @Internal
 @Beta
@@ -41,7 +41,7 @@ public class RouteTracking implements RouteFilter {
             AttributeKey.valueOf("$internal.handled.method");
 
     @Override
-    public CompletableFuture<Void> routed(HandlerMapping mapping, RouteContext context, RouteFilterChain next) {
+    public CompletionStage<Void> routed(HandlerMapping mapping, RouteContext context, RouteFilterChain next) {
         if (!mapping.methodInfo().isLocator()) {
             context.attrs().attr(HANDLED_METHOD).set(mapping.methodInfo().handlerMethod());
         }

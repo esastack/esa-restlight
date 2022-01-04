@@ -25,6 +25,7 @@ import io.netty.channel.Channel;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 
 public class ExceptionHandledRestlightHandler implements RestlightHandler {
 
@@ -40,7 +41,7 @@ public class ExceptionHandledRestlightHandler implements RestlightHandler {
     }
 
     @Override
-    public CompletableFuture<Void> process(RequestContext context) {
+    public CompletionStage<Void> process(RequestContext context) {
         CompletableFuture<Void> promise = new CompletableFuture<>();
         underlying.process(context)
                 .whenComplete((v, th) -> {

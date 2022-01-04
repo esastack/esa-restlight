@@ -32,7 +32,7 @@ import io.esastack.restlight.server.route.ExecutionHandler;
 import io.esastack.restlight.server.route.Mapping;
 import io.esastack.restlight.server.util.Futures;
 
-import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 
 /**
  * Abstract implementation of {@link ExecutionHandler} which handles segment {@link Mapping} by instantiating bean
@@ -59,7 +59,7 @@ abstract class AbstractExecutionHandler<H extends HandlerMethodAdapter> implemen
     }
 
     @Override
-    public CompletableFuture<Void> handle(RequestContext context) {
+    public CompletionStage<Void> handle(RequestContext context) {
         try {
             final Object object = resolveBean(handlerMethod.handlerMethod(), context);
             final Object[] args = resolveArgs(context);
@@ -126,8 +126,8 @@ abstract class AbstractExecutionHandler<H extends HandlerMethodAdapter> implemen
         return null;
     }
 
-    protected CompletableFuture<Object> invoke(RequestContext context, Object bean, Object[] args) {
-        CompletableFuture<Object> future;
+    protected CompletionStage<Object> invoke(RequestContext context, Object bean, Object[] args) {
+        CompletionStage<Object> future;
         try {
             final Object returnValue = getInvoker(handlerMethod.handlerMethod(), bean).invoke(context, args);
             if (handlerMethod.isConcurrent() && returnValue == null) {
@@ -153,7 +153,7 @@ abstract class AbstractExecutionHandler<H extends HandlerMethodAdapter> implemen
         return handlerMethod;
     }
 
-    CompletableFuture<Void> resolveReturnValue(Object value, RequestContext context) {
+    CompletionStage<Void> resolveReturnValue(Object value, RequestContext context) {
         return handlerResolver.handle(value, context);
     }
 

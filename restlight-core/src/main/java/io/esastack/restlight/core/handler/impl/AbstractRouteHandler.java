@@ -22,8 +22,8 @@ import io.esastack.restlight.server.util.Futures;
 import io.netty.util.Signal;
 
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
+import java.util.concurrent.CompletionStage;
 
 abstract class AbstractRouteHandler extends AbstractExecutionHandler<RouteHandlerMethodAdapter> {
 
@@ -44,7 +44,7 @@ abstract class AbstractRouteHandler extends AbstractExecutionHandler<RouteHandle
     }
 
     @Override
-    public CompletableFuture<Void> handle(RequestContext context) {
+    public CompletionStage<Void> handle(RequestContext context) {
         try {
             final Object bean = resolveBean(handlerMethod(), context);
             this.bean = new RouteHandlerImpl(handlerMethod().handlerMethod(), bean);
@@ -79,13 +79,13 @@ abstract class AbstractRouteHandler extends AbstractExecutionHandler<RouteHandle
         }
     }
 
-    protected CompletableFuture<Boolean> applyPreHandle(RequestContext context, Object bean) {
+    protected CompletionStage<Boolean> applyPreHandle(RequestContext context, Object bean) {
         if (interceptorAbsent) {
             return Futures.completedFuture(Boolean.TRUE);
         }
 
         int i = 0;
-        CompletableFuture<Boolean> future = null;
+        CompletionStage<Boolean> future = null;
         do {
             final int index = i;
             if (future == null) {
@@ -102,7 +102,7 @@ abstract class AbstractRouteHandler extends AbstractExecutionHandler<RouteHandle
         return future;
     }
 
-    private CompletableFuture<Boolean> invokeInterceptor(RequestContext context, Object bean, int index) {
+    private CompletionStage<Boolean> invokeInterceptor(RequestContext context, Object bean, int index) {
         return interceptors.get(index)
                 .preHandle0(context, bean)
                 .thenApply(allowed -> {
@@ -113,13 +113,13 @@ abstract class AbstractRouteHandler extends AbstractExecutionHandler<RouteHandle
                 });
     }
 
-    protected CompletableFuture<Void> applyPostHandle(RequestContext context, Object bean) {
+    protected CompletionStage<Void> applyPostHandle(RequestContext context, Object bean) {
         if (interceptorAbsent) {
             return Futures.completedFuture();
         }
 
         int i = 0;
-        CompletableFuture<Void> future = null;
+        CompletionStage<Void> future = null;
         do {
             final InternalInterceptor interceptor = interceptors.get(i);
             if (future == null) {

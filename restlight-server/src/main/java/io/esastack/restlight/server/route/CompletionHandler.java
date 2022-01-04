@@ -17,7 +17,7 @@ package io.esastack.restlight.server.route;
 
 import io.esastack.restlight.server.context.RequestContext;
 
-import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 
 @FunctionalInterface
 public interface CompletionHandler {
@@ -30,6 +30,6 @@ public interface CompletionHandler {
      *
      * @return future
      */
-    CompletableFuture<Void> onComplete(RequestContext context, Throwable t);
+    CompletionStage<Void> onComplete(RequestContext context, Throwable t);
 
 }

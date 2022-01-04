@@ -22,7 +22,7 @@ import io.esastack.restlight.core.resolver.ExceptionResolver;
 import io.esastack.restlight.server.context.RequestContext;
 import io.esastack.restlight.server.util.Futures;
 
-import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 
 public class MappedExceptionResolver implements ExceptionResolver<Throwable> {
 
@@ -36,7 +36,7 @@ public class MappedExceptionResolver implements ExceptionResolver<Throwable> {
     }
 
     @Override
-    public CompletableFuture<Void> handleException(RequestContext context, Throwable ex) {
+    public CompletionStage<Void> handleException(RequestContext context, Throwable ex) {
         if (ex == null) {
             return Futures.completedFuture();
         }

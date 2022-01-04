@@ -17,7 +17,7 @@ package io.esastack.restlight.server.route;
 
 import io.esastack.restlight.server.context.RequestContext;
 
-import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 
 /**
  * This handler is used to handle the given {@link RequestContext}.
@@ -31,7 +31,7 @@ public interface ExecutionHandler {
      * @param context   context
      * @return          result
      */
-    CompletableFuture<Void> handle(RequestContext context);
+    CompletionStage<Void> handle(RequestContext context);
 
 }
 

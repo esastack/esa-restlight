@@ -17,7 +17,7 @@ package io.esastack.restlight.server.route;
 
 import io.esastack.restlight.server.context.RequestContext;
 
-import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 
 @FunctionalInterface
 public interface ExceptionHandler<T extends Throwable> {
@@ -30,6 +30,6 @@ public interface ExceptionHandler<T extends Throwable> {
      *
      * @return future
      */
-    CompletableFuture<Void> handleException(RequestContext context, T t);
+    CompletionStage<Void> handleException(RequestContext context, T t);
 
 }

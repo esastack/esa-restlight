@@ -23,7 +23,7 @@ import io.esastack.restlight.server.schedule.Scheduler;
 import io.netty.channel.Channel;
 
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 
 public class FilteredHandler implements RestlightHandler {
 
@@ -48,7 +48,7 @@ public class FilteredHandler implements RestlightHandler {
     }
 
     @Override
-    public CompletableFuture<Void> process(RequestContext context) {
+    public CompletionStage<Void> process(RequestContext context) {
         return filterChain.doFilter(new FilterContextImpl(context.attrs(),
                 new FilteringRequestImpl(context.request()), context.response()));
     }

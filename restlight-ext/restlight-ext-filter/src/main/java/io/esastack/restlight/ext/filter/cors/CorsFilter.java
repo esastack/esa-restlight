@@ -27,7 +27,7 @@ import io.esastack.restlight.server.handler.FilterChain;
 import io.esastack.restlight.server.util.Futures;
 
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 import java.util.stream.Collectors;
 
 public class CorsFilter implements Filter {
@@ -40,7 +40,7 @@ public class CorsFilter implements Filter {
     }
 
     @Override
-    public CompletableFuture<Void> doFilter(FilterContext context, FilterChain chain) {
+    public CompletionStage<Void> doFilter(FilterContext context, FilterChain chain) {
         final HttpRequest request = context.request();
         final HttpResponse response = context.response();
         final String origin = request.headers().get(HttpHeaderNames.ORIGIN);

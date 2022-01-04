@@ -17,11 +17,12 @@ package io.esastack.restlight.core.interceptor;
 
 import io.esastack.restlight.core.util.Ordered;
 import io.esastack.restlight.server.context.RequestContext;
-import io.esastack.restlight.server.route.Route;
 import io.esastack.restlight.server.handler.Filter;
+import io.esastack.restlight.server.route.Route;
 import io.esastack.restlight.server.util.Futures;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 
 /**
  * Common interceptor is designed to be executed around accessing target {@link Route}. Be
@@ -35,12 +36,11 @@ public interface InternalInterceptor extends Ordered {
      * Asynchronous implementation of {@link #preHandle(RequestContext, Object)}, which will be called in
      * the lifecycle of the request(if matched) actually instead of {@link #preHandle(RequestContext, Object)}.
      *
-     * @param context  request context
-     * @param handler  handler
-     *
+     * @param context request context
+     * @param handler handler
      * @return future result
      */
-    default CompletableFuture<Boolean> preHandle0(RequestContext context, Object handler) {
+    default CompletionStage<Boolean> preHandle0(RequestContext context, Object handler) {
         CompletableFuture<Boolean> future;
         try {
             future = Futures.completedFuture(preHandle(context, handler));
@@ -53,9 +53,8 @@ public interface InternalInterceptor extends Ordered {
     /**
      * Called before HandlerExecution invokes the handler.
      *
-     * @param context  current HTTP request context
-     * @param handler  handler
-     *
+     * @param context current HTTP request context
+     * @param handler handler
      * @return if the execution chain should proceed with the next interceptor or the handler itself. Else,
      * OldDispatcherHandler assumes that this interceptor has already dealt with the response itself.
      * @throws Exception in case of errors
@@ -68,12 +67,11 @@ public interface InternalInterceptor extends Ordered {
      * Asynchronous implementation of {@link #postHandle(RequestContext, Object)}, which will be called in
      * the lifecycle of the request(if matched). actually instead of {@link #preHandle(RequestContext, Object)}
      *
-     * @param context  request context
-     * @param handler  handler
-     *
+     * @param context request context
+     * @param handler handler
      * @return future result
      */
-    default CompletableFuture<Void> postHandle0(RequestContext context, Object handler) {
+    default CompletionStage<Void> postHandle0(RequestContext context, Object handler) {
         CompletableFuture<Void> future;
         try {
             postHandle(context, handler);
@@ -87,9 +85,8 @@ public interface InternalInterceptor extends Ordered {
     /**
      * Called after HandlerExecution actually invoked the handler
      *
-     * @param context  current HTTP request context
-     * @param handler  handler
-     *
+     * @param context current HTTP request context
+     * @param handler handler
      * @throws Exception in case of errors
      */
     default void postHandle(RequestContext context, Object handler) throws Exception {
@@ -101,15 +98,14 @@ public interface InternalInterceptor extends Ordered {
      * will be called in the lifecycle of the request(if matched) actually instead of {@link #preHandle(RequestContext,
      * Object)}
      *
-     * @param context  request context
-     * @param handler  handler
-     * @param ex       error
-     *
+     * @param context request context
+     * @param handler handler
+     * @param ex      error
      * @return future result
      */
-    default CompletableFuture<Void> afterCompletion0(RequestContext context,
-                                                     Object handler,
-                                                     Exception ex) {
+    default CompletionStage<Void> afterCompletion0(RequestContext context,
+                                                   Object handler,
+                                                   Exception ex) {
         CompletableFuture<Void> future;
         try {
             afterCompletion(context, handler, ex);
@@ -125,9 +121,9 @@ public interface InternalInterceptor extends Ordered {
      * <p>
      * Note: Will only be called if this interceptor's preHandle method has successfully completed and returned true!
      *
-     * @param context  current HTTP request context
-     * @param handler  handler
-     * @param ex       exception occurred
+     * @param context current HTTP request context
+     * @param handler handler
+     * @param ex      exception occurred
      */
     default void afterCompletion(RequestContext context,
                                  Object handler,
