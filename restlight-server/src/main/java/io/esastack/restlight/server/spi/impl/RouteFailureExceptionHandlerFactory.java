@@ -28,9 +28,10 @@ import io.esastack.restlight.server.core.HttpResponse;
 import io.esastack.restlight.server.route.RouteFailureException;
 import io.esastack.restlight.server.spi.ExceptionHandlerFactory;
 import io.esastack.restlight.server.util.ErrorDetail;
+import io.esastack.restlight.server.util.Futures;
 
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 
 @Internal
 @Feature(tags = Constants.INTERNAL)
@@ -44,26 +45,17 @@ public class RouteFailureExceptionHandlerFactory implements ExceptionHandlerFact
     private static class RouteFailureExceptionHandler implements IExceptionHandler {
 
         @Override
-        public CompletableFuture<Void> handle(RequestContext context, Throwable th,
-                                              ExceptionHandlerChain next) {
-            final CompletableFuture<Void> handled = new CompletableFuture<>();
-            next.handle(context, th).whenComplete((v, ex) -> {
-                if (ex == null) {
-                    handled.complete(null);
-                    return;
-                }
-                if (ex instanceof RouteFailureException) {
-                    HttpResponse response = context.response();
-                    HttpStatus status = toStatus(((RouteFailureException) ex).getFailureType());
-                    response.status(status.code());
-                    response.entity(new ErrorDetail<>(context.request().path(), status.reasonPhrase()));
-                    handled.complete(null);
-                } else {
-                    handled.completeExceptionally(ex);
-                }
-            });
-
-            return handled;
+        public CompletionStage<Void> handle(RequestContext context, Throwable th,
+                                            ExceptionHandlerChain next) {
+            if (th instanceof RouteFailureException) {
+                HttpResponse response = context.response();
+                HttpStatus status = toStatus(((RouteFailureException) th).failureType());
+                response.status(status.code());
+                response.entity(new ErrorDetail<>(context.request().path(), status.reasonPhrase()));
+                return Futures.completedFuture();
+            } else {
+                return next.handle(context, th);
+            }
         }
 
         private HttpStatus toStatus(RouteFailureException.RouteFailure cause) {

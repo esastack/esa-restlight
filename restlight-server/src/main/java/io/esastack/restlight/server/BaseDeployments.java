@@ -37,6 +37,7 @@ import io.esastack.restlight.server.route.Route;
 import io.esastack.restlight.server.route.RouteRegistry;
 import io.esastack.restlight.server.route.impl.AbstractRouteRegistry;
 import io.esastack.restlight.server.route.impl.CachedRouteRegistry;
+import io.esastack.restlight.server.route.impl.RoutableRegistry;
 import io.esastack.restlight.server.route.impl.SimpleRouteRegistry;
 import io.esastack.restlight.server.schedule.ExecutorScheduler;
 import io.esastack.restlight.server.schedule.RequestTask;
@@ -142,24 +143,6 @@ public abstract class BaseDeployments<R extends BaseRestlightServer<R, D, O>, D 
     public D addRoute(Route route) {
         checkImmutable();
         Checks.checkNotNull(route, "route");
-        if (route.scheduler() == null) {
-            String defaultScheduler = ctx().options().getScheduling().getDefaultScheduler();
-            if (StringUtils.isNotEmpty(defaultScheduler)) {
-                Scheduler scheduler = ctx().schedulers().get(defaultScheduler);
-                if (scheduler == null) {
-                    throw new IllegalStateException("Could not find any scheduler named '"
-                            + defaultScheduler + "'");
-                }
-                route = Route.route(route)
-                        .scheduler(scheduler);
-            } else {
-                route = Route.route(route)
-                        .scheduler(ctx().schedulers().get(Schedulers.BIZ));
-            }
-        } else if (Schedulers.isBiz(route.scheduler())) {
-            route = Route.route(route)
-                    .scheduler(ctx().schedulers().get(Schedulers.BIZ));
-        }
         this.routes.add(route);
         return self();
     }
@@ -383,7 +366,7 @@ public abstract class BaseDeployments<R extends BaseRestlightServer<R, D, O>, D 
     }
 
     protected RestlightHandler doGetRestlightHandler() {
-        final AbstractRouteRegistry routeRegistry = getRouteRegistry();
+        final RoutableRegistry routeRegistry = new RoutableRegistry(ctx(), getRouteRegistry());
         ctx().setRegistry(routeRegistry);
 
         // register routes
@@ -460,11 +443,13 @@ public abstract class BaseDeployments<R extends BaseRestlightServer<R, D, O>, D 
                         true,
                         Collections.singletonMap(Constants.INTERNAL, StringUtils.empty()),
                         false));
-        List<IExceptionHandler> exImpls = this.exceptionHandlerFactories
-                .stream().map(factory -> factory.handler(ctx())).filter(Optional::isPresent)
-                .map(Optional::get).collect(Collectors.toList());
+        IExceptionHandler[] exImpls = this.exceptionHandlerFactories
+                .stream().map(factory -> factory.handler(ctx()))
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .toArray(IExceptionHandler[]::new);
         OrderedComparator.sort(exImpls);
-        return exImpls.toArray(new IExceptionHandler[0]);
+        return exImpls;
     }
 
     /**

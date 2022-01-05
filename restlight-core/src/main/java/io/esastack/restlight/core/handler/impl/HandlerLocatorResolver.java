@@ -83,7 +83,8 @@ public class HandlerLocatorResolver implements HandlerValueResolver {
 
         final Route route = router.route(context);
         if (route == null) {
-            return Futures.completedExceptionally(new RouteFailureException(DispatcherHandlerImpl.notFound(context)));
+            return Futures.completedExceptionally(new RouteFailureException(context,
+                    DispatcherHandlerImpl.notFound(context)));
         }
 
         final RouteExecution execution;
@@ -95,7 +96,7 @@ public class HandlerLocatorResolver implements HandlerValueResolver {
 
         final CompletionStage<Void> promise = new CompletableFuture<>();
         try {
-            return execution.executionHandler().handle(context).whenComplete((v, th) -> {
+            return execution.handle(context).whenComplete((v, th) -> {
                 if (th != null && execution.exceptionHandler() != null) {
                     execution.exceptionHandler().handleException(context, th)
                             .whenComplete((v0, th0) -> {

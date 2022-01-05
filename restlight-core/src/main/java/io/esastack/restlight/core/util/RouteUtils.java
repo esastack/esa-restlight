@@ -196,9 +196,8 @@ public final class RouteUtils {
         Checks.checkNotNull(scheduler,
                 "Could not find any scheduler named '" + methodInfo.handlerMethod().scheduler() + "'");
 
-        return Optional.of(Route.route()
+        return Optional.of(Route.route(scheduler)
                 .mapping(computeFullyMapping(mapping))
-                .scheduler(scheduler)
                 .handler(handler)
                 .executionFactory(routeMethod::toExecution)
         );

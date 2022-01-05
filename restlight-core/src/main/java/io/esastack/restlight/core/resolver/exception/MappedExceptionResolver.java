@@ -16,8 +16,6 @@
 package io.esastack.restlight.core.resolver.exception;
 
 import esa.commons.Checks;
-import esa.commons.logging.Logger;
-import esa.commons.logging.LoggerFactory;
 import io.esastack.restlight.core.resolver.ExceptionResolver;
 import io.esastack.restlight.server.context.RequestContext;
 import io.esastack.restlight.server.util.Futures;
@@ -25,8 +23,6 @@ import io.esastack.restlight.server.util.Futures;
 import java.util.concurrent.CompletionStage;
 
 public class MappedExceptionResolver implements ExceptionResolver<Throwable> {
-
-    private static final Logger logger = LoggerFactory.getLogger(MappedExceptionResolver.class);
 
     private final ExceptionMapper mapper;
 
@@ -43,8 +39,6 @@ public class MappedExceptionResolver implements ExceptionResolver<Throwable> {
         Class<? extends Throwable> type = ex.getClass();
         ExceptionResolver<Throwable> resolver = mapper.mapTo(type);
         if (resolver == null) {
-            logger.debug("None HandlerMethod is found to handle exception", ex);
-            // just throw it, cause we can not resolve
             return Futures.completedExceptionally(ex);
         }
         return resolver.handleException(context, ex);

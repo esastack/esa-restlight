@@ -33,6 +33,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 
 @Internal
 @Feature(tags = Constants.INTERNAL)
@@ -46,7 +47,7 @@ public class ValidationExceptionHandlerFactory implements ExceptionHandlerFactor
     private static class ValidationExceptionHandler implements IExceptionHandler {
 
         @Override
-        public CompletableFuture<Void> handle(RequestContext context, Throwable th,
+        public CompletionStage<Void> handle(RequestContext context, Throwable th,
                                               ExceptionHandlerChain next) {
             final CompletableFuture<Void> handled = new CompletableFuture<>();
             next.handle(context, th).whenComplete((v, ex) -> {

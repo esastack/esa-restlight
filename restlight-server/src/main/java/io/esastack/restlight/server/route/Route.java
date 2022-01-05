@@ -32,9 +32,9 @@ public interface Route extends Routing, Scheduling {
      * @return {@link RouteImpl}
      */
     static RouteImpl route(Scheduler scheduler) {
-        return new RouteImpl(scheduler,
+        return new RouteImpl(null,
                 null,
-                null,
+                scheduler,
                 null);
     }
 
@@ -53,7 +53,7 @@ public interface Route extends Routing, Scheduling {
      * @return  {@link RouteImpl}
      */
     static RouteImpl route(Mapping mapping) {
-        return new RouteImpl(null, mapping, null, null);
+        return new RouteImpl(mapping, null, null, null);
     }
 
     /**
@@ -63,17 +63,17 @@ public interface Route extends Routing, Scheduling {
      * @return  {@link RouteImpl}.
      */
     static RouteImpl route(Route another) {
-        return new RouteImpl(another.scheduler(),
-                another.mapping(),
+        return new RouteImpl(another.mapping(),
                 another.executionFactory(),
+                another.scheduler(),
                 another.handler().orElse(null));
     }
 
     /**
-     * Obtains the {@link ExecutionHandler} to handle the request.
+     * Obtains the {@link ExecutionFactory} to handle the request.
      *
      * @return      execution handler
      */
-    ExecutionHandlerFactory executionFactory();
+    ExecutionFactory executionFactory();
 
 }
