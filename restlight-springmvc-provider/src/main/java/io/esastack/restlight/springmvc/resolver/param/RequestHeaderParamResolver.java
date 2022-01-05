@@ -25,7 +25,7 @@ import io.esastack.restlight.springmvc.util.RequestMappingUtils;
 /**
  * Implementation of {@link ParamResolverFactory} for resolving argument that annotated by the RequestHeader.
  */
-public class RequestHeaderResolver extends AbstractHeaderResolver {
+public class RequestHeaderParamResolver extends AbstractHeaderResolver {
 
     @Override
     public boolean supports(Param param) {
