@@ -13,38 +13,38 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.esastack.restlight.springmvc.resolver.param;
+package io.esastack.restlight.jaxrs.resolver.param;
 
 import io.esastack.restlight.core.method.Param;
 import io.esastack.restlight.core.resolver.ParamResolverFactory;
 import io.esastack.restlight.core.resolver.nav.NameAndValue;
 import io.esastack.restlight.core.resolver.param.AbstractCookieValueResolver;
-import io.esastack.restlight.springmvc.annotation.shaded.CookieValue0;
-import io.esastack.restlight.springmvc.util.RequestMappingUtils;
+import io.esastack.restlight.jaxrs.util.JaxrsMappingUtils;
+import io.esastack.restlight.jaxrs.util.JaxrsUtils;
+import jakarta.ws.rs.CookieParam;
 
 /**
- * Implementation of {@link ParamResolverFactory} for resolving argument that annotated by the CookieValue
+ * Implementation of {@link ParamResolverFactory} for resolving argument that annotated by the
+ * {@link CookieParam}
  */
-public class CookieValueResolver extends AbstractCookieValueResolver {
+public class CookieValueParamResolver extends AbstractCookieValueResolver {
 
     @Override
     public boolean supports(Param param) {
-        return param.hasAnnotation(CookieValue0.shadedClass());
+        return JaxrsUtils.hasAnnotation(param, CookieParam.class);
     }
 
     @Override
     protected NameAndValue<String> createNameAndValue(Param param) {
-        CookieValue0 cookieValue =
-                CookieValue0.fromShade(param.getAnnotation(CookieValue0.shadedClass()));
-        assert cookieValue != null;
-        return new NameAndValue<>(cookieValue.value(),
-                cookieValue.required(),
-                RequestMappingUtils.normaliseDefaultValue(cookieValue.defaultValue()));
+        CookieParam cookieParam = JaxrsUtils.getAnnotation(param, CookieParam.class);
+        return new NameAndValue<>(cookieParam.value(),
+                false,
+                JaxrsMappingUtils.extractDefaultValue(param));
     }
 
     @Override
     public int getOrder() {
-        return 0;
+        return 10;
     }
 
 }
