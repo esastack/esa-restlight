@@ -265,7 +265,7 @@ public final class RouteUtils {
         return CompositeHandlerValueResolverLocator.wrapIfNecessary(handlerValueResolverLocators);
     }
 
-    private static Mapping computeFullyMapping(HandlerMapping mapping) {
+    public static Mapping computeFullyMapping(HandlerMapping mapping) {
         Mapping value = mapping.mapping();
         if (mapping.methodInfo().isLocator()) {
             value = MappingUtils.combine(mapping.mapping(), Mapping.mapping("/**"));

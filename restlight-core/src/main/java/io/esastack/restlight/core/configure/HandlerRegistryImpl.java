@@ -169,8 +169,8 @@ public class HandlerRegistryImpl implements HandlerRegistry, Handlers {
                                     .extractHandlerMapping(new HandlerContext<>(context),
                                             null, userType, method);
                             if (mapping.isPresent()) {
-                                // deRegister by mapping
-                                registry.deRegister(Route.route(mapping.get().mapping()));
+                                // deRegister routes which have same mapping extracted from given handler
+                                registry.deRegister(Route.route(RouteUtils.computeFullyMapping(mapping.get())));
                                 for (HandlerMapping mp : mappings) {
                                     if (mp.mapping().equals(mapping.get().mapping())) {
                                         removableMappings.add(mp);
