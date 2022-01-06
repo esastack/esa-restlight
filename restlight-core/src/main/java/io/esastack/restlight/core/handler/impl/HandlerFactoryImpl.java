@@ -110,7 +110,6 @@ public class HandlerFactoryImpl implements HandlerFactory {
         doInit0(instance, userType, getOrDefaultContext(userType, method), context);
     }
 
-
     protected Object doInstantiate(Class<?> clazz, HandlerContext<? extends RestlightOptions> handlerCtx,
                                    RequestContext context) {
         final ResolvableHandler resolvable = getResolvableHandler(clazz, handlerCtx);
@@ -219,9 +218,9 @@ public class HandlerFactoryImpl implements HandlerFactory {
         @SuppressWarnings("unchecked")
         private ResolvableParam<ConstructorParam, ResolverWrap>[] mergeConsParamResolvers(Constructor<?> constructor,
                                                                                           ResolvableParamPredicate
-                                                                                                    resolvable,
+                                                                                                  resolvable,
                                                                                           HandlerResolverFactory
-                                                                                                    factory) {
+                                                                                                  factory) {
             List<ResolvableParam<ConstructorParam, ResolverWrap>> resolvers = new LinkedList<>();
             for (int i = 0; i < constructor.getParameterCount(); i++) {
                 ConstructorParam param = new ConstructorParamImpl(constructor, i);
@@ -236,9 +235,9 @@ public class HandlerFactoryImpl implements HandlerFactory {
         @SuppressWarnings("unchecked")
         private ResolvableParam<MethodParam, ResolverWrap>[] mergeSetterParamResolvers(Class<?> clazz,
                                                                                        ResolvableParamPredicate
-                                                                                                 resolvable,
+                                                                                               resolvable,
                                                                                        HandlerResolverFactory
-                                                                                                 factory) {
+                                                                                               factory) {
             List<ResolvableParam<MethodParam, ResolverWrap>> resolvers = new LinkedList<>();
             ReflectionUtils.getAllDeclaredMethods(clazz).stream()
                     .filter(ReflectionUtils::isSetter)
@@ -256,7 +255,7 @@ public class HandlerFactoryImpl implements HandlerFactory {
                                                                                      ResolvableParamPredicate
                                                                                              resolvable,
                                                                                      HandlerResolverFactory
-                                                                                               factory) {
+                                                                                             factory) {
             List<ResolvableParam<FieldParam, ResolverWrap>> resolvers = new LinkedList<>();
             ReflectionUtils.getAllDeclaredFields(clazz)
                     .forEach(f -> {

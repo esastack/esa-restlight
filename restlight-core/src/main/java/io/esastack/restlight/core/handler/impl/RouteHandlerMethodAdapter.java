@@ -150,6 +150,7 @@ public abstract class RouteHandlerMethodAdapter extends HandlerMethodAdapter<Rou
     }
 
     private static class Matcher {
+
         final List<InterceptorMapping> interceptorMappings;
 
         private Matcher(List<InterceptorMapping> interceptorMappings) {
@@ -210,6 +211,7 @@ public abstract class RouteHandlerMethodAdapter extends HandlerMethodAdapter<Rou
     }
 
     private static class InterceptorMapping implements Ordered, RequestPredicate {
+
         private final InterceptorPredicate predicate;
         private final InternalInterceptor interceptor;
 
