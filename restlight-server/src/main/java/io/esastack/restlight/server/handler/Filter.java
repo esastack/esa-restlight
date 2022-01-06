@@ -19,7 +19,7 @@ import esa.commons.spi.SPI;
 import io.esastack.restlight.core.util.Ordered;
 import io.esastack.restlight.server.context.FilterContext;
 
-import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 
 @SPI
 public interface Filter extends Ordered {
@@ -34,7 +34,7 @@ public interface Filter extends Ordered {
      * @param chain    filter chain
      * @return future
      */
-    CompletableFuture<Void> doFilter(FilterContext context, FilterChain chain);
+    CompletionStage<Void> doFilter(FilterContext context, FilterChain chain);
 
     /**
      * Default to lowest order.

@@ -147,10 +147,10 @@ public class JaxrsHandlerFactory extends HandlerFactoryImpl {
 
         @SuppressWarnings("unchecked")
         private ResolvableParam<ConstructorParam, ContextResolver>[] contextResolversOfCons(Constructor<?> constructor,
-                                                                                           ResolvableParamPredicate
-                                                                                                   predicate,
-                                                                                           HandlerResolverFactory
-                                                                                                   factory) {
+                                                                                            ResolvableParamPredicate
+                                                                                                    predicate,
+                                                                                            HandlerResolverFactory
+                                                                                                    factory) {
             List<ResolvableParam<ConstructorParam, ContextResolver>> params = new LinkedList<>();
             for (int i = 0; i < constructor.getParameterCount(); i++) {
                 ConstructorParam param = new ConstructorParamImpl(constructor, i);
@@ -166,7 +166,7 @@ public class JaxrsHandlerFactory extends HandlerFactoryImpl {
                                                                                          ResolvableParamPredicate
                                                                                                  predicate,
                                                                                          HandlerResolverFactory
-                                                                                                         factory) {
+                                                                                                 factory) {
 
             List<ResolvableParam<MethodParam, ContextResolver>> params = new LinkedList<>();
             ReflectionUtils.getAllDeclaredMethods(clazz).stream()
@@ -185,7 +185,7 @@ public class JaxrsHandlerFactory extends HandlerFactoryImpl {
                                                                                        ResolvableParamPredicate
                                                                                                predicate,
                                                                                        HandlerResolverFactory
-                                                                                                       factory) {
+                                                                                               factory) {
             List<ResolvableParam<FieldParam, ContextResolver>> params = new LinkedList<>();
             ReflectionUtils.getAllDeclaredFields(clazz)
                     .forEach(f -> {

@@ -23,7 +23,7 @@ import io.esastack.restlight.core.util.Ordered;
 import io.esastack.restlight.server.context.RouteContext;
 import jakarta.ws.rs.container.ContainerResponseFilter;
 
-import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 
 public class JaxrsResponseFilters implements RouteFilter {
 
@@ -35,7 +35,7 @@ public class JaxrsResponseFilters implements RouteFilter {
     }
 
     @Override
-    public CompletableFuture<Void> routed(HandlerMapping mapping, RouteContext context, RouteFilterChain next) {
+    public CompletionStage<Void> routed(HandlerMapping mapping, RouteContext context, RouteFilterChain next) {
         return next.doNext(mapping, context).thenCompose(v -> FilteredExceptionHandler
                 .applyResponseFilters(context, filters));
     }

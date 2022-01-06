@@ -17,7 +17,7 @@ package io.esastack.restlight.server.route.impl;
 
 import esa.commons.Checks;
 import io.esastack.restlight.server.context.RequestContext;
-import io.esastack.restlight.server.route.ExecutionHandlerFactory;
+import io.esastack.restlight.server.route.ExecutionFactory;
 import io.esastack.restlight.server.route.Mapping;
 import io.esastack.restlight.server.route.Route;
 import io.esastack.restlight.server.route.predicate.RequestPredicate;
@@ -37,7 +37,7 @@ class RouteWrap implements Route, RequestPredicate {
     }
 
     @Override
-    public ExecutionHandlerFactory executionFactory() {
+    public ExecutionFactory executionFactory() {
         return route.executionFactory();
     }
 

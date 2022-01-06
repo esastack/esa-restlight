@@ -50,8 +50,7 @@ public class SingletonRouteMethod extends RouteHandlerMethodAdapter {
 
     @Override
     public RouteExecution toExecution(RequestContext context) {
-        return new RouteExecutionImpl(mapping(), new SingletonRouteHandler(handlerResolver(), this,
-                getMatchingInterceptors(context), singleton), filters(), exceptionResolver());
+        return new SingletonRouteExecution(this, getMatchingInterceptors(context), singleton);
     }
 
     static HandlerInvoker buildInvoker(HandlerMethod method, Object instance,
@@ -66,16 +65,15 @@ public class SingletonRouteMethod extends RouteHandlerMethodAdapter {
         return handler;
     }
 
-    private static class SingletonRouteHandler extends AbstractRouteHandler {
+    private static class SingletonRouteExecution extends AbstractRouteExecution {
 
         private final Object singleton;
         private final HandlerInvoker invoker;
 
-        private SingletonRouteHandler(HandlerValueResolver handlerResolver,
-                                      RouteHandlerMethodAdapter handlerMethod,
-                                      List<InternalInterceptor> interceptors,
-                                      Object singleton) {
-            super(handlerResolver, handlerMethod, interceptors);
+        private SingletonRouteExecution(RouteHandlerMethodAdapter handlerMethod,
+                                        List<InternalInterceptor> interceptors,
+                                        Object singleton) {
+            super(handlerMethod, interceptors);
             assert handlerMethod.context().handlerAdvicesFactory().isPresent();
             this.singleton = singleton;
             this.invoker = buildInvoker(handlerMethod, singleton,

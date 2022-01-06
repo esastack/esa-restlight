@@ -18,7 +18,7 @@ package io.esastack.restlight.core.interceptor;
 import esa.commons.Checks;
 import io.esastack.restlight.server.context.RequestContext;
 
-import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 
 abstract class AbstractInterceptorWrap<I extends InternalInterceptor> implements Interceptor {
 
@@ -30,7 +30,7 @@ abstract class AbstractInterceptorWrap<I extends InternalInterceptor> implements
     }
 
     @Override
-    public CompletableFuture<Boolean> preHandle0(RequestContext context, Object handler) {
+    public CompletionStage<Boolean> preHandle0(RequestContext context, Object handler) {
         return interceptor.preHandle0(context, handler);
     }
 
@@ -40,7 +40,7 @@ abstract class AbstractInterceptorWrap<I extends InternalInterceptor> implements
     }
 
     @Override
-    public CompletableFuture<Void> postHandle0(RequestContext context, Object handler) {
+    public CompletionStage<Void> postHandle0(RequestContext context, Object handler) {
         return interceptor.postHandle0(context, handler);
     }
 
@@ -50,7 +50,7 @@ abstract class AbstractInterceptorWrap<I extends InternalInterceptor> implements
     }
 
     @Override
-    public CompletableFuture<Void> afterCompletion0(RequestContext context, Object handler, Exception ex) {
+    public CompletionStage<Void> afterCompletion0(RequestContext context, Object handler, Exception ex) {
         return interceptor.afterCompletion0(context, handler, ex);
     }
 

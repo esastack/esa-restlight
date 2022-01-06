@@ -196,9 +196,8 @@ public final class RouteUtils {
         Checks.checkNotNull(scheduler,
                 "Could not find any scheduler named '" + methodInfo.handlerMethod().scheduler() + "'");
 
-        return Optional.of(Route.route()
+        return Optional.of(Route.route(scheduler)
                 .mapping(computeFullyMapping(mapping))
-                .scheduler(scheduler)
                 .handler(handler)
                 .executionFactory(routeMethod::toExecution)
         );
@@ -266,7 +265,7 @@ public final class RouteUtils {
         return CompositeHandlerValueResolverLocator.wrapIfNecessary(handlerValueResolverLocators);
     }
 
-    private static Mapping computeFullyMapping(HandlerMapping mapping) {
+    public static Mapping computeFullyMapping(HandlerMapping mapping) {
         Mapping value = mapping.mapping();
         if (mapping.methodInfo().isLocator()) {
             value = MappingUtils.combine(mapping.mapping(), Mapping.mapping("/**"));

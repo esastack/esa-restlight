@@ -29,6 +29,7 @@ import jakarta.ws.rs.container.ContainerRequestContext;
 import jakarta.ws.rs.container.ContainerResponseFilter;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 
 public class FilteredExceptionHandler implements IExceptionHandler {
 
@@ -40,9 +41,9 @@ public class FilteredExceptionHandler implements IExceptionHandler {
     }
 
     @Override
-    public CompletableFuture<Void> handle(RequestContext context,
-                                          Throwable th,
-                                          ExceptionHandlerChain next) {
+    public CompletionStage<Void> handle(RequestContext context,
+                                        Throwable th,
+                                        ExceptionHandlerChain next) {
         return next.handle(context, th).thenCompose(v -> applyResponseFilters(context, filters));
     }
 

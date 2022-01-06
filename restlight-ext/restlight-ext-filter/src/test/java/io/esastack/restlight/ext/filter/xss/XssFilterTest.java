@@ -54,7 +54,7 @@ class XssFilterTest {
                 .withHeader("header", "src=\"//xxxx.cn/image/t.js\"")
                 .build();
         filter.doFilter(new FilterContextImpl(new AttributeMap(), new FilteringRequestImpl(request0),
-                MockHttpResponse.aMockResponse().build()), chain).join();
+                MockHttpResponse.aMockResponse().build()), chain).toCompletableFuture().join();
         assertEquals("", req.get().getParam("script"));
         assertNull(req.get().getParam("null"));
         // TODO: wrap HttpHeaders
@@ -86,7 +86,7 @@ class XssFilterTest {
                 .withHeader("header", "src=\"//xxxx.cn/image/t.js\"")
                 .build();
         filterEscape.doFilter(new FilterContextImpl(new AttributeMap(), new FilteringRequestImpl(requestEscape),
-                MockHttpResponse.aMockResponse().build()), chain).join();
+                MockHttpResponse.aMockResponse().build()), chain).toCompletableFuture().join();
         assertEquals("&lt;script&gt;test&lt;/script&gt;", req.get().getParam("script"));
         assertNull(req.get().getParam("null"));
         // TODO: wrap HttpHeaders

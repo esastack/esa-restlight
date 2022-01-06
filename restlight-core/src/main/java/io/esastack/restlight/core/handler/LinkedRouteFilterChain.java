@@ -20,7 +20,7 @@ import io.esastack.restlight.server.context.RouteContext;
 import io.esastack.restlight.server.handler.LinkedFilterChain;
 
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 import java.util.function.Function;
 
 public class LinkedRouteFilterChain implements RouteFilterChain {
@@ -43,7 +43,7 @@ public class LinkedRouteFilterChain implements RouteFilterChain {
      * @return  filter chain
      */
     public static LinkedRouteFilterChain immutable(List<RouteFilter> filters,
-                                                   Function<RouteContext, CompletableFuture<Void>> action) {
+                                                   Function<RouteContext, CompletionStage<Void>> action) {
         Checks.checkNotEmptyArg(filters, "filters must not be empty");
         // link all the filter and the given action(last)
         RouteFilterChain next = (mp, ctx) -> action.apply(ctx);
@@ -57,7 +57,7 @@ public class LinkedRouteFilterChain implements RouteFilterChain {
     }
 
     @Override
-    public CompletableFuture<Void> doNext(HandlerMapping mapping, RouteContext context) {
+    public CompletionStage<Void> doNext(HandlerMapping mapping, RouteContext context) {
         return current.routed(mapping, context, next);
     }
 

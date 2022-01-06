@@ -15,40 +15,57 @@
  */
 package io.esastack.restlight.core.handler.impl;
 
-import io.esastack.restlight.core.handler.HandlerValueResolver;
+import io.esastack.restlight.core.handler.LinkedRouteFilterChain;
+import io.esastack.restlight.core.handler.RouteFilter;
+import io.esastack.restlight.core.handler.RouteHandler;
 import io.esastack.restlight.core.interceptor.InternalInterceptor;
 import io.esastack.restlight.server.context.RequestContext;
+import io.esastack.restlight.server.context.impl.RouteContextImpl;
+import io.esastack.restlight.server.core.impl.RoutedRequestImpl;
+import io.esastack.restlight.server.route.CompletionHandler;
+import io.esastack.restlight.server.route.ExceptionHandler;
+import io.esastack.restlight.server.route.RouteExecution;
 import io.esastack.restlight.server.util.Futures;
 import io.netty.util.Signal;
 
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
+import java.util.concurrent.CompletionStage;
 
-abstract class AbstractRouteHandler extends AbstractExecutionHandler<RouteHandlerMethodAdapter> {
+abstract class AbstractRouteExecution extends AbstractExecution<RouteHandlerMethodAdapter> implements RouteExecution {
 
     private static final CompletionException EXECUTION_NOT_ALLOWED
             = new CompletionException(Signal.valueOf("Execution not allowed by Interceptor.preHandle()"));
 
-    final List<InternalInterceptor> interceptors;
-    final boolean interceptorAbsent;
-    volatile int interceptorIndex = -1;
-    volatile Object bean;
+    private final List<InternalInterceptor> interceptors;
+    private final boolean interceptorAbsent;
+    private final CompletionHandler completionHandler;
+    private volatile int interceptorIndex = -1;
+    private volatile RouteHandler handler;
 
-    AbstractRouteHandler(HandlerValueResolver handlerResolver,
-                         RouteHandlerMethodAdapter handlerMethod,
-                         List<InternalInterceptor> interceptors) {
-        super(handlerResolver, handlerMethod);
+    AbstractRouteExecution(RouteHandlerMethodAdapter handlerMethod, List<InternalInterceptor> interceptors) {
+        super(handlerMethod.handlerResolver(), handlerMethod);
         this.interceptors = interceptors;
         this.interceptorAbsent = interceptors == null || interceptors.isEmpty();
+        this.completionHandler = (this::triggerAfterCompletion);
     }
 
     @Override
-    public CompletableFuture<Void> handle(RequestContext context) {
+    public CompletionStage<Void> handle(RequestContext context) {
+        List<RouteFilter> filters = handlerMethod().filters();
+        if (filters == null || filters.isEmpty()) {
+            return doHandle(context);
+        }
+        LinkedRouteFilterChain chain = LinkedRouteFilterChain.immutable(filters, this::doHandle);
+        return chain.doNext(handlerMethod().mapping(), new RouteContextImpl(context.attrs(),
+                new RoutedRequestImpl(context.request()), context.response()));
+    }
+
+    private CompletionStage<Void> doHandle(RequestContext context) {
         try {
             final Object bean = resolveBean(handlerMethod(), context);
-            this.bean = new RouteHandlerImpl(handlerMethod().handlerMethod(), bean);
-            return applyPreHandle(context, this.bean)
+            this.handler = new RouteHandlerImpl(handlerMethod().handlerMethod(), bean);
+            return applyPreHandle(context, this.handler)
                     .thenApply(allowed -> {
                         if (!allowed) {
                             // break the CompletionStage
@@ -79,13 +96,23 @@ abstract class AbstractRouteHandler extends AbstractExecutionHandler<RouteHandle
         }
     }
 
-    protected CompletableFuture<Boolean> applyPreHandle(RequestContext context, Object bean) {
+    @Override
+    public CompletionHandler completionHandler() {
+        return this.completionHandler;
+    }
+
+    @Override
+    public ExceptionHandler<Throwable> exceptionHandler() {
+        return handlerMethod().exceptionResolver();
+    }
+
+    private CompletionStage<Boolean> applyPreHandle(RequestContext context, Object bean) {
         if (interceptorAbsent) {
             return Futures.completedFuture(Boolean.TRUE);
         }
 
         int i = 0;
-        CompletableFuture<Boolean> future = null;
+        CompletionStage<Boolean> future = null;
         do {
             final int index = i;
             if (future == null) {
@@ -102,7 +129,7 @@ abstract class AbstractRouteHandler extends AbstractExecutionHandler<RouteHandle
         return future;
     }
 
-    private CompletableFuture<Boolean> invokeInterceptor(RequestContext context, Object bean, int index) {
+    private CompletionStage<Boolean> invokeInterceptor(RequestContext context, Object bean, int index) {
         return interceptors.get(index)
                 .preHandle0(context, bean)
                 .thenApply(allowed -> {
@@ -113,13 +140,13 @@ abstract class AbstractRouteHandler extends AbstractExecutionHandler<RouteHandle
                 });
     }
 
-    protected CompletableFuture<Void> applyPostHandle(RequestContext context, Object bean) {
+    private CompletionStage<Void> applyPostHandle(RequestContext context, Object bean) {
         if (interceptorAbsent) {
             return Futures.completedFuture();
         }
 
         int i = 0;
-        CompletableFuture<Void> future = null;
+        CompletionStage<Void> future = null;
         do {
             final InternalInterceptor interceptor = interceptors.get(i);
             if (future == null) {
@@ -128,6 +155,39 @@ abstract class AbstractRouteHandler extends AbstractExecutionHandler<RouteHandle
                 future = future.thenCompose(v -> interceptor.postHandle0(context, bean));
             }
         } while (++i < interceptors.size());
+        return future;
+    }
+
+    private CompletionStage<Void> triggerAfterCompletion(RequestContext context, Throwable t) {
+        if (this.interceptorAbsent) {
+            return Futures.completedFuture();
+        }
+
+        final Exception ex;
+        if (t instanceof Exception) {
+            ex = (Exception) t;
+        } else if (t == null) {
+            ex = null;
+        } else {
+            // Unhandled Throwable error.
+            return Futures.completedExceptionally(new Error("Unexpected throwable.", t));
+        }
+
+        int i = interceptorIndex;
+        if (i < 0) {
+            return Futures.completedFuture();
+        }
+        CompletionStage<Void> future = null;
+        do {
+            final InternalInterceptor interceptor = interceptors.get(i);
+            if (future == null) {
+                future = interceptor
+                        .afterCompletion0(context, handler, ex);
+            } else {
+                future = future.thenCompose(v -> interceptor.afterCompletion0(context, handler, ex));
+            }
+        } while (i-- > 0);
+
         return future;
     }
 }

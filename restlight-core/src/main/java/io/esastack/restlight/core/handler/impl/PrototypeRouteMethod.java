@@ -44,20 +44,17 @@ public class PrototypeRouteMethod extends RouteHandlerMethodAdapter {
 
     @Override
     public RouteExecution toExecution(RequestContext context) {
-        return new RouteExecutionImpl(mapping(), new PrototypeRouteHandler(handlerResolver(),
-                this, getMatchingInterceptors(context)),
-                filters(), exceptionResolver());
+        return new PrototypeRouteExecution(this, getMatchingInterceptors(context));
     }
 
-    private static class PrototypeRouteHandler extends AbstractRouteHandler {
+    private static class PrototypeRouteExecution extends AbstractRouteExecution {
 
         private final HandlerFactory handlerFactory;
         private final HandlerAdvicesFactory handlerAdvicesFactory;
 
-        private PrototypeRouteHandler(HandlerValueResolver handlerResolver,
-                                      RouteHandlerMethodAdapter handlerMethod,
-                                      List<InternalInterceptor> interceptors) {
-            super(handlerResolver, handlerMethod, interceptors);
+        private PrototypeRouteExecution(RouteHandlerMethodAdapter handlerMethod,
+                                        List<InternalInterceptor> interceptors) {
+            super(handlerMethod, interceptors);
             assert handlerMethod.context().handlerAdvicesFactory().isPresent();
             assert handlerMethod.context().handlerFactory().isPresent();
             this.handlerFactory = handlerMethod.context().handlerFactory().get();

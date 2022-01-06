@@ -39,6 +39,7 @@ import io.esastack.restlight.server.util.Futures;
 
 import java.lang.reflect.Type;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 
 public class HandlerLocatorResolver implements HandlerValueResolver {
 
@@ -58,7 +59,7 @@ public class HandlerLocatorResolver implements HandlerValueResolver {
     }
 
     @Override
-    public CompletableFuture<Void> handle(Object value, RequestContext context) {
+    public CompletionStage<Void> handle(Object value, RequestContext context) {
         if (value == null) {
             return Futures.completedExceptionally(new WebServerException("Unexpected 'null' returned by" +
                     " resource locator: [" + handlerMapping.methodInfo().handlerMethod() + "]"));
@@ -82,7 +83,8 @@ public class HandlerLocatorResolver implements HandlerValueResolver {
 
         final Route route = router.route(context);
         if (route == null) {
-            return Futures.completedExceptionally(new RouteFailureException(DispatcherHandlerImpl.notFound(context)));
+            return Futures.completedExceptionally(new RouteFailureException(context,
+                    DispatcherHandlerImpl.notFound(context)));
         }
 
         final RouteExecution execution;
@@ -92,9 +94,9 @@ public class HandlerLocatorResolver implements HandlerValueResolver {
             return Futures.completedExceptionally(th);
         }
 
-        final CompletableFuture<Void> promise = new CompletableFuture<>();
+        final CompletionStage<Void> promise = new CompletableFuture<>();
         try {
-            return execution.executionHandler().handle(context).whenComplete((v, th) -> {
+            return execution.handle(context).whenComplete((v, th) -> {
                 if (th != null && execution.exceptionHandler() != null) {
                     execution.exceptionHandler().handleException(context, th)
                             .whenComplete((v0, th0) -> {
@@ -117,14 +119,14 @@ public class HandlerLocatorResolver implements HandlerValueResolver {
     }
 
     private void complete(RequestContext context, CompletionHandler completionHandler,
-                          Throwable th, CompletableFuture<Void> promise) {
+                          Throwable th, CompletionStage<Void> promise) {
         if (completionHandler != null) {
             completionHandler.onComplete(context, th);
         }
         if (th != null) {
-            promise.completeExceptionally(th);
+            promise.toCompletableFuture().completeExceptionally(th);
         } else {
-            promise.complete(null);
+            promise.toCompletableFuture().complete(null);
         }
     }
 

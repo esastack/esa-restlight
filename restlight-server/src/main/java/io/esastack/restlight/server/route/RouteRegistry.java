@@ -18,7 +18,7 @@ package io.esastack.restlight.server.route;
 import java.util.List;
 
 /**
- * Interface defines a Registry for the {@link Route}s.
+ * This {@link RouteRegistry} is used to define a registry which holds and manages {@link Route}s.
  */
 public interface RouteRegistry {
 
@@ -30,14 +30,14 @@ public interface RouteRegistry {
     List<Route> routes();
 
     /**
-     * Register the given {@link Route}.
+     * Registers the given {@link Route}.
      *
      * @param route route for registering
      */
     void register(Route route);
 
     /**
-     * DeRegister the given {@link Route}.
+     * DeRegisters the given {@link Route}.
      *
      * @param route route
      */

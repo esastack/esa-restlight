@@ -20,7 +20,7 @@ import io.esastack.restlight.server.schedule.Scheduler;
 import io.netty.channel.Channel;
 
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 
 public interface RestlightHandler {
 
@@ -30,7 +30,7 @@ public interface RestlightHandler {
      * @param context  context
      * @return future
      */
-    CompletableFuture<Void> process(RequestContext context);
+    CompletionStage<Void> process(RequestContext context);
 
     /**
      * tcp connect event

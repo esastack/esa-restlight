@@ -25,11 +25,10 @@ import io.esastack.restlight.server.core.HttpRequest;
 import io.esastack.restlight.server.core.HttpResponse;
 import io.esastack.restlight.server.route.CompletionHandler;
 import io.esastack.restlight.server.route.ExceptionHandler;
-import io.esastack.restlight.server.route.ExecutionHandler;
 import io.esastack.restlight.server.route.Route;
 import io.esastack.restlight.server.route.RouteExecution;
 import io.esastack.restlight.server.route.RouteFailureException;
-import io.esastack.restlight.server.route.impl.AbstractRouteRegistry;
+import io.esastack.restlight.server.route.impl.RoutableRegistry;
 import io.esastack.restlight.server.route.predicate.RoutePredicate;
 import io.esastack.restlight.server.schedule.RequestTask;
 import io.esastack.restlight.server.util.ErrorDetail;
@@ -52,12 +51,12 @@ public class DispatcherHandlerImpl implements DispatcherHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(DispatcherHandlerImpl.class);
 
-    private final AbstractRouteRegistry registry;
+    private final RoutableRegistry registry;
     private final IExceptionHandler[] exceptionHandlers;
 
     private final LongAdder rejectCount = new LongAdder();
 
-    public DispatcherHandlerImpl(AbstractRouteRegistry registry, IExceptionHandler[] exceptionHandlers) {
+    public DispatcherHandlerImpl(RoutableRegistry registry, IExceptionHandler[] exceptionHandlers) {
         Checks.checkNotNull(registry, "registry");
         Checks.checkNotNull(exceptionHandlers, "exceptionHandlers");
         this.registry = registry;
@@ -79,9 +78,8 @@ public class DispatcherHandlerImpl implements DispatcherHandler {
                         CompletableFuture<Void> promise,
                         Route route) {
         final RouteExecution execution = route.executionFactory().create(context);
-        final ExecutionHandler executionHandler = execution.executionHandler();
         try {
-            executionHandler.handle(context)
+            execution.handle(context)
                     // wind up
                     .whenComplete((r, t) -> {
                         final Throwable ex = Futures.unwrapCompletionException(t);

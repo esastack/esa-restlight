@@ -86,8 +86,8 @@ class AccessLogFilterTest {
             ctx.response().status(200);
             return Futures.completedFuture();
         });
-        filter.doFilter(new FilterContextImpl(new AttributeMap(), new FilteringRequestImpl(request), response),
-                chain).join();
+        filter.doFilter(new FilterContextImpl(new AttributeMap(), new FilteringRequestImpl(request), response), chain)
+                .toCompletableFuture().join();
         assertEquals(200, response.status());
         response.callEndListener();
         verify(mock).info(argThat(s -> s.contains(request.rawMethod())

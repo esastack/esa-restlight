@@ -30,7 +30,7 @@ import io.esastack.restlight.server.util.DateUtils;
 
 import java.io.File;
 import java.nio.charset.Charset;
-import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 import java.util.concurrent.TimeUnit;
 
 public class AccessLogFilter implements Filter {
@@ -67,7 +67,7 @@ public class AccessLogFilter implements Filter {
     }
 
     @Override
-    public CompletableFuture<Void> doFilter(FilterContext context, FilterChain chain) {
+    public CompletionStage<Void> doFilter(FilterContext context, FilterChain chain) {
         final HttpRequest request = context.request();
         final HttpResponse response = context.response();
 

@@ -34,7 +34,7 @@ import io.netty.handler.codec.http.HttpHeaderNames;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
@@ -90,7 +90,7 @@ public class IpWhiteListFilter implements Filter {
     }
 
     @Override
-    public CompletableFuture<Void> doFilter(FilterContext context, FilterChain chain) {
+    public CompletionStage<Void> doFilter(FilterContext context, FilterChain chain) {
         final HttpRequest request = context.request();
         final HttpResponse response = context.response();
 
@@ -117,7 +117,6 @@ public class IpWhiteListFilter implements Filter {
      * Get remote ip address.
      *
      * @param request request
-     *
      * @return ip
      */
     protected String getRemoteAddr(HttpRequest request) {

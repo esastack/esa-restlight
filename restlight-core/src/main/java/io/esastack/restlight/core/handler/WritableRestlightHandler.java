@@ -45,7 +45,7 @@ import io.esastack.restlight.server.schedule.ExceptionHandledRestlightHandler;
 import io.esastack.restlight.server.util.Futures;
 
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 
 public class WritableRestlightHandler extends ExceptionHandledRestlightHandler {
 
@@ -70,7 +70,7 @@ public class WritableRestlightHandler extends ExceptionHandledRestlightHandler {
     }
 
     @Override
-    public CompletableFuture<Void> process(RequestContext context) {
+    public CompletionStage<Void> process(RequestContext context) {
         return super.process(context).whenComplete((v, th) -> {
             if (th != null) {
                 DispatcherHandlerImpl.handleException(context, Futures.unwrapCompletionException(th));

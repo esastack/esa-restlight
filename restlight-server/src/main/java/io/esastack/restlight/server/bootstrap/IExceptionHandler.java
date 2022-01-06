@@ -19,7 +19,7 @@ import esa.commons.annotation.Internal;
 import io.esastack.restlight.core.util.Ordered;
 import io.esastack.restlight.server.context.RequestContext;
 
-import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 
 /**
  * This {@link IExceptionHandler} is designed for internal using. The exception caught will be proceed by
@@ -37,7 +37,7 @@ public interface IExceptionHandler extends Ordered {
      * @param next      next handler chain
      * @return          handled result
      */
-    CompletableFuture<Void> handle(RequestContext context, Throwable th, ExceptionHandlerChain next);
+    CompletionStage<Void> handle(RequestContext context, Throwable th, ExceptionHandlerChain next);
 
 }
 

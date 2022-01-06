@@ -43,7 +43,7 @@ public class DefaultMockMvc implements MockMvc {
         RequestContext context = new RequestContextImpl(request, response);
         context.attrs().attr(RequestContextImpl.RESPONSE_CONTENT).set(new MockResponseContent(buffer));
 
-        handler.process(context).join();
+        handler.process(context).toCompletableFuture().join();
         return new DefaultResultActions(new DefaultMvcResult(request, response));
     }
 
