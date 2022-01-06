@@ -48,6 +48,7 @@ import io.esastack.restlight.server.schedule.Schedulers;
 import io.esastack.restlight.server.spi.ConnectionHandlerFactory;
 import io.esastack.restlight.server.spi.DisConnectionHandlerFactory;
 import io.esastack.restlight.server.spi.ExceptionHandlerFactory;
+import io.esastack.restlight.server.spi.FilterFactory;
 import io.esastack.restlight.server.spi.RequestTaskHookFactory;
 import io.esastack.restlight.server.spi.RouteRegistryAware;
 import io.esastack.restlight.server.spi.RouteRegistryAwareFactory;
@@ -77,7 +78,7 @@ public abstract class BaseDeployments<R extends BaseRestlightServer<R, D, O>, D 
      */
     protected final R restlight;
     private final List<Route> routes = new LinkedList<>();
-    private final List<Filter> filters = new LinkedList<>();
+    private final List<FilterFactory> filters = new LinkedList<>();
     private final List<ExceptionHandlerFactory> exceptionHandlerFactories = new LinkedList<>();
     private final List<ConnectionHandlerFactory> connectionHandlers = new LinkedList<>();
     private final List<DisConnectionHandlerFactory> disConnectionHandlers = new LinkedList<>();
@@ -224,14 +225,21 @@ public abstract class BaseDeployments<R extends BaseRestlightServer<R, D, O>, D 
     public D addFilter(Filter filter) {
         checkImmutable();
         Checks.checkNotNull(filter, "filter");
-        this.filters.add(filter);
+        addFilter(ctx -> Optional.of(filter));
         return self();
     }
 
-    public D addFilters(Collection<? extends Filter> filters) {
+    public D addFilter(FilterFactory filter) {
+        checkImmutable();
+        Checks.checkNotNull(filter, "filter");
+        addFilters(Collections.singletonList(filter));
+        return self();
+    }
+
+    public D addFilters(Collection<? extends FilterFactory> filters) {
         checkImmutable();
         if (filters != null && !filters.isEmpty()) {
-            filters.forEach(this::addFilter);
+            this.filters.addAll(filters);
         }
         return self();
     }
@@ -347,7 +355,11 @@ public abstract class BaseDeployments<R extends BaseRestlightServer<R, D, O>, D 
      * @return filters
      */
     List<Filter> filters() {
-        return filters;
+        return filters.stream()
+                .map(factory -> factory.filter(ctx()))
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .collect(Collectors.toList());
     }
 
     RestlightHandler applyDeployments() {

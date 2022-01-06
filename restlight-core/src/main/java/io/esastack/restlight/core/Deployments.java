@@ -26,6 +26,7 @@ import io.esastack.restlight.core.configure.DeploymentsConfigure;
 import io.esastack.restlight.core.configure.ExtensionsHandler;
 import io.esastack.restlight.core.configure.HandlerConfigure;
 import io.esastack.restlight.core.configure.HandlerRegistry;
+import io.esastack.restlight.core.configure.HandlerRegistryAware;
 import io.esastack.restlight.core.configure.HandlerRegistryImpl;
 import io.esastack.restlight.core.configure.MiniConfigurableDeployments;
 import io.esastack.restlight.core.handler.HandlerMapping;
@@ -73,6 +74,7 @@ import io.esastack.restlight.core.spi.ExtensionsHandlerFactory;
 import io.esastack.restlight.core.spi.FutureTransferFactory;
 import io.esastack.restlight.core.spi.HandlerAdviceFactory;
 import io.esastack.restlight.core.spi.HandlerFactoryProvider;
+import io.esastack.restlight.core.spi.HandlerRegistryAwareFactory;
 import io.esastack.restlight.core.spi.ParamResolverAdviceProvider;
 import io.esastack.restlight.core.spi.ParamResolverProvider;
 import io.esastack.restlight.core.spi.RequestEntityResolverAdviceProvider;
@@ -129,6 +131,7 @@ public abstract class Deployments<R extends AbstractRestlight<R, D, O>, D extend
     private final List<InterceptorFactory> interceptors = new LinkedList<>();
     private final Map<Class<? extends Throwable>, ExceptionResolver<Throwable>> exceptionResolvers
             = new LinkedHashMap<>();
+    private final List<HandlerRegistryAwareFactory> handlerAwareness = new LinkedList<>();
 
     protected Deployments(R restlight, O options) {
         super(restlight, options);
@@ -851,6 +854,26 @@ public abstract class Deployments<R extends AbstractRestlight<R, D, O>, D extend
         return self();
     }
 
+    public D addHandlerRegistryAware(HandlerRegistryAware aware) {
+        checkImmutable();
+        Checks.checkNotNull(aware, "aware");
+        return addHandlerRegistryAware((HandlerRegistryAwareFactory) deployContext -> Optional.of(aware));
+    }
+
+    public D addHandlerRegistryAware(HandlerRegistryAwareFactory aware) {
+        checkImmutable();
+        Checks.checkNotNull(aware, "aware");
+        return addHandlerRegistryAwareness(Collections.singletonList(aware));
+    }
+
+    public D addHandlerRegistryAwareness(Collection<? extends HandlerRegistryAwareFactory> awareness) {
+        checkImmutable();
+        if (awareness != null && !awareness.isEmpty()) {
+            this.handlerAwareness.addAll(awareness);
+        }
+        return self();
+    }
+
     @Override
     protected void beforeApplyDeployments() {
         List<DeploymentsConfigure> configures = SpiLoader.cached(DeploymentsConfigure.class)
@@ -1014,9 +1037,15 @@ public abstract class Deployments<R extends AbstractRestlight<R, D, O>, D extend
         OrderedComparator.sort(handlerConfigures);
         ctx().setHandlerConfigure(Collections.unmodifiableList(handlerConfigures));
 
-        // register handlers byn handlerRegistry.
+        // register handlers by handlerRegistry.
         this.registerHandlers(handlerRegistry);
 
+        loadHandlerRegistriesFromSpi()
+                .stream()
+                .map(factory -> factory.createAware(ctx()))
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .forEach(aware -> aware.setRegistry(handlerRegistry));
         // register routes added by user.
         super.registerRoutes(registry);
     }
@@ -1108,6 +1137,15 @@ public abstract class Deployments<R extends AbstractRestlight<R, D, O>, D extend
                 }
             }
         }
+    }
+
+    private List<HandlerRegistryAwareFactory> loadHandlerRegistriesFromSpi() {
+        // load HandlerRegistryAware by spi
+        this.handlerAwareness.addAll(SpiLoader.cached(HandlerRegistryAware.class).getAll()
+                .stream().map(aware -> (HandlerRegistryAwareFactory) deployContext -> Optional.of(aware))
+                .collect(Collectors.toList()));
+        this.handlerAwareness.addAll(SpiLoader.cached(HandlerRegistryAwareFactory.class).getAll());
+        return handlerAwareness;
     }
 
     private void loadResolversFromSpi() {
