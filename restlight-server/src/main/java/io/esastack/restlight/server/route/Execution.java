@@ -15,8 +15,10 @@
  */
 package io.esastack.restlight.server.route;
 
+import io.esastack.restlight.server.context.RequestContext;
 import io.esastack.restlight.server.core.HttpRequest;
-import io.esastack.restlight.server.core.HttpResponse;
+
+import java.util.concurrent.CompletionStage;
 
 /**
  * A Execution is used to handle current {@link HttpRequest}'s lifecycle after routing this {@link HttpRequest}.
@@ -24,12 +26,12 @@ import io.esastack.restlight.server.core.HttpResponse;
 public interface Execution {
 
     /**
-     * Handles current {@link HttpRequest}, this method must make sure that current {@link HttpResponse} has been
-     * committed or else Restlight will handle it for you which probably means a error.
+     * Handle the current request by given {@code context} object.
      *
-     * @return execution handler
+     * @param context   context
+     * @return          result
      */
-    ExecutionHandler executionHandler();
+    CompletionStage<Void> handle(RequestContext context);
 
     /**
      * Returns an instance of {@link CompletionHandler} to handle the completion event of current request.

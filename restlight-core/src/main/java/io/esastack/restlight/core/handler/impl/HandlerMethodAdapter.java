@@ -116,7 +116,7 @@ public class HandlerMethodAdapter<H extends HandlerMethod> implements HandlerMet
             } else {
                 List<RequestEntityResolver> requestEntityResolvers = factory.getRequestEntityResolvers(param);
                 if (requestEntityResolvers.isEmpty()) {
-                    throw new IllegalArgumentException("There is no resolver to handle param: ["
+                    throw new IllegalArgumentException("There is no suitable resolver to handle param: ["
                             + param.toString() + "]");
                 } else {
                     return new ResolvableParam<>(param, new AdvisedRequestEntityResolver(handlerMethod, param,

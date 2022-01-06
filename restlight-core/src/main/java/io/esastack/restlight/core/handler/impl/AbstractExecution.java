@@ -28,27 +28,26 @@ import io.esastack.restlight.core.method.ResolvableParam;
 import io.esastack.restlight.core.resolver.HandlerResolverFactory;
 import io.esastack.restlight.server.bootstrap.WebServerException;
 import io.esastack.restlight.server.context.RequestContext;
-import io.esastack.restlight.server.route.ExecutionHandler;
-import io.esastack.restlight.server.route.Mapping;
+import io.esastack.restlight.server.route.Execution;
 import io.esastack.restlight.server.util.Futures;
 
-import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 
 /**
- * Abstract implementation of {@link ExecutionHandler} which handles segment {@link Mapping} by instantiating bean
+ * Abstract implementation of {@link Execution} which handles {@link RequestContext} by instantiating bean
  * (if necessary), resolving arguments, invoking and handling return value step by step.
  *
  * @param <H> Handler type
  */
-abstract class AbstractExecutionHandler<H extends HandlerMethodAdapter> implements ExecutionHandler {
+abstract class AbstractExecution<H extends HandlerMethodAdapter> implements Execution {
 
-    private static final Logger logger = LoggerFactory.getLogger(AbstractExecutionHandler.class);
+    private static final Logger logger = LoggerFactory.getLogger(AbstractExecution.class);
 
     private final FutureTransfer transfer;
     private final HandlerValueResolver handlerResolver;
     private final H handlerMethod;
 
-    AbstractExecutionHandler(HandlerValueResolver handlerResolver, H handlerMethod) {
+    AbstractExecution(HandlerValueResolver handlerResolver, H handlerMethod) {
         Checks.checkNotNull(handlerResolver, "handlerResolver");
         Checks.checkNotNull(handlerMethod, "handlerMethod");
         assert handlerMethod.context().resolverFactory().isPresent();
@@ -59,7 +58,7 @@ abstract class AbstractExecutionHandler<H extends HandlerMethodAdapter> implemen
     }
 
     @Override
-    public CompletableFuture<Void> handle(RequestContext context) {
+    public CompletionStage<Void> handle(RequestContext context) {
         try {
             final Object object = resolveBean(handlerMethod.handlerMethod(), context);
             final Object[] args = resolveArgs(context);
@@ -126,8 +125,8 @@ abstract class AbstractExecutionHandler<H extends HandlerMethodAdapter> implemen
         return null;
     }
 
-    protected CompletableFuture<Object> invoke(RequestContext context, Object bean, Object[] args) {
-        CompletableFuture<Object> future;
+    protected CompletionStage<Object> invoke(RequestContext context, Object bean, Object[] args) {
+        CompletionStage<Object> future;
         try {
             final Object returnValue = getInvoker(handlerMethod.handlerMethod(), bean).invoke(context, args);
             if (handlerMethod.isConcurrent() && returnValue == null) {
@@ -153,7 +152,7 @@ abstract class AbstractExecutionHandler<H extends HandlerMethodAdapter> implemen
         return handlerMethod;
     }
 
-    CompletableFuture<Void> resolveReturnValue(Object value, RequestContext context) {
+    CompletionStage<Void> resolveReturnValue(Object value, RequestContext context) {
         return handlerResolver.handle(value, context);
     }
 

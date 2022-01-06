@@ -18,16 +18,16 @@ package io.esastack.restlight.server.route;
 import io.esastack.restlight.server.context.RequestContext;
 
 /**
- * This {@link Router} is used to match {@link Route} with given {@link RequestContext}.
+ * This {@link Router} is used to match a {@link Route} to handle the given {@link RequestContext}.
  */
 public interface Router {
 
     /**
-     * Gets the matched {@link Route}s by the given {@code context}.
+     * Gets the matched {@link Route} by the given {@code context}.
      *
      * @param context context
      *
-     * @return matched {@link Route}s or {@code null} if missing
+     * @return matched {@link Route} or {@code null} if missing
      */
     Route route(RequestContext context);
 

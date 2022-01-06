@@ -23,6 +23,7 @@ import esa.commons.spi.SpiLoader;
 import io.esastack.restlight.core.Deployments;
 import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.core.configure.HandlerConfigure;
+import io.esastack.restlight.core.configure.HandlerRegistryAware;
 import io.esastack.restlight.core.handler.HandlerMapping;
 import io.esastack.restlight.core.handler.HandlerMappingProvider;
 import io.esastack.restlight.core.handler.RouteFilterAdapter;
@@ -52,6 +53,7 @@ import io.esastack.restlight.core.serialize.GsonHttpBodySerializer;
 import io.esastack.restlight.core.serialize.HttpRequestSerializer;
 import io.esastack.restlight.core.serialize.HttpResponseSerializer;
 import io.esastack.restlight.core.spi.ContextResolverProvider;
+import io.esastack.restlight.core.spi.HandlerRegistryAwareFactory;
 import io.esastack.restlight.core.spi.ParamResolverAdviceProvider;
 import io.esastack.restlight.core.spi.ParamResolverProvider;
 import io.esastack.restlight.core.spi.RequestEntityResolverAdviceProvider;
@@ -72,6 +74,7 @@ import io.esastack.restlight.server.schedule.Scheduler;
 import io.esastack.restlight.server.spi.ConnectionHandlerFactory;
 import io.esastack.restlight.server.spi.DisConnectionHandlerFactory;
 import io.esastack.restlight.server.spi.ExceptionHandlerFactory;
+import io.esastack.restlight.server.spi.FilterFactory;
 import io.esastack.restlight.server.spi.RequestTaskHookFactory;
 import io.esastack.restlight.server.spi.RouteRegistryAware;
 import io.esastack.restlight.server.spi.RouteRegistryAwareFactory;
@@ -135,6 +138,7 @@ public class Deployments4Spring<R extends AbstractRestlight4Spring<R, D, O>, D e
         configureResponseEntityResolversAndAdvices(context);
         configureSerializers(context);
         configureExceptionResolvers(context);
+        configureHandlerRegistryAwareness(context);
     }
 
     private void configureContextConfigures(ApplicationContext context) {
@@ -181,7 +185,11 @@ public class Deployments4Spring<R extends AbstractRestlight4Spring<R, D, O>, D e
     private void configureFilters(ApplicationContext context) {
         Map<String, Filter> filters = beansOfType(context, Filter.class);
         if (!filters.isEmpty()) {
-            this.addFilters(filters.values());
+            filters.values().forEach(this::addFilter);
+        }
+        Map<String, FilterFactory> factories = beansOfType(context, FilterFactory.class);
+        if (!factories.isEmpty()) {
+            this.addFilters(factories.values());
         }
     }
 
@@ -438,6 +446,11 @@ public class Deployments4Spring<R extends AbstractRestlight4Spring<R, D, O>, D e
     private void configureExceptionResolvers(ApplicationContext context) {
         // auto inject serializer
         beansOfType(context, ExceptionResolver.class).values().forEach(this::addExceptionResolver);
+    }
+
+    private void configureHandlerRegistryAwareness(ApplicationContext context) {
+        beansOfType(context, HandlerRegistryAware.class).values().forEach(this::addHandlerRegistryAware);
+        addHandlerRegistryAwareness(beansOfType(context, HandlerRegistryAwareFactory.class).values());
     }
 
     private <T> Optional<T> beanOfType(ApplicationContext context, Class<T> clz) {

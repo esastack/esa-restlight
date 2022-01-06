@@ -81,7 +81,7 @@ public abstract class RouteHandlerMethodAdapter extends HandlerMethodAdapter<Rou
         return handlerFactory.getRouteFilters(method);
     }
 
-    List<InternalInterceptor> getMatchingInterceptors(io.esastack.restlight.server.context.RequestContext context) {
+    List<InternalInterceptor> getMatchingInterceptors(RequestContext context) {
         if (handlerMethod().intercepted()) {
             return interceptorMatcher.match(context);
         }
@@ -150,13 +150,14 @@ public abstract class RouteHandlerMethodAdapter extends HandlerMethodAdapter<Rou
     }
 
     private static class Matcher {
+
         final List<InterceptorMapping> interceptorMappings;
 
         private Matcher(List<InterceptorMapping> interceptorMappings) {
             this.interceptorMappings = interceptorMappings;
         }
 
-        List<InternalInterceptor> match(io.esastack.restlight.server.context.RequestContext context) {
+        List<InternalInterceptor> match(RequestContext context) {
             //if lookup map is empty -> just return the all mapping interceptors
             if (interceptorMappings.isEmpty()) {
                 return null;
@@ -167,7 +168,7 @@ public abstract class RouteHandlerMethodAdapter extends HandlerMethodAdapter<Rou
             return doMatch(context);
         }
 
-        protected List<InternalInterceptor> doMatch(io.esastack.restlight.server.context.RequestContext context) {
+        protected List<InternalInterceptor> doMatch(RequestContext context) {
             // match interceptors by order
             final List<InternalInterceptor> matchedInterceptors =
                     new LinkedList<>();
@@ -197,7 +198,7 @@ public abstract class RouteHandlerMethodAdapter extends HandlerMethodAdapter<Rou
         }
 
         @Override
-        protected List<InternalInterceptor> doMatch(io.esastack.restlight.server.context.RequestContext context) {
+        protected List<InternalInterceptor> doMatch(RequestContext context) {
             try {
                 return super.doMatch(context);
             } finally {
@@ -210,6 +211,7 @@ public abstract class RouteHandlerMethodAdapter extends HandlerMethodAdapter<Rou
     }
 
     private static class InterceptorMapping implements Ordered, RequestPredicate {
+
         private final InterceptorPredicate predicate;
         private final InternalInterceptor interceptor;
 
@@ -219,7 +221,7 @@ public abstract class RouteHandlerMethodAdapter extends HandlerMethodAdapter<Rou
         }
 
         @Override
-        public boolean test(io.esastack.restlight.server.context.RequestContext context) {
+        public boolean test(RequestContext context) {
             return predicate.test(context);
         }
 
@@ -243,7 +245,7 @@ public abstract class RouteHandlerMethodAdapter extends HandlerMethodAdapter<Rou
         }
 
         @Override
-        public boolean test(io.esastack.restlight.server.context.RequestContext context) {
+        public boolean test(RequestContext context) {
             Boolean isMatched = matched.getIfExists();
             if (isMatched == null) {
                 boolean matchResult = super.test(context);

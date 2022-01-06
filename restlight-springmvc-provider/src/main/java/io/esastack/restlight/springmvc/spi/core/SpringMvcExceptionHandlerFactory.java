@@ -31,6 +31,7 @@ import io.esastack.restlight.springmvc.util.ResponseStatusUtils;
 
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 
 @Internal
 @Feature(tags = Constants.INTERNAL)
@@ -44,8 +45,8 @@ public class SpringMvcExceptionHandlerFactory implements ExceptionHandlerFactory
     private static class SpringMvcExceptionHandler implements IExceptionHandler {
 
         @Override
-        public CompletableFuture<Void> handle(RequestContext context, Throwable th,
-                                              ExceptionHandlerChain next) {
+        public CompletionStage<Void> handle(RequestContext context, Throwable th,
+                                            ExceptionHandlerChain next) {
             final CompletableFuture<Void> handled = new CompletableFuture<>();
             next.handle(context, th).whenComplete((v, ex) -> {
                 if (ex == null) {

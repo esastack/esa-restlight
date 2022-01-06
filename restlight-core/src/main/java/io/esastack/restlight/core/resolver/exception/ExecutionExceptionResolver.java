@@ -19,14 +19,14 @@ import esa.commons.Checks;
 import io.esastack.restlight.core.handler.Handler;
 import io.esastack.restlight.core.handler.HandlerValueResolver;
 import io.esastack.restlight.core.handler.impl.ExceptionHandlerExecution;
-import io.esastack.restlight.core.handler.impl.ExecutionImpl;
 import io.esastack.restlight.core.handler.impl.HandlerMethodAdapter;
 import io.esastack.restlight.core.method.HandlerMethod;
 import io.esastack.restlight.core.resolver.ExceptionResolver;
 import io.esastack.restlight.server.context.RequestContext;
+import io.esastack.restlight.server.route.Execution;
 import io.esastack.restlight.server.util.Futures;
 
-import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 
 public class ExecutionExceptionResolver implements ExceptionResolver<Throwable> {
 
@@ -46,12 +46,11 @@ public class ExecutionExceptionResolver implements ExceptionResolver<Throwable> 
     }
 
     @Override
-    public CompletableFuture<Void> handleException(RequestContext context,
-                                                   Throwable ex) {
+    public CompletionStage<Void> handleException(RequestContext context,
+                                                 Throwable ex) {
         try {
-            final ExecutionImpl execution = new ExecutionImpl(new ExceptionHandlerExecution(handlerResolver,
-                    handler, handlerMethod, ex));
-            final CompletableFuture<Void> future = execution.executionHandler().handle(context);
+            final Execution execution = new ExceptionHandlerExecution(handlerResolver, handler, handlerMethod, ex);
+            final CompletionStage<Void> future = execution.handle(context);
             if (execution.completionHandler() == null) {
                 return future;
             } else {

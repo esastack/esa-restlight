@@ -32,12 +32,12 @@ import jakarta.ws.rs.NotSupportedException;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.Response;
 
-import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 
 public class JaxrsExceptionAdapter implements IExceptionHandler {
 
     @Override
-    public CompletableFuture<Void> handle(RequestContext context, Throwable th, ExceptionHandlerChain next) {
+    public CompletionStage<Void> handle(RequestContext context, Throwable th, ExceptionHandlerChain next) {
         if (th == null) {
             return next.handle(context, null);
         }

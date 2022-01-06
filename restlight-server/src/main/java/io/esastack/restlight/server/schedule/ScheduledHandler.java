@@ -117,7 +117,8 @@ class ScheduledHandler {
         final Route route = dispatcher.route(context);
         // handle routed failure and return
         if (route == null) {
-            return Futures.completedExceptionally(new RouteFailureException(DispatcherHandlerImpl.notFound(context)));
+            return Futures.completedExceptionally(new RouteFailureException(context,
+                    DispatcherHandlerImpl.notFound(context)));
         }
         return Futures.completedFuture(route);
     }

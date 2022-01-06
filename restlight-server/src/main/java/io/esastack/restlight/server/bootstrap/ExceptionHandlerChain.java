@@ -18,7 +18,7 @@ package io.esastack.restlight.server.bootstrap;
 import esa.commons.annotation.Internal;
 import io.esastack.restlight.server.context.RequestContext;
 
-import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 
 /**
  * This is a chained {@link IExceptionHandler} which is used to handle {@link Throwable}.
@@ -33,7 +33,7 @@ public interface ExceptionHandlerChain {
      * @param th        throwable
      * @return          handled result
      */
-    CompletableFuture<Void> handle(RequestContext context, Throwable th);
+    CompletionStage<Void> handle(RequestContext context, Throwable th);
 
 }
 

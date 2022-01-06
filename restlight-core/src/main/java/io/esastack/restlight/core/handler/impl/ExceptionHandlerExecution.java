@@ -23,7 +23,7 @@ import io.esastack.restlight.core.method.HandlerMethod;
 import io.esastack.restlight.core.method.MethodParam;
 import io.esastack.restlight.server.context.RequestContext;
 
-public class ExceptionHandlerExecution extends AbstractExecutionHandler<HandlerMethodAdapter<HandlerMethod>> {
+public class ExceptionHandlerExecution extends AbstractExecution<HandlerMethodAdapter<HandlerMethod>> {
 
     private final Handler handler;
     private final Throwable th;

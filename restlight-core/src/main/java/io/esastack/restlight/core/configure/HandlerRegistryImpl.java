@@ -18,11 +18,19 @@ package io.esastack.restlight.core.configure;
 import esa.commons.Checks;
 import esa.commons.ClassUtils;
 import esa.commons.ObjectUtils;
+import esa.commons.logging.Logger;
+import esa.commons.logging.LoggerFactory;
+import esa.commons.reflect.ReflectionUtils;
 import io.esastack.restlight.core.DeployContext;
 import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.core.handler.HandlerMapping;
 import io.esastack.restlight.core.handler.impl.HandlerContext;
+import io.esastack.restlight.core.method.FieldParam;
+import io.esastack.restlight.core.method.FieldParamImpl;
 import io.esastack.restlight.core.method.HandlerMethodImpl;
+import io.esastack.restlight.core.method.MethodParam;
+import io.esastack.restlight.core.method.MethodParamImpl;
+import io.esastack.restlight.core.method.ResolvableParamPredicate;
 import io.esastack.restlight.core.util.RouteUtils;
 import io.esastack.restlight.server.route.Route;
 import io.esastack.restlight.server.route.RouteRegistry;
@@ -39,6 +47,8 @@ import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.stream.Collectors;
 
 public class HandlerRegistryImpl implements HandlerRegistry, Handlers {
+
+    private static final Logger logger = LoggerFactory.getLogger(HandlerRegistryImpl.class);
 
     private final Set<Class<?>> classes = new CopyOnWriteArraySet<>();
     private final Set<Object> singletons = new CopyOnWriteArraySet<>();
@@ -70,6 +80,10 @@ public class HandlerRegistryImpl implements HandlerRegistry, Handlers {
             List<HandlerMapping> mappings = new LinkedList<>();
             handlers.forEach(handler -> {
                 Class<?> userType = ClassUtils.getUserType(handler);
+
+                // the resolvable param of singleton handler is not allowed in fields and setters.
+                checkFieldsAndSetters(userType);
+
                 ClassUtils.doWithUserDeclaredMethods(userType,
                         method -> {
                             HandlerContext<?> context = HandlerContext.build(this.context,
@@ -153,7 +167,7 @@ public class HandlerRegistryImpl implements HandlerRegistry, Handlers {
 
                 Class<?> userType = ClassUtils.getUserType(handler);
                 for (Object singleton : singletons) {
-                    if (singleton.equals(handler) || singleton.equals(userType)) {
+                    if (singleton.equals(handler) || ClassUtils.getUserType(singleton).equals(userType)) {
                         removableHandlers.add(singleton);
                         removableSingletons.add(singleton);
                     }
@@ -169,8 +183,8 @@ public class HandlerRegistryImpl implements HandlerRegistry, Handlers {
                                     .extractHandlerMapping(new HandlerContext<>(context),
                                             null, userType, method);
                             if (mapping.isPresent()) {
-                                // deRegister by mapping
-                                registry.deRegister(Route.route(mapping.get().mapping()));
+                                // deRegister routes which have same mapping extracted from given handler
+                                registry.deRegister(Route.route(RouteUtils.computeFullyMapping(mapping.get())));
                                 for (HandlerMapping mp : mappings) {
                                     if (mp.mapping().equals(mapping.get().mapping())) {
                                         removableMappings.add(mp);
@@ -215,5 +229,29 @@ public class HandlerRegistryImpl implements HandlerRegistry, Handlers {
         return Collections.unmodifiableSet(singletons);
     }
 
+    private void checkFieldsAndSetters(Class<?> userType) {
+        ResolvableParamPredicate resolvable = context.paramPredicate().orElse(null);
+        if (resolvable == null) {
+            return;
+        }
+        ReflectionUtils.getAllDeclaredFields(userType)
+                .forEach(f -> {
+                    FieldParam param = new FieldParamImpl(f);
+                    if (resolvable.test(param)) {
+                        logger.warn("Can't resolve field({}) in a singleton handler. maybe you can"
+                                + " add class({}) as prototype?", param, userType);
+                    }
+                });
+
+        ReflectionUtils.getAllDeclaredMethods(userType).stream()
+                .filter(ReflectionUtils::isSetter)
+                .forEach(m -> {
+                    MethodParam param = new MethodParamImpl(m, 0);
+                    if (resolvable.test(param)) {
+                        logger.warn("Can't resolve param({}) in a singleton handler. maybe you can"
+                                + " add class({}) as prototype?", param, userType);
+                    }
+                });
+    }
 }
 

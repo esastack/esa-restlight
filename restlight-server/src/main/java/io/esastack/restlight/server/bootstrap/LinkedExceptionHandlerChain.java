@@ -20,7 +20,7 @@ import esa.commons.annotation.Internal;
 import io.esastack.restlight.server.context.RequestContext;
 import io.esastack.restlight.server.util.Futures;
 
-import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 import java.util.function.BiFunction;
 
 @Internal
@@ -55,7 +55,7 @@ public class LinkedExceptionHandlerChain implements ExceptionHandlerChain {
 
     public static ExceptionHandlerChain immutable(IExceptionHandler[] handlers,
                                                   BiFunction<RequestContext, Throwable,
-                                                          CompletableFuture<Void>> action) {
+                                                          CompletionStage<Void>> action) {
         Checks.checkNotNull(handlers, "handlers");
         ExceptionHandlerChain chain = action::apply;
 
@@ -69,7 +69,7 @@ public class LinkedExceptionHandlerChain implements ExceptionHandlerChain {
     }
 
     @Override
-    public CompletableFuture<Void> handle(RequestContext context, Throwable th) {
+    public CompletionStage<Void> handle(RequestContext context, Throwable th) {
         return handler.handle(context, th, next);
     }
 }

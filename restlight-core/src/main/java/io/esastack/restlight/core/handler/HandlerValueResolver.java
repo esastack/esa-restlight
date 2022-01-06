@@ -19,7 +19,7 @@ import io.esastack.restlight.core.method.HandlerMethod;
 import io.esastack.restlight.core.util.Ordered;
 import io.esastack.restlight.server.context.RequestContext;
 
-import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 
 /**
  * This interface is designed to handle the return value of {@link HandlerMethod}.
@@ -33,7 +33,7 @@ public interface HandlerValueResolver extends Ordered {
      * @param context   context
      * @return          handled result
      */
-    CompletableFuture<Void> handle(Object value, RequestContext context);
+    CompletionStage<Void> handle(Object value, RequestContext context);
 
 }
 

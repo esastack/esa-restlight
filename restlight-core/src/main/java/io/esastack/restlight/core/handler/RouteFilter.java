@@ -23,7 +23,7 @@ import io.esastack.restlight.server.route.Route;
 import io.esastack.restlight.server.route.RouteExecution;
 import io.esastack.restlight.server.schedule.Scheduler;
 
-import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 
 /**
  * The {@link RouteFilter} is designed to handle the {@link HttpRequest} and {@link HttpResponse} as soon as
@@ -45,7 +45,7 @@ public interface RouteFilter extends Ordered {
      * continuously, otherwise the request will be terminated and the
      * {@link RouteContext#response()} will be returned directly.
      */
-    CompletableFuture<Void> routed(HandlerMapping mapping, RouteContext context, RouteFilterChain next);
+    CompletionStage<Void> routed(HandlerMapping mapping, RouteContext context, RouteFilterChain next);
 
 }
 

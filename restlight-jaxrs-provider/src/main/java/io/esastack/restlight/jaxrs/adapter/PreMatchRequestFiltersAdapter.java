@@ -25,7 +25,7 @@ import io.esastack.restlight.server.handler.FilterChain;
 import io.esastack.restlight.server.util.Futures;
 import jakarta.ws.rs.container.ContainerRequestFilter;
 
-import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 
 public class PreMatchRequestFiltersAdapter implements Filter {
 
@@ -37,7 +37,7 @@ public class PreMatchRequestFiltersAdapter implements Filter {
     }
 
     @Override
-    public CompletableFuture<Void> doFilter(FilterContext context, FilterChain chain) {
+    public CompletionStage<Void> doFilter(FilterContext context, FilterChain chain) {
         final AbstractContainerRequestContext ctx = JaxrsContextUtils.getRequestContext(context);
         try {
             for (ContainerRequestFilter filter : filters) {

@@ -51,6 +51,7 @@ import io.esastack.restlight.core.spi.RouteFilterFactory;
 import io.esastack.restlight.server.bootstrap.IExceptionHandler;
 import io.esastack.restlight.server.handler.Filter;
 import io.esastack.restlight.server.route.RouteRegistry;
+import io.esastack.restlight.server.spi.FilterFactory;
 
 import java.util.Collection;
 
@@ -92,12 +93,23 @@ public class MiniConfigurableDeployments {
     }
 
     /**
+     * Adds {@link Filter}.
+     *
+     * @param filter    filter
+     * @return deployments
+     */
+    public MiniConfigurableDeployments addFilter(FilterFactory filter) {
+        deployments.addFilter(filter);
+        return self();
+    }
+
+    /**
      * Adds {@link Filter}s.
      *
      * @param filters    filters
      * @return deployments
      */
-    public MiniConfigurableDeployments addFilters(Collection<? extends Filter> filters) {
+    public MiniConfigurableDeployments addFilters(Collection<? extends FilterFactory> filters) {
         deployments.addFilters(filters);
         return self();
     }

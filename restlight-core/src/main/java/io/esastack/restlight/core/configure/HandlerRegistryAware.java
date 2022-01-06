@@ -13,23 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.esastack.restlight.server.route;
+package io.esastack.restlight.core.configure;
 
-import io.esastack.restlight.server.context.RequestContext;
+import esa.commons.spi.SPI;
 
 /**
- * The factory to create a {@link ExecutionHandler} to handle the specified {@link RequestContext}.
+ * A marker interface which provides a way to access the {@link HandlerRegistry} after it's has been instantiated
+ * and all the internal handlers have been registered to it. You can register or deregister custom handlers
+ * whenever you like even while the server is running by implementing current interface.
  */
+@SPI
 @FunctionalInterface
-public interface ExecutionHandlerFactory {
+public interface HandlerRegistryAware {
 
     /**
-     * Creates an {@link ExecutionHandler} to handle the given {@code ctx}.
+     * This callback method is invoked when all the internal handlers have been registered to {@code registry}.
      *
-     * @param ctx   ctx
-     * @return      execution handler
+     * @param registry  registry
      */
-    RouteExecution create(RequestContext ctx);
+    void setRegistry(HandlerRegistry registry);
 
 }
 

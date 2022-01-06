@@ -30,10 +30,12 @@ import java.util.Optional;
 public class StringConverterProviderAdapter implements StringConverterFactory {
 
     private final ParamConverterProvider underlying;
+    private final int order;
 
-    public StringConverterProviderAdapter(ParamConverterProvider underlying) {
+    public StringConverterProviderAdapter(ParamConverterProvider underlying, int order) {
         Checks.checkNotNull(underlying, "underlying");
         this.underlying = underlying;
+        this.order = order;
     }
 
     @Override
@@ -56,6 +58,11 @@ public class StringConverterProviderAdapter implements StringConverterFactory {
                 return isLazy;
             }
         });
+    }
+
+    @Override
+    public int getOrder() {
+        return order;
     }
 }
 

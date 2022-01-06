@@ -15,17 +15,26 @@
  */
 package io.esastack.restlight.server.route;
 
+import io.esastack.restlight.server.context.RequestContext;
+
 public class RouteFailureException extends RuntimeException {
 
     private final transient RouteFailure failureType;
+    private final RequestContext context;
 
-    public RouteFailureException(RouteFailure failureType) {
-        super();
+    public RouteFailureException(RequestContext context, RouteFailure failureType) {
+        super("There is no route to handle request(url=" + context.request().path() + ", method="
+                + context.request().method() + ")");
+        this.context = context;
         this.failureType = failureType;
     }
 
-    public RouteFailure getFailureType() {
+    public RouteFailure failureType() {
         return failureType;
+    }
+
+    public RequestContext context() {
+        return context;
     }
 
     public enum RouteFailure {

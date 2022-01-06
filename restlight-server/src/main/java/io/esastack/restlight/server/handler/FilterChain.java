@@ -18,7 +18,7 @@ package io.esastack.restlight.server.handler;
 import esa.commons.annotation.Internal;
 import io.esastack.restlight.server.context.FilterContext;
 
-import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 
 @Internal
 public interface FilterChain {
@@ -29,6 +29,6 @@ public interface FilterChain {
      * @param context  context
      * @return future
      */
-    CompletableFuture<Void> doFilter(FilterContext context);
+    CompletionStage<Void> doFilter(FilterContext context);
 
 }

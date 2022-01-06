@@ -37,6 +37,7 @@ import io.esastack.restlight.server.route.Route;
 import io.esastack.restlight.server.route.RouteRegistry;
 import io.esastack.restlight.server.route.impl.AbstractRouteRegistry;
 import io.esastack.restlight.server.route.impl.CachedRouteRegistry;
+import io.esastack.restlight.server.route.impl.RoutableRegistry;
 import io.esastack.restlight.server.route.impl.SimpleRouteRegistry;
 import io.esastack.restlight.server.schedule.ExecutorScheduler;
 import io.esastack.restlight.server.schedule.RequestTask;
@@ -47,6 +48,7 @@ import io.esastack.restlight.server.schedule.Schedulers;
 import io.esastack.restlight.server.spi.ConnectionHandlerFactory;
 import io.esastack.restlight.server.spi.DisConnectionHandlerFactory;
 import io.esastack.restlight.server.spi.ExceptionHandlerFactory;
+import io.esastack.restlight.server.spi.FilterFactory;
 import io.esastack.restlight.server.spi.RequestTaskHookFactory;
 import io.esastack.restlight.server.spi.RouteRegistryAware;
 import io.esastack.restlight.server.spi.RouteRegistryAwareFactory;
@@ -76,7 +78,7 @@ public abstract class BaseDeployments<R extends BaseRestlightServer<R, D, O>, D 
      */
     protected final R restlight;
     private final List<Route> routes = new LinkedList<>();
-    private final List<Filter> filters = new LinkedList<>();
+    private final List<FilterFactory> filters = new LinkedList<>();
     private final List<ExceptionHandlerFactory> exceptionHandlerFactories = new LinkedList<>();
     private final List<ConnectionHandlerFactory> connectionHandlers = new LinkedList<>();
     private final List<DisConnectionHandlerFactory> disConnectionHandlers = new LinkedList<>();
@@ -142,24 +144,6 @@ public abstract class BaseDeployments<R extends BaseRestlightServer<R, D, O>, D 
     public D addRoute(Route route) {
         checkImmutable();
         Checks.checkNotNull(route, "route");
-        if (route.scheduler() == null) {
-            String defaultScheduler = ctx().options().getScheduling().getDefaultScheduler();
-            if (StringUtils.isNotEmpty(defaultScheduler)) {
-                Scheduler scheduler = ctx().schedulers().get(defaultScheduler);
-                if (scheduler == null) {
-                    throw new IllegalStateException("Could not find any scheduler named '"
-                            + defaultScheduler + "'");
-                }
-                route = Route.route(route)
-                        .scheduler(scheduler);
-            } else {
-                route = Route.route(route)
-                        .scheduler(ctx().schedulers().get(Schedulers.BIZ));
-            }
-        } else if (Schedulers.isBiz(route.scheduler())) {
-            route = Route.route(route)
-                    .scheduler(ctx().schedulers().get(Schedulers.BIZ));
-        }
         this.routes.add(route);
         return self();
     }
@@ -241,14 +225,21 @@ public abstract class BaseDeployments<R extends BaseRestlightServer<R, D, O>, D 
     public D addFilter(Filter filter) {
         checkImmutable();
         Checks.checkNotNull(filter, "filter");
-        this.filters.add(filter);
+        addFilter(ctx -> Optional.of(filter));
         return self();
     }
 
-    public D addFilters(Collection<? extends Filter> filters) {
+    public D addFilter(FilterFactory filter) {
+        checkImmutable();
+        Checks.checkNotNull(filter, "filter");
+        addFilters(Collections.singletonList(filter));
+        return self();
+    }
+
+    public D addFilters(Collection<? extends FilterFactory> filters) {
         checkImmutable();
         if (filters != null && !filters.isEmpty()) {
-            filters.forEach(this::addFilter);
+            this.filters.addAll(filters);
         }
         return self();
     }
@@ -364,7 +355,11 @@ public abstract class BaseDeployments<R extends BaseRestlightServer<R, D, O>, D 
      * @return filters
      */
     List<Filter> filters() {
-        return filters;
+        return filters.stream()
+                .map(factory -> factory.filter(ctx()))
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .collect(Collectors.toList());
     }
 
     RestlightHandler applyDeployments() {
@@ -383,7 +378,7 @@ public abstract class BaseDeployments<R extends BaseRestlightServer<R, D, O>, D 
     }
 
     protected RestlightHandler doGetRestlightHandler() {
-        final AbstractRouteRegistry routeRegistry = getRouteRegistry();
+        final RoutableRegistry routeRegistry = new RoutableRegistry(ctx(), getRouteRegistry());
         ctx().setRegistry(routeRegistry);
 
         // register routes
@@ -460,11 +455,13 @@ public abstract class BaseDeployments<R extends BaseRestlightServer<R, D, O>, D 
                         true,
                         Collections.singletonMap(Constants.INTERNAL, StringUtils.empty()),
                         false));
-        List<IExceptionHandler> exImpls = this.exceptionHandlerFactories
-                .stream().map(factory -> factory.handler(ctx())).filter(Optional::isPresent)
-                .map(Optional::get).collect(Collectors.toList());
+        IExceptionHandler[] exImpls = this.exceptionHandlerFactories
+                .stream().map(factory -> factory.handler(ctx()))
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .toArray(IExceptionHandler[]::new);
         OrderedComparator.sort(exImpls);
-        return exImpls.toArray(new IExceptionHandler[0]);
+        return exImpls;
     }
 
     /**
