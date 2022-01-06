@@ -13,36 +13,38 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.esastack.restlight.jaxrs.resolver.param;
+package io.esastack.restlight.springmvc.resolver.param;
 
 import io.esastack.restlight.core.method.Param;
 import io.esastack.restlight.core.resolver.ParamResolverFactory;
 import io.esastack.restlight.core.resolver.nav.NameAndValue;
-import io.esastack.restlight.core.resolver.param.AbstractHeaderResolver;
-import io.esastack.restlight.jaxrs.util.JaxrsMappingUtils;
-import io.esastack.restlight.jaxrs.util.JaxrsUtils;
-import jakarta.ws.rs.HeaderParam;
+import io.esastack.restlight.core.resolver.param.AbstractCookieValueResolver;
+import io.esastack.restlight.springmvc.annotation.shaded.CookieValue0;
+import io.esastack.restlight.springmvc.util.RequestMappingUtils;
 
 /**
- * Implementation of {@link ParamResolverFactory} for resolving argument that annotated by the RequestHeader.
+ * Implementation of {@link ParamResolverFactory} for resolving argument that annotated by the CookieValue
  */
-public class RequestHeaderResolver extends AbstractHeaderResolver {
+public class CookieValueParamResolver extends AbstractCookieValueResolver {
 
     @Override
     public boolean supports(Param param) {
-        return JaxrsUtils.hasAnnotation(param, HeaderParam.class);
+        return param.hasAnnotation(CookieValue0.shadedClass());
     }
 
     @Override
     protected NameAndValue<String> createNameAndValue(Param param) {
-        HeaderParam headerParam = JaxrsUtils.getAnnotation(param, HeaderParam.class);
-        return new NameAndValue<>(headerParam.value(),
-                false,
-                JaxrsMappingUtils.extractDefaultValue(param));
+        CookieValue0 cookieValue =
+                CookieValue0.fromShade(param.getAnnotation(CookieValue0.shadedClass()));
+        assert cookieValue != null;
+        return new NameAndValue<>(cookieValue.value(),
+                cookieValue.required(),
+                RequestMappingUtils.normaliseDefaultValue(cookieValue.defaultValue()));
     }
 
     @Override
     public int getOrder() {
-        return 10;
+        return 0;
     }
+
 }

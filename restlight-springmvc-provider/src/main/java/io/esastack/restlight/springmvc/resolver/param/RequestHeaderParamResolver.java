@@ -13,38 +13,37 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.esastack.restlight.jaxrs.resolver.param;
+package io.esastack.restlight.springmvc.resolver.param;
 
 import io.esastack.restlight.core.method.Param;
 import io.esastack.restlight.core.resolver.ParamResolverFactory;
 import io.esastack.restlight.core.resolver.nav.NameAndValue;
-import io.esastack.restlight.core.resolver.param.AbstractCookieValueResolver;
-import io.esastack.restlight.jaxrs.util.JaxrsMappingUtils;
-import io.esastack.restlight.jaxrs.util.JaxrsUtils;
-import jakarta.ws.rs.CookieParam;
+import io.esastack.restlight.core.resolver.param.AbstractHeaderResolver;
+import io.esastack.restlight.springmvc.annotation.shaded.RequestHeader0;
+import io.esastack.restlight.springmvc.util.RequestMappingUtils;
 
 /**
- * Implementation of {@link ParamResolverFactory} for resolving argument that annotated by the
- * {@link CookieParam}
+ * Implementation of {@link ParamResolverFactory} for resolving argument that annotated by the RequestHeader.
  */
-public class CookieValueResolver extends AbstractCookieValueResolver {
+public class RequestHeaderParamResolver extends AbstractHeaderResolver {
 
     @Override
     public boolean supports(Param param) {
-        return JaxrsUtils.hasAnnotation(param, CookieParam.class);
+        return param.hasAnnotation(RequestHeader0.shadedClass());
     }
 
     @Override
     protected NameAndValue<String> createNameAndValue(Param param) {
-        CookieParam cookieParam = JaxrsUtils.getAnnotation(param, CookieParam.class);
-        return new NameAndValue<>(cookieParam.value(),
-                false,
-                JaxrsMappingUtils.extractDefaultValue(param));
+        RequestHeader0 requestHeader =
+                RequestHeader0.fromShade(param.getAnnotation(RequestHeader0.shadedClass()));
+        assert requestHeader != null;
+        return new NameAndValue<>(requestHeader.value(),
+                requestHeader.required(),
+                RequestMappingUtils.normaliseDefaultValue(requestHeader.defaultValue()));
     }
 
     @Override
     public int getOrder() {
-        return 10;
+        return 0;
     }
-
 }

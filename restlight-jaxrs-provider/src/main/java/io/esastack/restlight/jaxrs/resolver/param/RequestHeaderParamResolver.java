@@ -13,37 +13,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.esastack.restlight.springmvc.resolver.param;
+package io.esastack.restlight.jaxrs.resolver.param;
 
 import io.esastack.restlight.core.method.Param;
 import io.esastack.restlight.core.resolver.ParamResolverFactory;
 import io.esastack.restlight.core.resolver.nav.NameAndValue;
 import io.esastack.restlight.core.resolver.param.AbstractHeaderResolver;
-import io.esastack.restlight.springmvc.annotation.shaded.RequestHeader0;
-import io.esastack.restlight.springmvc.util.RequestMappingUtils;
+import io.esastack.restlight.jaxrs.util.JaxrsMappingUtils;
+import io.esastack.restlight.jaxrs.util.JaxrsUtils;
+import jakarta.ws.rs.HeaderParam;
 
 /**
  * Implementation of {@link ParamResolverFactory} for resolving argument that annotated by the RequestHeader.
  */
-public class RequestHeaderResolver extends AbstractHeaderResolver {
+public class RequestHeaderParamResolver extends AbstractHeaderResolver {
 
     @Override
     public boolean supports(Param param) {
-        return param.hasAnnotation(RequestHeader0.shadedClass());
+        return JaxrsUtils.hasAnnotation(param, HeaderParam.class);
     }
 
     @Override
     protected NameAndValue<String> createNameAndValue(Param param) {
-        RequestHeader0 requestHeader =
-                RequestHeader0.fromShade(param.getAnnotation(RequestHeader0.shadedClass()));
-        assert requestHeader != null;
-        return new NameAndValue<>(requestHeader.value(),
-                requestHeader.required(),
-                RequestMappingUtils.normaliseDefaultValue(requestHeader.defaultValue()));
+        HeaderParam headerParam = JaxrsUtils.getAnnotation(param, HeaderParam.class);
+        return new NameAndValue<>(headerParam.value(),
+                false,
+                JaxrsMappingUtils.extractDefaultValue(param));
     }
 
     @Override
     public int getOrder() {
-        return 0;
+        return 10;
     }
 }
