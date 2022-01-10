@@ -17,23 +17,25 @@ package io.esastack.restlight.jaxrs.adapter;
 
 import esa.commons.Checks;
 import esa.commons.ClassUtils;
+import io.esastack.commons.net.http.MediaType;
 import io.esastack.restlight.core.method.Param;
 import io.esastack.restlight.core.resolver.ParamResolverAdapter;
 import io.esastack.restlight.core.util.ResponseEntityUtils;
 import io.esastack.restlight.jaxrs.configure.ProxyComponent;
 import io.esastack.restlight.jaxrs.util.JaxrsUtils;
 import io.esastack.restlight.server.context.RequestContext;
+import jakarta.ws.rs.ext.ContextResolver;
 
 import java.util.List;
 
 public class JaxrsContextResolverAdapter implements ParamResolverAdapter {
 
-    private final jakarta.ws.rs.ext.ContextResolver<?> delegating;
-    private final io.esastack.commons.net.http.MediaType[] produces;
+    private final ContextResolver<?> delegating;
+    private final MediaType[] produces;
     private final int order;
     private final Class<?> matchableType;
 
-    public JaxrsContextResolverAdapter(ProxyComponent<jakarta.ws.rs.ext.ContextResolver<?>> delegating) {
+    public JaxrsContextResolverAdapter(ProxyComponent<ContextResolver<?>> delegating) {
         Checks.checkNotNull(delegating, "delegating");
         this.delegating = delegating.proxied();
         this.produces = MediaTypes.covert(JaxrsUtils.produces(delegating.underlying()));
@@ -44,7 +46,7 @@ public class JaxrsContextResolverAdapter implements ParamResolverAdapter {
 
     @Override
     public Object resolve(Param param, RequestContext context) throws Exception {
-        final List<io.esastack.commons.net.http.MediaType> mediaTypes = ResponseEntityUtils.getMediaTypes(context);
+        final List<MediaType> mediaTypes = ResponseEntityUtils.getMediaTypes(context);
         if (MediaTypes.isCompatibleWith(produces, mediaTypes)) {
             return delegating.getContext(param.type());
         } else {
