@@ -27,9 +27,10 @@ import io.esastack.restlight.core.configure.MiniConfigurableDeployments;
 import io.esastack.restlight.core.method.ResolvableParamPredicate;
 import io.esastack.restlight.core.util.ConstructorUtils;
 import io.esastack.restlight.jaxrs.adapter.DynamicFeatureAdapter;
-import io.esastack.restlight.jaxrs.adapter.FilteredExceptionHandler;
+import io.esastack.restlight.jaxrs.adapter.HandlerProvidersImpl;
 import io.esastack.restlight.jaxrs.adapter.JaxrsContextResolverAdapter;
 import io.esastack.restlight.jaxrs.adapter.JaxrsExceptionMapperAdapter;
+import io.esastack.restlight.jaxrs.adapter.JaxrsResponseFilters;
 import io.esastack.restlight.jaxrs.adapter.MessageBodyReaderAdapter;
 import io.esastack.restlight.jaxrs.adapter.MessageBodyWriterAdapter;
 import io.esastack.restlight.jaxrs.adapter.PreMatchRequestFiltersAdapter;
@@ -236,14 +237,14 @@ public class JaxrsExtensionsHandler implements ExtensionsHandler {
                     JaxrsUtils.getOrder(provider.underlying())));
         }
 
-        this.covertThenAddFilters(appNameBindings);
+        HandlerProvidersImpl handlers = this.covertThenAddFilters(appNameBindings);
         this.covertThenAddInterceptors(appNameBindings);
         deployments.addHandlerConfigure(new DynamicFeatureAdapter(deployments.deployContext(), appNameBindings,
                 factory.dynamicFeatures().stream().map(ProxyComponent::proxied).collect(Collectors.toList()),
-                configuration));
+                configuration, handlers));
     }
 
-    private void covertThenAddFilters(List<Class<? extends Annotation>> appNameBindings) {
+    private HandlerProvidersImpl covertThenAddFilters(List<Class<? extends Annotation>> appNameBindings) {
         // convert @PreMatching ContainerRequestFilters
         List<OrderComponent<ContainerRequestFilter>> reqFilters = new LinkedList<>();
         for (ProxyComponent<ContainerRequestFilter> filter : factory.requestFilters()) {
@@ -263,10 +264,10 @@ public class JaxrsExtensionsHandler implements ExtensionsHandler {
                 rspFilters.add(new OrderComponent<>(filter.proxied(), JaxrsUtils.getOrder(filter.underlying())));
             }
         }
-        if (!rspFilters.isEmpty()) {
-            deployments.addExceptionHandler(new FilteredExceptionHandler(descendingOrder(rspFilters)
-                    .toArray(new ContainerResponseFilter[0])));
-        }
+        HandlerProvidersImpl providers = new HandlerProvidersImpl(descendingOrder(rspFilters)
+                .toArray(new ContainerResponseFilter[0]));
+        deployments.addFilter(new JaxrsResponseFilters(providers));
+        return providers;
     }
 
     private void covertThenAddInterceptors(List<Class<? extends Annotation>> appNameBindings) {

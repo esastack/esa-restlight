@@ -16,33 +16,68 @@
 package io.esastack.restlight.jaxrs.adapter;
 
 import esa.commons.Checks;
-import io.esastack.restlight.core.handler.HandlerMapping;
-import io.esastack.restlight.core.handler.RouteFilter;
-import io.esastack.restlight.core.handler.RouteFilterChain;
+import io.esastack.restlight.core.spi.impl.RouteTracking;
 import io.esastack.restlight.core.util.Ordered;
-import io.esastack.restlight.server.context.RouteContext;
+import io.esastack.restlight.jaxrs.impl.JaxrsContextUtils;
+import io.esastack.restlight.jaxrs.impl.container.ContainerResponseContextImpl;
+import io.esastack.restlight.jaxrs.impl.container.ResponseContainerContext;
+import io.esastack.restlight.jaxrs.impl.core.ResponseImpl;
+import io.esastack.restlight.jaxrs.util.RuntimeDelegateUtils;
+import io.esastack.restlight.server.context.FilterContext;
+import io.esastack.restlight.server.context.RequestContext;
+import io.esastack.restlight.server.handler.Filter;
+import io.esastack.restlight.server.handler.FilterChain;
+import io.esastack.restlight.server.util.Futures;
+import jakarta.ws.rs.container.ContainerRequestContext;
 import jakarta.ws.rs.container.ContainerResponseFilter;
 
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
-public class JaxrsResponseFilters implements RouteFilter {
+public class JaxrsResponseFilters implements Filter {
 
-    private final ContainerResponseFilter[] filters;
+    private final HandlerProviders providers;
 
-    public JaxrsResponseFilters(ContainerResponseFilter[] filters) {
-        Checks.checkNotNull(filters, "filters");
-        this.filters = filters;
+    public JaxrsResponseFilters(HandlerProviders providers) {
+        Checks.checkNotNull(providers, "providers");
+        this.providers = providers;
     }
 
     @Override
-    public CompletionStage<Void> routed(HandlerMapping mapping, RouteContext context, RouteFilterChain next) {
-        return next.doNext(mapping, context).thenCompose(v -> FilteredExceptionHandler
-                .applyResponseFilters(context, filters));
+    public CompletionStage<Void> doFilter(FilterContext context, FilterChain chain) {
+        return chain.doFilter(context).thenCompose(v -> applyResponseFilters(context,
+                providers.getResponseFilters(RouteTracking.handlerMethod(context))));
     }
 
     @Override
     public int getOrder() {
-        return Ordered.HIGHEST_PRECEDENCE + 1000;
+        return Ordered.LOWEST_PRECEDENCE;
+    }
+
+    private CompletableFuture<Void> applyResponseFilters(RequestContext context, ContainerResponseFilter[] filters) {
+        if (!isSuccess(context) || filters == null || filters.length == 0) {
+            return Futures.completedFuture();
+        }
+        ResponseImpl rsp = JaxrsContextUtils.getResponse(context);
+        RuntimeDelegateUtils.addMetadataToJakarta(context.response(), rsp);
+        final ContainerRequestContext reqCtx = new ResponseContainerContext(JaxrsContextUtils
+                .getRequestContext(context));
+        final ContainerResponseContextImpl rspCtx = new ContainerResponseContextImpl(
+                ResponseEntityStreamClose.getNonClosableOutputStream(context), rsp);
+        for (ContainerResponseFilter filter : filters) {
+            try {
+                filter.filter(reqCtx, rspCtx);
+            } catch (Throwable ex) {
+                RuntimeDelegateUtils.addMetadataToNetty(rsp, context.response(), true);
+                return Futures.completedExceptionally(ex);
+            }
+        }
+        RuntimeDelegateUtils.addMetadataToNetty(rsp, context.response(), true);
+        return Futures.completedFuture();
+    }
+
+    private boolean isSuccess(RequestContext context) {
+        return context.response().status() < 400;
     }
 }
 

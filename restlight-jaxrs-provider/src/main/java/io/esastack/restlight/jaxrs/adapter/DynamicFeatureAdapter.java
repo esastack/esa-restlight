@@ -59,18 +59,22 @@ public class DynamicFeatureAdapter implements HandlerConfigure {
     private final List<Class<? extends Annotation>> appNameBindings;
     private final DynamicFeature[] features;
     private final ConfigurationImpl parent;
+    private final HandlerProvidersImpl providers;
 
     public DynamicFeatureAdapter(DeployContext<? extends RestlightOptions> context,
                                  List<Class<? extends Annotation>> appNameBindings,
                                  List<DynamicFeature> features,
-                                 ConfigurationImpl parent) {
+                                 ConfigurationImpl parent,
+                                 HandlerProvidersImpl providers) {
         Checks.checkNotNull(parent, "parent");
         Checks.checkNotNull(context, "context");
+        Checks.checkNotNull(providers, "providers");
         this.context = context;
         this.appNameBindings = appNameBindings;
         this.features = features == null || features.isEmpty() ? new DynamicFeature[0]
                 : features.toArray(new DynamicFeature[0]);
         this.parent = parent;
+        this.providers = providers;
     }
 
     @Override
@@ -142,9 +146,7 @@ public class DynamicFeatureAdapter implements HandlerConfigure {
             ContainerResponseFilter[] filters = descendingOrder(
                     filterByNameBindings(handlerMethod, current, providers.responseFilters(), false))
                     .toArray(new ContainerResponseFilter[0]);
-            if (filters.length > 0) {
-                configurable.addRouteFilters(Collections.singleton(new JaxrsResponseFilters(filters)));
-            }
+            this.providers.addResponseFilters(handlerMethod, filters);
         }
     }
 

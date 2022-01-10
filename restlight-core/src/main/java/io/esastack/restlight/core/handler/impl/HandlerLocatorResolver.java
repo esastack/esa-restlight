@@ -97,11 +97,10 @@ public class HandlerLocatorResolver implements HandlerValueResolver {
         final CompletionStage<Void> promise = new CompletableFuture<>();
         try {
             return execution.handle(context).whenComplete((v, th) -> {
-                if (th != null && execution.exceptionHandler() != null) {
-                    execution.exceptionHandler().handleException(context, th)
-                            .whenComplete((v0, th0) -> {
-                                complete(context, execution.completionHandler(), th0, promise);
-                            });
+                final Throwable ex = Futures.unwrapCompletionException(th);
+                if (ex != null && execution.exceptionHandler() != null) {
+                    execution.exceptionHandler().handleException(context, ex)
+                            .whenComplete((v0, th0) -> complete(context, execution.completionHandler(), th0, promise));
                 } else {
                     complete(context, execution.completionHandler(), null, promise);
                 }
