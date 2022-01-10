@@ -40,8 +40,7 @@ public class StringConverterProviderAdapter implements StringConverterFactory {
 
     @Override
     public Optional<StringConverter> createConverter(Class<?> type, Type genericType, Param param) {
-        jakarta.ws.rs.ext.ParamConverter<?> converter = underlying.getConverter(type,
-                genericType, param.annotations());
+        ParamConverter<?> converter = underlying.getConverter(type, genericType, param.annotations());
         if (converter == null) {
             return Optional.empty();
         }

@@ -24,7 +24,7 @@ import io.esastack.restlight.server.core.impl.HttpOutputStreamImpl;
 
 import java.io.OutputStream;
 
-class ResponseEntityStreamClose {
+final class ResponseEntityStreamClose {
 
     private static final AttributeKey<HttpOutputStream> CLOSURE_STREAM = AttributeKey.valueOf("$closure.stream");
 
@@ -55,6 +55,9 @@ class ResponseEntityStreamClose {
             // do nothing
             // NOTE: the close should only be invoked when the request has ended.
         }
+    }
+
+    private ResponseEntityStreamClose() {
     }
 
 }

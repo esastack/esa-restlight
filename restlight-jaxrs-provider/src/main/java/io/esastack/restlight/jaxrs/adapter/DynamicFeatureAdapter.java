@@ -161,7 +161,7 @@ public class DynamicFeatureAdapter implements HandlerConfigure {
         for (ProxyComponent<T> component : all) {
             // NOTE: follow specification description, filers or interceptors added by DynamicFeature is
             // bound to current resource method.
-            if (isAddedDynamically(component, configuration)) {
+            if (isBoundToMethod(component, configuration)) {
                 bound.add(new OrderComponent<>(component.proxied(), JaxrsUtils.getOrder(component.underlying())));
             }
             if (skipPreMatching && JaxrsUtils.isPreMatched(component.underlying())) {
@@ -178,8 +178,8 @@ public class DynamicFeatureAdapter implements HandlerConfigure {
         return bound;
     }
 
-    private static <T> boolean isAddedDynamically(ProxyComponent<T> component,
-                                                  HandlerMethodConfiguration configuration) {
+    private static <T> boolean isBoundToMethod(ProxyComponent<T> component,
+                                               HandlerMethodConfiguration configuration) {
         Object target = component.underlying();
         for (Object instance : configuration.methodBoundInstances) {
             if (instance.equals(target)) {
