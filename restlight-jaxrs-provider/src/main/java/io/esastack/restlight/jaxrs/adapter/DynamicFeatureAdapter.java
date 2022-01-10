@@ -75,7 +75,7 @@ public class DynamicFeatureAdapter implements HandlerConfigure {
 
     @Override
     public void configure(HandlerMethod handlerMethod, ConfigurableHandler configurable) {
-        DynamicFeatureConfiguration current = new DynamicFeatureConfiguration(parent);
+        HandlerMethodConfiguration current = new HandlerMethodConfiguration(parent);
         ResourceInfo resourceInfo = new ResourceInfoImpl(handlerMethod.beanType(), handlerMethod.method());
 
         // bind filters and interceptors dynamically.
@@ -84,9 +84,9 @@ public class DynamicFeatureAdapter implements HandlerConfigure {
             feature.configure(resourceInfo, context);
         }
 
-        ProvidersProxyFactoryExt providers = new ProvidersProxyFactoryExtImpl(this.context, current);
+        MethodProvidersProxyFactory providers = new MethodProvidersProxyFactoryImpl(this.context, current);
         // handle features
-        for (ProxyComponent<Feature> feature : providers.featuresAddedDynamically()) {
+        for (ProxyComponent<Feature> feature : providers.methodBoundFeatures()) {
             if (feature.proxied().configure(context)) {
                 current.addEnabledFeature(feature.underlying());
             }
@@ -149,7 +149,7 @@ public class DynamicFeatureAdapter implements HandlerConfigure {
     }
 
     private <T> List<OrderComponent<T>> filterByNameBindings(HandlerMethod method,
-                                                             DynamicFeatureConfiguration configuration,
+                                                             HandlerMethodConfiguration configuration,
                                                              Collection<ProxyComponent<T>> all,
                                                              boolean skipPreMatching) {
         if (all.isEmpty()) {
@@ -179,14 +179,14 @@ public class DynamicFeatureAdapter implements HandlerConfigure {
     }
 
     private static <T> boolean isAddedDynamically(ProxyComponent<T> component,
-                                                  DynamicFeatureConfiguration configuration) {
+                                                  HandlerMethodConfiguration configuration) {
         Object target = component.underlying();
-        for (Object instance : configuration.instancesAddedDynamically) {
+        for (Object instance : configuration.methodBoundInstances) {
             if (instance.equals(target)) {
                 return true;
             }
         }
-        for (Class<?> clazz : configuration.classesAddedDynamically) {
+        for (Class<?> clazz : configuration.methodBoundClasses) {
             if (clazz.equals(target)) {
                 return true;
             }
@@ -194,19 +194,19 @@ public class DynamicFeatureAdapter implements HandlerConfigure {
         return false;
     }
 
-    private static class DynamicFeatureConfiguration extends ConfigurationImpl {
+    private static class HandlerMethodConfiguration extends ConfigurationImpl {
 
         /**
          * NOTE: provider class or instance added by {@link DynamicFeature} is bound to particular resource methods.
          */
-        private final List<Class<?>> classesAddedDynamically = new LinkedList<>();
+        private final List<Class<?>> methodBoundClasses = new LinkedList<>();
 
         /**
          * NOTE: provider class or instance added by {@link DynamicFeature} is bound to particular resource methods.
          */
-        private final List<Object> instancesAddedDynamically = new LinkedList<>();
+        private final List<Object> methodBoundInstances = new LinkedList<>();
 
-        public DynamicFeatureConfiguration(ConfigurationImpl from) {
+        private HandlerMethodConfiguration(ConfigurationImpl from) {
             super(from);
         }
 
@@ -214,7 +214,7 @@ public class DynamicFeatureAdapter implements HandlerConfigure {
         public boolean addProviderInstance(Object instance, Map<Class<?>, Integer> contracts) {
             boolean success = super.addProviderInstance(instance, contracts);
             if (success) {
-                this.instancesAddedDynamically.add(instance);
+                this.methodBoundInstances.add(instance);
             }
             return success;
         }
@@ -223,13 +223,13 @@ public class DynamicFeatureAdapter implements HandlerConfigure {
         public boolean addProviderClass(Class<?> clazz, Map<Class<?>, Integer> contracts) {
             boolean success = super.addProviderClass(clazz, contracts);
             if (success) {
-                this.classesAddedDynamically.add(clazz);
+                this.methodBoundClasses.add(clazz);
             }
             return success;
         }
     }
 
-    private interface ProvidersProxyFactoryExt extends ProvidersProxyFactory {
+    private interface MethodProvidersProxyFactory extends ProvidersProxyFactory {
 
         /**
          * Obtains an immutable collection of {@link Feature}s, which are proxied to instantiate and inject
@@ -237,26 +237,26 @@ public class DynamicFeatureAdapter implements HandlerConfigure {
          *
          * @return  features
          */
-        Collection<ProxyComponent<Feature>> featuresAddedDynamically();
+        Collection<ProxyComponent<Feature>> methodBoundFeatures();
 
     }
 
-    private static class ProvidersProxyFactoryExtImpl extends ProvidersProxyFactoryImpl
-            implements ProvidersProxyFactoryExt {
+    private static class MethodProvidersProxyFactoryImpl extends ProvidersProxyFactoryImpl
+            implements MethodProvidersProxyFactory {
 
-        private final DynamicFeatureConfiguration configuration;
+        private final HandlerMethodConfiguration configuration;
 
-        private ProvidersProxyFactoryExtImpl(DeployContext<? extends RestlightOptions> deployContext,
-                                             DynamicFeatureConfiguration configuration) {
+        private MethodProvidersProxyFactoryImpl(DeployContext<? extends RestlightOptions> deployContext,
+                                                HandlerMethodConfiguration configuration) {
             super(deployContext, configuration);
             this.configuration = configuration;
         }
 
         @Override
-        public Collection<ProxyComponent<Feature>> featuresAddedDynamically() {
+        public Collection<ProxyComponent<Feature>> methodBoundFeatures() {
             List<ProxyComponent<Feature>> features = new LinkedList<>();
-            features.addAll(getFromClasses(configuration.classesAddedDynamically, Feature.class).values());
-            features.addAll(getFromInstances(configuration.instancesAddedDynamically, Feature.class).values());
+            features.addAll(getFromClasses(configuration.methodBoundClasses, Feature.class).values());
+            features.addAll(getFromInstances(configuration.methodBoundInstances, Feature.class).values());
             return Collections.unmodifiableList(features);
         }
     }
