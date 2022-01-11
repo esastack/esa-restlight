@@ -17,7 +17,6 @@ package io.esastack.restlight.core;
 
 import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.core.configure.HandlerConfigure;
-import io.esastack.restlight.core.configure.HandlerRegistry;
 import io.esastack.restlight.core.configure.Handlers;
 import io.esastack.restlight.core.handler.HandlerAdvicesFactory;
 import io.esastack.restlight.core.handler.HandlerContextProvider;
@@ -152,14 +151,6 @@ public interface DeployContext<O extends RestlightOptions> extends ServerDeployC
      * @return optional value
      */
     Optional<List<HandlerConfigure>> handlerConfigures();
-
-    /**
-     * Gets the {@link HandlerRegistry}. It should be instantiate when server is about to starting
-     * and initializing.
-     *
-     * @return  optional values
-     */
-    Optional<HandlerRegistry> handlerRegistry();
 
     /**
      * Obtains the {@link HandlerFactory}. It should be instantiate when server is about to starting

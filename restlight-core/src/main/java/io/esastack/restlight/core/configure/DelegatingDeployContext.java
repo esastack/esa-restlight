@@ -148,11 +148,6 @@ public class DelegatingDeployContext<O extends RestlightOptions> implements Depl
     }
 
     @Override
-    public Optional<HandlerRegistry> handlerRegistry() {
-        return underlying.handlerRegistry();
-    }
-
-    @Override
     public Optional<Handlers> handlers() {
         return underlying.handlers();
     }

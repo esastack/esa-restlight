@@ -132,11 +132,6 @@ public class DeployContextImpl<O extends RestlightOptions> extends ServerDeployC
     }
 
     @Override
-    public Optional<HandlerRegistry> handlerRegistry() {
-        return Optional.ofNullable(handlerRegistry);
-    }
-
-    @Override
     public Optional<Handlers> handlers() {
         return Optional.ofNullable(handlers);
     }
