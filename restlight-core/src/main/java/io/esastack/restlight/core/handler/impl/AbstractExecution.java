@@ -50,7 +50,7 @@ abstract class AbstractExecution<H extends HandlerMethodAdapter> implements Exec
     AbstractExecution(HandlerValueResolver handlerResolver, H handlerMethod) {
         Checks.checkNotNull(handlerResolver, "handlerResolver");
         Checks.checkNotNull(handlerMethod, "handlerMethod");
-        assert handlerMethod.context().resolverFactory().isPresent();
+        Checks.checkState(handlerMethod.context().resolverFactory().isPresent(), "resolverFactory is null");
         this.handlerResolver = handlerResolver;
         this.transfer = ((HandlerResolverFactory) handlerMethod.context().resolverFactory().get())
                 .getFutureTransfer(handlerMethod.handlerMethod());

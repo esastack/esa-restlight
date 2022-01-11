@@ -203,10 +203,10 @@ public class HandlerFactoryImpl implements HandlerFactory {
         private final ResolvableParam<FieldParam, ResolverWrap>[] fieldParamResolvers;
 
         private ResolvableHandler(Class<?> clazz, HandlerContext<? extends RestlightOptions> context) {
-            assert context.resolverFactory().isPresent();
-            assert context.paramPredicate().isPresent();
-            ResolvableParamPredicate resolvable = context.paramPredicate().get();
-            HandlerResolverFactory resolverFactory = context.resolverFactory().get();
+            ResolvableParamPredicate resolvable = context.paramPredicate()
+                    .orElseThrow(() -> new IllegalStateException("paramPredicate is null"));
+            HandlerResolverFactory resolverFactory = context.resolverFactory()
+                    .orElseThrow(() -> new IllegalStateException("resolverFactory is null"));
             this.constructor = ConstructorUtils.extractResolvable(clazz, resolvable);
             Checks.checkState(this.constructor != null,
                     "There is no suitable constructor to instantiate class: " + clazz.getName());

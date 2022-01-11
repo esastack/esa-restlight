@@ -16,6 +16,7 @@
 package io.esastack.restlight.jaxrs.configure;
 
 import esa.commons.Checks;
+import esa.commons.ObjectUtils;
 import esa.commons.reflect.BeanUtils;
 import esa.commons.reflect.ReflectionUtils;
 import io.esastack.restlight.core.DeployContext;
@@ -57,6 +58,11 @@ public class JaxrsHandlerFactory extends HandlerFactoryImpl {
         if (context != null) {
             return super.doInstantiate(clazz, handlerContext, context);
         } else {
+            // If HandlerResolverFactory is absent which means the deployments is not prepared,
+            // in this case, there is no way to do further instantiation.
+            if (!handlerContext.resolverFactory().isPresent()) {
+                return ObjectUtils.instantiateBeanIfNecessary(clazz);
+            }
             final ResolvableProvider resolvable = getResolvableProvider(clazz, handlerContext);
             Object[] consArgs = new Object[resolvable.constructor.getParameterCount()];
             ResolvableParam<ConstructorParam, ContextResolver>[] consParams = resolvable.consParamResolvers;
@@ -86,6 +92,11 @@ public class JaxrsHandlerFactory extends HandlerFactoryImpl {
         if (context != null) {
             super.doInit0(instance, clazz, handlerContext, context);
         } else {
+            // If HandlerResolverFactory is absent which means the deployments is not prepared,
+            // in this case, there is no way to do further initialization.
+            if (!handlerContext.resolverFactory().isPresent()) {
+                return;
+            }
             final ResolvableProvider resolvable = getResolvableProvider(clazz, handlerContext);
             for (ResolvableParam<MethodParam, ContextResolver> r : resolvable.setterParamResolvers) {
                 MethodParam param = r.param();
@@ -133,10 +144,10 @@ public class JaxrsHandlerFactory extends HandlerFactoryImpl {
         private final ResolvableParam<FieldParam, ContextResolver>[] fieldParamResolvers;
 
         private ResolvableProvider(Class<?> clazz, DeployContext<? extends RestlightOptions> context) {
-            assert context.paramPredicate().isPresent();
-            assert context.resolverFactory().isPresent();
-            ResolvableParamPredicate resolvable = context.paramPredicate().get();
-            HandlerResolverFactory resolverFactory = context.resolverFactory().get();
+            HandlerResolverFactory resolverFactory = context.resolverFactory()
+                    .orElseThrow(() -> new IllegalStateException("resolverFactory is null"));
+            ResolvableParamPredicate resolvable = context.paramPredicate()
+                    .orElseThrow(() -> new IllegalStateException("paramPredicate is null"));
             this.constructor = ConstructorUtils.extractResolvable(clazz, resolvable);
             Checks.checkState(this.constructor != null,
                     "There is no suitable constructor to instantiate class: " + clazz.getName());

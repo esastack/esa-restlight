@@ -15,6 +15,7 @@
  */
 package io.esastack.restlight.core.handler.impl;
 
+import esa.commons.Checks;
 import esa.commons.collection.AttributeKey;
 import esa.commons.collection.AttributeMap;
 import esa.commons.collection.Attributes;
@@ -46,7 +47,7 @@ public class HandlerContext<O extends RestlightOptions> extends DelegatingDeploy
         Attributes attributes = new AttributeMap(ctx.attrs().size());
         ctx.attrs().forEach((name, value) -> attributes.attr(AttributeKey.valueOf(name.name())).set(value.get()));
 
-        assert ctx.resolverFactory().isPresent();
+        Checks.checkState(ctx.resolverFactory().isPresent(), "resolverFactory is null");
         HandlerConfiguration configuration = buildConfiguration(ctx.resolverFactory().get(), attributes);
         ConfigurableHandler configurable = new ConfigurableHandlerImpl(method, configuration);
         if (ctx.handlerConfigures().isPresent()) {

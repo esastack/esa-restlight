@@ -61,7 +61,7 @@ public abstract class RouteHandlerMethodAdapter extends HandlerMethodAdapter<Rou
                               ExceptionResolver<Throwable> exceptionResolver) {
         super(context, mapping.methodInfo().handlerMethod());
         Checks.checkNotNull(handlerResolver, "handlerResolver");
-        assert context.resolverFactory().isPresent();
+        Checks.checkState(context.resolverFactory().isPresent(), "resolverFactory is null");
         this.mapping = mapping;
         this.filters = getMatchingFilters(context.resolverFactory().get(), handlerMethod());
         this.interceptorMatcher = maybeMatchable(interceptors);
