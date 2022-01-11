@@ -25,6 +25,7 @@ import io.esastack.restlight.core.configure.ConfigurableHandlerImpl;
 import io.esastack.restlight.core.configure.DelegatingDeployContext;
 import io.esastack.restlight.core.configure.HandlerConfiguration;
 import io.esastack.restlight.core.configure.HandlerConfigure;
+import io.esastack.restlight.core.handler.HandlerContextProvider;
 import io.esastack.restlight.core.method.HandlerMethod;
 import io.esastack.restlight.core.resolver.HandlerResolverFactory;
 import io.esastack.restlight.core.resolver.HandlerResolverFactoryImpl;
@@ -54,7 +55,7 @@ public class HandlerContext<O extends RestlightOptions> extends DelegatingDeploy
             }
         }
         HandlerResolverFactory resolverFactory = getHandlerResolverFactory(ctx.resolverFactory().get(), configuration);
-        return new HandlerContext<C>(ctx) {
+        HandlerContext<C> context = new HandlerContext<C>(ctx) {
             @Override
             public Optional<HandlerResolverFactory> resolverFactory() {
                 return Optional.of(resolverFactory);
@@ -65,6 +66,13 @@ public class HandlerContext<O extends RestlightOptions> extends DelegatingDeploy
                 return configuration.attrs();
             }
         };
+
+        HandlerContextProvider handlerContexts = context.handlerContextProvider().orElseThrow(() ->
+                new IllegalStateException("HandlerContextProvider is absent"));
+        if (handlerContexts instanceof HandlerContexts) {
+            ((HandlerContexts) handlerContexts).addContext(method, context);
+        }
+        return context;
     }
 
     private static HandlerResolverFactory getHandlerResolverFactory(HandlerResolverFactory factory,
