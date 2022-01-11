@@ -122,6 +122,11 @@ public class WritableRestlightHandler extends ExceptionHandledRestlightHandler {
         });
     }
 
+    @Override
+    protected boolean isHandleable(RequestContext context, Throwable th) {
+        return !RouteTracking.isMethodMatched(context);
+    }
+
     private void setEntityTypeIfNecessary(ResponseEntityResolverContext rspCtx, HttpResponse response) {
         if (response.entity() != null && rspCtx.httpEntity().type() == null) {
             Class<?> entityType = ClassUtils.getUserType(response.entity());

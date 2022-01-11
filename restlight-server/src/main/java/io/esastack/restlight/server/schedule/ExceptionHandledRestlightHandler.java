@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
-public class ExceptionHandledRestlightHandler implements RestlightHandler {
+public abstract class ExceptionHandledRestlightHandler implements RestlightHandler {
 
     private final RestlightHandler underlying;
     private final ExceptionHandlerChain exceptionHandler;
@@ -80,16 +80,29 @@ public class ExceptionHandledRestlightHandler implements RestlightHandler {
         return underlying.schedulers();
     }
 
+    /**
+     * Whether the exception occurred in given {@link RequestContext} should be handleable or not.
+     *
+     * @param context   context
+     * @param th        th
+     * @return          {@code true} if should be handled, otherwise {@code false}.
+     */
+    protected abstract boolean isHandleable(RequestContext context, Throwable th);
+
     private void handleException(RequestContext context, Throwable th,
                                  CompletableFuture<Void> promise) {
-        exceptionHandler.handle(context, th)
-                .whenComplete((v, t) -> {
-                    if (t != null) {
-                        PromiseUtils.setFailure(promise, th);
-                    } else {
-                        PromiseUtils.setSuccess(promise);
-                    }
-                });
+        if (isHandleable(context, th)) {
+            exceptionHandler.handle(context, th)
+                    .whenComplete((v, t) -> {
+                        if (t != null) {
+                            PromiseUtils.setFailure(promise, th);
+                        } else {
+                            PromiseUtils.setSuccess(promise);
+                        }
+                    });
+        } else {
+            promise.completeExceptionally(th);
+        }
     }
 }
 

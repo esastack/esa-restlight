@@ -22,7 +22,6 @@ import io.esastack.restlight.core.util.Constants;
 import io.esastack.restlight.core.util.OrderedComparator;
 import io.esastack.restlight.server.bootstrap.AbstractDelegatedRestlightServer;
 import io.esastack.restlight.server.bootstrap.IExceptionHandler;
-import io.esastack.restlight.server.bootstrap.LinkedExceptionHandlerChain;
 import io.esastack.restlight.server.bootstrap.RestlightServer;
 import io.esastack.restlight.server.bootstrap.RestlightServerBootstrap;
 import io.esastack.restlight.server.config.ServerOptions;
@@ -224,10 +223,16 @@ public abstract class BaseRestlightServer<R extends BaseRestlightServer<R, D, O>
         return doBuildServer(buildExceptionHandled(handler, deployments().exceptionHandlers));
     }
 
-    protected ExceptionHandledRestlightHandler buildExceptionHandled(RestlightHandler handler,
-                                                                     IExceptionHandler[] exceptionHandlers) {
-        return new ExceptionHandledRestlightHandler(handler, LinkedExceptionHandlerChain.immutable(exceptionHandlers));
-    }
+    /**
+     * Builds an {@link ExceptionHandledRestlightHandler} by given {@link RestlightHandler} and
+     * {@link IExceptionHandler}s.
+     *
+     * @param handler   handler
+     * @param exceptionHandlers exception handlers
+     * @return          handler which can handle exception.
+     */
+    protected abstract ExceptionHandledRestlightHandler buildExceptionHandled(RestlightHandler handler,
+                                                                              IExceptionHandler[] exceptionHandlers);
 
     protected RestlightServer doBuildServer(ExceptionHandledRestlightHandler handler) {
         return RestlightServerBootstrap.from(options, handler)
