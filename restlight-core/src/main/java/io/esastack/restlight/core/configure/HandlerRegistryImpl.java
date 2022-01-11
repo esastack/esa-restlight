@@ -37,30 +37,28 @@ import io.esastack.restlight.server.route.RouteRegistry;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.stream.Collectors;
 
-public class HandlerRegistryImpl implements HandlerRegistry, Handlers {
+public class HandlerRegistryImpl implements HandlerRegistry {
 
     private static final Logger logger = LoggerFactory.getLogger(HandlerRegistryImpl.class);
 
-    private final Set<Class<?>> classes = new CopyOnWriteArraySet<>();
-    private final Set<Object> singletons = new CopyOnWriteArraySet<>();
     private final List<HandlerMapping> mappings = new CopyOnWriteArrayList<>();
     private final DeployContext<? extends RestlightOptions> context;
     private final RouteRegistry registry;
+    private final Handlers handlers;
 
     public HandlerRegistryImpl(DeployContext<? extends RestlightOptions> context) {
         Checks.checkNotNull(context, "context");
         Checks.checkState(context.routeRegistry().isPresent(), "route registry is null.");
+        Checks.checkState(context.handlers().isPresent(), "handlers is null");
         this.context = context;
         this.registry = context.routeRegistry().get();
+        this.handlers = context.handlers().get();
     }
 
     @Override
@@ -102,7 +100,6 @@ public class HandlerRegistryImpl implements HandlerRegistry, Handlers {
                         },
                         RouteUtils::isHandlerMethod);
             });
-            this.singletons.addAll(handlers);
             this.mappings.addAll(mappings);
         }
     }
@@ -140,7 +137,6 @@ public class HandlerRegistryImpl implements HandlerRegistry, Handlers {
                             RouteUtils::isHandlerMethod);
                 });
                 this.mappings.addAll(mappings);
-                this.classes.addAll(classes);
             }
         }
     }
@@ -155,21 +151,17 @@ public class HandlerRegistryImpl implements HandlerRegistry, Handlers {
     public void removeHandlers(Collection<Object> handlers) {
         if (handlers != null && !handlers.isEmpty()) {
             List<Object> removableHandlers = new LinkedList<>();
-            Set<Class<?>> removableClasses = new HashSet<>();
-            Set<Object> removableSingletons = new HashSet<>();
             for (Object handler : handlers) {
-                for (Class<?> clazz : classes) {
+                for (Class<?> clazz : this.handlers.getClasses()) {
                     if (clazz.equals(handler)) {
                         removableHandlers.add(clazz);
-                        removableClasses.add(clazz);
                     }
                 }
 
                 Class<?> userType = ClassUtils.getUserType(handler);
-                for (Object singleton : singletons) {
+                for (Object singleton : this.handlers.getSingletons()) {
                     if (singleton.equals(handler) || ClassUtils.getUserType(singleton).equals(userType)) {
                         removableHandlers.add(singleton);
-                        removableSingletons.add(singleton);
                     }
                 }
             }
@@ -195,8 +187,6 @@ public class HandlerRegistryImpl implements HandlerRegistry, Handlers {
                         RouteUtils::isHandlerMethod);
             });
             this.mappings.removeAll(removableMappings);
-            this.singletons.removeAll(removableSingletons);
-            this.classes.removeAll(removableClasses);
         }
     }
 
@@ -217,16 +207,6 @@ public class HandlerRegistryImpl implements HandlerRegistry, Handlers {
                     }));
             mappings.addAll(mps);
         }
-    }
-
-    @Override
-    public Set<Class<?>> getClasses() {
-        return Collections.unmodifiableSet(classes);
-    }
-
-    @Override
-    public Set<Object> getSingletons() {
-        return Collections.unmodifiableSet(singletons);
     }
 
     private void checkFieldsAndSetters(Class<?> userType) {

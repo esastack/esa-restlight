@@ -53,7 +53,7 @@ public class WritableRestlightHandler extends ExceptionHandledRestlightHandler {
 
     private final HandlerResolverFactory resolverFactory;
     private final ResponseEntityChannelFactory channelFactory;
-    private final HandlerContextProvider handlerContextProvider;
+    private final HandlerContextProvider handlerContexts;
 
     public WritableRestlightHandler(RestlightHandler underlying,
                                     ExceptionHandlerChain handlerChain,
@@ -65,7 +65,7 @@ public class WritableRestlightHandler extends ExceptionHandledRestlightHandler {
         this.channelFactory = channelFactory;
         this.resolverFactory = context.resolverFactory().orElseThrow(() ->
                 new IllegalStateException("HandlerResolverFactory is absent"));
-        this.handlerContextProvider = context.handlerContextProvider().orElseThrow(() ->
+        this.handlerContexts = context.handlerContexts().orElseThrow(() ->
                 new IllegalStateException("HandlerContextProvider is absent"));
     }
 
@@ -140,7 +140,7 @@ public class WritableRestlightHandler extends ExceptionHandledRestlightHandler {
             return resolverFactory;
         }
 
-        HandlerContext<?> context = handlerContextProvider.getContext(method);
+        HandlerContext<?> context = handlerContexts.getContext(method);
         if (context != null) {
             return context.resolverFactory().orElseThrow(() ->
                     new IllegalStateException("HandlerResolverFactory is absent"));

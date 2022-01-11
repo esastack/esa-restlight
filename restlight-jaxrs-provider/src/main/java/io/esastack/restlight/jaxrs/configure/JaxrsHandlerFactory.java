@@ -52,18 +52,18 @@ public class JaxrsHandlerFactory extends HandlerFactoryImpl {
     }
 
     @Override
-    protected Object doInstantiate(Class<?> clazz, HandlerContext<? extends RestlightOptions> handlerCtx,
+    protected Object doInstantiate(Class<?> clazz, HandlerContext<? extends RestlightOptions> handlerContext,
                                    RequestContext context) {
         if (context != null) {
-            return super.doInstantiate(clazz, handlerCtx, context);
+            return super.doInstantiate(clazz, handlerContext, context);
         } else {
-            final ResolvableProvider resolvable = getResolvableProvider(clazz, handlerCtx);
+            final ResolvableProvider resolvable = getResolvableProvider(clazz, handlerContext);
             Object[] consArgs = new Object[resolvable.constructor.getParameterCount()];
             ResolvableParam<ConstructorParam, ContextResolver>[] consParams = resolvable.consParamResolvers;
             int index = 0;
             for (ResolvableParam<ConstructorParam, ContextResolver> param : consParams) {
                 try {
-                    consArgs[index++] = param.resolver().resolve(param.param(), handlerCtx);
+                    consArgs[index++] = param.resolver().resolve(param.param(), handlerContext);
                 } catch (Throwable th) {
                     //wrap exception
                     throw WebServerException.wrap(th);
@@ -81,19 +81,19 @@ public class JaxrsHandlerFactory extends HandlerFactoryImpl {
     }
 
     @Override
-    protected void doInit0(Object instance, Class<?> clazz, HandlerContext<? extends RestlightOptions> handlerCtx,
+    protected void doInit0(Object instance, Class<?> clazz, HandlerContext<? extends RestlightOptions> handlerContext,
                            RequestContext context) {
         if (context != null) {
-            super.doInit0(instance, clazz, handlerCtx, context);
+            super.doInit0(instance, clazz, handlerContext, context);
         } else {
-            final ResolvableProvider resolvable = getResolvableProvider(clazz, handlerCtx);
+            final ResolvableProvider resolvable = getResolvableProvider(clazz, handlerContext);
             for (ResolvableParam<MethodParam, ContextResolver> r : resolvable.setterParamResolvers) {
                 MethodParam param = r.param();
                 //resolve args with resolver
                 if (r.resolver() != null) {
                     //it may return a null value
                     try {
-                        Object arg = r.resolver().resolve(param, handlerCtx);
+                        Object arg = r.resolver().resolve(param, handlerContext);
                         ReflectionUtils.invokeMethod(param.method(), instance, arg);
                     } catch (InvocationTargetException ex) {
                         throw new IllegalStateException("Failed to invoke method: [" + param.method() + "]",
@@ -110,7 +110,7 @@ public class JaxrsHandlerFactory extends HandlerFactoryImpl {
                 if (r.resolver() != null) {
                     try {
                         BeanUtils.setFieldValue(instance, param.name(),
-                                r.resolver().resolve(param, handlerCtx));
+                                r.resolver().resolve(param, handlerContext));
                     } catch (Exception e) {
                         //wrap exception
                         throw WebServerException.wrap(e);

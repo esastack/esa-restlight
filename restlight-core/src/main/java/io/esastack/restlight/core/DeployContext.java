@@ -166,7 +166,7 @@ public interface DeployContext<O extends RestlightOptions> extends ServerDeployC
      *
      * @return  an optional value of {@link HandlerContextProvider}.
      */
-    Optional<HandlerContextProvider> handlerContextProvider();
+    Optional<HandlerContextProvider> handlerContexts();
 
     /**
      * Gets the {@link Handlers}. It should be instantiate when server is about to starting

@@ -158,8 +158,8 @@ public class DelegatingDeployContext<O extends RestlightOptions> implements Depl
     }
 
     @Override
-    public Optional<HandlerContextProvider> handlerContextProvider() {
-        return underlying.handlerContextProvider();
+    public Optional<HandlerContextProvider> handlerContexts() {
+        return underlying.handlerContexts();
     }
 
     public DeployContext<O> unwrap() {

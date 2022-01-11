@@ -51,16 +51,16 @@ import java.util.concurrent.ConcurrentHashMap;
 public class HandlerFactoryImpl implements HandlerFactory {
 
     private final ConcurrentHashMap<Class<?>, ResolvableHandler> resolvableHandlers = new ConcurrentHashMap<>();
-    private final HandlerContextProvider handlerContextProvider;
+    private final HandlerContextProvider handlerContexts;
     private final HandlerContext<? extends RestlightOptions> defaultContext;
     private final Handlers handlers;
 
-    public HandlerFactoryImpl(DeployContext<? extends RestlightOptions> defaultContext, Handlers handlers) {
-        Checks.checkNotNull(defaultContext, "defaultContext");
+    public HandlerFactoryImpl(DeployContext<? extends RestlightOptions> deployContext, Handlers handlers) {
+        Checks.checkNotNull(deployContext, "deployContext");
         Checks.checkNotNull(handlers, "handlers");
-        this.handlerContextProvider = defaultContext.handlerContextProvider().orElseThrow(() ->
+        this.handlerContexts = deployContext.handlerContexts().orElseThrow(() ->
                 new IllegalStateException("HandlerContextProvider is absent"));
-        this.defaultContext = new HandlerContext<>(defaultContext);
+        this.defaultContext = new HandlerContext<>(deployContext);
         this.handlers = handlers;
     }
 
@@ -110,9 +110,9 @@ public class HandlerFactoryImpl implements HandlerFactory {
         doInit0(instance, userType, getOrDefaultContext(userType, method), context);
     }
 
-    protected Object doInstantiate(Class<?> clazz, HandlerContext<? extends RestlightOptions> handlerCtx,
+    protected Object doInstantiate(Class<?> clazz, HandlerContext<? extends RestlightOptions> handlerContext,
                                    RequestContext context) {
-        final ResolvableHandler resolvable = getResolvableHandler(clazz, handlerCtx);
+        final ResolvableHandler resolvable = getResolvableHandler(clazz, handlerContext);
         final ResolvableParam<ConstructorParam, ResolverWrap>[] consParams = resolvable.consParamResolvers;
         final Object[] args = new Object[consParams.length];
         for (int i = 0; i < consParams.length; i++) {
@@ -122,7 +122,7 @@ public class HandlerFactoryImpl implements HandlerFactory {
             if (resolvable0.resolver() != null) {
                 //it may return a null value
                 try {
-                    args[i] = resolvable0.resolver().resolve(handlerCtx, param, context);
+                    args[i] = resolvable0.resolver().resolve(handlerContext, param, context);
                 } catch (Exception e) {
                     //wrap exception
                     throw WebServerException.wrap(e);
@@ -139,9 +139,9 @@ public class HandlerFactoryImpl implements HandlerFactory {
         }
     }
 
-    protected void doInit0(Object instance, Class<?> clazz, HandlerContext<? extends RestlightOptions> handlerCtx,
+    protected void doInit0(Object instance, Class<?> clazz, HandlerContext<? extends RestlightOptions> handlerContext,
                            RequestContext context) {
-        final ResolvableHandler resolvable = getResolvableHandler(clazz, handlerCtx);
+        final ResolvableHandler resolvable = getResolvableHandler(clazz, handlerContext);
 
         // set fields
         for (ResolvableParam<FieldParam, ResolverWrap> r : resolvable.fieldParamResolvers) {
@@ -150,7 +150,8 @@ public class HandlerFactoryImpl implements HandlerFactory {
             if (r.resolver() != null) {
                 //it may return a null value
                 try {
-                    BeanUtils.setFieldValue(instance, param.name(), r.resolver().resolve(handlerCtx, param, context));
+                    BeanUtils.setFieldValue(instance, param.name(), r.resolver().resolve(handlerContext,
+                            param, context));
                 } catch (Exception e) {
                     //wrap exception
                     throw WebServerException.wrap(e);
@@ -165,7 +166,7 @@ public class HandlerFactoryImpl implements HandlerFactory {
             if (r.resolver() != null) {
                 //it may return a null value
                 try {
-                    Object arg = r.resolver().resolve(handlerCtx, param, context);
+                    Object arg = r.resolver().resolve(handlerContext, param, context);
                     ReflectionUtils.invokeMethod(param.method(), instance, arg);
                 } catch (InvocationTargetException ex) {
                     throw new IllegalArgumentException("Error occurred while invoking method: [" +
@@ -185,7 +186,7 @@ public class HandlerFactoryImpl implements HandlerFactory {
         if (clazz == null || method == null) {
             return defaultContext;
         }
-        HandlerContext<? extends RestlightOptions> context = handlerContextProvider
+        HandlerContext<? extends RestlightOptions> context = handlerContexts
                 .getContext(HandlerMethodImpl.of(clazz, method));
         if (context != null) {
             return context;

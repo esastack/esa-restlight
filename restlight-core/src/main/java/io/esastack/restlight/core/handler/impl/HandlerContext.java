@@ -67,7 +67,7 @@ public class HandlerContext<O extends RestlightOptions> extends DelegatingDeploy
             }
         };
 
-        HandlerContextProvider handlerContexts = context.handlerContextProvider().orElseThrow(() ->
+        HandlerContextProvider handlerContexts = context.handlerContexts().orElseThrow(() ->
                 new IllegalStateException("HandlerContextProvider is absent"));
         if (handlerContexts instanceof HandlerContexts) {
             ((HandlerContexts) handlerContexts).addContext(method, context);
