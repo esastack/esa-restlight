@@ -77,7 +77,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import static io.esastack.restlight.jaxrs.util.JaxrsUtils.ascendingOrdered;
 import static io.esastack.restlight.jaxrs.util.JaxrsUtils.descendingOrder;
@@ -242,8 +241,7 @@ public class JaxrsExtensionsHandler implements ExtensionsHandler {
         HandlerProvidersImpl handlers = this.covertThenAddFilters(appNameBindings);
         this.covertThenAddInterceptors(appNameBindings);
         deployments.addHandlerConfigure(new DynamicFeatureAdapter(deployments.deployContext(), appNameBindings,
-                factory.dynamicFeatures().stream().map(ProxyComponent::proxied).collect(Collectors.toList()),
-                configuration, handlers));
+                factory.dynamicFeatures(), configuration, handlers));
     }
 
     private HandlerProvidersImpl covertThenAddFilters(List<Class<? extends Annotation>> appNameBindings) {

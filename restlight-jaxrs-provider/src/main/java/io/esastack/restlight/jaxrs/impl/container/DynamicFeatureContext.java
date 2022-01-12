@@ -17,13 +17,14 @@ package io.esastack.restlight.jaxrs.impl.container;
 
 import esa.commons.Checks;
 import esa.commons.ClassUtils;
+import esa.commons.logging.Logger;
+import esa.commons.logging.LoggerFactory;
 import io.esastack.restlight.jaxrs.impl.core.ConfigurableImpl;
 import io.esastack.restlight.jaxrs.impl.core.ConfigurationImpl;
 import jakarta.ws.rs.container.ContainerRequestFilter;
 import jakarta.ws.rs.container.ContainerResponseFilter;
 import jakarta.ws.rs.core.Configurable;
 import jakarta.ws.rs.core.Configuration;
-import jakarta.ws.rs.core.Feature;
 import jakarta.ws.rs.core.FeatureContext;
 import jakarta.ws.rs.ext.ReaderInterceptor;
 import jakarta.ws.rs.ext.WriterInterceptor;
@@ -32,11 +33,16 @@ import java.util.Map;
 
 public class DynamicFeatureContext implements FeatureContext {
 
+    private static final Logger logger = LoggerFactory.getLogger(DynamicFeatureContext.class);
+
+    private final Class<?> featureType;
     private final ConfigurationImpl configuration;
     private final Configurable<ConfigurableImpl> configurable;
 
-    public DynamicFeatureContext(ConfigurationImpl configuration) {
+    public DynamicFeatureContext(Class<?> featureType, ConfigurationImpl configuration) {
+        Checks.checkNotNull(featureType, "featureType");
         Checks.checkNotNull(configuration, "configuration");
+        this.featureType = featureType;
         this.configuration = configuration;
         this.configurable = new ConfigurableImpl(configuration);
     }
@@ -118,20 +124,20 @@ public class DynamicFeatureContext implements FeatureContext {
 
     private boolean isRegistrable(Class<?> target, Class<?>[] contracts) {
         if (ContainerRequestFilter.class.isAssignableFrom(target)) {
-            return isLegalContracts(contracts);
+            return isLegalContracts(target, contracts);
         } else if (ContainerResponseFilter.class.isAssignableFrom(target)) {
-            return isLegalContracts(contracts);
+            return isLegalContracts(target, contracts);
         } else if (ReaderInterceptor.class.isAssignableFrom(target)) {
-            return isLegalContracts(contracts);
+            return isLegalContracts(target, contracts);
         } else if (WriterInterceptor.class.isAssignableFrom(target)) {
-            return isLegalContracts(contracts);
-        } else if (Feature.class.isAssignableFrom(target)) {
-            return isLegalContracts(contracts);
+            return isLegalContracts(target, contracts);
         }
+
+        logger.warn("It's unsupported to register({}) in DynamicFeature({})", target, featureType);
         return false;
     }
 
-    private boolean isLegalContracts(Class<?>[] contracts) {
+    private boolean isLegalContracts(Class<?> target, Class<?>[] contracts) {
         if (contracts == null || contracts.length == 0) {
             return true;
         }
@@ -139,10 +145,11 @@ public class DynamicFeatureContext implements FeatureContext {
             if (ContainerRequestFilter.class.equals(contract)
                     || ContainerResponseFilter.class.equals(contract)
                     || ReaderInterceptor.class.equals(contract)
-                    || WriterInterceptor.class.equals(contract)
-                    || Feature.class.equals(contract)) {
+                    || WriterInterceptor.class.equals(contract)) {
                 continue;
             }
+            logger.warn("It's unsupported to register({}) as ({}) in DynamicFeature({})",
+                    target, contract, featureType);
             return false;
         }
         return true;

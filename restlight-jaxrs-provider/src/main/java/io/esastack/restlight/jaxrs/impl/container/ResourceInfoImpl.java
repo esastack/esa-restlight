@@ -41,5 +41,14 @@ public class ResourceInfoImpl implements ResourceInfo {
     public Class<?> getResourceClass() {
         return userType;
     }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("ResourceInfoImpl{");
+        sb.append("userType=").append(userType);
+        sb.append(", method=").append(method);
+        sb.append('}');
+        return sb.toString();
+    }
 }
 

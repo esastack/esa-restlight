@@ -110,7 +110,7 @@ public class FeatureContextImpl implements FeatureContext {
     private void checkState(Object component) {
         Class<?> userType = ClassUtils.getUserType(component);
         if (JaxrsUtils.isFeature(userType)) {
-            logger.warn("It's unsupported to add another nested feature({}) in feature({})",
+            logger.warn("It's unsupported to register nested feature({}) in feature({})",
                     userType, featureType);
         }
     }
@@ -121,7 +121,7 @@ public class FeatureContextImpl implements FeatureContext {
         }
         for (Class<?> userType : contracts) {
             if (JaxrsUtils.isFeature(userType)) {
-                logger.warn("It's unsupported to add another nested feature({}) in feature({})",
+                logger.warn("It's unsupported to register nested feature({}) in feature({})",
                         ClassUtils.getUserType(component), featureType);
             }
             return;
@@ -135,7 +135,7 @@ public class FeatureContextImpl implements FeatureContext {
 
         for (Class<?> userType : contracts.keySet()) {
             if (JaxrsUtils.isFeature(userType)) {
-                logger.warn("It's unsupported to add another nested feature({}) in feature({})",
+                logger.warn("It's unsupported to register nested feature({}) in feature({})",
                         ClassUtils.getUserType(component), featureType);
             }
             return;
