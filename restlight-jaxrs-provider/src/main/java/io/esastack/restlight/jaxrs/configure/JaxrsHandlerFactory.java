@@ -53,10 +53,10 @@ public class JaxrsHandlerFactory extends HandlerFactoryImpl {
     }
 
     @Override
-    protected Object doInstantiate(Class<?> clazz, HandlerContext<? extends RestlightOptions> handlerContext,
-                                   RequestContext context) {
+    protected Object doInstantiate(HandlerContext<? extends RestlightOptions> handlerContext,
+                                   Class<?> clazz, RequestContext context) {
         if (context != null) {
-            return super.doInstantiate(clazz, handlerContext, context);
+            return super.doInstantiate(handlerContext, clazz, context);
         } else {
             // If HandlerResolverFactory is absent which means the deployments is not prepared,
             // in this case, there is no way to do further instantiation.
@@ -87,10 +87,10 @@ public class JaxrsHandlerFactory extends HandlerFactoryImpl {
     }
 
     @Override
-    protected void doInit0(Object instance, Class<?> clazz, HandlerContext<? extends RestlightOptions> handlerContext,
-                           RequestContext context) {
+    protected void doInit0(HandlerContext<? extends RestlightOptions> handlerContext,
+                           Object instance, Class<?> clazz, RequestContext context) {
         if (context != null) {
-            super.doInit0(instance, clazz, handlerContext, context);
+            super.doInit0(handlerContext, instance, clazz, context);
         } else {
             // If HandlerResolverFactory is absent which means the deployments is not prepared,
             // in this case, there is no way to do further initialization.

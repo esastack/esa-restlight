@@ -152,7 +152,7 @@ public class DynamicFeatureContext implements FeatureContext {
         if (ContainerRequestFilter.class.isAssignableFrom(target)) {
             if (JaxrsUtils.isPreMatched(target)) {
                 logger.warn("Registering {} as ContainerRequestFilter in DynamicFeature({}) is unsupported,"
-                        + " please remove @PreMatching of it.", target, featureType);
+                        + " please remove @PreMatching on it.", target, featureType);
                 return false;
             } else {
                 return true;

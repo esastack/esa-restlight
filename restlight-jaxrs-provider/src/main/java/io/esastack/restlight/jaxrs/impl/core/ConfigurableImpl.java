@@ -17,8 +17,9 @@ package io.esastack.restlight.jaxrs.impl.core;
 
 import esa.commons.Checks;
 import esa.commons.ClassUtils;
+import esa.commons.logging.Logger;
+import esa.commons.logging.LoggerFactory;
 import io.esastack.restlight.jaxrs.util.JaxrsUtils;
-import io.esastack.restlight.server.util.LoggerUtils;
 import jakarta.ws.rs.core.Configurable;
 import jakarta.ws.rs.core.Configuration;
 
@@ -26,6 +27,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ConfigurableImpl implements Configurable<ConfigurableImpl> {
+
+    private static final Logger logger = LoggerFactory.getLogger(ConfigurableImpl.class);
 
     private final ConfigurationImpl configuration;
 
@@ -115,8 +118,7 @@ public class ConfigurableImpl implements Configurable<ConfigurableImpl> {
         Map<Class<?>, Integer> effectiveContracts = new HashMap<>();
         for (Class<?> contract : contracts) {
             if (!target.isAssignableFrom(contract)) {
-                LoggerUtils.logger().warn("The contract: [" + contract + "] which isn't assignable from :[" +
-                        target + "] has been ignored.");
+                logger.warn("Failed to register {} as {}", target, contract);
             } else {
                 effectiveContracts.put(contract, order);
             }
@@ -129,8 +131,7 @@ public class ConfigurableImpl implements Configurable<ConfigurableImpl> {
         Map<Class<?>, Integer> effectiveContracts = new HashMap<>();
         for (Map.Entry<Class<?>, Integer> entry : contracts.entrySet()) {
             if (!entry.getKey().isAssignableFrom(clazz)) {
-                LoggerUtils.logger().warn("The contract: [" + entry.getKey() + "] which isn't assignable from" +
-                        " :[" + clazz + "] has been ignored.");
+                logger.warn("Failed to register {} as {}", clazz, entry.getKey());
             } else {
                 effectiveContracts.put(entry.getKey(), entry.getValue());
             }

@@ -57,7 +57,7 @@ public class ResponseEntityStreamChannelImpl extends ResponseEntityChannelImpl
     @Override
     public HttpOutputStream outputStream() {
         if (content.isEnded()) {
-            throw new IllegalStateException("Already ended");
+            throw new IllegalStateException("Already ended.");
         }
         if (outputStream == null) {
             checkCommitted();

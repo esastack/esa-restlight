@@ -36,7 +36,7 @@ import java.util.concurrent.locks.ReentrantLock;
 public class AsyncResponseImpl implements AsyncResponse {
 
     private static final UnsupportedOperationException UNSUPPORTED_REGISTRATION =
-            new UnsupportedOperationException("registration operation isn't supported.");
+            new UnsupportedOperationException("registration operation is unsupported.");
 
     private static final Timer TIME_OUT_SCHEDULER = new HashedWheelTimer();
     private static final AtomicIntegerFieldUpdater<AsyncResponseImpl> STATUS_UPDATER = AtomicIntegerFieldUpdater

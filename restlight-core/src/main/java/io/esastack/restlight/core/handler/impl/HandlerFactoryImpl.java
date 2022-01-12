@@ -66,12 +66,12 @@ public class HandlerFactoryImpl implements HandlerFactory {
 
     @Override
     public Object instantiate(Class<?> clazz, RequestContext context) {
-        return doInstantiate(clazz, getOrDefaultContext(clazz, null), context);
+        return doInstantiate(getOrDefaultContext(clazz, null), clazz, context);
     }
 
     @Override
     public Object instantiate(Class<?> clazz, Method method, RequestContext context) {
-        return doInstantiate(clazz, getOrDefaultContext(clazz, method), context);
+        return doInstantiate(getOrDefaultContext(clazz, method), clazz, context);
     }
 
     @Override
@@ -101,28 +101,28 @@ public class HandlerFactoryImpl implements HandlerFactory {
     @Override
     public void doInit(Object instance, RequestContext context) {
         Class<?> userType = ClassUtils.getUserType(instance);
-        doInit0(instance, userType, getOrDefaultContext(userType, null), context);
+        doInit0(getOrDefaultContext(userType, null), instance, userType, context);
     }
 
     @Override
     public void doInit(Object instance, Method method, RequestContext context) {
         Class<?> userType = ClassUtils.getUserType(instance);
-        doInit0(instance, userType, getOrDefaultContext(userType, method), context);
+        doInit0(getOrDefaultContext(userType, method), instance, userType, context);
     }
 
-    protected Object doInstantiate(Class<?> clazz, HandlerContext<? extends RestlightOptions> handlerContext,
-                                   RequestContext context) {
-        final ResolvableHandler resolvable = getResolvableHandler(clazz, handlerContext);
-        final ResolvableParam<ConstructorParam, ResolverWrap>[] consParams = resolvable.consParamResolvers;
+    protected Object doInstantiate(HandlerContext<? extends RestlightOptions> handlerContext,
+                                   Class<?> clazz, RequestContext context) {
+        final ResolvableHandler handler = getResolvableHandler(clazz, handlerContext);
+        final ResolvableParam<ConstructorParam, ResolverWrap>[] consParams = handler.consParamResolvers;
         final Object[] args = new Object[consParams.length];
         for (int i = 0; i < consParams.length; i++) {
-            ResolvableParam<ConstructorParam, ResolverWrap> resolvable0 = consParams[i];
-            ConstructorParam param = resolvable0.param();
+            ResolvableParam<ConstructorParam, ResolverWrap> resolvable = consParams[i];
+            ConstructorParam param = resolvable.param();
             //resolve args with resolver
-            if (resolvable0.resolver() != null) {
+            if (resolvable.resolver() != null) {
                 //it may return a null value
                 try {
-                    args[i] = resolvable0.resolver().resolve(handlerContext, param, context);
+                    args[i] = resolvable.resolver().resolve(handlerContext, param, context);
                 } catch (Exception e) {
                     //wrap exception
                     throw WebServerException.wrap(e);
@@ -131,7 +131,7 @@ public class HandlerFactoryImpl implements HandlerFactory {
         }
 
         try {
-            return resolvable.constructor.newInstance(args);
+            return handler.constructor.newInstance(args);
         } catch (InvocationTargetException ex) {
             throw new IllegalStateException("Could not instantiate class: [" + clazz + "]", ex.getTargetException());
         } catch (Exception ex) {
@@ -139,12 +139,12 @@ public class HandlerFactoryImpl implements HandlerFactory {
         }
     }
 
-    protected void doInit0(Object instance, Class<?> clazz, HandlerContext<? extends RestlightOptions> handlerContext,
-                           RequestContext context) {
-        final ResolvableHandler resolvable = getResolvableHandler(clazz, handlerContext);
+    protected void doInit0(HandlerContext<? extends RestlightOptions> handlerContext,
+                           Object instance, Class<?> clazz, RequestContext context) {
+        final ResolvableHandler handler = getResolvableHandler(clazz, handlerContext);
 
         // set fields
-        for (ResolvableParam<FieldParam, ResolverWrap> r : resolvable.fieldParamResolvers) {
+        for (ResolvableParam<FieldParam, ResolverWrap> r : handler.fieldParamResolvers) {
             FieldParam param = r.param();
             //resolve args with resolver
             if (r.resolver() != null) {
@@ -160,7 +160,7 @@ public class HandlerFactoryImpl implements HandlerFactory {
         }
 
         // set methods
-        for (ResolvableParam<MethodParam, ResolverWrap> r : resolvable.setterParamResolvers) {
+        for (ResolvableParam<MethodParam, ResolverWrap> r : handler.setterParamResolvers) {
             MethodParam param = r.param();
             //resolve args with resolver
             if (r.resolver() != null) {
