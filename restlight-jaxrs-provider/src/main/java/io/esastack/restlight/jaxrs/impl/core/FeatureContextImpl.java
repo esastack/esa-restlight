@@ -16,6 +16,10 @@
 package io.esastack.restlight.jaxrs.impl.core;
 
 import esa.commons.Checks;
+import esa.commons.ClassUtils;
+import esa.commons.logging.Logger;
+import esa.commons.logging.LoggerFactory;
+import io.esastack.restlight.jaxrs.util.JaxrsUtils;
 import jakarta.ws.rs.core.Configurable;
 import jakarta.ws.rs.core.Configuration;
 import jakarta.ws.rs.core.FeatureContext;
@@ -24,10 +28,15 @@ import java.util.Map;
 
 public class FeatureContextImpl implements FeatureContext {
 
+    private static final Logger logger = LoggerFactory.getLogger(FeatureContextImpl.class);
+
+    private final Class<?> featureType;
     private final Configurable<? extends Configurable<?>> underlying;
 
-    public FeatureContextImpl(Configurable<? extends Configurable<?>> underlying) {
+    public FeatureContextImpl(Class<?> featureType, Configurable<? extends Configurable<?>> underlying) {
+        Checks.checkNotNull(featureType, "featureType");
         Checks.checkNotNull(underlying, "underlying");
+        this.featureType = featureType;
         this.underlying = underlying;
     }
 
@@ -44,50 +53,93 @@ public class FeatureContextImpl implements FeatureContext {
 
     @Override
     public FeatureContext register(Class<?> componentClass) {
+        checkState(componentClass);
         underlying.register(componentClass);
         return this;
     }
 
     @Override
     public FeatureContext register(Class<?> componentClass, int priority) {
+        checkState(componentClass);
         underlying.register(componentClass, priority);
         return this;
     }
 
     @Override
     public FeatureContext register(Class<?> componentClass, Class<?>... contracts) {
+        checkState(componentClass, contracts);
         underlying.register(componentClass, contracts);
         return this;
     }
 
     @Override
     public FeatureContext register(Class<?> componentClass, Map<Class<?>, Integer> contracts) {
+        checkState(componentClass, contracts);
         underlying.register(componentClass, contracts);
         return this;
     }
 
     @Override
     public FeatureContext register(Object component) {
+        checkState(component);
         underlying.register(component);
         return this;
     }
 
     @Override
     public FeatureContext register(Object component, int priority) {
+        checkState(component);
         underlying.register(component, priority);
         return this;
     }
 
     @Override
     public FeatureContext register(Object component, Class<?>... contracts) {
+        checkState(component, contracts);
         underlying.register(component, contracts);
         return this;
     }
 
     @Override
     public FeatureContext register(Object component, Map<Class<?>, Integer> contracts) {
+        checkState(component, contracts);
         underlying.register(component, contracts);
         return this;
+    }
+
+    private void checkState(Object component) {
+        Class<?> userType = ClassUtils.getUserType(component);
+        if (JaxrsUtils.isFeature(userType)) {
+            logger.warn("It's unsupported to add another nested feature({}) in feature({})",
+                    userType, featureType);
+        }
+    }
+
+    private void checkState(Object component, Class<?>... contracts) {
+        if (contracts == null) {
+            return;
+        }
+        for (Class<?> userType : contracts) {
+            if (JaxrsUtils.isFeature(userType)) {
+                logger.warn("It's unsupported to add another nested feature({}) in feature({})",
+                        ClassUtils.getUserType(component), featureType);
+            }
+            return;
+        }
+    }
+
+    private void checkState(Object component, Map<Class<?>, Integer> contracts) {
+        if (contracts == null) {
+            return;
+        }
+
+        for (Class<?> userType : contracts.keySet()) {
+            if (JaxrsUtils.isFeature(userType)) {
+                logger.warn("It's unsupported to add another nested feature({}) in feature({})",
+                        ClassUtils.getUserType(component), featureType);
+            }
+            return;
+        }
     }
 }
 

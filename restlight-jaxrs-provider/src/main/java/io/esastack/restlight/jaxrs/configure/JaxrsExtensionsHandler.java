@@ -205,8 +205,10 @@ public class JaxrsExtensionsHandler implements ExtensionsHandler {
     private void convertThenAddProviders(List<Class<? extends Annotation>> appNameBindings) {
         Collection<ProxyComponent<Feature>> features = factory.features();
         if (!features.isEmpty()) {
-            FeatureContext context = new FeatureContextImpl(new ConfigurableImpl(configuration));
+            ConfigurableImpl configurable = new ConfigurableImpl(configuration);
             for (ProxyComponent<Feature> feature : features) {
+                FeatureContext context = new FeatureContextImpl(ClassUtils.getUserType(feature.underlying()),
+                        configurable);
                 if (feature.proxied().configure(context)) {
                     configuration.addEnabledFeature(feature.underlying());
                 }

@@ -252,7 +252,7 @@ public final class JaxrsUtils {
 
     private static List<Class<?>> getComponents(Class<?> clazz) {
         List<Class<?>> classes = new LinkedList<>();
-        getComponentsRecursively(clazz, classes);
+        getComponentsRecursively(clazz, classes, 0);
         return classes;
     }
 
@@ -270,20 +270,20 @@ public final class JaxrsUtils {
         return AnnotationUtils.hasAnnotation(mParam.method(), target);
     }
 
-    private static void getComponentsRecursively(Class<?> clazz, List<Class<?>> classes) {
+    private static void getComponentsRecursively(Class<?> clazz, List<Class<?>> classes, int depth) {
         if (clazz == null || clazz.equals(Object.class)) {
             return;
         }
 
-        if (isComponent(clazz)) {
+        if (depth > 0 && isComponent(clazz)) {
             classes.add(clazz);
-            return;
         }
 
+        ++depth;
         for (Class<?> interface0 : clazz.getInterfaces()) {
-            getComponentsRecursively(interface0, classes);
+            getComponentsRecursively(interface0, classes, depth);
         }
-        getComponentsRecursively(clazz.getSuperclass(), classes);
+        getComponentsRecursively(clazz.getSuperclass(), classes, depth);
     }
 
     private static List<MediaType> convertToMediaTypes(String[] values) {
