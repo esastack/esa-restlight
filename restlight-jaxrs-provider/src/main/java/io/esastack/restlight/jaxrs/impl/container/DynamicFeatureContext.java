@@ -21,6 +21,7 @@ import esa.commons.logging.Logger;
 import esa.commons.logging.LoggerFactory;
 import io.esastack.restlight.jaxrs.impl.core.ConfigurableImpl;
 import io.esastack.restlight.jaxrs.impl.core.ConfigurationImpl;
+import io.esastack.restlight.jaxrs.util.JaxrsUtils;
 import jakarta.ws.rs.container.ContainerRequestFilter;
 import jakarta.ws.rs.container.ContainerResponseFilter;
 import jakarta.ws.rs.core.Configurable;
@@ -123,36 +124,45 @@ public class DynamicFeatureContext implements FeatureContext {
     }
 
     private boolean isRegistrable(Class<?> target, Class<?>[] contracts) {
-        if (ContainerRequestFilter.class.isAssignableFrom(target)) {
-            return isLegalContracts(target, contracts);
-        } else if (ContainerResponseFilter.class.isAssignableFrom(target)) {
-            return isLegalContracts(target, contracts);
-        } else if (ReaderInterceptor.class.isAssignableFrom(target)) {
-            return isLegalContracts(target, contracts);
-        } else if (WriterInterceptor.class.isAssignableFrom(target)) {
-            return isLegalContracts(target, contracts);
-        }
-
-        logger.warn("It's unsupported to register({}) in DynamicFeature({})", target, featureType);
-        return false;
-    }
-
-    private boolean isLegalContracts(Class<?> target, Class<?>[] contracts) {
         if (contracts == null || contracts.length == 0) {
-            return true;
+            return isRegistrableType(target);
         }
+
         for (Class<?> contract : contracts) {
-            if (ContainerRequestFilter.class.equals(contract)
-                    || ContainerResponseFilter.class.equals(contract)
+            if (ContainerResponseFilter.class.equals(contract)
                     || ReaderInterceptor.class.equals(contract)
                     || WriterInterceptor.class.equals(contract)) {
                 continue;
             }
-            logger.warn("It's unsupported to register({}) as ({}) in DynamicFeature({})",
+            if (ContainerRequestFilter.class.equals(contract)) {
+                if (JaxrsUtils.isPreMatched(target)) {
+                    logger.warn("Registering {} as {} in DynamicFeature({}) is unsupported, please remove" +
+                            " @PreMatching of it.", target, contract, featureType);
+                } else {
+                    continue;
+                }
+            }
+            logger.warn("Registering {} as {} in DynamicFeature({}) is unsupported.",
                     target, contract, featureType);
-            return false;
         }
         return true;
     }
-}
 
+    private boolean isRegistrableType(Class<?> target) {
+        if (ContainerRequestFilter.class.isAssignableFrom(target)) {
+            if (JaxrsUtils.isPreMatched(target)) {
+                logger.warn("Registering {} as ContainerRequestFilter in DynamicFeature({}) is unsupported,"
+                        + " please remove @PreMatching of it.", target, featureType);
+                return false;
+            } else {
+                return true;
+            }
+        } else if (ContainerResponseFilter.class.isAssignableFrom(target)) {
+            return true;
+        } else if (ReaderInterceptor.class.isAssignableFrom(target)) {
+            return true;
+        } else {
+            return WriterInterceptor.class.isAssignableFrom(target);
+        }
+    }
+}
