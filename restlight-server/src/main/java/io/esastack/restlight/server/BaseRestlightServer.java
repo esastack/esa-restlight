@@ -28,7 +28,7 @@ import io.esastack.restlight.server.config.ServerOptions;
 import io.esastack.restlight.server.handler.Filter;
 import io.esastack.restlight.server.handler.FilteredHandler;
 import io.esastack.restlight.server.handler.RestlightHandler;
-import io.esastack.restlight.server.schedule.ExceptionHandledRestlightHandler;
+import io.esastack.restlight.server.schedule.AbstractRestlightHandler;
 import io.esastack.restlight.server.spi.FilterFactory;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelOption;
@@ -220,21 +220,21 @@ public abstract class BaseRestlightServer<R extends BaseRestlightServer<R, D, O>
             OrderedComparator.sort(filters);
             handler = new FilteredHandler(handler, filters);
         }
-        return doBuildServer(buildExceptionHandled(handler, deployments().exceptionHandlers));
+        return doBuildServer(buildHandler(handler, deployments().exceptionHandlers));
     }
 
     /**
-     * Builds an {@link ExceptionHandledRestlightHandler} by given {@link RestlightHandler} and
+     * Builds an {@link AbstractRestlightHandler} by given {@link RestlightHandler} and
      * {@link IExceptionHandler}s.
      *
      * @param handler   handler
      * @param exceptionHandlers exception handlers
      * @return          handler which can handle exception.
      */
-    protected abstract ExceptionHandledRestlightHandler buildExceptionHandled(RestlightHandler handler,
-                                                                              IExceptionHandler[] exceptionHandlers);
+    protected abstract AbstractRestlightHandler buildHandler(RestlightHandler handler,
+                                                             IExceptionHandler[] exceptionHandlers);
 
-    protected RestlightServer doBuildServer(ExceptionHandledRestlightHandler handler) {
+    protected RestlightServer doBuildServer(AbstractRestlightHandler handler) {
         return RestlightServerBootstrap.from(options, handler)
                 .withAddress(address)
                 .withOptions(channelOptions)

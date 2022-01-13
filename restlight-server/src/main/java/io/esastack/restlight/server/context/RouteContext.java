@@ -15,12 +15,12 @@
  */
 package io.esastack.restlight.server.context;
 
-import io.esastack.restlight.server.core.HttpResponse;
+import io.esastack.restlight.server.core.RoutedRequest;
 
 public interface RouteContext extends RequestContext {
 
     @Override
-    HttpResponse response();
+    RoutedRequest request();
 
 }
 

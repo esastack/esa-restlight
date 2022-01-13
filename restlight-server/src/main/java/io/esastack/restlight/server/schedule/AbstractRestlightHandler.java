@@ -27,13 +27,13 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
-public abstract class ExceptionHandledRestlightHandler implements RestlightHandler {
+public abstract class AbstractRestlightHandler implements RestlightHandler {
 
     private final RestlightHandler underlying;
     private final ExceptionHandlerChain exceptionHandler;
 
-    public ExceptionHandledRestlightHandler(RestlightHandler underlying,
-                                            ExceptionHandlerChain handlerChain) {
+    public AbstractRestlightHandler(RestlightHandler underlying,
+                                    ExceptionHandlerChain handlerChain) {
         Checks.checkNotNull(underlying, "underlying");
         Checks.checkNotNull(handlerChain, "handlerChain");
         this.underlying = underlying;

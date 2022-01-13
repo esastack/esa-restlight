@@ -86,23 +86,6 @@ public class DynamicFeatureAdapter implements HandlerConfigure {
         }
 
         ProvidersProxyFactory providers = new ProvidersProxyFactoryImpl(this.context, current);
-
-        // add context resolvers, which should have higher precedence than those added at
-        // JaxrsExtensionsHandler which have no providers and configuration corresponding
-        // with current method.
-        configurable.addContextResolver(new ConfigurationResolverAdapter(current) {
-            @Override
-            public int getOrder() {
-                return 0;
-            }
-        });
-        configurable.addContextResolver(new ProvidersResolverAdapter(new ProvidersImpl(providers)) {
-            @Override
-            public int getOrder() {
-                return 0;
-            }
-        });
-
         // bound ReaderInterceptors(only be active when handler method has matched)
         List<OrderComponent<ReaderInterceptor>> readerInterceptors = filterByNameBindings(handlerMethod,
                 providers.readerInterceptors(), false);
@@ -139,6 +122,22 @@ public class DynamicFeatureAdapter implements HandlerConfigure {
                     .toArray(new ContainerResponseFilter[0]);
             this.providers.addResponseFilters(handlerMethod, filters);
         }
+
+        // add context resolvers, which should have higher precedence than those added at
+        // JaxrsExtensionsHandler which have no providers and configuration corresponding
+        // with current method.
+        configurable.addContextResolver(new ConfigurationResolverAdapter(current) {
+            @Override
+            public int getOrder() {
+                return 0;
+            }
+        });
+        configurable.addContextResolver(new ProvidersResolverAdapter(new ProvidersImpl(providers)) {
+            @Override
+            public int getOrder() {
+                return 0;
+            }
+        });
     }
 
     private <T> List<OrderComponent<T>> filterByNameBindings(HandlerMethod method,

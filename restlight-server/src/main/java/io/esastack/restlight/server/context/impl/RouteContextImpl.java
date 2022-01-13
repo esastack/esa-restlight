@@ -22,16 +22,16 @@ import io.esastack.restlight.server.core.RoutedRequest;
 
 public class RouteContextImpl extends RequestContextImpl implements RouteContext {
 
-    private final HttpResponse response;
+    private final RoutedRequest request;
 
     public RouteContextImpl(Attributes attributes, RoutedRequest request, HttpResponse response) {
         super(attributes, request, response);
-        this.response = response;
+        this.request = request;
     }
 
     @Override
-    public HttpResponse response() {
-        return response;
+    public RoutedRequest request() {
+        return this.request;
     }
 }
 

@@ -41,24 +41,24 @@ import io.esastack.restlight.server.context.RequestContext;
 import io.esastack.restlight.server.core.HttpRequest;
 import io.esastack.restlight.server.core.HttpResponse;
 import io.esastack.restlight.server.handler.RestlightHandler;
-import io.esastack.restlight.server.schedule.ExceptionHandledRestlightHandler;
+import io.esastack.restlight.server.schedule.AbstractRestlightHandler;
 import io.esastack.restlight.server.util.Futures;
 
 import java.util.List;
 import java.util.concurrent.CompletionStage;
 
-public class WritableRestlightHandler extends ExceptionHandledRestlightHandler {
+public class RestlightHandlerImpl extends AbstractRestlightHandler {
 
-    private static final Logger logger = LoggerFactory.getLogger(WritableRestlightHandler.class);
+    private static final Logger logger = LoggerFactory.getLogger(RestlightHandlerImpl.class);
 
     private final HandlerResolverFactory resolverFactory;
     private final ResponseEntityChannelFactory channelFactory;
     private final HandlerContextProvider handlerContexts;
 
-    public WritableRestlightHandler(RestlightHandler underlying,
-                                    ExceptionHandlerChain handlerChain,
-                                    ResponseEntityChannelFactory channelFactory,
-                                    DeployContext<? extends RestlightOptions> context) {
+    public RestlightHandlerImpl(RestlightHandler underlying,
+                                ExceptionHandlerChain handlerChain,
+                                ResponseEntityChannelFactory channelFactory,
+                                DeployContext<? extends RestlightOptions> context) {
         super(underlying, handlerChain);
         Checks.checkNotNull(channelFactory, "channelFactory");
         Checks.checkNotNull(context, "context");

@@ -165,7 +165,7 @@ public class ProvidersProxyFactoryImpl implements ProvidersProxyFactory {
         for (Class<?> clazz : classes) {
             if (target.isAssignableFrom(clazz)) {
                 values.put(clazz, new ProxyComponent<>(clazz, (T) ExtensionHandlerProxy.newProxy(target,
-                        new LazyInstantiateHandler(clazz, context))));
+                        new LazyInstantiateHandler(context, clazz))));
             }
         }
         return values;
@@ -178,7 +178,7 @@ public class ProvidersProxyFactoryImpl implements ProvidersProxyFactory {
             Class<?> userType = ClassUtils.getUserType(instance);
             if (target.isAssignableFrom(userType)) {
                 values.put(userType, new ProxyComponent<>(instance, (T) ExtensionHandlerProxy.newProxy(target,
-                        new LazyInjectHandler(instance, context))));
+                        new LazyInjectHandler(context, instance))));
             }
         }
         return values;
