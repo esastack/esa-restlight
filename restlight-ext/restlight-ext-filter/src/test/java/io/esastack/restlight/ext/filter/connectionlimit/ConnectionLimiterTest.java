@@ -15,15 +15,15 @@
  */
 package io.esastack.restlight.ext.filter.connectionlimit;
 
+import com.google.common.util.concurrent.RateLimiter;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.embedded.EmbeddedChannel;
 import org.junit.jupiter.api.Test;
 
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.CountDownLatch;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assumptions.assumeTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -33,24 +33,29 @@ class ConnectionLimiterTest {
     void testLimited() throws Exception {
         final ConnectionLimitOptions ops = ConnectionLimitOptionsConfigure.newOpts()
                 .maxPerSecond(1).configured();
-        final ConnectionLimiter limiter = new ConnectionLimiter(ops);
+        final RateLimiter limiter0 = mock(RateLimiter.class);
+        final ConnectionLimiter limiter = new ConnectionLimiter(ops, limiter0);
         final ChannelHandlerContext ctx = mock(ChannelHandlerContext.class);
         final EmbeddedChannel channel = new EmbeddedChannel();
         when(ctx.channel()).thenReturn(channel);
+        when(limiter0.tryAcquire(1)).thenReturn(true);
         limiter.onConnect(channel);
         assertTrue(ctx.channel().isActive());
         assertTrue(ctx.channel().isOpen());
         assertTrue(ctx.channel().isWritable());
 
-        final long start = System.nanoTime();
+        when(limiter0.tryAcquire(1)).thenReturn(false);
         limiter.onConnect(channel);
-        assumeTrue((System.nanoTime() - start) < TimeUnit.SECONDS.toNanos(1L));
 
         // wait the closure of this channel.
-        ctx.channel().closeFuture().get(5L, TimeUnit.SECONDS);
-        assertFalse(ctx.channel().isActive());
-        assertFalse(ctx.channel().isOpen());
-        assertFalse(ctx.channel().isWritable());
+        final CountDownLatch latch = new CountDownLatch(1);
+        channel.closeFuture().addListener(future -> {
+            latch.countDown();
+            assertFalse(ctx.channel().isActive());
+            assertFalse(ctx.channel().isOpen());
+            assertFalse(ctx.channel().isWritable());
+        });
+        latch.await();
     }
 
 }

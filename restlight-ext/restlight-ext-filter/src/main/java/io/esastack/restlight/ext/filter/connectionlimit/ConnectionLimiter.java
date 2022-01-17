@@ -15,6 +15,7 @@
  */
 package io.esastack.restlight.ext.filter.connectionlimit;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.util.concurrent.RateLimiter;
 import esa.commons.Checks;
 import io.esastack.restlight.server.handler.ConnectionHandler;
@@ -36,6 +37,14 @@ public class ConnectionLimiter implements ConnectionHandler {
         Checks.checkArg(options.getMaxPerSecond() > 0, "PermitsPerSecond must be over than 0!");
         this.permitsPerSecond = options.getMaxPerSecond();
         this.connects = RateLimiter.create(permitsPerSecond);
+    }
+
+    @VisibleForTesting
+    ConnectionLimiter(ConnectionLimitOptions options, RateLimiter limiter) {
+        Checks.checkNotNull(options, "options");
+        Checks.checkArg(options.getMaxPerSecond() > 0, "PermitsPerSecond must be over than 0!");
+        this.permitsPerSecond = options.getMaxPerSecond();
+        this.connects = limiter;
     }
 
     @Override
