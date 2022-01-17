@@ -63,11 +63,7 @@ public class RouteTracking implements RouteFilter {
         }
     }
 
-    public static boolean isMethodMatched(RequestContext context) {
-        return handlerMethod(context) != null;
-    }
-
-    public static HandlerMethod handlerMethod(RequestContext context) {
+    public static HandlerMethod matchedMethod(RequestContext context) {
         return context.attrs().attr(HANDLED_METHOD).get();
     }
 

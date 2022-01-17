@@ -27,16 +27,15 @@ import java.util.function.Supplier;
 public class NameAndStringValueResolver implements NameAndValueResolver {
 
     private final StringConverter converter;
-    private final BiFunction<String, RequestContext, String> valueExtractor;
+    private final BiFunction<String, RequestContext, String> paramValueFunc;
     private final NameAndValue<Object> nav;
 
     public NameAndStringValueResolver(Param param,
                                       HandlerResolverFactory resolverFactory,
-                                      BiFunction<String, RequestContext, String> valueExtractor,
+                                      BiFunction<String, RequestContext, String> paramValueFunc,
                                       NameAndValue<String> nav) {
         Checks.checkNotNull(resolverFactory, "resolverFactory");
-        this.valueExtractor = Checks.checkNotNull(valueExtractor, "valueExtractor");
-
+        this.paramValueFunc = Checks.checkNotNull(paramValueFunc, "paramValueFunc");
         this.converter = resolverFactory.getStringConverter(param.type(),
                 param.genericType(),
                 param);
@@ -57,7 +56,7 @@ public class NameAndStringValueResolver implements NameAndValueResolver {
 
     @Override
     public Object resolve(String name, RequestContext ctx) {
-        return converter.fromString(valueExtractor.apply(name, ctx));
+        return converter.fromString(paramValueFunc.apply(name, ctx));
     }
 
     @Override

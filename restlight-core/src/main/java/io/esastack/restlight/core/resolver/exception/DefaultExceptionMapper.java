@@ -32,9 +32,9 @@ public class DefaultExceptionMapper implements ExceptionMapper {
     /**
      * Exception type -> RouteHandlerImpl
      */
-    private final Map<Class<? extends Throwable>, ExceptionResolver<Throwable>> mappings;
+    private final Map<Class<? extends Throwable>, ? extends ExceptionResolver<Throwable>> mappings;
 
-    public DefaultExceptionMapper(Map<Class<? extends Throwable>, ExceptionResolver<Throwable>> mappings) {
+    public DefaultExceptionMapper(Map<Class<? extends Throwable>, ? extends ExceptionResolver<Throwable>> mappings) {
         Checks.checkNotEmptyArg(mappings);
         this.mappings = mappings;
     }
@@ -51,7 +51,7 @@ public class DefaultExceptionMapper implements ExceptionMapper {
 
         List<Class<? extends Throwable>> matches =
                 InternalThreadLocalMap.get().arrayList(mappings.size());
-        for (Map.Entry<Class<? extends Throwable>, ExceptionResolver<Throwable>> entry :
+        for (Map.Entry<Class<? extends Throwable>, ? extends ExceptionResolver<Throwable>> entry :
                 this.mappings.entrySet()) {
             Class<? extends Throwable> mappedType = entry.getKey();
             if (mappedType.isAssignableFrom(type)) {

@@ -237,6 +237,7 @@ public class RequestBeanParamResolver implements ParamResolverFactory {
      * Hold the Field and setter operation
      */
     private static class FieldAndSetter {
+
         private final BiConsumer<Object, Object> setter;
         private final ParamResolver resolver;
 

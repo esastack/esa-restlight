@@ -27,6 +27,7 @@ import io.esastack.restlight.core.serialize.HttpResponseSerializer;
 import io.esastack.restlight.core.spi.FutureTransferFactory;
 import io.esastack.restlight.core.spi.RouteFilterFactory;
 import io.esastack.restlight.core.util.OrderedComparator;
+import io.netty.util.internal.InternalThreadLocalMap;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -336,17 +337,17 @@ public class HandlerResolverFactoryImpl implements HandlerResolverFactory {
 
     @Override
     public List<ResponseEntityResolverAdvice> getResponseEntityResolverAdvices(ResponseEntity entity) {
-        if (responseEntityResolverAdvices != null && !responseEntityResolverAdvices.isEmpty()) {
-            List<ResponseEntityResolverAdvice> advices =
-                    responseEntityResolverAdvices.stream()
-                            .filter(advice -> advice.supports(entity))
-                            .map(factory -> Checks.checkNotNull(factory.createResolverAdvice(entity),
-                                    "Failed to create ResponseEntityResolverAdvice for response entity: "
-                                            + entity))
-                            .collect(Collectors.toList());
-            if (!advices.isEmpty()) {
-                return Collections.unmodifiableList(advices);
+        if (responseEntityResolverAdvices != null && responseEntityResolverAdvices.size() != 0) {
+            List<ResponseEntityResolverAdvice> advices = InternalThreadLocalMap.get()
+                    .arrayList(responseEntityResolverAdvices.size());
+
+            ResponseEntityResolverAdvice advice;
+            for (ResponseEntityResolverAdviceFactory factory : responseEntityResolverAdvices) {
+                if (factory.supports(entity) && (advice = factory.createResolverAdvice(entity)) != null) {
+                    advices.add(advice);
+                }
             }
+            return advices;
         }
         return Collections.emptyList();
     }

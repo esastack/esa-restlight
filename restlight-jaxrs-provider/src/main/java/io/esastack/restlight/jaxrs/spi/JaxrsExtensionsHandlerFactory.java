@@ -33,5 +33,6 @@ public class JaxrsExtensionsHandlerFactory implements ExtensionsHandlerFactory {
     public Optional<ExtensionsHandler> handler(MiniConfigurableDeployments deployments) {
         return Optional.of(new JaxrsExtensionsHandler(deployments));
     }
+
 }
 

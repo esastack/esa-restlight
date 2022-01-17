@@ -23,8 +23,8 @@ import io.esastack.restlight.core.configure.ConfigurableHandler;
 import io.esastack.restlight.core.configure.HandlerConfigure;
 import io.esastack.restlight.core.method.HandlerMethod;
 import io.esastack.restlight.jaxrs.configure.OrderComponent;
-import io.esastack.restlight.jaxrs.configure.ProvidersProxyFactory;
-import io.esastack.restlight.jaxrs.configure.ProvidersProxyFactoryImpl;
+import io.esastack.restlight.jaxrs.configure.ProvidersFactory;
+import io.esastack.restlight.jaxrs.configure.ProvidersFactoryImpl;
 import io.esastack.restlight.jaxrs.configure.ProxyComponent;
 import io.esastack.restlight.jaxrs.impl.container.DynamicFeatureContext;
 import io.esastack.restlight.jaxrs.impl.container.ResourceInfoImpl;
@@ -56,22 +56,18 @@ public class DynamicFeatureAdapter implements HandlerConfigure {
     private final List<Class<? extends Annotation>> appNameBindings;
     private final Collection<ProxyComponent<DynamicFeature>> features;
     private final ConfigurationImpl parent;
-    private final HandlerProvidersImpl providers;
 
     public DynamicFeatureAdapter(DeployContext<? extends RestlightOptions> context,
                                  List<Class<? extends Annotation>> appNameBindings,
                                  Collection<ProxyComponent<DynamicFeature>> features,
-                                 ConfigurationImpl parent,
-                                 HandlerProvidersImpl providers) {
+                                 ConfigurationImpl parent) {
         Checks.checkNotNull(parent, "parent");
         Checks.checkNotNull(context, "context");
-        Checks.checkNotNull(providers, "providers");
         this.context = context;
         this.appNameBindings = appNameBindings;
         this.features = features == null || features.isEmpty()
                 ? Collections.emptyList() : Collections.unmodifiableCollection(features);
         this.parent = parent;
-        this.providers = providers;
     }
 
     @Override
@@ -85,14 +81,14 @@ public class DynamicFeatureAdapter implements HandlerConfigure {
                     new DynamicFeatureContext(ClassUtils.getUserType(feature.underlying()), current));
         }
 
-        ProvidersProxyFactory providers = new ProvidersProxyFactoryImpl(this.context, current);
+        ProvidersFactory providers = new ProvidersFactoryImpl(this.context, current);
         // bound ReaderInterceptors(only be active when handler method has matched)
         List<OrderComponent<ReaderInterceptor>> readerInterceptors = filterByNameBindings(handlerMethod,
                 providers.readerInterceptors(), false);
         if (!readerInterceptors.isEmpty()) {
             configurable.addRequestEntityResolverAdvices(Collections.singleton(
                     new ReaderInterceptorsAdapter(ascendingOrdered(readerInterceptors)
-                            .toArray(new ReaderInterceptor[0]), true)));
+                            .toArray(new ReaderInterceptor[0]), ProvidersPredicate.BINDING_HANDLER)));
         }
 
         // bound WriterInterceptors(only be active when handler method has matched)
@@ -101,7 +97,7 @@ public class DynamicFeatureAdapter implements HandlerConfigure {
         if (!writerInterceptors.isEmpty()) {
             configurable.addResponseEntityResolverAdvices(Collections.singleton(
                     new WriterInterceptorsAdapter(ascendingOrdered(writerInterceptors)
-                            .toArray(new WriterInterceptor[0]), true)));
+                            .toArray(new WriterInterceptor[0]), ProvidersPredicate.BINDING_HANDLER)));
         }
 
         // handle bound postMatch ContainerRequestFilters (only apply to resource method)
@@ -120,7 +116,8 @@ public class DynamicFeatureAdapter implements HandlerConfigure {
             ContainerResponseFilter[] filters = descendingOrder(
                     filterByNameBindings(handlerMethod, providers.responseFilters(), false))
                     .toArray(new ContainerResponseFilter[0]);
-            this.providers.addResponseFilters(handlerMethod, filters);
+            configurable.addRouteFilters(Collections.singleton(
+                    new JaxrsResponseFiltersAdapter.ContainerResponseFilterBinder(filters)));
         }
 
         // add context resolvers, which should have higher precedence than those added at

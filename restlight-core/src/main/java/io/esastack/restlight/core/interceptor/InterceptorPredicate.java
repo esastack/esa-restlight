@@ -19,7 +19,7 @@ import io.esastack.restlight.server.route.predicate.RequestPredicate;
 
 public interface InterceptorPredicate extends RequestPredicate {
 
-    InterceptorPredicate ALWAYS = request -> Boolean.TRUE;
-    InterceptorPredicate NEVER = request -> Boolean.FALSE;
+    InterceptorPredicate ALWAYS = context -> Boolean.TRUE;
+    InterceptorPredicate NEVER = context -> Boolean.FALSE;
 
 }

@@ -15,21 +15,13 @@
  */
 package io.esastack.restlight.jaxrs.adapter;
 
-import io.esastack.restlight.core.method.HandlerMethod;
-import jakarta.ws.rs.container.ContainerResponseFilter;
+import io.esastack.restlight.core.spi.impl.RouteTracking;
+import io.esastack.restlight.server.route.predicate.RequestPredicate;
 
-/**
- * This {@link HandlerProviders} is used to get providers of specified {@link HandlerMethod}.
- */
-public interface HandlerProviders {
+public interface ProvidersPredicate extends RequestPredicate {
 
-    /**
-     * Obtains {@link ContainerResponseFilter}s of given {@link HandlerMethod}.
-     *
-     * @param method    handler method
-     * @return          response filters
-     */
-    ContainerResponseFilter[] getResponseFilters(HandlerMethod method);
+    ProvidersPredicate BINDING_GLOBAL = context -> RouteTracking.matchedMethod(context) ==  null;
+    ProvidersPredicate BINDING_HANDLER = context -> RouteTracking.matchedMethod(context) !=  null;
 
 }
 

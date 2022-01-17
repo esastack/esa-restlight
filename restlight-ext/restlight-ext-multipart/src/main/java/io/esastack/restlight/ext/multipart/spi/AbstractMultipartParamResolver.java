@@ -38,7 +38,6 @@ import io.esastack.restlight.server.context.RequestContext;
 import io.esastack.restlight.server.core.HttpRequest;
 import io.netty.buffer.ByteBuf;
 import io.netty.handler.codec.http.DefaultFullHttpRequest;
-import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpVersion;
@@ -114,7 +113,7 @@ abstract class AbstractMultipartParamResolver extends NameAndValueResolverFactor
 
             if (!HttpPostRequestDecoder.isMultipart(request0)) {
                 throw new IllegalStateException("You excepted to accept a multipart file or attribute," +
-                        " but Content-Type is: " + request.headers().get(HttpHeaderNames.CONTENT_TYPE));
+                        " but Content-Type is: " + request.contentType());
             }
 
             final HttpPostMultipartRequestDecoder decoder = new HttpPostMultipartRequestDecoder(factory, request0);

@@ -33,15 +33,15 @@ public class NameAndStringsValueResolver implements NameAndValueResolver {
 
     private final StringConverter strConverter;
     private final Function<Collection<String>, Object> strsConverter;
-    private final BiFunction<String, RequestContext, Collection<String>> valueExtractor;
+    private final BiFunction<String, RequestContext, Collection<String>> paramValuesFunc;
     private final NameAndValue<Object> nav;
 
     public NameAndStringsValueResolver(Param param,
                                        HandlerResolverFactory resolverFactory,
-                                       BiFunction<String, RequestContext, Collection<String>> valueExtractor,
+                                       BiFunction<String, RequestContext, Collection<String>> paramValuesFunc,
                                        NameAndValue<String> nav) {
         Checks.checkNotNull(resolverFactory, "resolverFactory");
-        this.valueExtractor = Checks.checkNotNull(valueExtractor, "valueExtractor");
+        this.paramValuesFunc = Checks.checkNotNull(paramValuesFunc, "paramValuesFunc");
         this.strConverter = resolverFactory.getStringConverter(param.type(),
                 param.genericType(),
                 param);
@@ -62,7 +62,7 @@ public class NameAndStringsValueResolver implements NameAndValueResolver {
 
     @Override
     public Object resolve(String name, RequestContext ctx) {
-        Collection<String> values = valueExtractor.apply(name, ctx);
+        Collection<String> values = paramValuesFunc.apply(name, ctx);
         if (values == null || values.isEmpty()) {
             return null;
         }

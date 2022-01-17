@@ -28,7 +28,6 @@ import io.esastack.restlight.core.method.HandlerMethod;
 import io.esastack.restlight.core.resolver.HandlerResolverFactory;
 import io.esastack.restlight.core.resolver.ResponseEntity;
 import io.esastack.restlight.core.resolver.ResponseEntityImpl;
-import io.esastack.restlight.core.resolver.ResponseEntityResolverAdvice;
 import io.esastack.restlight.core.resolver.ResponseEntityResolverContext;
 import io.esastack.restlight.core.resolver.ResponseEntityResolverContextImpl;
 import io.esastack.restlight.core.spi.ResponseEntityChannelFactory;
@@ -76,15 +75,14 @@ public class RestlightHandlerImpl extends AbstractRestlightHandler {
                 DispatcherHandlerImpl.handleException(context, Futures.unwrapCompletionException(th));
             }
 
-            final HandlerMethod method = RouteTracking.handlerMethod(context);
+            final HandlerMethod method = RouteTracking.matchedMethod(context);
             final List<MediaType> mediaTypes = ResponseEntityUtils.getMediaTypes(context);
             final ResponseEntity entity = new ResponseEntityImpl(method, context.response(),
                     mediaTypes.isEmpty() ? null : mediaTypes.get(0));
             HandlerResolverFactory resolverFactory = getResolverFactory(method);
             final ResponseEntityResolverContext rspCtx = new ResponseEntityResolverContextImpl(context,
                     entity, channelFactory.create(context), resolverFactory.getResponseEntityResolvers(),
-                    resolverFactory.getResponseEntityResolverAdvices(entity)
-                            .toArray(new ResponseEntityResolverAdvice[0]));
+                    resolverFactory.getResponseEntityResolverAdvices(entity));
 
             setEntityTypeIfNecessary(rspCtx, context.response());
             final HttpRequest request = context.request();
@@ -124,7 +122,7 @@ public class RestlightHandlerImpl extends AbstractRestlightHandler {
 
     @Override
     protected boolean isHandleable(RequestContext context, Throwable th) {
-        return !RouteTracking.isMethodMatched(context);
+        return RouteTracking.matchedMethod(context) == null;
     }
 
     private void setEntityTypeIfNecessary(ResponseEntityResolverContext rspCtx, HttpResponse response) {

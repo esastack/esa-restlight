@@ -16,7 +16,12 @@
 package io.esastack.restlight.jaxrs.impl.ext;
 
 import esa.commons.Checks;
-import io.esastack.restlight.jaxrs.configure.ProvidersProxyFactory;
+import esa.commons.ClassUtils;
+import io.esastack.restlight.core.resolver.exception.DefaultExceptionMapper;
+import io.esastack.restlight.core.util.Ordered;
+import io.esastack.restlight.core.util.OrderedComparator;
+import io.esastack.restlight.jaxrs.adapter.JaxrsExceptionMapperAdapter;
+import io.esastack.restlight.jaxrs.configure.ProvidersFactory;
 import io.esastack.restlight.jaxrs.configure.ProxyComponent;
 import io.esastack.restlight.jaxrs.util.JaxrsUtils;
 import jakarta.ws.rs.core.MediaType;
@@ -30,20 +35,26 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class ProvidersImpl implements Providers {
 
-    public final ProvidersProxyFactory providers;
+    public final ProvidersFactory providers;
 
-    private Collection<MessageBodyReader<?>> messageBodyReaders;
-    private Collection<MessageBodyWriter<?>> messageBodyWriters;
-    private Map<Class<Throwable>, ExceptionMapper<Throwable>> exceptionMappers;
-    private Map<Class<?>, ProducesComponent<ContextResolver<?>>> contextResolvers;
+    private final AtomicReference<ConsumesComponent<MessageBodyReader<?>>[]> messageBodyReaders
+            = new AtomicReference<>();
+    private final AtomicReference<ProducesComponent<MessageBodyWriter<?>>[]> messageBodyWriters
+            = new AtomicReference<>();
 
-    public ProvidersImpl(ProvidersProxyFactory providers) {
+    private final AtomicReference<io.esastack.restlight.core.resolver.exception.ExceptionMapper>
+            exceptionMappers = new AtomicReference<>();
+    private final AtomicReference<ProducesComponent<ContextResolver<?>>[]> contextResolvers
+            = new AtomicReference<>();
+
+    public ProvidersImpl(ProvidersFactory providers) {
         Checks.checkNotNull(providers, "providers");
         this.providers = providers;
     }
@@ -52,99 +63,189 @@ public class ProvidersImpl implements Providers {
     @Override
     public <T> MessageBodyReader<T> getMessageBodyReader(Class<T> type, Type genericType,
                                                          Annotation[] annotations, MediaType mediaType) {
-        if (messageBodyReaders == null) {
-            messageBodyReaders = providers.messageBodyReaders().stream().map(ProxyComponent::proxied)
-                    .collect(Collectors.toList());
-        }
-        if (messageBodyReaders.isEmpty()) {
+        ConsumesComponent<MessageBodyReader<?>>[] readers = messageBodyReaders.updateAndGet(pre -> {
+            if (pre != null) {
+                return pre;
+            }
+
+            Collection<ProxyComponent<MessageBodyReader<?>>> readers0 = providers.messageBodyReaders();
+            ConsumesComponent<MessageBodyReader<?>>[] current = new ConsumesComponent[readers0.size()];
+            int i = 0;
+            for (ProxyComponent<MessageBodyReader<?>> reader : readers0) {
+                current[i++] = new ConsumesComponent(reader.proxied(),
+                        ClassUtils.findFirstGenericType(reader.underlying().getClass()).orElse(Object.class),
+                        JaxrsUtils.getOrder(reader.underlying()),
+                        JaxrsUtils.consumes(reader.underlying()).toArray(new MediaType[0]));
+            }
+            return current;
+        });
+
+        if (readers.length == 0) {
             return null;
         }
-        for (MessageBodyReader<?> reader : messageBodyReaders) {
-            if (reader.isReadable(type, genericType, annotations, mediaType)) {
-                return (MessageBodyReader<T>) reader;
+
+        // follow specification, default to application/octet-stream.
+        if (mediaType == null) {
+            mediaType = MediaType.APPLICATION_OCTET_STREAM_TYPE;
+        }
+
+        OrderedComparator.sort(readers);
+        List<MessageBodyReader<?>> filtered = new LinkedList<>();
+        for (ConsumesComponent<MessageBodyReader<?>> reader : readers) {
+            if (reader.type.isAssignableFrom(type) && isCompatible(mediaType, reader.consumes)
+                    && reader.underlying.isReadable(type, genericType, annotations, mediaType)) {
+                filtered.add(reader.underlying);
             }
         }
-        return null;
+
+        if (filtered.isEmpty()) {
+            return null;
+        }
+        return (MessageBodyReader<T>) filtered.get(0);
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public <T> MessageBodyWriter<T> getMessageBodyWriter(Class<T> type, Type genericType,
                                                          Annotation[] annotations, MediaType mediaType) {
-        if (messageBodyWriters == null) {
-            messageBodyWriters = providers.messageBodyWriters().stream().map(ProxyComponent::proxied)
-                    .collect(Collectors.toList());
-        }
-        if (messageBodyWriters.isEmpty()) {
+        ProducesComponent<MessageBodyWriter<?>>[] writers = messageBodyWriters.updateAndGet(pre -> {
+            if (pre != null) {
+                return pre;
+            }
+
+            Collection<ProxyComponent<MessageBodyWriter<?>>> writers0 = providers.messageBodyWriters();
+            ProducesComponent<MessageBodyWriter<?>>[] current = new ProducesComponent[writers0.size()];
+            int i = 0;
+            for (ProxyComponent<MessageBodyWriter<?>> reader : writers0) {
+                current[i++] = new ProducesComponent(reader.proxied(),
+                        ClassUtils.findFirstGenericType(reader.underlying().getClass()).orElse(Object.class),
+                        JaxrsUtils.getOrder(reader.underlying()),
+                        JaxrsUtils.produces(reader.underlying()).toArray(new MediaType[0]));
+            }
+            return current;
+        });
+
+        if (writers.length == 0) {
             return null;
         }
-        for (MessageBodyWriter<?> writer : messageBodyWriters) {
-            if (writer.isWriteable(type, genericType, annotations, mediaType)) {
-                return (MessageBodyWriter<T>) writer;
+
+        OrderedComparator.sort(writers);
+        List<MessageBodyWriter<?>> filtered = new LinkedList<>();
+        for (ProducesComponent<MessageBodyWriter<?>> writer : writers) {
+            if (writer.type.isAssignableFrom(type) && isCompatible(mediaType, writer.produces)
+                    && writer.underlying.isWriteable(type, genericType, annotations, mediaType)) {
+                filtered.add(writer.underlying);
             }
         }
-        return null;
+
+        if (filtered.isEmpty()) {
+            return null;
+        }
+        return (MessageBodyWriter<T>) filtered.get(0);
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public <T extends Throwable> ExceptionMapper<T> getExceptionMapper(Class<T> type) {
-        if (exceptionMappers == null) {
-            Map<Class<Throwable>, ExceptionMapper<Throwable>> exMappers = new HashMap<>();
+        io.esastack.restlight.core.resolver.exception.ExceptionMapper mapper = exceptionMappers.updateAndGet(pre -> {
+            if (pre != null) {
+                return pre;
+            }
+            Map<Class<? extends Throwable>, JaxrsExceptionMapperAdapter<Throwable>> mappings = new HashMap<>();
             for (Map.Entry<Class<Throwable>, ProxyComponent<ExceptionMapper<Throwable>>> entry :
                     providers.exceptionMappers().entrySet()) {
-                exMappers.put(entry.getKey(), entry.getValue().proxied());
+                mappings.put(entry.getKey(), new JaxrsExceptionMapperAdapter<>(entry.getValue().proxied()));
             }
-            exceptionMappers = exMappers;
-        }
-        return (ExceptionMapper<T>) exceptionMappers.get(type);
+            return new DefaultExceptionMapper(mappings);
+        });
+
+        return (ExceptionMapper<T>) ((JaxrsExceptionMapperAdapter<?>) mapper.mapTo(type)).underlying();
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public <T> ContextResolver<T> getContextResolver(Class<T> contextType, MediaType mediaType) {
-        if (contextResolvers == null) {
-            Map<Class<?>, ProducesComponent<ContextResolver<?>>> resolvers = new HashMap<>();
-            for (Map.Entry<Class<?>, ProxyComponent<ContextResolver<?>>> entry :
-                    providers.contextResolvers().entrySet()) {
-                resolvers.put(entry.getKey(), new ProducesComponent<>(JaxrsUtils.produces(
-                        entry.getValue().underlying()), entry.getValue().proxied()));
+        ProducesComponent<ContextResolver<?>>[] resolvers = contextResolvers.updateAndGet(pre -> {
+            if (pre != null) {
+                return pre;
             }
-            contextResolvers = resolvers;
-        }
-        ProducesComponent<ContextResolver<?>> contextResolver = contextResolvers.get(contextType);
-        if (contextResolver == null) {
+
+            Map<Class<?>, ProxyComponent<ContextResolver<?>>> resolvers0 = providers.contextResolvers();
+            ProducesComponent<ContextResolver<?>>[] current = new ProducesComponent[resolvers0.size()];
+            int i = 0;
+            for (Map.Entry<Class<?>, ProxyComponent<ContextResolver<?>>> resolver : resolvers0.entrySet()) {
+                current[i++] = new ProducesComponent(resolver.getValue().proxied(),
+                        resolver.getKey(),
+                        JaxrsUtils.getOrder(resolver.getValue().underlying()),
+                        JaxrsUtils.produces(resolver.getValue().underlying()).toArray(new MediaType[0]));
+            }
+            return current;
+        });
+
+        if (resolvers.length == 0) {
             return null;
         }
-        if (contextResolver.mediaTypes().isEmpty()) {
-            return (ContextResolver<T>) contextResolver;
-        }
-        for (MediaType type : contextResolver.mediaTypes()) {
-            if (type.isCompatible(mediaType)) {
-                return (ContextResolver<T>) contextResolver;
+        List<ContextResolver<?>> filtered = new LinkedList<>();
+        for (ProducesComponent<ContextResolver<?>> resolver : resolvers) {
+            if (resolver.type.isAssignableFrom(contextType) && isCompatible(mediaType, resolver.produces)) {
+                filtered.add(resolver.underlying);
             }
         }
-        return null;
+
+        if (filtered.isEmpty()) {
+            return null;
+        }
+        return (ContextResolver<T>) filtered.get(0);
     }
 
-    private static class ProducesComponent<T> {
+    private boolean isCompatible(MediaType current, MediaType[] target) {
+        if (target.length == 0) {
+            return true;
+        }
+        for (MediaType type : target) {
+            if (type.isCompatible(current)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
-        private final List<MediaType> mediaTypes;
-        private final T underlying;
+    private static class GenericComponent<T> implements Ordered {
 
-        private ProducesComponent(List<MediaType> mediaTypes, T underlying) {
-            this.mediaTypes = mediaTypes;
+        final T underlying;
+        final Class<?> type;
+        private final int order;
+
+        private GenericComponent(T underlying, Class<?> type, int order) {
             this.underlying = underlying;
+            this.type = type;
+            this.order = order;
         }
 
-        private T underlying() {
-            return underlying;
+        @Override
+        public int getOrder() {
+            return order;
         }
+    }
 
-        private List<MediaType> mediaTypes() {
-            return mediaTypes;
+    private static class ProducesComponent<T> extends GenericComponent<T> {
+
+        private final MediaType[] produces;
+
+        private ProducesComponent(T underlying, Class<?> type, int order, MediaType[] produces) {
+            super(underlying, type, order);
+            this.produces = produces;
         }
+    }
 
+    private static class ConsumesComponent<T> extends GenericComponent<T> {
+
+        private final MediaType[] consumes;
+
+        private ConsumesComponent(T underlying, Class<?> type, int order, MediaType[] consumes) {
+            super(underlying, type, order);
+            this.consumes = consumes;
+        }
     }
 
 }

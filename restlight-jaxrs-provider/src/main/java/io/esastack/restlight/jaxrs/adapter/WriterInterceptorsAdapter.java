@@ -19,7 +19,6 @@ import esa.commons.Checks;
 import io.esastack.restlight.core.resolver.ResponseEntity;
 import io.esastack.restlight.core.resolver.ResponseEntityResolverAdviceAdapter;
 import io.esastack.restlight.core.resolver.ResponseEntityResolverContext;
-import io.esastack.restlight.core.spi.impl.RouteTracking;
 import io.esastack.restlight.jaxrs.impl.ext.WriterInterceptorContextImpl;
 import io.esastack.restlight.jaxrs.util.RuntimeDelegateUtils;
 import jakarta.ws.rs.core.MultivaluedHashMap;
@@ -29,18 +28,18 @@ import jakarta.ws.rs.ext.WriterInterceptor;
 public class WriterInterceptorsAdapter implements ResponseEntityResolverAdviceAdapter {
 
     private final WriterInterceptor[] interceptors;
-    private final boolean onlyActiveWhenMatched;
+    private final ProvidersPredicate predicate;
 
-    public WriterInterceptorsAdapter(WriterInterceptor[] interceptors, boolean onlyActiveWhenMatched) {
+    public WriterInterceptorsAdapter(WriterInterceptor[] interceptors, ProvidersPredicate predicate) {
         Checks.checkNotNull(interceptors, "interceptors");
+        Checks.checkNotNull(predicate, "predicate");
         this.interceptors = interceptors;
-        this.onlyActiveWhenMatched = onlyActiveWhenMatched;
+        this.predicate = predicate;
     }
 
     @Override
     public void aroundWrite(ResponseEntityResolverContext context) throws Exception {
-        boolean hasMatched = RouteTracking.isMethodMatched(context.context());
-        if (onlyActiveWhenMatched && hasMatched || !onlyActiveWhenMatched && !hasMatched) {
+        if (predicate.test(context.context())) {
             MultivaluedMap<String, Object> headers = new MultivaluedHashMap<>();
             RuntimeDelegateUtils.addHeadersToMap(context.context().response().headers(), headers);
             try {

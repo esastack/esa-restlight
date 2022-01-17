@@ -39,13 +39,13 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-public class ProvidersProxyFactoryImpl implements ProvidersProxyFactory {
+public class ProvidersFactoryImpl implements ProvidersFactory {
 
     private final DeployContext<? extends RestlightOptions> context;
     private final ConfigurationImpl configuration;
 
-    public ProvidersProxyFactoryImpl(DeployContext<? extends RestlightOptions> context,
-                                     ConfigurationImpl configuration) {
+    public ProvidersFactoryImpl(DeployContext<? extends RestlightOptions> context,
+                                ConfigurationImpl configuration) {
         Checks.checkNotNull(context, "context");
         Checks.checkNotNull(configuration, "configuration");
         this.context = context;

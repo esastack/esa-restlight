@@ -20,7 +20,6 @@ import esa.commons.StringUtils;
 import esa.commons.collection.LinkedMultiValueMap;
 import esa.commons.collection.MultiValueMap;
 import io.esastack.commons.net.buffer.Buffer;
-import io.esastack.commons.net.http.HttpHeaderNames;
 import io.esastack.commons.net.http.HttpMethod;
 import io.esastack.commons.net.http.MediaType;
 import io.esastack.restlight.server.core.FilteringRequest;
@@ -152,7 +151,7 @@ public class FilteringRequestImpl extends HttpRequestProxy implements FilteringR
 
     private void addFormUriEncodedParams(MultiValueMap<String, String> params) {
         if (HttpMethod.POST.equals(method()) && body().readableBytes() > 0) {
-            String contentType = headers().get(HttpHeaderNames.CONTENT_TYPE);
+            String contentType = contentType().toString();
             if (contentType != null
                     && contentType.length() >= MediaType.APPLICATION_FORM_URLENCODED_VALUE.length()
                     && contentType.charAt(0) == MediaType.APPLICATION_FORM_URLENCODED_VALUE.charAt(0)) {

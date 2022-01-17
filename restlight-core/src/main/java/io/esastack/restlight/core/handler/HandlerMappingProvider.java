@@ -35,4 +35,5 @@ public interface HandlerMappingProvider {
      * @see Deployments#addHandlerMappingProvider(HandlerMappingProvider)
      */
     Collection<HandlerMapping> mappings(DeployContext<? extends RestlightOptions> ctx);
+
 }

@@ -19,25 +19,24 @@ import esa.commons.Checks;
 import io.esastack.restlight.core.method.HandlerMethod;
 import io.esastack.restlight.core.resolver.RequestEntityResolverAdviceAdapter;
 import io.esastack.restlight.core.resolver.RequestEntityResolverContext;
-import io.esastack.restlight.core.spi.impl.RouteTracking;
 import io.esastack.restlight.jaxrs.impl.ext.ReaderInterceptorContextImpl;
 import jakarta.ws.rs.ext.ReaderInterceptor;
 
 public class ReaderInterceptorsAdapter implements RequestEntityResolverAdviceAdapter {
 
     private final ReaderInterceptor[] interceptors;
-    private final boolean onlyActiveWhenMatched;
+    private final ProvidersPredicate predicate;
 
-    public ReaderInterceptorsAdapter(ReaderInterceptor[] interceptors, boolean onlyActiveWhenMatched) {
+    public ReaderInterceptorsAdapter(ReaderInterceptor[] interceptors, ProvidersPredicate predicate) {
         Checks.checkNotNull(interceptors, "interceptors");
+        Checks.checkNotNull(predicate, "predicate");
         this.interceptors = interceptors;
-        this.onlyActiveWhenMatched = onlyActiveWhenMatched;
+        this.predicate = predicate;
     }
 
     @Override
     public Object aroundRead(RequestEntityResolverContext context) throws Exception {
-        boolean hasMatched = RouteTracking.isMethodMatched(context.context());
-        if ((onlyActiveWhenMatched && hasMatched) || (!onlyActiveWhenMatched && !hasMatched)) {
+        if (predicate.test(context.context())) {
             return new ReaderInterceptorContextImpl(context, interceptors).proceed();
         } else {
             return context.proceed();

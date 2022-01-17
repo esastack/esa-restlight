@@ -25,10 +25,10 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.MultivaluedMap;
 import jakarta.ws.rs.core.NewCookie;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -62,7 +62,7 @@ public class HttpRequestHeaders implements HttpHeaders {
     @Override
     public List<MediaType> getAcceptableMediaTypes() {
         List<io.esastack.commons.net.http.MediaType> mediaTypes = request.accepts();
-        List<MediaType> values = new LinkedList<>();
+        List<MediaType> values = new ArrayList<>(mediaTypes.size());
         for (io.esastack.commons.net.http.MediaType mediaType : mediaTypes) {
             values.add(MediaTypeUtils.convert(mediaType));
         }

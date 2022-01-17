@@ -50,10 +50,6 @@ public class ProducesPredicate implements RequestPredicate {
         this.producibleMediaTypes = Collections.unmodifiableList(getProducibleMediaTypes());
     }
 
-    public static ProducesPredicate parseFrom(String[] produces) {
-        return parseFrom(produces, null);
-    }
-
     public static ProducesPredicate parseFrom(String[] produces, String[] headers) {
         Set<ProducesPredicate.Expression> produceExpressions =
                 MappingUtils.parseProduceExpressions(produces, headers);

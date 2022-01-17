@@ -16,7 +16,10 @@
 package io.esastack.restlight.jaxrs.adapter;
 
 import esa.commons.Checks;
-import io.esastack.restlight.core.spi.impl.RouteTracking;
+import esa.commons.collection.AttributeKey;
+import io.esastack.restlight.core.handler.HandlerMapping;
+import io.esastack.restlight.core.handler.RouteFilter;
+import io.esastack.restlight.core.handler.RouteFilterChain;
 import io.esastack.restlight.core.util.Ordered;
 import io.esastack.restlight.jaxrs.impl.JaxrsContextUtils;
 import io.esastack.restlight.jaxrs.impl.container.ContainerResponseContextImpl;
@@ -25,6 +28,7 @@ import io.esastack.restlight.jaxrs.impl.core.ResponseImpl;
 import io.esastack.restlight.jaxrs.util.RuntimeDelegateUtils;
 import io.esastack.restlight.server.context.FilterContext;
 import io.esastack.restlight.server.context.RequestContext;
+import io.esastack.restlight.server.context.RouteContext;
 import io.esastack.restlight.server.handler.Filter;
 import io.esastack.restlight.server.handler.FilterChain;
 import io.esastack.restlight.server.util.Futures;
@@ -34,24 +38,35 @@ import jakarta.ws.rs.container.ContainerResponseFilter;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
-public class JaxrsResponseFilters implements Filter {
+public class JaxrsResponseFiltersAdapter implements Filter {
 
-    private final HandlerProviders providers;
+    private static final AttributeKey<ContainerResponseFilter[]> HAS_BOUND_FILTERS =
+            AttributeKey.valueOf("$bound_filters");
 
-    public JaxrsResponseFilters(HandlerProviders providers) {
-        Checks.checkNotNull(providers, "providers");
-        this.providers = providers;
+    private final ContainerResponseFilter[] filters;
+
+    public JaxrsResponseFiltersAdapter(ContainerResponseFilter[] filters) {
+        Checks.checkNotNull(filters, "filters");
+        this.filters = filters;
     }
 
     @Override
     public CompletionStage<Void> doFilter(FilterContext context, FilterChain chain) {
-        return chain.doFilter(context).thenCompose(v -> applyResponseFilters(context,
-                providers.getResponseFilters(RouteTracking.handlerMethod(context))));
+        return chain.doFilter(context).thenCompose(v -> applyResponseFilters(context, getBoundFilters(context)));
     }
 
     @Override
     public int getOrder() {
         return Ordered.LOWEST_PRECEDENCE;
+    }
+
+    private ContainerResponseFilter[] getBoundFilters(RequestContext context) {
+        ContainerResponseFilter[] bound;
+        if ((bound = context.attrs().attr(HAS_BOUND_FILTERS).getAndRemove()) != null) {
+            return bound;
+        } else {
+            return filters;
+        }
     }
 
     private CompletableFuture<Void> applyResponseFilters(RequestContext context, ContainerResponseFilter[] filters) {
@@ -78,6 +93,26 @@ public class JaxrsResponseFilters implements Filter {
 
     private boolean isSuccess(RequestContext context) {
         return context.response().status() < 400;
+    }
+
+    static class ContainerResponseFilterBinder implements RouteFilter {
+
+        private final ContainerResponseFilter[] filters;
+
+        ContainerResponseFilterBinder(ContainerResponseFilter[] filters) {
+            this.filters = filters;
+        }
+
+        @Override
+        public CompletionStage<Void> routed(HandlerMapping mapping, RouteContext context, RouteFilterChain next) {
+            context.attrs().attr(HAS_BOUND_FILTERS).set(filters);
+            return next.doNext(mapping, context);
+        }
+
+        @Override
+        public int getOrder() {
+            return Ordered.HIGHEST_PRECEDENCE;
+        }
     }
 }
 

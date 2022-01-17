@@ -33,8 +33,7 @@ public class RestlightThreadFactory implements ThreadFactory {
         this(prefix, true);
     }
 
-    public RestlightThreadFactory(String prefix,
-                                  boolean daemon) {
+    public RestlightThreadFactory(String prefix, boolean daemon) {
         Checks.checkNotNull(prefix, "prefix");
         this.prefix = prefix + "-" + POOL_ID.getAndIncrement() + "#";
         this.daemon = daemon;

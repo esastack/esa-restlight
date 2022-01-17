@@ -21,6 +21,8 @@ import io.esastack.restlight.core.resolver.HandledValue;
 import io.esastack.restlight.core.resolver.ResponseEntity;
 import io.esastack.restlight.core.resolver.ResponseEntityChannel;
 import io.esastack.restlight.core.resolver.ResponseEntityResolverAdapter;
+import io.esastack.restlight.core.util.Ordered;
+import io.esastack.restlight.core.util.ResponseEntityUtils;
 import io.esastack.restlight.jaxrs.util.MediaTypeUtils;
 import io.esastack.restlight.jaxrs.util.RuntimeDelegateUtils;
 import io.esastack.restlight.server.context.RequestContext;
@@ -28,29 +30,18 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.MultivaluedHashMap;
 import jakarta.ws.rs.core.MultivaluedMap;
 import jakarta.ws.rs.ext.MessageBodyWriter;
-
-import java.util.List;
+import jakarta.ws.rs.ext.Providers;
 
 public class MessageBodyWriterAdapter<T> implements ResponseEntityResolverAdapter {
 
-    private final MessageBodyWriter<T> underlying;
-    private final Class<?> matchableType;
-    private final MediaType[] produces;
-    private final int order;
+    private final Providers providers;
 
-    public MessageBodyWriterAdapter(MessageBodyWriter<T> underlying,
-                                    Class<?> matchableType,
-                                    List<MediaType> produces,
-                                    int order) {
-        Checks.checkNotNull(underlying, "underlying");
-        Checks.checkNotNull(matchableType, "matchableType");
-        Checks.checkNotNull(produces, "produces");
-        this.underlying = underlying;
-        this.matchableType = matchableType;
-        this.produces = produces.toArray(new MediaType[0]);
-        this.order = order;
+    public MessageBodyWriterAdapter(Providers providers) {
+        Checks.checkNotNull(providers, "providers");
+        this.providers = providers;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public HandledValue<Void> writeTo(ResponseEntity entity,
                                       ResponseEntityChannel channel,
@@ -62,45 +53,33 @@ public class MessageBodyWriterAdapter<T> implements ResponseEntityResolverAdapte
         if (type == null) {
             type = ClassUtils.getUserType(entity.response().entity());
         }
-        if (!matchableType.isAssignableFrom(type)) {
-            return HandledValue.failed();
-        }
 
-        MediaType mediaType = MediaTypeUtils.convert(entity.mediaType());
-        if (!isCompatible(mediaType)
-                || !underlying.isWriteable(entity.type(), entity.genericType(), entity.annotations(), mediaType)) {
-            return HandledValue.failed();
-        }
-        @SuppressWarnings("unchecked")
-        T value = (T) entity.response().entity();
-        MultivaluedMap<String, Object> headers = new MultivaluedHashMap<>();
-        RuntimeDelegateUtils.addHeadersToMap(context.response().headers(), headers);
-        try {
-            underlying.writeTo(value, entity.type(), entity.genericType(), entity.annotations(),
-                    mediaType, headers, ResponseEntityStreamClose.getNonClosableOutputStream(context));
-        } finally {
-            RuntimeDelegateUtils.addHeadersFromMap(context.response().headers(), headers, true);
-        }
+        for (io.esastack.commons.net.http.MediaType mediaType : ResponseEntityUtils.getMediaTypes(context)) {
+            MediaType mediaType0 = MediaTypeUtils.convert(mediaType);
+            MessageBodyWriter<T> writer = (MessageBodyWriter<T>) providers.getMessageBodyWriter(type,
+                    entity.genericType(), entity.annotations(), mediaType0);
+            if (writer != null) {
+                T value = (T) entity.response().entity();
+                MultivaluedMap<String, Object> headers = new MultivaluedHashMap<>();
+                RuntimeDelegateUtils.addHeadersToMap(context.response().headers(), headers);
+                try {
+                    writer.writeTo(value, entity.type(), entity.genericType(), entity.annotations(),
+                            mediaType0, headers, ResponseEntityStreamClose.getNonClosableOutputStream(context));
+                } finally {
+                    RuntimeDelegateUtils.addHeadersFromMap(context.response().headers(), headers, true);
+                }
 
-        ResponseEntityStreamClose.close(context);
-        return HandledValue.succeed(null);
+                ResponseEntityStreamClose.close(context);
+                return HandledValue.succeed(null);
+            }
+        }
+        return HandledValue.failed();
     }
 
     @Override
     public int getOrder() {
-        return order;
+        return Ordered.LOWEST_PRECEDENCE;
     }
 
-    private boolean isCompatible(MediaType current) {
-        if (produces.length == 0) {
-            return true;
-        }
-        for (MediaType type : produces) {
-            if (type.isCompatible(current)) {
-                return true;
-            }
-        }
-        return false;
-    }
 }
 

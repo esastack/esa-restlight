@@ -27,7 +27,7 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
-public class ConstructorUtils {
+public final class ConstructorUtils {
 
     private static final Logger logger = LoggerFactory.getLogger(ConstructorUtils.class);
 

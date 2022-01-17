@@ -16,52 +16,45 @@
 package io.esastack.restlight.jaxrs.adapter;
 
 import esa.commons.Checks;
-import esa.commons.ClassUtils;
 import io.esastack.commons.net.http.MediaType;
 import io.esastack.restlight.core.method.Param;
 import io.esastack.restlight.core.resolver.ParamResolverAdapter;
+import io.esastack.restlight.core.util.Ordered;
 import io.esastack.restlight.core.util.ResponseEntityUtils;
-import io.esastack.restlight.jaxrs.configure.ProxyComponent;
-import io.esastack.restlight.jaxrs.util.JaxrsUtils;
+import io.esastack.restlight.jaxrs.util.MediaTypeUtils;
 import io.esastack.restlight.server.context.RequestContext;
 import jakarta.ws.rs.ext.ContextResolver;
-
-import java.util.List;
+import jakarta.ws.rs.ext.Providers;
 
 public class JaxrsContextResolverAdapter implements ParamResolverAdapter {
 
-    private final ContextResolver<?> delegating;
-    private final MediaType[] produces;
-    private final int order;
-    private final Class<?> matchableType;
+    private final Providers providers;
 
-    public JaxrsContextResolverAdapter(ProxyComponent<ContextResolver<?>> delegating) {
-        Checks.checkNotNull(delegating, "delegating");
-        this.delegating = delegating.proxied();
-        this.produces = MediaTypes.covert(JaxrsUtils.produces(delegating.underlying()));
-        this.order = JaxrsUtils.getOrder(delegating.underlying());
-        this.matchableType = ClassUtils.findFirstGenericType(ClassUtils.getUserType(delegating.underlying()))
-                .orElse(Object.class);
+    public JaxrsContextResolverAdapter(Providers providers) {
+        Checks.checkNotNull(providers, "providers");
+        this.providers = providers;
     }
 
     @Override
     public Object resolve(Param param, RequestContext context) throws Exception {
-        final List<MediaType> mediaTypes = ResponseEntityUtils.getMediaTypes(context);
-        if (MediaTypes.isCompatibleWith(produces, mediaTypes)) {
-            return delegating.getContext(param.type());
-        } else {
-            return null;
+        ContextResolver<?> resolver;
+        for (MediaType mediaType : ResponseEntityUtils.getMediaTypes(context)) {
+            if ((resolver = providers.getContextResolver(param.type(),
+                    MediaTypeUtils.convert(mediaType))) != null) {
+                return resolver;
+            }
         }
+        return null;
     }
 
     @Override
     public boolean supports(Param param) {
-        return matchableType.isAssignableFrom(param.type());
+        return true;
     }
 
     @Override
     public int getOrder() {
-        return order;
+        return Ordered.LOWEST_PRECEDENCE;
     }
 
 }

@@ -28,9 +28,9 @@ import java.util.Optional;
  */
 public class CompositeMappingLocator implements MappingLocator {
 
-    private final Collection<? extends MappingLocator> locators;
+    private final MappingLocator[] locators;
 
-    private CompositeMappingLocator(Collection<? extends MappingLocator> locators) {
+    private CompositeMappingLocator(MappingLocator[] locators) {
         Checks.checkNotEmptyArg(locators, "locators");
         this.locators = locators;
     }
@@ -42,7 +42,7 @@ public class CompositeMappingLocator implements MappingLocator {
         if (locators.size() == 1) {
             return locators.iterator().next();
         } else {
-            return new CompositeMappingLocator(locators);
+            return new CompositeMappingLocator(locators.toArray(new MappingLocator[0]));
         }
     }
 

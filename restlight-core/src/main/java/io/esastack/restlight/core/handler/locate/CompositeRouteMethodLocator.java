@@ -28,9 +28,9 @@ import java.util.Optional;
  */
 public class CompositeRouteMethodLocator implements RouteMethodLocator {
 
-    private final Collection<? extends RouteMethodLocator> locators;
+    private final RouteMethodLocator[] locators;
 
-    private CompositeRouteMethodLocator(Collection<? extends RouteMethodLocator> locators) {
+    private CompositeRouteMethodLocator(RouteMethodLocator[] locators) {
         Checks.checkNotEmptyArg(locators, "locators");
         this.locators = locators;
     }
@@ -42,7 +42,7 @@ public class CompositeRouteMethodLocator implements RouteMethodLocator {
         if (locators.size() == 1) {
             return locators.iterator().next();
         } else {
-            return new CompositeRouteMethodLocator(locators);
+            return new CompositeRouteMethodLocator(locators.toArray(new RouteMethodLocator[0]));
         }
     }
 

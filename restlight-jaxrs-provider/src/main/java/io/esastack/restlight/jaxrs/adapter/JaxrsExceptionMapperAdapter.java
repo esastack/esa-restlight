@@ -49,5 +49,9 @@ public class JaxrsExceptionMapperAdapter<T extends Throwable> implements Excepti
             return Futures.completedExceptionally(th);
         }
     }
+
+    public ExceptionMapper<T> underlying() {
+        return underlying;
+    }
 }
 

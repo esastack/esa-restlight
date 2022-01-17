@@ -44,24 +44,6 @@ public final class FutureUtils {
         return HAS_GUAVA_FUTURE;
     }
 
-    public static Object getFutureResult(Object obj) {
-        if (obj == null) {
-            return null;
-        }
-        Class<?> type = obj.getClass();
-        try {
-            if (CompletableFuture.class.isAssignableFrom(type)) {
-                return ((CompletableFuture) obj).get();
-            } else if (hasGuavaFuture() && ListenableFuture.class.isAssignableFrom(type)) {
-                return ((ListenableFuture) obj).get();
-            } else {
-                return obj;
-            }
-        } catch (InterruptedException | ExecutionException ignored) {
-            return obj;
-        }
-    }
-
     public static <T> CompletableFuture<T> transferListenableFuture(ListenableFuture<T> future) {
         final CompletableFuture<T> transfer = new CompletableFuture<>();
         future.addListener(() -> {

@@ -61,7 +61,7 @@ public class ValidationExceptionHandlerFactory implements ExceptionHandlerFactor
                     if (constraints == null || constraints.isEmpty()) {
                         context.response().entity(new ErrorDetail<>(context.request().path(), ex.getMessage()));
                     } else {
-                        List<ConstraintDetail> details = InternalThreadLocalMap.get().arrayList();
+                        List<ConstraintDetail> details = InternalThreadLocalMap.get().arrayList(constraints.size());
                         for (ConstraintViolation<?> c : constraints) {
                             details.add(new ConstraintDetail(c.getPropertyPath().toString(),
                                     c.getInvalidValue().toString(), c.getMessage()));
