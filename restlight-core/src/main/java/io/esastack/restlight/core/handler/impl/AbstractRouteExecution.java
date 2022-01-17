@@ -40,8 +40,8 @@ abstract class AbstractRouteExecution extends AbstractExecution<RouteHandlerMeth
     private final List<InternalInterceptor> interceptors;
     private final boolean interceptorAbsent;
     private final CompletionHandler completionHandler;
-    private volatile int interceptorIndex = -1;
     private volatile RouteHandler handler;
+    private volatile int interceptorIndex = -1;
 
     AbstractRouteExecution(RouteHandlerMethodAdapter handlerMethod, List<InternalInterceptor> interceptors) {
         super(handlerMethod.handlerResolver(), handlerMethod);
@@ -52,8 +52,8 @@ abstract class AbstractRouteExecution extends AbstractExecution<RouteHandlerMeth
 
     @Override
     public CompletionStage<Void> handle(RequestContext context) {
-        List<RouteFilter> filters = handlerMethod().filters();
-        if (filters == null || filters.isEmpty()) {
+        RouteFilter[] filters = handlerMethod().filters();
+        if (filters.length == 0) {
             return doHandle(context);
         }
         LinkedRouteFilterChain chain = LinkedRouteFilterChain.immutable(filters, this::doHandle);

@@ -43,6 +43,7 @@ import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -64,6 +65,8 @@ public class HttpRequestImpl implements HttpRequest {
     private final HttpHeaders headers;
     private final HttpHeaders trailers;
     private Map<String, List<String>> params;
+    private List<MediaType> accepts;
+    private MediaType contentType;
     private HttpInputStream is;
     private Set<Cookie> cookies;
 
@@ -116,24 +119,39 @@ public class HttpRequestImpl implements HttpRequest {
 
     @Override
     public MediaType contentType() {
-        String contentType = headers.get(HttpHeaderNames.CONTENT_TYPE);
-        if (StringUtils.isEmpty(contentType)) {
-            return null;
-        }
+        if (contentType == null) {
+            String contentType = headers.get(HttpHeaderNames.CONTENT_TYPE);
+            if (StringUtils.isEmpty(contentType)) {
+                return null;
+            }
 
-        MediaType mediaType = null;
-        try {
-            mediaType = MediaTypeUtil.parseMediaType(contentType);
-        } catch (Exception e) {
-            logger.warn("Error while parsing content type: " + contentType, e);
-        }
+            MediaType mediaType = null;
+            try {
+                mediaType = MediaTypeUtil.parseMediaType(contentType);
+            } catch (Exception e) {
+                logger.warn("Error while parsing content type: " + contentType, e);
+            }
 
-        return mediaType;
+            this.contentType = mediaType;
+        }
+        return this.contentType;
     }
 
     @Override
     public List<MediaType> accepts() {
-        return MediaTypeUtil.parseMediaTypes(headers.get(HttpHeaderNames.ACCEPT));
+        if (accepts == null) {
+            List<MediaType> parsed = MediaTypeUtil.parseMediaTypes(headers.get(HttpHeaderNames.ACCEPT));
+            List<MediaType> accepts;
+            if (parsed.isEmpty()) {
+                accepts = new ArrayList<>(1);
+                accepts.add(MediaType.ALL);
+            } else {
+                accepts = new ArrayList<>(parsed.size());
+                accepts.addAll(parsed);
+            }
+            this.accepts = accepts;
+        }
+        return this.accepts;
     }
 
     @Override

@@ -23,8 +23,8 @@ import io.esastack.restlight.core.configure.ConfigurableHandler;
 import io.esastack.restlight.core.configure.HandlerConfigure;
 import io.esastack.restlight.core.method.HandlerMethod;
 import io.esastack.restlight.jaxrs.configure.OrderComponent;
-import io.esastack.restlight.jaxrs.configure.ProvidersProxyFactory;
-import io.esastack.restlight.jaxrs.configure.ProvidersProxyFactoryImpl;
+import io.esastack.restlight.jaxrs.configure.ProvidersFactory;
+import io.esastack.restlight.jaxrs.configure.ProvidersFactoryImpl;
 import io.esastack.restlight.jaxrs.configure.ProxyComponent;
 import io.esastack.restlight.jaxrs.impl.container.DynamicFeatureContext;
 import io.esastack.restlight.jaxrs.impl.container.ResourceInfoImpl;
@@ -38,8 +38,6 @@ import jakarta.ws.rs.container.ContainerRequestFilter;
 import jakarta.ws.rs.container.ContainerResponseFilter;
 import jakarta.ws.rs.container.DynamicFeature;
 import jakarta.ws.rs.container.ResourceInfo;
-import jakarta.ws.rs.core.Feature;
-import jakarta.ws.rs.core.FeatureContext;
 import jakarta.ws.rs.ext.ReaderInterceptor;
 import jakarta.ws.rs.ext.WriterInterceptor;
 
@@ -48,7 +46,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 import static io.esastack.restlight.jaxrs.util.JaxrsUtils.ascendingOrdered;
 import static io.esastack.restlight.jaxrs.util.JaxrsUtils.descendingOrder;
@@ -57,39 +54,70 @@ public class DynamicFeatureAdapter implements HandlerConfigure {
 
     private final DeployContext<? extends RestlightOptions> context;
     private final List<Class<? extends Annotation>> appNameBindings;
-    private final DynamicFeature[] features;
+    private final Collection<ProxyComponent<DynamicFeature>> features;
     private final ConfigurationImpl parent;
 
     public DynamicFeatureAdapter(DeployContext<? extends RestlightOptions> context,
                                  List<Class<? extends Annotation>> appNameBindings,
-                                 List<DynamicFeature> features,
+                                 Collection<ProxyComponent<DynamicFeature>> features,
                                  ConfigurationImpl parent) {
         Checks.checkNotNull(parent, "parent");
         Checks.checkNotNull(context, "context");
         this.context = context;
         this.appNameBindings = appNameBindings;
-        this.features = features == null || features.isEmpty() ? new DynamicFeature[0]
-                : features.toArray(new DynamicFeature[0]);
+        this.features = features == null || features.isEmpty()
+                ? Collections.emptyList() : Collections.unmodifiableCollection(features);
         this.parent = parent;
     }
 
     @Override
     public void configure(HandlerMethod handlerMethod, ConfigurableHandler configurable) {
-        DynamicFeatureConfiguration current = new DynamicFeatureConfiguration(parent);
+        ConfigurationImpl current = new ConfigurationImpl(parent);
         ResourceInfo resourceInfo = new ResourceInfoImpl(handlerMethod.beanType(), handlerMethod.method());
 
         // bind filters and interceptors dynamically.
-        FeatureContext context = new DynamicFeatureContext(current);
-        for (DynamicFeature feature : features) {
-            feature.configure(resourceInfo, context);
+        for (ProxyComponent<DynamicFeature> feature : features) {
+            feature.proxied().configure(resourceInfo,
+                    new DynamicFeatureContext(ClassUtils.getUserType(feature.underlying()), current));
         }
 
-        ProvidersProxyFactoryExt providers = new ProvidersProxyFactoryExtImpl(this.context, current);
-        // handle features
-        for (ProxyComponent<Feature> feature : providers.featuresAddedDynamically()) {
-            if (feature.proxied().configure(context)) {
-                current.addEnabledFeature(feature.underlying());
+        ProvidersFactory providers = new ProvidersFactoryImpl(this.context, current);
+        // bound ReaderInterceptors(only be active when handler method has matched)
+        List<OrderComponent<ReaderInterceptor>> readerInterceptors = filterByNameBindings(handlerMethod,
+                providers.readerInterceptors(), false);
+        if (!readerInterceptors.isEmpty()) {
+            configurable.addRequestEntityResolverAdvices(Collections.singleton(
+                    new ReaderInterceptorsAdapter(ascendingOrdered(readerInterceptors)
+                            .toArray(new ReaderInterceptor[0]), ProvidersPredicate.BINDING_HANDLER)));
+        }
+
+        // bound WriterInterceptors(only be active when handler method has matched)
+        List<OrderComponent<WriterInterceptor>> writerInterceptors = filterByNameBindings(handlerMethod,
+                providers.writerInterceptors(), false);
+        if (!writerInterceptors.isEmpty()) {
+            configurable.addResponseEntityResolverAdvices(Collections.singleton(
+                    new WriterInterceptorsAdapter(ascendingOrdered(writerInterceptors)
+                            .toArray(new WriterInterceptor[0]), ProvidersPredicate.BINDING_HANDLER)));
+        }
+
+        // handle bound postMatch ContainerRequestFilters (only apply to resource method)
+        if (JaxrsMappingUtils.isMethod(handlerMethod.method())) {
+            List<OrderComponent<ContainerRequestFilter>> filters =
+                    filterByNameBindings(handlerMethod, providers.requestFilters(),
+                    true);
+            if (!filters.isEmpty()) {
+                configurable.addRouteFilters(Collections.singleton(new PostMatchRequestFiltersAdapter(
+                        ascendingOrdered(filters).toArray(new ContainerRequestFilter[0]))));
             }
+        }
+
+        // handle bound ContainerResponseFilters (only apply to resource method)
+        if (JaxrsMappingUtils.isMethod(handlerMethod.method())) {
+            ContainerResponseFilter[] filters = descendingOrder(
+                    filterByNameBindings(handlerMethod, providers.responseFilters(), false))
+                    .toArray(new ContainerResponseFilter[0]);
+            configurable.addRouteFilters(Collections.singleton(
+                    new JaxrsResponseFiltersAdapter.ContainerResponseFilterBinder(filters)));
         }
 
         // add context resolvers, which should have higher precedence than those added at
@@ -107,49 +135,9 @@ public class DynamicFeatureAdapter implements HandlerConfigure {
                 return 0;
             }
         });
-
-        // bound ReaderInterceptors(only be active when handler method has matched)
-        List<OrderComponent<ReaderInterceptor>> readerInterceptors = filterByNameBindings(handlerMethod,
-                current, providers.readerInterceptors(), false);
-        if (!readerInterceptors.isEmpty()) {
-            configurable.addRequestEntityResolverAdvices(Collections.singleton(
-                    new ReaderInterceptorsAdapter(ascendingOrdered(readerInterceptors)
-                            .toArray(new ReaderInterceptor[0]), true)));
-        }
-
-        // bound WriterInterceptors(only be active when handler method has matched)
-        List<OrderComponent<WriterInterceptor>> writerInterceptors = filterByNameBindings(handlerMethod,
-                current, providers.writerInterceptors(), false);
-        if (!writerInterceptors.isEmpty()) {
-            configurable.addResponseEntityResolverAdvices(Collections.singleton(
-                    new WriterInterceptorsAdapter(ascendingOrdered(writerInterceptors)
-                            .toArray(new WriterInterceptor[0]), true)));
-        }
-
-        // handle bound postMatch ContainerRequestFilters (only apply to resource method)
-        if (JaxrsMappingUtils.isLocator(handlerMethod.method())) {
-            List<OrderComponent<ContainerRequestFilter>> filters =
-                    filterByNameBindings(handlerMethod, current, providers.requestFilters(),
-                    true);
-            if (!filters.isEmpty()) {
-                configurable.addRouteFilters(Collections.singleton(new PostMatchRequestFiltersAdapter(
-                        ascendingOrdered(filters).toArray(new ContainerRequestFilter[0]))));
-            }
-        }
-
-        // handle bound ContainerResponseFilters (only apply to resource method)
-        if (JaxrsMappingUtils.isLocator(handlerMethod.method())) {
-            ContainerResponseFilter[] filters = descendingOrder(
-                    filterByNameBindings(handlerMethod, current, providers.responseFilters(), false))
-                    .toArray(new ContainerResponseFilter[0]);
-            if (filters.length > 0) {
-                configurable.addRouteFilters(Collections.singleton(new JaxrsResponseFilters(filters)));
-            }
-        }
     }
 
     private <T> List<OrderComponent<T>> filterByNameBindings(HandlerMethod method,
-                                                             DynamicFeatureConfiguration configuration,
                                                              Collection<ProxyComponent<T>> all,
                                                              boolean skipPreMatching) {
         if (all.isEmpty()) {
@@ -161,9 +149,6 @@ public class DynamicFeatureAdapter implements HandlerConfigure {
         for (ProxyComponent<T> component : all) {
             // NOTE: follow specification description, filers or interceptors added by DynamicFeature is
             // bound to current resource method.
-            if (isAddedDynamically(component, configuration)) {
-                bound.add(new OrderComponent<>(component.proxied(), JaxrsUtils.getOrder(component.underlying())));
-            }
             if (skipPreMatching && JaxrsUtils.isPreMatched(component.underlying())) {
                 continue;
             }
@@ -177,89 +162,5 @@ public class DynamicFeatureAdapter implements HandlerConfigure {
         }
         return bound;
     }
-
-    private static <T> boolean isAddedDynamically(ProxyComponent<T> component,
-                                                  DynamicFeatureConfiguration configuration) {
-        Object target = component.underlying();
-        for (Object instance : configuration.instancesAddedDynamically) {
-            if (instance.equals(target)) {
-                return true;
-            }
-        }
-        for (Class<?> clazz : configuration.classesAddedDynamically) {
-            if (clazz.equals(target)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private static class DynamicFeatureConfiguration extends ConfigurationImpl {
-
-        /**
-         * NOTE: provider class or instance added by {@link DynamicFeature} is bound to particular resource methods.
-         */
-        private final List<Class<?>> classesAddedDynamically = new LinkedList<>();
-
-        /**
-         * NOTE: provider class or instance added by {@link DynamicFeature} is bound to particular resource methods.
-         */
-        private final List<Object> instancesAddedDynamically = new LinkedList<>();
-
-        public DynamicFeatureConfiguration(ConfigurationImpl from) {
-            super(from);
-        }
-
-        @Override
-        public boolean addProviderInstance(Object instance, Map<Class<?>, Integer> contracts) {
-            boolean success = super.addProviderInstance(instance, contracts);
-            if (success) {
-                this.instancesAddedDynamically.add(instance);
-            }
-            return success;
-        }
-
-        @Override
-        public boolean addProviderClass(Class<?> clazz, Map<Class<?>, Integer> contracts) {
-            boolean success = super.addProviderClass(clazz, contracts);
-            if (success) {
-                this.classesAddedDynamically.add(clazz);
-            }
-            return success;
-        }
-    }
-
-    private interface ProvidersProxyFactoryExt extends ProvidersProxyFactory {
-
-        /**
-         * Obtains an immutable collection of {@link Feature}s, which are proxied to instantiate and inject
-         * fields and properties when the feature is firstly invoked.
-         *
-         * @return  features
-         */
-        Collection<ProxyComponent<Feature>> featuresAddedDynamically();
-
-    }
-
-    private static class ProvidersProxyFactoryExtImpl extends ProvidersProxyFactoryImpl
-            implements ProvidersProxyFactoryExt {
-
-        private final DynamicFeatureConfiguration configuration;
-
-        private ProvidersProxyFactoryExtImpl(DeployContext<? extends RestlightOptions> deployContext,
-                                             DynamicFeatureConfiguration configuration) {
-            super(deployContext, configuration);
-            this.configuration = configuration;
-        }
-
-        @Override
-        public Collection<ProxyComponent<Feature>> featuresAddedDynamically() {
-            List<ProxyComponent<Feature>> features = new LinkedList<>();
-            features.addAll(getFromClasses(configuration.classesAddedDynamically, Feature.class).values());
-            features.addAll(getFromInstances(configuration.instancesAddedDynamically, Feature.class).values());
-            return Collections.unmodifiableList(features);
-        }
-    }
-
 }
 

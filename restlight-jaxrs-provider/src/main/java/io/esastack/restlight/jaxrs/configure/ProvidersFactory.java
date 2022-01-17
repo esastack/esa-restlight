@@ -39,7 +39,7 @@ import java.util.Map;
  * @see LazyInstantiateHandler
  * @see LazyInjectHandler
  */
-public interface ProvidersProxyFactory {
+public interface ProvidersFactory {
 
     /**
      * Obtains an immutable collection of {@link MessageBodyReader}s, which are proxied to instantiate and inject

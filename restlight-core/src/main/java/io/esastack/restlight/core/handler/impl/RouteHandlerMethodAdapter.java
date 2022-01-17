@@ -49,7 +49,7 @@ import java.util.Set;
 public abstract class RouteHandlerMethodAdapter extends HandlerMethodAdapter<RouteHandlerMethod> {
 
     private final HandlerMapping mapping;
-    private final List<RouteFilter> filters;
+    private final RouteFilter[] filters;
     private final HandlerValueResolver handlerResolver;
     private final ExceptionResolver<Throwable> exceptionResolver;
     private final Matcher interceptorMatcher;
@@ -61,9 +61,9 @@ public abstract class RouteHandlerMethodAdapter extends HandlerMethodAdapter<Rou
                               ExceptionResolver<Throwable> exceptionResolver) {
         super(context, mapping.methodInfo().handlerMethod());
         Checks.checkNotNull(handlerResolver, "handlerResolver");
-        assert context.resolverFactory().isPresent();
+        Checks.checkState(context.resolverFactory().isPresent(), "resolverFactory is null");
         this.mapping = mapping;
-        this.filters = getMatchingFilters(context.resolverFactory().get(), handlerMethod());
+        this.filters = getMatchingFilters(context.resolverFactory().get(), handlerMethod()).toArray(new RouteFilter[0]);
         this.interceptorMatcher = maybeMatchable(interceptors);
         this.exceptionResolver = exceptionResolver;
         this.handlerResolver = handlerResolver;
@@ -100,7 +100,7 @@ public abstract class RouteHandlerMethodAdapter extends HandlerMethodAdapter<Rou
         return mapping;
     }
 
-    List<RouteFilter> filters() {
+    RouteFilter[] filters() {
         return filters;
     }
 

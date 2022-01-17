@@ -19,7 +19,7 @@ import esa.commons.Checks;
 import esa.commons.StringUtils;
 import esa.commons.spi.SpiLoader;
 import io.esastack.restlight.core.config.RestlightOptions;
-import io.esastack.restlight.core.handler.WritableRestlightHandler;
+import io.esastack.restlight.core.handler.RestlightHandlerImpl;
 import io.esastack.restlight.core.resolver.ExceptionResolver;
 import io.esastack.restlight.core.resolver.exception.DefaultExceptionResolverFactory;
 import io.esastack.restlight.core.spi.ResponseEntityChannelFactory;
@@ -31,7 +31,7 @@ import io.esastack.restlight.server.bootstrap.IExceptionHandler;
 import io.esastack.restlight.server.bootstrap.LinkedExceptionHandlerChain;
 import io.esastack.restlight.server.bootstrap.RestlightServer;
 import io.esastack.restlight.server.handler.RestlightHandler;
-import io.esastack.restlight.server.schedule.ExceptionHandledRestlightHandler;
+import io.esastack.restlight.server.schedule.AbstractRestlightHandler;
 
 import java.util.Collections;
 import java.util.List;
@@ -54,8 +54,8 @@ public abstract class AbstractRestlight<R extends AbstractRestlight<R, D, O>,
     }
 
     @Override
-    protected ExceptionHandledRestlightHandler buildExceptionHandled(RestlightHandler handler,
-                                                                     IExceptionHandler[] exceptionHandlers) {
+    protected AbstractRestlightHandler buildHandler(RestlightHandler handler,
+                                                    IExceptionHandler[] exceptionHandlers) {
         ExceptionResolver<Throwable> exceptionResolver = getExceptionResolver();
         final ExceptionHandlerChain handlerChain;
         if (exceptionResolver == null) {
@@ -64,7 +64,7 @@ public abstract class AbstractRestlight<R extends AbstractRestlight<R, D, O>,
             handlerChain = LinkedExceptionHandlerChain.immutable(exceptionHandlers,
                     exceptionResolver::handleException);
         }
-        return new WritableRestlightHandler(handler, handlerChain, extractChannelFactory(),
+        return new RestlightHandlerImpl(handler, handlerChain, extractChannelFactory(),
                 deployments().deployContext());
     }
 

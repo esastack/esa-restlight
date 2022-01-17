@@ -17,8 +17,9 @@ package io.esastack.restlight.jaxrs.impl.core;
 
 import esa.commons.Checks;
 import esa.commons.ClassUtils;
+import esa.commons.logging.Logger;
+import esa.commons.logging.LoggerFactory;
 import io.esastack.restlight.jaxrs.util.JaxrsUtils;
-import io.esastack.restlight.server.util.LoggerUtils;
 import jakarta.ws.rs.RuntimeType;
 import jakarta.ws.rs.core.Configuration;
 import jakarta.ws.rs.core.Feature;
@@ -33,6 +34,8 @@ import java.util.Map;
 import java.util.Set;
 
 public class ConfigurationImpl implements Configuration {
+
+    private static final Logger logger = LoggerFactory.getLogger(ConfigurationImpl.class);
 
     /**
      * All classes and instance types which have registered, for checking duplicate purpose.
@@ -190,8 +193,7 @@ public class ConfigurationImpl implements Configuration {
             this.resourcesClasses.add(clazz);
             return;
         }
-        LoggerUtils.logger().error("The class :[" + clazz.getName() + "] is unsupported to be registered" +
-                " as a [Resource].");
+        logger.error("Failed to register {} as Resource.", clazz);
     }
 
     public void addResourceInstance(Object instance) {
@@ -204,8 +206,7 @@ public class ConfigurationImpl implements Configuration {
             this.resourcesInstances.add(instance);
             return;
         }
-        LoggerUtils.logger().warn("The instance of type: [" + clazz.getName() + "] has been registered before," +
-                " and the current should be ignored.");
+        logger.warn("Registering {}(which has been registered before) is ignored.");
     }
 
     public boolean addProviderInstance(Object instance, Map<Class<?>, Integer> contracts) {
@@ -219,8 +220,7 @@ public class ConfigurationImpl implements Configuration {
             this.contracts.put(clazz, contracts);
             return true;
         }
-        LoggerUtils.logger().error("The class :[" + clazz.getName() + "] is unsupported to be registered" +
-                " as a [Provider].");
+        logger.error("Failed to register {} as Provider.", clazz);
         return false;
     }
 
@@ -234,8 +234,7 @@ public class ConfigurationImpl implements Configuration {
             this.contracts.put(clazz, contracts);
             return true;
         }
-        LoggerUtils.logger().error("The class :[" + clazz.getName() + "] is unsupported to be registered" +
-                " as a [Provider].");
+        logger.warn("Registering {}(which has been registered before) is ignored.");
         return false;
     }
 
@@ -244,8 +243,7 @@ public class ConfigurationImpl implements Configuration {
             return true;
         }
         if (!this.classes.add(clazz)) {
-            LoggerUtils.logger().warn("The class: [" + clazz.getName() + "] has been registered before," +
-                    " and the current should be ignored.");
+            logger.warn("Registering {}(which has been registered before) is ignored.");
             return true;
         }
         return false;

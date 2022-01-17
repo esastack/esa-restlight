@@ -378,9 +378,7 @@ public abstract class BaseDeployments<R extends BaseRestlightServer<R, D, O>, D 
     }
 
     protected RestlightHandler doGetRestlightHandler() {
-        final RoutableRegistry routeRegistry = new RoutableRegistry(ctx(), getRouteRegistry());
-        ctx().setRegistry(routeRegistry);
-
+        RoutableRegistry routeRegistry = getOrCreateRegistry();
         // register routes
         registerRoutes(routeRegistry);
         ctx().setDispatcherHandler(dispatcher);
@@ -441,11 +439,19 @@ public abstract class BaseDeployments<R extends BaseRestlightServer<R, D, O>, D 
         );
     }
 
-    private AbstractRouteRegistry getRouteRegistry() {
-        if (deployContext.options().getRoute().isUseCachedRouting() && routes.size() >= 10) {
-            return new CachedRouteRegistry(deployContext.options().getRoute().getComputeRate());
+    protected final RoutableRegistry getOrCreateRegistry() {
+        if (ctx().routeRegistry().isPresent()) {
+            return (RoutableRegistry) ctx().routeRegistry().get();
         } else {
-            return new SimpleRouteRegistry();
+            AbstractRouteRegistry registry;
+            if (deployContext.options().getRoute().isUseCachedRouting() && routes.size() >= 10) {
+                registry = new CachedRouteRegistry(deployContext.options().getRoute().getComputeRate());
+            } else {
+                registry = new SimpleRouteRegistry();
+            }
+            RoutableRegistry registry0 = new RoutableRegistry(ctx(), registry);
+            ctx().setRegistry(registry0);
+            return registry0;
         }
     }
 

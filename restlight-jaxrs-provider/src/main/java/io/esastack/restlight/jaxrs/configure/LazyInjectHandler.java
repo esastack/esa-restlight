@@ -23,8 +23,8 @@ class LazyInjectHandler extends LazyInstantiateHandler {
 
     private final Object target;
 
-    LazyInjectHandler(Object target, DeployContext<? extends RestlightOptions> context) {
-        super(ClassUtils.getUserType(target), context);
+    LazyInjectHandler(DeployContext<? extends RestlightOptions> context, Object target) {
+        super(context, ClassUtils.getUserType(target));
         this.target = target;
     }
 

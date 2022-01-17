@@ -33,10 +33,9 @@ class LazyInstantiateHandler implements InvocationHandler {
     private volatile Object target;
     private volatile boolean initialized;
 
-    LazyInstantiateHandler(Class<?> clazz,
-                           DeployContext<? extends RestlightOptions> context) {
-        Checks.checkNotNull(clazz, "clazz");
+    LazyInstantiateHandler(DeployContext<? extends RestlightOptions> context, Class<?> clazz) {
         Checks.checkNotNull(context, "context");
+        Checks.checkNotNull(clazz, "clazz");
         this.clazz = clazz;
         this.context = context;
     }

@@ -19,6 +19,7 @@ import io.esastack.restlight.server.context.RequestContext;
 import io.esastack.restlight.server.core.HttpRequest;
 import io.esastack.restlight.server.util.MappingUtils;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Objects;
@@ -77,7 +78,7 @@ public class ParamsPredicate implements RequestPredicate {
 
     @Override
     public String toString() {
-        return "{params=" + expressions + '}';
+        return "{params=" + Arrays.toString(expressions) + '}';
     }
 
     private static class Expression extends AbstractNameValueExpression {

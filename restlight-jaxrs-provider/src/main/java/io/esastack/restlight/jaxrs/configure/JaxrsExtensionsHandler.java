@@ -27,12 +27,13 @@ import io.esastack.restlight.core.configure.MiniConfigurableDeployments;
 import io.esastack.restlight.core.method.ResolvableParamPredicate;
 import io.esastack.restlight.core.util.ConstructorUtils;
 import io.esastack.restlight.jaxrs.adapter.DynamicFeatureAdapter;
-import io.esastack.restlight.jaxrs.adapter.FilteredExceptionHandler;
 import io.esastack.restlight.jaxrs.adapter.JaxrsContextResolverAdapter;
 import io.esastack.restlight.jaxrs.adapter.JaxrsExceptionMapperAdapter;
+import io.esastack.restlight.jaxrs.adapter.JaxrsResponseFiltersAdapter;
 import io.esastack.restlight.jaxrs.adapter.MessageBodyReaderAdapter;
 import io.esastack.restlight.jaxrs.adapter.MessageBodyWriterAdapter;
 import io.esastack.restlight.jaxrs.adapter.PreMatchRequestFiltersAdapter;
+import io.esastack.restlight.jaxrs.adapter.ProvidersPredicate;
 import io.esastack.restlight.jaxrs.adapter.ReaderInterceptorsAdapter;
 import io.esastack.restlight.jaxrs.adapter.StringConverterProviderAdapter;
 import io.esastack.restlight.jaxrs.adapter.WriterInterceptorsAdapter;
@@ -56,10 +57,7 @@ import jakarta.ws.rs.core.Configuration;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.Feature;
 import jakarta.ws.rs.core.FeatureContext;
-import jakarta.ws.rs.ext.ContextResolver;
 import jakarta.ws.rs.ext.ExceptionMapper;
-import jakarta.ws.rs.ext.MessageBodyReader;
-import jakarta.ws.rs.ext.MessageBodyWriter;
 import jakarta.ws.rs.ext.ParamConverterProvider;
 import jakarta.ws.rs.ext.Providers;
 import jakarta.ws.rs.ext.ReaderInterceptor;
@@ -76,7 +74,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import static io.esastack.restlight.jaxrs.util.JaxrsUtils.ascendingOrdered;
 import static io.esastack.restlight.jaxrs.util.JaxrsUtils.descendingOrder;
@@ -90,13 +87,13 @@ public class JaxrsExtensionsHandler implements ExtensionsHandler {
 
     private final ConfigurationImpl configuration = new ConfigurationImpl();
     private final MiniConfigurableDeployments deployments;
-    private final ProvidersProxyFactory factory;
+    private final ProvidersFactory factory;
     private final Providers providers;
 
     public JaxrsExtensionsHandler(MiniConfigurableDeployments deployments) {
         Checks.checkNotNull(deployments, "deployments");
         this.deployments = deployments;
-        this.factory = new ProvidersProxyFactoryImpl(deployments.deployContext(), configuration);
+        this.factory = new ProvidersFactoryImpl(deployments.deployContext(), configuration);
         this.providers = new ProvidersImpl(factory);
     }
 
@@ -204,46 +201,36 @@ public class JaxrsExtensionsHandler implements ExtensionsHandler {
     private void convertThenAddProviders(List<Class<? extends Annotation>> appNameBindings) {
         Collection<ProxyComponent<Feature>> features = factory.features();
         if (!features.isEmpty()) {
-            FeatureContext context = new FeatureContextImpl(new ConfigurableImpl(configuration));
+            ConfigurableImpl configurable = new ConfigurableImpl(configuration);
             for (ProxyComponent<Feature> feature : features) {
+                FeatureContext context = new FeatureContextImpl(ClassUtils.getUserType(feature.underlying()),
+                        configurable);
                 if (feature.proxied().configure(context)) {
                     configuration.addEnabledFeature(feature.underlying());
                 }
             }
         }
 
-        for (ProxyComponent<MessageBodyReader<?>> reader : factory.messageBodyReaders()) {
-            deployments.addRequestEntityResolver(new MessageBodyReaderAdapter<>(reader.proxied(),
-                    ClassUtils.findFirstGenericType(reader.underlying().getClass()).orElse(Object.class),
-                    JaxrsUtils.consumes(reader.underlying()), JaxrsUtils.getOrder(reader.underlying())));
-        }
-        for (ProxyComponent<MessageBodyWriter<?>> writer : factory.messageBodyWriters()) {
-            deployments.addResponseEntityResolver(new MessageBodyWriterAdapter<>(writer.proxied(),
-                    ClassUtils.findFirstGenericType(writer.underlying().getClass()).orElse(Object.class),
-                    JaxrsUtils.produces(writer.underlying()), JaxrsUtils.getOrder(writer.underlying())));
-        }
+        deployments.addRequestEntityResolver(new MessageBodyReaderAdapter<>(providers));
+        deployments.addResponseEntityResolver(new MessageBodyWriterAdapter<>(providers));
         for (Map.Entry<Class<Throwable>, ProxyComponent<ExceptionMapper<Throwable>>> entry :
                 factory.exceptionMappers().entrySet()) {
             deployments.addExceptionResolver(entry.getKey(),
                     new JaxrsExceptionMapperAdapter<>(entry.getValue().proxied()));
         }
-        for (Map.Entry<Class<?>, ProxyComponent<ContextResolver<?>>> entry :
-                factory.contextResolvers().entrySet()) {
-            deployments.addParamResolver(new JaxrsContextResolverAdapter(entry.getValue()));
-        }
+        deployments.addParamResolver(new JaxrsContextResolverAdapter(providers));
         for (ProxyComponent<ParamConverterProvider> provider : factory.paramConverterProviders()) {
             deployments.addStringConverter(new StringConverterProviderAdapter(provider.proxied(),
                     JaxrsUtils.getOrder(provider.underlying())));
         }
 
-        this.covertThenAddFilters(appNameBindings);
-        this.covertThenAddInterceptors(appNameBindings);
+        this.convertThenAddFilters(appNameBindings);
+        this.convertThenAddInterceptors(appNameBindings);
         deployments.addHandlerConfigure(new DynamicFeatureAdapter(deployments.deployContext(), appNameBindings,
-                factory.dynamicFeatures().stream().map(ProxyComponent::proxied).collect(Collectors.toList()),
-                configuration));
+                factory.dynamicFeatures(), configuration));
     }
 
-    private void covertThenAddFilters(List<Class<? extends Annotation>> appNameBindings) {
+    private void convertThenAddFilters(List<Class<? extends Annotation>> appNameBindings) {
         // convert @PreMatching ContainerRequestFilters
         List<OrderComponent<ContainerRequestFilter>> reqFilters = new LinkedList<>();
         for (ProxyComponent<ContainerRequestFilter> filter : factory.requestFilters()) {
@@ -263,13 +250,11 @@ public class JaxrsExtensionsHandler implements ExtensionsHandler {
                 rspFilters.add(new OrderComponent<>(filter.proxied(), JaxrsUtils.getOrder(filter.underlying())));
             }
         }
-        if (!rspFilters.isEmpty()) {
-            deployments.addExceptionHandler(new FilteredExceptionHandler(descendingOrder(rspFilters)
-                    .toArray(new ContainerResponseFilter[0])));
-        }
+        deployments.addFilter(new JaxrsResponseFiltersAdapter(descendingOrder(rspFilters)
+                .toArray(new ContainerResponseFilter[0])));
     }
 
-    private void covertThenAddInterceptors(List<Class<? extends Annotation>> appNameBindings) {
+    private void convertThenAddInterceptors(List<Class<? extends Annotation>> appNameBindings) {
         // covert ReaderInterceptors which can apply to all methods(even if it's null).
         List<OrderComponent<ReaderInterceptor>> readInterceptors = new LinkedList<>();
         for (ProxyComponent<ReaderInterceptor> interceptor : factory.readerInterceptors()) {
@@ -280,7 +265,7 @@ public class JaxrsExtensionsHandler implements ExtensionsHandler {
         }
         if (!readInterceptors.isEmpty()) {
             deployments.addRequestEntityResolverAdvice(new ReaderInterceptorsAdapter(ascendingOrdered(
-                    readInterceptors).toArray(new ReaderInterceptor[0]), false));
+                    readInterceptors).toArray(new ReaderInterceptor[0]), ProvidersPredicate.BINDING_GLOBAL));
         }
 
         // convert WriterInterceptors which can apply to all methods(even if it's null).
@@ -293,7 +278,7 @@ public class JaxrsExtensionsHandler implements ExtensionsHandler {
         }
         if (!writerInterceptors.isEmpty()) {
             deployments.addResponseEntityResolverAdvice(new WriterInterceptorsAdapter(ascendingOrdered(
-                    writerInterceptors).toArray(new WriterInterceptor[0]), false));
+                    writerInterceptors).toArray(new WriterInterceptor[0]), ProvidersPredicate.BINDING_GLOBAL));
         }
     }
 

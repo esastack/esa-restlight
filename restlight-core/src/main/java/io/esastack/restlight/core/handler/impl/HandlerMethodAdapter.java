@@ -52,10 +52,9 @@ public class HandlerMethodAdapter<H extends HandlerMethod> implements HandlerMet
         this.handlerMethod = handlerMethod;
         this.concurrent = RouteUtils.isConcurrent(handlerMethod);
         this.context = context;
-        assert context.paramPredicate().isPresent();
-        assert context.resolverFactory().isPresent();
-        this.methodParamResolvers = mergeResolversOfMethod(handlerMethod, context.paramPredicate().get(),
-                context.resolverFactory().get());
+        this.methodParamResolvers = mergeResolversOfMethod(handlerMethod,
+                context.paramPredicate().orElseThrow(() -> new IllegalStateException("paramPredicate is null")),
+                context.resolverFactory().orElseThrow(() -> new IllegalStateException("resolverFactory is null")));
     }
 
     @Override

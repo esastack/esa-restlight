@@ -16,6 +16,7 @@
 package io.esastack.restlight.jaxrs.configure;
 
 import esa.commons.Checks;
+import esa.commons.ObjectUtils;
 import esa.commons.reflect.BeanUtils;
 import esa.commons.reflect.ReflectionUtils;
 import io.esastack.restlight.core.DeployContext;
@@ -52,18 +53,23 @@ public class JaxrsHandlerFactory extends HandlerFactoryImpl {
     }
 
     @Override
-    protected Object doInstantiate(Class<?> clazz, HandlerContext<? extends RestlightOptions> handlerCtx,
-                                   RequestContext context) {
+    protected Object doInstantiate(HandlerContext<? extends RestlightOptions> handlerContext,
+                                   Class<?> clazz, RequestContext context) {
         if (context != null) {
-            return super.doInstantiate(clazz, handlerCtx, context);
+            return super.doInstantiate(handlerContext, clazz, context);
         } else {
-            final ResolvableProvider resolvable = getResolvableProvider(clazz, handlerCtx);
+            // If HandlerResolverFactory is absent which means the deployments is not prepared,
+            // in this case, there is no way to do further instantiation.
+            if (!handlerContext.resolverFactory().isPresent()) {
+                return ObjectUtils.instantiateBeanIfNecessary(clazz);
+            }
+            final ResolvableProvider resolvable = getResolvableProvider(clazz, handlerContext);
             Object[] consArgs = new Object[resolvable.constructor.getParameterCount()];
             ResolvableParam<ConstructorParam, ContextResolver>[] consParams = resolvable.consParamResolvers;
             int index = 0;
             for (ResolvableParam<ConstructorParam, ContextResolver> param : consParams) {
                 try {
-                    consArgs[index++] = param.resolver().resolve(param.param(), handlerCtx);
+                    consArgs[index++] = param.resolver().resolve(param.param(), handlerContext);
                 } catch (Throwable th) {
                     //wrap exception
                     throw WebServerException.wrap(th);
@@ -81,19 +87,24 @@ public class JaxrsHandlerFactory extends HandlerFactoryImpl {
     }
 
     @Override
-    protected void doInit0(Object instance, Class<?> clazz, HandlerContext<? extends RestlightOptions> handlerCtx,
-                           RequestContext context) {
+    protected void doInit0(HandlerContext<? extends RestlightOptions> handlerContext,
+                           Object instance, Class<?> clazz, RequestContext context) {
         if (context != null) {
-            super.doInit0(instance, clazz, handlerCtx, context);
+            super.doInit0(handlerContext, instance, clazz, context);
         } else {
-            final ResolvableProvider resolvable = getResolvableProvider(clazz, handlerCtx);
+            // If HandlerResolverFactory is absent which means the deployments is not prepared,
+            // in this case, there is no way to do further initialization.
+            if (!handlerContext.resolverFactory().isPresent()) {
+                return;
+            }
+            final ResolvableProvider resolvable = getResolvableProvider(clazz, handlerContext);
             for (ResolvableParam<MethodParam, ContextResolver> r : resolvable.setterParamResolvers) {
                 MethodParam param = r.param();
                 //resolve args with resolver
                 if (r.resolver() != null) {
                     //it may return a null value
                     try {
-                        Object arg = r.resolver().resolve(param, handlerCtx);
+                        Object arg = r.resolver().resolve(param, handlerContext);
                         ReflectionUtils.invokeMethod(param.method(), instance, arg);
                     } catch (InvocationTargetException ex) {
                         throw new IllegalStateException("Failed to invoke method: [" + param.method() + "]",
@@ -110,7 +121,7 @@ public class JaxrsHandlerFactory extends HandlerFactoryImpl {
                 if (r.resolver() != null) {
                     try {
                         BeanUtils.setFieldValue(instance, param.name(),
-                                r.resolver().resolve(param, handlerCtx));
+                                r.resolver().resolve(param, handlerContext));
                     } catch (Exception e) {
                         //wrap exception
                         throw WebServerException.wrap(e);
@@ -133,10 +144,10 @@ public class JaxrsHandlerFactory extends HandlerFactoryImpl {
         private final ResolvableParam<FieldParam, ContextResolver>[] fieldParamResolvers;
 
         private ResolvableProvider(Class<?> clazz, DeployContext<? extends RestlightOptions> context) {
-            assert context.paramPredicate().isPresent();
-            assert context.resolverFactory().isPresent();
-            ResolvableParamPredicate resolvable = context.paramPredicate().get();
-            HandlerResolverFactory resolverFactory = context.resolverFactory().get();
+            HandlerResolverFactory resolverFactory = context.resolverFactory()
+                    .orElseThrow(() -> new IllegalStateException("resolverFactory is null"));
+            ResolvableParamPredicate resolvable = context.paramPredicate()
+                    .orElseThrow(() -> new IllegalStateException("paramPredicate is null"));
             this.constructor = ConstructorUtils.extractResolvable(clazz, resolvable);
             Checks.checkState(this.constructor != null,
                     "There is no suitable constructor to instantiate class: " + clazz.getName());

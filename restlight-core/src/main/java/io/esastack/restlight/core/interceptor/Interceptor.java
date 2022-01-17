@@ -16,8 +16,8 @@
 package io.esastack.restlight.core.interceptor;
 
 import esa.commons.spi.SPI;
-import io.esastack.restlight.server.core.HttpRequest;
 import io.esastack.restlight.core.util.Affinity;
+import io.esastack.restlight.server.core.HttpRequest;
 import io.esastack.restlight.server.route.Route;
 
 /**

@@ -15,6 +15,7 @@
  */
 package io.esastack.restlight.core.handler.impl;
 
+import esa.commons.Checks;
 import esa.commons.collection.MultiValueMap;
 import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.core.handler.Handler;
@@ -44,8 +45,7 @@ public class SingletonRouteMethod extends RouteHandlerMethodAdapter {
                                 MultiValueMap<InterceptorPredicate, Interceptor> interceptors,
                                 ExceptionResolver<Throwable> exceptionResolver) {
         super(mapping, context, handlerResolver, interceptors, exceptionResolver);
-        assert mapping.bean().isPresent();
-        this.singleton = mapping.bean().get();
+        this.singleton = mapping.bean().orElseThrow(() -> new IllegalStateException("bean is null"));
     }
 
     @Override
@@ -74,7 +74,8 @@ public class SingletonRouteMethod extends RouteHandlerMethodAdapter {
                                         List<InternalInterceptor> interceptors,
                                         Object singleton) {
             super(handlerMethod, interceptors);
-            assert handlerMethod.context().handlerAdvicesFactory().isPresent();
+            Checks.checkState(handlerMethod.context().handlerAdvicesFactory().isPresent(),
+                    "handlerAdvicesFactory is null");
             this.singleton = singleton;
             this.invoker = buildInvoker(handlerMethod, singleton,
                     handlerMethod.context().handlerAdvicesFactory().get());

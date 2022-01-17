@@ -20,6 +20,7 @@ import io.esastack.commons.net.http.MediaTypeUtil;
 import io.esastack.restlight.server.core.HttpRequest;
 
 public abstract class AbstractMediaTypeExpression implements Comparable<AbstractMediaTypeExpression> {
+
     private static final String NEGATE_SYMBOL = "!";
 
     private final MediaType mediaType;

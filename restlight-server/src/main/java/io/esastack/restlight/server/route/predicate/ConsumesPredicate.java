@@ -36,10 +36,6 @@ public class ConsumesPredicate implements RequestPredicate {
         this.expressions = temp.toArray(new Expression[0]);
     }
 
-    public static ConsumesPredicate parseFrom(String[] consumes) {
-        return parseFrom(consumes, null);
-    }
-
     public static ConsumesPredicate parseFrom(String[] consumes, String[] headers) {
 
         Set<ConsumesPredicate.Expression> consumeExpressions =

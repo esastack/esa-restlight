@@ -13,14 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.esastack.restlight.server.context;
+package io.esastack.restlight.core.configure;
 
-import io.esastack.restlight.server.core.RoutedRequest;
+import java.util.Collections;
+import java.util.Set;
+import java.util.concurrent.CopyOnWriteArraySet;
 
-public interface RouteContext extends RequestContext {
+public class HandlersImpl implements Handlers {
+
+    final Set<Class<?>> classes = new CopyOnWriteArraySet<>();
+    final Set<Object> singletons = new CopyOnWriteArraySet<>();
 
     @Override
-    RoutedRequest request();
+    public Set<Class<?>> getClasses() {
+        return Collections.unmodifiableSet(classes);
+    }
+
+    @Override
+    public Set<Object> getSingletons() {
+        return Collections.unmodifiableSet(singletons);
+    }
 
 }
 

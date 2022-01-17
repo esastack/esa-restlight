@@ -17,13 +17,15 @@ package io.esastack.restlight.jaxrs.impl.container;
 
 import esa.commons.Checks;
 import esa.commons.ClassUtils;
+import esa.commons.logging.Logger;
+import esa.commons.logging.LoggerFactory;
 import io.esastack.restlight.jaxrs.impl.core.ConfigurableImpl;
 import io.esastack.restlight.jaxrs.impl.core.ConfigurationImpl;
+import io.esastack.restlight.jaxrs.util.JaxrsUtils;
 import jakarta.ws.rs.container.ContainerRequestFilter;
 import jakarta.ws.rs.container.ContainerResponseFilter;
 import jakarta.ws.rs.core.Configurable;
 import jakarta.ws.rs.core.Configuration;
-import jakarta.ws.rs.core.Feature;
 import jakarta.ws.rs.core.FeatureContext;
 import jakarta.ws.rs.ext.ReaderInterceptor;
 import jakarta.ws.rs.ext.WriterInterceptor;
@@ -32,11 +34,16 @@ import java.util.Map;
 
 public class DynamicFeatureContext implements FeatureContext {
 
+    private static final Logger logger = LoggerFactory.getLogger(DynamicFeatureContext.class);
+
+    private final Class<?> featureType;
     private final ConfigurationImpl configuration;
     private final Configurable<ConfigurableImpl> configurable;
 
-    public DynamicFeatureContext(ConfigurationImpl configuration) {
+    public DynamicFeatureContext(Class<?> featureType, ConfigurationImpl configuration) {
+        Checks.checkNotNull(featureType, "featureType");
         Checks.checkNotNull(configuration, "configuration");
+        this.featureType = featureType;
         this.configuration = configuration;
         this.configurable = new ConfigurableImpl(configuration);
     }
@@ -117,35 +124,45 @@ public class DynamicFeatureContext implements FeatureContext {
     }
 
     private boolean isRegistrable(Class<?> target, Class<?>[] contracts) {
-        if (ContainerRequestFilter.class.isAssignableFrom(target)) {
-            return isLegalContracts(contracts);
-        } else if (ContainerResponseFilter.class.isAssignableFrom(target)) {
-            return isLegalContracts(contracts);
-        } else if (ReaderInterceptor.class.isAssignableFrom(target)) {
-            return isLegalContracts(contracts);
-        } else if (WriterInterceptor.class.isAssignableFrom(target)) {
-            return isLegalContracts(contracts);
-        } else if (Feature.class.isAssignableFrom(target)) {
-            return isLegalContracts(contracts);
-        }
-        return false;
-    }
-
-    private boolean isLegalContracts(Class<?>[] contracts) {
         if (contracts == null || contracts.length == 0) {
-            return true;
+            return isRegistrableType(target);
         }
+
         for (Class<?> contract : contracts) {
-            if (ContainerRequestFilter.class.equals(contract)
-                    || ContainerResponseFilter.class.equals(contract)
+            if (ContainerResponseFilter.class.equals(contract)
                     || ReaderInterceptor.class.equals(contract)
-                    || WriterInterceptor.class.equals(contract)
-                    || Feature.class.equals(contract)) {
+                    || WriterInterceptor.class.equals(contract)) {
                 continue;
             }
-            return false;
+            if (ContainerRequestFilter.class.equals(contract)) {
+                if (JaxrsUtils.isPreMatched(target)) {
+                    logger.warn("Registering {} as {} in DynamicFeature({}) is unsupported, please remove" +
+                            " @PreMatching of it.", target, contract, featureType);
+                } else {
+                    continue;
+                }
+            }
+            logger.warn("Registering {} as {} in DynamicFeature({}) is unsupported.",
+                    target, contract, featureType);
         }
         return true;
     }
-}
 
+    private boolean isRegistrableType(Class<?> target) {
+        if (ContainerRequestFilter.class.isAssignableFrom(target)) {
+            if (JaxrsUtils.isPreMatched(target)) {
+                logger.warn("Registering {} as ContainerRequestFilter in DynamicFeature({}) is unsupported,"
+                        + " please remove @PreMatching on it.", target, featureType);
+                return false;
+            } else {
+                return true;
+            }
+        } else if (ContainerResponseFilter.class.isAssignableFrom(target)) {
+            return true;
+        } else if (ReaderInterceptor.class.isAssignableFrom(target)) {
+            return true;
+        } else {
+            return WriterInterceptor.class.isAssignableFrom(target);
+        }
+    }
+}

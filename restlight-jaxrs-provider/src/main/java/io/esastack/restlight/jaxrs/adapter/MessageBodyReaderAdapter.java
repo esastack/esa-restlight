@@ -20,82 +20,54 @@ import io.esastack.restlight.core.method.Param;
 import io.esastack.restlight.core.resolver.HandledValue;
 import io.esastack.restlight.core.resolver.RequestEntity;
 import io.esastack.restlight.core.resolver.RequestEntityResolverAdapter;
+import io.esastack.restlight.core.util.Ordered;
 import io.esastack.restlight.jaxrs.impl.core.ModifiableMultivaluedMap;
 import io.esastack.restlight.jaxrs.util.MediaTypeUtils;
 import io.esastack.restlight.server.context.RequestContext;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.ext.MessageBodyReader;
-
-import java.util.List;
+import jakarta.ws.rs.ext.Providers;
 
 public class MessageBodyReaderAdapter<T> implements RequestEntityResolverAdapter {
 
-    private final MessageBodyReader<T> underlying;
-    private final Class<?> matchableType;
-    private final MediaType[] consumes;
-    private final int order;
+    private final Providers providers;
 
-    public MessageBodyReaderAdapter(MessageBodyReader<T> underlying,
-                                    Class<?> matchableType,
-                                    List<MediaType> consumes,
-                                    int order) {
-        Checks.checkNotNull(underlying, "underlying");
-        Checks.checkNotNull(matchableType, "matchableType");
-        Checks.checkNotNull(consumes, "consumes");
-        this.matchableType = matchableType;
-        this.consumes = consumes.toArray(new MediaType[0]);
-        this.underlying = underlying;
-        this.order = order;
+    public MessageBodyReaderAdapter(Providers providers) {
+        Checks.checkNotNull(providers, "providers");
+        this.providers = providers;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public HandledValue<Object> readFrom(Param param, RequestEntity entity, RequestContext context) throws Exception {
-        final Class<?> clazz = entity.type();
-        // match by type firstly.
-        if (entity.type() == null || !matchableType.isAssignableFrom(clazz)) {
+        Class<?> type;
+        if ((type = entity.type()) == null) {
             return HandledValue.failed();
         }
-
-        // match by mediaType secondly.
-        // follow the spec, use APPLICATION_OCTET_STREAM as default
-        MediaType mediaType = MediaTypeUtils.convert(entity.mediaType() == null
-                ? io.esastack.commons.net.http.MediaType.APPLICATION_OCTET_STREAM : entity.mediaType());
-        if (!isCompatible(mediaType)) {
+        MediaType mediaType = MediaTypeUtils.convert(entity.mediaType());
+        MessageBodyReader<T> reader = (MessageBodyReader<T>) providers.getMessageBodyReader(type,
+                entity.genericType(),
+                entity.annotations(),
+                mediaType);
+        if (reader == null) {
             return HandledValue.failed();
         }
-
-        if (!underlying.isReadable(clazz, entity.genericType(), entity.annotations(), mediaType)) {
-            return HandledValue.failed();
-        }
-
-        @SuppressWarnings("unchecked")
-        T value = underlying.readFrom((Class<T>) clazz, entity.genericType(), entity.annotations(),
+        Object value = reader.readFrom((Class<T>) type, entity.genericType(), entity.annotations(),
                 mediaType, new ModifiableMultivaluedMap(context.request().headers()), entity.inputStream());
         return HandledValue.succeed(value);
     }
 
     @Override
     public boolean supports(Param param) {
-        // because the mediaType、type、genericType may be updated during ReaderInterceptor, so we can't
+        // because the mediaType/type/genericType may be updated during ReaderInterceptor, so we can't
         // bind this to param at the starting time.
         return true;
     }
 
     @Override
     public int getOrder() {
-        return order;
+        return Ordered.LOWEST_PRECEDENCE;
     }
 
-    private boolean isCompatible(MediaType current) {
-        if (consumes.length == 0) {
-            return true;
-        }
-        for (MediaType type : consumes) {
-            if (type.isCompatible(current)) {
-                return true;
-            }
-        }
-        return false;
-    }
 }
 

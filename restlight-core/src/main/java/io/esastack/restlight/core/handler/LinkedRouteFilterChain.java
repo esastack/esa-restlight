@@ -19,7 +19,6 @@ import esa.commons.Checks;
 import io.esastack.restlight.server.context.RouteContext;
 import io.esastack.restlight.server.handler.LinkedFilterChain;
 
-import java.util.List;
 import java.util.concurrent.CompletionStage;
 import java.util.function.Function;
 
@@ -42,15 +41,15 @@ public class LinkedRouteFilterChain implements RouteFilterChain {
      * @param action    action
      * @return  filter chain
      */
-    public static LinkedRouteFilterChain immutable(List<RouteFilter> filters,
+    public static LinkedRouteFilterChain immutable(RouteFilter[] filters,
                                                    Function<RouteContext, CompletionStage<Void>> action) {
         Checks.checkNotEmptyArg(filters, "filters must not be empty");
         // link all the filter and the given action(last)
         RouteFilterChain next = (mp, ctx) -> action.apply(ctx);
         LinkedRouteFilterChain chain;
-        int i = filters.size() - 1;
+        int i = filters.length - 1;
         do {
-            chain = new LinkedRouteFilterChain(filters.get(i), next);
+            chain = new LinkedRouteFilterChain(filters[i], next);
             next = chain;
         } while (--i >= 0);
         return chain;

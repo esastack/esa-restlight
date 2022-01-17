@@ -23,7 +23,7 @@ import java.net.URI;
 public class PostMatchContainerRequestContext extends AbstractContainerRequestContext {
 
     private static final IllegalStateException ILLEGAL_STATE_OF_MATCHED = new IllegalStateException("This operation" +
-            "is not allowed after request matching, maybe @PreMatching is missing?");
+            "is not allowed after matching request, maybe @PreMatching is missed?");
 
     public PostMatchContainerRequestContext(RequestContext context) {
         super(context);

@@ -24,9 +24,9 @@ import java.util.Optional;
 
 public class CompositeHandlerValueResolverLocator implements HandlerValueResolverLocator {
 
-    private final Collection<? extends HandlerValueResolverLocator> locators;
+    private final HandlerValueResolverLocator[] locators;
 
-    private CompositeHandlerValueResolverLocator(Collection<? extends HandlerValueResolverLocator> locators) {
+    private CompositeHandlerValueResolverLocator(HandlerValueResolverLocator[] locators) {
         Checks.checkNotEmptyArg(locators, "locators");
         this.locators = locators;
     }
@@ -39,7 +39,7 @@ public class CompositeHandlerValueResolverLocator implements HandlerValueResolve
         if (locators.size() == 1) {
             return locators.iterator().next();
         } else {
-            return new CompositeHandlerValueResolverLocator(locators);
+            return new CompositeHandlerValueResolverLocator(locators.toArray(new HandlerValueResolverLocator[0]));
         }
     }
 

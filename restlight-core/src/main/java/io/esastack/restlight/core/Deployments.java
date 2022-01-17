@@ -22,18 +22,19 @@ import esa.commons.StringUtils;
 import esa.commons.spi.SpiLoader;
 import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.core.configure.ConfigurableDeployments;
+import io.esastack.restlight.core.configure.DefaultHandlerRegistry;
 import io.esastack.restlight.core.configure.DeploymentsConfigure;
 import io.esastack.restlight.core.configure.ExtensionsHandler;
 import io.esastack.restlight.core.configure.HandlerConfigure;
 import io.esastack.restlight.core.configure.HandlerRegistry;
 import io.esastack.restlight.core.configure.HandlerRegistryAware;
-import io.esastack.restlight.core.configure.HandlerRegistryImpl;
+import io.esastack.restlight.core.configure.HandlersImpl;
 import io.esastack.restlight.core.configure.MiniConfigurableDeployments;
 import io.esastack.restlight.core.handler.HandlerMapping;
 import io.esastack.restlight.core.handler.HandlerMappingProvider;
 import io.esastack.restlight.core.handler.RouteFilterAdapter;
 import io.esastack.restlight.core.handler.impl.HandlerAdvicesFactoryImpl;
-import io.esastack.restlight.core.handler.impl.HandlerContextsImpl;
+import io.esastack.restlight.core.handler.impl.HandlerContexts;
 import io.esastack.restlight.core.handler.locate.HandlerValueResolverLocator;
 import io.esastack.restlight.core.handler.locate.MappingLocator;
 import io.esastack.restlight.core.handler.locate.RouteMethodLocator;
@@ -895,9 +896,24 @@ public abstract class Deployments<R extends AbstractRestlight<R, D, O>, D extend
 
     @Override
     protected RestlightHandler doGetRestlightHandler() {
-        ctx().setHandlerContextProvider(new HandlerContextsImpl());
+        // get or create a route registry.
+        getOrCreateRegistry();
+
+        ctx().setHandlerContextProvider(new HandlerContexts());
         // set the ResolvableParamPredicate immediately due to it may be used when resolving extensions.
         ctx().setParamPredicate(RouteUtils.loadResolvableParamPredicate(ctx()));
+
+        ctx().setHandlers(new HandlersImpl());
+        List<HandlerFactoryProvider> handlerFactories = SpiLoader.cached(HandlerFactoryProvider.class)
+                .getByFeature(restlight.name(),
+                        true,
+                        Collections.singletonMap(Constants.INTERNAL, StringUtils.empty()),
+                        false);
+        OrderedComparator.sort(handlerFactories);
+        handlerFactories.stream().map(provider -> provider.factoryBean(ctx()))
+                .filter(Optional::isPresent)
+                .findFirst()
+                .ifPresent(f -> ctx().setHandlerFactory(f.orElse(null)));
 
         ctx().setExtensions(handleThenGetExtensions());
 
@@ -1013,21 +1029,6 @@ public abstract class Deployments<R extends AbstractRestlight<R, D, O>, D extend
         }
         ctx().setExceptionResolverFactory(exceptionResolverFactory);
 
-        HandlerRegistryImpl handlerRegistry = new HandlerRegistryImpl(ctx());
-        ctx().setHandlerRegistry(handlerRegistry);
-        ctx().setHandlers(handlerRegistry);
-
-        List<HandlerFactoryProvider> handlerFactories = SpiLoader.cached(HandlerFactoryProvider.class)
-                .getByFeature(restlight.name(),
-                        true,
-                        Collections.singletonMap(Constants.INTERNAL, StringUtils.empty()),
-                        false);
-        OrderedComparator.sort(handlerFactories);
-        handlerFactories.stream().map(provider -> provider.factoryBean(ctx()))
-                .filter(Optional::isPresent)
-                .findFirst()
-                .ifPresent(f -> ctx().setHandlerFactory(f.orElse(null)));
-
         // load and set HandlerConfigures
         handlerConfigures.addAll(SpiLoader.cached(HandlerConfigure.class)
                 .getByFeature(restlight.name(),
@@ -1037,6 +1038,8 @@ public abstract class Deployments<R extends AbstractRestlight<R, D, O>, D extend
         OrderedComparator.sort(handlerConfigures);
         ctx().setHandlerConfigure(Collections.unmodifiableList(handlerConfigures));
 
+        HandlerRegistry handlerRegistry = new DefaultHandlerRegistry(ctx(),
+                (HandlersImpl) ctx().handlers().orElse(null));
         // register handlers by handlerRegistry.
         this.registerHandlers(handlerRegistry);
 

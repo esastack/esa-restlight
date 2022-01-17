@@ -27,14 +27,14 @@ public class ResponseEntityResolverContextImpl implements ResponseEntityResolver
     private final ResponseEntity entity;
     private final ResponseEntityChannel channel;
     private final List<ResponseEntityResolver> resolvers;
-    private final ResponseEntityResolverAdvice[] advices;
+    private final List<ResponseEntityResolverAdvice> advices;
     private int index;
 
     public ResponseEntityResolverContextImpl(RequestContext context,
                                              ResponseEntity entity,
                                              ResponseEntityChannel channel,
                                              List<ResponseEntityResolver> resolvers,
-                                             ResponseEntityResolverAdvice[] advices) {
+                                             List<ResponseEntityResolverAdvice> advices) {
         Checks.checkNotNull(entity, "entity");
         Checks.checkNotNull(resolvers, "resolvers");
         Checks.checkNotNull(channel, "channel");
@@ -62,7 +62,7 @@ public class ResponseEntityResolverContextImpl implements ResponseEntityResolver
 
     @Override
     public void proceed() throws Exception {
-        if (advices == null || index >= advices.length) {
+        if (advices == null || index >= advices.size()) {
             HandledValue<Void> handled;
             for (ResponseEntityResolver resolver : resolvers) {
                 handled = resolver.writeTo(entity, channel, context);
@@ -74,7 +74,7 @@ public class ResponseEntityResolverContextImpl implements ResponseEntityResolver
                     + entity);
         }
 
-        advices[index++].aroundWrite(this);
+        advices.get(index++).aroundWrite(this);
     }
 }
 

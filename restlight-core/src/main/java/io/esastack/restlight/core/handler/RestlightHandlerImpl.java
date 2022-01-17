@@ -28,7 +28,6 @@ import io.esastack.restlight.core.method.HandlerMethod;
 import io.esastack.restlight.core.resolver.HandlerResolverFactory;
 import io.esastack.restlight.core.resolver.ResponseEntity;
 import io.esastack.restlight.core.resolver.ResponseEntityImpl;
-import io.esastack.restlight.core.resolver.ResponseEntityResolverAdvice;
 import io.esastack.restlight.core.resolver.ResponseEntityResolverContext;
 import io.esastack.restlight.core.resolver.ResponseEntityResolverContextImpl;
 import io.esastack.restlight.core.spi.ResponseEntityChannelFactory;
@@ -41,31 +40,31 @@ import io.esastack.restlight.server.context.RequestContext;
 import io.esastack.restlight.server.core.HttpRequest;
 import io.esastack.restlight.server.core.HttpResponse;
 import io.esastack.restlight.server.handler.RestlightHandler;
-import io.esastack.restlight.server.schedule.ExceptionHandledRestlightHandler;
+import io.esastack.restlight.server.schedule.AbstractRestlightHandler;
 import io.esastack.restlight.server.util.Futures;
 
 import java.util.List;
 import java.util.concurrent.CompletionStage;
 
-public class WritableRestlightHandler extends ExceptionHandledRestlightHandler {
+public class RestlightHandlerImpl extends AbstractRestlightHandler {
 
-    private static final Logger logger = LoggerFactory.getLogger(WritableRestlightHandler.class);
+    private static final Logger logger = LoggerFactory.getLogger(RestlightHandlerImpl.class);
 
     private final HandlerResolverFactory resolverFactory;
     private final ResponseEntityChannelFactory channelFactory;
-    private final HandlerContextProvider handlerContextProvider;
+    private final HandlerContextProvider handlerContexts;
 
-    public WritableRestlightHandler(RestlightHandler underlying,
-                                    ExceptionHandlerChain handlerChain,
-                                    ResponseEntityChannelFactory channelFactory,
-                                    DeployContext<? extends RestlightOptions> context) {
+    public RestlightHandlerImpl(RestlightHandler underlying,
+                                ExceptionHandlerChain handlerChain,
+                                ResponseEntityChannelFactory channelFactory,
+                                DeployContext<? extends RestlightOptions> context) {
         super(underlying, handlerChain);
         Checks.checkNotNull(channelFactory, "channelFactory");
         Checks.checkNotNull(context, "context");
         this.channelFactory = channelFactory;
         this.resolverFactory = context.resolverFactory().orElseThrow(() ->
                 new IllegalStateException("HandlerResolverFactory is absent"));
-        this.handlerContextProvider = context.handlerContextProvider().orElseThrow(() ->
+        this.handlerContexts = context.handlerContexts().orElseThrow(() ->
                 new IllegalStateException("HandlerContextProvider is absent"));
     }
 
@@ -76,15 +75,14 @@ public class WritableRestlightHandler extends ExceptionHandledRestlightHandler {
                 DispatcherHandlerImpl.handleException(context, Futures.unwrapCompletionException(th));
             }
 
-            final HandlerMethod method = RouteTracking.handlerMethod(context);
+            final HandlerMethod method = RouteTracking.matchedMethod(context);
             final List<MediaType> mediaTypes = ResponseEntityUtils.getMediaTypes(context);
             final ResponseEntity entity = new ResponseEntityImpl(method, context.response(),
                     mediaTypes.isEmpty() ? null : mediaTypes.get(0));
             HandlerResolverFactory resolverFactory = getResolverFactory(method);
             final ResponseEntityResolverContext rspCtx = new ResponseEntityResolverContextImpl(context,
                     entity, channelFactory.create(context), resolverFactory.getResponseEntityResolvers(),
-                    resolverFactory.getResponseEntityResolverAdvices(entity)
-                            .toArray(new ResponseEntityResolverAdvice[0]));
+                    resolverFactory.getResponseEntityResolverAdvices(entity));
 
             setEntityTypeIfNecessary(rspCtx, context.response());
             final HttpRequest request = context.request();
@@ -122,6 +120,11 @@ public class WritableRestlightHandler extends ExceptionHandledRestlightHandler {
         });
     }
 
+    @Override
+    protected boolean isHandleable(RequestContext context, Throwable th) {
+        return RouteTracking.matchedMethod(context) == null;
+    }
+
     private void setEntityTypeIfNecessary(ResponseEntityResolverContext rspCtx, HttpResponse response) {
         if (response.entity() != null && rspCtx.httpEntity().type() == null) {
             Class<?> entityType = ClassUtils.getUserType(response.entity());
@@ -135,7 +138,7 @@ public class WritableRestlightHandler extends ExceptionHandledRestlightHandler {
             return resolverFactory;
         }
 
-        HandlerContext<?> context = handlerContextProvider.getContext(method);
+        HandlerContext<?> context = handlerContexts.getContext(method);
         if (context != null) {
             return context.resolverFactory().orElseThrow(() ->
                     new IllegalStateException("HandlerResolverFactory is absent"));

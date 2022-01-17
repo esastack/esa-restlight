@@ -55,10 +55,10 @@ public class PrototypeRouteMethod extends RouteHandlerMethodAdapter {
         private PrototypeRouteExecution(RouteHandlerMethodAdapter handlerMethod,
                                         List<InternalInterceptor> interceptors) {
             super(handlerMethod, interceptors);
-            assert handlerMethod.context().handlerAdvicesFactory().isPresent();
-            assert handlerMethod.context().handlerFactory().isPresent();
-            this.handlerFactory = handlerMethod.context().handlerFactory().get();
-            this.handlerAdvicesFactory = handlerMethod.context().handlerAdvicesFactory().get();
+            this.handlerFactory = handlerMethod.context().handlerFactory()
+                    .orElseThrow(() -> new IllegalStateException("handlerFactory is null"));
+            this.handlerAdvicesFactory = handlerMethod.context().handlerAdvicesFactory()
+                    .orElseThrow(() -> new IllegalStateException("handlerAdvicesFactory is null"));
         }
 
         @Override

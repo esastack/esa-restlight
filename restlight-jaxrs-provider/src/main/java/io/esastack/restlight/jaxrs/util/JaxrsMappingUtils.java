@@ -127,6 +127,10 @@ public final class JaxrsMappingUtils {
         return JaxrsMappingUtils.getMethod(element) == null;
     }
 
+    public static boolean isMethod(AnnotatedElement element) {
+        return JaxrsMappingUtils.getMethod(element) != null;
+    }
+
     private static String getMethod(AnnotatedElement element) {
         String method =
                 getAnnotation(element, HttpMethod.class)

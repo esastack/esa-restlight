@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 OPPO ESA Stack Project
+ * Copyright 2021 OPPO ESA Stack Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,13 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.esastack.restlight.core.interceptor;
+package io.esastack.restlight.jaxrs.adapter;
 
+import io.esastack.restlight.core.spi.impl.RouteTracking;
 import io.esastack.restlight.server.route.predicate.RequestPredicate;
 
-public interface InterceptorPredicate extends RequestPredicate {
+public interface ProvidersPredicate extends RequestPredicate {
 
-    InterceptorPredicate ALWAYS = context -> Boolean.TRUE;
-    InterceptorPredicate NEVER = context -> Boolean.FALSE;
+    ProvidersPredicate BINDING_GLOBAL = context -> RouteTracking.matchedMethod(context) ==  null;
+    ProvidersPredicate BINDING_HANDLER = context -> RouteTracking.matchedMethod(context) !=  null;
 
 }
+

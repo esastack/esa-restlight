@@ -48,7 +48,7 @@ import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
 public class ResponseImpl extends Response {
 
     private static final IllegalStateException UNSUPPORTED_READ = new IllegalStateException("The read" +
-            " operation is unsupported in server side!");
+            " operation is unsupported on server side!");
 
     private static final AtomicIntegerFieldUpdater<ResponseImpl> CLOSED_STATE = AtomicIntegerFieldUpdater
             .newUpdater(ResponseImpl.class, "closed");
@@ -76,10 +76,6 @@ public class ResponseImpl extends Response {
 
     public Annotation[] getEntityAnnotations() {
         return builder.annotations();
-    }
-
-    public String getReasonPhrase() {
-        return builder.reasonPhrase();
     }
 
     public Annotation[] getAnnotations() {

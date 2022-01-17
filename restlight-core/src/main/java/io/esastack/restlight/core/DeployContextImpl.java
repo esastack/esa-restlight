@@ -17,7 +17,6 @@ package io.esastack.restlight.core;
 
 import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.core.configure.HandlerConfigure;
-import io.esastack.restlight.core.configure.HandlerRegistry;
 import io.esastack.restlight.core.configure.Handlers;
 import io.esastack.restlight.core.handler.HandlerAdvicesFactory;
 import io.esastack.restlight.core.handler.HandlerContextProvider;
@@ -54,7 +53,6 @@ public class DeployContextImpl<O extends RestlightOptions> extends ServerDeployC
     private volatile MappingLocator mappingLocator;
     private volatile HandlerValueResolverLocator handlerResolverLocator;
     private volatile ExceptionResolverFactory exceptionResolverFactory;
-    private volatile HandlerRegistry handlerRegistry;
     private volatile Handlers handlers;
 
     protected DeployContextImpl(String name, O options) {
@@ -132,11 +130,6 @@ public class DeployContextImpl<O extends RestlightOptions> extends ServerDeployC
     }
 
     @Override
-    public Optional<HandlerRegistry> handlerRegistry() {
-        return Optional.ofNullable(handlerRegistry);
-    }
-
-    @Override
     public Optional<Handlers> handlers() {
         return Optional.ofNullable(handlers);
     }
@@ -147,7 +140,7 @@ public class DeployContextImpl<O extends RestlightOptions> extends ServerDeployC
     }
 
     @Override
-    public Optional<HandlerContextProvider> handlerContextProvider() {
+    public Optional<HandlerContextProvider> handlerContexts() {
         return Optional.ofNullable(handlerContextProvider);
     }
 
@@ -205,10 +198,6 @@ public class DeployContextImpl<O extends RestlightOptions> extends ServerDeployC
 
     void setParamPredicate(ResolvableParamPredicate paramPredicate) {
         this.paramPredicate = paramPredicate;
-    }
-
-    void setHandlerRegistry(HandlerRegistry handlerRegistry) {
-        this.handlerRegistry = handlerRegistry;
     }
 
     void setHandlers(Handlers handlers) {

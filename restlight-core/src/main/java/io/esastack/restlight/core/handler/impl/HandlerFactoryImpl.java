@@ -51,27 +51,27 @@ import java.util.concurrent.ConcurrentHashMap;
 public class HandlerFactoryImpl implements HandlerFactory {
 
     private final ConcurrentHashMap<Class<?>, ResolvableHandler> resolvableHandlers = new ConcurrentHashMap<>();
-    private final HandlerContextProvider handlerContextProvider;
+    private final HandlerContextProvider handlerContexts;
     private final HandlerContext<? extends RestlightOptions> defaultContext;
     private final Handlers handlers;
 
-    public HandlerFactoryImpl(DeployContext<? extends RestlightOptions> defaultContext, Handlers handlers) {
-        Checks.checkNotNull(defaultContext, "defaultContext");
+    public HandlerFactoryImpl(DeployContext<? extends RestlightOptions> deployContext, Handlers handlers) {
+        Checks.checkNotNull(deployContext, "deployContext");
         Checks.checkNotNull(handlers, "handlers");
-        this.handlerContextProvider = defaultContext.handlerContextProvider().orElseThrow(() ->
+        this.handlerContexts = deployContext.handlerContexts().orElseThrow(() ->
                 new IllegalStateException("HandlerContextProvider is absent"));
-        this.defaultContext = new HandlerContext<>(defaultContext);
+        this.defaultContext = new HandlerContext<>(deployContext);
         this.handlers = handlers;
     }
 
     @Override
     public Object instantiate(Class<?> clazz, RequestContext context) {
-        return doInstantiate(clazz, getOrDefaultContext(clazz, null), context);
+        return doInstantiate(getOrDefaultContext(clazz, null), clazz, context);
     }
 
     @Override
     public Object instantiate(Class<?> clazz, Method method, RequestContext context) {
-        return doInstantiate(clazz, getOrDefaultContext(clazz, method), context);
+        return doInstantiate(getOrDefaultContext(clazz, method), clazz, context);
     }
 
     @Override
@@ -101,28 +101,28 @@ public class HandlerFactoryImpl implements HandlerFactory {
     @Override
     public void doInit(Object instance, RequestContext context) {
         Class<?> userType = ClassUtils.getUserType(instance);
-        doInit0(instance, userType, getOrDefaultContext(userType, null), context);
+        doInit0(getOrDefaultContext(userType, null), instance, userType, context);
     }
 
     @Override
     public void doInit(Object instance, Method method, RequestContext context) {
         Class<?> userType = ClassUtils.getUserType(instance);
-        doInit0(instance, userType, getOrDefaultContext(userType, method), context);
+        doInit0(getOrDefaultContext(userType, method), instance, userType, context);
     }
 
-    protected Object doInstantiate(Class<?> clazz, HandlerContext<? extends RestlightOptions> handlerCtx,
-                                   RequestContext context) {
-        final ResolvableHandler resolvable = getResolvableHandler(clazz, handlerCtx);
-        final ResolvableParam<ConstructorParam, ResolverWrap>[] consParams = resolvable.consParamResolvers;
+    protected Object doInstantiate(HandlerContext<? extends RestlightOptions> handlerContext,
+                                   Class<?> clazz, RequestContext context) {
+        final ResolvableHandler handler = getResolvableHandler(clazz, handlerContext);
+        final ResolvableParam<ConstructorParam, ResolverWrap>[] consParams = handler.consParamResolvers;
         final Object[] args = new Object[consParams.length];
         for (int i = 0; i < consParams.length; i++) {
-            ResolvableParam<ConstructorParam, ResolverWrap> resolvable0 = consParams[i];
-            ConstructorParam param = resolvable0.param();
+            ResolvableParam<ConstructorParam, ResolverWrap> resolvable = consParams[i];
+            ConstructorParam param = resolvable.param();
             //resolve args with resolver
-            if (resolvable0.resolver() != null) {
+            if (resolvable.resolver() != null) {
                 //it may return a null value
                 try {
-                    args[i] = resolvable0.resolver().resolve(handlerCtx, param, context);
+                    args[i] = resolvable.resolver().resolve(handlerContext, param, context);
                 } catch (Exception e) {
                     //wrap exception
                     throw WebServerException.wrap(e);
@@ -131,7 +131,7 @@ public class HandlerFactoryImpl implements HandlerFactory {
         }
 
         try {
-            return resolvable.constructor.newInstance(args);
+            return handler.constructor.newInstance(args);
         } catch (InvocationTargetException ex) {
             throw new IllegalStateException("Could not instantiate class: [" + clazz + "]", ex.getTargetException());
         } catch (Exception ex) {
@@ -139,18 +139,19 @@ public class HandlerFactoryImpl implements HandlerFactory {
         }
     }
 
-    protected void doInit0(Object instance, Class<?> clazz, HandlerContext<? extends RestlightOptions> handlerCtx,
-                           RequestContext context) {
-        final ResolvableHandler resolvable = getResolvableHandler(clazz, handlerCtx);
+    protected void doInit0(HandlerContext<? extends RestlightOptions> handlerContext,
+                           Object instance, Class<?> clazz, RequestContext context) {
+        final ResolvableHandler handler = getResolvableHandler(clazz, handlerContext);
 
         // set fields
-        for (ResolvableParam<FieldParam, ResolverWrap> r : resolvable.fieldParamResolvers) {
+        for (ResolvableParam<FieldParam, ResolverWrap> r : handler.fieldParamResolvers) {
             FieldParam param = r.param();
             //resolve args with resolver
             if (r.resolver() != null) {
                 //it may return a null value
                 try {
-                    BeanUtils.setFieldValue(instance, param.name(), r.resolver().resolve(handlerCtx, param, context));
+                    BeanUtils.setFieldValue(instance, param.name(), r.resolver().resolve(handlerContext,
+                            param, context));
                 } catch (Exception e) {
                     //wrap exception
                     throw WebServerException.wrap(e);
@@ -159,13 +160,13 @@ public class HandlerFactoryImpl implements HandlerFactory {
         }
 
         // set methods
-        for (ResolvableParam<MethodParam, ResolverWrap> r : resolvable.setterParamResolvers) {
+        for (ResolvableParam<MethodParam, ResolverWrap> r : handler.setterParamResolvers) {
             MethodParam param = r.param();
             //resolve args with resolver
             if (r.resolver() != null) {
                 //it may return a null value
                 try {
-                    Object arg = r.resolver().resolve(handlerCtx, param, context);
+                    Object arg = r.resolver().resolve(handlerContext, param, context);
                     ReflectionUtils.invokeMethod(param.method(), instance, arg);
                 } catch (InvocationTargetException ex) {
                     throw new IllegalArgumentException("Error occurred while invoking method: [" +
@@ -185,7 +186,7 @@ public class HandlerFactoryImpl implements HandlerFactory {
         if (clazz == null || method == null) {
             return defaultContext;
         }
-        HandlerContext<? extends RestlightOptions> context = handlerContextProvider
+        HandlerContext<? extends RestlightOptions> context = handlerContexts
                 .getContext(HandlerMethodImpl.of(clazz, method));
         if (context != null) {
             return context;
@@ -202,10 +203,10 @@ public class HandlerFactoryImpl implements HandlerFactory {
         private final ResolvableParam<FieldParam, ResolverWrap>[] fieldParamResolvers;
 
         private ResolvableHandler(Class<?> clazz, HandlerContext<? extends RestlightOptions> context) {
-            assert context.resolverFactory().isPresent();
-            assert context.paramPredicate().isPresent();
-            ResolvableParamPredicate resolvable = context.paramPredicate().get();
-            HandlerResolverFactory resolverFactory = context.resolverFactory().get();
+            ResolvableParamPredicate resolvable = context.paramPredicate()
+                    .orElseThrow(() -> new IllegalStateException("paramPredicate is null"));
+            HandlerResolverFactory resolverFactory = context.resolverFactory()
+                    .orElseThrow(() -> new IllegalStateException("resolverFactory is null"));
             this.constructor = ConstructorUtils.extractResolvable(clazz, resolvable);
             Checks.checkState(this.constructor != null,
                     "There is no suitable constructor to instantiate class: " + clazz.getName());

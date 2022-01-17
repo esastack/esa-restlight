@@ -15,6 +15,7 @@
  */
 package io.esastack.restlight.core.handler.impl;
 
+import esa.commons.Checks;
 import esa.commons.collection.AttributeKey;
 import esa.commons.collection.AttributeMap;
 import esa.commons.collection.Attributes;
@@ -25,6 +26,7 @@ import io.esastack.restlight.core.configure.ConfigurableHandlerImpl;
 import io.esastack.restlight.core.configure.DelegatingDeployContext;
 import io.esastack.restlight.core.configure.HandlerConfiguration;
 import io.esastack.restlight.core.configure.HandlerConfigure;
+import io.esastack.restlight.core.handler.HandlerContextProvider;
 import io.esastack.restlight.core.method.HandlerMethod;
 import io.esastack.restlight.core.resolver.HandlerResolverFactory;
 import io.esastack.restlight.core.resolver.HandlerResolverFactoryImpl;
@@ -45,7 +47,7 @@ public class HandlerContext<O extends RestlightOptions> extends DelegatingDeploy
         Attributes attributes = new AttributeMap(ctx.attrs().size());
         ctx.attrs().forEach((name, value) -> attributes.attr(AttributeKey.valueOf(name.name())).set(value.get()));
 
-        assert ctx.resolverFactory().isPresent();
+        Checks.checkState(ctx.resolverFactory().isPresent(), "resolverFactory is null");
         HandlerConfiguration configuration = buildConfiguration(ctx.resolverFactory().get(), attributes);
         ConfigurableHandler configurable = new ConfigurableHandlerImpl(method, configuration);
         if (ctx.handlerConfigures().isPresent()) {
@@ -54,7 +56,7 @@ public class HandlerContext<O extends RestlightOptions> extends DelegatingDeploy
             }
         }
         HandlerResolverFactory resolverFactory = getHandlerResolverFactory(ctx.resolverFactory().get(), configuration);
-        return new HandlerContext<C>(ctx) {
+        HandlerContext<C> context = new HandlerContext<C>(ctx) {
             @Override
             public Optional<HandlerResolverFactory> resolverFactory() {
                 return Optional.of(resolverFactory);
@@ -65,6 +67,13 @@ public class HandlerContext<O extends RestlightOptions> extends DelegatingDeploy
                 return configuration.attrs();
             }
         };
+
+        HandlerContextProvider handlerContexts = context.handlerContexts().orElseThrow(() ->
+                new IllegalStateException("HandlerContextProvider is absent"));
+        if (handlerContexts instanceof HandlerContexts) {
+            ((HandlerContexts) handlerContexts).addContext(method, context);
+        }
+        return context;
     }
 
     private static HandlerResolverFactory getHandlerResolverFactory(HandlerResolverFactory factory,

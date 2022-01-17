@@ -20,6 +20,7 @@ import io.esastack.restlight.core.method.HandlerMethod;
 import io.esastack.restlight.core.resolver.ExceptionResolver;
 import io.esastack.restlight.core.util.OrderedComparator;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -27,12 +28,12 @@ import java.util.List;
  */
 public class CompositeExceptionMapper implements ExceptionMapper {
 
-    private final List<ExceptionMapper> mappers;
+    private final ExceptionMapper[] mappers;
 
     public CompositeExceptionMapper(List<ExceptionMapper> mappers) {
         Checks.checkNotNull(mappers, "mappers");
         OrderedComparator.sort(mappers);
-        this.mappers = mappers;
+        this.mappers = mappers.toArray(new ExceptionMapper[0]);
     }
 
     public static ExceptionMapper wrapIfNecessary(List<ExceptionMapper> mappers) {
@@ -46,7 +47,7 @@ public class CompositeExceptionMapper implements ExceptionMapper {
 
     @Override
     public boolean isApplicable(HandlerMethod handler) {
-        return mappers.stream().anyMatch(exMapper -> exMapper.isApplicable(handler));
+        return Arrays.stream(mappers).anyMatch(exMapper -> exMapper.isApplicable(handler));
     }
 
     @Override
