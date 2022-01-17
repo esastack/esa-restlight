@@ -30,7 +30,7 @@ import static org.mockito.Mockito.when;
 class ConnectionLimiterTest {
 
     @Test
-    void testLimited() {
+    void testLimited() throws Exception {
         final ConnectionLimitOptions ops = ConnectionLimitOptionsConfigure.newOpts()
                 .maxPerSecond(1).configured();
         final ConnectionLimiter limiter = new ConnectionLimiter(ops);
@@ -45,6 +45,9 @@ class ConnectionLimiterTest {
         final long start = System.nanoTime();
         limiter.onConnect(channel);
         assumeTrue((System.nanoTime() - start) < TimeUnit.SECONDS.toNanos(1L));
+
+        // wait the closure of this channel.
+        ctx.channel().closeFuture().get(5L, TimeUnit.SECONDS);
         assertFalse(ctx.channel().isActive());
         assertFalse(ctx.channel().isOpen());
         assertFalse(ctx.channel().isWritable());
