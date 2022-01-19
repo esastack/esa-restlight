@@ -11,7 +11,8 @@
       {"pattern":".*/io.esastack.restlight.core.resolver.ResponseEntityResolverFactory$"},
       {"pattern":".*/io.esastack.restlight.core.resolver.StringConverterFactory$"},
       {"pattern":".*/io.esastack.restlight.core.spi.ParamResolverProvider$"},
-      {"pattern":".*/io.esastack.restlight.core.spi.RouteFilterFactory$"}
+      {"pattern":".*/io.esastack.restlight.core.spi.RouteFilterFactory$"},
+      {"pattern":".*/io.esastack.restlight.server.spi.ExceptionHandlerFactory$"}
     ]},
   "bundles":[]
 }

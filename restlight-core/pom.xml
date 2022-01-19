@@ -30,10 +30,18 @@
             <artifactId>restlight-common</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <!--netty decompressor,used by netty-->
         <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>restlight-server</artifactId>
-            <version>${project.version}</version>
+            <groupId>com.jcraft</groupId>
+            <artifactId>jzlib</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-tcnative-boringssl-static</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.esastack</groupId>
+            <artifactId>httpserver</artifactId>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>

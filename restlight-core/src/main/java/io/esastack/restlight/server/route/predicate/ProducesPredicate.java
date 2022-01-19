@@ -51,7 +51,7 @@ public class ProducesPredicate implements RequestPredicate {
     }
 
     public static ProducesPredicate parseFrom(String[] produces, String[] headers) {
-        Set<ProducesPredicate.Expression> produceExpressions =
+        Set<Expression> produceExpressions =
                 MappingUtils.parseProduceExpressions(produces, headers);
         if (!produceExpressions.isEmpty()) {
             return new ProducesPredicate(produceExpressions);

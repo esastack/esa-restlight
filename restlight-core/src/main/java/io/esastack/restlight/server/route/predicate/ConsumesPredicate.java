@@ -38,7 +38,7 @@ public class ConsumesPredicate implements RequestPredicate {
 
     public static ConsumesPredicate parseFrom(String[] consumes, String[] headers) {
 
-        Set<ConsumesPredicate.Expression> consumeExpressions =
+        Set<Expression> consumeExpressions =
                 MappingUtils.parseConsumeExpressions(consumes, headers);
 
         if (!consumeExpressions.isEmpty()) {

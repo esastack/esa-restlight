@@ -15,9 +15,9 @@
  */
 package io.esastack.restlight.server.schedule;
 
+import io.esastack.restlight.server.context.RequestContext;
 import io.esastack.restlight.server.core.HttpRequest;
 import io.esastack.restlight.server.core.HttpResponse;
-import io.esastack.restlight.server.context.RequestContext;
 
 import java.util.concurrent.CompletableFuture;
 
