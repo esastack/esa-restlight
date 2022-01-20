@@ -39,7 +39,7 @@ class HttpResponseImplTest {
     @Test
     void testDelegate() {
         final Response mock = mock(Response.class);
-        final HttResponseImpl response = new HttResponseImpl(mock);
+        final HttpResponseImpl response = new HttpResponseImpl(mock);
 
         when(mock.status()).thenReturn(500);
         assertEquals(500, response.status());
@@ -71,7 +71,7 @@ class HttpResponseImplTest {
     @Test
     void testReset() {
         final Response mock = mock(Response.class);
-        final HttResponseImpl response = new HttResponseImpl(mock);
+        final HttpResponseImpl response = new HttpResponseImpl(mock);
 
         final HttpHeaders headers = new Http1HeadersImpl().set("a", "1");
         when(mock.headers()).thenReturn(headers);
@@ -89,7 +89,7 @@ class HttpResponseImplTest {
         final HttpHeaders headers = new Http1HeadersImpl();
         final Response mock = mock(Response.class);
         when(mock.headers()).thenReturn(headers);
-        final HttResponseImpl response = new HttResponseImpl(mock);
+        final HttpResponseImpl response = new HttpResponseImpl(mock);
 
         response.sendRedirect("foo");
         verify(mock).setStatus(HttpStatus.FOUND.code());

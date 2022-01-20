@@ -27,12 +27,12 @@ import java.util.function.Consumer;
  * Default implementation of {@link HttpResponse} that wraps the {@link Response} as delegate.
  */
 @Internal
-public class HttResponseImpl implements HttpResponse {
+public class HttpResponseImpl implements HttpResponse {
 
     private final Response res;
     private Object entity;
 
-    public HttResponseImpl(Response res) {
+    public HttpResponseImpl(Response res) {
         this.res = res;
     }
 
