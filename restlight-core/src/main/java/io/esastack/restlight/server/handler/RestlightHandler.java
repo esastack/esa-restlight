@@ -27,7 +27,7 @@ public interface RestlightHandler {
     /**
      * Processes the given {@link RequestContext}.
      *
-     * @param context  context
+     * @param context context
      * @return future
      */
     CompletionStage<Void> process(RequestContext context);
@@ -44,7 +44,7 @@ public interface RestlightHandler {
     /**
      * tcp disconnect event
      *
-     * @param channel   channel
+     * @param channel channel
      */
     default void onDisconnected(Channel channel) {
 

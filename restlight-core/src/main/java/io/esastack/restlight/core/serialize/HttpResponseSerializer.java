@@ -24,9 +24,9 @@ public interface HttpResponseSerializer extends Ordered {
     /**
      * Serialize the object to byte array.
      *
-     * @param entity    response entity
-     * @return  handled value
-     * @throws Exception    any exception
+     * @param entity response entity
+     * @return handled value
+     * @throws Exception any exception
      */
     HandledValue<byte[]> serialize(ResponseEntity entity) throws Exception;
 

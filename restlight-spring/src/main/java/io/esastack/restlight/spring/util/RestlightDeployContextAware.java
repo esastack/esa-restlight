@@ -16,7 +16,6 @@
 package io.esastack.restlight.spring.util;
 
 import io.esastack.restlight.core.DeployContext;
-import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.server.bootstrap.RestlightServer;
 import io.esastack.restlight.spring.Restlight4Spring;
 import org.springframework.beans.factory.Aware;
@@ -32,6 +31,6 @@ public interface RestlightDeployContextAware extends Aware {
      *
      * @param ctx ctx
      */
-    void setDeployContext(DeployContext<? extends RestlightOptions> ctx);
+    void setDeployContext(DeployContext ctx);
 
 }

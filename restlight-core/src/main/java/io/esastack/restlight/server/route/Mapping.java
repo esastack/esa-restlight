@@ -40,7 +40,6 @@ public interface Mapping {
      * {@link Mapping}.
      *
      * @param path path
-     *
      * @return builder
      */
     static MappingImpl mapping(String path) {
@@ -53,7 +52,6 @@ public interface Mapping {
      *
      * @param path   path
      * @param method method
-     *
      * @return builder
      */
     static MappingImpl mapping(String path, HttpMethod method) {
@@ -76,7 +74,6 @@ public interface Mapping {
      * set the {@link Mapping#path()} to given path for building a new {@link Mapping}.
      *
      * @param path path
-     *
      * @return builder
      */
     static MappingImpl get(String path) {
@@ -98,7 +95,6 @@ public interface Mapping {
      * set the {@link Mapping#path()} to given path for building a new {@link Mapping}.
      *
      * @param path path
-     *
      * @return builder
      */
     static MappingImpl post(String path) {
@@ -120,7 +116,6 @@ public interface Mapping {
      * set the {@link Mapping#path()} to given path for building a new {@link Mapping}.
      *
      * @param path path
-     *
      * @return builder
      */
     static MappingImpl put(String path) {
@@ -142,7 +137,6 @@ public interface Mapping {
      * set the {@link Mapping#path()} to given path for building a new {@link Mapping}.
      *
      * @param path path
-     *
      * @return builder
      */
     static MappingImpl delete(String path) {
@@ -164,7 +158,6 @@ public interface Mapping {
      * set the {@link Mapping#path()} to given path for building a new {@link Mapping}.
      *
      * @param path path
-     *
      * @return builder
      */
     static MappingImpl patch(String path) {
@@ -186,7 +179,6 @@ public interface Mapping {
      * set the {@link Mapping#path()} to given path for building a new {@link Mapping}.
      *
      * @param path path
-     *
      * @return builder
      */
     static MappingImpl head(String path) {
@@ -208,7 +200,6 @@ public interface Mapping {
      * and set the {@link Mapping#path()} to given path for building a new {@link Mapping}.
      *
      * @param path path
-     *
      * @return builder
      */
     static MappingImpl options(String path) {
@@ -230,7 +221,6 @@ public interface Mapping {
      * and set the {@link Mapping#path()} to given path for building a new {@link Mapping}.
      *
      * @param path path
-     *
      * @return builder
      */
     static MappingImpl trace(String path) {
@@ -252,7 +242,6 @@ public interface Mapping {
      * and set the {@link Mapping#path()} to given path for building a new {@link Mapping}.
      *
      * @param path path
-     *
      * @return builder
      */
     static MappingImpl connect(String path) {
@@ -324,7 +313,6 @@ public interface Mapping {
      * 'Accept'.
      *
      * @param child child mapping
-     *
      * @return combined
      */
     default Mapping combine(Mapping child) {

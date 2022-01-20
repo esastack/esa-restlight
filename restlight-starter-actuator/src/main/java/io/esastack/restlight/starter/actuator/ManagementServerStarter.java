@@ -116,7 +116,7 @@ public class ManagementServerStarter extends AbstractDelegatedRestlightServer
     /**
      * Guarantee the {@link ManagementServerStarter#shutdown()} will be executed before spring beans are
      * destroyed during {@link AbstractApplicationContext#close()}.
-     *
+     * <p>
      * See https://github.com/esastack/esa-restlight/issues/38.
      *
      * @param event event

@@ -19,8 +19,7 @@ import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.spring.Deployments4Spring;
 import org.springframework.context.ApplicationContext;
 
-class Deployments4SpringTest extends Deployments4Spring<Restlight4SpringTest, Deployments4SpringTest,
-        RestlightOptions> {
+class Deployments4SpringTest extends Deployments4Spring<Restlight4SpringTest, Deployments4SpringTest> {
 
     Deployments4SpringTest(Restlight4SpringTest restlight, ApplicationContext context, RestlightOptions options) {
         super(restlight, context, options);

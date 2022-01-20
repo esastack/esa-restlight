@@ -54,7 +54,6 @@ public interface FieldParam extends Param {
      *
      * @param ann ann
      * @param <A> type of given annotation
-     *
      * @return instance of given annotation type if present otherwise {@code false}
      */
     default <A extends Annotation> A getClassAnnotation(Class<A> ann) {
@@ -66,7 +65,6 @@ public interface FieldParam extends Param {
      *
      * @param ann ann
      * @param <A> type of given annotation
-     *
      * @return {@code true} if given annotation is present otherwise {@code false}
      */
     default <A extends Annotation> boolean hasClassAnnotation(Class<A> ann) {

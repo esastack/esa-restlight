@@ -70,7 +70,6 @@ public class PatternsPredicate implements RequestPredicate {
      * Get the matching patterns by the given lookup path
      *
      * @param lookupPath path
-     *
      * @return uri template variables, none-{@code null} if given path matched, {@code null} if it did not.
      */
     private Map<String, String> match(String lookupPath) {

@@ -19,7 +19,6 @@ import esa.commons.annotation.Internal;
 import io.esastack.restlight.core.DeployContext;
 import io.esastack.restlight.core.Deployments;
 import io.esastack.restlight.core.Restlight;
-import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.core.handler.HandlerMapping;
 import io.esastack.restlight.core.handler.HandlerMappingProvider;
 import io.esastack.restlight.core.interceptor.HandlerInterceptor;
@@ -61,13 +60,13 @@ import java.util.Collection;
  */
 public class MiniConfigurableDeployments {
 
-    final Deployments<?, ?, ?> deployments;
+    final Deployments<?, ?> deployments;
 
-    public DeployContext<? extends RestlightOptions> deployContext() {
+    public DeployContext deployContext() {
         return deployments.deployContext();
     }
 
-    public MiniConfigurableDeployments(Deployments<?, ?, ?> deployments) {
+    public MiniConfigurableDeployments(Deployments<?, ?> deployments) {
         this.deployments = deployments;
     }
 
@@ -84,7 +83,7 @@ public class MiniConfigurableDeployments {
     /**
      * Adds {@link Filter}.
      *
-     * @param filter    filter
+     * @param filter filter
      * @return deployments
      */
     public MiniConfigurableDeployments addFilter(Filter filter) {
@@ -95,7 +94,7 @@ public class MiniConfigurableDeployments {
     /**
      * Adds {@link Filter}.
      *
-     * @param filter    filter
+     * @param filter filter
      * @return deployments
      */
     public MiniConfigurableDeployments addFilter(FilterFactory filter) {
@@ -106,7 +105,7 @@ public class MiniConfigurableDeployments {
     /**
      * Adds {@link Filter}s.
      *
-     * @param filters    filters
+     * @param filters filters
      * @return deployments
      */
     public MiniConfigurableDeployments addFilters(Collection<? extends FilterFactory> filters) {
@@ -117,7 +116,7 @@ public class MiniConfigurableDeployments {
     /**
      * Adds {@link RouteFilterFactory}.
      *
-     * @param filter    route filter factory
+     * @param filter route filter factory
      * @return this deployments
      */
     public MiniConfigurableDeployments addRouteFilter(RouteFilterFactory filter) {
@@ -128,7 +127,7 @@ public class MiniConfigurableDeployments {
     /**
      * Adds {@link RouteFilterFactory}s.
      *
-     * @param filters    route filter factories
+     * @param filters route filter factories
      * @return this deployments
      */
     public MiniConfigurableDeployments addRouteFilters(Collection<? extends RouteFilterFactory> filters) {
@@ -139,7 +138,7 @@ public class MiniConfigurableDeployments {
     /**
      * Adds {@link IExceptionHandler}.
      *
-     * @param handler    exception handler
+     * @param handler exception handler
      * @return this deployments
      */
     @Internal
@@ -151,7 +150,7 @@ public class MiniConfigurableDeployments {
     /**
      * Adds {@link IExceptionHandler}s.
      *
-     * @param handlers    exception handlers
+     * @param handlers exception handlers
      * @return this deployments
      */
     @Internal
@@ -191,7 +190,6 @@ public class MiniConfigurableDeployments {
      * in the {@link RouteRegistry}
      *
      * @param providers providers
-     *
      * @return this deployments
      */
     public MiniConfigurableDeployments addHandlerMappingProviders(Collection<? extends HandlerMappingProvider>
@@ -204,7 +202,6 @@ public class MiniConfigurableDeployments {
      * Adds a controller bean which will be registered in the {@link RouteRegistry}.
      *
      * @param bean an {@link Object} instances.
-     *
      * @return this deployments
      */
     public MiniConfigurableDeployments addController(Object bean) {
@@ -216,7 +213,6 @@ public class MiniConfigurableDeployments {
      * Adds controller beans which will be registered in the {@link RouteRegistry}
      *
      * @param beans {@link Object} instances.
-     *
      * @return this deployments
      */
     public MiniConfigurableDeployments addControllers(Collection<?> beans) {
@@ -238,7 +234,6 @@ public class MiniConfigurableDeployments {
      * Adds controller advice bean or class.
      *
      * @param beanOrClass an {@link Object} instance or {@link Class}.
-     *
      * @return this deployments
      */
     public MiniConfigurableDeployments addControllerAdvice(Object beanOrClass) {
@@ -250,7 +245,6 @@ public class MiniConfigurableDeployments {
      * Adds controller advice beans.
      *
      * @param beanOrClasses {@link Object} instances or {@link Class}s.
-     *
      * @return this deployments
      */
     public MiniConfigurableDeployments addControllerAdvices(Collection<?> beanOrClasses) {
@@ -262,7 +256,6 @@ public class MiniConfigurableDeployments {
      * Adds a {@link RouteInterceptor}.
      *
      * @param interceptor interceptor
-     *
      * @return this deployments
      */
     public MiniConfigurableDeployments addRouteInterceptor(RouteInterceptor interceptor) {
@@ -274,7 +267,6 @@ public class MiniConfigurableDeployments {
      * Adds {@link RouteInterceptor}s.
      *
      * @param interceptors interceptors
-     *
      * @return this deployments
      */
     public MiniConfigurableDeployments addRouteInterceptors(Collection<? extends RouteInterceptor> interceptors) {
@@ -286,7 +278,6 @@ public class MiniConfigurableDeployments {
      * Adds a {@link HandlerInterceptor}.
      *
      * @param interceptor interceptor
-     *
      * @return this deployments
      */
     public MiniConfigurableDeployments addHandlerInterceptor(HandlerInterceptor interceptor) {
@@ -298,7 +289,6 @@ public class MiniConfigurableDeployments {
      * Adds {@link HandlerInterceptor}s.
      *
      * @param interceptors interceptors
-     *
      * @return this deployments
      */
     public MiniConfigurableDeployments addHandlerInterceptors(Collection<? extends HandlerInterceptor> interceptors) {
@@ -310,7 +300,6 @@ public class MiniConfigurableDeployments {
      * Adds a {@link MappingInterceptor}.
      *
      * @param interceptor interceptors
-     *
      * @return this deployments
      */
     public MiniConfigurableDeployments addMappingInterceptor(MappingInterceptor interceptor) {
@@ -322,7 +311,6 @@ public class MiniConfigurableDeployments {
      * Adds {@link MappingInterceptor}s.
      *
      * @param interceptors interceptors
-     *
      * @return this deployments
      */
     public MiniConfigurableDeployments addMappingInterceptors(Collection<? extends MappingInterceptor> interceptors) {
@@ -334,7 +322,6 @@ public class MiniConfigurableDeployments {
      * Adds {@link InterceptorFactory} which will be registered in the {@link HandlerResolverFactory}
      *
      * @param interceptor interceptor
-     *
      * @return this deployments
      */
     public MiniConfigurableDeployments addInterceptor(Interceptor interceptor) {
@@ -346,7 +333,6 @@ public class MiniConfigurableDeployments {
      * Adds {@link InterceptorFactory}s.
      *
      * @param interceptors interceptors
-     *
      * @return this deployments
      */
     public MiniConfigurableDeployments addInterceptors(Collection<? extends Interceptor> interceptors) {
@@ -358,7 +344,6 @@ public class MiniConfigurableDeployments {
      * Adds {@link InterceptorFactory} which will be registered in the {@link HandlerResolverFactory}
      *
      * @param factory factory
-     *
      * @return this deployments
      */
     public MiniConfigurableDeployments addInterceptorFactory(InterceptorFactory factory) {
@@ -370,7 +355,6 @@ public class MiniConfigurableDeployments {
      * Adds {@link InterceptorFactory}s.
      *
      * @param interceptors interceptors
-     *
      * @return this deployments
      */
     public MiniConfigurableDeployments addInterceptorFactories(Collection<? extends InterceptorFactory> interceptors) {
@@ -382,7 +366,6 @@ public class MiniConfigurableDeployments {
      * Adds {@link StringConverterFactory} which will be registered in the {@link HandlerResolverFactory}
      *
      * @param converter resolver
-     *
      * @return this deployments
      */
     public MiniConfigurableDeployments addStringConverter(StringConverterFactory converter) {
@@ -394,7 +377,6 @@ public class MiniConfigurableDeployments {
      * Adds {@link StringConverterFactory}s which will be registered in the {@link HandlerResolverFactory}
      *
      * @param converters converters
-     *
      * @return this deployments
      */
     public MiniConfigurableDeployments addStringConverters(Collection<? extends StringConverterFactory> converters) {
@@ -406,7 +388,6 @@ public class MiniConfigurableDeployments {
      * Adds {@link ParamResolverAdapter} which will be registered in the {@link HandlerResolverFactory}
      *
      * @param resolver resolver
-     *
      * @return this deployments
      */
     public MiniConfigurableDeployments addParamResolver(ParamResolverAdapter resolver) {
@@ -418,7 +399,6 @@ public class MiniConfigurableDeployments {
      * Adds {@link ParamResolverFactory} which will be registered in the {@link HandlerResolverFactory}
      *
      * @param resolver resolver
-     *
      * @return this deployments
      */
     public MiniConfigurableDeployments addParamResolver(ParamResolverFactory resolver) {
@@ -430,7 +410,6 @@ public class MiniConfigurableDeployments {
      * Adds {@link ParamResolverFactory}s which will be registered in the {@link HandlerResolverFactory}
      *
      * @param resolvers resolvers
-     *
      * @return this deployments
      */
     public MiniConfigurableDeployments addParamResolvers(Collection<? extends ParamResolverFactory> resolvers) {
@@ -442,7 +421,6 @@ public class MiniConfigurableDeployments {
      * Adds {@link ParamResolverFactory} which will be registered in the {@link HandlerResolverFactory}
      *
      * @param advice advice
-     *
      * @return this deployments
      */
     public MiniConfigurableDeployments addParamResolverAdvice(ParamResolverAdviceAdapter advice) {
@@ -454,7 +432,6 @@ public class MiniConfigurableDeployments {
      * Adds {@link ParamResolverAdviceFactory} which will be registered in the {@link HandlerResolverFactory}
      *
      * @param advice advice
-     *
      * @return this deployments
      */
     public MiniConfigurableDeployments addParamResolverAdvice(ParamResolverAdviceFactory advice) {
@@ -466,7 +443,6 @@ public class MiniConfigurableDeployments {
      * Adds {@link ParamResolverAdviceFactory}s which will be registered in the {@link HandlerResolverFactory}
      *
      * @param advices advices
-     *
      * @return this deployments
      */
     public MiniConfigurableDeployments addParamResolverAdvices(Collection<? extends ParamResolverAdviceFactory>
@@ -479,7 +455,6 @@ public class MiniConfigurableDeployments {
      * Adds {@link ContextResolverAdapter} which will be registered in the {@link HandlerResolverFactory}
      *
      * @param resolver resolver
-     *
      * @return this deployments
      */
     public MiniConfigurableDeployments addContextResolver(ContextResolverAdapter resolver) {
@@ -491,7 +466,6 @@ public class MiniConfigurableDeployments {
      * Adds {@link ParamResolverFactory} which will be registered in the {@link HandlerResolverFactory}
      *
      * @param resolver resolver
-     *
      * @return this deployments
      */
     public MiniConfigurableDeployments addContextResolver(ContextResolverFactory resolver) {
@@ -503,7 +477,6 @@ public class MiniConfigurableDeployments {
      * Adds {@link ParamResolverFactory}s which will be registered in the {@link HandlerResolverFactory}
      *
      * @param resolvers resolvers
-     *
      * @return this deployments
      */
     public MiniConfigurableDeployments addContextResolvers(Collection<? extends ContextResolverFactory> resolvers) {
@@ -515,7 +488,6 @@ public class MiniConfigurableDeployments {
      * Adds {@link RequestEntityResolverAdapter} which will be registered in the {@link HandlerResolverFactory}
      *
      * @param resolver resolver
-     *
      * @return this deployments
      */
     public MiniConfigurableDeployments addRequestEntityResolver(RequestEntityResolverAdapter resolver) {
@@ -527,7 +499,6 @@ public class MiniConfigurableDeployments {
      * Adds {@link RequestEntityResolverFactory} which will be registered in the {@link HandlerResolverFactory}
      *
      * @param resolver resolver
-     *
      * @return this deployments
      */
     public MiniConfigurableDeployments addRequestEntityResolver(RequestEntityResolverFactory resolver) {
@@ -539,11 +510,10 @@ public class MiniConfigurableDeployments {
      * Adds {@link RequestEntityResolverFactory}s which will be registered in the {@link HandlerResolverFactory}
      *
      * @param resolvers resolvers
-     *
      * @return this deployments
      */
     public MiniConfigurableDeployments addRequestEntityResolvers(Collection<? extends RequestEntityResolverFactory>
-                                                                     resolvers) {
+                                                                         resolvers) {
         deployments.addRequestEntityResolvers(resolvers);
         return self();
     }
@@ -552,7 +522,6 @@ public class MiniConfigurableDeployments {
      * Adds {@link RequestEntityResolverAdviceAdapter} which will be registered in the {@link HandlerResolverFactory}
      *
      * @param advice advice
-     *
      * @return this deployments
      */
     public MiniConfigurableDeployments addRequestEntityResolverAdvice(RequestEntityResolverAdviceAdapter advice) {
@@ -564,7 +533,6 @@ public class MiniConfigurableDeployments {
      * Adds {@link RequestEntityResolverAdviceFactory} which will be registered in the {@link HandlerResolverFactory}
      *
      * @param advice advice
-     *
      * @return this deployments
      */
     public MiniConfigurableDeployments addRequestEntityResolverAdvice(RequestEntityResolverAdviceFactory advice) {
@@ -576,7 +544,6 @@ public class MiniConfigurableDeployments {
      * Adds {@link RequestEntityResolverAdviceFactory}s which will be registered in the {@link HandlerResolverFactory}
      *
      * @param advices resolvers
-     *
      * @return this deployments
      */
     public MiniConfigurableDeployments addRequestEntityResolverAdvices(
@@ -594,7 +561,6 @@ public class MiniConfigurableDeployments {
      * Adds {@link ResponseEntityResolverFactory} which will be registered in the {@link HandlerResolverFactory}
      *
      * @param resolver resolver
-     *
      * @return this deployments
      */
     public MiniConfigurableDeployments addResponseEntityResolver(ResponseEntityResolverFactory resolver) {
@@ -606,11 +572,10 @@ public class MiniConfigurableDeployments {
      * Adds {@link ResponseEntityResolverFactory}s which will be registered in the {@link HandlerResolverFactory}
      *
      * @param resolvers resolvers
-     *
      * @return this deployments
      */
     public MiniConfigurableDeployments addResponseEntityResolvers(Collection<? extends ResponseEntityResolverFactory>
-                                                                      resolvers) {
+                                                                          resolvers) {
         deployments.addResponseEntityResolvers(resolvers);
         return self();
     }
@@ -619,7 +584,6 @@ public class MiniConfigurableDeployments {
      * Adds {@link ResponseEntityResolverAdviceAdapter} which will be registered in the {@link HandlerResolverFactory}
      *
      * @param advice advice
-     *
      * @return this deployments
      */
     public MiniConfigurableDeployments addResponseEntityResolverAdvice(ResponseEntityResolverAdviceAdapter advice) {
@@ -631,7 +595,6 @@ public class MiniConfigurableDeployments {
      * Adds {@link ResponseEntityResolverAdviceAdapter} which will be registered in the {@link HandlerResolverFactory}
      *
      * @param advice advice
-     *
      * @return this deployments
      */
     public MiniConfigurableDeployments addResponseEntityResolverAdvice(ResponseEntityResolverAdviceFactory advice) {
@@ -643,7 +606,6 @@ public class MiniConfigurableDeployments {
      * Adds {@link ResponseEntityResolverAdviceFactory}s which will be registered in the {@link HandlerResolverFactory}
      *
      * @param advices resolvers
-     *
      * @return this deployments
      */
     public MiniConfigurableDeployments addResponseEntityResolverAdvices(
@@ -656,7 +618,6 @@ public class MiniConfigurableDeployments {
      * Adds {@link HttpRequestSerializer} which will be registered in the {@link HandlerResolverFactory}
      *
      * @param requestSerializer requestSerializer
-     *
      * @return this deployments
      */
     public MiniConfigurableDeployments addRequestSerializer(HttpRequestSerializer requestSerializer) {
@@ -668,7 +629,6 @@ public class MiniConfigurableDeployments {
      * Adds {@link HttpRequestSerializer}s which will be registered in the {@link HandlerResolverFactory}
      *
      * @param requestSerializers requestSerializers
-     *
      * @return this deployments
      */
     public MiniConfigurableDeployments addRequestSerializers(Collection<? extends HttpRequestSerializer>
@@ -681,7 +641,6 @@ public class MiniConfigurableDeployments {
      * Adds {@link HttpResponseSerializer} which will be registered in the {@link HandlerResolverFactory}
      *
      * @param responseSerializer responseSerializer
-     *
      * @return this deployments
      */
     public MiniConfigurableDeployments addResponseSerializer(HttpResponseSerializer responseSerializer) {
@@ -693,11 +652,10 @@ public class MiniConfigurableDeployments {
      * Adds {@link HttpResponseSerializer}s which will be registered in the {@link HandlerResolverFactory}
      *
      * @param responseSerializers responseSerializers
-     *
      * @return this deployments
      */
     public MiniConfigurableDeployments addResponseSerializers(Collection<? extends HttpResponseSerializer>
-                                                                  responseSerializers) {
+                                                                      responseSerializers) {
         deployments.addResponseSerializers(responseSerializers);
         return self();
     }
@@ -707,7 +665,6 @@ public class MiniConfigurableDeployments {
      * HttpRequestSerializer} and {@link HttpResponseSerializer}
      *
      * @param serializer serializer
-     *
      * @return this deployments
      */
     public MiniConfigurableDeployments addSerializer(HttpBodySerializer serializer) {
@@ -720,7 +677,6 @@ public class MiniConfigurableDeployments {
      * HttpRequestSerializer} and {@link HttpResponseSerializer}
      *
      * @param serializers serializers
-     *
      * @return this deployments
      */
     public MiniConfigurableDeployments addSerializers(Collection<? extends HttpBodySerializer> serializers) {

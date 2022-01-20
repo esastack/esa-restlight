@@ -17,7 +17,7 @@ package io.esastack.restlight.server.route.impl;
 
 import esa.commons.Checks;
 import esa.commons.StringUtils;
-import io.esastack.restlight.server.ServerDeployContext;
+import io.esastack.restlight.core.DeployContext;
 import io.esastack.restlight.server.context.RequestContext;
 import io.esastack.restlight.server.route.Route;
 import io.esastack.restlight.server.route.RouteRegistry;
@@ -29,10 +29,10 @@ import java.util.List;
 
 public class RoutableRegistry implements RouteRegistry, Router {
 
-    private final ServerDeployContext<?> context;
+    private final DeployContext context;
     private final AbstractRouteRegistry underlying;
 
-    public RoutableRegistry(ServerDeployContext<?> context, AbstractRouteRegistry underlying) {
+    public RoutableRegistry(DeployContext context, AbstractRouteRegistry underlying) {
         Checks.checkNotNull(context, "context");
         Checks.checkNotNull(underlying, "underlying");
         this.context = context;

@@ -16,7 +16,6 @@
 package io.esastack.restlight.jaxrs.resolver.param;
 
 import io.esastack.restlight.core.DeployContext;
-import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.core.method.Param;
 import io.esastack.restlight.core.resolver.param.RequestBeanParamResolver;
 import io.esastack.restlight.jaxrs.util.JaxrsUtils;
@@ -24,7 +23,7 @@ import jakarta.ws.rs.BeanParam;
 
 public class BeanParamResolver extends RequestBeanParamResolver {
 
-    public BeanParamResolver(DeployContext<? extends RestlightOptions> ctx) {
+    public BeanParamResolver(DeployContext ctx) {
         super(ctx);
     }
 

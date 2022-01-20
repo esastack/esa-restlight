@@ -43,8 +43,8 @@ public interface RouteFilterFactory extends HandlerPredicate {
     /**
      * Creates an instance of {@link RouteFilter} for given {@link Route}.
      *
-     * @param method     handler method
-     * @return           an optional instance of filter which is corresponding with given {@code route}.
+     * @param method handler method
+     * @return an optional instance of filter which is corresponding with given {@code route}.
      */
     Optional<RouteFilter> create(HandlerMethod method);
 

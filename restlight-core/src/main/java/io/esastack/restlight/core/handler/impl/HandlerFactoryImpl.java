@@ -20,7 +20,6 @@ import esa.commons.ClassUtils;
 import esa.commons.reflect.BeanUtils;
 import esa.commons.reflect.ReflectionUtils;
 import io.esastack.restlight.core.DeployContext;
-import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.core.configure.Handlers;
 import io.esastack.restlight.core.handler.HandlerContextProvider;
 import io.esastack.restlight.core.handler.HandlerFactory;
@@ -52,15 +51,15 @@ public class HandlerFactoryImpl implements HandlerFactory {
 
     private final ConcurrentHashMap<Class<?>, ResolvableHandler> resolvableHandlers = new ConcurrentHashMap<>();
     private final HandlerContextProvider handlerContexts;
-    private final HandlerContext<? extends RestlightOptions> defaultContext;
+    private final HandlerContext defaultContext;
     private final Handlers handlers;
 
-    public HandlerFactoryImpl(DeployContext<? extends RestlightOptions> deployContext, Handlers handlers) {
+    public HandlerFactoryImpl(DeployContext deployContext, Handlers handlers) {
         Checks.checkNotNull(deployContext, "deployContext");
         Checks.checkNotNull(handlers, "handlers");
         this.handlerContexts = deployContext.handlerContexts().orElseThrow(() ->
                 new IllegalStateException("HandlerContextProvider is absent"));
-        this.defaultContext = new HandlerContext<>(deployContext);
+        this.defaultContext = new HandlerContext(deployContext);
         this.handlers = handlers;
     }
 
@@ -110,7 +109,7 @@ public class HandlerFactoryImpl implements HandlerFactory {
         doInit0(getOrDefaultContext(userType, method), instance, userType, context);
     }
 
-    protected Object doInstantiate(HandlerContext<? extends RestlightOptions> handlerContext,
+    protected Object doInstantiate(HandlerContext handlerContext,
                                    Class<?> clazz, RequestContext context) {
         final ResolvableHandler handler = getResolvableHandler(clazz, handlerContext);
         final ResolvableParam<ConstructorParam, ResolverWrap>[] consParams = handler.consParamResolvers;
@@ -139,7 +138,7 @@ public class HandlerFactoryImpl implements HandlerFactory {
         }
     }
 
-    protected void doInit0(HandlerContext<? extends RestlightOptions> handlerContext,
+    protected void doInit0(HandlerContext handlerContext,
                            Object instance, Class<?> clazz, RequestContext context) {
         final ResolvableHandler handler = getResolvableHandler(clazz, handlerContext);
 
@@ -178,15 +177,15 @@ public class HandlerFactoryImpl implements HandlerFactory {
         }
     }
 
-    private ResolvableHandler getResolvableHandler(Class<?> clazz, HandlerContext<? extends RestlightOptions> context) {
+    private ResolvableHandler getResolvableHandler(Class<?> clazz, HandlerContext context) {
         return resolvableHandlers.computeIfAbsent(clazz, clz -> new ResolvableHandler(clazz, context));
     }
 
-    private HandlerContext<? extends RestlightOptions> getOrDefaultContext(Class<?> clazz, Method method) {
+    private HandlerContext getOrDefaultContext(Class<?> clazz, Method method) {
         if (clazz == null || method == null) {
             return defaultContext;
         }
-        HandlerContext<? extends RestlightOptions> context = handlerContexts
+        HandlerContext context = handlerContexts
                 .getContext(HandlerMethodImpl.of(clazz, method));
         if (context != null) {
             return context;
@@ -202,7 +201,7 @@ public class HandlerFactoryImpl implements HandlerFactory {
         private final ResolvableParam<MethodParam, ResolverWrap>[] setterParamResolvers;
         private final ResolvableParam<FieldParam, ResolverWrap>[] fieldParamResolvers;
 
-        private ResolvableHandler(Class<?> clazz, HandlerContext<? extends RestlightOptions> context) {
+        private ResolvableHandler(Class<?> clazz, HandlerContext context) {
             ResolvableParamPredicate resolvable = context.paramPredicate()
                     .orElseThrow(() -> new IllegalStateException("paramPredicate is null"));
             HandlerResolverFactory resolverFactory = context.resolverFactory()

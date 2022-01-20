@@ -46,7 +46,7 @@ public interface DispatcherHandler {
      * This is the first phase of request processing which should find a {@link Route} for current request and handle
      * the not found event if there's no {@link Route} found in current context.
      *
-     * @param context  context
+     * @param context context
      * @return routes, which may be {@code null}.
      */
     Route route(RequestContext context);
@@ -54,8 +54,8 @@ public interface DispatcherHandler {
     /**
      * process for request
      *
-     * @param context  context
-     * @param promise  promise
+     * @param context context
+     * @param promise promise
      * @param route   routes
      */
     void service(RequestContext context,

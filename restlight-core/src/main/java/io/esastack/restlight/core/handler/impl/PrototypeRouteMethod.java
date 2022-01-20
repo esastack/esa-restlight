@@ -16,7 +16,6 @@
 package io.esastack.restlight.core.handler.impl;
 
 import esa.commons.collection.MultiValueMap;
-import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.core.handler.HandlerAdvicesFactory;
 import io.esastack.restlight.core.handler.HandlerFactory;
 import io.esastack.restlight.core.handler.HandlerInvoker;
@@ -35,7 +34,7 @@ import java.util.List;
 public class PrototypeRouteMethod extends RouteHandlerMethodAdapter {
 
     public PrototypeRouteMethod(HandlerMapping mapping,
-                                HandlerContext<? extends RestlightOptions> context,
+                                HandlerContext context,
                                 HandlerValueResolver handlerResolver,
                                 MultiValueMap<InterceptorPredicate, Interceptor> interceptors,
                                 ExceptionResolver<Throwable> exceptionResolver) {

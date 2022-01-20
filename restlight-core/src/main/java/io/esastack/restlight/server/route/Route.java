@@ -41,7 +41,7 @@ public interface Route extends Routing, Scheduling {
     /**
      * Creates an instance {@link RouteImpl} for building a new {@link Route}.
      *
-     * @return  {@link RouteImpl}
+     * @return {@link RouteImpl}
      */
     static RouteImpl route() {
         return new RouteImpl(null, null, null, null);
@@ -50,7 +50,7 @@ public interface Route extends Routing, Scheduling {
     /**
      * Creates an instance {@link RouteImpl} for building a new {@link Route}.
      *
-     * @return  {@link RouteImpl}
+     * @return {@link RouteImpl}
      */
     static RouteImpl route(Mapping mapping) {
         return new RouteImpl(mapping, null, null, null);
@@ -59,8 +59,8 @@ public interface Route extends Routing, Scheduling {
     /**
      * Creates an instance of {@link RouteImpl} from given {@code another}.
      *
-     * @param another   other
-     * @return  {@link RouteImpl}.
+     * @param another other
+     * @return {@link RouteImpl}.
      */
     static RouteImpl route(Route another) {
         return new RouteImpl(another.mapping(),
@@ -72,7 +72,7 @@ public interface Route extends Routing, Scheduling {
     /**
      * Obtains the {@link ExecutionFactory} to handle the request.
      *
-     * @return      execution handler
+     * @return execution handler
      */
     ExecutionFactory executionFactory();
 

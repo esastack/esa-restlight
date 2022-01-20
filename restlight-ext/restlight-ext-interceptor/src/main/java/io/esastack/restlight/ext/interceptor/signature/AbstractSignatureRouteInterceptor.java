@@ -16,7 +16,6 @@
 package io.esastack.restlight.ext.interceptor.signature;
 
 import io.esastack.restlight.core.DeployContext;
-import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.core.interceptor.RouteInterceptor;
 import io.esastack.restlight.core.method.HandlerMethod;
 import io.esastack.restlight.core.util.RouteUtils;
@@ -37,7 +36,7 @@ public abstract class AbstractSignatureRouteInterceptor extends AbstractSignatur
     }
 
     @Override
-    public boolean match(DeployContext<? extends RestlightOptions> ctx, Routing routing) {
+    public boolean match(DeployContext ctx, Routing routing) {
         Optional<HandlerMethod> handlerMethod = RouteUtils.extractHandlerMethod(routing);
         if (!handlerMethod.isPresent()) {
             return false;

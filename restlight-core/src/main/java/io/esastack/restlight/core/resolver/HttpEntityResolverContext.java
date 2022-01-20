@@ -23,14 +23,14 @@ public interface HttpEntityResolverContext {
     /**
      * Obtains current {@link RequestContext}.
      *
-     * @return  request context
+     * @return request context
      */
     RequestContext context();
 
     /**
      * Obtains the {@link Param} to resolve.
      *
-     * @return  param
+     * @return param
      */
     HttpEntity httpEntity();
 

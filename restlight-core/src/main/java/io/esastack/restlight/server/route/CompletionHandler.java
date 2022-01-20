@@ -25,9 +25,8 @@ public interface CompletionHandler {
     /**
      * Handles the completion event of request.
      *
-     * @param context  current context
-     * @param t        error
-     *
+     * @param context current context
+     * @param t       error
      * @return future
      */
     CompletionStage<Void> onComplete(RequestContext context, Throwable t);

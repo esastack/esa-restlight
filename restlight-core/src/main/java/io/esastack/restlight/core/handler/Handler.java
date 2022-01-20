@@ -37,7 +37,7 @@ public interface Handler extends HandlerInvoker {
     /**
      * Obtains the handler object.
      *
-     * @return  object
+     * @return object
      */
     Object bean();
 }

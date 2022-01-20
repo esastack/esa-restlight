@@ -17,7 +17,6 @@ package io.esastack.restlight.jaxrs.configure;
 
 import esa.commons.Checks;
 import io.esastack.restlight.core.DeployContext;
-import io.esastack.restlight.core.config.RestlightOptions;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
@@ -25,7 +24,7 @@ import java.lang.reflect.Method;
 
 class LazyInstantiateHandler implements InvocationHandler {
 
-    private final DeployContext<? extends RestlightOptions> context;
+    private final DeployContext context;
     private final Class<?> clazz;
     private final Object instantiateLock = new Object();
     private final Object initLock = new Object();
@@ -33,7 +32,7 @@ class LazyInstantiateHandler implements InvocationHandler {
     private volatile Object target;
     private volatile boolean initialized;
 
-    LazyInstantiateHandler(DeployContext<? extends RestlightOptions> context, Class<?> clazz) {
+    LazyInstantiateHandler(DeployContext context, Class<?> clazz) {
         Checks.checkNotNull(context, "context");
         Checks.checkNotNull(clazz, "clazz");
         this.clazz = clazz;

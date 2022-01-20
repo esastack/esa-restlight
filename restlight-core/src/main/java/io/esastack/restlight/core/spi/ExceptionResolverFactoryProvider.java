@@ -18,7 +18,6 @@ package io.esastack.restlight.core.spi;
 import esa.commons.annotation.Internal;
 import esa.commons.spi.SPI;
 import io.esastack.restlight.core.DeployContext;
-import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.core.resolver.exception.ExceptionResolverFactory;
 
 /**
@@ -33,9 +32,8 @@ public interface ExceptionResolverFactoryProvider {
      * Returns an instance of {@link ExceptionResolverFactory}.
      *
      * @param ctx deploy context
-     *
      * @return factory
      */
-    ExceptionResolverFactory factory(DeployContext<? extends RestlightOptions> ctx);
+    ExceptionResolverFactory factory(DeployContext ctx);
 
 }

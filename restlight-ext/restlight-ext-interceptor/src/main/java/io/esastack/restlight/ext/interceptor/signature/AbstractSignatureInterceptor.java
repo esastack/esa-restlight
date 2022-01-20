@@ -147,7 +147,6 @@ abstract class AbstractSignatureInterceptor implements InternalInterceptor {
      * @param data      data
      * @param signature signature
      * @param sk        secret key
-     *
      * @return true if the signature is legal, else false
      */
     protected abstract boolean validate(byte[] data, String signature, String sk);

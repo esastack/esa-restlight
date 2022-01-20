@@ -18,7 +18,6 @@ package io.esastack.restlight.core.spi;
 import esa.commons.annotation.Internal;
 import esa.commons.spi.SPI;
 import io.esastack.restlight.core.DeployContext;
-import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.core.serialize.HttpRequestSerializer;
 import io.esastack.restlight.core.serialize.HttpResponseSerializer;
 
@@ -34,18 +33,16 @@ public interface DefaultSerializerFactory {
      * Returns the default {@link HttpRequestSerializer}.
      *
      * @param ctx deploy context
-     *
      * @return request serializer
      */
-    HttpRequestSerializer defaultRequestSerializer(DeployContext<? extends RestlightOptions> ctx);
+    HttpRequestSerializer defaultRequestSerializer(DeployContext ctx);
 
     /**
      * Returns the default {@link HttpResponseSerializer}.
      *
      * @param ctx deploy context
-     *
      * @return response serializer
      */
-    HttpResponseSerializer defaultResponseSerializer(DeployContext<? extends RestlightOptions> ctx);
+    HttpResponseSerializer defaultResponseSerializer(DeployContext ctx);
 
 }

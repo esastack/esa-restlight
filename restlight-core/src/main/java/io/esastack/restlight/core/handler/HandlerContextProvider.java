@@ -15,7 +15,6 @@
  */
 package io.esastack.restlight.core.handler;
 
-import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.core.handler.impl.HandlerContext;
 import io.esastack.restlight.core.method.HandlerMethod;
 
@@ -30,9 +29,9 @@ public interface HandlerContextProvider {
      * Obtains {@link HandlerContext} of given {@link HandlerMethod}.
      *
      * @param method handler method
-     * @return  context of given {@link HandlerMethod}.
+     * @return context of given {@link HandlerMethod}.
      */
-    HandlerContext<? extends RestlightOptions> getContext(HandlerMethod method);
+    HandlerContext getContext(HandlerMethod method);
 
 }
 

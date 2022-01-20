@@ -44,7 +44,6 @@ public interface RequestTaskHook extends Ordered {
      * RequestContext#request()} and {@link RequestContext#response()} or {@link RequestTask#promise()}
      *
      * @param task request task
-     *
      * @return argument that was passed or a modified(possibly new) instance. {@link RequestTask} will not be submitted
      * to Biz-{@link Scheduler} if {@code null} is returned which means {@link RequestTask} has been rejected.
      */

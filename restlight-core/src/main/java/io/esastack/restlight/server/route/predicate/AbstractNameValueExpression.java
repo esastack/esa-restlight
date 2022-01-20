@@ -61,7 +61,6 @@ abstract class AbstractNameValueExpression {
      * parse the value from the expression
      *
      * @param valueExpression expression
-     *
      * @return passed value
      */
     protected String parseValue(String valueExpression) {
@@ -82,7 +81,6 @@ abstract class AbstractNameValueExpression {
      * is name matched
      *
      * @param request request
-     *
      * @return is matched
      */
     protected abstract boolean matchName(HttpRequest request);
@@ -91,7 +89,6 @@ abstract class AbstractNameValueExpression {
      * is value matched
      *
      * @param request request
-     *
      * @return is matched
      */
     protected abstract boolean matchValue(HttpRequest request);

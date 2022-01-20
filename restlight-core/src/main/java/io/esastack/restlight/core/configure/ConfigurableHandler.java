@@ -33,14 +33,14 @@ public interface ConfigurableHandler {
     /**
      * Obtains {@link Attributes}.
      *
-     * @return  attrs
+     * @return attrs
      */
     Attributes attrs();
 
     /**
      * Add {@link RouteFilter}s.
      *
-     * @param filters    route filters corresponding with specified {@link HandlerMethod}.
+     * @param filters route filters corresponding with specified {@link HandlerMethod}.
      * @return this configurable handler
      */
     ConfigurableHandler addRouteFilters(Collection<? extends RouteFilter> filters);

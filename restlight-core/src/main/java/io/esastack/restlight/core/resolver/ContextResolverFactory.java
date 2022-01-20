@@ -38,7 +38,7 @@ public interface ContextResolverFactory extends ParamPredicate, Ordered {
     /**
      * Creates an instance of {@link ParamResolverAdvice} for given {@code param}.
      *
-     * @param param    param
+     * @param param param
      * @return advice
      */
     ContextResolver createResolver(Param param);

@@ -28,42 +28,42 @@ public interface RequestEntity extends HttpEntity {
     /**
      * Obtains the request entity as {@code buffer} format.
      *
-     * @return  buffer
+     * @return buffer
      */
     Buffer body();
 
     /**
      * Sets with the given {@code data}.
      *
-     * @param data  data
+     * @param data data
      */
     void body(Buffer data);
 
     /**
      * Obtains the {@link HttpInputStream}.
      *
-     * @return  ins
+     * @return ins
      */
     HttpInputStream inputStream();
 
     /**
      * Sets with the given {@code ins}.
      *
-     * @param ins   ins
+     * @param ins ins
      */
     void inputStream(InputStream ins);
 
     /**
      * Obtains the {@link MethodParam} correspond with current entity.
      *
-     * @return  method param.
+     * @return method param.
      */
     Param param();
 
     /**
      * Obtains the {@link HttpRequest}.
      *
-     * @return  request
+     * @return request
      */
     HttpRequest request();
 }

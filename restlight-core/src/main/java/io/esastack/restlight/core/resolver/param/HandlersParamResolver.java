@@ -17,7 +17,6 @@ package io.esastack.restlight.core.resolver.param;
 
 import esa.commons.Checks;
 import io.esastack.restlight.core.DeployContext;
-import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.core.configure.Handlers;
 import io.esastack.restlight.core.method.Param;
 import io.esastack.restlight.core.resolver.ParamResolver;
@@ -28,9 +27,9 @@ import java.util.List;
 
 public class HandlersParamResolver implements ParamResolverFactory {
 
-    private final DeployContext<? extends RestlightOptions> deployContext;
+    private final DeployContext deployContext;
 
-    public HandlersParamResolver(DeployContext<? extends RestlightOptions> deployContext) {
+    public HandlersParamResolver(DeployContext deployContext) {
         Checks.checkNotNull(deployContext, "deployContext");
         this.deployContext = deployContext;
     }

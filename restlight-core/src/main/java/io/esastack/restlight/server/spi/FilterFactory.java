@@ -16,8 +16,7 @@
 package io.esastack.restlight.server.spi;
 
 import esa.commons.spi.SPI;
-import io.esastack.restlight.server.ServerDeployContext;
-import io.esastack.restlight.server.config.ServerOptions;
+import io.esastack.restlight.core.DeployContext;
 import io.esastack.restlight.server.handler.Filter;
 
 import java.util.Optional;
@@ -31,11 +30,10 @@ public interface FilterFactory {
     /**
      * Creates an optional instance of {@link Filter} for give target handler.
      *
-     * @param ctx     deploy context
-     *
+     * @param ctx deploy context
      * @return optional value of {@link Filter}
      */
-    Optional<Filter> filter(ServerDeployContext<? extends ServerOptions> ctx);
+    Optional<Filter> filter(DeployContext ctx);
 
 }
 

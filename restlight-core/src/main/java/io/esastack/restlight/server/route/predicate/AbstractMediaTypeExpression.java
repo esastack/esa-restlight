@@ -95,7 +95,6 @@ public abstract class AbstractMediaTypeExpression implements Comparable<Abstract
      * Match mediaType
      *
      * @param request request
-     *
      * @return boolean
      */
     protected abstract boolean matchMediaType(HttpRequest request);

@@ -78,16 +78,16 @@ public abstract class AbstractResponseEntityResolver implements ResponseEntityRe
     /**
      * Whether current resolver supports given {@code entity} or not.
      *
-     * @param entity    response entity
-     * @return  {@code true} if supports, otherwise {@code false}.
+     * @param entity response entity
+     * @return {@code true} if supports, otherwise {@code false}.
      */
     protected abstract boolean supports(ResponseEntity entity);
 
     /**
      * Whether the given {@code entity} should be handled as simple format.
      *
-     * @param entity    entity
-     * @return  {@code true} if the entity is simple format, otherwise {@code false}.
+     * @param entity entity
+     * @return {@code true} if the entity is simple format, otherwise {@code false}.
      */
     protected boolean isSimpleType(ResponseEntity entity) {
         return true;
@@ -110,11 +110,11 @@ public abstract class AbstractResponseEntityResolver implements ResponseEntityRe
     /**
      * Serializes the given {@code entityValue} to byte[] format.
      *
-     * @param entity   response entity
-     * @param mediaTypes    mediaTypes
-     * @param context       context
-     * @return      byte array.
-     * @throws Exception    any exception
+     * @param entity     response entity
+     * @param mediaTypes mediaTypes
+     * @param context    context
+     * @return byte array.
+     * @throws Exception any exception
      */
     protected abstract byte[] serialize(ResponseEntity entity,
                                         List<MediaType> mediaTypes,

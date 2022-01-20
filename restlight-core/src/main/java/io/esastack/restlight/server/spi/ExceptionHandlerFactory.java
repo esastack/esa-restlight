@@ -17,9 +17,8 @@ package io.esastack.restlight.server.spi;
 
 import esa.commons.annotation.Internal;
 import esa.commons.spi.SPI;
-import io.esastack.restlight.server.ServerDeployContext;
+import io.esastack.restlight.core.DeployContext;
 import io.esastack.restlight.server.bootstrap.IExceptionHandler;
-import io.esastack.restlight.server.config.ServerOptions;
 
 import java.util.Optional;
 
@@ -31,10 +30,10 @@ public interface ExceptionHandlerFactory {
     /**
      * Creates an optional instance of {@link IExceptionHandler}.
      *
-     * @param ctx   ctx
-     * @return      an optional {@link IExceptionHandler}, which must not be {@code null}.
+     * @param ctx ctx
+     * @return an optional {@link IExceptionHandler}, which must not be {@code null}.
      */
-    Optional<IExceptionHandler> handler(ServerDeployContext<? extends ServerOptions> ctx);
+    Optional<IExceptionHandler> handler(DeployContext ctx);
 
 }
 

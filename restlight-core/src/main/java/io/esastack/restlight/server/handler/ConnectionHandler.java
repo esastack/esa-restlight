@@ -24,7 +24,7 @@ public interface ConnectionHandler extends Ordered {
     /**
      * This callback notification is invoked in case a new {@link Channel} connected successfully.
      *
-     * @param channel    channel
+     * @param channel channel
      */
     void onConnect(Channel channel);
 

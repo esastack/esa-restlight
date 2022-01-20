@@ -29,9 +29,9 @@ public interface ExceptionHandlerChain {
     /**
      * Handles the given {@link Throwable} by given {@code context}.
      *
-     * @param context   context
-     * @param th        throwable
-     * @return          handled result
+     * @param context context
+     * @param th      throwable
+     * @return handled result
      */
     CompletionStage<Void> handle(RequestContext context, Throwable th);
 

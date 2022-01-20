@@ -18,7 +18,6 @@ package io.esastack.restlight.core.spi;
 import esa.commons.annotation.Internal;
 import esa.commons.spi.SPI;
 import io.esastack.restlight.core.DeployContext;
-import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.core.handler.RouteHandler;
 import io.esastack.restlight.core.handler.locate.RouteMethodLocator;
 
@@ -33,9 +32,8 @@ public interface RouteMethodLocatorFactory {
      * Create an instance of {@link RouteMethodLocator}.
      *
      * @param ctx deploy context
-     *
      * @return locator
      */
-    RouteMethodLocator locator(DeployContext<? extends RestlightOptions> ctx);
+    RouteMethodLocator locator(DeployContext ctx);
 
 }

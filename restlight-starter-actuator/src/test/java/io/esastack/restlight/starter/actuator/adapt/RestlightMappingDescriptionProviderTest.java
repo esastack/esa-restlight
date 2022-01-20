@@ -16,7 +16,6 @@
 package io.esastack.restlight.starter.actuator.adapt;
 
 import io.esastack.restlight.core.DeployContext;
-import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.core.handler.Handler;
 import io.esastack.restlight.core.handler.impl.HandlerImpl;
 import io.esastack.restlight.core.method.HandlerMethodImpl;
@@ -55,7 +54,7 @@ class RestlightMappingDescriptionProviderTest {
         final RouteRegistry registry = mock(RouteRegistry.class);
         when(registry.routes()).thenReturn(routes);
 
-        final DeployContext<? extends RestlightOptions> context = mock(DeployContext.class);
+        final DeployContext context = mock(DeployContext.class);
         when(context.routeRegistry()).thenReturn(Optional.of(registry));
 
         final RestlightMappingDescriptionProvider provider = new RestlightMappingDescriptionProvider();

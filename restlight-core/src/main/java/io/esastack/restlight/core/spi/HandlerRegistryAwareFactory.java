@@ -17,9 +17,7 @@ package io.esastack.restlight.core.spi;
 
 import esa.commons.spi.SPI;
 import io.esastack.restlight.core.DeployContext;
-import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.core.configure.HandlerRegistryAware;
-import io.esastack.restlight.server.ServerDeployContext;
 import io.esastack.restlight.server.spi.RouteRegistryAware;
 
 import java.util.Optional;
@@ -29,12 +27,12 @@ import java.util.Optional;
 public interface HandlerRegistryAwareFactory {
 
     /**
-     * Creates an instance of {@link RouteRegistryAware} by given {@link ServerDeployContext}.
+     * Creates an instance of {@link RouteRegistryAware} by given {@link DeployContext}.
      *
      * @param deployContext deploy context
-     * @return              registry aware
+     * @return registry aware
      */
-    Optional<HandlerRegistryAware> createAware(DeployContext<? extends RestlightOptions> deployContext);
+    Optional<HandlerRegistryAware> createAware(DeployContext deployContext);
 
 }
 

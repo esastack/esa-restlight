@@ -1,10 +1,20 @@
 [
   {
-    "name":"io.esastack.restlight.ext.multipart.spi.MultipartAttrParamResolver",
-    "methods":[{"name":"<init>","parameterTypes":[] }]
+    "name": "io.esastack.restlight.ext.multipart.spi.MultipartAttrParamResolver",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
   },
   {
-    "name":"io.esastack.restlight.ext.multipart.spi.MultipartFileParamResolver",
-    "methods":[{"name":"<init>","parameterTypes":[] }]
+    "name": "io.esastack.restlight.ext.multipart.spi.MultipartFileParamResolver",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
   }
 ]

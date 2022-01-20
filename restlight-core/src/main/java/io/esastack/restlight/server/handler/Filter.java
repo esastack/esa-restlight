@@ -30,8 +30,8 @@ public interface Filter extends Ordered {
      * <p>
      * IMPORTANT: never block current thread please, cause that will effect the performance.
      *
-     * @param context  context
-     * @param chain    filter chain
+     * @param context context
+     * @param chain   filter chain
      * @return future
      */
     CompletionStage<Void> doFilter(FilterContext context, FilterChain chain);

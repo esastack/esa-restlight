@@ -17,7 +17,6 @@ package io.esastack.restlight.jaxrs.resolver.param;
 
 import esa.commons.Checks;
 import io.esastack.restlight.core.DeployContext;
-import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.core.method.Param;
 import io.esastack.restlight.core.resolver.ParamResolver;
 import io.esastack.restlight.core.resolver.ParamResolverFactory;
@@ -32,9 +31,9 @@ import java.util.List;
 
 public class ResourceContextParamResolver implements ParamResolverFactory {
 
-    private final DeployContext<? extends RestlightOptions> context;
+    private final DeployContext context;
 
-    public ResourceContextParamResolver(DeployContext<? extends RestlightOptions> context) {
+    public ResourceContextParamResolver(DeployContext context) {
         Checks.checkNotNull(context, "context");
         this.context = context;
     }
@@ -51,9 +50,9 @@ public class ResourceContextParamResolver implements ParamResolverFactory {
 
     private static class ResourceContextResolver implements ParamResolver {
 
-        private final DeployContext<? extends RestlightOptions> context;
+        private final DeployContext context;
 
-        private ResourceContextResolver(DeployContext<? extends RestlightOptions> context) {
+        private ResourceContextResolver(DeployContext context) {
             this.context = context;
         }
 

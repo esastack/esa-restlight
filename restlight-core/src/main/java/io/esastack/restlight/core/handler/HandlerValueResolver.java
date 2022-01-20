@@ -29,9 +29,9 @@ public interface HandlerValueResolver extends Ordered {
     /**
      * Handles the given {@code value}.
      *
-     * @param value     value
-     * @param context   context
-     * @return          handled result
+     * @param value   value
+     * @param context context
+     * @return handled result
      */
     CompletionStage<Void> handle(Object value, RequestContext context);
 

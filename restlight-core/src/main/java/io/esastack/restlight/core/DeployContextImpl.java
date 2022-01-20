@@ -15,6 +15,9 @@
  */
 package io.esastack.restlight.core;
 
+import esa.commons.Checks;
+import esa.commons.collection.AttributeMap;
+import esa.commons.collection.Attributes;
 import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.core.configure.HandlerConfigure;
 import io.esastack.restlight.core.configure.Handlers;
@@ -29,14 +32,25 @@ import io.esastack.restlight.core.method.ResolvableParamPredicate;
 import io.esastack.restlight.core.resolver.HandlerResolverFactory;
 import io.esastack.restlight.core.resolver.exception.ExceptionMapper;
 import io.esastack.restlight.core.resolver.exception.ExceptionResolverFactory;
-import io.esastack.restlight.server.ServerDeployContextImpl;
+import io.esastack.restlight.server.bootstrap.DispatcherHandler;
+import io.esastack.restlight.server.route.RouteRegistry;
+import io.esastack.restlight.server.schedule.Scheduler;
 
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
-public class DeployContextImpl<O extends RestlightOptions> extends ServerDeployContextImpl<O>
-        implements DeployContext<O> {
+public class DeployContextImpl implements DeployContext {
 
+    private final String name;
+    private final RestlightOptions options;
+
+    private final Attributes attributes;
+    private final Map<String, Scheduler> schedulers = new HashMap<>(16);
+    private volatile RouteRegistry registry;
+    private volatile DispatcherHandler dispatcherHandler;
     private volatile HandlerContextProvider handlerContextProvider;
     private volatile HandlerFactory handlerFactory;
     private volatile ResolvableParamPredicate paramPredicate;
@@ -55,8 +69,54 @@ public class DeployContextImpl<O extends RestlightOptions> extends ServerDeployC
     private volatile ExceptionResolverFactory exceptionResolverFactory;
     private volatile Handlers handlers;
 
-    protected DeployContextImpl(String name, O options) {
-        super(name, options);
+    protected DeployContextImpl(String name, RestlightOptions options) {
+        Checks.checkNotNull(options, "name");
+        Checks.checkNotNull(options, "options");
+        this.name = name;
+        this.options = options;
+        this.attributes = new AttributeMap(8);
+    }
+
+    @Override
+    public String name() {
+        return name;
+    }
+
+    @Override
+    public Attributes attrs() {
+        return this.attributes;
+    }
+
+    @Override
+    public RestlightOptions options() {
+        return options;
+    }
+
+    @Override
+    public Map<String, Scheduler> schedulers() {
+        return Collections.unmodifiableMap(schedulers);
+    }
+
+    @Override
+    public Optional<RouteRegistry> routeRegistry() {
+        return Optional.ofNullable(registry);
+    }
+
+    @Override
+    public Optional<DispatcherHandler> dispatcherHandler() {
+        return Optional.of(dispatcherHandler);
+    }
+
+    Map<String, Scheduler> mutableSchedulers() {
+        return schedulers;
+    }
+
+    void setRegistry(RouteRegistry registry) {
+        this.registry = registry;
+    }
+
+    void setDispatcherHandler(DispatcherHandler dispatcherHandler) {
+        this.dispatcherHandler = dispatcherHandler;
     }
 
     @Override

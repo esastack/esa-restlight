@@ -18,7 +18,6 @@ package io.esastack.restlight.spring.spi;
 import esa.commons.annotation.Internal;
 import esa.commons.spi.SPI;
 import io.esastack.restlight.core.DeployContext;
-import io.esastack.restlight.core.config.RestlightOptions;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Controller;
 
@@ -36,11 +35,10 @@ public interface ControllerLocator {
      *
      * @param spring {@link ApplicationContext} that Restlight is starting with
      * @param ctx    deploy context
-     *
      * @return controllers
      */
     default Collection<Object> getControllers(ApplicationContext spring,
-                                              DeployContext<? extends RestlightOptions> ctx) {
+                                              DeployContext ctx) {
         Map<String, Object> controllers =
                 spring.getBeansWithAnnotation(Controller.class);
         if (controllers.isEmpty()) {

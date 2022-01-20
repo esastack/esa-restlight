@@ -20,7 +20,6 @@ import esa.commons.ObjectUtils;
 import esa.commons.reflect.BeanUtils;
 import esa.commons.reflect.ReflectionUtils;
 import io.esastack.restlight.core.DeployContext;
-import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.core.configure.Handlers;
 import io.esastack.restlight.core.handler.impl.HandlerContext;
 import io.esastack.restlight.core.handler.impl.HandlerFactoryImpl;
@@ -48,12 +47,12 @@ public class JaxrsHandlerFactory extends HandlerFactoryImpl {
 
     private final ConcurrentHashMap<Class<?>, ResolvableProvider> resolvableProviders = new ConcurrentHashMap<>();
 
-    public JaxrsHandlerFactory(DeployContext<? extends RestlightOptions> defaultContext, Handlers handlers) {
+    public JaxrsHandlerFactory(DeployContext defaultContext, Handlers handlers) {
         super(defaultContext, handlers);
     }
 
     @Override
-    protected Object doInstantiate(HandlerContext<? extends RestlightOptions> handlerContext,
+    protected Object doInstantiate(HandlerContext handlerContext,
                                    Class<?> clazz, RequestContext context) {
         if (context != null) {
             return super.doInstantiate(handlerContext, clazz, context);
@@ -87,7 +86,7 @@ public class JaxrsHandlerFactory extends HandlerFactoryImpl {
     }
 
     @Override
-    protected void doInit0(HandlerContext<? extends RestlightOptions> handlerContext,
+    protected void doInit0(HandlerContext handlerContext,
                            Object instance, Class<?> clazz, RequestContext context) {
         if (context != null) {
             super.doInit0(handlerContext, instance, clazz, context);
@@ -132,7 +131,7 @@ public class JaxrsHandlerFactory extends HandlerFactoryImpl {
     }
 
     private ResolvableProvider getResolvableProvider(Class<?> clazz,
-                                                     DeployContext<? extends RestlightOptions> context) {
+                                                     DeployContext context) {
         return resolvableProviders.computeIfAbsent(clazz, clz -> new ResolvableProvider(clazz, context));
     }
 
@@ -143,7 +142,7 @@ public class JaxrsHandlerFactory extends HandlerFactoryImpl {
         private final ResolvableParam<MethodParam, ContextResolver>[] setterParamResolvers;
         private final ResolvableParam<FieldParam, ContextResolver>[] fieldParamResolvers;
 
-        private ResolvableProvider(Class<?> clazz, DeployContext<? extends RestlightOptions> context) {
+        private ResolvableProvider(Class<?> clazz, DeployContext context) {
             HandlerResolverFactory resolverFactory = context.resolverFactory()
                     .orElseThrow(() -> new IllegalStateException("resolverFactory is null"));
             ResolvableParamPredicate resolvable = context.paramPredicate()

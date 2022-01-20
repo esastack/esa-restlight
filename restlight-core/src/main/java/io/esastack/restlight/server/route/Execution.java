@@ -28,8 +28,8 @@ public interface Execution {
     /**
      * Handle the current request by given {@code context} object.
      *
-     * @param context   context
-     * @return          result
+     * @param context context
+     * @return result
      */
     CompletionStage<Void> handle(RequestContext context);
 

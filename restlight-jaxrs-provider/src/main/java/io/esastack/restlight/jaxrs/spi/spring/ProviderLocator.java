@@ -18,7 +18,6 @@ package io.esastack.restlight.jaxrs.spi.spring;
 import esa.commons.annotation.Internal;
 import esa.commons.spi.Feature;
 import io.esastack.restlight.core.DeployContext;
-import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.core.util.Constants;
 import io.esastack.restlight.spring.spi.ExtensionLocator;
 import jakarta.ws.rs.core.Application;
@@ -36,7 +35,7 @@ public class ProviderLocator implements ExtensionLocator {
 
     @Override
     public Collection<Object> getExtensions(ApplicationContext spring,
-                                            DeployContext<? extends RestlightOptions> ctx) {
+                                            DeployContext ctx) {
         Map<String, Object> providers = spring.getBeansWithAnnotation(Provider.class);
         Set<Object> extensions = new HashSet<>(providers.values());
         Map<String, Application> applications = spring.getBeansOfType(Application.class);

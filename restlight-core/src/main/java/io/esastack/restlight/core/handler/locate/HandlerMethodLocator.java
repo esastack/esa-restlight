@@ -33,7 +33,6 @@ public interface HandlerMethodLocator extends Ordered {
      * @param parent   parent handler mapping if exist, which may be {@code null} for root method.
      * @param userType user type
      * @param method   target method
-     *
      * @return optional value of handler.
      */
     Optional<HandlerMethodInfo> getHandlerMethodInfo(HandlerMapping parent, Class<?> userType, Method method);

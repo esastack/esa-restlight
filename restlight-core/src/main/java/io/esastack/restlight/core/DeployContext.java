@@ -15,6 +15,7 @@
  */
 package io.esastack.restlight.core;
 
+import esa.commons.collection.Attributes;
 import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.core.configure.HandlerConfigure;
 import io.esastack.restlight.core.configure.Handlers;
@@ -29,9 +30,12 @@ import io.esastack.restlight.core.method.ResolvableParamPredicate;
 import io.esastack.restlight.core.resolver.HandlerResolverFactory;
 import io.esastack.restlight.core.resolver.exception.ExceptionMapper;
 import io.esastack.restlight.core.resolver.exception.ExceptionResolverFactory;
-import io.esastack.restlight.server.ServerDeployContext;
+import io.esastack.restlight.server.bootstrap.DispatcherHandler;
+import io.esastack.restlight.server.route.RouteRegistry;
+import io.esastack.restlight.server.schedule.Scheduler;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -41,7 +45,51 @@ import java.util.Optional;
  * Some of the methods in this interface will return an {@link Optional} value which means this value maybe a {@code
  * null} or this value may be instantiate later.
  */
-public interface DeployContext<O extends RestlightOptions> extends ServerDeployContext<O> {
+public interface DeployContext {
+
+    /**
+     * Name of the Restlight server.
+     *
+     * @return name
+     */
+    String name();
+
+    /**
+     * Obtains {@link Attributes}.
+     *
+     * @return attrs
+     */
+    Attributes attrs();
+
+    /**
+     * Returns options of current server.
+     *
+     * @return options
+     */
+    RestlightOptions options();
+
+    /**
+     * Gets schedulers map who's key is {@link Scheduler#name()}.
+     *
+     * @return schedulers
+     */
+    Map<String, Scheduler> schedulers();
+
+    /**
+     * Gets the instance of {@link RouteRegistry}. It should be instantiate when server is about to starting and
+     * initializing.
+     *
+     * @return optional value
+     */
+    Optional<RouteRegistry> routeRegistry();
+
+    /**
+     * Gets the instance of {@link DispatcherHandler}. It should be instantiate when server is about to starting and
+     * initializing.
+     *
+     * @return optional value
+     */
+    Optional<DispatcherHandler> dispatcherHandler();
 
     /**
      * Gets all the singleton controller beans. It should be instantiate before server is about to starting
@@ -61,7 +109,7 @@ public interface DeployContext<O extends RestlightOptions> extends ServerDeployC
     /**
      * Obtains all custom extensions.
      *
-     * @return  extensions
+     * @return extensions
      */
     Optional<List<Object>> extensions();
 
@@ -132,7 +180,7 @@ public interface DeployContext<O extends RestlightOptions> extends ServerDeployC
      * Gets the instance of {@link ResolvableParamPredicate}. It should be instantiate when server is about to
      * starting and initializing.
      *
-     * @return  an optional instance of {@link ResolvableParamPredicate}.
+     * @return an optional instance of {@link ResolvableParamPredicate}.
      */
     Optional<ResolvableParamPredicate> paramPredicate();
 
@@ -156,7 +204,7 @@ public interface DeployContext<O extends RestlightOptions> extends ServerDeployC
      * Obtains the {@link HandlerFactory}. It should be instantiate when server is about to starting
      * and initializing.
      *
-     * @return  an optional value of {@link HandlerFactory}.
+     * @return an optional value of {@link HandlerFactory}.
      */
     Optional<HandlerFactory> handlerFactory();
 
@@ -164,7 +212,7 @@ public interface DeployContext<O extends RestlightOptions> extends ServerDeployC
      * Obtains the {@link HandlerContextProvider}. It should be instantiate when server is about to starting
      * and initializing.
      *
-     * @return  an optional value of {@link HandlerContextProvider}.
+     * @return an optional value of {@link HandlerContextProvider}.
      */
     Optional<HandlerContextProvider> handlerContexts();
 
@@ -172,7 +220,7 @@ public interface DeployContext<O extends RestlightOptions> extends ServerDeployC
      * Gets the {@link Handlers}. It should be instantiate when server is about to starting
      * and initializing.
      *
-     * @return  optional value
+     * @return optional value
      */
     Optional<Handlers> handlers();
 

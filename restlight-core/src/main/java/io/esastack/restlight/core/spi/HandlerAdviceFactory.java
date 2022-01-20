@@ -17,7 +17,6 @@ package io.esastack.restlight.core.spi;
 
 import esa.commons.spi.SPI;
 import io.esastack.restlight.core.DeployContext;
-import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.core.handler.Handler;
 import io.esastack.restlight.core.handler.HandlerAdvice;
 
@@ -34,8 +33,7 @@ public interface HandlerAdviceFactory {
      *
      * @param ctx     deploy context
      * @param handler method handler
-     *
      * @return optional value of {@link HandlerAdvice}
      */
-    Optional<HandlerAdvice> handlerAdvice(DeployContext<? extends RestlightOptions> ctx, Handler handler);
+    Optional<HandlerAdvice> handlerAdvice(DeployContext ctx, Handler handler);
 }

@@ -94,7 +94,6 @@ public class MappingImpl implements Mapping {
      * Sets the {@link #name} to given value.
      *
      * @param name name
-     *
      * @return current instance
      */
     public MappingImpl name(String name) {
@@ -111,7 +110,6 @@ public class MappingImpl implements Mapping {
      * Sets the {@link #path} to given single path
      *
      * @param path path
-     *
      * @return builder
      */
     public MappingImpl path(String path) {
@@ -122,7 +120,6 @@ public class MappingImpl implements Mapping {
      * Sets the {@link #path} to given paths
      *
      * @param path path
-     *
      * @return builder
      */
     public MappingImpl path(String... path) {
@@ -153,7 +150,6 @@ public class MappingImpl implements Mapping {
      * value.
      *
      * @param path path
-     *
      * @return builder
      */
     public MappingImpl get(String path) {
@@ -175,7 +171,6 @@ public class MappingImpl implements Mapping {
      * value.
      *
      * @param path path
-     *
      * @return builder
      */
     public MappingImpl post(String path) {
@@ -197,7 +192,6 @@ public class MappingImpl implements Mapping {
      * value.
      *
      * @param path path
-     *
      * @return builder
      */
     public MappingImpl delete(String path) {
@@ -219,7 +213,6 @@ public class MappingImpl implements Mapping {
      * value.
      *
      * @param path path
-     *
      * @return builder
      */
     public MappingImpl put(String path) {
@@ -241,7 +234,6 @@ public class MappingImpl implements Mapping {
      * value.
      *
      * @param path path
-     *
      * @return builder
      */
     public MappingImpl patch(String path) {
@@ -263,7 +255,6 @@ public class MappingImpl implements Mapping {
      * value.
      *
      * @param path path
-     *
      * @return builder
      */
     public MappingImpl head(String path) {
@@ -285,7 +276,6 @@ public class MappingImpl implements Mapping {
      * value.
      *
      * @param path path
-     *
      * @return builder
      */
     public MappingImpl options(String path) {
@@ -307,7 +297,6 @@ public class MappingImpl implements Mapping {
      * value.
      *
      * @param path path
-     *
      * @return builder
      */
     public MappingImpl trace(String path) {
@@ -329,7 +318,6 @@ public class MappingImpl implements Mapping {
      * value.
      *
      * @param path path
-     *
      * @return builder
      */
     public MappingImpl connect(String path) {
@@ -341,7 +329,6 @@ public class MappingImpl implements Mapping {
      * Sets the {@link #method} to given value.
      *
      * @param method method
-     *
      * @return builder
      */
     public MappingImpl method(String method) {
@@ -353,7 +340,6 @@ public class MappingImpl implements Mapping {
      * Sets the {@link #method} to given value.
      *
      * @param method method
-     *
      * @return builder
      */
     public MappingImpl method(HttpMethod method) {
@@ -365,7 +351,6 @@ public class MappingImpl implements Mapping {
      * Sets the {@link #method} to given methods.
      *
      * @param method method
-     *
      * @return builder
      */
     public MappingImpl method(HttpMethod... method) {
@@ -385,7 +370,6 @@ public class MappingImpl implements Mapping {
      * Adds a parameter predicate which indicates that a request must have a parameter named by the given name.
      *
      * @param name parameter name
-     *
      * @return builder
      */
     public MappingImpl hasParam(String name) {
@@ -397,7 +381,6 @@ public class MappingImpl implements Mapping {
      * same with the given name value.
      *
      * @param name parameter name
-     *
      * @return builder
      */
     public MappingImpl hasParam(String name, String value) {
@@ -408,7 +391,6 @@ public class MappingImpl implements Mapping {
      * Adds a parameter predicate which indicates that request must not have a parameter named by given name.
      *
      * @param name parameter name
-     *
      * @return builder
      */
     public MappingImpl noneParam(String name) {
@@ -420,7 +402,6 @@ public class MappingImpl implements Mapping {
      * with the given name and value.
      *
      * @param name parameter name
-     *
      * @return builder
      */
     public MappingImpl noneParam(String name, String value) {
@@ -475,7 +456,6 @@ public class MappingImpl implements Mapping {
      * Adds a header predicate which indicates that request must have a header named by the given header name.
      *
      * @param name header name
-     *
      * @return builder
      */
     public MappingImpl hasHeader(String name) {
@@ -487,7 +467,6 @@ public class MappingImpl implements Mapping {
      * header must have a value which is same with the given header value.
      *
      * @param name header name
-     *
      * @return builder
      */
     public MappingImpl hasHeader(String name, String value) {
@@ -503,7 +482,6 @@ public class MappingImpl implements Mapping {
      * name and have a value same with the given header value.
      *
      * @param name header name
-     *
      * @return builder
      */
     public MappingImpl noneHeader(String name, String value) {
@@ -518,7 +496,6 @@ public class MappingImpl implements Mapping {
      * Adds some header predicates.
      *
      * @param headers headers
-     *
      * @return builder
      */
     public MappingImpl headers(String... headers) {
@@ -548,7 +525,6 @@ public class MappingImpl implements Mapping {
      * Adds a single consumes predicate
      *
      * @param mediaType mediaType
-     *
      * @return builder
      */
     public MappingImpl consumes(MediaType... mediaType) {
@@ -561,7 +537,6 @@ public class MappingImpl implements Mapping {
      * Adds some consumes predicates
      *
      * @param consumes consumes
-     *
      * @return builder
      */
     public MappingImpl consumes(String... consumes) {
@@ -591,7 +566,6 @@ public class MappingImpl implements Mapping {
      * Adds a single produces predicate
      *
      * @param mediaType mediaType
-     *
      * @return builder
      */
     public MappingImpl produces(MediaType... mediaType) {
@@ -604,7 +578,6 @@ public class MappingImpl implements Mapping {
      * Adds some produces predicates
      *
      * @param produces produces
-     *
      * @return builder
      */
     public MappingImpl produces(String... produces) {
@@ -674,7 +647,7 @@ public class MappingImpl implements Mapping {
             return false;
         }
         MappingImpl mapping = (MappingImpl) o;
-        return  Objects.equals(name, mapping.name) &&
+        return Objects.equals(name, mapping.name) &&
                 Arrays.equals(path, mapping.path) &&
                 Arrays.equals(method, mapping.method) &&
                 Arrays.equals(params, mapping.params) &&

@@ -44,7 +44,6 @@ public class LinkedFilterChain implements FilterChain {
      * Return a immutable filter chain, all the instances of {@link LinkedFilterChain} will be instantiated ahead.
      *
      * @param filters filters
-     *
      * @return filter chain
      */
     public static LinkedFilterChain immutable(List<Filter> filters,

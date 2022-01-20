@@ -41,13 +41,13 @@ public class JaxrsResolvableParamPredicate implements ResolvableParamPredicate {
         }
         if (isInRootResource(param)) {
             return param.hasAnnotation(Context.class)
-                || param.hasAnnotation(BeanParam.class)
-                || param.hasAnnotation(CookieParam.class)
-                || param.hasAnnotation(FormParam.class)
-                || param.hasAnnotation(HeaderParam.class)
-                || param.hasAnnotation(MatrixParam.class)
-                || param.hasAnnotation(PathParam.class)
-                || param.hasAnnotation(QueryParam.class);
+                    || param.hasAnnotation(BeanParam.class)
+                    || param.hasAnnotation(CookieParam.class)
+                    || param.hasAnnotation(FormParam.class)
+                    || param.hasAnnotation(HeaderParam.class)
+                    || param.hasAnnotation(MatrixParam.class)
+                    || param.hasAnnotation(PathParam.class)
+                    || param.hasAnnotation(QueryParam.class);
         } else {
             return param.hasAnnotation(Context.class);
         }

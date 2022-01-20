@@ -37,7 +37,7 @@ public interface ResponseEntityResolverAdviceFactory extends ResponseEntityPredi
     /**
      * Creates an instance of {@link ResponseEntityResolverAdvice} for given handler method.
      *
-     * @param entity   response entity
+     * @param entity response entity
      * @return advice
      */
     ResponseEntityResolverAdvice createResolverAdvice(ResponseEntity entity);

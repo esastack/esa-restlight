@@ -18,7 +18,6 @@ package io.esastack.restlight.jaxrs.spi;
 import esa.commons.annotation.Internal;
 import esa.commons.spi.Feature;
 import io.esastack.restlight.core.DeployContext;
-import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.core.handler.HandlerFactory;
 import io.esastack.restlight.core.spi.HandlerFactoryProvider;
 import io.esastack.restlight.core.util.Constants;
@@ -31,7 +30,7 @@ import java.util.Optional;
 public class JaxrsHandlerFactoryProvider implements HandlerFactoryProvider {
 
     @Override
-    public Optional<HandlerFactory> factoryBean(DeployContext<? extends RestlightOptions> ctx) {
+    public Optional<HandlerFactory> factoryBean(DeployContext ctx) {
         return Optional.of(new JaxrsHandlerFactory(ctx, ctx.handlers().orElse(null)));
     }
 

@@ -22,14 +22,14 @@ public interface Routing {
     /**
      * Obtains the {@link Mapping}.
      *
-     * @return  routes
+     * @return routes
      */
     Mapping mapping();
 
     /**
      * Obtains the handler(if present) which is corresponding with current {@link Route}.
      *
-     * @return  an optional handler.
+     * @return an optional handler.
      */
     default Optional<Object> handler() {
         return Optional.empty();

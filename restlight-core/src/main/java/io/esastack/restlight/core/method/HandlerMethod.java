@@ -25,7 +25,6 @@ public interface HandlerMethod {
      *
      * @param annotationType annotation type
      * @param <A>            A
-     *
      * @return A
      */
     <A extends Annotation> A getMethodAnnotation(Class<A> annotationType);
@@ -35,7 +34,6 @@ public interface HandlerMethod {
      *
      * @param annotationType annotationType
      * @param <A>            A
-     *
      * @return true or false
      */
     <A extends Annotation> boolean hasMethodAnnotation(Class<A> annotationType);

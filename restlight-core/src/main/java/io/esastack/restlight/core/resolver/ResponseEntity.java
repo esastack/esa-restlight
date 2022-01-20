@@ -28,7 +28,7 @@ public interface ResponseEntity extends HttpEntity {
     /**
      * Obtains the {@link HttpResponse} corresponding to current entity.
      *
-     * @return  response.
+     * @return response.
      */
     HttpResponse response();
 

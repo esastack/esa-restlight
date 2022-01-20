@@ -47,14 +47,14 @@ public interface HttpResponse {
     /**
      * Set the response entity.
      *
-     * @param entity    entity
+     * @param entity entity
      */
     void entity(Object entity);
 
     /**
      * Get current http response entity.
      *
-     * @return  entity
+     * @return entity
      */
     Object entity();
 
@@ -68,7 +68,7 @@ public interface HttpResponse {
     /**
      * Obtains the headers.
      *
-     * @return  headers.
+     * @return headers.
      */
     HttpHeaders headers();
 
@@ -104,7 +104,7 @@ public interface HttpResponse {
     /**
      * Obtains the trailer headers.
      *
-     * @return  trailers.
+     * @return trailers.
      */
     HttpHeaders trailers();
 

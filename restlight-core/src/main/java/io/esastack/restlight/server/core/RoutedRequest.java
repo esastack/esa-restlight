@@ -27,21 +27,21 @@ public interface RoutedRequest extends HttpRequest {
     /**
      * Set the body of the {@link HttpRequest} as byte[] format.
      *
-     * @param body  body
+     * @param body body
      */
     void body(byte[] body);
 
     /**
      * Set the body of the {@link HttpRequest}.
      *
-     * @param body    buffer body
+     * @param body buffer body
      */
     void body(Buffer body);
 
     /**
      * Set the body of the {@link HttpRequest} as is format.
      *
-     * @param ins    input stream
+     * @param ins input stream
      */
     void inputStream(HttpInputStream ins);
 

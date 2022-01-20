@@ -34,8 +34,8 @@ public interface FutureTransferFactory extends Ordered {
     /**
      * Creates an optional instance of {@link FutureTransfer}.
      *
-     * @param method    handler method
-     * @return          an optional instance of {@link FutureTransfer}.
+     * @param method handler method
+     * @return an optional instance of {@link FutureTransfer}.
      */
     Optional<FutureTransfer> futureTransfer(HandlerMethod method);
 

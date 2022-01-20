@@ -31,7 +31,7 @@ public interface RouteRegistryAware {
     /**
      * This callback method is invoked when all the internal routes have been registered to {@code registry}.
      *
-     * @param registry  registry
+     * @param registry registry
      */
     void setRegistry(RouteRegistry registry);
 

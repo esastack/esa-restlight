@@ -30,7 +30,6 @@ public interface ExceptionMapper extends Ordered {
      * Whether current {@link ExceptionMapper} is applicable to given {@link Handler}.
      *
      * @param handler handler
-     *
      * @return {@code true} this {@link ExceptionMapper} is applicable, otherwise {@code false}
      */
     default boolean isApplicable(HandlerMethod handler) {
@@ -41,7 +40,6 @@ public interface ExceptionMapper extends Ordered {
      * Maps a instance of {@link ExceptionResolver} to given target exception type.
      *
      * @param type target exception type
-     *
      * @return mapped resolver, {@code null} if there's no resolver been mapped.
      */
     ExceptionResolver<Throwable> mapTo(Class<? extends Throwable> type);

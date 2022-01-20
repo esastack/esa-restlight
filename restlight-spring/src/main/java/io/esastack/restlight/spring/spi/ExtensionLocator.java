@@ -18,7 +18,6 @@ package io.esastack.restlight.spring.spi;
 import esa.commons.annotation.Internal;
 import esa.commons.spi.SPI;
 import io.esastack.restlight.core.DeployContext;
-import io.esastack.restlight.core.config.RestlightOptions;
 import org.springframework.context.ApplicationContext;
 
 import java.lang.annotation.Annotation;
@@ -34,11 +33,10 @@ public interface ExtensionLocator {
      *
      * @param spring {@link ApplicationContext} that Restlight is starting with
      * @param ctx    deploy context
-     *
      * @return controller advices
      */
     Collection<Object> getExtensions(ApplicationContext spring,
-                                     DeployContext<? extends RestlightOptions> ctx);
+                                     DeployContext ctx);
 
 }
 

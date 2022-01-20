@@ -27,14 +27,14 @@ public interface Handlers {
     /**
      * Obtains all classes which have been registered.
      *
-     * @return  immutable classes, which must not be {@code null}.
+     * @return immutable classes, which must not be {@code null}.
      */
     Set<Class<?>> getClasses();
 
     /**
      * Obtains all singletons which have been registered.
      *
-     * @return  immutable singletons, which must not be {@code null}.
+     * @return immutable singletons, which must not be {@code null}.
      */
     Set<Object> getSingletons();
 

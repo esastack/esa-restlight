@@ -83,9 +83,9 @@ public abstract class AbstractRestlightHandler implements RestlightHandler {
     /**
      * Whether the exception occurred in given {@link RequestContext} should be handleable or not.
      *
-     * @param context   context
-     * @param th        th
-     * @return          {@code true} if should be handled, otherwise {@code false}.
+     * @param context context
+     * @param th      th
+     * @return {@code true} if should be handled, otherwise {@code false}.
      */
     protected abstract boolean isHandleable(RequestContext context, Throwable th);
 

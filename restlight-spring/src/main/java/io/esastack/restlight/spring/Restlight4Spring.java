@@ -49,8 +49,7 @@ import static io.esastack.restlight.spring.util.SpringContextUtils.getBean;
  * Deployments4Spring}) to bootstrap a {@link RestlightServer} which could be {@link
  * #start()} for service.
  */
-public class Restlight4Spring extends AbstractRestlight4Spring<Restlight4Spring, Deployments4Spring.Impl,
-        RestlightOptions> {
+public class Restlight4Spring extends AbstractRestlight4Spring<Restlight4Spring, Deployments4Spring.Impl> {
 
     private Restlight4Spring(ApplicationContext context, RestlightOptions options) {
         super(context, options);
@@ -60,7 +59,6 @@ public class Restlight4Spring extends AbstractRestlight4Spring<Restlight4Spring,
      * Creates a HTTP server of Restlight and auto-configure by given {@link ApplicationContext}.
      *
      * @param context ctx of spring
-     *
      * @return Restlight4Spring
      */
     public static Restlight4Spring forServer(ApplicationContext context) {
@@ -76,7 +74,6 @@ public class Restlight4Spring extends AbstractRestlight4Spring<Restlight4Spring,
      * RestlightOptions}.
      *
      * @param context ctx of spring
-     *
      * @return Restlight4Spring
      */
     public static Restlight4Spring forServer(ApplicationContext context, RestlightOptions options) {
@@ -85,7 +82,7 @@ public class Restlight4Spring extends AbstractRestlight4Spring<Restlight4Spring,
 
     @Override
     protected void preStart() {
-        DeployContext<RestlightOptions> context = deployments().deployContext();
+        DeployContext context = deployments().deployContext();
         deployments().contextConfigures.forEach(c -> {
             try {
                 c.accept(context);

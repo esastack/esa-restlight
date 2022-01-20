@@ -29,7 +29,7 @@ public interface HandlerRegistryAware {
     /**
      * This callback method is invoked when all the internal handlers have been registered to {@code registry}.
      *
-     * @param registry  registry
+     * @param registry registry
      */
     void setRegistry(HandlerRegistry registry);
 

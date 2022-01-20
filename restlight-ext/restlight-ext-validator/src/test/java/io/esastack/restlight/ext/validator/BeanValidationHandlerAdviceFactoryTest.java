@@ -65,7 +65,7 @@ class BeanValidationHandlerAdviceFactoryTest {
 
     }
 
-    private static class Context extends DeployContextImpl<RestlightOptions> {
+    private static class Context extends DeployContextImpl {
         private Context(String name, RestlightOptions options) {
             super(name, options);
         }

@@ -30,8 +30,8 @@ public interface HandlerValueResolverLocator extends Ordered {
     /**
      * Obtains an optional {@link HandlerValueResolver} for given {@link HandlerMapping} if possible.
      *
-     * @param mapping   mapping
-     * @return  an optional instance of {@link HandlerValueResolver}, which must not be {@code null}.
+     * @param mapping mapping
+     * @return an optional instance of {@link HandlerValueResolver}, which must not be {@code null}.
      */
     Optional<HandlerValueResolver> getHandlerValueResolver(HandlerMapping mapping);
 

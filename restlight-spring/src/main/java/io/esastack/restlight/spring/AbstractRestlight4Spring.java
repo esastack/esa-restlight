@@ -28,16 +28,16 @@ import org.springframework.context.ApplicationContext;
 
 import java.util.concurrent.Executor;
 
-public abstract class AbstractRestlight4Spring<R extends AbstractRestlight4Spring<R, D, O>,
-        D extends Deployments4Spring<R, D, O>, O extends RestlightOptions>
-        extends AbstractRestlight<R, D, O> {
+public abstract class AbstractRestlight4Spring<R extends AbstractRestlight4Spring<R, D>,
+        D extends Deployments4Spring<R, D>>
+        extends AbstractRestlight<R, D> {
 
     protected final ApplicationContext context;
     private boolean enableServerAware = true;
     private boolean enableIoExecutorAware = true;
     private boolean enableBizExecutorAware = true;
 
-    protected AbstractRestlight4Spring(ApplicationContext context, O options) {
+    protected AbstractRestlight4Spring(ApplicationContext context, RestlightOptions options) {
         super(options);
         Checks.checkNotNull(context, "Application ctx must not be null");
         this.context = context;

@@ -1,15 +1,34 @@
 {
-  "resources":{
-    "includes":[
-      {"pattern":".*/io.esastack.restlight.core.spi.ExceptionResolverFactoryProvider$"},
-      {"pattern":".*/io.esastack.restlight.core.spi.MappingLocatorFactory$"},
-      {"pattern":".*/io.esastack.restlight.core.spi.RouteMethodLocatorFactory$"},
-      {"pattern":".*/io.esastack.restlight.server.spi.ExceptionHandlerFactory$"},
-      {"pattern":".*/io.esastack.restlight.core.resolver.RequestEntityResolverFactory$"},
-      {"pattern":".*/io.esastack.restlight.core.resolver.ResponseEntityResolverFactory$"},
-      {"pattern":".*/io.esastack.restlight.core.spi.ParamResolverProvider$"},
-      {"pattern":".*/io.esastack.restlight.core.spi.RequestEntityResolverProvider$"},
-      {"pattern":".*/io.esastack.restlight.core.spi.ResponseEntityResolverProvider$"}
-    ]},
-  "bundles":[]
+  "resources": {
+    "includes": [
+      {
+        "pattern": ".*/io.esastack.restlight.core.spi.ExceptionResolverFactoryProvider$"
+      },
+      {
+        "pattern": ".*/io.esastack.restlight.core.spi.MappingLocatorFactory$"
+      },
+      {
+        "pattern": ".*/io.esastack.restlight.core.spi.RouteMethodLocatorFactory$"
+      },
+      {
+        "pattern": ".*/io.esastack.restlight.server.spi.ExceptionHandlerFactory$"
+      },
+      {
+        "pattern": ".*/io.esastack.restlight.core.resolver.RequestEntityResolverFactory$"
+      },
+      {
+        "pattern": ".*/io.esastack.restlight.core.resolver.ResponseEntityResolverFactory$"
+      },
+      {
+        "pattern": ".*/io.esastack.restlight.core.spi.ParamResolverProvider$"
+      },
+      {
+        "pattern": ".*/io.esastack.restlight.core.spi.RequestEntityResolverProvider$"
+      },
+      {
+        "pattern": ".*/io.esastack.restlight.core.spi.ResponseEntityResolverProvider$"
+      }
+    ]
+  },
+  "bundles": []
 }

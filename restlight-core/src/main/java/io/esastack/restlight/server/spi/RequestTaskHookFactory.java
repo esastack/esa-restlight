@@ -17,8 +17,7 @@ package io.esastack.restlight.server.spi;
 
 import esa.commons.annotation.Beta;
 import esa.commons.spi.SPI;
-import io.esastack.restlight.server.ServerDeployContext;
-import io.esastack.restlight.server.config.ServerOptions;
+import io.esastack.restlight.core.DeployContext;
 import io.esastack.restlight.server.schedule.RequestTaskHook;
 
 import java.util.Optional;
@@ -34,9 +33,8 @@ public interface RequestTaskHookFactory {
      * Creates an optional instance of {@link RequestTaskHook}.
      *
      * @param ctx ctx
-     *
      * @return optional value
      */
-    Optional<RequestTaskHook> hook(ServerDeployContext<? extends ServerOptions> ctx);
+    Optional<RequestTaskHook> hook(DeployContext ctx);
 
 }

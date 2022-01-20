@@ -39,7 +39,7 @@ public interface RequestEntityResolverAdviceFactory extends HandlerPredicate, Or
     /**
      * Creates an instance of {@link RequestEntityResolverAdvice} for given handler method.
      *
-     * @param method              method
+     * @param method method
      * @return advice
      */
     RequestEntityResolverAdvice createResolverAdvice(HandlerMethod method);

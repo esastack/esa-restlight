@@ -100,13 +100,12 @@ import java.util.stream.Collectors;
 /**
  * This Deployments will auto-configure itself from the {@link ApplicationContext}.
  */
-public class Deployments4Spring<R extends AbstractRestlight4Spring<R, D, O>, D extends Deployments4Spring<R, D, O>,
-        O extends RestlightOptions>
-        extends Deployments<R, D, O> {
+public class Deployments4Spring<R extends AbstractRestlight4Spring<R, D>, D extends Deployments4Spring<R, D>>
+        extends Deployments<R, D> {
 
     final List<DeployContextConfigure> contextConfigures = new LinkedList<>();
 
-    protected Deployments4Spring(R restlight, ApplicationContext context, O options) {
+    protected Deployments4Spring(R restlight, ApplicationContext context, RestlightOptions options) {
         super(restlight, options);
         autoConfigureFromSpringContext(context);
     }
@@ -497,7 +496,7 @@ public class Deployments4Spring<R extends AbstractRestlight4Spring<R, D, O>, D e
     }
 
 
-    public static class Impl extends Deployments4Spring<Restlight4Spring, Impl, RestlightOptions> {
+    public static class Impl extends Deployments4Spring<Restlight4Spring, Impl> {
 
         Impl(Restlight4Spring restlight, ApplicationContext context, RestlightOptions options) {
             super(restlight, context, options);

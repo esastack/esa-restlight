@@ -18,7 +18,6 @@ package io.esastack.restlight.springmvc.spi;
 import esa.commons.annotation.Internal;
 import esa.commons.spi.Feature;
 import io.esastack.restlight.core.DeployContext;
-import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.core.handler.locate.MappingLocator;
 import io.esastack.restlight.core.spi.MappingLocatorFactory;
 import io.esastack.restlight.core.util.Constants;
@@ -29,7 +28,7 @@ import io.esastack.restlight.springmvc.util.RequestMappingUtils;
 public class SpringMvcMappingLocatorFactory implements MappingLocatorFactory {
 
     @Override
-    public MappingLocator locator(DeployContext<? extends RestlightOptions> ctx) {
+    public MappingLocator locator(DeployContext ctx) {
         return (parent, userType, method) ->
                 RequestMappingUtils.extractMapping(userType, method, ctx.options().getContextPath());
     }

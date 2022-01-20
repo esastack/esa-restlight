@@ -17,6 +17,7 @@ package io.esastack.restlight.server.route.impl;
 
 /**
  * Routes that contains a lookup arrays of {@link RouteWrap}.
+ *
  * @param <R> type of {@link RouteWrap}
  */
 interface Routes<R extends RouteWrap> {

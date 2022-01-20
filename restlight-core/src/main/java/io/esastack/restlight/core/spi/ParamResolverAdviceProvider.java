@@ -17,7 +17,6 @@ package io.esastack.restlight.core.spi;
 
 import esa.commons.spi.SPI;
 import io.esastack.restlight.core.DeployContext;
-import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.core.resolver.ParamResolverAdviceFactory;
 
 import java.util.Optional;
@@ -32,9 +31,8 @@ public interface ParamResolverAdviceProvider {
      * Produces a an optional instance of {@link ParamResolverAdviceFactory}.
      *
      * @param ctx deploy context
-     *
      * @return Optional value of {@link ParamResolverAdviceFactory}.
      */
-    Optional<ParamResolverAdviceFactory> factoryBean(DeployContext<? extends RestlightOptions> ctx);
+    Optional<ParamResolverAdviceFactory> factoryBean(DeployContext ctx);
 
 }

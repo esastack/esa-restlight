@@ -16,7 +16,6 @@
 package io.esastack.restlight.core.interceptor;
 
 import io.esastack.restlight.core.DeployContext;
-import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.core.util.Affinity;
 import io.esastack.restlight.server.route.Routing;
 
@@ -25,7 +24,7 @@ class RouteInterceptorWrap extends AbstractInterceptorWrap<RouteInterceptor> {
     private final int affinity;
 
     RouteInterceptorWrap(RouteInterceptor interceptor,
-                         DeployContext<? extends RestlightOptions> ctx,
+                         DeployContext ctx,
                          Routing route) {
         super(interceptor);
         this.affinity = interceptor.match(ctx, route) ? Affinity.ATTACHED : Affinity.DETACHED;

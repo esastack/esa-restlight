@@ -17,7 +17,6 @@ package io.esastack.restlight.core.spi;
 
 import esa.commons.spi.SPI;
 import io.esastack.restlight.core.DeployContext;
-import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.core.resolver.StringConverterFactory;
 
 import java.util.Optional;
@@ -33,10 +32,9 @@ public interface StringConverterProvider {
      * Produces an optional instance of {@link StringConverterFactory}.
      *
      * @param ctx deploy context
-     *
      * @return optional value of {@link StringConverterFactory}
      */
-    Optional<StringConverterFactory> factoryBean(DeployContext<? extends RestlightOptions> ctx);
+    Optional<StringConverterFactory> factoryBean(DeployContext ctx);
 
 }
 

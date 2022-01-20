@@ -22,7 +22,7 @@ public interface RequestEntityResolverContext extends HttpEntityResolverContext 
     /**
      * Obtains the {@link Param} to resolve.
      *
-     * @return  param
+     * @return param
      */
     @Override
     RequestEntity httpEntity();

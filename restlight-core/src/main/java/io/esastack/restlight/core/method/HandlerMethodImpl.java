@@ -65,7 +65,6 @@ public class HandlerMethodImpl implements HandlerMethod {
      *
      * @param annotationType annotation type
      * @param <A>            annotation generic
-     *
      * @return annotation instance
      */
     @Override
@@ -78,7 +77,6 @@ public class HandlerMethodImpl implements HandlerMethod {
      *
      * @param annotationType annotation type
      * @param <A>            annotation generic
-     *
      * @return annotation instance
      */
     @Override

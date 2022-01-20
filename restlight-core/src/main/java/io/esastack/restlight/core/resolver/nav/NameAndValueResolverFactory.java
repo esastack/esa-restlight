@@ -16,7 +16,6 @@
 package io.esastack.restlight.core.resolver.nav;
 
 import io.esastack.restlight.core.DeployContext;
-import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.core.method.Param;
 import io.esastack.restlight.core.resolver.HandlerResolverFactory;
 import io.esastack.restlight.core.resolver.ParamPredicate;
@@ -37,7 +36,7 @@ public abstract class NameAndValueResolverFactory implements ParamResolverProvid
      * @return Optional value of {@link ParamResolverFactory}.
      */
     @Override
-    public Optional<ParamResolverFactory> factoryBean(DeployContext<? extends RestlightOptions> ctx) {
+    public Optional<ParamResolverFactory> factoryBean(DeployContext ctx) {
         return Optional.of(new ParamResolverFactory() {
 
             @Override

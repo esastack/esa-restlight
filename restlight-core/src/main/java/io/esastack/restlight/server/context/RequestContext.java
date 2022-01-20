@@ -24,21 +24,21 @@ public interface RequestContext {
     /**
      * Obtains {@link Attributes} corresponding with current {@link RequestContext}.
      *
-     * @return  attributes
+     * @return attributes
      */
     Attributes attrs();
 
     /**
      * Obtains current {@code request}.
      *
-     * @return  request
+     * @return request
      */
     HttpRequest request();
 
     /**
      * Obtains current {@code response}.
      *
-     * @return  response
+     * @return response
      */
     HttpResponse response();
 

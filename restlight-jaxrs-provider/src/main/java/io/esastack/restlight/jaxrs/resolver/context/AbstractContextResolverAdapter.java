@@ -31,7 +31,7 @@ abstract class AbstractContextResolverAdapter implements ContextResolverAdapter 
      * Whether supports given {@code param} or not.
      *
      * @param param param
-     * @return      {@code true} if supports given {@code param}, otherwise {@code false}.
+     * @return {@code true} if supports given {@code param}, otherwise {@code false}.
      */
     protected abstract boolean supports0(Param param);
 

@@ -24,7 +24,7 @@ public interface DisConnectionHandler extends Ordered {
     /**
      * This callback notification method is invoked in case the existed {@link Channel} has disconnected.
      *
-     * @param channel    channel
+     * @param channel channel
      */
     void onDisconnect(Channel channel);
 

@@ -29,8 +29,8 @@ public interface ResponseEntityChannelFactory extends Ordered {
     /**
      * Creates a {@link ResponseEntityChannel} corresponding to given {@link RequestContext}.
      *
-     * @param context   context
-     * @return  channel
+     * @param context context
+     * @return channel
      */
     ResponseEntityChannel create(RequestContext context);
 

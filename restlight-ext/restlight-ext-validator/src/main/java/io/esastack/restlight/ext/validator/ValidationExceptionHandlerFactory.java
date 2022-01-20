@@ -17,11 +17,10 @@ package io.esastack.restlight.ext.validator;
 
 import esa.commons.annotation.Internal;
 import esa.commons.spi.Feature;
+import io.esastack.restlight.core.DeployContext;
 import io.esastack.restlight.core.util.Constants;
-import io.esastack.restlight.server.ServerDeployContext;
 import io.esastack.restlight.server.bootstrap.ExceptionHandlerChain;
 import io.esastack.restlight.server.bootstrap.IExceptionHandler;
-import io.esastack.restlight.server.config.ServerOptions;
 import io.esastack.restlight.server.context.RequestContext;
 import io.esastack.restlight.server.spi.ExceptionHandlerFactory;
 import io.esastack.restlight.server.util.ErrorDetail;
@@ -40,7 +39,7 @@ import java.util.concurrent.CompletionStage;
 public class ValidationExceptionHandlerFactory implements ExceptionHandlerFactory {
 
     @Override
-    public Optional<IExceptionHandler> handler(ServerDeployContext<? extends ServerOptions> ctx) {
+    public Optional<IExceptionHandler> handler(DeployContext ctx) {
         return Optional.of(new ValidationExceptionHandler());
     }
 
@@ -48,7 +47,7 @@ public class ValidationExceptionHandlerFactory implements ExceptionHandlerFactor
 
         @Override
         public CompletionStage<Void> handle(RequestContext context, Throwable th,
-                                              ExceptionHandlerChain next) {
+                                            ExceptionHandlerChain next) {
             final CompletableFuture<Void> handled = new CompletableFuture<>();
             next.handle(context, th).whenComplete((v, ex) -> {
                 if (ex == null) {

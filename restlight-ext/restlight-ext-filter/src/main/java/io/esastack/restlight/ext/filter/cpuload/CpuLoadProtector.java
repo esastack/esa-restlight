@@ -125,7 +125,6 @@ public class CpuLoadProtector implements ConnectionHandler {
      * Compute the discard rate.
      *
      * @param current current cpu load
-     *
      * @return discard rate
      */
     private double getDiscardRate(double current) {

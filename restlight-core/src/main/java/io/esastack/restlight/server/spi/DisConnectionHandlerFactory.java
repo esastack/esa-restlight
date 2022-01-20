@@ -16,8 +16,7 @@
 package io.esastack.restlight.server.spi;
 
 import esa.commons.spi.SPI;
-import io.esastack.restlight.server.ServerDeployContext;
-import io.esastack.restlight.server.config.ServerOptions;
+import io.esastack.restlight.core.DeployContext;
 import io.esastack.restlight.server.handler.DisConnectionHandler;
 
 import java.util.Optional;
@@ -32,10 +31,10 @@ public interface DisConnectionHandlerFactory {
     /**
      * Creates an optional instance of {@link DisConnectionHandler}.
      *
-     * @param ctx   ctx
-     * @return      an optional {@link DisConnectionHandler}, which must not be {@code null}.
+     * @param ctx ctx
+     * @return an optional {@link DisConnectionHandler}, which must not be {@code null}.
      */
-    Optional<DisConnectionHandler> handler(ServerDeployContext<? extends ServerOptions> ctx);
+    Optional<DisConnectionHandler> handler(DeployContext ctx);
 
 }
 

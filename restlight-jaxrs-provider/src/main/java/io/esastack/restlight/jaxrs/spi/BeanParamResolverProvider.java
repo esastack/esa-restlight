@@ -16,7 +16,6 @@
 package io.esastack.restlight.jaxrs.spi;
 
 import io.esastack.restlight.core.DeployContext;
-import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.core.resolver.ParamResolverFactory;
 import io.esastack.restlight.core.spi.ParamResolverProvider;
 import io.esastack.restlight.jaxrs.resolver.param.BeanParamResolver;
@@ -26,7 +25,7 @@ import java.util.Optional;
 public class BeanParamResolverProvider implements ParamResolverProvider {
 
     @Override
-    public Optional<ParamResolverFactory> factoryBean(DeployContext<? extends RestlightOptions> ctx) {
+    public Optional<ParamResolverFactory> factoryBean(DeployContext ctx) {
         return Optional.of(new BeanParamResolver(ctx));
     }
 

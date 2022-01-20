@@ -18,7 +18,6 @@ package io.esastack.restlight.core.spi;
 import esa.commons.annotation.Internal;
 import esa.commons.spi.SPI;
 import io.esastack.restlight.core.DeployContext;
-import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.core.handler.locate.MappingLocator;
 
 /**
@@ -33,9 +32,8 @@ public interface MappingLocatorFactory {
      * Creates an instance of {@link MappingLocator}.
      *
      * @param ctx deploy context
-     *
      * @return locator
      */
-    MappingLocator locator(DeployContext<? extends RestlightOptions> ctx);
+    MappingLocator locator(DeployContext ctx);
 
 }

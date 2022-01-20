@@ -17,7 +17,6 @@ package io.esastack.restlight.starter.actuator.meter;
 
 import esa.commons.Checks;
 import io.esastack.restlight.core.DeployContext;
-import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.server.bootstrap.DispatcherHandler;
 import io.esastack.restlight.spring.util.RestlightBizExecutorAware;
 import io.esastack.restlight.spring.util.RestlightDeployContextAware;
@@ -34,7 +33,7 @@ import java.util.concurrent.TimeUnit;
 
 public class RestlightBizThreadPoolBinder implements RestlightBizExecutorAware, RestlightDeployContextAware {
 
-    private DeployContext<? extends RestlightOptions> deployContext;
+    private DeployContext deployContext;
     private final AutoRestlightServerOptions config;
     private final MeterRegistry registry;
     private static final String CATEGORY = "category";
@@ -75,7 +74,7 @@ public class RestlightBizThreadPoolBinder implements RestlightBizExecutorAware, 
     }
 
     @Override
-    public void setDeployContext(DeployContext<? extends RestlightOptions> ctx) {
+    public void setDeployContext(DeployContext ctx) {
         this.deployContext = ctx;
     }
 

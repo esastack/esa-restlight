@@ -22,7 +22,6 @@ import esa.commons.logging.Logger;
 import esa.commons.logging.LoggerFactory;
 import esa.commons.reflect.ReflectionUtils;
 import io.esastack.restlight.core.DeployContext;
-import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.core.handler.HandlerMapping;
 import io.esastack.restlight.core.handler.impl.HandlerContext;
 import io.esastack.restlight.core.method.FieldParam;
@@ -48,11 +47,11 @@ public class HandlerRegistryImpl implements HandlerRegistry {
     private static final Logger logger = LoggerFactory.getLogger(HandlerRegistryImpl.class);
 
     private final List<HandlerMapping> mappings = new CopyOnWriteArrayList<>();
-    private final DeployContext<? extends RestlightOptions> context;
+    private final DeployContext context;
     private final RouteRegistry registry;
     private final Handlers handlers;
 
-    public HandlerRegistryImpl(DeployContext<? extends RestlightOptions> context) {
+    public HandlerRegistryImpl(DeployContext context) {
         Checks.checkNotNull(context, "context");
         Checks.checkState(context.routeRegistry().isPresent(), "route registry is null.");
         Checks.checkState(context.handlers().isPresent(), "handlers is null");
@@ -84,7 +83,7 @@ public class HandlerRegistryImpl implements HandlerRegistry {
 
                 ClassUtils.doWithUserDeclaredMethods(userType,
                         method -> {
-                            HandlerContext<?> context = HandlerContext.build(this.context,
+                            HandlerContext context = HandlerContext.build(this.context,
                                     HandlerMethodImpl.of(userType, method));
                             Optional<HandlerMapping> mapping = RouteUtils
                                     .extractHandlerMapping(context,
@@ -122,7 +121,7 @@ public class HandlerRegistryImpl implements HandlerRegistry {
                     Class<?> userType = ClassUtils.getUserType(clazz);
                     ClassUtils.doWithUserDeclaredMethods(userType,
                             method -> {
-                                HandlerContext<?> context = HandlerContext.build(this.context,
+                                HandlerContext context = HandlerContext.build(this.context,
                                         HandlerMethodImpl.of(userType, method));
                                 Optional<HandlerMapping> mapping = RouteUtils
                                         .extractHandlerMapping(context, null, userType, method);
@@ -172,7 +171,7 @@ public class HandlerRegistryImpl implements HandlerRegistry {
                 ClassUtils.doWithUserDeclaredMethods(userType,
                         method -> {
                             Optional<HandlerMapping> mapping = RouteUtils
-                                    .extractHandlerMapping(new HandlerContext<>(context),
+                                    .extractHandlerMapping(new HandlerContext(context),
                                             null, userType, method);
                             if (mapping.isPresent()) {
                                 // deRegister routes which have same mapping extracted from given handler
@@ -200,7 +199,7 @@ public class HandlerRegistryImpl implements HandlerRegistry {
     public void addHandlerMappings(Collection<HandlerMapping> mappings) {
         if (mappings != null && !mappings.isEmpty()) {
             List<HandlerMapping> mps = new LinkedList<>();
-            mappings.forEach(mapping -> RouteUtils.extractRoute(new HandlerContext<>(context), mapping)
+            mappings.forEach(mapping -> RouteUtils.extractRoute(new HandlerContext(context), mapping)
                     .ifPresent(route -> {
                         mps.add(mapping);
                         registry.register(route);

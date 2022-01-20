@@ -25,9 +25,8 @@ public interface ExceptionHandler<T extends Throwable> {
     /**
      * Handle error occurred in the lifecycle of request.
      *
-     * @param context  current context
-     * @param t        error
-     *
+     * @param context current context
+     * @param t       error
      * @return future
      */
     CompletionStage<Void> handleException(RequestContext context, T t);

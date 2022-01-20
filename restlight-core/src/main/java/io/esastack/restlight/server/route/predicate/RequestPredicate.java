@@ -26,7 +26,6 @@ public interface RequestPredicate extends Predicate<RequestContext> {
      * Whether current predicate is able to ambiguous with given predicate.
      *
      * @param another another predicate
-     *
      * @return {@code true} means this predicate may ambiguous with given predicate.
      */
     default boolean mayAmbiguousWith(RequestPredicate another) {

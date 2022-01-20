@@ -23,7 +23,6 @@ public interface HandlerPredicate {
      * Judge whether should apply current component to resolve the {@link HandlerMethod}.
      *
      * @param method handler method.
-     *
      * @return {@code true} or {@code false}.
      */
     boolean supports(HandlerMethod method);

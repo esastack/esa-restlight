@@ -18,7 +18,6 @@ package io.esastack.restlight.jaxrs.adapter;
 import esa.commons.Checks;
 import esa.commons.ClassUtils;
 import io.esastack.restlight.core.DeployContext;
-import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.core.configure.ConfigurableHandler;
 import io.esastack.restlight.core.configure.HandlerConfigure;
 import io.esastack.restlight.core.method.HandlerMethod;
@@ -52,12 +51,12 @@ import static io.esastack.restlight.jaxrs.util.JaxrsUtils.descendingOrder;
 
 public class DynamicFeatureAdapter implements HandlerConfigure {
 
-    private final DeployContext<? extends RestlightOptions> context;
+    private final DeployContext context;
     private final List<Class<? extends Annotation>> appNameBindings;
     private final Collection<ProxyComponent<DynamicFeature>> features;
     private final ConfigurationImpl parent;
 
-    public DynamicFeatureAdapter(DeployContext<? extends RestlightOptions> context,
+    public DynamicFeatureAdapter(DeployContext context,
                                  List<Class<? extends Annotation>> appNameBindings,
                                  Collection<ProxyComponent<DynamicFeature>> features,
                                  ConfigurationImpl parent) {
@@ -104,7 +103,7 @@ public class DynamicFeatureAdapter implements HandlerConfigure {
         if (JaxrsMappingUtils.isMethod(handlerMethod.method())) {
             List<OrderComponent<ContainerRequestFilter>> filters =
                     filterByNameBindings(handlerMethod, providers.requestFilters(),
-                    true);
+                            true);
             if (!filters.isEmpty()) {
                 configurable.addRouteFilters(Collections.singleton(new PostMatchRequestFiltersAdapter(
                         ascendingOrdered(filters).toArray(new ContainerRequestFilter[0]))));

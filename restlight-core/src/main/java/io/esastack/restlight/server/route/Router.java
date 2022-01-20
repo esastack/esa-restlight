@@ -26,7 +26,6 @@ public interface Router {
      * Gets the matched {@link Route} by the given {@code context}.
      *
      * @param context context
-     *
      * @return matched {@link Route} or {@code null} if missing
      */
     Route route(RequestContext context);

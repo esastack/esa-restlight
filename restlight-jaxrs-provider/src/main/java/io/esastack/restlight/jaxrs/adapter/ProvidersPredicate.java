@@ -20,8 +20,8 @@ import io.esastack.restlight.server.route.predicate.RequestPredicate;
 
 public interface ProvidersPredicate extends RequestPredicate {
 
-    ProvidersPredicate BINDING_GLOBAL = context -> RouteTracking.matchedMethod(context) ==  null;
-    ProvidersPredicate BINDING_HANDLER = context -> RouteTracking.matchedMethod(context) !=  null;
+    ProvidersPredicate BINDING_GLOBAL = context -> RouteTracking.matchedMethod(context) == null;
+    ProvidersPredicate BINDING_HANDLER = context -> RouteTracking.matchedMethod(context) != null;
 
 }
 

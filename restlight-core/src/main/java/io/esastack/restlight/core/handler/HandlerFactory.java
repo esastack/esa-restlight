@@ -33,9 +33,9 @@ public interface HandlerFactory {
     /**
      * Just instantiate a object by given {@link RequestContext}.
      *
-     * @param clazz     clazz
-     * @param context   context
-     * @return  instance
+     * @param clazz   clazz
+     * @param context context
+     * @return instance
      */
     Object instantiate(Class<?> clazz, RequestContext context);
 
@@ -44,62 +44,62 @@ public interface HandlerFactory {
      * prototype instances created when invoking different methods of the same {@link Class} may also different from
      * each other, because they have different resolvers.
      *
-     * @param clazz     clazz
-     * @param method    method
-     * @param context   context
-     * @return          instance
+     * @param clazz   clazz
+     * @param method  method
+     * @param context context
+     * @return instance
      */
     Object instantiate(Class<?> clazz, Method method, RequestContext context);
 
     /**
      * Obtains a instance of given {@link Class}.
      *
-     * @param clazz class type
-     * @param context   current context, if the handler is prototype, just return it without instantiating a new one.
-     * @return  instance
+     * @param clazz   class type
+     * @param context current context, if the handler is prototype, just return it without instantiating a new one.
+     * @return instance
      */
     Object getInstance(Class<?> clazz, RequestContext context);
 
     /**
      * Obtains a instance of given {@link Class} and {@link Method}.
-     *
+     * <p>
      * The {@link ParamResolver}s and {@link ContextResolver}s may be different between two {@link Method}s. So the
      * prototype instances created when invoking different methods of the same {@link Class} may also different from
      * each other, because they have different resolvers.
      *
-     * @param clazz clazz
-     * @param method    method
-     * @param context   context
-     * @return  instance
+     * @param clazz   clazz
+     * @param method  method
+     * @param context context
+     * @return instance
      */
     Object getInstance(Class<?> clazz, Method method, RequestContext context);
 
     /**
      * Try to inject the setters or fields which are {@link ResolvableParamPredicate#test(Param)}.
      *
-     * @param instance  instance which is tended to be injected.
-     * @param context   current context
+     * @param instance instance which is tended to be injected.
+     * @param context  current context
      */
     void doInit(Object instance, RequestContext context);
 
     /**
      * Try to inject the setters or fields which are {@link ResolvableParamPredicate#test(Param)}.
-     *
+     * <p>
      * The {@link ParamResolver}s and {@link ContextResolver}s may be different between two {@link Method}s. So the
      * prototype instances created when invoking different methods of the same {@link Class} may also different from
      * each other, because they have different resolvers.
      *
-     * @param instance  instance which is tended to be injected.
-     * @param context   current context
+     * @param instance instance which is tended to be injected.
+     * @param context  current context
      */
     void doInit(Object instance, Method method, RequestContext context);
 
     /**
      * Just instantiate a object by given {@link RequestContext} and then inject fields and setters for it.
      *
-     * @param clazz clazz
-     * @param context   context
-     * @return  instance
+     * @param clazz   clazz
+     * @param context context
+     * @return instance
      */
     default Object instantiateThenInit(Class<?> clazz, RequestContext context) {
         Object instance = instantiate(clazz, context);
@@ -120,9 +120,9 @@ public interface HandlerFactory {
     /**
      * Obtains a instance of given {@link Class} and then init it.
      *
-     * @param clazz class type
-     * @param context   current context
-     * @return  instance which has been initialized.
+     * @param clazz   class type
+     * @param context current context
+     * @return instance which has been initialized.
      */
     default Object getThenInit(Class<?> clazz, RequestContext context) {
         Object instance = getInstance(clazz, context);

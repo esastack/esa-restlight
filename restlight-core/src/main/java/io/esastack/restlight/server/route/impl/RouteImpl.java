@@ -120,7 +120,6 @@ public class RouteImpl implements Route {
      * StatelessExecutionFactory} instantiated by the given request handler.
      *
      * @param handler handler
-     *
      * @return a new instance of {@link RouteImpl}
      */
     public RouteImpl handleAsync(Function<RequestContext, CompletionStage<Void>> handler) {
@@ -143,7 +142,6 @@ public class RouteImpl implements Route {
 
     /**
      * @param handler handler
-     *
      * @return a new instance of {@link RouteImpl}
      * @see #handleAsync(Function)
      */
@@ -159,7 +157,6 @@ public class RouteImpl implements Route {
      * StatelessExecutionFactory} instantiated by the given request handler.
      *
      * @param handler handler
-     *
      * @return a new instance of {@link RouteImpl}
      */
     public RouteImpl handle(ThrowingConsumer<RequestContext> handler) {
@@ -176,7 +173,6 @@ public class RouteImpl implements Route {
 
     /**
      * @param handler handler
-     *
      * @return a new instance of {@link RouteImpl}
      * @see #handle(ThrowingConsumer)
      */
@@ -193,7 +189,6 @@ public class RouteImpl implements Route {
      * StatelessExecutionFactory} instantiated by the given request handler.
      *
      * @param handler handler
-     *
      * @return a new instance of {@link RouteImpl}
      */
     public RouteImpl onErrorAsync(ExceptionHandler<Throwable> handler) {
@@ -216,7 +211,6 @@ public class RouteImpl implements Route {
 
     /**
      * @param handler handler
-     *
      * @return a new instance of {@link RouteImpl}
      * @see #onErrorAsync(ExceptionHandler)
      */
@@ -227,7 +221,6 @@ public class RouteImpl implements Route {
 
     /**
      * @param handler handler
-     *
      * @return a new instance of {@link RouteImpl}
      * @see #onErrorAsync(ExceptionHandler)
      */
@@ -238,7 +231,6 @@ public class RouteImpl implements Route {
 
     /**
      * @param handler handler
-     *
      * @return a new instance of {@link RouteImpl}
      * @see #onErrorAsync(ExceptionHandler)
      */
@@ -255,7 +247,6 @@ public class RouteImpl implements Route {
      * StatelessExecutionFactory} instantiated by the given request handler.
      *
      * @param handler handler
-     *
      * @return a new instance of {@link RouteImpl}
      */
     public RouteImpl onError(ThrowingBiConsumer<RequestContext, Throwable> handler) {
@@ -272,7 +263,6 @@ public class RouteImpl implements Route {
 
     /**
      * @param handler handler
-     *
      * @return a new instance of {@link RouteImpl}
      * @see #onError(ThrowingBiConsumer)
      */
@@ -283,7 +273,6 @@ public class RouteImpl implements Route {
 
     /**
      * @param handler handler
-     *
      * @return a new instance of {@link RouteImpl}
      * @see #onError(ThrowingBiConsumer)
      */
@@ -300,7 +289,6 @@ public class RouteImpl implements Route {
      * StatelessExecutionFactory} instantiated by the given request handler.
      *
      * @param handler handler
-     *
      * @return a new instance of {@link RouteImpl}
      */
     public RouteImpl onCompleteAsync(CompletionHandler handler) {
@@ -323,7 +311,6 @@ public class RouteImpl implements Route {
 
     /**
      * @param handler handler
-     *
      * @return a new instance of {@link RouteImpl}
      * @see #onCompleteAsync(CompletionHandler)
      */
@@ -334,7 +321,6 @@ public class RouteImpl implements Route {
 
     /**
      * @param handler handler
-     *
      * @return a new instance of {@link RouteImpl}
      * @see #onCompleteAsync(CompletionHandler)
      */
@@ -351,7 +337,6 @@ public class RouteImpl implements Route {
      * StatelessExecutionFactory} instantiated by the given request handler.
      *
      * @param handler handler
-     *
      * @return a new instance of {@link RouteImpl}
      */
     public RouteImpl onComplete(ThrowingBiConsumer<RequestContext, Throwable> handler) {
@@ -368,7 +353,6 @@ public class RouteImpl implements Route {
 
     /**
      * @param handler handler
-     *
      * @return a new instance of {@link RouteImpl}
      * @see #onComplete(ThrowingBiConsumer)
      */
@@ -379,7 +363,6 @@ public class RouteImpl implements Route {
 
     /**
      * @param handler handler
-     *
      * @return a new instance of {@link RouteImpl}
      * @see #onComplete(ThrowingBiConsumer)
      */
@@ -392,7 +375,6 @@ public class RouteImpl implements Route {
      * Sets {@link #handler} to given object which will be returned by {@link #handler()}.
      *
      * @param handler handler
-     *
      * @return a new instance of {@link RouteImpl}
      */
     public RouteImpl handler(Object handler) {

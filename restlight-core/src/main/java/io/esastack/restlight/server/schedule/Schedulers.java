@@ -61,7 +61,6 @@ public final class Schedulers {
      * Schedulers#BIZ}
      *
      * @param scheduler scheduler
-     *
      * @return {@code true} if given scheduler is biz scheduler, otherwise {@code false}.
      */
     public static boolean isBiz(Scheduler scheduler) {
@@ -73,7 +72,6 @@ public final class Schedulers {
      *
      * @param name     name of scheduler
      * @param executor underlying executor
-     *
      * @return delegated scheduler
      */
     public static ExecutorScheduler fromExecutor(String name, Executor executor) {
@@ -83,9 +81,9 @@ public final class Schedulers {
     /**
      * Wraps the given {@code scheduler} by {@code timeoutOptions}.
      *
-     * @param scheduler scheduler
-     * @param timeoutOptions    timeout options
-     * @return  scheduler
+     * @param scheduler      scheduler
+     * @param timeoutOptions timeout options
+     * @return scheduler
      */
     public static Scheduler wrapped(Scheduler scheduler, TimeoutOptions timeoutOptions) {
         if (timeoutOptions != null && timeoutOptions.getTimeMillis() > 0L && timeoutOptions.getType() != null) {

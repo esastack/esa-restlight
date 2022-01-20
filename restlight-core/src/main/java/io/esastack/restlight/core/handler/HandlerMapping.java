@@ -41,14 +41,14 @@ public interface HandlerMapping {
     /**
      * Obtains an optional {@code object}.
      *
-     * @return  optional object, which must not be {@code null}.
+     * @return optional object, which must not be {@code null}.
      */
     Optional<Object> bean();
 
     /**
      * Obtains an optional {@link HandlerMapping}.
      *
-     * @return  optional mapping, which must not be {@code null}.
+     * @return optional mapping, which must not be {@code null}.
      */
     Optional<HandlerMapping> parent();
 

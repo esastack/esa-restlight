@@ -26,7 +26,6 @@ public interface ParamPredicate {
      * Whether current {@link ParamResolver} implementation is support given parameter.
      *
      * @param param param
-     *
      * @return {@code true} if it supports
      */
     boolean supports(Param param);

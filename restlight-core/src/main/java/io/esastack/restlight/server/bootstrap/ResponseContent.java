@@ -26,21 +26,21 @@ public interface ResponseContent {
     /**
      * Sends the given {@code data} to remote endpoint.
      *
-     * @param data  data
+     * @param data data
      */
     void write(byte[] data);
 
     /**
      * Send the given {@code buffer} to remote endpoint.
      *
-     * @param buffer    buffer
+     * @param buffer buffer
      */
     void write(Buffer buffer);
 
     /**
      * Sends the {@code file} to remote endpoint and end current request.
      *
-     * @param file  file
+     * @param file file
      */
     void writeThenEnd(File file);
 
@@ -66,7 +66,7 @@ public interface ResponseContent {
     /**
      * Obtains {@link BufferAllocator} of current content.
      *
-     * @return  allocator
+     * @return allocator
      */
     ByteBufAllocator alloc();
 

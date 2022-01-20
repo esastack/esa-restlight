@@ -16,7 +16,6 @@
 package io.esastack.restlight.starter.actuator.adapt;
 
 import io.esastack.restlight.core.DeployContext;
-import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.core.method.HandlerMethod;
 import io.esastack.restlight.core.util.RouteUtils;
 import io.esastack.restlight.spring.util.RestlightDeployContextAware;
@@ -34,7 +33,7 @@ public class RestlightMappingDescriptionProvider implements MappingDescriptionPr
     private static final String MAPPING_NAME = "Restlight-Mappings";
 
     private List<MappingResult> mappings;
-    private DeployContext<? extends RestlightOptions> deployContext;
+    private DeployContext deployContext;
 
     @Override
     public String getMappingName() {
@@ -86,7 +85,7 @@ public class RestlightMappingDescriptionProvider implements MappingDescriptionPr
     }
 
     @Override
-    public void setDeployContext(DeployContext<? extends RestlightOptions> ctx) {
+    public void setDeployContext(DeployContext ctx) {
         this.deployContext = ctx;
     }
 

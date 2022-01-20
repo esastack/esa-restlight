@@ -21,7 +21,6 @@ import esa.commons.StringUtils;
 import esa.commons.spi.SpiLoader;
 import io.esastack.restlight.core.DeployContext;
 import io.esastack.restlight.core.annotation.Scheduled;
-import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.core.handler.Handler;
 import io.esastack.restlight.core.handler.HandlerMapping;
 import io.esastack.restlight.core.handler.HandlerValueResolver;
@@ -119,12 +118,12 @@ public final class RouteUtils {
         return Optional.empty();
     }
 
-    public static Optional<HandlerMapping> extractHandlerMapping(HandlerContext<? extends RestlightOptions> context,
+    public static Optional<HandlerMapping> extractHandlerMapping(HandlerContext context,
                                                                  Object bean, Class<?> userType, Method method) {
         return extractHandlerMapping(context, null, bean, userType, method);
     }
 
-    public static Optional<HandlerMapping> extractHandlerMapping(HandlerContext<? extends RestlightOptions> context,
+    public static Optional<HandlerMapping> extractHandlerMapping(HandlerContext context,
                                                                  HandlerMapping parent,
                                                                  Object bean, Class<?> userType, Method method) {
         final Optional<MappingLocator> mappingLocator;
@@ -148,7 +147,7 @@ public final class RouteUtils {
         return Optional.empty();
     }
 
-    public static Optional<Route> extractRoute(HandlerContext<? extends RestlightOptions> context,
+    public static Optional<Route> extractRoute(HandlerContext context,
                                                HandlerMapping mapping) {
         if (!context.handlerResolverLocator().isPresent() || !context.resolverFactory().isPresent()
                 || !context.exceptionResolverFactory().isPresent() || !context.handlerFactory().isPresent()) {
@@ -175,7 +174,7 @@ public final class RouteUtils {
             handler = new RouteHandlerImpl(methodInfo.handlerMethod(), mapping.bean().get());
             routeMethod = new SingletonRouteMethod(mapping, context, handlerResolver.get(),
                     filter(context, mapping.mapping(), handler,
-                    context.interceptors().orElse(Collections.emptyList())),
+                            context.interceptors().orElse(Collections.emptyList())),
                     exceptionResolver.createResolver(methodInfo.handlerMethod()));
         } else {
             handler = methodInfo.handlerMethod();
@@ -196,7 +195,7 @@ public final class RouteUtils {
         );
     }
 
-    public static ResolvableParamPredicate loadResolvableParamPredicate(DeployContext<? extends RestlightOptions>
+    public static ResolvableParamPredicate loadResolvableParamPredicate(DeployContext
                                                                                 ctx) {
         Collection<ResolvableParamPredicate> paramPredicates = SpiLoader
                 .cached(ResolvableParamPredicate.class)
@@ -217,7 +216,7 @@ public final class RouteUtils {
         };
     }
 
-    public static RouteMethodLocator loadRouteMethodLocator(DeployContext<? extends RestlightOptions> ctx) {
+    public static RouteMethodLocator loadRouteMethodLocator(DeployContext ctx) {
         List<RouteMethodLocatorFactory> factories =
                 SpiLoader.cached(RouteMethodLocatorFactory.class)
                         .getByFeature(ctx.name(),
@@ -230,7 +229,7 @@ public final class RouteUtils {
         return CompositeRouteMethodLocator.wrapIfNecessary(routeHandlerLocators);
     }
 
-    public static MappingLocator loadMappingLocator(DeployContext<? extends RestlightOptions> ctx) {
+    public static MappingLocator loadMappingLocator(DeployContext ctx) {
         List<MappingLocatorFactory> factories =
                 SpiLoader.cached(MappingLocatorFactory.class)
                         .getByFeature(ctx.name(),
@@ -243,7 +242,7 @@ public final class RouteUtils {
         return CompositeMappingLocator.wrapIfNecessary(mappingLocators);
     }
 
-    public static HandlerValueResolverLocator loadHandlerValueResolverLocator(DeployContext<? extends RestlightOptions>
+    public static HandlerValueResolverLocator loadHandlerValueResolverLocator(DeployContext
                                                                                       ctx) {
         List<HandlerValueResolverLocatorFactory> factories =
                 SpiLoader.cached(HandlerValueResolverLocatorFactory.class)

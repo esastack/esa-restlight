@@ -20,7 +20,6 @@ import esa.commons.collection.AttributeKey;
 import esa.commons.collection.AttributeMap;
 import esa.commons.collection.Attributes;
 import io.esastack.restlight.core.DeployContext;
-import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.core.configure.ConfigurableHandler;
 import io.esastack.restlight.core.configure.ConfigurableHandlerImpl;
 import io.esastack.restlight.core.configure.DelegatingDeployContext;
@@ -36,14 +35,13 @@ import java.util.Optional;
 
 import static io.esastack.restlight.core.resolver.HandlerResolverFactoryImpl.buildConfiguration;
 
-public class HandlerContext<O extends RestlightOptions> extends DelegatingDeployContext<O> {
+public class HandlerContext extends DelegatingDeployContext {
 
-    public HandlerContext(DeployContext<O> underlying) {
+    public HandlerContext(DeployContext underlying) {
         super(underlying);
     }
 
-    public static <C extends RestlightOptions> HandlerContext<C> build(DeployContext<C> ctx,
-                                                                       HandlerMethod method) {
+    public static HandlerContext build(DeployContext ctx, HandlerMethod method) {
         Attributes attributes = new AttributeMap(ctx.attrs().size());
         ctx.attrs().forEach((name, value) -> attributes.attr(AttributeKey.valueOf(name.name())).set(value.get()));
 
@@ -56,7 +54,7 @@ public class HandlerContext<O extends RestlightOptions> extends DelegatingDeploy
             }
         }
         HandlerResolverFactory resolverFactory = getHandlerResolverFactory(ctx.resolverFactory().get(), configuration);
-        HandlerContext<C> context = new HandlerContext<C>(ctx) {
+        HandlerContext context = new HandlerContext(ctx) {
             @Override
             public Optional<HandlerResolverFactory> resolverFactory() {
                 return Optional.of(resolverFactory);

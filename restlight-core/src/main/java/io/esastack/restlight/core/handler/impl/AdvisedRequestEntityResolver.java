@@ -17,7 +17,6 @@ package io.esastack.restlight.core.handler.impl;
 
 import esa.commons.Checks;
 import io.esastack.restlight.core.DeployContext;
-import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.core.method.HandlerMethod;
 import io.esastack.restlight.core.method.Param;
 import io.esastack.restlight.core.resolver.RequestEntity;
@@ -48,7 +47,7 @@ class AdvisedRequestEntityResolver implements ResolverWrap {
     }
 
     @Override
-    public Object resolve(DeployContext<? extends RestlightOptions> deployContext,
+    public Object resolve(DeployContext deployContext,
                           Param param, RequestContext context) throws Exception {
         RequestEntity entity = new RequestEntityImpl(handlerMethod, param, context);
         return new RequestEntityResolverContextImpl(this.param, context, entity, resolvers, advices).proceed();

@@ -32,10 +32,10 @@ public interface IExceptionHandler extends Ordered {
     /**
      * Handles the exception by given {@code context} and next {@link ExceptionHandlerChain}.
      *
-     * @param context   context
-     * @param th        th
-     * @param next      next handler chain
-     * @return          handled result
+     * @param context context
+     * @param th      th
+     * @param next    next handler chain
+     * @return handled result
      */
     CompletionStage<Void> handle(RequestContext context, Throwable th, ExceptionHandlerChain next);
 

@@ -33,8 +33,8 @@ public interface ExtensionsHandlerFactory {
     /**
      * Creates an {@link ExtensionsHandler} by given {@link MiniConfigurableDeployments}.
      *
-     * @param deployments   deployments
-     * @return  an optional instance of {@link ExtensionsHandler}, which must not be {@code null}.
+     * @param deployments deployments
+     * @return an optional instance of {@link ExtensionsHandler}, which must not be {@code null}.
      */
     Optional<ExtensionsHandler> handler(MiniConfigurableDeployments deployments);
 
