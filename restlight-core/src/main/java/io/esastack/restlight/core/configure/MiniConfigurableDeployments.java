@@ -60,13 +60,13 @@ import java.util.Collection;
  */
 public class MiniConfigurableDeployments {
 
-    final Deployments<?, ?> deployments;
+    final Deployments deployments;
 
     public DeployContext deployContext() {
         return deployments.deployContext();
     }
 
-    public MiniConfigurableDeployments(Deployments<?, ?> deployments) {
+    public MiniConfigurableDeployments(Deployments deployments) {
         this.deployments = deployments;
     }
 

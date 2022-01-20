@@ -49,7 +49,7 @@ import static io.esastack.restlight.spring.util.SpringContextUtils.getBean;
  * Deployments4Spring}) to bootstrap a {@link RestlightServer} which could be {@link
  * #start()} for service.
  */
-public class Restlight4Spring extends AbstractRestlight4Spring<Restlight4Spring, Deployments4Spring.Impl> {
+public class Restlight4Spring extends AbstractRestlight4Spring {
 
     private Restlight4Spring(ApplicationContext context, RestlightOptions options) {
         super(context, options);
@@ -78,6 +78,11 @@ public class Restlight4Spring extends AbstractRestlight4Spring<Restlight4Spring,
      */
     public static Restlight4Spring forServer(ApplicationContext context, RestlightOptions options) {
         return new Restlight4Spring(context, options);
+    }
+
+    @Override
+    public Deployments4Spring deployments() {
+        return (Deployments4Spring) super.deployments();
     }
 
     @Override

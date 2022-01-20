@@ -9,7 +9,7 @@
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * WITHOUT WARRANTIES O AbstractRestlight CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
@@ -20,6 +20,7 @@ import esa.commons.StringUtils;
 import esa.commons.reflect.AnnotationUtils;
 import esa.commons.spi.Feature;
 import esa.commons.spi.SpiLoader;
+import io.esastack.restlight.core.AbstractRestlight;
 import io.esastack.restlight.core.Deployments;
 import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.core.configure.HandlerConfigure;
@@ -100,12 +101,11 @@ import java.util.stream.Collectors;
 /**
  * This Deployments will auto-configure itself from the {@link ApplicationContext}.
  */
-public class Deployments4Spring<R extends AbstractRestlight4Spring<R, D>, D extends Deployments4Spring<R, D>>
-        extends Deployments<R, D> {
+public class Deployments4Spring extends Deployments {
 
     final List<DeployContextConfigure> contextConfigures = new LinkedList<>();
 
-    protected Deployments4Spring(R restlight, ApplicationContext context, RestlightOptions options) {
+    protected Deployments4Spring(AbstractRestlight restlight, ApplicationContext context, RestlightOptions options) {
         super(restlight, options);
         autoConfigureFromSpringContext(context);
     }
@@ -427,7 +427,7 @@ public class Deployments4Spring<R extends AbstractRestlight4Spring<R, D>, D exte
     }
 
     @SuppressWarnings("unchecked")
-    private <T extends Throwable> D addExceptionResolver(ExceptionResolver<T> resolver) {
+    private <T extends Throwable> Deployments addExceptionResolver(ExceptionResolver<T> resolver) {
         Class<T> t = (Class<T>) ClassUtils.findFirstGenericType(resolver.getClass(), ExceptionResolver.class)
                 .orElse(Throwable.class);
         return addExceptionResolver(t, resolver);
@@ -496,7 +496,7 @@ public class Deployments4Spring<R extends AbstractRestlight4Spring<R, D>, D exte
     }
 
 
-    public static class Impl extends Deployments4Spring<Restlight4Spring, Impl> {
+    public static class Impl extends Deployments4Spring {
 
         Impl(Restlight4Spring restlight, ApplicationContext context, RestlightOptions options) {
             super(restlight, context, options);

@@ -28,9 +28,7 @@ import org.springframework.context.ApplicationContext;
 
 import java.util.concurrent.Executor;
 
-public abstract class AbstractRestlight4Spring<R extends AbstractRestlight4Spring<R, D>,
-        D extends Deployments4Spring<R, D>>
-        extends AbstractRestlight<R, D> {
+public abstract class AbstractRestlight4Spring extends AbstractRestlight {
 
     protected final ApplicationContext context;
     private boolean enableServerAware = true;
@@ -43,19 +41,19 @@ public abstract class AbstractRestlight4Spring<R extends AbstractRestlight4Sprin
         this.context = context;
     }
 
-    public R enableServerAware(boolean enable) {
+    public AbstractRestlight enableServerAware(boolean enable) {
         checkImmutable();
         this.enableServerAware = enable;
         return self();
     }
 
-    public R enableIoExecutorAware(boolean enable) {
+    public AbstractRestlight enableIoExecutorAware(boolean enable) {
         checkImmutable();
         this.enableIoExecutorAware = enable;
         return self();
     }
 
-    public R enableBizExecutorAware(boolean enable) {
+    public AbstractRestlight enableBizExecutorAware(boolean enable) {
         checkImmutable();
         this.enableBizExecutorAware = enable;
         return self();

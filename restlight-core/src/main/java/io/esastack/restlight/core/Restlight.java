@@ -40,7 +40,7 @@ import io.esastack.restlight.server.bootstrap.RestlightServer;
  * This class allows to set some server-level configurations and the biz-level configurations(in {@link Deployments}) to
  * bootstrap a {@link RestlightServer} which could be {@link #start()} for service.
  */
-public class Restlight extends AbstractRestlight<Restlight, Deployments.Impl> {
+public class Restlight extends AbstractRestlight {
 
     Restlight(RestlightOptions options) {
         super(options);

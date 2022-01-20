@@ -9,7 +9,7 @@
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * WITHOUT WARRANTIES OAbstractRestlight CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
@@ -141,15 +141,14 @@ import java.util.stream.Collectors;
  * Implementation for a Restlight server bootstrap and returns a {@link RestlightHandler} for
  * {@link AbstractRestlight}.
  */
-public abstract class Deployments<R extends AbstractRestlight<R, D>, D extends
-        Deployments<R, D>> {
+public abstract class Deployments {
 
     private static final Class<? extends RejectedExecutionHandler> JDK_DEFAULT_REJECT_HANDLER;
 
     /**
-     * Hold the reference of {@link R}
+     * Hold the reference of {@link AbstractRestlight}
      */
-    protected final R restlight;
+    protected final AbstractRestlight restlight;
     private final List<Route> routes = new LinkedList<>();
     private final List<FilterFactory> filters = new LinkedList<>();
     private final List<ExceptionHandlerFactory> exceptionHandlerFactories = new LinkedList<>();
@@ -206,7 +205,7 @@ public abstract class Deployments<R extends AbstractRestlight<R, D>, D extends
         JDK_DEFAULT_REJECT_HANDLER = defaultHandlerClass;
     }
 
-    protected Deployments(R restlight, RestlightOptions options) {
+    protected Deployments(AbstractRestlight restlight, RestlightOptions options) {
         this.restlight = restlight;
         this.deployContext = newDeployContext(options);
         configEmbeddedSchedulers(options);
@@ -235,20 +234,20 @@ public abstract class Deployments<R extends AbstractRestlight<R, D>, D extends
         return ctx();
     }
 
-    public D addRouteFilter(RouteFilterAdapter filter) {
+    public Deployments addRouteFilter(RouteFilterAdapter filter) {
         checkImmutable();
         Checks.checkNotNull(filter, "filter");
         return addRouteFilter(RouteFilterFactory.singleton(filter));
     }
 
-    public D addRouteFilter(RouteFilterFactory filter) {
+    public Deployments addRouteFilter(RouteFilterFactory filter) {
         checkImmutable();
         Checks.checkNotNull(filter, "filter");
         this.routeFilters.add(filter);
         return self();
     }
 
-    public D addRouteFilters(Collection<? extends RouteFilterFactory> filters) {
+    public Deployments addRouteFilters(Collection<? extends RouteFilterFactory> filters) {
         checkImmutable();
         if (filters != null && !filters.isEmpty()) {
             filters.forEach(this::addRouteFilter);
@@ -256,13 +255,13 @@ public abstract class Deployments<R extends AbstractRestlight<R, D>, D extends
         return self();
     }
 
-    public D addExtension(Object extension) {
+    public Deployments addExtension(Object extension) {
         checkImmutable();
         Checks.checkNotNull(extension, "extension");
         return this.addExtensions(Collections.singleton(extension));
     }
 
-    public D addExtensions(Collection<Object> extensions) {
+    public Deployments addExtensions(Collection<Object> extensions) {
         checkImmutable();
         if (extensions != null && !extensions.isEmpty()) {
             this.extensions.addAll(extensions);
@@ -270,14 +269,14 @@ public abstract class Deployments<R extends AbstractRestlight<R, D>, D extends
         return self();
     }
 
-    public D addHandlerConfigure(HandlerConfigure handlerConfigure) {
+    public Deployments addHandlerConfigure(HandlerConfigure handlerConfigure) {
         checkImmutable();
         Checks.checkNotNull(handlerConfigure, "handlerConfigure");
         this.handlerConfigures.add(handlerConfigure);
         return self();
     }
 
-    public D addHandlerConfigures(Collection<? extends HandlerConfigure> handlerConfigures) {
+    public Deployments addHandlerConfigures(Collection<? extends HandlerConfigure> handlerConfigures) {
         checkImmutable();
         if (handlerConfigures != null && !handlerConfigures.isEmpty()) {
             this.handlerConfigures.addAll(handlerConfigures);
@@ -288,7 +287,7 @@ public abstract class Deployments<R extends AbstractRestlight<R, D>, D extends
     /**
      * Adds {@link HandlerMapping}
      */
-    public D addHandlerMapping(HandlerMapping mapping) {
+    public Deployments addHandlerMapping(HandlerMapping mapping) {
         checkImmutable();
         Checks.checkNotNull(mapping, "mapping");
         return this.addHandlerMappingProvider(ctx -> Collections.singletonList(mapping));
@@ -297,7 +296,7 @@ public abstract class Deployments<R extends AbstractRestlight<R, D>, D extends
     /**
      * Adds {@link HandlerMapping}
      */
-    public D addHandlerMappings(Collection<? extends HandlerMapping> mappings) {
+    public Deployments addHandlerMappings(Collection<? extends HandlerMapping> mappings) {
         checkImmutable();
         if (mappings != null && !mappings.isEmpty()) {
             return this.addHandlerMappingProvider(ctx -> new HashSet<>(mappings));
@@ -309,7 +308,7 @@ public abstract class Deployments<R extends AbstractRestlight<R, D>, D extends
      * Adds {@link HandlerMappingProvider} and {@link HandlerMapping}s returned by this provider will be registered in
      * the {@link RouteRegistry}
      */
-    public D addHandlerMappingProvider(HandlerMappingProvider provider) {
+    public Deployments addHandlerMappingProvider(HandlerMappingProvider provider) {
         checkImmutable();
         Checks.checkNotNull(provider, "provider");
         this.mappingProviders.add(provider);
@@ -323,7 +322,7 @@ public abstract class Deployments<R extends AbstractRestlight<R, D>, D extends
      * @param providers providers
      * @return this deployments
      */
-    public D addHandlerMappingProviders(Collection<? extends HandlerMappingProvider> providers) {
+    public Deployments addHandlerMappingProviders(Collection<? extends HandlerMappingProvider> providers) {
         checkImmutable();
         if (providers != null && !providers.isEmpty()) {
             this.mappingProviders.addAll(providers);
@@ -337,7 +336,7 @@ public abstract class Deployments<R extends AbstractRestlight<R, D>, D extends
      * @param bean an {@link Object} instances.
      * @return this deployments
      */
-    public D addController(Object bean) {
+    public Deployments addController(Object bean) {
         checkImmutable();
         Checks.checkNotNull(bean, "beans");
         checkDuplicateController(bean);
@@ -351,7 +350,7 @@ public abstract class Deployments<R extends AbstractRestlight<R, D>, D extends
      * @param beans {@link Object} instances.
      * @return this deployments
      */
-    public D addControllers(Collection<?> beans) {
+    public Deployments addControllers(Collection<?> beans) {
         checkImmutable();
         if (beans != null && !beans.isEmpty()) {
             beans.forEach(this::addController);
@@ -359,7 +358,7 @@ public abstract class Deployments<R extends AbstractRestlight<R, D>, D extends
         return self();
     }
 
-    public D addController(Class<?> clazz, boolean singleton) {
+    public Deployments addController(Class<?> clazz, boolean singleton) {
         checkImmutable();
         Checks.checkNotNull(clazz, "clazz");
         checkDuplicateController(clazz);
@@ -371,7 +370,7 @@ public abstract class Deployments<R extends AbstractRestlight<R, D>, D extends
         }
     }
 
-    public D addControllers(Collection<Class<?>> classes, boolean singleton) {
+    public Deployments addControllers(Collection<Class<?>> classes, boolean singleton) {
         checkImmutable();
         if (classes != null && !classes.isEmpty()) {
             classes.forEach(clazz -> this.addController(clazz, singleton));
@@ -385,7 +384,7 @@ public abstract class Deployments<R extends AbstractRestlight<R, D>, D extends
      * @param beanOrClass an {@link Object} instance or {@link Class}.
      * @return this deployments
      */
-    public D addControllerAdvice(Object beanOrClass) {
+    public Deployments addControllerAdvice(Object beanOrClass) {
         checkImmutable();
         Checks.checkNotNull(beanOrClass, "beanOrClass");
         Checks.checkArg(this.advices.stream()
@@ -401,7 +400,7 @@ public abstract class Deployments<R extends AbstractRestlight<R, D>, D extends
      * @param beanOrClasses {@link Object} instances or {@link Class}s.
      * @return this deployments
      */
-    public D addControllerAdvices(Collection<?> beanOrClasses) {
+    public Deployments addControllerAdvices(Collection<?> beanOrClasses) {
         checkImmutable();
         if (beanOrClasses != null && !beanOrClasses.isEmpty()) {
             beanOrClasses.forEach(this::addControllerAdvice);
@@ -415,7 +414,7 @@ public abstract class Deployments<R extends AbstractRestlight<R, D>, D extends
      * @param interceptor interceptor
      * @return this deployments
      */
-    public D addRouteInterceptor(RouteInterceptor interceptor) {
+    public Deployments addRouteInterceptor(RouteInterceptor interceptor) {
         return addInterceptorFactory(InterceptorFactory.of(interceptor));
     }
 
@@ -425,7 +424,7 @@ public abstract class Deployments<R extends AbstractRestlight<R, D>, D extends
      * @param interceptors interceptors
      * @return this deployments
      */
-    public D addRouteInterceptors(Collection<? extends RouteInterceptor> interceptors) {
+    public Deployments addRouteInterceptors(Collection<? extends RouteInterceptor> interceptors) {
         if (interceptors != null && !interceptors.isEmpty()) {
             interceptors.forEach(this::addRouteInterceptor);
         }
@@ -438,7 +437,7 @@ public abstract class Deployments<R extends AbstractRestlight<R, D>, D extends
      * @param interceptor interceptor
      * @return this deployments
      */
-    public D addHandlerInterceptor(HandlerInterceptor interceptor) {
+    public Deployments addHandlerInterceptor(HandlerInterceptor interceptor) {
         return addInterceptorFactory(InterceptorFactory.of(interceptor));
     }
 
@@ -448,7 +447,7 @@ public abstract class Deployments<R extends AbstractRestlight<R, D>, D extends
      * @param interceptors interceptors
      * @return this deployments
      */
-    public D addHandlerInterceptors(Collection<? extends HandlerInterceptor> interceptors) {
+    public Deployments addHandlerInterceptors(Collection<? extends HandlerInterceptor> interceptors) {
         checkImmutable();
         if (interceptors != null && !interceptors.isEmpty()) {
             interceptors.forEach(this::addHandlerInterceptor);
@@ -462,7 +461,7 @@ public abstract class Deployments<R extends AbstractRestlight<R, D>, D extends
      * @param interceptor interceptors
      * @return this deployments
      */
-    public D addMappingInterceptor(MappingInterceptor interceptor) {
+    public Deployments addMappingInterceptor(MappingInterceptor interceptor) {
         return addInterceptorFactory(InterceptorFactory.of(interceptor));
     }
 
@@ -472,7 +471,7 @@ public abstract class Deployments<R extends AbstractRestlight<R, D>, D extends
      * @param interceptors interceptors
      * @return this deployments
      */
-    public D addMappingInterceptors(Collection<? extends MappingInterceptor> interceptors) {
+    public Deployments addMappingInterceptors(Collection<? extends MappingInterceptor> interceptors) {
         checkImmutable();
         if (interceptors != null && !interceptors.isEmpty()) {
             interceptors.forEach(this::addMappingInterceptor);
@@ -486,7 +485,7 @@ public abstract class Deployments<R extends AbstractRestlight<R, D>, D extends
      * @param interceptor interceptor
      * @return this deployments
      */
-    public D addInterceptor(Interceptor interceptor) {
+    public Deployments addInterceptor(Interceptor interceptor) {
         return addInterceptorFactory(InterceptorFactory.of(interceptor));
     }
 
@@ -496,7 +495,7 @@ public abstract class Deployments<R extends AbstractRestlight<R, D>, D extends
      * @param interceptors interceptors
      * @return this deployments
      */
-    public D addInterceptors(Collection<? extends Interceptor> interceptors) {
+    public Deployments addInterceptors(Collection<? extends Interceptor> interceptors) {
         checkImmutable();
         if (interceptors != null && !interceptors.isEmpty()) {
             interceptors.forEach(this::addInterceptor);
@@ -510,7 +509,7 @@ public abstract class Deployments<R extends AbstractRestlight<R, D>, D extends
      * @param factory factory
      * @return this deployments
      */
-    public D addInterceptorFactory(InterceptorFactory factory) {
+    public Deployments addInterceptorFactory(InterceptorFactory factory) {
         checkImmutable();
         Checks.checkNotNull(factory, "factory");
         this.interceptors.add(factory);
@@ -523,7 +522,7 @@ public abstract class Deployments<R extends AbstractRestlight<R, D>, D extends
      * @param interceptors interceptors
      * @return this deployments
      */
-    public D addInterceptorFactories(Collection<? extends InterceptorFactory> interceptors) {
+    public Deployments addInterceptorFactories(Collection<? extends InterceptorFactory> interceptors) {
         checkImmutable();
         if (interceptors != null && !interceptors.isEmpty()) {
             this.interceptors.addAll(interceptors);
@@ -537,7 +536,7 @@ public abstract class Deployments<R extends AbstractRestlight<R, D>, D extends
      * @param converter resolver
      * @return this deployments
      */
-    public D addStringConverter(StringConverterAdapter converter) {
+    public Deployments addStringConverter(StringConverterAdapter converter) {
         checkImmutable();
         Checks.checkNotNull(converter, "converter");
         return addStringConverter(StringConverterFactory.singleton(converter));
@@ -549,7 +548,7 @@ public abstract class Deployments<R extends AbstractRestlight<R, D>, D extends
      * @param converter resolver
      * @return this deployments
      */
-    public D addStringConverter(StringConverterFactory converter) {
+    public Deployments addStringConverter(StringConverterFactory converter) {
         checkImmutable();
         Checks.checkNotNull(converter, "converter");
         this.stringConverters.add(converter);
@@ -562,7 +561,7 @@ public abstract class Deployments<R extends AbstractRestlight<R, D>, D extends
      * @param converts converters
      * @return this deployments
      */
-    public D addStringConverters(Collection<? extends StringConverterFactory> converts) {
+    public Deployments addStringConverters(Collection<? extends StringConverterFactory> converts) {
         checkImmutable();
         if (converts != null && !converts.isEmpty()) {
             this.stringConverters.addAll(converts);
@@ -576,7 +575,7 @@ public abstract class Deployments<R extends AbstractRestlight<R, D>, D extends
      * @param resolver resolver
      * @return this deployments
      */
-    public D addParamResolver(ParamResolverAdapter resolver) {
+    public Deployments addParamResolver(ParamResolverAdapter resolver) {
         checkImmutable();
         Checks.checkNotNull(resolver, "resolver");
         return addParamResolver(ParamResolverFactory.singleton(resolver));
@@ -588,7 +587,7 @@ public abstract class Deployments<R extends AbstractRestlight<R, D>, D extends
      * @param resolver resolver
      * @return this deployments
      */
-    public D addParamResolver(ParamResolverFactory resolver) {
+    public Deployments addParamResolver(ParamResolverFactory resolver) {
         checkImmutable();
         Checks.checkNotNull(resolver, "resolver");
         this.paramResolvers.add(resolver);
@@ -601,7 +600,7 @@ public abstract class Deployments<R extends AbstractRestlight<R, D>, D extends
      * @param resolvers resolvers
      * @return this deployments
      */
-    public D addParamResolvers(Collection<? extends ParamResolverFactory> resolvers) {
+    public Deployments addParamResolvers(Collection<? extends ParamResolverFactory> resolvers) {
         checkImmutable();
         if (resolvers != null && !resolvers.isEmpty()) {
             this.paramResolvers.addAll(resolvers);
@@ -615,7 +614,7 @@ public abstract class Deployments<R extends AbstractRestlight<R, D>, D extends
      * @param advice advice
      * @return this deployments
      */
-    public D addParamResolverAdvice(ParamResolverAdviceAdapter advice) {
+    public Deployments addParamResolverAdvice(ParamResolverAdviceAdapter advice) {
         checkImmutable();
         Checks.checkNotNull(advice, "advice");
         return addParamResolverAdvice(ParamResolverAdviceFactory.singleton(advice));
@@ -627,7 +626,7 @@ public abstract class Deployments<R extends AbstractRestlight<R, D>, D extends
      * @param advice advice
      * @return this deployments
      */
-    public D addParamResolverAdvice(ParamResolverAdviceFactory advice) {
+    public Deployments addParamResolverAdvice(ParamResolverAdviceFactory advice) {
         checkImmutable();
         Checks.checkNotNull(advice, "advice");
         this.paramResolverAdvices.add(advice);
@@ -640,7 +639,7 @@ public abstract class Deployments<R extends AbstractRestlight<R, D>, D extends
      * @param advices advices
      * @return this deployments
      */
-    public D addParamResolverAdvices(Collection<? extends ParamResolverAdviceFactory> advices) {
+    public Deployments addParamResolverAdvices(Collection<? extends ParamResolverAdviceFactory> advices) {
         checkImmutable();
         if (advices != null && !advices.isEmpty()) {
             this.paramResolverAdvices.addAll(advices);
@@ -654,7 +653,7 @@ public abstract class Deployments<R extends AbstractRestlight<R, D>, D extends
      * @param resolver resolver
      * @return this deployments
      */
-    public D addContextResolver(ContextResolverAdapter resolver) {
+    public Deployments addContextResolver(ContextResolverAdapter resolver) {
         checkImmutable();
         Checks.checkNotNull(resolver, "resolver");
         return addContextResolver(ContextResolverFactory.singleton(resolver));
@@ -666,7 +665,7 @@ public abstract class Deployments<R extends AbstractRestlight<R, D>, D extends
      * @param resolver resolver
      * @return this deployments
      */
-    public D addContextResolver(ContextResolverFactory resolver) {
+    public Deployments addContextResolver(ContextResolverFactory resolver) {
         checkImmutable();
         Checks.checkNotNull(resolver, "resolver");
         this.contextResolvers.add(resolver);
@@ -679,7 +678,7 @@ public abstract class Deployments<R extends AbstractRestlight<R, D>, D extends
      * @param resolvers resolvers
      * @return this deployments
      */
-    public D addContextResolvers(Collection<? extends ContextResolverFactory> resolvers) {
+    public Deployments addContextResolvers(Collection<? extends ContextResolverFactory> resolvers) {
         checkImmutable();
         if (resolvers != null && !resolvers.isEmpty()) {
             this.contextResolvers.addAll(resolvers);
@@ -693,7 +692,7 @@ public abstract class Deployments<R extends AbstractRestlight<R, D>, D extends
      * @param resolver resolver
      * @return this deployments
      */
-    public D addRequestEntityResolver(RequestEntityResolverAdapter resolver) {
+    public Deployments addRequestEntityResolver(RequestEntityResolverAdapter resolver) {
         checkImmutable();
         Checks.checkNotNull(resolver, "resolver");
         return addRequestEntityResolver(RequestEntityResolverFactory.singleton(resolver));
@@ -705,7 +704,7 @@ public abstract class Deployments<R extends AbstractRestlight<R, D>, D extends
      * @param resolver resolver
      * @return this deployments
      */
-    public D addRequestEntityResolver(RequestEntityResolverFactory resolver) {
+    public Deployments addRequestEntityResolver(RequestEntityResolverFactory resolver) {
         checkImmutable();
         Checks.checkNotNull(resolver, "resolver");
         this.requestEntityResolvers.add(resolver);
@@ -718,7 +717,7 @@ public abstract class Deployments<R extends AbstractRestlight<R, D>, D extends
      * @param resolvers resolvers
      * @return this deployments
      */
-    public D addRequestEntityResolvers(Collection<? extends RequestEntityResolverFactory> resolvers) {
+    public Deployments addRequestEntityResolvers(Collection<? extends RequestEntityResolverFactory> resolvers) {
         checkImmutable();
         if (resolvers != null && !resolvers.isEmpty()) {
             this.requestEntityResolvers.addAll(resolvers);
@@ -732,7 +731,7 @@ public abstract class Deployments<R extends AbstractRestlight<R, D>, D extends
      * @param advice advice
      * @return this deployments
      */
-    public D addRequestEntityResolverAdvice(RequestEntityResolverAdviceAdapter advice) {
+    public Deployments addRequestEntityResolverAdvice(RequestEntityResolverAdviceAdapter advice) {
         checkImmutable();
         Checks.checkNotNull(advice, "advice");
         return addRequestEntityResolverAdvice(RequestEntityResolverAdviceFactory.singleton(advice));
@@ -744,7 +743,7 @@ public abstract class Deployments<R extends AbstractRestlight<R, D>, D extends
      * @param advice advice
      * @return this deployments
      */
-    public D addRequestEntityResolverAdvice(RequestEntityResolverAdviceFactory advice) {
+    public Deployments addRequestEntityResolverAdvice(RequestEntityResolverAdviceFactory advice) {
         checkImmutable();
         Checks.checkNotNull(advice, "advice");
         this.requestEntityResolverAdvices.add(advice);
@@ -757,7 +756,8 @@ public abstract class Deployments<R extends AbstractRestlight<R, D>, D extends
      * @param advices resolvers
      * @return this deployments
      */
-    public D addRequestEntityResolverAdvices(Collection<? extends RequestEntityResolverAdviceFactory> advices) {
+    public Deployments addRequestEntityResolverAdvices(
+            Collection<? extends RequestEntityResolverAdviceFactory> advices) {
         checkImmutable();
         if (advices != null && !advices.isEmpty()) {
             this.requestEntityResolverAdvices.addAll(advices);
@@ -765,7 +765,7 @@ public abstract class Deployments<R extends AbstractRestlight<R, D>, D extends
         return self();
     }
 
-    public D addResponseEntityResolver(ResponseEntityResolverAdapter resolver) {
+    public Deployments addResponseEntityResolver(ResponseEntityResolverAdapter resolver) {
         checkImmutable();
         Checks.checkNotNull(resolver, "resolver");
         return addResponseEntityResolver(ResponseEntityResolverFactory.singleton(resolver));
@@ -777,7 +777,7 @@ public abstract class Deployments<R extends AbstractRestlight<R, D>, D extends
      * @param resolver resolver
      * @return this deployments
      */
-    public D addResponseEntityResolver(ResponseEntityResolverFactory resolver) {
+    public Deployments addResponseEntityResolver(ResponseEntityResolverFactory resolver) {
         checkImmutable();
         Checks.checkNotNull(resolver, "resolver");
         this.responseEntityResolvers.add(resolver);
@@ -790,7 +790,7 @@ public abstract class Deployments<R extends AbstractRestlight<R, D>, D extends
      * @param resolvers resolvers
      * @return this deployments
      */
-    public D addResponseEntityResolvers(Collection<? extends ResponseEntityResolverFactory> resolvers) {
+    public Deployments addResponseEntityResolvers(Collection<? extends ResponseEntityResolverFactory> resolvers) {
         checkImmutable();
         if (resolvers != null && !resolvers.isEmpty()) {
             this.responseEntityResolvers.addAll(resolvers);
@@ -804,7 +804,7 @@ public abstract class Deployments<R extends AbstractRestlight<R, D>, D extends
      * @param advice advice
      * @return this deployments
      */
-    public D addResponseEntityResolverAdvice(ResponseEntityResolverAdviceAdapter advice) {
+    public Deployments addResponseEntityResolverAdvice(ResponseEntityResolverAdviceAdapter advice) {
         checkImmutable();
         Checks.checkNotNull(advice, "advice");
         return addResponseEntityResolverAdvice(ResponseEntityResolverAdviceFactory.singleton(advice));
@@ -816,7 +816,7 @@ public abstract class Deployments<R extends AbstractRestlight<R, D>, D extends
      * @param advice advice
      * @return this deployments
      */
-    public D addResponseEntityResolverAdvice(ResponseEntityResolverAdviceFactory advice) {
+    public Deployments addResponseEntityResolverAdvice(ResponseEntityResolverAdviceFactory advice) {
         checkImmutable();
         Checks.checkNotNull(advice, "advice");
         this.responseEntityResolverAdvices.add(advice);
@@ -829,7 +829,8 @@ public abstract class Deployments<R extends AbstractRestlight<R, D>, D extends
      * @param advices resolvers
      * @return this deployments
      */
-    public D addResponseEntityResolverAdvices(Collection<? extends ResponseEntityResolverAdviceFactory> advices) {
+    public Deployments addResponseEntityResolverAdvices(
+            Collection<? extends ResponseEntityResolverAdviceFactory> advices) {
         checkImmutable();
         if (advices != null && !advices.isEmpty()) {
             this.responseEntityResolverAdvices.addAll(advices);
@@ -843,7 +844,7 @@ public abstract class Deployments<R extends AbstractRestlight<R, D>, D extends
      * @param requestSerializer requestSerializer
      * @return this deployments
      */
-    public D addRequestSerializer(HttpRequestSerializer requestSerializer) {
+    public Deployments addRequestSerializer(HttpRequestSerializer requestSerializer) {
         checkImmutable();
         Checks.checkNotNull(requestSerializer, "requestSerializer");
         this.rxSerializers.add(requestSerializer);
@@ -856,7 +857,7 @@ public abstract class Deployments<R extends AbstractRestlight<R, D>, D extends
      * @param requestSerializers requestSerializers
      * @return this deployments
      */
-    public D addRequestSerializers(Collection<? extends HttpRequestSerializer> requestSerializers) {
+    public Deployments addRequestSerializers(Collection<? extends HttpRequestSerializer> requestSerializers) {
         checkImmutable();
         if (requestSerializers != null && !requestSerializers.isEmpty()) {
             this.rxSerializers.addAll(requestSerializers);
@@ -870,7 +871,7 @@ public abstract class Deployments<R extends AbstractRestlight<R, D>, D extends
      * @param responseSerializer responseSerializer
      * @return this deployments
      */
-    public D addResponseSerializer(HttpResponseSerializer responseSerializer) {
+    public Deployments addResponseSerializer(HttpResponseSerializer responseSerializer) {
         checkImmutable();
         Checks.checkNotNull(responseSerializer, "responseSerializer");
         this.txSerializers.add(responseSerializer);
@@ -883,7 +884,7 @@ public abstract class Deployments<R extends AbstractRestlight<R, D>, D extends
      * @param responseSerializers responseSerializers
      * @return this deployments
      */
-    public D addResponseSerializers(Collection<? extends HttpResponseSerializer> responseSerializers) {
+    public Deployments addResponseSerializers(Collection<? extends HttpResponseSerializer> responseSerializers) {
         checkImmutable();
         if (responseSerializers != null && !responseSerializers.isEmpty()) {
             this.txSerializers.addAll(responseSerializers);
@@ -898,7 +899,7 @@ public abstract class Deployments<R extends AbstractRestlight<R, D>, D extends
      * @param serializer serializer
      * @return this deployments
      */
-    public D addSerializer(HttpBodySerializer serializer) {
+    public Deployments addSerializer(HttpBodySerializer serializer) {
         checkImmutable();
         Checks.checkNotNull(serializer, "serializer");
         this.addRequestSerializer(serializer);
@@ -913,7 +914,7 @@ public abstract class Deployments<R extends AbstractRestlight<R, D>, D extends
      * @param serializers serializers
      * @return this deployments
      */
-    public D addSerializers(Collection<? extends HttpBodySerializer> serializers) {
+    public Deployments addSerializers(Collection<? extends HttpBodySerializer> serializers) {
         checkImmutable();
         if (serializers != null && !serializers.isEmpty()) {
             this.addRequestSerializers(serializers);
@@ -923,7 +924,7 @@ public abstract class Deployments<R extends AbstractRestlight<R, D>, D extends
     }
 
     @SuppressWarnings("unchecked")
-    public <T extends Throwable> D addExceptionResolver(Class<T> type, ExceptionResolver<T> resolver) {
+    public <T extends Throwable> Deployments addExceptionResolver(Class<T> type, ExceptionResolver<T> resolver) {
         checkImmutable();
         Checks.checkNotNull(type, "type");
         Checks.checkNotNull(resolver, "resolver");
@@ -937,19 +938,19 @@ public abstract class Deployments<R extends AbstractRestlight<R, D>, D extends
         return self();
     }
 
-    public D addHandlerRegistryAware(HandlerRegistryAware aware) {
+    public Deployments addHandlerRegistryAware(HandlerRegistryAware aware) {
         checkImmutable();
         Checks.checkNotNull(aware, "aware");
         return addHandlerRegistryAware((HandlerRegistryAwareFactory) deployContext -> Optional.of(aware));
     }
 
-    public D addHandlerRegistryAware(HandlerRegistryAwareFactory aware) {
+    public Deployments addHandlerRegistryAware(HandlerRegistryAwareFactory aware) {
         checkImmutable();
         Checks.checkNotNull(aware, "aware");
         return addHandlerRegistryAwareness(Collections.singletonList(aware));
     }
 
-    public D addHandlerRegistryAwareness(Collection<? extends HandlerRegistryAwareFactory> awareness) {
+    public Deployments addHandlerRegistryAwareness(Collection<? extends HandlerRegistryAwareFactory> awareness) {
         checkImmutable();
         if (awareness != null && !awareness.isEmpty()) {
             this.handlerAwareness.addAll(awareness);
@@ -1366,7 +1367,7 @@ public abstract class Deployments<R extends AbstractRestlight<R, D>, D extends
      * @param route route
      * @return this
      */
-    public D addRoute(Route route) {
+    public Deployments addRoute(Route route) {
         checkImmutable();
         Checks.checkNotNull(route, "route");
         this.routes.add(route);
@@ -1379,7 +1380,7 @@ public abstract class Deployments<R extends AbstractRestlight<R, D>, D extends
      * @param routes routes
      * @return this
      */
-    public D addRoutes(Collection<? extends Route> routes) {
+    public Deployments addRoutes(Collection<? extends Route> routes) {
         checkImmutable();
         if (routes != null) {
             routes.forEach(this::addRoute);
@@ -1387,7 +1388,7 @@ public abstract class Deployments<R extends AbstractRestlight<R, D>, D extends
         return self();
     }
 
-    public D addScheduler(Scheduler scheduler) {
+    public Deployments addScheduler(Scheduler scheduler) {
         checkImmutable();
         Checks.checkNotNull(scheduler, "scheduler");
         Scheduler configured = configExecutor(scheduler);
@@ -1395,7 +1396,7 @@ public abstract class Deployments<R extends AbstractRestlight<R, D>, D extends
         return self();
     }
 
-    public D addSchedulers(Collection<? extends Scheduler> schedulers) {
+    public Deployments addSchedulers(Collection<? extends Scheduler> schedulers) {
         checkImmutable();
         if (schedulers != null && !schedulers.isEmpty()) {
             schedulers.forEach(this::addScheduler);
@@ -1403,7 +1404,7 @@ public abstract class Deployments<R extends AbstractRestlight<R, D>, D extends
         return self();
     }
 
-    public D addConnectionHandler(ConnectionHandler handler) {
+    public Deployments addConnectionHandler(ConnectionHandler handler) {
         checkImmutable();
         Checks.checkNotNull(handler, "handler");
         return addConnectionHandler(ctx -> {
@@ -1411,13 +1412,13 @@ public abstract class Deployments<R extends AbstractRestlight<R, D>, D extends
         });
     }
 
-    public D addConnectionHandler(ConnectionHandlerFactory handler) {
+    public Deployments addConnectionHandler(ConnectionHandlerFactory handler) {
         checkImmutable();
         Checks.checkNotNull(handler, "handler");
         return addConnectionHandlers(Collections.singletonList(handler));
     }
 
-    public D addConnectionHandlers(Collection<? extends ConnectionHandlerFactory> handlers) {
+    public Deployments addConnectionHandlers(Collection<? extends ConnectionHandlerFactory> handlers) {
         checkImmutable();
         if (handlers != null && !handlers.isEmpty()) {
             this.connectionHandlers.addAll(handlers);
@@ -1425,7 +1426,7 @@ public abstract class Deployments<R extends AbstractRestlight<R, D>, D extends
         return self();
     }
 
-    public D addDisConnectionHandler(DisConnectionHandler handler) {
+    public Deployments addDisConnectionHandler(DisConnectionHandler handler) {
         checkImmutable();
         Checks.checkNotNull(handler, "handler");
         return addDisConnectionHandler(ctx -> {
@@ -1433,13 +1434,13 @@ public abstract class Deployments<R extends AbstractRestlight<R, D>, D extends
         });
     }
 
-    public D addDisConnectionHandler(DisConnectionHandlerFactory handler) {
+    public Deployments addDisConnectionHandler(DisConnectionHandlerFactory handler) {
         checkImmutable();
         Checks.checkNotNull(handler, "handler");
         return addDisConnectionHandlers(Collections.singletonList(handler));
     }
 
-    public D addDisConnectionHandlers(Collection<? extends DisConnectionHandlerFactory> handlers) {
+    public Deployments addDisConnectionHandlers(Collection<? extends DisConnectionHandlerFactory> handlers) {
         checkImmutable();
         if (handlers != null && !handlers.isEmpty()) {
             this.disConnectionHandlers.addAll(handlers);
@@ -1447,21 +1448,21 @@ public abstract class Deployments<R extends AbstractRestlight<R, D>, D extends
         return self();
     }
 
-    public D addFilter(Filter filter) {
+    public Deployments addFilter(Filter filter) {
         checkImmutable();
         Checks.checkNotNull(filter, "filter");
         addFilter(ctx -> Optional.of(filter));
         return self();
     }
 
-    public D addFilter(FilterFactory filter) {
+    public Deployments addFilter(FilterFactory filter) {
         checkImmutable();
         Checks.checkNotNull(filter, "filter");
         addFilters(Collections.singletonList(filter));
         return self();
     }
 
-    public D addFilters(Collection<? extends FilterFactory> filters) {
+    public Deployments addFilters(Collection<? extends FilterFactory> filters) {
         checkImmutable();
         if (filters != null && !filters.isEmpty()) {
             this.filters.addAll(filters);
@@ -1470,7 +1471,7 @@ public abstract class Deployments<R extends AbstractRestlight<R, D>, D extends
     }
 
     @Internal
-    public D addExceptionHandler(IExceptionHandler handler) {
+    public Deployments addExceptionHandler(IExceptionHandler handler) {
         checkImmutable();
         Checks.checkNotNull(handler, "handler");
         this.exceptionHandlerFactories.add(ctx -> Optional.of(handler));
@@ -1478,7 +1479,7 @@ public abstract class Deployments<R extends AbstractRestlight<R, D>, D extends
     }
 
     @Internal
-    public D addExceptionHandlers(Collection<? extends IExceptionHandler> handlers) {
+    public Deployments addExceptionHandlers(Collection<? extends IExceptionHandler> handlers) {
         checkImmutable();
         if (handlers != null && !handlers.isEmpty()) {
             handlers.forEach(this::addExceptionHandler);
@@ -1487,26 +1488,26 @@ public abstract class Deployments<R extends AbstractRestlight<R, D>, D extends
     }
 
     @Internal
-    public D addExceptionHandler(ExceptionHandlerFactory handler) {
+    public Deployments addExceptionHandler(ExceptionHandlerFactory handler) {
         checkImmutable();
         Checks.checkNotNull(handler, "handler");
         this.exceptionHandlerFactories.add(handler);
         return self();
     }
 
-    public D addRouteRegistryAware(RouteRegistryAware aware) {
+    public Deployments addRouteRegistryAware(RouteRegistryAware aware) {
         checkImmutable();
         Checks.checkNotNull(aware, "aware");
         return addRouteRegistryAware((RouteRegistryAwareFactory) deployContext -> Optional.of(aware));
     }
 
-    public D addRouteRegistryAware(RouteRegistryAwareFactory aware) {
+    public Deployments addRouteRegistryAware(RouteRegistryAwareFactory aware) {
         checkImmutable();
         Checks.checkNotNull(aware, "aware");
         return addRouteRegistryAwareness(Collections.singletonList(aware));
     }
 
-    public D addRouteRegistryAwareness(Collection<? extends RouteRegistryAwareFactory> awareness) {
+    public Deployments addRouteRegistryAwareness(Collection<? extends RouteRegistryAwareFactory> awareness) {
         checkImmutable();
         if (awareness != null && !awareness.isEmpty()) {
             this.registryAwareness.addAll(awareness);
@@ -1515,12 +1516,12 @@ public abstract class Deployments<R extends AbstractRestlight<R, D>, D extends
     }
 
     @Beta
-    public D addRequestTaskHook(RequestTaskHook hook) {
+    public Deployments addRequestTaskHook(RequestTaskHook hook) {
         return addRequestTaskHook((RequestTaskHookFactory) ctx -> Optional.of(hook));
     }
 
     @Beta
-    public D addRequestTaskHook(RequestTaskHookFactory hook) {
+    public Deployments addRequestTaskHook(RequestTaskHookFactory hook) {
         checkImmutable();
         Checks.checkNotNull(hook, "hook");
         this.requestTaskHooks.add(hook);
@@ -1528,7 +1529,7 @@ public abstract class Deployments<R extends AbstractRestlight<R, D>, D extends
     }
 
     @Beta
-    public D addRequestTaskHooks(Collection<? extends RequestTaskHookFactory> hooks) {
+    public Deployments addRequestTaskHooks(Collection<? extends RequestTaskHookFactory> hooks) {
         checkImmutable();
         if (hooks != null && !hooks.isEmpty()) {
             hooks.forEach(this::addRequestTaskHook);
@@ -1562,7 +1563,7 @@ public abstract class Deployments<R extends AbstractRestlight<R, D>, D extends
     /**
      * @return current Restlight
      */
-    public R server() {
+    public AbstractRestlight server() {
         return restlight;
     }
 
@@ -1692,9 +1693,8 @@ public abstract class Deployments<R extends AbstractRestlight<R, D>, D extends
         restlight.checkImmutable();
     }
 
-    @SuppressWarnings("unchecked")
-    protected D self() {
-        return (D) this;
+    protected Deployments self() {
+        return this;
     }
 
     /**
@@ -1728,8 +1728,7 @@ public abstract class Deployments<R extends AbstractRestlight<R, D>, D extends
         }
     }
 
-    public static class Impl extends Deployments<Restlight, Impl> {
-
+    public static class Impl extends Deployments {
         Impl(Restlight restlight, RestlightOptions options) {
             super(restlight, options);
         }

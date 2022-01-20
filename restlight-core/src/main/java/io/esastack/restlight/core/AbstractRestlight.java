@@ -58,12 +58,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * and the biz-level configurations(in {@link Deployments}) to bootstrap a {@link RestlightServer} which could
  * be {@link #start()} for service.
  * <p>
- *
- * @param <R> type of Restlight
- * @param <D> type of Deployments
  */
-public abstract class AbstractRestlight<R extends AbstractRestlight<R, D>,
-        D extends Deployments<R, D>> extends AbstractDelegatedRestlightServer
+public abstract class AbstractRestlight extends AbstractDelegatedRestlightServer
         implements RestlightServer {
 
     /**
@@ -75,7 +71,7 @@ public abstract class AbstractRestlight<R extends AbstractRestlight<R, D>,
     private final Map<ChannelOption<?>, Object> childChannelOptions = new LinkedHashMap<>();
     @Beta
     private final List<ChannelHandler> channelHandlers = new LinkedList<>();
-    private D deployments;
+    private Deployments deployments;
     private String name = Constants.SERVER;
     /**
      * local server address to bind.
@@ -89,14 +85,14 @@ public abstract class AbstractRestlight<R extends AbstractRestlight<R, D>,
         this.options = options;
     }
 
-    public R name(String name) {
+    public AbstractRestlight name(String name) {
         checkImmutable();
         Checks.checkNotEmptyArg(name, "name");
         this.name = name;
         return self();
     }
 
-    public R address(SocketAddress localAddress) {
+    public AbstractRestlight address(SocketAddress localAddress) {
         checkImmutable();
         this.address = localAddress;
         return self();
@@ -105,21 +101,21 @@ public abstract class AbstractRestlight<R extends AbstractRestlight<R, D>,
     /**
      * @see #address(SocketAddress)
      */
-    public R address(int port) {
+    public AbstractRestlight address(int port) {
         return address(new InetSocketAddress(port));
     }
 
     /**
      * @see #address(SocketAddress)
      */
-    public R address(String host, int port) {
+    public AbstractRestlight address(String host, int port) {
         return address(SocketUtils.socketAddress(host, port));
     }
 
     /**
      * @see #address(SocketAddress)
      */
-    public R domainSocketAddress(String path) {
+    public AbstractRestlight domainSocketAddress(String path) {
         return address(new DomainSocketAddress(path));
     }
 
@@ -129,13 +125,13 @@ public abstract class AbstractRestlight<R extends AbstractRestlight<R, D>,
      * @param daemon daemon
      * @return this
      */
-    public R daemon(boolean daemon) {
+    public AbstractRestlight daemon(boolean daemon) {
         checkImmutable();
         this.daemon = daemon;
         return self();
     }
 
-    public R options(Map<ChannelOption<?>, Object> options) {
+    public AbstractRestlight options(Map<ChannelOption<?>, Object> options) {
         checkImmutable();
         if (options != null && !options.isEmpty()) {
             this.channelOptions.clear();
@@ -144,13 +140,13 @@ public abstract class AbstractRestlight<R extends AbstractRestlight<R, D>,
         return self();
     }
 
-    public <T> R option(ChannelOption<T> option, T value) {
+    public <T> AbstractRestlight option(ChannelOption<T> option, T value) {
         checkImmutable();
         this.channelOptions.put(option, value);
         return self();
     }
 
-    public R childOptions(Map<ChannelOption<?>, Object> options) {
+    public AbstractRestlight childOptions(Map<ChannelOption<?>, Object> options) {
         checkImmutable();
         if (options != null && !options.isEmpty()) {
             this.childChannelOptions.clear();
@@ -159,14 +155,14 @@ public abstract class AbstractRestlight<R extends AbstractRestlight<R, D>,
         return self();
     }
 
-    public <T> R childOption(ChannelOption<T> option, T value) {
+    public <T> AbstractRestlight childOption(ChannelOption<T> option, T value) {
         checkImmutable();
         this.childChannelOptions.put(option, value);
         return self();
     }
 
     @Beta
-    public R channelHandler(ChannelHandler channelHandler) {
+    public AbstractRestlight channelHandler(ChannelHandler channelHandler) {
         checkImmutable();
         if (channelHandler != null) {
             this.channelHandlers.add(channelHandler);
@@ -175,7 +171,7 @@ public abstract class AbstractRestlight<R extends AbstractRestlight<R, D>,
     }
 
     @Beta
-    public R channelHandlers(ChannelHandler... channelHandlers) {
+    public AbstractRestlight channelHandlers(ChannelHandler... channelHandlers) {
         checkImmutable();
         if (channelHandlers == null || channelHandlers.length == 0) {
             return self();
@@ -184,7 +180,7 @@ public abstract class AbstractRestlight<R extends AbstractRestlight<R, D>,
     }
 
     @Beta
-    public R channelHandlers(Collection<? extends ChannelHandler> channelHandlers) {
+    public AbstractRestlight channelHandlers(Collection<? extends ChannelHandler> channelHandlers) {
         checkImmutable();
         if (channelHandlers != null && !channelHandlers.isEmpty()) {
             this.channelHandlers.addAll(channelHandlers);
@@ -193,9 +189,9 @@ public abstract class AbstractRestlight<R extends AbstractRestlight<R, D>,
     }
 
     /**
-     * Gets {@link D} for deployments configuration.
+     * Gets {@link Deployments} for deployments configuration.
      */
-    public synchronized D deployments() {
+    public synchronized Deployments deployments() {
         if (deployments == null) {
             deployments = createDeployments();
         }
@@ -224,9 +220,8 @@ public abstract class AbstractRestlight<R extends AbstractRestlight<R, D>,
     protected void postStart(RestlightServer server) {
     }
 
-    @SuppressWarnings("unchecked")
-    protected R self() {
-        return (R) this;
+    protected AbstractRestlight self() {
+        return this;
     }
 
     private RestlightServer buildServer() {
@@ -304,6 +299,6 @@ public abstract class AbstractRestlight<R extends AbstractRestlight<R, D>,
                 .createResolver(null);
     }
 
-    protected abstract D createDeployments();
+    protected abstract Deployments createDeployments();
 
 }

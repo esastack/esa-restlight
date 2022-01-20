@@ -17,6 +17,7 @@ package io.esastack.restlight.test.bootstrap;
 
 import esa.commons.Checks;
 import esa.commons.ObjectUtils;
+import io.esastack.restlight.core.AbstractRestlight;
 import io.esastack.restlight.core.config.RestlightOptionsConfigure;
 import io.esastack.restlight.core.interceptor.HandlerInterceptor;
 import io.esastack.restlight.core.resolver.ParamResolverAdapter;
@@ -105,7 +106,7 @@ public class MinorityMockMvcBuilder implements MockMvcBuilder {
 
     @Override
     public MockMvc build() {
-        final Restlight4Test server = deployments.server();
+        final AbstractRestlight server = deployments.server();
         server.start();
         return new DefaultMockMvc(((FakeServer) server.unWrap()).handler);
     }

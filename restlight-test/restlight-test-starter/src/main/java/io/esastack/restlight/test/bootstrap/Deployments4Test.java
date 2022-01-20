@@ -18,7 +18,7 @@ package io.esastack.restlight.test.bootstrap;
 import io.esastack.restlight.core.Deployments;
 import io.esastack.restlight.core.config.RestlightOptions;
 
-class Deployments4Test extends Deployments<Restlight4Test, Deployments4Test> {
+class Deployments4Test extends Deployments {
 
     Deployments4Test(Restlight4Test restlight, RestlightOptions options) {
         super(restlight, options);
