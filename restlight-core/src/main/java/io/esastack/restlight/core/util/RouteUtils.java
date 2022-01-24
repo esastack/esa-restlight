@@ -77,9 +77,9 @@ public final class RouteUtils {
     }
 
     public static String scheduling(HandlerMethod handler, String defaultScheduling) {
-        Scheduled scheduled = handler.getMethodAnnotation(Scheduled.class);
+        Scheduled scheduled = handler.getMethodAnnotation(Scheduled.class, false);
         if (scheduled == null) {
-            scheduled = handler.beanType().getAnnotation(Scheduled.class);
+            scheduled = handler.getClassAnnotation(Scheduled.class, false);
         }
         if (scheduled == null) {
             if (defaultScheduling == null) {

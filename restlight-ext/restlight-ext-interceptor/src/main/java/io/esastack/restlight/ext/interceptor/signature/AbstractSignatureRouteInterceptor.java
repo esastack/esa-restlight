@@ -45,9 +45,9 @@ public abstract class AbstractSignatureRouteInterceptor extends AbstractSignatur
                 .extOption(SIGN + ".verify-all")
                 .map(Boolean::valueOf)
                 .orElse(Boolean.FALSE)) {
-            return !handlerMethod.get().hasMethodAnnotation(IgnoreSignValidation.class);
+            return !handlerMethod.get().hasMethodAnnotation(IgnoreSignValidation.class, false);
         } else {
-            return handlerMethod.get().hasMethodAnnotation(SignValidation.class);
+            return handlerMethod.get().hasMethodAnnotation(SignValidation.class, false);
         }
     }
 }

@@ -70,19 +70,11 @@ class EndpointHandlerMethod extends HandlerMethodImpl {
 
     @SuppressWarnings("unchecked")
     @Override
-    public <A extends Annotation> A getMethodAnnotation(Class<A> annotationType) {
+    public <A extends Annotation> A getMethodAnnotation(Class<A> annotationType, boolean recursive) {
         if (ResponseBody0.shadedClass().equals(annotationType)) {
             return (A) responseBody;
         }
-        return super.getMethodAnnotation(annotationType);
-    }
-
-    @Override
-    public <A extends Annotation> boolean hasMethodAnnotation(Class<A> annotationType) {
-        if (ResponseBody0.shadedClass().equals(annotationType)) {
-            return true;
-        }
-        return super.hasMethodAnnotation(annotationType);
+        return super.getMethodAnnotation(annotationType, recursive);
     }
 
     @Override
@@ -256,7 +248,6 @@ class EndpointHandlerMethod extends HandlerMethodImpl {
         Class<? extends Annotation> annotationType() {
             return RequestBody0.shadedClass();
         }
-
     }
 
     private static class ResponseBodyInvocationHandler extends AbstractAnnotationInvocationHandler {

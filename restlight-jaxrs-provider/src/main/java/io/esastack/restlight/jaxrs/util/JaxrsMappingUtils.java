@@ -15,6 +15,7 @@
  */
 package io.esastack.restlight.jaxrs.util;
 
+import esa.commons.ClassUtils;
 import esa.commons.StringUtils;
 import esa.commons.UrlUtils;
 import esa.commons.reflect.AnnotationUtils;
@@ -82,31 +83,34 @@ public final class JaxrsMappingUtils {
         }
 
         contextPath = ConverterUtils.standardContextPath(contextPath);
-        final String parentPath = getAnnotation(userType, Path.class)
+        final Class<?> annotatedUserType = findAnnotatedClass(userType).orElse(userType);
+        final Method annotatedMethod = findAnnotatedMethod(method).orElse(method);
+
+        final String parentPath = getAnnotation(annotatedUserType, Path.class)
                 .map(Path::value)
                 .orElse(null);
 
-        final String path = getAnnotation(method, Path.class)
+        final String path = getAnnotation(annotatedMethod, Path.class)
                 .map(Path::value)
                 .orElse(null);
 
 
-        final String[] parentConsumes = getAnnotation(userType, Consumes.class)
+        final String[] parentConsumes = getAnnotation(annotatedUserType, Consumes.class)
                 .map(Consumes::value)
                 .orElse(null);
-        final String[] consumes = getAnnotation(method, Consumes.class)
+        final String[] consumes = getAnnotation(annotatedMethod, Consumes.class)
                 .map(Consumes::value)
                 .orElse(null);
 
-        final String[] parentProduces = getAnnotation(userType, Produces.class)
+        final String[] parentProduces = getAnnotation(annotatedUserType, Produces.class)
                 .map(Produces::value)
                 .orElse(null);
-        final String[] produces = getAnnotation(method, Produces.class)
+        final String[] produces = getAnnotation(annotatedMethod, Produces.class)
                 .map(Produces::value)
                 .orElse(null);
 
-        final String parentHttpMethod = getMethod(userType);
-        final String httpMethod = getMethod(method);
+        final String parentHttpMethod = getMethod(annotatedUserType);
+        final String httpMethod = getMethod(annotatedMethod);
 
         if (path == null && httpMethod == null) {
             return Optional.empty();
@@ -123,12 +127,9 @@ public final class JaxrsMappingUtils {
         }
     }
 
-    public static boolean isLocator(AnnotatedElement element) {
-        return JaxrsMappingUtils.getMethod(element) == null;
-    }
-
-    public static boolean isMethod(AnnotatedElement element) {
-        return JaxrsMappingUtils.getMethod(element) != null;
+    public static boolean isMethod(Method element) {
+        Method annotatedMethod = findAnnotatedMethod(element).orElse(element);
+        return JaxrsMappingUtils.getMethod(annotatedMethod) != null;
     }
 
     private static String getMethod(AnnotatedElement element) {
@@ -198,4 +199,44 @@ public final class JaxrsMappingUtils {
         return Optional.ofNullable(
                 AnnotationUtils.findAnnotation(element, targetClass));
     }
+
+    private static Optional<Method> findAnnotatedMethod(Method method) {
+        if (method == null) {
+            return Optional.empty();
+        }
+        if (isAnnotatedElement(method)) {
+            return Optional.of(method);
+        }
+        for (Method m : ClassUtils.findImplementedMethods(method)) {
+            if (isAnnotatedElement(m)) {
+                return Optional.of(m);
+            }
+        }
+        return Optional.empty();
+    }
+
+    private static Optional<Class<?>> findAnnotatedClass(Class<?> element) {
+        if (element == null || Object.class.equals(element)) {
+            return Optional.empty();
+        }
+
+        if (isAnnotatedElement(element)) {
+            return Optional.of(element);
+        }
+        for (Class<?> interface0 : element.getInterfaces()) {
+            if (isAnnotatedElement(interface0)) {
+                return Optional.of(interface0);
+            }
+        }
+
+        return findAnnotatedClass(element.getSuperclass());
+    }
+
+    private static boolean isAnnotatedElement(AnnotatedElement element) {
+        return AnnotationUtils.hasAnnotation(element, Path.class)
+                || AnnotationUtils.hasAnnotation(element, HttpMethod.class)
+                || AnnotationUtils.hasAnnotation(element, Consumes.class)
+                || AnnotationUtils.hasAnnotation(element, Produces.class);
+    }
+
 }

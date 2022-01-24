@@ -206,7 +206,7 @@ public class ConfigurationImpl implements Configuration {
             this.resourcesInstances.add(instance);
             return;
         }
-        logger.warn("Registering {}(which has been registered before) is ignored.");
+        logger.warn("Registering {}(unrecognized resource) is ignored.", clazz);
     }
 
     public boolean addProviderInstance(Object instance, Map<Class<?>, Integer> contracts) {
@@ -234,7 +234,7 @@ public class ConfigurationImpl implements Configuration {
             this.contracts.put(clazz, contracts);
             return true;
         }
-        logger.warn("Registering {}(which has been registered before) is ignored.");
+        logger.warn("Registering {}(unrecognized provider) is ignored.", clazz);
         return false;
     }
 
@@ -243,7 +243,7 @@ public class ConfigurationImpl implements Configuration {
             return true;
         }
         if (!this.classes.add(clazz)) {
-            logger.warn("Registering {}(which has been registered before) is ignored.");
+            logger.warn("Registering {}(which has been registered before) is ignored.", clazz);
             return true;
         }
         return false;
