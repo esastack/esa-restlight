@@ -34,10 +34,10 @@ public final class ResponseStatusUtils {
 
     public static HttpStatus getCustomResponse(Class<?> userType, Method targetMethod) {
         ResponseStatus0 annotation = ResponseStatus0.fromShade(AnnotationUtils.findAnnotation(targetMethod,
-                ResponseStatus0.shadedClass()));
+                ResponseStatus0.shadedClass(), true));
         if (annotation == null) {
             annotation = ResponseStatus0.fromShade(AnnotationUtils.findAnnotation(userType,
-                    ResponseStatus0.shadedClass()));
+                    ResponseStatus0.shadedClass(), true));
         }
         if (annotation != null) {
             if (StringUtils.isEmpty(annotation.reason())) {

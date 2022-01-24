@@ -16,7 +16,6 @@
 package io.esastack.restlight.springmvc.resolver.rspentity;
 
 import esa.commons.StringUtils;
-import esa.commons.reflect.AnnotationUtils;
 import io.esastack.commons.net.http.MediaType;
 import io.esastack.restlight.core.method.HandlerMethod;
 import io.esastack.restlight.core.resolver.ParamResolverFactory;
@@ -51,10 +50,11 @@ public class ResponseStatusEntityResolverFactory implements ResponseEntityResolv
 
     private static ResponseStatus0 getResponseStatus(HandlerMethod handlerMethod) {
         ResponseStatus0 anno =
-                ResponseStatus0.fromShade(handlerMethod.getMethodAnnotation(ResponseStatus0.shadedClass()));
+                ResponseStatus0.fromShade(handlerMethod
+                        .getMethodAnnotation(ResponseStatus0.shadedClass(), true));
         if (anno == null) {
-            anno = ResponseStatus0.fromShade(AnnotationUtils.findAnnotation(handlerMethod.beanType(),
-                    ResponseStatus0.shadedClass()));
+            anno = ResponseStatus0.fromShade(handlerMethod
+                    .getClassAnnotation(ResponseStatus0.shadedClass(), true));
         }
         return anno;
     }

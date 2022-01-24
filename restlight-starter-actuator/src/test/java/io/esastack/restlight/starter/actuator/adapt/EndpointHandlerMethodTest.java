@@ -44,16 +44,16 @@ class EndpointHandlerMethodTest {
     void testSpringMvc() {
         final Handler handler = EndpointHandlerMethod.forSpringMvc(webOperation());
         final HandlerMethod handlerMethod = handler.handlerMethod();
-        assertTrue(handlerMethod.hasMethodAnnotation(ResponseBody0.shadedClass()));
-        final Annotation responseBody = handlerMethod.getMethodAnnotation(ResponseBody0.shadedClass());
+        assertTrue(handlerMethod.hasMethodAnnotation(ResponseBody0.shadedClass(), false));
+        final Annotation responseBody = handlerMethod.getMethodAnnotation(ResponseBody0.shadedClass(), false);
         assertNotNull(responseBody);
         assertEquals(ResponseBody0.shadedClass(), responseBody.annotationType());
         assertNotEquals(0, responseBody.hashCode());
         assertNotNull(responseBody.toString());
-        assertEquals(responseBody, handlerMethod.getMethodAnnotation(ResponseBody0.shadedClass()));
+        assertEquals(responseBody, handlerMethod.getMethodAnnotation(ResponseBody0.shadedClass(), false));
         assertEquals(responseBody,
                 EndpointHandlerMethod.forSpringMvc(webOperation()).handlerMethod()
-                        .getMethodAnnotation(ResponseBody0.shadedClass()));
+                        .getMethodAnnotation(ResponseBody0.shadedClass(), false));
         assertNotNull(responseBody.toString());
 
         assertNotNull(handlerMethod.parameters());
@@ -121,6 +121,5 @@ class EndpointHandlerMethodTest {
             }
         };
     }
-
 
 }

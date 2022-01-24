@@ -15,7 +15,6 @@
  */
 package io.esastack.restlight.springmvc.resolver.rspentity;
 
-import esa.commons.reflect.AnnotationUtils;
 import io.esastack.restlight.core.method.HandlerMethod;
 import io.esastack.restlight.core.resolver.ResponseEntity;
 import io.esastack.restlight.core.resolver.ResponseEntityResolver;
@@ -50,8 +49,8 @@ public class FixedResponseEntityResolverFactory implements ResponseEntityResolve
             if (handlerMethod == null) {
                 return false;
             }
-            return AnnotationUtils.hasAnnotation(handlerMethod.beanType(), ResponseBody0.shadedClass())
-                    || handlerMethod.hasMethodAnnotation(ResponseBody0.shadedClass());
+            return handlerMethod.hasClassAnnotation(ResponseBody0.shadedClass(), true)
+                    || handlerMethod.hasMethodAnnotation(ResponseBody0.shadedClass(), true);
         }
 
     }

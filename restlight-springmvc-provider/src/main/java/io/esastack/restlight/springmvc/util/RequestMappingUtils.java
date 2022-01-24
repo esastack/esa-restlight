@@ -26,7 +26,6 @@ import io.esastack.restlight.springmvc.annotation.shaded.RequestMapping0;
 import io.esastack.restlight.springmvc.annotation.shaded.ValueConstants0;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Optional;
@@ -73,20 +72,29 @@ public final class RequestMappingUtils {
         }
         contextPath = ConverterUtils.standardContextPath(contextPath);
         //resolve the parent @RequestMapping
-        RequestMapping0 parentRequestMapping = findRequestMapping(userType);
+        RequestMapping0 parentRequestMapping = findClassRequestMapping(userType);
         //resolve the method @RequestMapping
-        RequestMapping0 requestMapping = findRequestMapping(method);
+        RequestMapping0 requestMapping = findMethodRequestMapping(method);
 
         return buildRouteMappingInfo(requestMapping, parentRequestMapping, contextPath);
     }
 
-    private static RequestMapping0 findRequestMapping(AnnotatedElement element) {
-
+    private static RequestMapping0 findClassRequestMapping(Class<?> element) {
         Annotation ann =
-                AnnotationUtils.findAnyAnnotation(element, RequestMapping0.extendedClasses());
+                AnnotationUtils.findAnyAnnotation(element, RequestMapping0.extendedClasses(), true);
         if (ann == null) {
             ann = AnnotationUtils.findAnnotation(element,
-                    RequestMapping0.shadedClass());
+                    RequestMapping0.shadedClass(), true);
+        }
+        return RequestMapping0.fromShade(ann);
+    }
+
+    private static RequestMapping0 findMethodRequestMapping(Method element) {
+        Annotation ann =
+                AnnotationUtils.findAnyAnnotation(element, RequestMapping0.extendedClasses(), true);
+        if (ann == null) {
+            ann = AnnotationUtils.findAnnotation(element,
+                    RequestMapping0.shadedClass(), true);
         }
         return RequestMapping0.fromShade(ann);
     }

@@ -21,8 +21,10 @@ import io.esastack.restlight.core.method.Param;
 import io.esastack.restlight.core.resolver.ParamResolverAdapter;
 import io.esastack.restlight.core.util.Ordered;
 import io.esastack.restlight.core.util.ResponseEntityUtils;
+import io.esastack.restlight.jaxrs.util.JaxrsUtils;
 import io.esastack.restlight.jaxrs.util.MediaTypeUtils;
 import io.esastack.restlight.server.context.RequestContext;
+import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.ext.ContextResolver;
 import jakarta.ws.rs.ext.Providers;
 
@@ -49,7 +51,8 @@ public class JaxrsContextResolverAdapter implements ParamResolverAdapter {
 
     @Override
     public boolean supports(Param param) {
-        return true;
+        return JaxrsUtils.hasAnnotation(param, Context.class)
+                && providers.getContextResolver(param.type(), jakarta.ws.rs.core.MediaType.WILDCARD_TYPE) != null;
     }
 
     @Override

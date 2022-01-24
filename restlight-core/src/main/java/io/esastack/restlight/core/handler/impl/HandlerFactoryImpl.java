@@ -209,7 +209,6 @@ public class HandlerFactoryImpl implements HandlerFactory {
             this.constructor = ConstructorUtils.extractResolvable(clazz, resolvable);
             Checks.checkState(this.constructor != null,
                     "There is no suitable constructor to instantiate class: " + clazz.getName());
-            ReflectionUtils.makeConstructorAccessible(this.constructor);
             this.consParamResolvers = mergeConsParamResolvers(constructor, resolvable, resolverFactory);
             this.setterParamResolvers = mergeSetterParamResolvers(clazz, resolvable, resolverFactory);
             this.fieldParamResolvers = mergeFieldParamResolvers(clazz, resolvable, resolverFactory);

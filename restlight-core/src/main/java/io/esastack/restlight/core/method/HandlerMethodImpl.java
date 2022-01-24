@@ -60,28 +60,14 @@ public class HandlerMethodImpl implements HandlerMethod {
         return new MethodParamImpl(method, i);
     }
 
-    /**
-     * get the annotation of this method
-     *
-     * @param annotationType annotation type
-     * @param <A>            annotation generic
-     * @return annotation instance
-     */
     @Override
-    public <A extends Annotation> A getMethodAnnotation(Class<A> annotationType) {
-        return AnnotationUtils.findAnnotation(this.method, annotationType);
+    public <A extends Annotation> A getMethodAnnotation(Class<A> annotationType, boolean recursive) {
+        return AnnotationUtils.findAnnotation(this.method, annotationType, recursive);
     }
 
-    /**
-     * is annotation present
-     *
-     * @param annotationType annotation type
-     * @param <A>            annotation generic
-     * @return annotation instance
-     */
     @Override
-    public <A extends Annotation> boolean hasMethodAnnotation(Class<A> annotationType) {
-        return AnnotationUtils.hasAnnotation(this.method, annotationType);
+    public <A extends Annotation> A getClassAnnotation(Class<A> annotationType, boolean recursive) {
+        return AnnotationUtils.findAnnotation(this.beanType, annotationType, recursive);
     }
 
     @Override

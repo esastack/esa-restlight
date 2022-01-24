@@ -36,9 +36,9 @@ import static io.esastack.restlight.core.interceptor.HandlerInterceptor.PATTERN_
 public final class InterceptorUtils {
 
     public static boolean isIntercepted(HandlerMethod handler) {
-        Intercepted intercepted = handler.getMethodAnnotation(Intercepted.class);
+        Intercepted intercepted = handler.getMethodAnnotation(Intercepted.class, false);
         if (intercepted == null) {
-            intercepted = handler.beanType().getAnnotation(Intercepted.class);
+            intercepted = handler.getClassAnnotation(Intercepted.class, false);
         }
         if (intercepted == null) {
             return true;

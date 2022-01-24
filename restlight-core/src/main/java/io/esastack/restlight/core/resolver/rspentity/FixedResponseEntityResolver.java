@@ -16,7 +16,6 @@
 package io.esastack.restlight.core.resolver.rspentity;
 
 import esa.commons.collection.AttributeKey;
-import esa.commons.reflect.AnnotationUtils;
 import io.esastack.commons.net.http.MediaType;
 import io.esastack.restlight.core.annotation.ResponseSerializer;
 import io.esastack.restlight.core.annotation.Serializer;
@@ -116,18 +115,16 @@ public abstract class FixedResponseEntityResolver extends AbstractResponseEntity
 
         // find @ResponseSerializer from the method and class
         ResponseSerializer responseSerializer;
-        if ((responseSerializer = method.getMethodAnnotation(ResponseSerializer.class)) != null
-                || (responseSerializer = AnnotationUtils.findAnnotation(method.beanType(),
-                ResponseSerializer.class)) != null) {
+        if ((responseSerializer = method.getMethodAnnotation(ResponseSerializer.class, true)) != null
+                || (responseSerializer = method.getClassAnnotation(ResponseSerializer.class, true)) != null) {
             target = responseSerializer.value();
         }
 
         // find @Serializer from the method and class
         if (target == null) {
             Serializer serializer;
-            if ((serializer = method.getMethodAnnotation(Serializer.class)) != null
-                    || (serializer = AnnotationUtils.findAnnotation(method.beanType(),
-                    Serializer.class)) != null) {
+            if ((serializer = method.getMethodAnnotation(Serializer.class, true)) != null
+                    || (serializer = method.getClassAnnotation(Serializer.class, true)) != null) {
                 target = serializer.value();
             }
 

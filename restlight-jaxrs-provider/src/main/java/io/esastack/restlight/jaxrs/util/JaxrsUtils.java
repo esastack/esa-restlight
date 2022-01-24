@@ -186,7 +186,7 @@ public final class JaxrsUtils {
     }
 
     public static boolean isRootResource(Class<?> clazz) {
-        return AnnotationUtils.hasAnnotation(clazz, Path.class);
+        return AnnotationUtils.hasAnnotation(clazz, Path.class, true);
     }
 
     public static boolean isMessageBodyReader(Class<?> clazz) {

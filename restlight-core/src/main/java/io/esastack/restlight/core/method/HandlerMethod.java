@@ -24,19 +24,47 @@ public interface HandlerMethod {
      * Get annotation type
      *
      * @param annotationType annotation type
+     * @param recursive      whether to find in annotation in implemented method of current implementation.
      * @param <A>            A
      * @return A
      */
-    <A extends Annotation> A getMethodAnnotation(Class<A> annotationType);
+    <A extends Annotation> A getMethodAnnotation(Class<A> annotationType, boolean recursive);
+
+    /**
+     * Get annotation type
+     *
+     * @param annotationType annotation type
+     * @param recursive      whether to find in annotation in interfaces and super class recursively.
+     * @param <A>            A
+     *
+     * @return A
+     */
+    <A extends Annotation> A getClassAnnotation(Class<A> annotationType, boolean recursive);
 
     /**
      * Whether has annotation
      *
      * @param annotationType annotationType
+     * @param recursive      whether to find in annotation in implemented method of current implementation.
      * @param <A>            A
      * @return true or false
      */
-    <A extends Annotation> boolean hasMethodAnnotation(Class<A> annotationType);
+    default <A extends Annotation> boolean hasMethodAnnotation(Class<A> annotationType, boolean recursive) {
+        return getMethodAnnotation(annotationType, recursive) != null;
+    }
+
+    /**
+     * Whether has annotation
+     *
+     * @param annotationType annotation type
+     * @param recursive      whether to find in annotation in interfaces and super class recursively.
+     * @param <A>            A
+     *
+     * @return A
+     */
+    default <A extends Annotation> boolean hasClassAnnotation(Class<A> annotationType, boolean recursive) {
+        return getClassAnnotation(annotationType, recursive) != null;
+    }
 
     /**
      * Get handler bean type
