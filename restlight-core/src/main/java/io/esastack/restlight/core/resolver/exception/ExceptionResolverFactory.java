@@ -24,7 +24,6 @@ public interface ExceptionResolverFactory {
      * Creates an instance of {@link ExceptionResolver} for given {@link HandlerMethod}.
      *
      * @param handlerMethod handler
-     *
      * @return resolver
      */
     ExceptionResolver<Throwable> createResolver(HandlerMethod handlerMethod);

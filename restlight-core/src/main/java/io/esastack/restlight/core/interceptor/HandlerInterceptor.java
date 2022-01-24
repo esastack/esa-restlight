@@ -22,6 +22,7 @@ import io.esastack.restlight.server.core.HttpRequest;
  * This implementation of {@link InternalInterceptor} is used to match to a {@link HttpRequest}
  * which has a {@link HttpRequest#path()}(such as {@code /foo/bar})  by the {@link #includes()} and {@link
  * #excludes()}.
+ *
  * @see InternalInterceptor
  * @see InterceptorFactory#of(HandlerInterceptor)
  */

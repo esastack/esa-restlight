@@ -25,7 +25,7 @@ public interface HeaderDelegateFactory {
     /**
      * Creates an {@link RuntimeDelegate.HeaderDelegate}.
      *
-     * @return      delegate
+     * @return delegate
      */
     RuntimeDelegate.HeaderDelegate<?> headerDelegate();
 

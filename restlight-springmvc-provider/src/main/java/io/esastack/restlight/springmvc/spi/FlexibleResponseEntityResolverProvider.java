@@ -16,7 +16,6 @@
 package io.esastack.restlight.springmvc.spi;
 
 import io.esastack.restlight.core.DeployContext;
-import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.core.config.SerializeOptions;
 import io.esastack.restlight.core.resolver.ResponseEntityResolverFactory;
 import io.esastack.restlight.core.spi.ResponseEntityResolverProvider;
@@ -28,7 +27,7 @@ import java.util.Optional;
 public class FlexibleResponseEntityResolverProvider implements ResponseEntityResolverProvider {
 
     @Override
-    public Optional<ResponseEntityResolverFactory> factoryBean(DeployContext<? extends RestlightOptions> ctx) {
+    public Optional<ResponseEntityResolverFactory> factoryBean(DeployContext ctx) {
         SerializeOptions serializeOptions = ctx.options().getSerialize().getRequest();
         if (serializeOptions.isNegotiation()) {
             return Optional.of(new NegotiationResponseResolverFactory(

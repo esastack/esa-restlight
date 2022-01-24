@@ -15,7 +15,6 @@
  */
 package io.esastack.restlight.core.handler.impl;
 
-import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.core.handler.HandlerContextProvider;
 import io.esastack.restlight.core.method.HandlerMethod;
 
@@ -24,14 +23,14 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class HandlerContexts implements HandlerContextProvider {
 
-    private final ConcurrentHashMap<Method, HandlerContext<?>> contexts = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<Method, HandlerContext> contexts = new ConcurrentHashMap<>();
 
     @Override
-    public HandlerContext<? extends RestlightOptions> getContext(HandlerMethod method) {
+    public HandlerContext getContext(HandlerMethod method) {
         return this.contexts.get(method.method());
     }
 
-    void addContext(HandlerMethod method, HandlerContext<? extends RestlightOptions> context) {
+    void addContext(HandlerMethod method, HandlerContext context) {
         this.contexts.putIfAbsent(method.method(), context);
     }
 

@@ -17,7 +17,6 @@ package io.esastack.restlight.ext.validator;
 
 import esa.commons.spi.SPI;
 import io.esastack.restlight.core.DeployContext;
-import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.core.util.Ordered;
 
 import javax.validation.Validator;
@@ -32,10 +31,10 @@ public interface ValidatorFactory extends Ordered {
     /**
      * Creates a {@link Validator} by given {@link DeployContext}.
      *
-     * @param ctx   ctx
-     * @return  validator
+     * @param ctx ctx
+     * @return validator
      */
-    Optional<Validator> validator(DeployContext<? extends RestlightOptions> ctx);
+    Optional<Validator> validator(DeployContext ctx);
 
 }
 

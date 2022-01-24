@@ -48,7 +48,7 @@ public abstract class AbstractRouteMethodLocator implements RouteMethodLocator {
      * Whether given {@link HandlerMethod} is a locator or not.
      *
      * @param handlerMethod handler method
-     * @return  {@code true} if the {@code handlerMethod} is a locator, otherwise {@code false}.
+     * @return {@code true} if the {@code handlerMethod} is a locator, otherwise {@code false}.
      */
     protected boolean isLocator(HandlerMethod handlerMethod) {
         return false;

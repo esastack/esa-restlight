@@ -64,8 +64,8 @@ public final class ConstructorUtils {
             ConstructorParam param = new ConstructorParamImpl(constructor, i);
             if (!resolvable.test(param)) {
                 logger.warn("Constructor: {} can't be used to instantiate class: {}, due to unresolvable" +
-                        " param: {}", constructor.getName() + " => " +
-                        Arrays.toString(constructor.getParameterTypes()),
+                                " param: {}", constructor.getName() + " => " +
+                                Arrays.toString(constructor.getParameterTypes()),
                         constructor.getDeclaringClass().getName(),
                         param);
                 return false;

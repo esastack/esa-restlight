@@ -18,7 +18,6 @@ package io.esastack.restlight.springmvc.spi;
 import esa.commons.annotation.Internal;
 import esa.commons.spi.Feature;
 import io.esastack.restlight.core.DeployContext;
-import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.core.resolver.exception.ExceptionResolverFactory;
 import io.esastack.restlight.core.spi.ExceptionResolverFactoryProvider;
 import io.esastack.restlight.core.util.Constants;
@@ -29,7 +28,7 @@ import io.esastack.restlight.springmvc.resolver.exception.SpringMvcExceptionReso
 public class SpringMvcExceptionResolverFactoryProvider implements ExceptionResolverFactoryProvider {
 
     @Override
-    public ExceptionResolverFactory factory(DeployContext<? extends RestlightOptions> ctx) {
+    public ExceptionResolverFactory factory(DeployContext ctx) {
         return new SpringMvcExceptionResolverFactory(
                 ctx,
                 ctx.exceptionMappers().orElse(null),

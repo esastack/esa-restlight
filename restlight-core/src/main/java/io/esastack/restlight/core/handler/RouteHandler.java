@@ -20,6 +20,7 @@ import io.esastack.restlight.server.context.RequestContext;
 
 /**
  * This interface defines the invocation to the handler method(controller).
+ *
  * @see RouteHandler#invoke(RequestContext, Object...)
  */
 public interface RouteHandler extends Handler {
@@ -27,7 +28,7 @@ public interface RouteHandler extends Handler {
     /**
      * Obtains {@link RouteHandlerMethod}.
      *
-     * @return  route handler method
+     * @return route handler method
      */
     @Override
     RouteHandlerMethod handlerMethod();

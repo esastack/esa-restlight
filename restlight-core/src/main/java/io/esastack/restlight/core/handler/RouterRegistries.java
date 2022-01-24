@@ -24,9 +24,9 @@ public interface RouterRegistries {
     /**
      * Obtains or just create an {@link Router} by given {@link Class}.
      *
-     * @param clazz     clazz
-     * @param factory   factory
-     * @return          router
+     * @param clazz   clazz
+     * @param factory factory
+     * @return router
      */
     Router getOrCompute(Class<?> clazz, Function<Class<?>, Router> factory);
 

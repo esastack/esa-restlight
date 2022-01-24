@@ -32,8 +32,8 @@ public interface FutureTransfer {
      * Transfer the given {@code value} to {@link CompletableFuture}.
      *
      * @param context current context
-     * @param value value
-     * @return  transferred value
+     * @param value   value
+     * @return transferred value
      */
     CompletionStage<Object> transferTo(RequestContext context, Object value);
 

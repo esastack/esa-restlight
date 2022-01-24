@@ -20,7 +20,6 @@ import esa.commons.annotation.Internal;
 import esa.commons.collection.AttributeKey;
 import esa.commons.spi.Feature;
 import io.esastack.restlight.core.DeployContext;
-import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.core.serialize.HttpBodySerializer;
 import io.esastack.restlight.core.serialize.HttpRequestSerializer;
 import io.esastack.restlight.core.serialize.HttpResponseSerializer;
@@ -38,16 +37,16 @@ public class JacksonDefaultSerializerFactory implements DefaultSerializerFactory
     private volatile HttpBodySerializer jackson;
 
     @Override
-    public HttpRequestSerializer defaultRequestSerializer(DeployContext<? extends RestlightOptions> ctx) {
+    public HttpRequestSerializer defaultRequestSerializer(DeployContext ctx) {
         return getInstance(ctx);
     }
 
     @Override
-    public HttpResponseSerializer defaultResponseSerializer(DeployContext<? extends RestlightOptions> ctx) {
+    public HttpResponseSerializer defaultResponseSerializer(DeployContext ctx) {
         return getInstance(ctx);
     }
 
-    private HttpBodySerializer getInstance(DeployContext<? extends RestlightOptions> ctx) {
+    private HttpBodySerializer getInstance(DeployContext ctx) {
         if (jackson == null) {
             synchronized (this) {
                 final Object objectMapper = ctx.attrs().attr(OBJECT_MAPPER).get();

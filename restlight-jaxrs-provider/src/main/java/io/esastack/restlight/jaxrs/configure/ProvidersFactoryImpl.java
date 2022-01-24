@@ -18,7 +18,6 @@ package io.esastack.restlight.jaxrs.configure;
 import esa.commons.Checks;
 import esa.commons.ClassUtils;
 import io.esastack.restlight.core.DeployContext;
-import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.jaxrs.impl.core.ConfigurationImpl;
 import jakarta.ws.rs.container.ContainerRequestFilter;
 import jakarta.ws.rs.container.ContainerResponseFilter;
@@ -41,10 +40,10 @@ import java.util.Map;
 
 public class ProvidersFactoryImpl implements ProvidersFactory {
 
-    private final DeployContext<? extends RestlightOptions> context;
+    private final DeployContext context;
     private final ConfigurationImpl configuration;
 
-    public ProvidersFactoryImpl(DeployContext<? extends RestlightOptions> context,
+    public ProvidersFactoryImpl(DeployContext context,
                                 ConfigurationImpl configuration) {
         Checks.checkNotNull(context, "context");
         Checks.checkNotNull(configuration, "configuration");

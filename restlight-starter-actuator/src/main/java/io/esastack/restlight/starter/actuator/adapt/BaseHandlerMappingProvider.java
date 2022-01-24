@@ -19,7 +19,6 @@ import esa.commons.Checks;
 import esa.commons.UrlUtils;
 import io.esastack.commons.net.http.HttpMethod;
 import io.esastack.restlight.core.DeployContext;
-import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.core.handler.Handler;
 import io.esastack.restlight.core.handler.HandlerMapping;
 import io.esastack.restlight.core.handler.HandlerMappingProvider;
@@ -56,7 +55,7 @@ public abstract class BaseHandlerMappingProvider implements HandlerMappingProvid
     }
 
     @Override
-    public Collection<HandlerMapping> mappings(DeployContext<? extends RestlightOptions> ctx) {
+    public Collection<HandlerMapping> mappings(DeployContext ctx) {
         return endpoints.stream()
                 .flatMap(e -> e.getOperations()
                         .stream()
@@ -64,7 +63,7 @@ public abstract class BaseHandlerMappingProvider implements HandlerMappingProvid
                 .collect(Collectors.toList());
     }
 
-    private HandlerMapping createMapping(WebOperation op, DeployContext<? extends RestlightOptions> ctx) {
+    private HandlerMapping createMapping(WebOperation op, DeployContext ctx) {
         // create mapping by predicate
         final WebOperationRequestPredicate predicate = op.getRequestPredicate();
         String path;
@@ -92,7 +91,6 @@ public abstract class BaseHandlerMappingProvider implements HandlerMappingProvid
      * Gets a instance of {@link Handler} for given {@link WebOperation}
      *
      * @param op operation
-     *
      * @return instance of {@link Handler}
      */
     abstract Handler getHandler(WebOperation op);

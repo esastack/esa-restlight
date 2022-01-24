@@ -18,7 +18,6 @@ package io.esastack.restlight.core.configure;
 import esa.commons.Checks;
 import esa.commons.ClassUtils;
 import io.esastack.restlight.core.DeployContext;
-import io.esastack.restlight.core.config.RestlightOptions;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -28,7 +27,7 @@ public class DefaultHandlerRegistry extends HandlerRegistryImpl {
 
     private final HandlersImpl handlers;
 
-    public DefaultHandlerRegistry(DeployContext<? extends RestlightOptions> context, HandlersImpl handlers) {
+    public DefaultHandlerRegistry(DeployContext context, HandlersImpl handlers) {
         super(context);
         Checks.checkNotNull(handlers, "handlers");
         this.handlers = handlers;

@@ -115,10 +115,10 @@ public abstract class AbstractExceptionResolverFactory extends DefaultExceptionR
     /**
      * Detect methods which are designed to handle exceptions in target advice bean.
      *
-     * @param adviceBean    advice bean
-     * @param isController  whether target bean is a controller
-     * @param locator       locator
-     * @param factory       factory
+     * @param adviceBean   advice bean
+     * @param isController whether target bean is a controller
+     * @param locator      locator
+     * @param factory      factory
      * @return exception mappers
      */
     protected abstract List<ExceptionMapper> createMappersFromControllerAdvice(Object adviceBean,

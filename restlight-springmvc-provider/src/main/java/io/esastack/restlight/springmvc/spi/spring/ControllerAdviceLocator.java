@@ -18,7 +18,6 @@ package io.esastack.restlight.springmvc.spi.spring;
 import esa.commons.annotation.Internal;
 import esa.commons.spi.Feature;
 import io.esastack.restlight.core.DeployContext;
-import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.core.util.Constants;
 import io.esastack.restlight.spring.spi.AdviceLocator;
 import io.esastack.restlight.springmvc.annotation.shaded.ControllerAdvice0;
@@ -33,8 +32,7 @@ import java.util.Map;
 public class ControllerAdviceLocator implements AdviceLocator {
 
     @Override
-    public Collection<Object> getAdvices(ApplicationContext spring, DeployContext<?
-            extends RestlightOptions> ctx) {
+    public Collection<Object> getAdvices(ApplicationContext spring, DeployContext ctx) {
         Map<String, Object> advices =
                 spring.getBeansWithAnnotation(ControllerAdvice0.shadedClass());
         if (advices.isEmpty()) {

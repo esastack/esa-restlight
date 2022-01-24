@@ -38,11 +38,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-public class DelegatingDeployContext<O extends RestlightOptions> implements DeployContext<O> {
+public class DelegatingDeployContext implements DeployContext {
 
-    private final DeployContext<O> underlying;
+    private final DeployContext underlying;
 
-    public DelegatingDeployContext(DeployContext<O> underlying) {
+    public DelegatingDeployContext(DeployContext underlying) {
         Checks.checkNotNull(underlying, "underlying");
         this.underlying = underlying;
     }
@@ -118,7 +118,7 @@ public class DelegatingDeployContext<O extends RestlightOptions> implements Depl
     }
 
     @Override
-    public O options() {
+    public RestlightOptions options() {
         return underlying.options();
     }
 
@@ -162,7 +162,7 @@ public class DelegatingDeployContext<O extends RestlightOptions> implements Depl
         return underlying.handlerContexts();
     }
 
-    public DeployContext<O> unwrap() {
+    public DeployContext unwrap() {
         return underlying;
     }
 }

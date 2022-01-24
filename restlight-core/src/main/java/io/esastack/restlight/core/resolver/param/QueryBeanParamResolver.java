@@ -18,7 +18,6 @@ package io.esastack.restlight.core.resolver.param;
 import esa.commons.StringUtils;
 import io.esastack.restlight.core.DeployContext;
 import io.esastack.restlight.core.annotation.QueryBean;
-import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.core.method.FieldParam;
 import io.esastack.restlight.core.method.Param;
 import io.esastack.restlight.core.resolver.HandlerResolverFactory;
@@ -31,7 +30,7 @@ import io.esastack.restlight.core.resolver.nav.NameAndValueResolverAdapter;
  */
 public class QueryBeanParamResolver extends RequestBeanParamResolver {
 
-    public QueryBeanParamResolver(DeployContext<? extends RestlightOptions> ctx) {
+    public QueryBeanParamResolver(DeployContext ctx) {
         super(ctx);
     }
 

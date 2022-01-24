@@ -17,7 +17,6 @@ package io.esastack.restlight.core.handler;
 
 import io.esastack.restlight.core.DeployContext;
 import io.esastack.restlight.core.Deployments;
-import io.esastack.restlight.core.config.RestlightOptions;
 
 import java.util.Collection;
 
@@ -30,10 +29,9 @@ public interface HandlerMappingProvider {
      * Gets {@link HandlerMapping}s from this provider.
      *
      * @param ctx ctx
-     *
      * @return mappings
      * @see Deployments#addHandlerMappingProvider(HandlerMappingProvider)
      */
-    Collection<HandlerMapping> mappings(DeployContext<? extends RestlightOptions> ctx);
+    Collection<HandlerMapping> mappings(DeployContext ctx);
 
 }

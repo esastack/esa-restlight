@@ -1,10 +1,29 @@
 [
   {
-    "name":"com.fasterxml.jackson.databind.ext.Java7HandlersImpl",
-    "methods":[{"name":"<init>","parameterTypes":[] }]
+    "name": "com.fasterxml.jackson.databind.ext.Java7HandlersImpl",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
   },
   {
-    "name":"com.fasterxml.jackson.databind.ext.Java7SupportImpl",
-    "methods":[{"name":"<init>","parameterTypes":[] }]
+    "name": "com.fasterxml.jackson.databind.ext.Java7SupportImpl",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "name": "io.esastack.restlight.server.spi.impl.RouteFailureExceptionHandlerFactory",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
   }
 ]

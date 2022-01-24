@@ -196,7 +196,7 @@ public interface RouteInterceptor extends InternalInterceptor {
      *
      * @return affinity value.
      */
-    boolean match(DeployContext<? extends RestlightOptions> ctx, Route route);
+    boolean match(DeployContext ctx, Route route);
 }
 ```
 
@@ -221,7 +221,7 @@ public RouteInterceptor interceptor() {
         }
 
         @Override
-        public boolean match(DeployContext<? extends RestlightOptions> ctx, Route route) {
+        public boolean match(DeployContext ctx, Route route) {
             HttpMethod[] method = route.mapping().method();
             return method.length == 1 && method[0] == HttpMethod.GET;
         }
@@ -336,6 +336,6 @@ public interface InterceptorFactory {
      * @param route target route.
      * @return interceptor
      */
-    Optional<Interceptor> create(DeployContext<? extends RestlightOptions> ctx, Route route);
+    Optional<Interceptor> create(DeployContext ctx, Route route);
 }
 ```

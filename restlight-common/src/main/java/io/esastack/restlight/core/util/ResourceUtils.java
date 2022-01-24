@@ -32,7 +32,6 @@ public final class ResourceUtils {
      * given {@code path} is a pattern of 'classpath:xxxx'.
      *
      * @param path resource path
-     *
      * @return resource file
      */
     public static File getFile(String path) {

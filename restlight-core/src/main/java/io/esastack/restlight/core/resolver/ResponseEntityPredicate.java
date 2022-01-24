@@ -21,7 +21,6 @@ public interface ResponseEntityPredicate {
      * Judge whether should apply current component to resolve the {@link ResponseEntity}.
      *
      * @param entity response entity.
-     *
      * @return {@code true} or {@code false}.
      */
     boolean supports(ResponseEntity entity);

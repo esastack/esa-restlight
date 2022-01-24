@@ -21,7 +21,6 @@ import esa.commons.collection.LinkedMultiArrayValueMap;
 import esa.commons.collection.MultiValueMap;
 import io.esastack.restlight.core.DeployContext;
 import io.esastack.restlight.core.annotation.Intercepted;
-import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.core.interceptor.Interceptor;
 import io.esastack.restlight.core.interceptor.InterceptorFactory;
 import io.esastack.restlight.core.interceptor.InterceptorPredicate;
@@ -47,7 +46,7 @@ public final class InterceptorUtils {
         return intercepted.value();
     }
 
-    static MultiValueMap<InterceptorPredicate, Interceptor> filter(DeployContext<? extends RestlightOptions>
+    static MultiValueMap<InterceptorPredicate, Interceptor> filter(DeployContext
                                                                            context,
                                                                    Mapping mapping,
                                                                    Object handler,

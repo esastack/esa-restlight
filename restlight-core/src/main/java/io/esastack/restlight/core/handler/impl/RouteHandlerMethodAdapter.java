@@ -17,7 +17,6 @@ package io.esastack.restlight.core.handler.impl;
 
 import esa.commons.Checks;
 import esa.commons.collection.MultiValueMap;
-import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.core.handler.HandlerMapping;
 import io.esastack.restlight.core.handler.HandlerValueResolver;
 import io.esastack.restlight.core.handler.RouteFilter;
@@ -55,7 +54,7 @@ public abstract class RouteHandlerMethodAdapter extends HandlerMethodAdapter<Rou
     private final Matcher interceptorMatcher;
 
     RouteHandlerMethodAdapter(HandlerMapping mapping,
-                              HandlerContext<? extends RestlightOptions> context,
+                              HandlerContext context,
                               HandlerValueResolver handlerResolver,
                               MultiValueMap<InterceptorPredicate, Interceptor> interceptors,
                               ExceptionResolver<Throwable> exceptionResolver) {
@@ -72,8 +71,8 @@ public abstract class RouteHandlerMethodAdapter extends HandlerMethodAdapter<Rou
     /**
      * Builds a {@link RouteExecution} to handle the given {@link RequestContext}.
      *
-     * @param context   context
-     * @return  execution
+     * @param context context
+     * @return execution
      */
     public abstract RouteExecution toExecution(RequestContext context);
 

@@ -28,9 +28,9 @@ import java.lang.annotation.Target;
  * serialize/deserialize by the
  * given implementation of {@link HttpBodySerializer} if necessary(maybe there's no need to deserialize such as a
  * parameter in the url.).
- *
+ * <p>
  * It could be used to associate with the @RequestBody/@ResponseBody(if in spring environment).
- *
+ * <p>
  * {@link Serializer} could be annotated on the parameter, method and the class, and also the priority of the
  * 3 places will be method(highest) &gt; class(lowest).
  */

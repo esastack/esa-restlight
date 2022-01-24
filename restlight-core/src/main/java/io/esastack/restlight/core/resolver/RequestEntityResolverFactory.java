@@ -41,7 +41,7 @@ public interface RequestEntityResolverFactory extends ParamPredicate, Ordered {
     /**
      * Creates an instance of {@link RequestEntityResolver} for given handler method.
      *
-     * @param param param
+     * @param param       param
      * @param serializers all the {@link HttpRequestSerializer}s in the context
      * @return resolver
      */

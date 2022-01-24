@@ -22,13 +22,13 @@ public final class UriUtils {
     /**
      * Encode given {@code target}.
      *
-     * @param target               target
-     * @param encodeSlashInPath   If {@code true}, the slash ({@code '/'}) characters in template values will
-     *                            be encoded, otherwise not.
+     * @param target                 target
+     * @param encodeSlashInPath      If {@code true}, the slash ({@code '/'}) characters in template values will
+     *                               be encoded, otherwise not.
      * @param encodePercentAnyway    All {@code '%'} characters in the {@code target} values will be encoded.
      * @param encodePercentCondition If {@code true}, all {@code '%'} characters in the {@code target} values
-     *                              that are not followed by two hexadecimal numbers will be encoded, otherwise not.
-     * @return              encoded value
+     *                               that are not followed by two hexadecimal numbers will be encoded, otherwise not.
+     * @return encoded value
      */
     public static String encode(String target, boolean encodeSlashInPath,
                                 boolean encodePercentAnyway, boolean encodePercentCondition) {

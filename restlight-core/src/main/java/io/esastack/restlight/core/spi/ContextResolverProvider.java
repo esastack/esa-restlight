@@ -17,7 +17,6 @@ package io.esastack.restlight.core.spi;
 
 import esa.commons.spi.SPI;
 import io.esastack.restlight.core.DeployContext;
-import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.core.resolver.ContextResolverFactory;
 
 import java.util.Optional;
@@ -33,10 +32,9 @@ public interface ContextResolverProvider {
      * Produces an optional instance of {@link ContextResolverFactory}.
      *
      * @param ctx deploy context
-     *
      * @return optional value of {@link ContextResolverFactory}
      */
-    Optional<ContextResolverFactory> factoryBean(DeployContext<? extends RestlightOptions> ctx);
+    Optional<ContextResolverFactory> factoryBean(DeployContext ctx);
 
 }
 

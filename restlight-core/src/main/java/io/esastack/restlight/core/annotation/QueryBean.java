@@ -27,6 +27,7 @@ import java.lang.annotation.Target;
 /**
  * Indicates that the parameter annotated by this annotation will be resolved from the Url parameters or form
  * parameters(application/x-www-form-urlencoded only).
+ *
  * @see HttpRequest#getParam(String)
  */
 @Target({ElementType.PARAMETER})

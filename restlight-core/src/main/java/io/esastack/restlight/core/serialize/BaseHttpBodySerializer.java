@@ -47,7 +47,7 @@ public abstract class BaseHttpBodySerializer implements HttpBodySerializer {
         return serializer().serialize(target);
     }
 
-    protected  <T> T doDeserialize(byte[] data, Type type) throws Exception {
+    protected <T> T doDeserialize(byte[] data, Type type) throws Exception {
         if (data == null || data.length == 0) {
             return null;
         }
@@ -57,8 +57,8 @@ public abstract class BaseHttpBodySerializer implements HttpBodySerializer {
     /**
      * Whether supports to serialize the given {@code entity} or not.
      *
-     * @param entity    entity
-     * @return  {@code true} meas support, otherwise not.
+     * @param entity entity
+     * @return {@code true} meas support, otherwise not.
      */
     protected boolean supportsWrite(ResponseEntity entity) {
         MediaType mediaType = entity.mediaType();
@@ -68,8 +68,8 @@ public abstract class BaseHttpBodySerializer implements HttpBodySerializer {
     /**
      * Whether supports to deserialize the given {@code entity} or not.
      *
-     * @param entity    entity
-     * @return  {@code true} meas support, otherwise not.
+     * @param entity entity
+     * @return {@code true} meas support, otherwise not.
      */
     protected boolean supportsRead(RequestEntity entity) {
         MediaType mediaType = entity.mediaType();
@@ -79,7 +79,7 @@ public abstract class BaseHttpBodySerializer implements HttpBodySerializer {
     /**
      * Adds the content-type to given {@code response}.
      *
-     * @param entity  response entity
+     * @param entity response entity
      */
     protected void addContentType(ResponseEntity entity) {
         entity.response().headers().set(HttpHeaderNames.CONTENT_TYPE, MediaType.APPLICATION_JSON_UTF8.value());
@@ -88,7 +88,7 @@ public abstract class BaseHttpBodySerializer implements HttpBodySerializer {
     /**
      * Obtains the {@link Serializer} to use.
      *
-     * @return  serializer
+     * @return serializer
      */
     protected abstract Serializer serializer();
 }

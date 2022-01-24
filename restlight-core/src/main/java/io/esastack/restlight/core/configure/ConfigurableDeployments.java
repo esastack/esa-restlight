@@ -21,7 +21,7 @@ import java.util.Collection;
 
 public class ConfigurableDeployments extends MiniConfigurableDeployments {
 
-    public ConfigurableDeployments(Deployments<?, ?, ?> deployments) {
+    public ConfigurableDeployments(Deployments deployments) {
         super(deployments);
     }
 

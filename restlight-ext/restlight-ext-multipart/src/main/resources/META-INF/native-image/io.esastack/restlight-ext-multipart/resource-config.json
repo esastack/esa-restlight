@@ -1,7 +1,10 @@
 {
-  "resources":{
-    "includes":[
-      {"pattern":".*/io.esastack.restlight.core.spi.ParamResolverProvider$"}
-    ]},
-  "bundles":[]
+  "resources": {
+    "includes": [
+      {
+        "pattern": ".*/io.esastack.restlight.core.spi.ParamResolverProvider$"
+      }
+    ]
+  },
+  "bundles": []
 }

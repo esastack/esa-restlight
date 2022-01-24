@@ -21,7 +21,6 @@ public interface ResultActions {
      * Add matcher to match the result.
      *
      * @param matcher matcher
-     *
      * @return current actions
      */
     ResultActions addExpect(ResultMatcher matcher);
@@ -30,7 +29,6 @@ public interface ResultActions {
      * Add handler to handle the result.
      *
      * @param handler handler
-     *
      * @return current actions
      */
     ResultActions then(ResultHandler handler);

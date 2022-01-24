@@ -24,9 +24,9 @@ public interface HttpRequestSerializer extends Ordered {
     /**
      * Deserialize the data from byte array to the object.
      *
-     * @param entity    entity
-     * @param <T>       generic type
-     * @return  handled value
+     * @param entity entity
+     * @param <T>    generic type
+     * @return handled value
      * @throws Exception any exception
      */
     <T> HandledValue<T> deserialize(RequestEntity entity) throws Exception;

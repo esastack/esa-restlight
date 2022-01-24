@@ -1,14 +1,29 @@
 [
   {
-    "name":"io.esastack.restlight.ext.validator.ValidationExceptionHandlerFactory",
-    "methods":[{"name":"<init>","parameterTypes":[] }]
+    "name": "io.esastack.restlight.ext.validator.ValidationExceptionHandlerFactory",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
   },
   {
-    "name":"io.esastack.restlight.ext.validator.BeanValidationHandlerAdviceFactory",
-    "methods":[{"name":"<init>","parameterTypes":[] }]
+    "name": "io.esastack.restlight.ext.validator.BeanValidationHandlerAdviceFactory",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
   },
   {
-    "name":"io.esastack.restlight.ext.validator.DefaultValidatorFactory",
-    "methods":[{"name":"<init>","parameterTypes":[] }]
+    "name": "io.esastack.restlight.ext.validator.DefaultValidatorFactory",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
   }
 ]

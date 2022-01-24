@@ -29,6 +29,7 @@ import io.esastack.restlight.server.route.Route;
  * And we will also determine that whether a {@link HttpRequest} should be matched to this
  * interceptor by the return value of {@link #predicate()}'s {@link InterceptorPredicate#test(Object)} when a {@link
  * HttpRequest} is coming.
+ *
  * @see Affinity
  * @see InternalInterceptor
  */

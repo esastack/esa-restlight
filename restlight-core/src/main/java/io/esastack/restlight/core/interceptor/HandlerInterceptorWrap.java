@@ -16,7 +16,6 @@
 package io.esastack.restlight.core.interceptor;
 
 import io.esastack.restlight.core.DeployContext;
-import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.core.util.InterceptorUtils;
 import io.esastack.restlight.server.route.Mapping;
 import io.esastack.restlight.server.route.Routing;
@@ -32,7 +31,7 @@ class HandlerInterceptorWrap extends AbstractInterceptorWrap<HandlerInterceptor>
     private final int affinity;
 
     HandlerInterceptorWrap(HandlerInterceptor interceptor,
-                           DeployContext<? extends RestlightOptions> ctx,
+                           DeployContext ctx,
                            Routing route) {
         super(interceptor);
         final Mapping mapping = route.mapping();

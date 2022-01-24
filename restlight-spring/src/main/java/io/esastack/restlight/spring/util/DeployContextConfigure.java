@@ -15,24 +15,24 @@
  */
 package io.esastack.restlight.spring.util;
 
+import io.esastack.restlight.core.DeployContext;
 import io.esastack.restlight.core.Restlight;
 import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.core.util.Ordered;
-import io.esastack.restlight.server.ServerDeployContext;
 
 /**
- * DeployContextConfigure allows user to modify the {@link ServerDeployContext} or change the options in {@link
+ * DeployContextConfigure allows user to modify the {@link DeployContext} or change the options in {@link
  * RestlightOptions} before {@link Restlight#start()}ing.
  */
 @FunctionalInterface
 public interface DeployContextConfigure extends Ordered {
 
     /**
-     * accept {@link ServerDeployContext} and do some modification before starting server.
+     * accept {@link DeployContext} and do some modification before starting server.
      *
-     * @param context   context
+     * @param context context
      */
-    void accept(ServerDeployContext<? extends RestlightOptions> context);
-        
+    void accept(DeployContext context);
+
 }
 

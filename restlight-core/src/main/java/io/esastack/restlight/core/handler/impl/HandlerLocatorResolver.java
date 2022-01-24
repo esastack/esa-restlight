@@ -18,7 +18,6 @@ package io.esastack.restlight.core.handler.impl;
 import esa.commons.Checks;
 import esa.commons.ClassUtils;
 import io.esastack.restlight.core.DeployContext;
-import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.core.configure.DelegatingDeployContext;
 import io.esastack.restlight.core.handler.HandlerMapping;
 import io.esastack.restlight.core.handler.HandlerValueResolver;
@@ -43,11 +42,11 @@ import java.util.concurrent.CompletionStage;
 
 public class HandlerLocatorResolver implements HandlerValueResolver {
 
-    private final DeployContext<? extends RestlightOptions> deployContext;
+    private final DeployContext deployContext;
     private final HandlerMapping handlerMapping;
     private final RouterRegistries registries;
 
-    public HandlerLocatorResolver(DeployContext<? extends RestlightOptions> deployContext,
+    public HandlerLocatorResolver(DeployContext deployContext,
                                   HandlerMapping handlerMapping,
                                   RouterRegistries registries) {
         Checks.checkNotNull(deployContext, "deployContext");
@@ -70,7 +69,7 @@ public class HandlerLocatorResolver implements HandlerValueResolver {
             final AbstractRouteRegistry registry = new SimpleRouteRegistry();
             ClassUtils.doWithUserDeclaredMethods(userType,
                     method -> {
-                        HandlerContext<?> ctx = HandlerContext.build(lookupParentRecursively(deployContext),
+                        HandlerContext ctx = HandlerContext.build(lookupParentRecursively(deployContext),
                                 HandlerMethodImpl.of(userType, method));
                         RouteUtils.extractHandlerMapping(ctx, handlerMapping,
                                 extractBean(value), userType, method)
@@ -133,9 +132,9 @@ public class HandlerLocatorResolver implements HandlerValueResolver {
         return value instanceof Type ? null : value;
     }
 
-    private static <O extends RestlightOptions> DeployContext<O> lookupParentRecursively(DeployContext<O> current) {
+    private static DeployContext lookupParentRecursively(DeployContext current) {
         if (current instanceof DelegatingDeployContext) {
-            return lookupParentRecursively(((DelegatingDeployContext<O>) current).unwrap());
+            return lookupParentRecursively(((DelegatingDeployContext) current).unwrap());
         } else {
             return current;
         }

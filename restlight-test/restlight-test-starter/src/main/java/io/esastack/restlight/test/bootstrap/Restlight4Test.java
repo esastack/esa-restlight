@@ -20,7 +20,7 @@ import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.server.bootstrap.RestlightServer;
 import io.esastack.restlight.server.schedule.AbstractRestlightHandler;
 
-class Restlight4Test extends AbstractRestlight<Restlight4Test, Deployments4Test, RestlightOptions> {
+class Restlight4Test extends AbstractRestlight {
 
     private Restlight4Test(RestlightOptions options) {
         super(options);
@@ -33,6 +33,11 @@ class Restlight4Test extends AbstractRestlight<Restlight4Test, Deployments4Test,
     @Override
     protected Deployments4Test createDeployments() {
         return new Deployments4Test(this, options);
+    }
+
+    @Override
+    public Deployments4Test deployments() {
+        return (Deployments4Test) super.deployments();
     }
 
     @Override

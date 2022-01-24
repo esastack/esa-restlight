@@ -38,7 +38,7 @@ public class SignValidationInterceptorFactory implements InterceptorFactory {
     }
 
     @Override
-    public Optional<Interceptor> create(DeployContext<? extends RestlightOptions> ctx, Routing route) {
+    public Optional<Interceptor> create(DeployContext ctx, Routing route) {
         return InterceptorFactory
                 .of(instance == null ? instance = doCreate(buildSignOptions(ctx.options()), distributor) : instance)
                 .create(ctx, route);

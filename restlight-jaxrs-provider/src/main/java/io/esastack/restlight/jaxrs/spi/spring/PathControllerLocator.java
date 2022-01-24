@@ -18,7 +18,6 @@ package io.esastack.restlight.jaxrs.spi.spring;
 import esa.commons.annotation.Internal;
 import esa.commons.spi.Feature;
 import io.esastack.restlight.core.DeployContext;
-import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.core.util.Constants;
 import io.esastack.restlight.spring.spi.ControllerLocator;
 import jakarta.ws.rs.Path;
@@ -38,7 +37,7 @@ public class PathControllerLocator implements ControllerLocator {
 
     @Override
     public Collection<Object> getControllers(ApplicationContext spring,
-                                             DeployContext<? extends RestlightOptions> ctx) {
+                                             DeployContext ctx) {
         Map<String, Object> controllers =
                 spring.getBeansWithAnnotation(Path.class);
         if (controllers.isEmpty()) {

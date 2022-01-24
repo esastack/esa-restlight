@@ -25,8 +25,7 @@ import org.springframework.context.ApplicationContext;
 
 import static io.esastack.restlight.spring.util.SpringContextUtils.getBean;
 
-class Restlight4SpringTest extends AbstractRestlight4Spring<Restlight4SpringTest, Deployments4SpringTest,
-        RestlightOptions> {
+class Restlight4SpringTest extends AbstractRestlight4Spring {
 
     private Restlight4SpringTest(ApplicationContext context, RestlightOptions options) {
         super(context, options);
@@ -43,6 +42,11 @@ class Restlight4SpringTest extends AbstractRestlight4Spring<Restlight4SpringTest
     @Override
     protected Deployments4SpringTest createDeployments() {
         return new Deployments4SpringTest(this, context, options);
+    }
+
+    @Override
+    public Deployments4SpringTest deployments() {
+        return (Deployments4SpringTest) super.deployments();
     }
 
     @Override

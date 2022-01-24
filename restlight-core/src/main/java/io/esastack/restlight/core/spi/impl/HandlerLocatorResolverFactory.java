@@ -18,7 +18,6 @@ package io.esastack.restlight.core.spi.impl;
 import esa.commons.annotation.Internal;
 import esa.commons.spi.Feature;
 import io.esastack.restlight.core.DeployContext;
-import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.core.handler.HandlerMapping;
 import io.esastack.restlight.core.handler.HandlerValueResolver;
 import io.esastack.restlight.core.handler.RouterRegistries;
@@ -37,13 +36,13 @@ import java.util.function.Function;
 public class HandlerLocatorResolverFactory implements HandlerValueResolverLocatorFactory {
 
     @Override
-    public HandlerValueResolverLocator resolver(DeployContext<? extends RestlightOptions> ctx) {
+    public HandlerValueResolverLocator resolver(DeployContext ctx) {
         return new HandlerLocatorResolverLocator(ctx);
     }
 
     private static class HandlerLocatorResolverLocator implements HandlerValueResolverLocator {
 
-        private final DeployContext<? extends RestlightOptions> context;
+        private final DeployContext context;
         private final RouterRegistries registries = new RouterRegistries() {
 
             private final ConcurrentHashMap<Class<?>, Router> registries = new ConcurrentHashMap<>(8);
@@ -54,7 +53,7 @@ public class HandlerLocatorResolverFactory implements HandlerValueResolverLocato
             }
         };
 
-        private HandlerLocatorResolverLocator(DeployContext<? extends RestlightOptions> context) {
+        private HandlerLocatorResolverLocator(DeployContext context) {
             this.context = context;
         }
 

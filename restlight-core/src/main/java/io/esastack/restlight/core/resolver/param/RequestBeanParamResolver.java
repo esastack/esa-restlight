@@ -21,7 +21,6 @@ import esa.commons.reflect.AnnotationUtils;
 import esa.commons.reflect.ReflectionUtils;
 import io.esastack.restlight.core.DeployContext;
 import io.esastack.restlight.core.annotation.RequestBean;
-import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.core.method.FieldParam;
 import io.esastack.restlight.core.method.FieldParamImpl;
 import io.esastack.restlight.core.method.Param;
@@ -49,9 +48,9 @@ import java.util.stream.Collectors;
 public class RequestBeanParamResolver implements ParamResolverFactory {
 
     private static final Map<Class<?>, ParamResolver> META_CACHE = new ConcurrentHashMap<>(16);
-    private final DeployContext<? extends RestlightOptions> ctx;
+    private final DeployContext ctx;
 
-    public RequestBeanParamResolver(DeployContext<? extends RestlightOptions> ctx) {
+    public RequestBeanParamResolver(DeployContext ctx) {
         Checks.checkNotNull(ctx, "ctx");
         this.ctx = ctx;
     }

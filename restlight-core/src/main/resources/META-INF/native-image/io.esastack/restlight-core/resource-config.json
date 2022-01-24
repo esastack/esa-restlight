@@ -1,17 +1,43 @@
 {
-  "resources":{
-    "includes":[
-      {"pattern":".*/io.esastack.restlight.core.method.ResolvableParamPredicate$"},
-      {"pattern":".*/io.esastack.restlight.core.spi.DefaultSerializerFactory$"},
-      {"pattern":".*/io.esastack.restlight.core.spi.FutureTransferFactory$"},
-      {"pattern":".*/io.esastack.restlight.core.spi.HandlerFactoryProvider$"},
-      {"pattern":".*/io.esastack.restlight.core.spi.HandlerValueResolverLocatorFactory$"},
-      {"pattern":".*/io.esastack.restlight.core.spi.ResponseEntityChannelFactory$"},
-      {"pattern":".*/io.esastack.restlight.core.resolver.ParamResolverFactory$"},
-      {"pattern":".*/io.esastack.restlight.core.resolver.ResponseEntityResolverFactory$"},
-      {"pattern":".*/io.esastack.restlight.core.resolver.StringConverterFactory$"},
-      {"pattern":".*/io.esastack.restlight.core.spi.ParamResolverProvider$"},
-      {"pattern":".*/io.esastack.restlight.core.spi.RouteFilterFactory$"}
-    ]},
-  "bundles":[]
+  "resources": {
+    "includes": [
+      {
+        "pattern": ".*/io.esastack.restlight.core.method.ResolvableParamPredicate$"
+      },
+      {
+        "pattern": ".*/io.esastack.restlight.core.spi.DefaultSerializerFactory$"
+      },
+      {
+        "pattern": ".*/io.esastack.restlight.core.spi.FutureTransferFactory$"
+      },
+      {
+        "pattern": ".*/io.esastack.restlight.core.spi.HandlerFactoryProvider$"
+      },
+      {
+        "pattern": ".*/io.esastack.restlight.core.spi.HandlerValueResolverLocatorFactory$"
+      },
+      {
+        "pattern": ".*/io.esastack.restlight.core.spi.ResponseEntityChannelFactory$"
+      },
+      {
+        "pattern": ".*/io.esastack.restlight.core.resolver.ParamResolverFactory$"
+      },
+      {
+        "pattern": ".*/io.esastack.restlight.core.resolver.ResponseEntityResolverFactory$"
+      },
+      {
+        "pattern": ".*/io.esastack.restlight.core.resolver.StringConverterFactory$"
+      },
+      {
+        "pattern": ".*/io.esastack.restlight.core.spi.ParamResolverProvider$"
+      },
+      {
+        "pattern": ".*/io.esastack.restlight.core.spi.RouteFilterFactory$"
+      },
+      {
+        "pattern": ".*/io.esastack.restlight.server.spi.ExceptionHandlerFactory$"
+      }
+    ]
+  },
+  "bundles": []
 }

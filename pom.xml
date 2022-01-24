@@ -102,7 +102,6 @@
 
     <modules>
         <module>restlight-common</module>
-        <module>restlight-server</module>
         <module>restlight-core</module>
         <module>restlight-springmvc-provider</module>
         <module>restlight-springmvc-annotation</module>

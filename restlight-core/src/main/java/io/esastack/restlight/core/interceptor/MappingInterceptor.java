@@ -21,6 +21,7 @@ import io.esastack.restlight.server.core.HttpRequest;
 /**
  * We will determine that whether a {@link HttpRequest} should be matched to this interceptor by
  * the {@link InterceptorPredicate#test(Object)} when a {@link HttpRequest} is coming.
+ *
  * @see InternalInterceptor
  * @see InterceptorPredicate
  * @see InterceptorFactory#of(MappingInterceptor)

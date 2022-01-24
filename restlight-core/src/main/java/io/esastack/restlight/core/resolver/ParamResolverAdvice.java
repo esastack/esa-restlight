@@ -27,8 +27,8 @@ public interface ParamResolverAdvice {
     /**
      * This method is called around {@link ParamResolver#resolve(Param, RequestContext)}.
      *
-     * @param context   context
-     * @return  resolved arg value
+     * @param context context
+     * @return resolved arg value
      * @throws Exception exception
      */
     Object aroundResolve(ParamResolverContext context) throws Exception;

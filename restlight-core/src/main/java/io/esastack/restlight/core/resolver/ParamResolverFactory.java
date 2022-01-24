@@ -41,7 +41,7 @@ public interface ParamResolverFactory extends ParamPredicate, Ordered {
     /**
      * Creates a instance of {@link ParamResolver} for given handler method.
      *
-     * @param param   method
+     * @param param       method
      * @param serializers all the {@link HttpRequestSerializer}s of current context
      * @return resolver
      */

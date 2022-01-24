@@ -19,7 +19,6 @@ import esa.commons.Checks;
 import esa.commons.logging.Logger;
 import esa.commons.logging.LoggerFactory;
 import io.esastack.restlight.core.DeployContext;
-import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.spring.util.RestlightBizExecutorAware;
 import io.esastack.restlight.spring.util.RestlightDeployContextAware;
 import io.esastack.restlight.starter.autoconfigure.AutoRestlightServerOptions;
@@ -38,7 +37,7 @@ public class RestlightBizThreadPoolEndpoint implements RestlightBizExecutorAware
 
     private static final Logger logger =
             LoggerFactory.getLogger(RestlightBizThreadPoolEndpoint.class);
-    private DeployContext<? extends RestlightOptions> deployContext;
+    private DeployContext deployContext;
 
     @Autowired(required = false)
     AutoRestlightServerOptions config;
@@ -210,7 +209,7 @@ public class RestlightBizThreadPoolEndpoint implements RestlightBizExecutorAware
     }
 
     @Override
-    public void setDeployContext(DeployContext<? extends RestlightOptions> ctx) {
+    public void setDeployContext(DeployContext ctx) {
         this.deployContext = ctx;
     }
 }

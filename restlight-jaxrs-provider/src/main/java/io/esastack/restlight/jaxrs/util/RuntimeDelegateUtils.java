@@ -114,7 +114,7 @@ public final class RuntimeDelegateUtils {
         }
     }
 
-    public static <K, V1, V2>  boolean equalsIgnoreValueOrder(MultivaluedMap<K, V1> m1, MultivaluedMap<K, V2> m2) {
+    public static <K, V1, V2> boolean equalsIgnoreValueOrder(MultivaluedMap<K, V1> m1, MultivaluedMap<K, V2> m2) {
         if (m2 == null) {
             return false;
         }

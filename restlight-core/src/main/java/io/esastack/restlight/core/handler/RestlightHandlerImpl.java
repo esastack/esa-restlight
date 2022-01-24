@@ -22,7 +22,6 @@ import esa.commons.logging.LoggerFactory;
 import io.esastack.commons.net.http.HttpStatus;
 import io.esastack.commons.net.http.MediaType;
 import io.esastack.restlight.core.DeployContext;
-import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.core.handler.impl.HandlerContext;
 import io.esastack.restlight.core.method.HandlerMethod;
 import io.esastack.restlight.core.resolver.HandlerResolverFactory;
@@ -57,7 +56,7 @@ public class RestlightHandlerImpl extends AbstractRestlightHandler {
     public RestlightHandlerImpl(RestlightHandler underlying,
                                 ExceptionHandlerChain handlerChain,
                                 ResponseEntityChannelFactory channelFactory,
-                                DeployContext<? extends RestlightOptions> context) {
+                                DeployContext context) {
         super(underlying, handlerChain);
         Checks.checkNotNull(channelFactory, "channelFactory");
         Checks.checkNotNull(context, "context");
@@ -138,7 +137,7 @@ public class RestlightHandlerImpl extends AbstractRestlightHandler {
             return resolverFactory;
         }
 
-        HandlerContext<?> context = handlerContexts.getContext(method);
+        HandlerContext context = handlerContexts.getContext(method);
         if (context != null) {
             return context.resolverFactory().orElseThrow(() ->
                     new IllegalStateException("HandlerResolverFactory is absent"));

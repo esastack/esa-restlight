@@ -27,21 +27,21 @@ public interface ParamResolverContext {
     /**
      * Obtains current {@link RequestContext}.
      *
-     * @return  request context
+     * @return request context
      */
     RequestContext context();
 
     /**
      * Obtains the {@link Param} to resolve.
      *
-     * @return  param
+     * @return param
      */
     Param param();
 
     /**
      * Resolves the {@link #param()} by given {@link #context()}.
      *
-     * @return  context
+     * @return context
      * @throws Exception exception
      */
     Object proceed() throws Exception;

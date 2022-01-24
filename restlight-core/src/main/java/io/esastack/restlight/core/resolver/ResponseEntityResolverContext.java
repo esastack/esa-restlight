@@ -23,7 +23,7 @@ public interface ResponseEntityResolverContext extends HttpEntityResolverContext
     /**
      * Obtains the {@link Param} to resolve.
      *
-     * @return  param
+     * @return param
      */
     @Override
     ResponseEntity httpEntity();
@@ -31,12 +31,13 @@ public interface ResponseEntityResolverContext extends HttpEntityResolverContext
     /**
      * Obtains teh {@link ResponseEntityChannel}.
      *
-     * @return  channel
+     * @return channel
      */
     ResponseEntityChannel channel();
 
     /**
      * Resolves the {@link HttpResponse#entity()} by given {@link #context()}.
+     *
      * @throws Exception exception
      */
     void proceed() throws Exception;

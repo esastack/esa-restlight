@@ -17,7 +17,6 @@ package io.esastack.restlight.core.handler.impl;
 
 import esa.commons.Checks;
 import esa.commons.collection.MultiValueMap;
-import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.core.handler.Handler;
 import io.esastack.restlight.core.handler.HandlerAdvice;
 import io.esastack.restlight.core.handler.HandlerAdvicesFactory;
@@ -40,7 +39,7 @@ public class SingletonRouteMethod extends RouteHandlerMethodAdapter {
     private final Object singleton;
 
     public SingletonRouteMethod(HandlerMapping mapping,
-                                HandlerContext<? extends RestlightOptions> context,
+                                HandlerContext context,
                                 HandlerValueResolver handlerResolver,
                                 MultiValueMap<InterceptorPredicate, Interceptor> interceptors,
                                 ExceptionResolver<Throwable> exceptionResolver) {

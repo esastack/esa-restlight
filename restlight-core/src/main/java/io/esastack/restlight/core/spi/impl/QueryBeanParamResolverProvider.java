@@ -16,7 +16,6 @@
 package io.esastack.restlight.core.spi.impl;
 
 import io.esastack.restlight.core.DeployContext;
-import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.core.resolver.ParamResolverFactory;
 import io.esastack.restlight.core.resolver.param.QueryBeanParamResolver;
 import io.esastack.restlight.core.spi.ParamResolverProvider;
@@ -26,7 +25,7 @@ import java.util.Optional;
 public class QueryBeanParamResolverProvider implements ParamResolverProvider {
 
     @Override
-    public Optional<ParamResolverFactory> factoryBean(DeployContext<? extends RestlightOptions> ctx) {
+    public Optional<ParamResolverFactory> factoryBean(DeployContext ctx) {
         return Optional.of(new QueryBeanParamResolver(ctx));
     }
 

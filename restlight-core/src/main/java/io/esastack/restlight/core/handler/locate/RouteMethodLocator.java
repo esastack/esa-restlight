@@ -34,7 +34,6 @@ public interface RouteMethodLocator extends HandlerMethodLocator {
      * @param parent   parent handler mapping if exist, which may be {@code null} for root method.
      * @param userType user type
      * @param method   target method
-     *
      * @return optional value of route handler.
      */
     Optional<RouteMethodInfo> getRouteMethodInfo(HandlerMapping parent, Class<?> userType, Method method);

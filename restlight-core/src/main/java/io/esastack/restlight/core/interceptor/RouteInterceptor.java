@@ -17,9 +17,7 @@ package io.esastack.restlight.core.interceptor;
 
 import esa.commons.spi.SPI;
 import io.esastack.restlight.core.DeployContext;
-import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.core.handler.impl.RouteHandlerMethodAdapter;
-import io.esastack.restlight.server.BaseDeployments;
 import io.esastack.restlight.server.core.HttpRequest;
 import io.esastack.restlight.server.route.Route;
 import io.esastack.restlight.server.route.Routing;
@@ -32,6 +30,7 @@ import io.esastack.restlight.server.route.Routing;
  * <p>
  * whether a {@link HttpRequest} should be matched to this interceptor will just depends on the
  * return value of {@link #match(DeployContext, Routing)}.
+ *
  * @see InternalInterceptor
  * @see InterceptorFactory#of(RouteInterceptor)
  */
@@ -43,11 +42,10 @@ public interface RouteInterceptor extends InternalInterceptor {
      *
      * @param ctx   context
      * @param route route to match, the {@link Route} that added by
-     * {@link BaseDeployments#addRoute(Route)}
+     *              {@link io.esastack.restlight.core.Deployments#addRoute(Route)}
      *              will not be passed to this method, and {@link Route} that associates to a {@link
      *              RouteHandlerMethodAdapter} will be passed to this method instead.
-     *
      * @return affinity value.
      */
-    boolean match(DeployContext<? extends RestlightOptions> ctx, Routing route);
+    boolean match(DeployContext ctx, Routing route);
 }

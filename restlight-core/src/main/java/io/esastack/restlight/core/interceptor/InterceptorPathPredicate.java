@@ -39,7 +39,6 @@ public class InterceptorPathPredicate implements InterceptorPredicate {
      * Judge current request if matches interception predicate
      *
      * @param lookupPath lookupPath
-     *
      * @return match
      */
     private boolean match(String lookupPath) {

@@ -18,7 +18,6 @@ package io.esastack.restlight.core.interceptor;
 import esa.commons.Checks;
 import esa.commons.spi.SPI;
 import io.esastack.restlight.core.DeployContext;
-import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.server.route.Route;
 import io.esastack.restlight.server.route.Routing;
 
@@ -34,7 +33,6 @@ public interface InterceptorFactory {
      * Creates a implementation of {@link InterceptorFactory} by the given {@link Interceptor}
      *
      * @param interceptor interceptor
-     *
      * @return factory
      */
     static InterceptorFactory of(Interceptor interceptor) {
@@ -47,7 +45,6 @@ public interface InterceptorFactory {
      * the delegate.
      *
      * @param interceptor interceptor
-     *
      * @return factory
      */
     static InterceptorFactory of(InternalInterceptor interceptor) {
@@ -60,7 +57,6 @@ public interface InterceptorFactory {
      * the delegate.
      *
      * @param interceptor interceptor
-     *
      * @return factory
      */
     static InterceptorFactory of(HandlerInterceptor interceptor) {
@@ -73,7 +69,6 @@ public interface InterceptorFactory {
      * the delegate.
      *
      * @param interceptor interceptor
-     *
      * @return factory
      */
     static InterceptorFactory of(MappingInterceptor interceptor) {
@@ -86,7 +81,6 @@ public interface InterceptorFactory {
      * delegate.
      *
      * @param interceptor interceptor
-     *
      * @return factory
      */
     static InterceptorFactory of(RouteInterceptor interceptor) {
@@ -98,10 +92,9 @@ public interface InterceptorFactory {
      *
      * @param ctx   deploy context
      * @param route target route.
-     *
      * @return interceptor associated with given {@link Route} or else an empty optional result.
      */
-    Optional<Interceptor> create(DeployContext<? extends RestlightOptions> ctx, Routing route);
+    Optional<Interceptor> create(DeployContext ctx, Routing route);
 
     class Singleton implements InterceptorFactory {
 
@@ -113,7 +106,7 @@ public interface InterceptorFactory {
         }
 
         @Override
-        public Optional<Interceptor> create(DeployContext<? extends RestlightOptions> ctx, Routing route) {
+        public Optional<Interceptor> create(DeployContext ctx, Routing route) {
             return Optional.of(interceptor);
         }
     }
@@ -128,7 +121,7 @@ public interface InterceptorFactory {
         }
 
         @Override
-        public Optional<Interceptor> create(DeployContext<? extends RestlightOptions> ctx, Routing route) {
+        public Optional<Interceptor> create(DeployContext ctx, Routing route) {
             return Optional.of(new RouteInterceptorWrap(interceptor, ctx, route));
         }
 
@@ -144,7 +137,7 @@ public interface InterceptorFactory {
         }
 
         @Override
-        public Optional<Interceptor> create(DeployContext<? extends RestlightOptions> ctx, Routing route) {
+        public Optional<Interceptor> create(DeployContext ctx, Routing route) {
             return Optional.of(new HandlerInterceptorWrap(interceptor, ctx, route));
         }
 

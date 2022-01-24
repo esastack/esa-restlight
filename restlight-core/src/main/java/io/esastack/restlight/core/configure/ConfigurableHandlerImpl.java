@@ -118,23 +118,23 @@ public class ConfigurableHandlerImpl implements ConfigurableHandler {
 
     @Override
     public ConfigurableHandler addRequestEntityResolverAdvices(Collection<? extends RequestEntityResolverAdvice>
-                                                                           advices) {
+                                                                       advices) {
         if (advices == null || advices.isEmpty()) {
             return this;
         }
 
         configuration.addRequestEntityResolverAdvices(advices.stream().map(advice ->
                 new RequestEntityResolverAdviceFactory() {
-            @Override
-            public boolean supports(HandlerMethod method) {
-                return ConfigurableHandlerImpl.this.method.method().equals(method.method());
-            }
+                    @Override
+                    public boolean supports(HandlerMethod method) {
+                        return ConfigurableHandlerImpl.this.method.method().equals(method.method());
+                    }
 
-            @Override
-            public RequestEntityResolverAdvice createResolverAdvice(HandlerMethod method) {
-                return advice;
-            }
-        }).collect(Collectors.toList()));
+                    @Override
+                    public RequestEntityResolverAdvice createResolverAdvice(HandlerMethod method) {
+                        return advice;
+                    }
+                }).collect(Collectors.toList()));
 
         return this;
     }
@@ -153,7 +153,7 @@ public class ConfigurableHandlerImpl implements ConfigurableHandler {
 
     @Override
     public ConfigurableHandler addResponseEntityResolverAdvices(Collection<? extends ResponseEntityResolverAdvice>
-                                                                            advices) {
+                                                                        advices) {
         if (advices == null || advices.isEmpty()) {
             return this;
         }

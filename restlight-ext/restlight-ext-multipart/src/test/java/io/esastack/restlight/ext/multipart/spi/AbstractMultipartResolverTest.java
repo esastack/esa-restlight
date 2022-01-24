@@ -42,6 +42,7 @@ public abstract class AbstractMultipartResolverTest {
     private static final MultipartConfig config = new MultipartConfig(false);
     static MultipartAttrParamResolver attrResolver = new MultipartAttrParamResolver();
     static MultipartFileParamResolver fileResolver = new MultipartFileParamResolver();
+
     {
         attrResolver.initFactory(config);
         fileResolver.initFactory(config);

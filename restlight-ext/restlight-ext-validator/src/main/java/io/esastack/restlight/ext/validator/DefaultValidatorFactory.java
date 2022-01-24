@@ -18,7 +18,6 @@ package io.esastack.restlight.ext.validator;
 import esa.commons.StringUtils;
 import esa.commons.collection.AttributeKey;
 import io.esastack.restlight.core.DeployContext;
-import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.ext.validator.core.ValidationOptions;
 import org.hibernate.validator.messageinterpolation.ResourceBundleMessageInterpolator;
 import org.hibernate.validator.resourceloading.PlatformResourceBundleLocator;
@@ -33,7 +32,7 @@ public class DefaultValidatorFactory implements ValidatorFactory {
             .valueOf("$bean-validation-options");
 
     @Override
-    public Optional<Validator> validator(DeployContext<? extends RestlightOptions> ctx) {
+    public Optional<Validator> validator(DeployContext ctx) {
         final ValidationOptions options = ctx.attrs().attr(VALIDATION_OPTIONS).getAndRemove();
         if (options == null || StringUtils.isEmpty(options.getMessageFile())) {
             return Optional.of(Validation.buildDefaultValidatorFactory().getValidator());

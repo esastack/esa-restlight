@@ -41,9 +41,9 @@ public interface StringConverterFactory extends Ordered {
     /**
      * Creates an instance of {@link StringConverter} for given {@link Param}.
      *
-     * @param type         type
-     * @param genericType  genericType
-     * @param param        related Param
+     * @param type        type
+     * @param genericType genericType
+     * @param param       related Param
      * @return StringConverter
      */
     Optional<StringConverter> createConverter(Class<?> type, Type genericType, Param param);

@@ -38,7 +38,6 @@ public final class RequestMappingUtils {
      * spring mvc environment.
      *
      * @param value origin default value
-     *
      * @return normalised value
      */
     public static String normaliseDefaultValue(String value) {
@@ -64,7 +63,6 @@ public final class RequestMappingUtils {
      * @param userType    type of target method's declaring class.
      * @param method      target method
      * @param contextPath context path
-     *
      * @return optional value of {@link Mapping}
      */
     public static Optional<Mapping> extractMapping(Class<?> userType,

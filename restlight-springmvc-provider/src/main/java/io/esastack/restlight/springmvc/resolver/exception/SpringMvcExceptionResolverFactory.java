@@ -20,7 +20,6 @@ import esa.commons.ClassUtils;
 import esa.commons.StringUtils;
 import esa.commons.reflect.AnnotationUtils;
 import io.esastack.restlight.core.DeployContext;
-import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.core.handler.impl.HandlerContext;
 import io.esastack.restlight.core.handler.impl.HandlerImpl;
 import io.esastack.restlight.core.handler.impl.HandlerMethodAdapter;
@@ -47,9 +46,9 @@ import java.util.Map;
 
 public class SpringMvcExceptionResolverFactory extends AbstractExceptionResolverFactory {
 
-    private final DeployContext<? extends RestlightOptions> context;
+    private final DeployContext context;
 
-    public SpringMvcExceptionResolverFactory(DeployContext<? extends RestlightOptions> context,
+    public SpringMvcExceptionResolverFactory(DeployContext context,
                                              List<ExceptionMapper> mappers,
                                              Collection<?> controllerBeans,
                                              Collection<?> adviceBeans,
@@ -120,7 +119,7 @@ public class SpringMvcExceptionResolverFactory extends AbstractExceptionResolver
             locator.getHandlerMethodInfo(null, ClassUtils.getUserType(bean), method).ifPresent(handler -> {
                 ExceptionResolver<Throwable> resolver =
                         new ExecutionExceptionResolver(new HandlerMethodAdapter<>(
-                                new HandlerContext<>(context), handler.handlerMethod()),
+                                new HandlerContext(context), handler.handlerMethod()),
                                 new HandlerMethodResolver(handler),
                                 new HandlerImpl(handler.handlerMethod(), bean));
                 addExceptionMapping(mappings, exceptionType, resolver);

@@ -27,6 +27,7 @@ import java.lang.annotation.Target;
 
 /**
  * Indicates that current controller(s) should be scheduled by which {@link Scheduler}
+ *
  * @see Scheduling
  * @see Schedulers
  */

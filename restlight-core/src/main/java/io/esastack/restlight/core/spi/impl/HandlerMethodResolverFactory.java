@@ -18,7 +18,6 @@ package io.esastack.restlight.core.spi.impl;
 import esa.commons.annotation.Internal;
 import esa.commons.spi.Feature;
 import io.esastack.restlight.core.DeployContext;
-import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.core.handler.HandlerMapping;
 import io.esastack.restlight.core.handler.HandlerValueResolver;
 import io.esastack.restlight.core.handler.impl.HandlerMethodResolver;
@@ -33,7 +32,7 @@ import java.util.Optional;
 public class HandlerMethodResolverFactory implements HandlerValueResolverLocatorFactory {
 
     @Override
-    public HandlerValueResolverLocator resolver(DeployContext<? extends RestlightOptions> ctx) {
+    public HandlerValueResolverLocator resolver(DeployContext ctx) {
         return new HandlerMethodResolverLocator();
     }
 

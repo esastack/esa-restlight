@@ -33,8 +33,8 @@ public interface HandlerConfigure extends Ordered {
      * Configures the {@link ConfigurableHandler} when the given {@code handlerMethod} is prepare to be
      * registered.
      *
-     * @param handlerMethod     handler method
-     * @param configurable      configurable
+     * @param handlerMethod handler method
+     * @param configurable  configurable
      */
     void configure(HandlerMethod handlerMethod, ConfigurableHandler configurable);
 

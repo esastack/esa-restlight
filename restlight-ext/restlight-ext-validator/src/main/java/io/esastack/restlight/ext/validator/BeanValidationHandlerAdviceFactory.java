@@ -20,7 +20,6 @@ import esa.commons.collection.AttributeKey;
 import esa.commons.spi.Feature;
 import esa.commons.spi.SpiLoader;
 import io.esastack.restlight.core.DeployContext;
-import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.core.handler.Handler;
 import io.esastack.restlight.core.handler.HandlerAdvice;
 import io.esastack.restlight.core.spi.HandlerAdviceFactory;
@@ -41,7 +40,7 @@ public class BeanValidationHandlerAdviceFactory implements HandlerAdviceFactory 
             .valueOf("$bean-validation-validator");
 
     @Override
-    public Optional<HandlerAdvice> handlerAdvice(DeployContext<? extends RestlightOptions> ctx, Handler handler) {
+    public Optional<HandlerAdvice> handlerAdvice(DeployContext ctx, Handler handler) {
         Optional<Validator> validator = ctx.attrs().attr(VALIDATION_VALIDATOR).get();
         if (validator == null) {
             validator = doCreate(ctx);
@@ -73,7 +72,7 @@ public class BeanValidationHandlerAdviceFactory implements HandlerAdviceFactory 
         return Optional.empty();
     }
 
-    private Optional<Validator> doCreate(DeployContext<? extends RestlightOptions> ctx) {
+    private Optional<Validator> doCreate(DeployContext ctx) {
         final List<ValidatorFactory> factories =
                 SpiLoader.cached(ValidatorFactory.class)
                         .getByGroup(ctx.name(), true);

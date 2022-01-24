@@ -24,7 +24,6 @@ import io.esastack.commons.net.buffer.BufferUtil;
 import io.esastack.commons.net.netty.http.Http1HeadersAdaptor;
 import io.esastack.commons.net.netty.http.Http1HeadersImpl;
 import io.esastack.restlight.core.DeployContext;
-import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.core.method.Param;
 import io.esastack.restlight.core.resolver.HandlerResolverFactory;
 import io.esastack.restlight.core.resolver.ParamResolverFactory;
@@ -78,7 +77,7 @@ abstract class AbstractMultipartParamResolver extends NameAndValueResolverFactor
     private HttpDataFactory factory;
 
     @Override
-    public Optional<ParamResolverFactory> factoryBean(DeployContext<? extends RestlightOptions> ctx) {
+    public Optional<ParamResolverFactory> factoryBean(DeployContext ctx) {
         initFactory(Checks.checkNotNull(buildConfig(ctx), "config"));
         return super.factoryBean(ctx);
     }
@@ -141,7 +140,7 @@ abstract class AbstractMultipartParamResolver extends NameAndValueResolverFactor
 
     protected abstract NameAndValueResolver doCreateResolver(Param param, HandlerResolverFactory resolverFactory);
 
-    MultipartConfig buildConfig(DeployContext<? extends RestlightOptions> ctx) {
+    MultipartConfig buildConfig(DeployContext ctx) {
         MultipartConfig config;
 
         // Try to get useDiskValue from options, if absent then try to get minSizeValue.

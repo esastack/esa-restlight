@@ -19,7 +19,6 @@ import esa.commons.annotation.Internal;
 import esa.commons.spi.Feature;
 import io.esastack.commons.net.http.HttpStatus;
 import io.esastack.restlight.core.DeployContext;
-import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.core.handler.locate.AbstractRouteMethodLocator;
 import io.esastack.restlight.core.handler.locate.RouteMethodLocator;
 import io.esastack.restlight.core.method.HandlerMethod;
@@ -32,7 +31,7 @@ import io.esastack.restlight.springmvc.util.ResponseStatusUtils;
 public class SpringMvcRouteMethodLocatorFactory implements RouteMethodLocatorFactory {
 
     @Override
-    public RouteMethodLocator locator(DeployContext<? extends RestlightOptions> ctx) {
+    public RouteMethodLocator locator(DeployContext ctx) {
         return new HandlerLocator(ctx.options().getScheduling().getDefaultScheduler());
     }
 

@@ -23,7 +23,6 @@ public interface SecretProvider {
      * @param appId         appId
      * @param secretVersion secretVersion
      * @param timestamp     timestamp
-     *
      * @return secret
      */
     String get(String appId, String secretVersion, String timestamp);

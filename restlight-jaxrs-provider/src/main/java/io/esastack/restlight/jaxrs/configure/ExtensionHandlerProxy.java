@@ -23,7 +23,7 @@ import java.security.PrivilegedAction;
 final class ExtensionHandlerProxy {
 
     static Object newProxy(Class<?> clazz, InvocationHandler handler) {
-        Class<?>[] interfaces = { clazz };
+        Class<?>[] interfaces = {clazz};
         ClassLoader loader;
         final SecurityManager sm = System.getSecurityManager();
         if (sm == null) {

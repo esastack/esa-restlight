@@ -24,7 +24,6 @@ public interface TxSerializer {
      * serialize the object to byte array
      *
      * @param target target
-     *
      * @return byte array
      * @throws Exception error
      */

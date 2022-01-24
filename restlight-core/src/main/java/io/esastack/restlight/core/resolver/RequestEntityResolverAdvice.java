@@ -23,7 +23,7 @@ public interface RequestEntityResolverAdvice {
      * This method will be called around
      * {@link ResponseEntityResolver#writeTo(ResponseEntity, ResponseEntityChannel, RequestContext)}.
      *
-     * @param context   context
+     * @param context context
      * @return object   resolved value
      * @throws Exception exception
      */

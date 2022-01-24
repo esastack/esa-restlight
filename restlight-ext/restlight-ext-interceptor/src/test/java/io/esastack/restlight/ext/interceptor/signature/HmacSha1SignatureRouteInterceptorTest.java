@@ -100,7 +100,7 @@ class HmacSha1SignatureRouteInterceptorTest extends AbstractSignatureInterceptor
         return new Context(new RestlightOptions().extOption(SIGN + ".verify-all", String.valueOf(verifyAll)));
     }
 
-    private static class Context extends DeployContextImpl<RestlightOptions> {
+    private static class Context extends DeployContextImpl {
 
         protected Context(RestlightOptions options) {
             super(Constants.SERVER, options);

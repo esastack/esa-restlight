@@ -17,8 +17,8 @@ package io.esastack.restlight.starter.actuator;
 
 import esa.commons.Checks;
 import esa.commons.annotation.Beta;
+import io.esastack.restlight.core.AbstractRestlight;
 import io.esastack.restlight.core.Deployments;
-import io.esastack.restlight.core.Restlight;
 import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.spring.Restlight4Spring;
 import io.esastack.restlight.starter.actuator.autoconfigurer.ManagementOptions;
@@ -34,11 +34,11 @@ import java.util.Map;
 
 public class ConfigurableManagementRestlight {
 
-    private final Restlight restlight;
+    private final AbstractRestlight restlight;
     private final ManagementOptions options;
     SocketAddress address;
 
-    ConfigurableManagementRestlight(Restlight restlight,
+    ConfigurableManagementRestlight(AbstractRestlight restlight,
                                     ManagementOptions options) {
         Checks.checkNotNull(restlight, "restlight");
         Checks.checkNotNull(options, "options");
@@ -143,7 +143,7 @@ public class ConfigurableManagementRestlight {
     /**
      * @see Restlight4Spring#deployments()
      */
-    public Deployments.Impl deployments() {
+    public Deployments deployments() {
         return restlight.deployments();
     }
 }

@@ -16,7 +16,6 @@
 package io.esastack.restlight.core.handler.impl;
 
 import io.esastack.restlight.core.DeployContext;
-import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.core.handler.Handler;
 import io.esastack.restlight.core.handler.HandlerAdvice;
 import io.esastack.restlight.core.handler.HandlerAdvicesFactory;
@@ -29,10 +28,10 @@ import java.util.List;
 
 public class HandlerAdvicesFactoryImpl implements HandlerAdvicesFactory {
 
-    private final DeployContext<? extends RestlightOptions> context;
+    private final DeployContext context;
     private final Collection<? extends HandlerAdviceFactory> factories;
 
-    public HandlerAdvicesFactoryImpl(DeployContext<? extends RestlightOptions> context,
+    public HandlerAdvicesFactoryImpl(DeployContext context,
                                      Collection<? extends HandlerAdviceFactory> factories) {
         this.context = context;
         this.factories = factories;

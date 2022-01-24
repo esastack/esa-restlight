@@ -25,7 +25,7 @@ import io.esastack.restlight.core.resolver.ParamResolver;
  * or {@link ContextResolver}, such as a field which has the initial value when declaring it. In this case, we
  * shouldn't try to bind a resolver with. And this interface is designed to test whether the given {@link Param}
  * should be resolved by custom resolver.
- *
+ * <p>
  * !NOTE: This is only used internally.
  */
 @Internal
@@ -37,7 +37,7 @@ public interface ResolvableParamPredicate {
      * Whether the given {@code param} should be resolved by custom resolvers or not.
      *
      * @param param param
-     * @return      {@code true} when the param should be resolved by custom resolvers, otherwise {@code false}.
+     * @return {@code true} when the param should be resolved by custom resolvers, otherwise {@code false}.
      */
     boolean test(Param param);
 

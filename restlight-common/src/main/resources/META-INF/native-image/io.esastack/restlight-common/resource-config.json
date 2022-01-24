@@ -1,7 +1,10 @@
 {
-  "resources":{
-    "includes":[
-      {"pattern":".*/Restlight-Ver.txt$"}
-    ]},
-  "bundles":[]
+  "resources": {
+    "includes": [
+      {
+        "pattern": ".*/Restlight-Ver.txt$"
+      }
+    ]
+  },
+  "bundles": []
 }

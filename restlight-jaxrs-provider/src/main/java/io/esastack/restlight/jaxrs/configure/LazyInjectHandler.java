@@ -17,13 +17,12 @@ package io.esastack.restlight.jaxrs.configure;
 
 import esa.commons.ClassUtils;
 import io.esastack.restlight.core.DeployContext;
-import io.esastack.restlight.core.config.RestlightOptions;
 
 class LazyInjectHandler extends LazyInstantiateHandler {
 
     private final Object target;
 
-    LazyInjectHandler(DeployContext<? extends RestlightOptions> context, Object target) {
+    LazyInjectHandler(DeployContext context, Object target) {
         super(context, ClassUtils.getUserType(target));
         this.target = target;
     }

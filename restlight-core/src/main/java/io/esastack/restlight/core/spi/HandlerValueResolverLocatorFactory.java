@@ -18,7 +18,6 @@ package io.esastack.restlight.core.spi;
 import esa.commons.annotation.Internal;
 import esa.commons.spi.SPI;
 import io.esastack.restlight.core.DeployContext;
-import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.core.handler.locate.HandlerValueResolverLocator;
 
 /**
@@ -32,10 +31,9 @@ public interface HandlerValueResolverLocatorFactory {
      * Create an instance of {@link HandlerValueResolverLocator}.
      *
      * @param ctx deploy context
-     *
      * @return locator
      */
-    HandlerValueResolverLocator resolver(DeployContext<? extends RestlightOptions> ctx);
+    HandlerValueResolverLocator resolver(DeployContext ctx);
 
 }
 

@@ -32,35 +32,35 @@ public interface ResponseEntityChannel {
     /**
      * Sends the given {@code data} to remote endpoint.
      *
-     * @param data  data
+     * @param data data
      */
     void write(byte[] data);
 
     /**
      * Send the given {@code buffer} to remote endpoint.
      *
-     * @param buffer    buffer
+     * @param buffer buffer
      */
     void write(Buffer buffer);
 
     /**
      * Sends the {@code data} to remote endpoint and end current request.
      *
-     * @param data    data
+     * @param data data
      */
     void writeThenEnd(byte[] data);
 
     /**
      * Sends the {@code buffer} to remote endpoint and end current request.
      *
-     * @param buffer    buffer
+     * @param buffer buffer
      */
     void writeThenEnd(Buffer buffer);
 
     /**
      * Sends the {@code file} to remote endpoint and end current request.
      *
-     * @param file  file
+     * @param file file
      */
     void writeThenEnd(File file);
 

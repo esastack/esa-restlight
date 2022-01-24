@@ -16,7 +16,6 @@
 package io.esastack.restlight.core.resolver;
 
 import io.esastack.restlight.core.DeployContext;
-import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.core.method.Param;
 
 public interface ContextResolver extends Resolver {
@@ -29,7 +28,7 @@ public interface ContextResolver extends Resolver {
      * @return value resolved
      * @throws Exception ex
      */
-    Object resolve(Param param, DeployContext<? extends RestlightOptions> context) throws Exception;
+    Object resolve(Param param, DeployContext context) throws Exception;
 
 }
 

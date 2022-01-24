@@ -26,7 +26,7 @@ public interface ResponseEntityResolverAdvice {
      * This method will be called around
      * {@link ResponseEntityResolver#writeTo(ResponseEntity, ResponseEntityChannel, RequestContext)}.
      *
-     * @param context   context
+     * @param context context
      * @throws Exception exception
      */
     void aroundWrite(ResponseEntityResolverContext context) throws Exception;

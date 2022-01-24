@@ -37,7 +37,6 @@ public interface RestlightIoExecutorAware extends Aware {
      * esa.commons.concurrent.DirectExecutor#INSTANCE} as the parameter.
      *
      * @param ioExecutor executor
-     *
      * @see RestlightServer#ioExecutor()
      */
     void setRestlightIoExecutor(Executor ioExecutor);

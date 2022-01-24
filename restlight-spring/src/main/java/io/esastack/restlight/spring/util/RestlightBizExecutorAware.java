@@ -36,7 +36,6 @@ public interface RestlightBizExecutorAware extends Aware {
      * esa.commons.concurrent.DirectExecutor#INSTANCE} as the parameter.
      *
      * @param bizExecutor executor
-     *
      * @see RestlightServer#bizExecutor()
      */
     void setRestlightBizExecutor(Executor bizExecutor);

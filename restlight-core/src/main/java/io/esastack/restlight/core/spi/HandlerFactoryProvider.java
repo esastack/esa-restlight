@@ -18,7 +18,6 @@ package io.esastack.restlight.core.spi;
 import esa.commons.annotation.Internal;
 import esa.commons.spi.SPI;
 import io.esastack.restlight.core.DeployContext;
-import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.core.handler.HandlerFactory;
 import io.esastack.restlight.core.util.Ordered;
 
@@ -33,10 +32,9 @@ public interface HandlerFactoryProvider extends Ordered {
      * Produces a an optional instance of {@link HandlerFactory}.
      *
      * @param ctx deploy context
-     *
      * @return Optional value of {@link HandlerFactory}.
      */
-    Optional<HandlerFactory> factoryBean(DeployContext<? extends RestlightOptions> ctx);
+    Optional<HandlerFactory> factoryBean(DeployContext ctx);
 
 }
 

@@ -166,6 +166,6 @@ public class ConfigurableRestlight {
      * @see Restlight4Spring#deployments()
      */
     public Deployments4Spring.Impl deployments() {
-        return restlight.deployments();
+        return (Deployments4Spring.Impl) restlight.deployments();
     }
 }

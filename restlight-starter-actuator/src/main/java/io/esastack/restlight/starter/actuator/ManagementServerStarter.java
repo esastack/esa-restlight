@@ -21,6 +21,7 @@ import esa.commons.StringUtils;
 import esa.commons.TimeCounter;
 import esa.commons.logging.Logger;
 import esa.commons.logging.LoggerFactory;
+import io.esastack.restlight.core.AbstractRestlight;
 import io.esastack.restlight.core.Restlight;
 import io.esastack.restlight.core.handler.HandlerMappingProvider;
 import io.esastack.restlight.core.util.Constants;
@@ -69,7 +70,7 @@ public class ManagementServerStarter extends AbstractDelegatedRestlightServer
         }
         try {
             logger.info("Starting Restlight(Actuator) server...\n" + managementOptions.toString());
-            Restlight server = Restlight.forServer(managementOptions)
+            AbstractRestlight server = Restlight.forServer(managementOptions)
                     .name(Constants.MANAGEMENT)
                     .deployments()
                     .addHandlerMappingProvider(mappingProvider)
@@ -116,7 +117,7 @@ public class ManagementServerStarter extends AbstractDelegatedRestlightServer
     /**
      * Guarantee the {@link ManagementServerStarter#shutdown()} will be executed before spring beans are
      * destroyed during {@link AbstractApplicationContext#close()}.
-     *
+     * <p>
      * See https://github.com/esastack/esa-restlight/issues/38.
      *
      * @param event event

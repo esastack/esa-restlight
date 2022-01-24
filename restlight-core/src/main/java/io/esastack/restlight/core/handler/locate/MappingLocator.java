@@ -32,7 +32,6 @@ public interface MappingLocator {
      * @param parent   parent handler mapping if exist, which may be {@code null} for root method.
      * @param userType type of given method
      * @param method   target method
-     *
      * @return mapping
      */
     Optional<Mapping> getMapping(HandlerMapping parent, Class<?> userType, Method method);

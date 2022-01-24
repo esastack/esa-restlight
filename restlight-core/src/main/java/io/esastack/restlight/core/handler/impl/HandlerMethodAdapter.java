@@ -16,7 +16,6 @@
 package io.esastack.restlight.core.handler.impl;
 
 import esa.commons.Checks;
-import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.core.method.HandlerMethod;
 import io.esastack.restlight.core.method.MethodParam;
 import io.esastack.restlight.core.method.Param;
@@ -37,16 +36,16 @@ import java.util.List;
  * An adapter of {@link HandlerMethod} which holds the {@link ParamResolver}s, {@link ContextResolver}s or
  * {@link RequestEntityResolver} to resolve method parameters.
  *
- * @param <H>   generic handler method
+ * @param <H> generic handler method
  */
 public class HandlerMethodAdapter<H extends HandlerMethod> implements HandlerMethod {
 
-    private final HandlerContext<? extends RestlightOptions> context;
+    private final HandlerContext context;
     private final H handlerMethod;
     private final ResolvableParam<MethodParam, ResolverWrap>[] methodParamResolvers;
     private final boolean concurrent;
 
-    public HandlerMethodAdapter(HandlerContext<? extends RestlightOptions> context, H handlerMethod) {
+    public HandlerMethodAdapter(HandlerContext context, H handlerMethod) {
         Checks.checkNotNull(context, "context");
         Checks.checkNotNull(handlerMethod, "handlerMethod");
         this.handlerMethod = handlerMethod;
@@ -129,7 +128,7 @@ public class HandlerMethodAdapter<H extends HandlerMethod> implements HandlerMet
         return methodParamResolvers;
     }
 
-    HandlerContext<? extends RestlightOptions> context() {
+    HandlerContext context() {
         return this.context;
     }
 

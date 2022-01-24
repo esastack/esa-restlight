@@ -30,56 +30,56 @@ public interface HttpEntity {
     /**
      * Obtains the type of current entity.
      *
-     * @return  type
+     * @return type
      */
     Class<?> type();
 
     /**
      * Sets with the given {@code type}.
      *
-     * @param type  type
+     * @param type type
      */
     void type(Class<?> type);
 
     /**
      * Obtains the generic type corresponds to current entity.
      *
-     * @return  generic type
+     * @return generic type
      */
     Type genericType();
 
     /**
      * Sets with the given {@link Type}.
      *
-     * @param genericType   generic type
+     * @param genericType generic type
      */
     void genericType(Type genericType);
 
     /**
      * Obtains the {@link Annotation}s corresponds to current entity.
      *
-     * @return  annotations
+     * @return annotations
      */
     Annotation[] annotations();
 
     /**
      * Sets with the given {@code annotations}.
      *
-     * @param annotations   annotations
+     * @param annotations annotations
      */
     void annotations(Annotation[] annotations);
 
     /**
      * Obtains the {@link MediaType} corresponds to current entity.
      *
-     * @return  mediaType
+     * @return mediaType
      */
     MediaType mediaType();
 
     /**
      * Sets with the given {@code mediaType}.
      *
-     * @param mediaType     mediaType
+     * @param mediaType mediaType
      */
     void mediaType(MediaType mediaType);
 
@@ -87,7 +87,7 @@ public interface HttpEntity {
      * Obtains the {@link HandlerMethod} if current value is produced by
      * {@link Handler#invoke(RequestContext, Object[])}, otherwise the value may be produces by {@link Filter}.
      *
-     * @return  handler method if present.
+     * @return handler method if present.
      */
     Optional<HandlerMethod> handler();
 }
