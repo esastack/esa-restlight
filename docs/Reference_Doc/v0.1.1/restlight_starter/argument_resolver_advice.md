@@ -19,7 +19,7 @@ public interface ArgumentResolverAdvice {
     /**
      * 在ArgumentResolver.resolve()之后被调用， 并使用此方法的返回值作为参数绑定到对应的Controller参数上
      */
-    Object afterResolved(Object arg, AsyncRequest request);
+    Object afterResolved(Object arg, AsyncRequest request, AsyncResponse response);
 }
 ```
 
@@ -40,7 +40,7 @@ public interface ArgumentResolverAdviceAdapter
     }
 
     @Override
-    default Object afterResolved(Object arg, AsyncRequest request) {
+    default Object afterResolved(Object arg, AsyncRequest request, AsyncResponse response) {
         return arg;
     }
 
