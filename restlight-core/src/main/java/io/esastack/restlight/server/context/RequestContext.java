@@ -22,13 +22,6 @@ import io.esastack.restlight.server.core.HttpResponse;
 public interface RequestContext {
 
     /**
-     * Obtains {@link Attributes} corresponding with current {@link RequestContext}.
-     *
-     * @return attributes
-     */
-    Attributes attrs();
-
-    /**
      * Obtains current {@code request}.
      *
      * @return request
@@ -41,6 +34,13 @@ public interface RequestContext {
      * @return response
      */
     HttpResponse response();
+
+    /**
+     * Obtains {@link Attributes} corresponding with current {@link RequestContext}.
+     *
+     * @return attributes
+     */
+    Attributes attrs();
 
 }
 
