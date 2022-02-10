@@ -46,11 +46,6 @@ public class RequestContextImpl implements RequestContext {
     }
 
     @Override
-    public Attributes attrs() {
-        return attributes;
-    }
-
-    @Override
     public HttpRequest request() {
         return request;
     }
@@ -58,6 +53,11 @@ public class RequestContextImpl implements RequestContext {
     @Override
     public HttpResponse response() {
         return response;
+    }
+
+    @Override
+    public Attributes attrs() {
+        return attributes;
     }
 }
 
