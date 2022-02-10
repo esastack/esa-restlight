@@ -27,7 +27,7 @@ public interface ArgumentResolver {
      * 从AsyncRequest中解析出对应parameter的值
      * 解析后的Object必须能和MethodParameter类型匹配
      */
-    Object resolve(AsyncRequest request) throws Exception;
+    Object resolve(AsyncRequest request, AsyncResponse response) throws Exception;
     
 }
 ```
@@ -137,7 +137,7 @@ public ArgumentResolverAdapter resolver() {
         }
  
         @Override
-        public Object resolve(AsyncRequest request) {
+        public Object resolve(AsyncRequest request, AsyncResponse response) {
             return "your appid";
         }
     };
@@ -210,7 +210,7 @@ private static class Resolver implements ArgumentResolver {
     }
 
     @Override
-    public Object resolve(AsyncRequest request) {
+    public Object resolve(AsyncRequest request, AsyncResponse response) {
         // 运行时直接获取Header
         return request.getHeader(headerName);
     }
