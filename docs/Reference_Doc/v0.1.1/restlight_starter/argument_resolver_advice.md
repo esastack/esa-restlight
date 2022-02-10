@@ -14,7 +14,7 @@ public interface ArgumentResolverAdvice {
     /**
      * 在ArgumentResolver.resolve()之前被调用
      */
-    void beforeResolve(AsyncRequest request);
+    void beforeResolve(AsyncRequest request, AsyncResponse response);
 
     /**
      * 在ArgumentResolver.resolve()之后被调用， 并使用此方法的返回值作为参数绑定到对应的Controller参数上
@@ -36,7 +36,7 @@ public interface ArgumentResolverAdviceAdapter
         extends ArgumentResolverPredicate, ArgumentResolverAdvice, Ordered {
 
     @Override
-    default void beforeResolve(AsyncRequest request) {
+    default void beforeResolve(AsyncRequest request, AsyncResponse response) {
     }
 
     @Override
@@ -60,7 +60,7 @@ public interface ArgumentResolverAdviceFactory extends ArgumentResolverPredicate
     /**
      * 生成ArgumentResolverAdvice
      */
-    ArgumentResolverAdvice createResolverAdvice(MethodParameter parameter, ArgumentResolver resolver);
+    ArgumentResolverAdvice createResolverAdvice(Param param, ArgumentResolver resolver);
 
     @Override
     default int getOrder() {
