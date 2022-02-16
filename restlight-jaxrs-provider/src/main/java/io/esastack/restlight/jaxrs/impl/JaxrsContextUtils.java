@@ -21,15 +21,13 @@ import io.esastack.restlight.jaxrs.impl.container.PostMatchContainerRequestConte
 import io.esastack.restlight.jaxrs.impl.container.PreMatchContainerRequestContext;
 import io.esastack.restlight.jaxrs.impl.core.HttpRequestHeaders;
 import io.esastack.restlight.jaxrs.impl.core.RequestImpl;
-import io.esastack.restlight.jaxrs.impl.core.ResponseImpl;
 import io.esastack.restlight.jaxrs.impl.core.UriInfoImpl;
 import io.esastack.restlight.server.context.FilterContext;
 import io.esastack.restlight.server.context.RequestContext;
+import io.esastack.restlight.server.core.HttpRequest;
 import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.Request;
-import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.SecurityContext;
-import jakarta.ws.rs.ext.RuntimeDelegate;
 
 import java.net.URI;
 import java.util.concurrent.CompletableFuture;
@@ -50,7 +48,7 @@ public final class JaxrsContextUtils {
     public static Request getRequest(RequestContext context) {
         Request request = context.attrs().attr(REQUEST_KEY).get();
         if (request == null) {
-            request = new RequestImpl(context.request(), context.response());
+            request = new RequestImpl(context);
             context.attrs().attr(REQUEST_KEY).set(request);
         }
         return request;
@@ -87,24 +85,6 @@ public final class JaxrsContextUtils {
         return ctx;
     }
 
-    public static ResponseImpl getResponse(RequestContext context) {
-        final Response response;
-        if (context.response().entity() instanceof Response) {
-            response = (Response) context.response().entity();
-        } else {
-            response = null;
-        }
-        ResponseImpl rsp;
-        if (response == null) {
-            rsp = (ResponseImpl) RuntimeDelegate.getInstance().createResponseBuilder().build();
-        } else if (response instanceof ResponseImpl) {
-            rsp = (ResponseImpl) response;
-        } else {
-            rsp = (ResponseImpl) Response.fromResponse(response).build();
-        }
-        return rsp;
-    }
-
     public static SecurityContext getSecurityContext(RequestContext context) {
         return context.attrs().attr(SECURITY_CONTEXT_KEY).get();
     }
@@ -122,12 +102,14 @@ public final class JaxrsContextUtils {
     }
 
     public static URI extractURI(RequestContext context) {
-        String sb = context.request().scheme() +
-                "://" +
-                context.request().localAddr() +
-                ":" +
-                context.request().localPort();
-        return URI.create(sb);
+        HttpRequest request = context.request();
+        StringBuilder sb = new StringBuilder();
+        sb.append(request.scheme())
+                .append("://")
+                .append(request.localAddr())
+                .append(":")
+                .append(request.localPort());
+        return URI.create(sb.toString());
     }
 
     private JaxrsContextUtils() {

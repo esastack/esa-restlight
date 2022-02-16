@@ -16,9 +16,7 @@
 package io.esastack.restlight.jaxrs.impl.core;
 
 import esa.commons.Checks;
-import esa.commons.DateUtils;
 import io.esastack.commons.net.http.HttpHeaderNames;
-import io.esastack.commons.net.http.HttpStatus;
 import io.esastack.commons.net.http.MediaTypeUtil;
 import io.esastack.restlight.core.util.HttpHeaderUtils;
 import io.esastack.restlight.jaxrs.util.MediaTypeUtils;
@@ -31,14 +29,14 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.MultivaluedMap;
 import jakarta.ws.rs.core.NewCookie;
 import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.ext.RuntimeDelegate;
 
 import java.lang.annotation.Annotation;
 import java.net.URI;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -56,9 +54,8 @@ public class ResponseImpl extends Response {
     private final ResponseBuilderImpl builder;
 
     private volatile int closed = 0;
-    private LinkValues linkValues;
 
-    public ResponseImpl(ResponseBuilderImpl builder) {
+    ResponseImpl(ResponseBuilderImpl builder) {
         Checks.checkNotNull(builder, "builder");
         this.builder = builder;
     }
@@ -72,10 +69,6 @@ public class ResponseImpl extends Response {
         checkClosed();
         builder.entity(entity, annotations);
         builder.headers().putSingle(HttpHeaderNames.CONTENT_TYPE, mediaType);
-    }
-
-    public Annotation[] getEntityAnnotations() {
-        return builder.annotations();
     }
 
     public Annotation[] getAnnotations() {
@@ -97,8 +90,7 @@ public class ResponseImpl extends Response {
 
     @Override
     public StatusType getStatusInfo() {
-        StatusType type = Status.fromStatusCode(getStatus());
-        return type != null ? type : new StatusTypeImpl(getStatus());
+        return Status.fromStatusCode(getStatus());
     }
 
     @Override
@@ -148,6 +140,8 @@ public class ResponseImpl extends Response {
         Object mediaType = builder.headers().getFirst(HttpHeaders.CONTENT_TYPE);
         if (mediaType == null || mediaType instanceof MediaType) {
             return (MediaType) mediaType;
+        } else if (mediaType instanceof io.esastack.commons.net.http.MediaType) {
+            return MediaTypeUtils.convert((io.esastack.commons.net.http.MediaType) mediaType);
         } else {
             return MediaTypeUtils.convert(MediaTypeUtil.parseMediaType(mediaType.toString()));
         }
@@ -180,26 +174,30 @@ public class ResponseImpl extends Response {
         return length;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public Set<String> getAllowedMethods() {
-        Object methods = builder.headers().getFirst(HttpHeaders.ALLOW);
+        List<Object> methods = builder.headers().get(HttpHeaders.ALLOW);
         if (methods == null) {
             return Collections.emptySet();
         } else {
-            return (Set<String>) methods;
+            Set<String> methodSet = new HashSet<>();
+            for (Object obj : methods) {
+                methodSet.add(obj.toString());
+            }
+            return methodSet;
         }
     }
 
     @Override
     public Map<String, NewCookie> getCookies() {
         List<Object> cookieValues = builder.headers().get(HttpHeaders.SET_COOKIE);
-        if (cookieValues == null || cookieValues.isEmpty()) {
+        if (cookieValues == null) {
             return Collections.emptyMap();
         } else {
             Map<String, NewCookie> cookies = new HashMap<>();
             for (Object item : cookieValues) {
-                NewCookie newCookie = NewCookie.valueOf(item.toString());
+                NewCookie newCookie = RuntimeDelegate.getInstance().createHeaderDelegate(NewCookie.class)
+                        .fromString(item.toString());
                 cookies.put(newCookie.getName(), newCookie);
             }
 
@@ -213,7 +211,7 @@ public class ResponseImpl extends Response {
         if (tag == null || tag instanceof EntityTag) {
             return (EntityTag) tag;
         } else {
-            return EntityTag.valueOf(tag.toString());
+            return RuntimeDelegate.getInstance().createHeaderDelegate(EntityTag.class).fromString(tag.toString());
         }
     }
 
@@ -223,7 +221,7 @@ public class ResponseImpl extends Response {
         if (data == null || data instanceof Date) {
             return (Date) data;
         }
-        return DateUtils.toDate(data.toString(), DateUtils.yyyyMMddHHmmss);
+        return io.esastack.restlight.server.util.DateUtils.parseByCache(data.toString());
     }
 
     @Override
@@ -232,7 +230,7 @@ public class ResponseImpl extends Response {
         if (data == null || data instanceof Date) {
             return (Date) data;
         } else {
-            return DateUtils.toDate(data.toString(), DateUtils.yyyyMMddHHmmss);
+            return io.esastack.restlight.server.util.DateUtils.parseByCache(data.toString());
         }
     }
 
@@ -248,7 +246,20 @@ public class ResponseImpl extends Response {
 
     @Override
     public Set<Link> getLinks() {
-        return getLinkValues().links;
+        Set<Link> links = new HashSet<>();
+        List<Object> ls = builder.headers().get(HttpHeaders.LINK);
+        if (ls != null) {
+            for (Object item : ls) {
+                if (item instanceof Link) {
+                    links.add((Link) item);
+                } else if (item instanceof String) {
+                    links.add(Link.valueOf((String) item));
+                } else {
+                    LoggerUtils.logger().warn("Unrecognized header value of 'link': [{}]", item);
+                }
+            }
+        }
+        return links;
     }
 
     @Override
@@ -258,7 +269,15 @@ public class ResponseImpl extends Response {
 
     @Override
     public Link getLink(String relation) {
-        return getLinkValues().relToLinks.get(relation);
+        if (relation == null) {
+            return null;
+        }
+        for (Link link : getLinks()) {
+            if (link.getRel().equals(relation)) {
+                return link;
+            }
+        }
+        return null;
     }
 
     @Override
@@ -285,68 +304,6 @@ public class ResponseImpl extends Response {
     private void checkClosed() {
         if (CLOSED_STATE.get(this) == 1) {
             throw new IllegalStateException("Response has been closed!");
-        }
-    }
-
-    private LinkValues getLinkValues() {
-        if (this.linkValues != null) {
-            return this.linkValues;
-        }
-        final Set<Link> links = new LinkedHashSet<>();
-        List<Object> ls = builder.headers().get(HttpHeaders.LINK);
-        for (Object obj : ls) {
-            if (obj instanceof Link) {
-                links.add((Link) obj);
-            } else if (obj instanceof String) {
-                for (String link : ((String) obj).split(",")) {
-                    links.add(Link.valueOf(link));
-                }
-            } else {
-                LoggerUtils.logger().warn("Unrecognized header value of 'link': [{}]", obj);
-            }
-        }
-        final Map<String, Link> relToLinks = new LinkedHashMap<>(links.size());
-        for (Link link : links) {
-            for (String rel : link.getRels()) {
-                relToLinks.put(rel, link);
-            }
-        }
-        this.linkValues = new LinkValues(links, relToLinks);
-        return this.linkValues;
-    }
-
-    private static class StatusTypeImpl implements StatusType {
-
-        private final int status;
-
-        private StatusTypeImpl(int status) {
-            this.status = status;
-        }
-
-        @Override
-        public int getStatusCode() {
-            return status;
-        }
-
-        @Override
-        public Status.Family getFamily() {
-            return Status.Family.familyOf(status);
-        }
-
-        @Override
-        public String getReasonPhrase() {
-            return HttpStatus.valueOf(status).reasonPhrase();
-        }
-    }
-
-    private static class LinkValues {
-
-        private final Set<Link> links;
-        private final Map<String, Link> relToLinks;
-
-        private LinkValues(Set<Link> links, Map<String, Link> relToLinks) {
-            this.links = Collections.unmodifiableSet(links);
-            this.relToLinks = Collections.unmodifiableMap(relToLinks);
         }
     }
 

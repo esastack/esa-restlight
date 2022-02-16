@@ -89,10 +89,7 @@ public class ResponseBuilderImpl extends Response.ResponseBuilder {
 
     @Override
     public Response.ResponseBuilder status(int status, String reasonPhrase) {
-        if (status < 100 || status > 599) {
-            throw new IllegalArgumentException("illegal status: " + status + " (expected:[100, 600))");
-        }
-        this.status = Response.Status.fromStatusCode(status);
+        status(status);
         this.reasonPhrase = reasonPhrase;
         return this;
     }
@@ -120,7 +117,11 @@ public class ResponseBuilderImpl extends Response.ResponseBuilder {
             }
         }
 
-        return setHeader(HttpHeaders.ALLOW, methodsSet);
+        List<Object> methodList = null;
+        if (methodsSet != null) {
+            methodList = new LinkedList<>(methodsSet);
+        }
+        return addHeaders(HttpHeaders.ALLOW, methodList);
     }
 
     @Override
@@ -133,7 +134,11 @@ public class ResponseBuilderImpl extends Response.ResponseBuilder {
             methods.forEach(m -> methodsSet.add(m.toUpperCase()));
         }
 
-        return setHeader(HttpHeaders.ALLOW, methodsSet);
+        List<Object> methodList = null;
+        if (methodsSet != null) {
+            methodList = new LinkedList<>(methodsSet);
+        }
+        return addHeaders(HttpHeaders.ALLOW, methodList);
     }
 
     @Override
@@ -254,7 +259,7 @@ public class ResponseBuilderImpl extends Response.ResponseBuilder {
 
     @Override
     public Response.ResponseBuilder variants(List<Variant> variants) {
-        return addHeaders(HttpHeaders.VARY, variants);
+        return addHeaders(HttpHeaders.VARY, variants != null ? new LinkedList<>(variants) : null);
     }
 
     @Override
@@ -265,7 +270,7 @@ public class ResponseBuilderImpl extends Response.ResponseBuilder {
             Collections.addAll(linksList, links);
         }
 
-        return addHeaders(HttpHeaders.LINK, linksList);
+        return addHeaders(HttpHeaders.LINK, linksList != null ? new LinkedList<>(linksList) : null);
     }
 
     @Override
@@ -325,7 +330,7 @@ public class ResponseBuilderImpl extends Response.ResponseBuilder {
         return this;
     }
 
-    private Response.ResponseBuilder addHeaders(String name, List<?> values) {
+    private Response.ResponseBuilder addHeaders(String name, List<Object> values) {
         if (values == null) {
             this.headers.remove(name);
         } else {

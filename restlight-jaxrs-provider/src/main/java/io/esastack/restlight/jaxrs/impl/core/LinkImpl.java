@@ -59,7 +59,7 @@ public class LinkImpl extends Link {
     @Override
     public List<String> getRels() {
         final String rels = params.get(REL);
-        return StringUtils.isEmpty(rels) ? Collections.emptyList() : Arrays.asList(rels.split(" +"));
+        return StringUtils.isEmpty(rels) ? Collections.emptyList() : Arrays.asList(rels.split(" "));
     }
 
     @Override
@@ -86,13 +86,12 @@ public class LinkImpl extends Link {
             return false;
         }
         LinkImpl link = (LinkImpl) o;
-        return Objects.equals(uri, link.uri) && Objects.equals(params, link.params)
-                && Objects.equals(strVal, link.strVal);
+        return Objects.equals(uri, link.uri) && Objects.equals(params, link.params);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(uri, params, strVal);
+        return Objects.hash(uri, params);
     }
 
     @Override
@@ -102,16 +101,7 @@ public class LinkImpl extends Link {
         }
         RuntimeDelegate.HeaderDelegate<Link> delegate = RuntimeDelegate.getInstance()
                 .createHeaderDelegate(Link.class);
-        if (delegate != null) {
-            strVal = delegate.toString(this);
-        } else {
-            final StringBuilder sb = new StringBuilder("LinkImpl{");
-            sb.append("uri=").append(uri);
-            sb.append(", params=").append(params);
-            sb.append(", strVal='").append(strVal).append('\'');
-            sb.append('}');
-            strVal = sb.toString();
-        }
+        strVal = delegate.toString(this);
         return strVal;
     }
 }

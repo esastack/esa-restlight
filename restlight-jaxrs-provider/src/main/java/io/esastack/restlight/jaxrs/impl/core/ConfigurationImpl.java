@@ -155,12 +155,16 @@ public class ConfigurationImpl implements Configuration {
 
     @Override
     public Set<Class<?>> getClasses() {
-        return Collections.unmodifiableSet(resourcesClasses);
+        final Set<Class<?>> classes = new HashSet<>(resourcesClasses);
+        classes.addAll(providerClasses);
+        return Collections.unmodifiableSet(classes);
     }
 
     @Override
     public Set<Object> getInstances() {
-        return Collections.unmodifiableSet(resourcesInstances);
+        final Set<Object> instances = new HashSet<>(resourcesInstances);
+        instances.addAll(providerInstances);
+        return Collections.unmodifiableSet(instances);
     }
 
     public void setProperty(String name, Object value) {
@@ -181,7 +185,12 @@ public class ConfigurationImpl implements Configuration {
     }
 
     public void addEnabledFeature(Object feature) {
-        this.enabledFeatures.add(feature);
+        Class<?> target = ClassUtils.getUserType(feature);
+        if (Feature.class.isAssignableFrom(ClassUtils.getUserType(feature))) {
+            this.enabledFeatures.add(feature);
+        } else {
+            logger.error("Failed to register {} as Feature.", target);
+        }
     }
 
     public void addResourceClass(Class<?> clazz) {
@@ -191,9 +200,9 @@ public class ConfigurationImpl implements Configuration {
 
         if (JaxrsUtils.isRootResource(clazz)) {
             this.resourcesClasses.add(clazz);
-            return;
+        } else {
+            logger.error("Failed to register {} as Resource.", clazz);
         }
-        logger.error("Failed to register {} as Resource.", clazz);
     }
 
     public void addResourceInstance(Object instance) {
@@ -204,38 +213,50 @@ public class ConfigurationImpl implements Configuration {
 
         if (JaxrsUtils.isRootResource(clazz)) {
             this.resourcesInstances.add(instance);
+        } else {
+            logger.warn("Registering {}(unrecognized resource) is ignored.", clazz);
+        }
+    }
+
+    public void addProviderInstance(Object instance, Map<Class<?>, Integer> contracts) {
+        Class<?> target = ClassUtils.getUserType(instance);
+        if (checkState(target, true)) {
             return;
         }
-        logger.warn("Registering {}(unrecognized resource) is ignored.", clazz);
-    }
 
-    public boolean addProviderInstance(Object instance, Map<Class<?>, Integer> contracts) {
-        Class<?> clazz = ClassUtils.getUserType(instance);
-        if (checkState(clazz, true)) {
-            return false;
-        }
-
-        if (JaxrsUtils.isComponent(clazz)) {
+        Map<Class<?>, Integer> checked = checkContracts(target, contracts);
+        if (!checked.isEmpty()) {
             this.providerInstances.add(instance);
-            this.contracts.put(clazz, contracts);
-            return true;
+            this.contracts.put(target, checked);
+        } else {
+            logger.error("Failed to register {} as Provider.", target);
         }
-        logger.error("Failed to register {} as Provider.", clazz);
-        return false;
     }
 
-    public boolean addProviderClass(Class<?> clazz, Map<Class<?>, Integer> contracts) {
-        if (checkState(clazz, true)) {
-            return false;
+    public void addProviderClass(Class<?> target, Map<Class<?>, Integer> contracts) {
+        if (checkState(target, true)) {
+            return;
         }
 
-        if (JaxrsUtils.isComponent(clazz)) {
-            this.providerClasses.add(clazz);
-            this.contracts.put(clazz, contracts);
-            return true;
+        Map<Class<?>, Integer> checked = checkContracts(target, contracts);
+        if (!checked.isEmpty()) {
+            this.providerClasses.add(target);
+            this.contracts.put(target, checked);
+        } else {
+            logger.warn("Registering {}(unrecognized provider) is ignored.", target);
         }
-        logger.warn("Registering {}(unrecognized provider) is ignored.", clazz);
-        return false;
+    }
+
+    private Map<Class<?>, Integer> checkContracts(Class<?> target, Map<Class<?>, Integer> contracts) {
+        Map<Class<?>, Integer> checked = new HashMap<>();
+        for (Map.Entry<Class<?>, Integer> entry : contracts.entrySet()) {
+            if (!entry.getKey().isAssignableFrom(target)) {
+                logger.warn("Failed to register {} as {}", target, entry.getKey());
+            } else {
+                checked.put(entry.getKey(), entry.getValue());
+            }
+        }
+        return checked;
     }
 
     private boolean checkState(Class<?> clazz, boolean checkConstrain) {

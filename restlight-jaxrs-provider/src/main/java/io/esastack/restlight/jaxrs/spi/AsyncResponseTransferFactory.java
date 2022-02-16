@@ -16,6 +16,8 @@
 package io.esastack.restlight.jaxrs.spi;
 
 import esa.commons.annotation.Internal;
+import esa.commons.logging.Logger;
+import esa.commons.logging.LoggerFactory;
 import esa.commons.spi.Feature;
 import io.esastack.restlight.core.handler.FutureTransfer;
 import io.esastack.restlight.core.method.HandlerMethod;
@@ -38,8 +40,8 @@ public class AsyncResponseTransferFactory implements FutureTransferFactory {
     @Override
     public Optional<FutureTransfer> futureTransfer(HandlerMethod method) {
         for (MethodParam param : method.parameters()) {
-            if (param.hasAnnotation(Suspended.class) && param.type().equals(AsyncResponse.class)) {
-                return Optional.of(AsyncResponseTransfer.SINGLETON);
+            if (param.hasAnnotation(Suspended.class) && AsyncResponse.class.equals(param.type())) {
+                return Optional.of(new AsyncResponseTransfer(method));
             }
         }
         return Optional.empty();
@@ -52,9 +54,12 @@ public class AsyncResponseTransferFactory implements FutureTransferFactory {
 
     private static class AsyncResponseTransfer implements FutureTransfer {
 
-        private static final FutureTransfer SINGLETON = new AsyncResponseTransfer();
+        private static final Logger logger = LoggerFactory.getLogger(AsyncResponseTransfer.class);
 
-        private AsyncResponseTransfer() {
+        private final HandlerMethod method;
+
+        private AsyncResponseTransfer(HandlerMethod method) {
+            this.method = method;
         }
 
         @Override
@@ -63,6 +68,10 @@ public class AsyncResponseTransferFactory implements FutureTransferFactory {
             if (asyncResponse == null) {
                 return Futures.completedFuture(value);
             } else {
+                if (logger.isDebugEnabled()) {
+                    logger.debug("The return value of method[{}] is ignored due to @Suspended AsyncResponse" +
+                            " has taken effect.", method);
+                }
                 return asyncResponse;
             }
         }

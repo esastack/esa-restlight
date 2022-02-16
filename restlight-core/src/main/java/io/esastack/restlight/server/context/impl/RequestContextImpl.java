@@ -36,7 +36,7 @@ public class RequestContextImpl implements RequestContext {
         this(new AttributeMap(16), request, response);
     }
 
-    protected RequestContextImpl(Attributes attributes, HttpRequest request, HttpResponse response) {
+    public RequestContextImpl(Attributes attributes, HttpRequest request, HttpResponse response) {
         Checks.checkNotNull(attributes, "attributes");
         Checks.checkNotNull(request, "request");
         Checks.checkNotNull(response, "response");

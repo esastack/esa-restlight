@@ -13,15 +13,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements. See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership. The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License. You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 package io.esastack.restlight.jaxrs.impl.core;
 
 import esa.commons.Checks;
 import esa.commons.StringUtils;
+import esa.commons.logging.Logger;
+import esa.commons.logging.LoggerFactory;
 import io.esastack.restlight.core.handler.HandlerMapping;
 import io.esastack.restlight.core.spi.impl.RouteTracking;
 import io.esastack.restlight.server.context.RequestContext;
-import io.esastack.restlight.server.route.predicate.PatternsPredicate;
-import io.esastack.restlight.server.util.LoggerUtils;
+import io.esastack.restlight.server.util.PathVariableUtils;
 import jakarta.ws.rs.core.MultivaluedHashMap;
 import jakarta.ws.rs.core.MultivaluedMap;
 import jakarta.ws.rs.core.PathSegment;
@@ -39,7 +58,13 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * The {@link #relativize(URI, URI)} copies from org.apache.cxf.jaxrs.utils.HttpUtils which is
+ * created by Apache CXF Copyright 2006-2014 The Apache Software Foundation.
+ */
 public class UriInfoImpl implements UriInfo {
+
+    private static final Logger logger = LoggerFactory.getLogger(UriInfoImpl.class);
 
     private final RequestContext context;
     private URI baseUri;
@@ -91,22 +116,12 @@ public class UriInfoImpl implements UriInfo {
 
     @Override
     public UriBuilder getRequestUriBuilder() {
-        return RuntimeDelegate.getInstance().createUriBuilder().uri(getBaseUri());
+        return RuntimeDelegate.getInstance().createUriBuilder().uri(getRequestUri());
     }
 
     @Override
     public URI getAbsolutePath() {
-        String path = getPath();
-        if (!path.startsWith("/")) {
-            path = "/" + path;
-        }
-        /*
-         * eg:
-         * ("http://127.0.0.1:8080/abc/def").resolve("mn/xyz/def") to "http://127.0.0.1:8080/abc/mn/xyz/def"
-         * ("http://127.0.0.1:8080/abc/def/").resolve("mn/xyz/def") to "http://127.0.0.1:8080/abc/def/mn/xyz/def"
-         * ("http://127.0.0.1:8080/abc/def/").resolve("/mn/xyz/def") to "http://127.0.0.1:8080/mn/xyz/def"
-         */
-        return baseUri.resolve(path);
+        return getBaseUri().resolve(getPath(false));
     }
 
     @Override
@@ -131,7 +146,7 @@ public class UriInfoImpl implements UriInfo {
 
     @Override
     public MultivaluedMap<String, String> getPathParameters(boolean decode) {
-        Map<String, String> variables = context.attrs().attr(PatternsPredicate.TEMPLATE_VARIABLES).get();
+        Map<String, String> variables = PathVariableUtils.getPathVariables(context);
         if (variables == null || variables.isEmpty()) {
             return new UnmodifiableMultivaluedMap<>(new MultivaluedHashMap<>());
         } else {
@@ -151,8 +166,20 @@ public class UriInfoImpl implements UriInfo {
     @Override
     public MultivaluedMap<String, String> getQueryParameters(boolean decode) {
         MultivaluedMap<String, String> parameters = new MultivaluedHashMap<>();
-        parameters.putAll(context.request().paramsMap());
-        return parameters;
+        if (StringUtils.isEmpty(context.request().query())) {
+            return new UnmodifiableMultivaluedMap<>(parameters);
+        }
+        for (String item : context.request().query().split("&")) {
+            if (StringUtils.isEmpty(item)) {
+                continue;
+            }
+            String[] pairs = item.split("=");
+            if (pairs.length != 2) {
+                throw new IllegalStateException("Failed to split query pair from [" + item + "]");
+            }
+            parameters.add(pairs[0], pairs[1]);
+        }
+        return new UnmodifiableMultivaluedMap<>(parameters);
     }
 
     @Override
@@ -171,6 +198,7 @@ public class UriInfoImpl implements UriInfo {
         for (HandlerMapping mapping : mappings) {
             uris.add(mapping.mapping().toString());
         }
+        Collections.reverse(uris);
         return Collections.unmodifiableList(uris);
     }
 
@@ -185,6 +213,7 @@ public class UriInfoImpl implements UriInfo {
         for (HandlerMapping mapping : mappings) {
             resources.add(new MatchedResource(mapping.methodInfo(), mapping.bean().orElse(null)));
         }
+        Collections.reverse(resources);
         return Collections.unmodifiableList(resources);
     }
 
@@ -199,8 +228,7 @@ public class UriInfoImpl implements UriInfo {
 
     @Override
     public URI relativize(URI uri) {
-        URI resolved = resolve(uri);
-        return relativize(getRequestUri(), resolved);
+        return relativize(getRequestUri(), resolve(uri));
     }
 
     public void baseUri(URI baseUri) {
@@ -211,37 +239,55 @@ public class UriInfoImpl implements UriInfo {
         try {
             value = URLDecoder.decode(value, StandardCharsets.UTF_8.name());
         } catch (UnsupportedEncodingException ex) {
-            LoggerUtils.logger().warn("Failed to decode {} by UTF-8", value);
+            logger.warn("Failed to decode {} by UTF-8", value);
         }
-
         return value;
     }
 
-    private static URI relativize(URI from, URI to) {
-        if (!from.isAbsolute() || !to.isAbsolute()) {
-            return to;
+    static URI relativize(URI base, URI uri) {
+        // quick bail-out
+        if (!(base.isAbsolute()) || !(uri.isAbsolute())) {
+            return uri;
+        }
+        if (base.isOpaque() || uri.isOpaque()) {
+            // Unlikely case of an URN which can't deal with
+            // relative path, such as urn:isbn:0451450523
+            return uri;
+        }
+        // Check for common root
+        URI root = base.resolve("/");
+        if (!(root.equals(uri.resolve("/")))) {
+            // Different protocol/auth/host/port, return as is
+            return uri;
         }
 
-        if (from.isOpaque() || to.isOpaque()) {
-            return to;
+        // Ignore hostname bits for the following , but add "/" in the beginning
+        // so that in worst case we'll still return "/fred" rather than
+        // "http://example.com/fred".
+        URI baseRel = URI.create("/").resolve(root.relativize(base));
+        URI uriRel = URI.create("/").resolve(root.relativize(uri));
+
+        // Is it same path?
+        if (baseRel.getPath().equals(uriRel.getPath())) {
+            return baseRel.relativize(uriRel);
         }
 
-        // from is absolute and to is absolute
-        if (isEquals(from.getScheme(), to.getScheme())
-                && isEquals(from.getRawAuthority(), to.getRawAuthority())) {
-            String resolved = to.toString().replace(
-                    to.getScheme() + "://" + to.getRawAuthority(), "");
-            to = URI.create(resolved);
+        // Direct siblings? (ie. in same folder)
+        URI commonBase = baseRel.resolve("./");
+        if (commonBase.equals(uriRel.resolve("./"))) {
+            return commonBase.relativize(uriRel);
         }
 
-        return from.relativize(to);
-    }
-
-    private static boolean isEquals(String from, String to) {
-        if (from == null) {
-            return to == null;
+        // No, then just keep climbing up until we find a common base.
+        URI relative = URI.create("");
+        while (!(uriRel.getPath().startsWith(commonBase.getPath())) && !(commonBase.getPath().equals("/"))) {
+            commonBase = commonBase.resolve("../");
+            relative = relative.resolve("../");
         }
 
-        return from.equals(to);
+        // Now we can use URI.relativize
+        URI relToCommon = commonBase.relativize(uriRel);
+        // and prepend the needed ../
+        return relative.resolve(relToCommon);
     }
 }

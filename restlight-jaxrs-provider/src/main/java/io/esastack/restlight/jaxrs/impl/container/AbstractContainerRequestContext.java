@@ -34,6 +34,7 @@ import jakarta.ws.rs.core.UriInfo;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -64,8 +65,12 @@ public abstract class AbstractContainerRequestContext implements ContainerReques
     @Override
     public Collection<String> getPropertyNames() {
         List<String> names = new ArrayList<>(context.attrs().size());
-        context.attrs().forEach((name, value) -> names.add(name.name()));
-        return names;
+        context.attrs().forEach((name, value) -> {
+            if (value.get() != null) {
+                names.add(name.name());
+            }
+        });
+        return Collections.unmodifiableList(names);
     }
 
     @Override

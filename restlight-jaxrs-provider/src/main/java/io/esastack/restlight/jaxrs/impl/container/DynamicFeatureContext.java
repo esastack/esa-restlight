@@ -30,6 +30,10 @@ import jakarta.ws.rs.core.FeatureContext;
 import jakarta.ws.rs.ext.ReaderInterceptor;
 import jakarta.ws.rs.ext.WriterInterceptor;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 public class DynamicFeatureContext implements FeatureContext {
@@ -61,108 +65,154 @@ public class DynamicFeatureContext implements FeatureContext {
 
     @Override
     public FeatureContext register(Class<?> componentClass) {
-        if (isRegistrable(componentClass, null)) {
-            configurable.register(componentClass);
+        if (componentClass == null) {
+            return this;
+        }
+        Map<Class<?>, Integer> contracts = checkContracts(componentClass,
+                JaxrsUtils.getComponents(componentClass).toArray(new Class[0]), JaxrsUtils.getOrder(componentClass));
+        if (!contracts.isEmpty()) {
+            configurable.register(componentClass, contracts);
         }
         return this;
     }
 
     @Override
     public FeatureContext register(Class<?> componentClass, int priority) {
-        if (isRegistrable(componentClass, null)) {
-            configurable.register(componentClass, priority);
+        if (componentClass == null) {
+            return this;
+        }
+        Map<Class<?>, Integer> contracts = checkContracts(componentClass,
+                JaxrsUtils.getComponents(componentClass).toArray(new Class[0]), priority);
+        if (!contracts.isEmpty()) {
+            configurable.register(componentClass, contracts);
         }
         return this;
     }
 
     @Override
     public FeatureContext register(Class<?> componentClass, Class<?>... contracts) {
-        if (isRegistrable(componentClass, contracts)) {
-            configurable.register(componentClass, contracts);
+        if (componentClass == null || contracts == null) {
+            return this;
+        }
+        Map<Class<?>, Integer> contracts0 = checkContracts(componentClass, contracts,
+                JaxrsUtils.getOrder(componentClass));
+        if (!contracts0.isEmpty()) {
+            configurable.register(componentClass, contracts0);
         }
         return this;
     }
 
     @Override
     public FeatureContext register(Class<?> componentClass, Map<Class<?>, Integer> contracts) {
-        if (isRegistrable(componentClass, contracts.keySet().toArray(new Class<?>[0]))) {
-            configurable.register(componentClass, contracts);
+        if (componentClass == null || contracts == null) {
+            return this;
+        }
+        Map<Class<?>, Integer> contracts0 = checkContracts(componentClass, contracts);
+        if (!contracts0.isEmpty()) {
+            configurable.register(componentClass, contracts0);
         }
         return this;
     }
 
     @Override
     public FeatureContext register(Object component) {
-        if (isRegistrable(ClassUtils.getUserType(component), null)) {
-            configurable.register(component);
+        if (component == null) {
+            return this;
+        }
+        final Class<?> userType = ClassUtils.getUserType(component);
+        Map<Class<?>, Integer> contracts = checkContracts(userType,
+                JaxrsUtils.getComponents(userType).toArray(new Class[0]), JaxrsUtils.getOrder(userType));
+        if (!contracts.isEmpty()) {
+            configurable.register(component, contracts);
         }
         return this;
     }
 
     @Override
     public FeatureContext register(Object component, int priority) {
-        if (isRegistrable(ClassUtils.getUserType(component), null)) {
-            configurable.register(component, priority);
+        if (component == null) {
+            return this;
+        }
+        final Class<?> userType = ClassUtils.getUserType(component);
+        Map<Class<?>, Integer> contracts = checkContracts(userType,
+                JaxrsUtils.getComponents(userType).toArray(new Class[0]), priority);
+        if (!contracts.isEmpty()) {
+            configurable.register(component, contracts);
         }
         return this;
     }
 
     @Override
     public FeatureContext register(Object component, Class<?>... contracts) {
-        if (isRegistrable(ClassUtils.getUserType(component), contracts)) {
-            configurable.register(component, contracts);
+        if (component == null || contracts == null) {
+            return this;
+        }
+        Class<?> userType = ClassUtils.getUserType(component);
+        Map<Class<?>, Integer> contracts0 = checkContracts(userType, contracts, JaxrsUtils.getOrder(userType));
+        if (!contracts0.isEmpty()) {
+            configurable.register(component, contracts0);
         }
         return this;
     }
 
     @Override
     public FeatureContext register(Object component, Map<Class<?>, Integer> contracts) {
-        if (isRegistrable(ClassUtils.getUserType(component), contracts.keySet().toArray(new Class<?>[0]))) {
-            configurable.register(component, contracts);
+        if (component == null || contracts == null) {
+            return this;
+        }
+        Class<?> userType = ClassUtils.getUserType(component);
+        Map<Class<?>, Integer> contracts0 = checkContracts(userType, contracts);
+        if (!contracts0.isEmpty()) {
+            configurable.register(component, contracts0);
         }
         return this;
     }
 
-    private boolean isRegistrable(Class<?> target, Class<?>[] contracts) {
-        if (contracts == null || contracts.length == 0) {
-            return isRegistrableType(target);
+    private Map<Class<?>, Integer> checkContracts(Class<?> target, Map<Class<?>, Integer> contracts) {
+        if (contracts == null || contracts.size() == 0) {
+            return Collections.emptyMap();
         }
 
+        Map<Class<?>, Integer> checked = checkContracts(target, contracts.keySet().toArray(new Class[0]),
+                JaxrsUtils.getOrder(target));
+
+        List<Class<?>> removable = new LinkedList<>();
+        contracts.keySet().forEach(key -> {
+            if (!checked.containsKey(key)) {
+                removable.add(key);
+            }
+        });
+
+        removable.forEach(contracts::remove);
+        return contracts;
+    }
+
+    private Map<Class<?>, Integer> checkContracts(Class<?> target, Class<?>[] contracts, int priority) {
+        if (contracts == null || contracts.length == 0) {
+            return Collections.emptyMap();
+        }
+
+        Map<Class<?>, Integer> checked = new HashMap<>(contracts.length);
         for (Class<?> contract : contracts) {
             if (ContainerResponseFilter.class.equals(contract)
                     || ReaderInterceptor.class.equals(contract)
                     || WriterInterceptor.class.equals(contract)) {
+                checked.put(contract, priority);
                 continue;
             }
             if (ContainerRequestFilter.class.equals(contract)) {
                 if (JaxrsUtils.isPreMatched(target)) {
                     logger.warn("Registering {} as {} in DynamicFeature({}) is unsupported, please remove" +
-                            " @PreMatching of it.", target, contract, featureType);
+                            " @PreMatching on it.", target, contract, featureType);
                 } else {
-                    continue;
+                    checked.put(contract, priority);
                 }
+                continue;
             }
             logger.warn("Registering {} as {} in DynamicFeature({}) is unsupported.",
                     target, contract, featureType);
         }
-        return true;
+        return checked;
     }
 
-    private boolean isRegistrableType(Class<?> target) {
-        if (ContainerRequestFilter.class.isAssignableFrom(target)) {
-            if (JaxrsUtils.isPreMatched(target)) {
-                logger.warn("Registering {} as ContainerRequestFilter in DynamicFeature({}) is unsupported,"
-                        + " please remove @PreMatching on it.", target, featureType);
-                return false;
-            } else {
-                return true;
-            }
-        } else if (ContainerResponseFilter.class.isAssignableFrom(target)) {
-            return true;
-        } else if (ReaderInterceptor.class.isAssignableFrom(target)) {
-            return true;
-        } else {
-            return WriterInterceptor.class.isAssignableFrom(target);
-        }
-    }
 }
