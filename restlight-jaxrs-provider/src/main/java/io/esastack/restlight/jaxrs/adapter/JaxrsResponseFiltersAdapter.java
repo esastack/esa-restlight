@@ -34,6 +34,8 @@ import io.esastack.restlight.server.handler.FilterChain;
 import io.esastack.restlight.server.util.Futures;
 import jakarta.ws.rs.container.ContainerRequestContext;
 import jakarta.ws.rs.container.ContainerResponseFilter;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.ext.RuntimeDelegate;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
@@ -73,7 +75,7 @@ public class JaxrsResponseFiltersAdapter implements Filter {
         if (!isSuccess(context) || filters == null || filters.length == 0) {
             return Futures.completedFuture();
         }
-        ResponseImpl rsp = JaxrsContextUtils.getResponse(context);
+        ResponseImpl rsp = getResponse(context);
         RuntimeDelegateUtils.addMetadataToJakarta(context.response(), rsp);
         final ContainerRequestContext reqCtx = new ResponseContainerContext(JaxrsContextUtils
                 .getRequestContext(context));
@@ -93,6 +95,24 @@ public class JaxrsResponseFiltersAdapter implements Filter {
 
     private boolean isSuccess(RequestContext context) {
         return context.response().status() < 400;
+    }
+
+    private static ResponseImpl getResponse(RequestContext context) {
+        final Response response;
+        if (context.response().entity() instanceof Response) {
+            response = (Response) context.response().entity();
+        } else {
+            response = null;
+        }
+        ResponseImpl rsp;
+        if (response == null) {
+            rsp = (ResponseImpl) RuntimeDelegate.getInstance().createResponseBuilder().build();
+        } else if (response instanceof ResponseImpl) {
+            rsp = (ResponseImpl) response;
+        } else {
+            rsp = (ResponseImpl) Response.fromResponse(response).build();
+        }
+        return rsp;
     }
 
     static class ContainerResponseFilterBinder implements RouteFilter {

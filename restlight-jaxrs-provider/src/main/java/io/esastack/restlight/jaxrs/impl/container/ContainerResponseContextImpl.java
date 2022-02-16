@@ -179,7 +179,7 @@ public class ContainerResponseContextImpl implements ContainerResponseContext {
 
     @Override
     public Annotation[] getEntityAnnotations() {
-        return response.getEntityAnnotations();
+        return response.getAnnotations();
     }
 
     @Override

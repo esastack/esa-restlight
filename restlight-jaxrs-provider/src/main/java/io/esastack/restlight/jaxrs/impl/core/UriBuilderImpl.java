@@ -16,6 +16,7 @@
 package io.esastack.restlight.jaxrs.impl.core;
 
 import esa.commons.Checks;
+import esa.commons.ClassUtils;
 import esa.commons.StringUtils;
 import esa.commons.reflect.AnnotationUtils;
 import io.esastack.restlight.jaxrs.util.UriUtils;
@@ -131,14 +132,18 @@ public class UriBuilderImpl extends UriBuilder {
     @Override
     public UriBuilder schemeSpecificPart(String ssp) {
         Checks.checkArg(ssp != null, "ssp must not be null");
-        try {
-            if (scheme == null) {
-                scheme = "http";
-            }
-            return uri(new URI(scheme, ssp, fragment));
-        } catch (URISyntaxException ex) {
-            throw new IllegalArgumentException("Error occurred when parsing:[" + ssp + "] to URI", ex);
+        if (scheme == null) {
+            scheme = "http";
         }
+        StringBuilder sb = new StringBuilder(this.scheme);
+        if (!ssp.startsWith("://")) {
+            sb.append("://");
+        }
+        sb.append(ssp);
+        if (StringUtils.isNotEmpty(fragment)) {
+            sb.append("#").append(fragment);
+        }
+        return uri(URI.create(sb.toString()));
     }
 
     @Override
@@ -156,7 +161,7 @@ public class UriBuilderImpl extends UriBuilder {
 
     @Override
     public UriBuilder port(int port) {
-        Checks.checkArg(port < -1 || port > 65535, "illegal port: " + port);
+        Checks.checkArg(port > 0 && port <= 65535, "illegal port: " + port);
         this.port = port;
         return this;
     }
@@ -173,17 +178,21 @@ public class UriBuilderImpl extends UriBuilder {
     @Override
     public UriBuilder path(String path) {
         Checks.checkArg(path != null, "path must not be null");
-        if (this.path.endsWith("/")) {
-            if (path.startsWith("/")) {
-                this.path += path.substring(1);
-            } else {
-                this.path += path;
-            }
+        if (StringUtils.isEmpty(this.path)) {
+            this.path = path;
         } else {
-            if (path.startsWith("/")) {
-                this.path += path;
+            if (this.path.endsWith("/")) {
+                if (path.startsWith("/")) {
+                    this.path += path.substring(1);
+                } else {
+                    this.path += path;
+                }
             } else {
-                this.path += "/" + path;
+                if (path.startsWith("/")) {
+                    this.path += path;
+                } else {
+                    this.path += "/" + path;
+                }
             }
         }
         return this;
@@ -191,9 +200,7 @@ public class UriBuilderImpl extends UriBuilder {
 
     @Override
     public UriBuilder path(Class resource) {
-        if (resource == null) {
-            throw new IllegalArgumentException("resource must not be null");
-        }
+        Checks.checkArg(resource != null, "resource must not be null");
 
         Path path = AnnotationUtils.findAnnotation(resource, Path.class);
         if (path == null) {
@@ -210,7 +217,7 @@ public class UriBuilderImpl extends UriBuilder {
 
         List<Method> methods = selectMethods(resource, method);
         if (methods.size() != 1) {
-            throw new IllegalArgumentException("Has found " + methods.size() + " methods which" +
+            throw new IllegalArgumentException("Found " + methods.size() + " methods which" +
                     " named:[" + method + "] and annotated with @Path");
         }
 
@@ -235,10 +242,10 @@ public class UriBuilderImpl extends UriBuilder {
         }
 
         for (String segment : segments) {
-            if (segment == null) {
+            if (StringUtils.isEmpty(segment)) {
                 continue;
             }
-            path(UriUtils.encode(segment, true, false, false));
+            path(UriUtils.encode(segment));
         }
 
         return this;
@@ -247,11 +254,11 @@ public class UriBuilderImpl extends UriBuilder {
     @Override
     public UriBuilder replaceMatrix(String matrix) {
         matrix = checkNotNull(matrix);
-        if (StringUtils.isNotEmpty(matrix)) {
-            matrix = matrix.startsWith(";") ? matrix : ";" + matrix;
+        if (StringUtils.isNotEmpty(matrix) && !matrix.startsWith(";")) {
+            matrix = ";" + matrix;
         }
-
-        if (this.path == null) {
+        matrix = UriUtils.encode(matrix);
+        if (StringUtils.isEmpty(this.path)) {
             this.path = matrix;
         } else {
             int start = Math.max(0, path.lastIndexOf("/"));
@@ -269,7 +276,7 @@ public class UriBuilderImpl extends UriBuilder {
     @Override
     public UriBuilder matrixParam(String name, Object... values) {
         Checks.checkArg(name != null, "name must not be null");
-        Checks.checkArg(values != null, "values must not be nulls");
+        Checks.checkArg(values != null, "values must not be null");
 
         StringBuilder path = new StringBuilder(checkNotNull(this.path));
         for (Object value : values) {
@@ -277,7 +284,7 @@ public class UriBuilderImpl extends UriBuilder {
                 continue;
             }
 
-            path.append(";").append(name).append(";").append(value);
+            path.append(";").append(UriUtils.encode(name)).append("=").append(UriUtils.encode(value.toString()));
         }
         this.path = path.toString();
         return this;
@@ -296,7 +303,11 @@ public class UriBuilderImpl extends UriBuilder {
 
     @Override
     public UriBuilder replaceQuery(String query) {
-        this.query = query;
+        if (StringUtils.isEmpty(query)) {
+            this.query = null;
+        } else {
+            this.query = UriUtils.encode(query);
+        }
         return this;
     }
 
@@ -308,7 +319,9 @@ public class UriBuilderImpl extends UriBuilder {
         StringBuilder sb = new StringBuilder(checkNotNull(this.query));
         String prefix = StringUtils.isEmpty(this.query) ? "" : "&";
         for (Object value : values) {
-            sb.append(prefix).append(name).append("=").append(value);
+            sb.append(prefix).append(UriUtils.encode(name))
+                    .append("=")
+                    .append(UriUtils.encode(value.toString()));
             prefix = "&";
         }
 
@@ -320,7 +333,7 @@ public class UriBuilderImpl extends UriBuilder {
     public UriBuilder replaceQueryParam(String name, Object... values) {
         Checks.checkArg(name != null, "name must not be null");
 
-        if (values == null) {
+        if (values == null || values.length == 0) {
             this.query = null;
         } else {
             StringBuilder sb = new StringBuilder();
@@ -329,7 +342,7 @@ public class UriBuilderImpl extends UriBuilder {
                 if (value == null) {
                     continue;
                 }
-                sb.append(prefix).append(name).append("=").append(value);
+                sb.append(prefix).append(UriUtils.encode(name)).append("=").append(UriUtils.encode(value.toString()));
                 prefix = "&";
             }
             this.query = sb.toString();
@@ -340,7 +353,11 @@ public class UriBuilderImpl extends UriBuilder {
 
     @Override
     public UriBuilder fragment(String fragment) {
-        this.fragment = fragment;
+        if (StringUtils.isEmpty(fragment)) {
+            this.fragment = null;
+        } else {
+            this.fragment = UriUtils.encode(fragment);
+        }
         return this;
     }
 
@@ -370,22 +387,22 @@ public class UriBuilderImpl extends UriBuilder {
 
     @Override
     public UriBuilder resolveTemplates(Map<String, Object> templateValues) {
-        checkTemplate(templateValues);
+        checkTemplateMaps(templateValues);
         return resolveTemplates(templateValues, true,
-                false, true);
+                false, false);
     }
 
     @Override
     public UriBuilder resolveTemplates(Map<String, Object> templateValues, boolean encodeSlashInPath)
             throws IllegalArgumentException {
-        checkTemplate(templateValues);
+        checkTemplateMaps(templateValues);
         return resolveTemplates(templateValues, encodeSlashInPath,
-                false, true);
+                false, false);
     }
 
     @Override
     public UriBuilder resolveTemplatesFromEncoded(Map<String, Object> templateValues) {
-        checkTemplate(templateValues);
+        checkTemplateMaps(templateValues);
         return resolveTemplates(templateValues, true,
                 false, true);
     }
@@ -394,7 +411,6 @@ public class UriBuilderImpl extends UriBuilder {
     public URI buildFromMap(Map<String, ?> values) {
         checkEntryValues(values);
         resolveTemplates(values, true, true, false);
-        checkUnResolvedTemplate();
         return doBuild();
     }
 
@@ -403,7 +419,6 @@ public class UriBuilderImpl extends UriBuilder {
             UriBuilderException {
         checkEntryValues(values);
         resolveTemplates(values, encodeSlashInPath, true, false);
-        checkUnResolvedTemplate();
         return doBuild();
     }
 
@@ -411,7 +426,6 @@ public class UriBuilderImpl extends UriBuilder {
     public URI buildFromEncodedMap(Map<String, ?> values) throws IllegalArgumentException, UriBuilderException {
         checkEntryValues(values);
         resolveTemplates(values, true, false, true);
-        checkUnResolvedTemplate();
         return doBuild();
     }
 
@@ -419,7 +433,6 @@ public class UriBuilderImpl extends UriBuilder {
     public URI build(Object... values) throws IllegalArgumentException, UriBuilderException {
         checkValues(values);
         resolveTemplates(values, true, true, false);
-        checkUnResolvedTemplate();
         return doBuild();
     }
 
@@ -427,7 +440,6 @@ public class UriBuilderImpl extends UriBuilder {
     public URI build(Object[] values, boolean encodeSlashInPath) throws IllegalArgumentException, UriBuilderException {
         checkValues(values);
         resolveTemplates(values, encodeSlashInPath, true, false);
-        checkUnResolvedTemplate();
         return doBuild();
     }
 
@@ -435,7 +447,6 @@ public class UriBuilderImpl extends UriBuilder {
     public URI buildFromEncoded(Object... values) throws IllegalArgumentException, UriBuilderException {
         checkValues(values);
         resolveTemplates(values, true, false, true);
-        checkUnResolvedTemplate();
         return doBuild();
     }
 
@@ -460,7 +471,7 @@ public class UriBuilderImpl extends UriBuilder {
             sb.append(":").append(port);
         }
 
-        if (path != null) {
+        if (StringUtils.isNotEmpty(path)) {
             if (!path.startsWith("/")) {
                 sb.append("/");
             }
@@ -502,55 +513,34 @@ public class UriBuilderImpl extends UriBuilder {
         }
     }
 
-    private void checkUnResolvedTemplate() {
-        if (StringUtils.isEmpty(path)) {
-            return;
-        }
-        if (!path.contains("{")) {
-            return;
-        }
-
-        List<String> unResolvedTemplates = new LinkedList<>();
-        StringBuilder unresolved = null;
-        for (int i = 0; i < path.length(); i++) {
-            switch (path.charAt(i)) {
-                case '{':
-                    unresolved = new StringBuilder();
-                    break;
-                case '}':
-                    if (unresolved != null) {
-                        unResolvedTemplates.add(unresolved.toString());
-                    }
-                    break;
-                default:
-                    if (unresolved != null) {
-                        unresolved.append(path.charAt(i));
-                    }
-            }
-        }
-
-        throw new UriBuilderException("The URI templates: " + unResolvedTemplates + " haven't supplied value");
-    }
-
     private UriBuilder resolveTemplates(Map<String, ?> templateValues, boolean encodeSlashInPath,
                                         boolean encodePercentAnyway, boolean encodePercentCondition) {
-        if (StringUtils.isEmpty(path) || templateValues.isEmpty()) {
+        if (templateValues == null || templateValues.isEmpty()) {
             return this;
         }
 
-        return resolveTemplates0((template, index) -> templateValues.get(template), encodeSlashInPath,
-                encodePercentAnyway, encodePercentCondition);
+        this.userInfo = doResolveTemplate((template, index) -> templateValues.get(template), this.userInfo,
+                false, encodePercentAnyway, encodePercentCondition);
+        this.host = doResolveTemplate((template, index) -> templateValues.get(template), this.host,
+                false, encodePercentAnyway, encodePercentCondition);
+        this.path = doResolveTemplate((template, index) -> templateValues.get(template), this.path,
+                encodeSlashInPath, encodePercentAnyway, encodePercentCondition);
+        this.query = doResolveTemplate((template, index) -> templateValues.get(template), this.query,
+                false, encodePercentAnyway, encodePercentCondition);
+        this.fragment = doResolveTemplate((template, index) -> templateValues.get(template), this.fragment,
+                false, encodePercentAnyway, encodePercentCondition);
+
+        return this;
     }
 
     private void resolveTemplates(Object[] values, boolean encodeSlashInPath,
                                   boolean encodePercentAnyway, boolean encodePercentCondition) {
-        if (StringUtils.isEmpty(path) || values == null || values.length == 0) {
+        if (values == null || values.length == 0) {
             return;
         }
 
         final Map<String, String> templateValues = new HashMap<>();
-
-        resolveTemplates0((template, index) -> {
+        final BiFunction<String, Integer, ?> valueFunction = (template, index) -> {
             Object value = templateValues.get(template);
             if (value != null) {
                 return value;
@@ -559,23 +549,39 @@ public class UriBuilderImpl extends UriBuilder {
                 templateValues.put(template, value.toString());
                 return templateValues.get(template);
             }
-        }, encodeSlashInPath, encodePercentAnyway, encodePercentCondition);
+        };
+
+        this.userInfo = doResolveTemplate(valueFunction, this.userInfo,
+                false, encodePercentAnyway, encodePercentCondition);
+        this.host = doResolveTemplate(valueFunction, this.host,
+                false, encodePercentAnyway, encodePercentCondition);
+        this.path = doResolveTemplate(valueFunction, this.path,
+                encodeSlashInPath, encodePercentAnyway, encodePercentCondition);
+        this.query = doResolveTemplate(valueFunction, this.query,
+                false, encodePercentAnyway, encodePercentCondition);
+        this.fragment = doResolveTemplate(valueFunction, this.fragment,
+                false, encodePercentAnyway, encodePercentCondition);
     }
 
-    private UriBuilder resolveTemplates0(BiFunction<String, Integer, ?> valueFunction, boolean encodeSlashInPath,
-                                         boolean encodePercentAnyway, boolean encodePercentCondition) {
+    private static String doResolveTemplate(BiFunction<String, Integer, ?> valueFunction,
+                                            String target, boolean encodeSlashInPath,
+                                            boolean encodePercentAnyway, boolean encodePercentCondition) {
+        if (StringUtils.isEmpty(target)) {
+            return target;
+        }
         StringBuilder sb = new StringBuilder();
         int index = 0;
-        for (int i = 0; i < path.length(); i++) {
-            if (path.indexOf(i) == '{') {
-                for (int j = i; j < path.length(); j++) {
-                    if (path.indexOf(j) == '}') {
-                        String template = path.substring(i + 1, j);
+        for (int i = 0; i < target.length(); i++) {
+            if (target.charAt(i) == '{') {
+                for (int j = i; j < target.length(); j++) {
+                    if (target.charAt(j) == '}') {
+                        String template = target.substring(i + 1, j);
                         Object value = valueFunction.apply(template, index);
                         if (value == null) {
-                            sb.append(path, i + 1, j);
+                            sb.append(target, i, Math.min(target.length(), j + 1));
                         } else {
-                            sb.append(value);
+                            sb.append(UriUtils.encode(value.toString(), encodeSlashInPath,
+                                    encodePercentAnyway, encodePercentCondition));
                         }
                         i = j;
                         index++;
@@ -583,15 +589,14 @@ public class UriBuilderImpl extends UriBuilder {
                     }
                 }
             } else {
-                sb.append(path.indexOf(i));
+                sb.append(target.charAt(i));
             }
         }
 
-        this.path = UriUtils.encode(sb.toString(), encodeSlashInPath, encodePercentAnyway, encodePercentCondition);
-        return this;
+        return sb.toString();
     }
 
-    private static void checkTemplate(Map<String, ?> templateValues) {
+    private static void checkTemplateMaps(Map<String, ?> templateValues) {
         Checks.checkArg(templateValues != null, "templateValues must not be null");
         for (Map.Entry<String, ?> item : templateValues.entrySet()) {
             Checks.checkArg(item.getKey() != null, "null key in templateValues is illegal");
@@ -620,20 +625,13 @@ public class UriBuilderImpl extends UriBuilder {
     }
 
     private static String checkNotNull(String value) {
-        if (value == null) {
-            return "";
-        } else {
-            return value;
-        }
+        return value == null ? "" : value;
     }
 
     private static List<Method> selectMethods(Class<?> resource, String method) {
         List<Method> methods = new LinkedList<>();
-        for (Method m : resource.getMethods()) {
-            if (m.getName().equals(method) && annotatedWithPath.test(m)) {
-                methods.add(m);
-            }
-        }
+        ClassUtils.doWithUserDeclaredMethods(resource, methods::add,
+                m -> m.getName().equals(method) && annotatedWithPath.test(m));
         return methods;
     }
 }

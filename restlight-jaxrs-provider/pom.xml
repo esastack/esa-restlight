@@ -75,6 +75,19 @@
             <version>${javax.annotation.version}</version>
             <optional>true</optional>
         </dependency>
+
+        <dependency>
+            <groupId>jakarta.xml.bind</groupId>
+            <artifactId>jakarta.xml.bind-api</artifactId>
+            <version>${jaxrs-api.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-impl</artifactId>
+            <version>${jaxrs-api.version}</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
 </project>

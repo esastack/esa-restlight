@@ -106,6 +106,7 @@ public class AsyncResponseImpl implements AsyncResponse {
         }
         if (STATUS_UPDATER.compareAndSet(this, AsyncState.SUSPENDED.code, AsyncState.CANCELLED.code)) {
             doCancel(retryAfter);
+            return true;
         }
         return false;
     }
@@ -147,7 +148,15 @@ public class AsyncResponseImpl implements AsyncResponse {
                     if (!timeout.isCancelled()) {
                         TimeoutTask t = timeoutTask.get();
                         if (t != null && t.handler != null) {
-                            t.handler.handleTimeout(this);
+                            try {
+                                t.handler.handleTimeout(this);
+                                this.completeResponse(null);
+                            } catch (Throwable th) {
+                                if (!asyncResponse.isDone()) {
+                                    asyncResponse.completeExceptionally(th);
+                                }
+                            }
+
                             // clean the timeout task
                             timeoutTask.updateAndGet(pre -> new TimeoutTask(t.timeout, t.unit, t.handler, null));
                         }
@@ -199,6 +208,10 @@ public class AsyncResponseImpl implements AsyncResponse {
         throw UNSUPPORTED_REGISTRATION;
     }
 
+    TimeoutTask timeoutTask() {
+        return timeoutTask.get();
+    }
+
     private void doCancel(Object retryAfter) {
         handlerLock.lock();
         try {
@@ -218,7 +231,7 @@ public class AsyncResponseImpl implements AsyncResponse {
     }
 
     private void completeResponse(Object response) {
-        if (asyncResponse.isDone()) {
+        if (!asyncResponse.isDone()) {
             asyncResponse.complete(response);
         }
     }
@@ -238,12 +251,12 @@ public class AsyncResponseImpl implements AsyncResponse {
         }
     }
 
-    private static class TimeoutTask {
+    static class TimeoutTask {
 
-        private final long timeout;
-        private final TimeUnit unit;
-        private final TimeoutHandler handler;
-        private final Timeout task;
+        final long timeout;
+        final TimeUnit unit;
+        final TimeoutHandler handler;
+        final Timeout task;
 
         private TimeoutTask(long timeout, TimeUnit unit, TimeoutHandler handler, Timeout task) {
             this.timeout = timeout;

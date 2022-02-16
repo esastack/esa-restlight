@@ -16,7 +16,6 @@
 package io.esastack.restlight.jaxrs.impl.core;
 
 import esa.commons.Checks;
-import esa.commons.DateUtils;
 import esa.commons.StringUtils;
 import io.esastack.commons.net.http.HttpHeaderNames;
 import io.esastack.commons.net.http.HttpMethod;
@@ -24,12 +23,14 @@ import io.esastack.commons.net.http.MediaType;
 import io.esastack.commons.net.http.MediaTypeUtil;
 import io.esastack.restlight.core.util.HttpHeaderUtils;
 import io.esastack.restlight.jaxrs.util.MediaTypeUtils;
+import io.esastack.restlight.server.context.RequestContext;
 import io.esastack.restlight.server.core.HttpRequest;
 import io.esastack.restlight.server.core.HttpResponse;
 import jakarta.ws.rs.core.EntityTag;
 import jakarta.ws.rs.core.Request;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Variant;
+import jakarta.ws.rs.ext.RuntimeDelegate;
 
 import java.util.Arrays;
 import java.util.Comparator;
@@ -52,11 +53,10 @@ public class RequestImpl implements Request {
 
     private String varyHeader;
 
-    public RequestImpl(HttpRequest request, HttpResponse response) {
-        Checks.checkNotNull(request, "request");
-        Checks.checkNotNull(response, "response");
-        this.request = request;
-        this.response = response;
+    public RequestImpl(RequestContext context) {
+        Checks.checkNotNull(context, "context");
+        this.request = context.request();
+        this.response = context.response();
     }
 
     @Override
@@ -186,18 +186,24 @@ public class RequestImpl implements Request {
 
     private static List<EntityTag> toETags(List<String> eTags) {
         final List<EntityTag> tags = new LinkedList<>();
+
+        RuntimeDelegate.HeaderDelegate<EntityTag> delegate = RuntimeDelegate.getInstance()
+                .createHeaderDelegate(EntityTag.class);
+        if (delegate == null) {
+            throw new IllegalStateException("Failed to get HeaderDelegate to resolve EntityTag.");
+        }
         for (String eTag : eTags) {
             Arrays.stream(eTag.split(",")).forEach(
-                    (item) -> tags.add(EntityTag.valueOf(StringUtils.trim(item))));
+                    (item) -> tags.add(delegate.fromString(StringUtils.trim(item))));
         }
 
         return tags;
     }
 
     private static Response.ResponseBuilder ifUnmodifiedSince(String strDate, Date lastModified) {
-        final Date date = DateUtils.toDate(strDate, DateUtils.yyyyMMddHHmmss);
+        final Date date = io.esastack.restlight.server.util.DateUtils.parseByCache(strDate);
 
-        if (date.before(lastModified)) {
+        if (!date.before(lastModified)) {
             return null;
         }
 
@@ -205,7 +211,7 @@ public class RequestImpl implements Request {
     }
 
     private static Response.ResponseBuilder ifModifiedSince(String strDate, Date lastModified) {
-        final Date date = DateUtils.toDate(strDate, DateUtils.yyyyMMddHHmmss);
+        final Date date = io.esastack.restlight.server.util.DateUtils.parseByCache(strDate);
 
         if (!date.before(lastModified)) {
             return Response.notModified();
@@ -239,7 +245,7 @@ public class RequestImpl implements Request {
         }
         if (acceptLanguage) {
             if (!emptyBuilder) {
-                builder.append(", ");
+                builder.append(",");
             }
             builder.append(HttpHeaderNames.ACCEPT_LANGUAGE);
             emptyBuilder = false;
@@ -247,49 +253,12 @@ public class RequestImpl implements Request {
 
         if (acceptEncoding) {
             if (!emptyBuilder) {
-                builder.append(", ");
+                builder.append(",");
             }
             builder.append(HttpHeaderNames.ACCEPT_ENCODING);
         }
 
         return builder.toString();
-    }
-
-    /**
-     * This {@link VariantMatcher} is designed to match {@link Variant}s.
-     */
-    private static class VariantMatcher {
-
-        private static final VariantMatcher INSTANCE = new VariantMatcher();
-
-        /**
-         * Selects a {@link Variant} which is best match the {@code request} from the given {@code variants}.
-         *
-         * @param request  request
-         * @param variants variants
-         * @return variant
-         */
-        private Variant match(HttpRequest request, List<Variant> variants) {
-            List<String> acceptEncodings = HttpHeaderUtils.getAcceptEncodings(request.headers());
-            List<Locale> acceptLanguages = HttpHeaderUtils.getAcceptLanguages(request.headers());
-            List<MediaType> accepts = request.accepts();
-
-            List<Variant> matched = new LinkedList<>();
-            for (Variant variant : variants) {
-                if (isAcceptEncodingMatched(acceptEncodings, variant.getEncoding())
-                        && isAcceptLanguagesMatched(acceptLanguages, variant.getLanguage())
-                        && isMediaTypeMatched(accepts, variant.getMediaType())) {
-                    matched.add(variant);
-                }
-            }
-
-            if (matched.isEmpty()) {
-                return null;
-            }
-
-            matched.sort(VariantComparator.INSTANCE);
-            return matched.get(0);
-        }
     }
 
     private static boolean isAcceptEncodingMatched(List<String> acceptEncodings, String target) {
@@ -335,6 +304,43 @@ public class RequestImpl implements Request {
         }
 
         return false;
+    }
+
+    /**
+     * This {@link VariantMatcher} is designed to match {@link Variant}s.
+     */
+    private static class VariantMatcher {
+
+        private static final VariantMatcher INSTANCE = new VariantMatcher();
+
+        /**
+         * Selects a {@link Variant} which is best match the {@code request} from the given {@code variants}.
+         *
+         * @param request  request
+         * @param variants variants
+         * @return variant
+         */
+        private Variant match(HttpRequest request, List<Variant> variants) {
+            List<String> acceptEncodings = HttpHeaderUtils.getAcceptEncodings(request.headers());
+            List<Locale> acceptLanguages = HttpHeaderUtils.getAcceptLanguages(request.headers());
+            List<MediaType> accepts = request.accepts();
+
+            List<Variant> matched = new LinkedList<>();
+            for (Variant variant : variants) {
+                if (isAcceptEncodingMatched(acceptEncodings, variant.getEncoding())
+                        && isAcceptLanguagesMatched(acceptLanguages, variant.getLanguage())
+                        && isMediaTypeMatched(accepts, variant.getMediaType())) {
+                    matched.add(variant);
+                }
+            }
+
+            if (matched.isEmpty()) {
+                return null;
+            }
+
+            matched.sort(VariantComparator.INSTANCE);
+            return matched.get(0);
+        }
     }
 
     private static class VariantComparator implements Comparator<Variant> {

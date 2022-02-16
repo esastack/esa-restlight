@@ -18,6 +18,7 @@ package io.esastack.restlight.jaxrs.impl.core;
 import esa.commons.Checks;
 import jakarta.ws.rs.core.Link;
 import jakarta.ws.rs.core.UriBuilder;
+import jakarta.ws.rs.ext.RuntimeDelegate;
 
 import java.net.URI;
 import java.util.HashMap;
@@ -33,21 +34,24 @@ public class LinkBuilderImpl implements Link.Builder {
 
     @Override
     public Link.Builder link(Link link) {
-        this.uriBuilder = UriBuilder.fromUri(link.getUri());
-        this.params.clear();
+        this.uriBuilder = UriBuilder.fromLink(link);
         this.params.putAll(link.getParams());
         return this;
     }
 
     @Override
     public Link.Builder link(String link) {
-        Link l = LinkImpl.valueOf(link);
-        return link(l);
+        Link l = RuntimeDelegate.getInstance().createHeaderDelegate(Link.class).fromString(link);
+        if (l != null) {
+            this.uriBuilder = l.getUriBuilder();
+            this.params.putAll(l.getParams());
+        }
+        return this;
     }
 
     @Override
     public Link.Builder uri(URI uri) {
-        Checks.checkNotNull(uri, "uri");
+        Checks.checkArg(uri != null, "uri is null");
         this.uriBuilder = UriBuilder.fromUri(uri);
         return this;
     }
@@ -60,7 +64,6 @@ public class LinkBuilderImpl implements Link.Builder {
 
     @Override
     public Link.Builder baseUri(URI uri) {
-        Checks.checkNotNull(uri, "uri");
         this.baseUri = uri;
         return this;
     }
@@ -73,8 +76,8 @@ public class LinkBuilderImpl implements Link.Builder {
 
     @Override
     public Link.Builder uriBuilder(UriBuilder uriBuilder) {
-        Checks.checkNotNull(uriBuilder, "uriBuilder");
-        this.uriBuilder = uriBuilder.clone();
+        Checks.checkArg(uriBuilder != null, "uriBuilder is null");
+        this.uriBuilder = uriBuilder;
         return this;
     }
 
@@ -85,7 +88,7 @@ public class LinkBuilderImpl implements Link.Builder {
         }
         String rels = this.params.get(REL);
         param(REL, rels == null ? rel : rels + " " + rel);
-        return null;
+        return this;
     }
 
     @Override
@@ -102,7 +105,7 @@ public class LinkBuilderImpl implements Link.Builder {
         if (type == null) {
             throw new IllegalArgumentException("type is null");
         }
-        param(Link.TITLE, type);
+        param(Link.TYPE, type);
         return this;
     }
 
@@ -120,34 +123,33 @@ public class LinkBuilderImpl implements Link.Builder {
 
     @Override
     public Link build(Object... values) {
-        if (values == null) {
-            throw new IllegalArgumentException("values is null");
-        }
-        URI target;
-        if (uriBuilder == null) {
-            target = baseUri;
-        } else {
-            target = this.uriBuilder.build(values);
-        }
-        if (!target.isAbsolute() && baseUri != null) {
-            target = baseUri.resolve(target);
-        }
-        return new LinkImpl(target, this.params);
+        return new LinkImpl(getResolvedUri(values), new HashMap<>(this.params));
     }
 
     @Override
     public Link buildRelativized(URI uri, Object... values) {
-        if (uri == null) {
-            throw new IllegalArgumentException("uri is null");
-        }
-        if (values == null) {
-            throw new IllegalArgumentException("values is null");
-        }
-        URI target = uriBuilder.build(values);
+        URI resolved = getResolvedUri(values);
+        return new LinkImpl(UriInfoImpl.relativize(uri, resolved), new HashMap<>(params));
+    }
+
+    private URI getResolvedUri(Object... values) {
+        URI uri = uriBuilder.build(values);
+
         if (baseUri != null) {
-            return new LinkImpl(uri.relativize(baseUri.resolve(target)), this.params);
+            UriBuilder linkUriBuilder = UriBuilder.fromUri(baseUri);
+            String scheme = uri.getScheme();
+            if (scheme != null && scheme.startsWith("http")) {
+                if (!uri.isAbsolute()) {
+                    return linkUriBuilder.build().resolve(uri);
+                } else {
+                    return uri;
+                }
+            } else {
+                String theUri = uri.toString();
+                return linkUriBuilder.path(theUri).build();
+            }
         } else {
-            return new LinkImpl(uri.relativize(target), this.params);
+            return uri;
         }
     }
 }

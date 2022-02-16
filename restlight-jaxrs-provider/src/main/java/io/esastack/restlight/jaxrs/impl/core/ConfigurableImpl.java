@@ -55,88 +55,88 @@ public class ConfigurableImpl implements Configurable<ConfigurableImpl> {
 
     @Override
     public ConfigurableImpl register(Class<?> componentClass) {
+        if (componentClass == null) {
+            return this;
+        }
         return register(componentClass, JaxrsUtils.extractContracts(componentClass,
                 JaxrsUtils.getOrder(componentClass)));
     }
 
     @Override
     public ConfigurableImpl register(Class<?> componentClass, int priority) {
+        if (componentClass == null) {
+            return this;
+        }
         return register(componentClass, JaxrsUtils.extractContracts(componentClass, priority));
     }
 
     @Override
     public ConfigurableImpl register(Class<?> componentClass, Class<?>... contracts) {
-        if (contracts == null || contracts.length == 0) {
+        if (componentClass == null || contracts == null || contracts.length == 0) {
             return this;
         }
 
-        configuration.addProviderClass(componentClass, effectiveContracts(componentClass, contracts));
+        configuration.addProviderClass(componentClass, checkContracts(componentClass, contracts));
         return this;
     }
 
     @Override
     public ConfigurableImpl register(Class<?> componentClass, Map<Class<?>, Integer> contracts) {
-        if (contracts == null || contracts.isEmpty()) {
+        if (componentClass == null || contracts == null || contracts.isEmpty()) {
             return this;
         }
 
-        configuration.addProviderClass(componentClass, effectiveContracts(componentClass, contracts));
+        configuration.addProviderClass(componentClass, contracts);
         return this;
     }
 
     @Override
     public ConfigurableImpl register(Object component) {
+        if (component == null) {
+            return this;
+        }
         return register(component, JaxrsUtils.extractContracts(component, JaxrsUtils.getOrder(component)));
     }
 
     @Override
     public ConfigurableImpl register(Object component, int priority) {
+        if (component == null) {
+            return this;
+        }
         return register(component, JaxrsUtils.extractContracts(component, priority));
     }
 
     @Override
     public ConfigurableImpl register(Object component, Class<?>... contracts) {
-        if (contracts == null || contracts.length == 0) {
+        if (component == null || contracts == null || contracts.length == 0) {
             return this;
         }
 
-        configuration.addProviderInstance(component, effectiveContracts(ClassUtils.getUserType(component), contracts));
+        configuration.addProviderInstance(component, checkContracts(ClassUtils.getUserType(component), contracts));
         return this;
     }
 
     @Override
     public ConfigurableImpl register(Object component, Map<Class<?>, Integer> contracts) {
-        if (contracts == null || contracts.isEmpty()) {
+        if (component == null || contracts == null || contracts.isEmpty()) {
             return this;
         }
-        configuration.addProviderInstance(component, effectiveContracts(ClassUtils.getUserType(component), contracts));
+        configuration.addProviderInstance(component, contracts);
         return this;
     }
 
-    private static Map<Class<?>, Integer> effectiveContracts(Class<?> target, Class<?>... contracts) {
+    private Map<Class<?>, Integer> checkContracts(Class<?> target, Class<?>... contracts) {
         int order = JaxrsUtils.getOrder(target);
-        Map<Class<?>, Integer> effectiveContracts = new HashMap<>();
+        Map<Class<?>, Integer> checked = new HashMap<>();
         for (Class<?> contract : contracts) {
-            if (!target.isAssignableFrom(contract)) {
+            if (!contract.isAssignableFrom(target)) {
                 logger.warn("Failed to register {} as {}", target, contract);
             } else {
-                effectiveContracts.put(contract, order);
+                checked.put(contract, order);
             }
         }
 
-        return effectiveContracts;
-    }
-
-    private static Map<Class<?>, Integer> effectiveContracts(Class<?> clazz, Map<Class<?>, Integer> contracts) {
-        Map<Class<?>, Integer> effectiveContracts = new HashMap<>();
-        for (Map.Entry<Class<?>, Integer> entry : contracts.entrySet()) {
-            if (!entry.getKey().isAssignableFrom(clazz)) {
-                logger.warn("Failed to register {} as {}", clazz, entry.getKey());
-            } else {
-                effectiveContracts.put(entry.getKey(), entry.getValue());
-            }
-        }
-        return effectiveContracts;
+        return checked;
     }
 }
 

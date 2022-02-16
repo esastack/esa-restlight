@@ -207,7 +207,7 @@ public final class JaxrsMappingUtils {
         if (isAnnotatedElement(method)) {
             return Optional.of(method);
         }
-        for (Method m : ClassUtils.findImplementedMethods(method)) {
+        for (Method m : ClassUtils.findOverriddenMethods(method)) {
             if (isAnnotatedElement(m)) {
                 return Optional.of(m);
             }

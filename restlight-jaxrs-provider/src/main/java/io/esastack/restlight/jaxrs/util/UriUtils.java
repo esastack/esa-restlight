@@ -20,6 +20,16 @@ import esa.commons.StringUtils;
 public final class UriUtils {
 
     /**
+     * Encodes the given {@code target} string.
+     *
+     * @param target    target
+     * @return          encoded value
+     */
+    public static String encode(String target) {
+        return encode(target, true, true, false);
+    }
+
+    /**
      * Encode given {@code target}.
      *
      * @param target                 target
@@ -51,9 +61,9 @@ public final class UriUtils {
                 } else if (encodePercentCondition
                         && (i + 1 < target.length() && isHex(target.charAt(i + 1)))
                         && (i + 2 < target.length() && isHex(target.charAt(i + 2)))) {
-                    sb.append("%25");
-                } else {
                     sb.append(current);
+                } else {
+                    sb.append("%25");
                 }
             } else {
                 sb.append(current);
@@ -63,7 +73,7 @@ public final class UriUtils {
         return sb.toString();
     }
 
-    public static boolean isHex(char target) {
+    private static boolean isHex(char target) {
         if (target >= '0' && target <= '9') {
             return true;
         }

@@ -250,7 +250,7 @@ public final class JaxrsUtils {
                 || JaxrsUtils.isParamConverterProvider(clazz);
     }
 
-    private static List<Class<?>> getComponents(Class<?> clazz) {
+    public static List<Class<?>> getComponents(Class<?> clazz) {
         List<Class<?>> classes = new LinkedList<>();
         getComponentsRecursively(clazz, classes, 0);
         return classes;
