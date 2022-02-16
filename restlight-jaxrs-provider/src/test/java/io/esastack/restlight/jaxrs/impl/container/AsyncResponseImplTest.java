@@ -24,7 +24,6 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Date;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -175,7 +174,7 @@ class AsyncResponseImplTest {
     }
 
     @Test
-    void setTimeout() throws Throwable {
+    void testSetTimeout() {
         // response has been resumed.
         final AsyncResponse response1 = new AsyncResponseImpl(new CompletableFuture<>());
         response1.resume(new Object());
@@ -213,22 +212,10 @@ class AsyncResponseImplTest {
         assertEquals(TimeUnit.SECONDS, task23.unit);
         assertSame(handler2, task23.handler);
         assertNull(task23.task);
-
-        // just handle timeout task
-        final CompletableFuture<Object> future3 = new CompletableFuture<>();
-        final AsyncResponseImpl response3 = new AsyncResponseImpl(future3);
-        final CountDownLatch latch = new CountDownLatch(1);
-        final TimeoutHandler handler3 = asyncResponse -> latch.countDown();
-        response3.setTimeoutHandler(handler3);
-        response3.setTimeout(10L, TimeUnit.MILLISECONDS);
-        latch.await();
-        future3.isDone();
-        assertTrue(future3.isDone());
-        assertNull(future3.get());
     }
 
     @Test
-    void setTimeoutHandler() {
+    void testSetTimeoutHandler() {
         // pre task is null
         final AsyncResponseImpl response = new AsyncResponseImpl(new CompletableFuture<>());
         final TimeoutHandler handler1 = asyncResponse -> { };
