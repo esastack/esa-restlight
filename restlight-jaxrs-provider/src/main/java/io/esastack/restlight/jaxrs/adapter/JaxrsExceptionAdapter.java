@@ -69,7 +69,8 @@ public class JaxrsExceptionAdapter implements IExceptionHandler {
                 if ((routeFailure = context.attrs().attr(RoutePredicate.MISMATCH_ERR).get()) != null) {
                     switch (routeFailure) {
                         case METHOD_MISMATCH:
-                            return new NotAllowedException(Response.status(HttpStatus.NOT_FOUND.code()).build());
+                            return new NotAllowedException(Response.status(HttpStatus.METHOD_NOT_ALLOWED
+                                    .code()).build());
                         case CONSUMES_MISMATCH:
                             return new NotSupportedException(underlying.getMessage(), extractCause(underlying));
                         case PRODUCES_MISMATCH:

@@ -16,12 +16,13 @@
 package io.esastack.restlight.jaxrs.impl.core;
 
 import esa.commons.Checks;
+import esa.commons.StringUtils;
 import jakarta.ws.rs.core.MultivaluedHashMap;
 import jakarta.ws.rs.core.MultivaluedMap;
 import jakarta.ws.rs.core.PathSegment;
 
 import java.util.Arrays;
-import java.util.Collections;
+import java.util.stream.Collectors;
 
 public class PathSegmentImpl implements PathSegment {
 
@@ -55,11 +56,14 @@ public class PathSegmentImpl implements PathSegment {
             for (int i = 1; i < subSegments.length; i++) {
                 String[] nav = subSegments[i].split("=");
                 String[] vs = nav[1].split(",");
-                values.put(nav[0], Collections.unmodifiableList(Arrays.asList(vs)));
+                values.addAll(StringUtils.trim(nav[0]),
+                        Arrays.stream(vs).map(StringUtils::trim).collect(Collectors.toList()));
             }
-            params = new UnmodifiableMultivaluedMap<>(values);
+            params = values;
         }
 
-        return params;
+        MultivaluedMap<String, String> copied = new MultivaluedHashMap<>();
+        copied.putAll(params);
+        return copied;
     }
 }

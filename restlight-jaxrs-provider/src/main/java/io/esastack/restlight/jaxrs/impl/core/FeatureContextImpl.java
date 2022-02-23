@@ -124,7 +124,6 @@ public class FeatureContextImpl implements FeatureContext {
                 logger.warn("Registering nested feature({}) in feature({}) is unsupported.",
                         ClassUtils.getUserType(component), featureType);
             }
-            return;
         }
     }
 
@@ -138,7 +137,6 @@ public class FeatureContextImpl implements FeatureContext {
                 logger.warn("Registering nested feature({}) in feature({}) is unsupported.",
                         ClassUtils.getUserType(component), featureType);
             }
-            return;
         }
     }
 }

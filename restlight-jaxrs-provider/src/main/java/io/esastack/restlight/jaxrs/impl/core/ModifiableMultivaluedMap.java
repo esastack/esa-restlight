@@ -56,29 +56,28 @@ public final class ModifiableMultivaluedMap implements MultivaluedMap<String, St
     @Override
     public void addAll(String key, String... newValues) {
         Checks.checkNotNull(newValues, "newValues");
-        if (newValues.length == 0) {
-            return;
+        for (String newValue : newValues) {
+            underlying.add(key, newValue);
         }
-        underlying.add(key, newValues);
     }
 
     @Override
     public void addAll(String key, List<String> valueList) {
         Checks.checkNotNull(valueList, "valueList");
-        if (valueList.size() == 0) {
-            return;
-        }
         underlying.add(key, valueList);
     }
 
     @Override
     public void addFirst(String key, String value) {
         List<String> previous = underlying.getAll(key);
+        List<String> current;
         if (previous == null || previous.isEmpty()) {
-            previous = new ArrayList<>();
+            current = new ArrayList<>();
+        } else {
+            current = new ArrayList<>(previous);
         }
-        previous.add(0, value);
-        underlying.set(key, previous);
+        current.add(0, value);
+        underlying.set(key, current);
     }
 
     @Override
@@ -111,7 +110,8 @@ public final class ModifiableMultivaluedMap implements MultivaluedMap<String, St
     public boolean containsValue(Object value) {
         Checks.checkNotNull(value, "value");
         for (String name : underlying.names()) {
-            if (value.equals(underlying.getAll(name))) {
+            List<String> values;
+            if ((values = underlying.getAll(name)) != null && values.contains(value)) {
                 return true;
             }
         }
@@ -141,9 +141,17 @@ public final class ModifiableMultivaluedMap implements MultivaluedMap<String, St
 
     @Override
     public void putAll(Map<? extends String, ? extends List<String>> m) {
-        clear();
         for (Map.Entry<? extends String, ? extends List<String>> entry : m.entrySet()) {
-            underlying.set(entry.getKey(), entry.getValue());
+            List<String> values = entry.getValue();
+            if (values == null) {
+                continue;
+            }
+            List<String> v;
+            List<String> newValue = new ArrayList<>(values);
+            if ((v = underlying.getAll(entry.getKey())) != null) {
+                newValue.addAll(v);
+            }
+            underlying.set(entry.getKey(), newValue);
         }
     }
 

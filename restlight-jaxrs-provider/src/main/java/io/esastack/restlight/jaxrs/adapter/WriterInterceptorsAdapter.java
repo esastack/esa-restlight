@@ -44,7 +44,7 @@ public class WriterInterceptorsAdapter implements ResponseEntityResolverAdviceAd
             RuntimeDelegateUtils.addHeadersToMap(context.context().response().headers(), headers);
             try {
                 new WriterInterceptorContextImpl(context,
-                        ResponseEntityStreamClose.getNonClosableOutputStream(context.context()),
+                        ResponseEntityStreamUtils.getUnClosableOutputStream(context.context()),
                         headers, interceptors).proceed();
             } catch (Throwable th) {
                 RuntimeDelegateUtils.addHeadersFromMap(context.context().response().headers(), headers, true);

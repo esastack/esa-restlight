@@ -113,61 +113,82 @@ public class JaxrsExtensionsHandler implements ExtensionsHandler {
 
         ProxyComponent<Application> application = null;
         if (applicationObj != null) {
-            application = getOrInstantiate(applicationObj);
+            application = getOrInstantiate(applicationObj, deployments, configuration, providers);
         }
 
         if (application != null) {
-            ApplicationPath pathAnn = AnnotationUtils.findAnnotation(ClassUtils
-                    .getUserType(application.underlying()), ApplicationPath.class);
-            if (pathAnn != null) {
-                /*
-                 * NOTE: If the external context-path is empty, try to use the value defined in @ApplicationPath.
-                 */
-                RestlightOptions options = deployments.deployContext().options();
-                String contextPath = options.getContextPath();
-                String annPath = pathAnn.value();
-                if (StringUtils.isEmpty(contextPath)) {
-                    if (StringUtils.isNotEmpty(annPath)) {
-                        options.setContextPath(annPath);
-                    }
-                } else if (StringUtils.isNotEmpty(annPath)) {
-                    LoggerUtils.logger().warn("The path:[{}] defined in @ApplicationPath has been discarded" +
-                            " caused by the existed context-path:[{}]", annPath, contextPath);
-                }
-            }
-            Set<Class<?>> classes = application.proxied().getClasses();
-            if (classes != null) {
-                handleableExtensions.addAll(classes);
-            }
-            Set<Object> singletons = application.proxied().getSingletons();
-            if (singletons != null) {
-                handleableExtensions.addAll(singletons);
-            }
-            Map<String, Object> properties = application.proxied().getProperties();
-            if (properties != null) {
-                properties.forEach(configuration::setProperty);
-            }
-            deployments.addContextResolver(new ApplicationResolverAdapter(application.proxied()));
-
-            // be different from same resolvers added at DynamicFeatureAdapter, you can think
-            // the between two as fallback which have no configurations corresponding with specified resource method.
-            // eg. if there are some providers and configurations added by DynamicFeatures, then those
-            // information can't be known here.
-            deployments.addContextResolver(new ConfigurationResolverAdapter(configuration));
-            deployments.addContextResolver(new ProvidersResolverAdapter(providers));
+            handleApplication(application, deployments, configuration, handleableExtensions);
         }
+        // be different from same resolvers added at DynamicFeatureAdapter, you can think
+        // the between two as fallback which have no configurations corresponding with specified resource method.
+        // eg. if there are some providers and configurations added by DynamicFeatures, then those
+        // information can't be known here.
+        deployments.addContextResolver(new ConfigurationResolverAdapter(configuration));
+        deployments.addContextResolver(new ProvidersResolverAdapter(providers));
+
         deployments.addParamResolver(new ResourceContextParamResolver(deployments.deployContext()));
 
-        for (Object extension : handleableExtensions) {
+        convertThenAddExtensions(configuration, deployments, handleableExtensions);
+
+        List<Class<? extends Annotation>> appNameBindings;
+        if (application == null) {
+            appNameBindings = Collections.emptyList();
+        } else {
+            appNameBindings = JaxrsUtils.findNameBindings(ClassUtils.getUserType(application.underlying()));
+        }
+        this.convertThenAddProviders(appNameBindings, factory, configuration, providers, deployments);
+    }
+
+    void handleApplication(ProxyComponent<Application> application,
+                           MiniConfigurableDeployments deployments,
+                           ConfigurationImpl configuration,
+                           List<Object> extensions) {
+        ApplicationPath pathAnn = AnnotationUtils.findAnnotation(ClassUtils
+                .getUserType(application.underlying()), ApplicationPath.class);
+        if (pathAnn != null) {
+            /*
+             * NOTE: If the external context-path is empty, try to use the value defined in @ApplicationPath.
+             */
+            RestlightOptions options = deployments.deployContext().options();
+            String contextPath = options.getContextPath();
+            String annPath = pathAnn.value();
+            if (StringUtils.isEmpty(contextPath)) {
+                if (StringUtils.isNotEmpty(annPath)) {
+                    options.setContextPath(annPath);
+                }
+            } else if (StringUtils.isNotEmpty(annPath)) {
+                LoggerUtils.logger().warn("The path:[{}] defined in @ApplicationPath has been discarded" +
+                        " caused by the existed context-path:[{}]", annPath, contextPath);
+            }
+        }
+        Set<Class<?>> classes = application.proxied().getClasses();
+        if (classes != null) {
+            extensions.addAll(classes);
+        }
+        Set<Object> singletons = application.proxied().getSingletons();
+        if (singletons != null) {
+            extensions.addAll(singletons);
+        }
+        Map<String, Object> properties = application.proxied().getProperties();
+        if (properties != null) {
+            properties.forEach(configuration::setProperty);
+        }
+        deployments.addContextResolver(new ApplicationResolverAdapter(application.proxied()));
+    }
+
+    void convertThenAddExtensions(ConfigurationImpl configuration,
+                                  MiniConfigurableDeployments deployments,
+                                  List<Object> extensions) {
+        for (Object extension : extensions) {
             final Class<?> userType = ClassUtils.getUserType(extension);
             final boolean isClazz = (userType == extension);
             if (JaxrsUtils.isRootResource(userType)) {
                 if (isClazz) {
-                    this.configuration.addResourceClass(userType);
-                    this.deployments.addController(userType, false);
+                    configuration.addResourceClass(userType);
+                    deployments.addController(userType, false);
                 } else {
-                    this.configuration.addResourceInstance(extension);
-                    this.deployments.addController(extension);
+                    configuration.addResourceInstance(extension);
+                    deployments.addController(extension);
                 }
             } else {
                 if (isClazz) {
@@ -188,17 +209,14 @@ public class JaxrsExtensionsHandler implements ExtensionsHandler {
                 }
             }
         }
-
-        List<Class<? extends Annotation>> appNameBindings;
-        if (application == null) {
-            appNameBindings = Collections.emptyList();
-        } else {
-            appNameBindings = JaxrsUtils.findNameBindings(ClassUtils.getUserType(application.underlying()));
-        }
-        this.convertThenAddProviders(appNameBindings);
     }
 
-    private void convertThenAddProviders(List<Class<? extends Annotation>> appNameBindings) {
+    @SuppressWarnings("unchecked")
+    void convertThenAddProviders(List<Class<? extends Annotation>> appNameBindings,
+                                 ProvidersFactory factory,
+                                 ConfigurationImpl configuration,
+                                 Providers providers,
+                                 MiniConfigurableDeployments deployments) {
         Collection<ProxyComponent<Feature>> features = factory.features();
         if (!features.isEmpty()) {
             ConfigurableImpl configurable = new ConfigurableImpl(configuration);
@@ -213,10 +231,10 @@ public class JaxrsExtensionsHandler implements ExtensionsHandler {
 
         deployments.addRequestEntityResolver(new MessageBodyReaderAdapter<>(providers));
         deployments.addResponseEntityResolver(new MessageBodyWriterAdapter<>(providers));
-        for (Map.Entry<Class<Throwable>, ProxyComponent<ExceptionMapper<Throwable>>> entry :
-                factory.exceptionMappers().entrySet()) {
-            deployments.addExceptionResolver(entry.getKey(),
-                    new JaxrsExceptionMapperAdapter<>(entry.getValue().proxied()));
+        for (ProxyComponent<ExceptionMapper<Throwable>> mapper : factory.exceptionMappers()) {
+            deployments.addExceptionResolver((Class<Throwable>) ClassUtils.findFirstGenericType(
+                    ClassUtils.getUserType(mapper.underlying())).orElse(Throwable.class),
+                    new JaxrsExceptionMapperAdapter<>(mapper));
         }
         deployments.addParamResolver(new JaxrsContextResolverAdapter(providers));
         for (ProxyComponent<ParamConverterProvider> provider : factory.paramConverterProviders()) {
@@ -224,13 +242,15 @@ public class JaxrsExtensionsHandler implements ExtensionsHandler {
                     JaxrsUtils.getOrder(provider.underlying())));
         }
 
-        this.convertThenAddFilters(appNameBindings);
-        this.convertThenAddInterceptors(appNameBindings);
+        this.convertThenAddFilters(appNameBindings, deployments, factory);
+        this.convertThenAddInterceptors(appNameBindings, deployments, factory);
         deployments.addHandlerConfigure(new DynamicFeatureAdapter(deployments.deployContext(), appNameBindings,
                 factory.dynamicFeatures(), configuration));
     }
 
-    private void convertThenAddFilters(List<Class<? extends Annotation>> appNameBindings) {
+    void convertThenAddFilters(List<Class<? extends Annotation>> appNameBindings,
+                               MiniConfigurableDeployments deployments,
+                               ProvidersFactory factory) {
         // convert @PreMatching ContainerRequestFilters
         List<OrderComponent<ContainerRequestFilter>> reqFilters = new LinkedList<>();
         for (ProxyComponent<ContainerRequestFilter> filter : factory.requestFilters()) {
@@ -254,7 +274,9 @@ public class JaxrsExtensionsHandler implements ExtensionsHandler {
                 .toArray(new ContainerResponseFilter[0])));
     }
 
-    private void convertThenAddInterceptors(List<Class<? extends Annotation>> appNameBindings) {
+    void convertThenAddInterceptors(List<Class<? extends Annotation>> appNameBindings,
+                                    MiniConfigurableDeployments deployments,
+                                    ProvidersFactory factory) {
         // covert ReaderInterceptors which can apply to all methods(even if it's null).
         List<OrderComponent<ReaderInterceptor>> readInterceptors = new LinkedList<>();
         for (ProxyComponent<ReaderInterceptor> interceptor : factory.readerInterceptors()) {
@@ -282,7 +304,9 @@ public class JaxrsExtensionsHandler implements ExtensionsHandler {
         }
     }
 
-    private ProxyComponent<Application> getOrInstantiate(Object object) {
+    ProxyComponent<Application> getOrInstantiate(Object object, MiniConfigurableDeployments deployments,
+                                                 ConfigurationImpl configuration,
+                                                 Providers providers) {
         if (object instanceof Application) {
             return new ProxyComponent<>(object, (Application) object);
         }
@@ -306,9 +330,9 @@ public class JaxrsExtensionsHandler implements ExtensionsHandler {
                         " unresolvable parameter: [" + parameter.getName() + "], maybe @Context is absent?");
             }
             if (Configuration.class.isAssignableFrom(parameter.getType())) {
-                args[index++] = this.configuration;
+                args[index++] = configuration;
             } else if (Providers.class.isAssignableFrom(parameter.getType())) {
-                args[index++] = this.providers;
+                args[index++] = providers;
             } else {
                 throw new IllegalStateException("Failed to instantiate class: [" + userType + "] caused by" +
                         " unsupported parameter: [" + parameter.getName() + "], only Application and Providers are" +

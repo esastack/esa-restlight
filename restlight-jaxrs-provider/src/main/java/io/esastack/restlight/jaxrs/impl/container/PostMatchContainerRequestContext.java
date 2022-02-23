@@ -22,8 +22,8 @@ import java.net.URI;
 
 public class PostMatchContainerRequestContext extends AbstractContainerRequestContext {
 
-    private static final IllegalStateException ILLEGAL_STATE_OF_MATCHED = new IllegalStateException("This operation" +
-            "is not allowed after matching request, maybe @PreMatching is missed?");
+    private static final IllegalStateException ILLEGAL_STATE_AFTER_MATCHING = new IllegalStateException(
+            "This operation is not allowed after matching request, maybe @PreMatching is missed?");
 
     public PostMatchContainerRequestContext(RequestContext context) {
         super(context);
@@ -31,22 +31,22 @@ public class PostMatchContainerRequestContext extends AbstractContainerRequestCo
 
     @Override
     public void setRequestUri(URI requestUri) {
-        throw ILLEGAL_STATE_OF_MATCHED;
+        throw ILLEGAL_STATE_AFTER_MATCHING;
     }
 
     @Override
     public void setRequestUri(URI baseUri, URI requestUri) {
-        throw ILLEGAL_STATE_OF_MATCHED;
+        throw ILLEGAL_STATE_AFTER_MATCHING;
     }
 
     @Override
     public void setMethod(String method) {
-        throw ILLEGAL_STATE_OF_MATCHED;
+        throw ILLEGAL_STATE_AFTER_MATCHING;
     }
 
     @Override
     public void setEntityStream(InputStream input) {
-        throw ILLEGAL_STATE_OF_MATCHED;
+        throw ILLEGAL_STATE_AFTER_MATCHING;
     }
 }
 

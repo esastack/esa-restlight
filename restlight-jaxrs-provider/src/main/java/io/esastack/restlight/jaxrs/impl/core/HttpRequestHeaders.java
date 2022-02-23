@@ -24,6 +24,7 @@ import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.MultivaluedMap;
 import jakarta.ws.rs.core.NewCookie;
+import jakarta.ws.rs.ext.RuntimeDelegate;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -36,12 +37,12 @@ import java.util.Map;
 public class HttpRequestHeaders implements HttpHeaders {
 
     private final HttpRequest request;
-    private final UnmodifiableMultivaluedMap<String, String> headers;
+    private final ModifiableMultivaluedMap headers;
 
     public HttpRequestHeaders(HttpRequest request) {
         Checks.checkNotNull(request, "request");
         this.request = request;
-        this.headers = new UnmodifiableMultivaluedMap<>(new ModifiableMultivaluedMap(request.headers()));
+        this.headers = new ModifiableMultivaluedMap(request.headers());
     }
 
     @Override
@@ -93,7 +94,9 @@ public class HttpRequestHeaders implements HttpHeaders {
         } else {
             Map<String, Cookie> cookies = new HashMap<>();
             for (Object item : cookieValues) {
-                NewCookie newCookie = NewCookie.valueOf(item.toString());
+                NewCookie newCookie = RuntimeDelegate.getInstance()
+                        .createHeaderDelegate(NewCookie.class)
+                        .fromString(item.toString());
                 cookies.put(newCookie.getName(), newCookie);
             }
             return cookies;

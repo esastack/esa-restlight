@@ -17,6 +17,7 @@ package io.esastack.restlight.core.resolver.param;
 
 import esa.commons.Checks;
 import esa.commons.concurrent.UnsafeUtils;
+import esa.commons.function.Function3;
 import esa.commons.reflect.AnnotationUtils;
 import esa.commons.reflect.ReflectionUtils;
 import io.esastack.restlight.core.DeployContext;
@@ -27,6 +28,7 @@ import io.esastack.restlight.core.method.Param;
 import io.esastack.restlight.core.resolver.HandlerResolverFactory;
 import io.esastack.restlight.core.resolver.ParamResolver;
 import io.esastack.restlight.core.resolver.ParamResolverFactory;
+import io.esastack.restlight.core.resolver.StringConverter;
 import io.esastack.restlight.core.serialize.HttpRequestSerializer;
 import io.esastack.restlight.server.context.RequestContext;
 import io.esastack.restlight.server.util.LoggerUtils;
@@ -36,6 +38,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -64,6 +67,7 @@ public class RequestBeanParamResolver implements ParamResolverFactory {
 
     @Override
     public ParamResolver createResolver(Param param,
+                                        Function3<Class<?>, Type, Param, StringConverter> converterFunc,
                                         List<? extends HttpRequestSerializer> serializers) {
         Class<?> type = param.type();
         // instantiate target object by unsafe
@@ -72,13 +76,16 @@ public class RequestBeanParamResolver implements ParamResolverFactory {
         if (resolver == null) {
             // no need to check the previous value
             META_CACHE.putIfAbsent(type, resolver = new Resolver(newTypeMeta(type,
+                    converterFunc,
                     ctx.resolverFactory().orElse(null))));
         }
         return resolver;
     }
 
-    protected TypeMeta newTypeMeta(Class<?> type, HandlerResolverFactory resolverFactory) {
-        return new TypeMeta(type, resolverFactory);
+    protected TypeMeta newTypeMeta(Class<?> type,
+                                   Function3<Class<?>, Type, Param, StringConverter> converterFunc,
+                                   HandlerResolverFactory resolverFactory) {
+        return new TypeMeta(type, converterFunc, resolverFactory);
     }
 
     @Override
@@ -116,9 +123,11 @@ public class RequestBeanParamResolver implements ParamResolverFactory {
         private final Allocator alloc;
         final List<FieldAndSetter> fas;
 
-        TypeMeta(Class<?> c, HandlerResolverFactory resolverFactory) {
+        TypeMeta(Class<?> c,
+                 Function3<Class<?>, Type, Param, StringConverter> converterFunc,
+                 HandlerResolverFactory resolverFactory) {
             this.alloc = detectAllocator(c);
-            this.fas = buildFieldAndSetterList(c, resolverFactory);
+            this.fas = buildFieldAndSetterList(c, converterFunc, resolverFactory);
         }
 
         private static Allocator detectAllocator(Class<?> c) {
@@ -137,16 +146,21 @@ public class RequestBeanParamResolver implements ParamResolverFactory {
             return alloc;
         }
 
-        private List<FieldAndSetter> buildFieldAndSetterList(Class<?> c, HandlerResolverFactory resolverFactory) {
+        private List<FieldAndSetter> buildFieldAndSetterList(Class<?> c,
+                                                             Function3<Class<?>, Type, Param, StringConverter>
+                                                                     converterFunc,
+                                                             HandlerResolverFactory resolverFactory) {
             return ReflectionUtils.getAllDeclaredFields(c)
                     .stream()
                     // exclude static and final field
                     .filter(f -> !Modifier.isFinal(f.getModifiers()) && !Modifier.isStatic(f.getModifiers()))
-                    .map(f -> resolveFieldAndSetter(f, resolverFactory))
+                    .map(f -> resolveFieldAndSetter(f, converterFunc, resolverFactory))
                     .collect(Collectors.toList());
         }
 
-        private FieldAndSetter resolveFieldAndSetter(Field f, HandlerResolverFactory resolverFactory) {
+        private FieldAndSetter resolveFieldAndSetter(Field f,
+                                                     Function3<Class<?>, Type, Param, StringConverter> converterFunc,
+                                                     HandlerResolverFactory resolverFactory) {
             Method method = ReflectionUtils.getSetter(f);
             BiConsumer<Object, Object> setter;
             if (method != null) {
@@ -164,11 +178,13 @@ public class RequestBeanParamResolver implements ParamResolverFactory {
                 };
             }
             FieldParam fieldParam = new FieldParamImpl(f);
-            ParamResolver resolver = findResolver(fieldParam, resolverFactory);
+            ParamResolver resolver = findResolver(fieldParam, converterFunc, resolverFactory);
             return new FieldAndSetter(setter, resolver);
         }
 
-        protected ParamResolver findResolver(FieldParam fieldParam, HandlerResolverFactory resolverFactory) {
+        protected ParamResolver findResolver(FieldParam fieldParam,
+                                             Function3<Class<?>, Type, Param, StringConverter> converterFunc,
+                                             HandlerResolverFactory resolverFactory) {
             return resolverFactory.getParamResolver(fieldParam);
         }
     }

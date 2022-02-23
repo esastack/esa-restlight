@@ -34,14 +34,12 @@ public class VariantListBuilderImpl extends Variant.VariantListBuilder {
     @Override
     public List<Variant> build() {
         add();
-        List<Variant> newVariants = new ArrayList<>(variants);
-        reset();
-        return newVariants;
+        return new ArrayList<>(variants);
     }
 
     @Override
     public Variant.VariantListBuilder add() {
-        if (languages.isEmpty() || encodings.isEmpty() || mediaTypes.isEmpty()) {
+        if (languages.isEmpty() && encodings.isEmpty() && mediaTypes.isEmpty()) {
             return this;
         }
         for (final Locale language : languages) {
@@ -51,6 +49,7 @@ public class VariantListBuilderImpl extends Variant.VariantListBuilder {
                 }
             }
         }
+        reset();
         return this;
     }
 
@@ -82,7 +81,6 @@ public class VariantListBuilderImpl extends Variant.VariantListBuilder {
     }
 
     private void reset() {
-        variants.clear();
         languages.clear();
         encodings.clear();
         mediaTypes.clear();

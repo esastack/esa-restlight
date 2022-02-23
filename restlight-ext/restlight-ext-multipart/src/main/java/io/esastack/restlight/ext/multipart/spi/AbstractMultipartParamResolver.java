@@ -16,21 +16,18 @@
 package io.esastack.restlight.ext.multipart.spi;
 
 import esa.commons.Checks;
-import esa.commons.StringUtils;
 import esa.commons.collection.AttributeKey;
+import esa.commons.function.Function3;
 import esa.commons.logging.Logger;
 import esa.commons.logging.LoggerFactory;
 import io.esastack.commons.net.buffer.BufferUtil;
 import io.esastack.commons.net.netty.http.Http1HeadersAdaptor;
 import io.esastack.commons.net.netty.http.Http1HeadersImpl;
-import io.esastack.restlight.core.DeployContext;
 import io.esastack.restlight.core.method.Param;
-import io.esastack.restlight.core.resolver.HandlerResolverFactory;
-import io.esastack.restlight.core.resolver.ParamResolverFactory;
+import io.esastack.restlight.core.resolver.StringConverter;
 import io.esastack.restlight.core.resolver.nav.NameAndValue;
 import io.esastack.restlight.core.resolver.nav.NameAndValueResolver;
 import io.esastack.restlight.core.resolver.nav.NameAndValueResolverFactory;
-import io.esastack.restlight.ext.multipart.core.MultipartConfig;
 import io.esastack.restlight.ext.multipart.core.MultipartFile;
 import io.esastack.restlight.ext.multipart.core.MultipartFileImpl;
 import io.esastack.restlight.server.context.RequestContext;
@@ -41,8 +38,6 @@ import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpVersion;
 import io.netty.handler.codec.http.multipart.Attribute;
-import io.netty.handler.codec.http.multipart.DefaultHttpDataFactory;
-import io.netty.handler.codec.http.multipart.DiskFileUpload;
 import io.netty.handler.codec.http.multipart.FileUpload;
 import io.netty.handler.codec.http.multipart.HttpDataFactory;
 import io.netty.handler.codec.http.multipart.HttpPostMultipartRequestDecoder;
@@ -50,42 +45,35 @@ import io.netty.handler.codec.http.multipart.HttpPostRequestDecoder;
 import io.netty.handler.codec.http.multipart.InterfaceHttpData;
 
 import java.io.IOException;
-import java.nio.charset.Charset;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 abstract class AbstractMultipartParamResolver extends NameAndValueResolverFactory {
 
     static final AttributeKey<String> PREFIX = AttributeKey.stringKey("$multipart.attr.");
-    private static final AttributeKey<HttpPostMultipartRequestDecoder> MULTIPART_DECODER =
-            AttributeKey.valueOf("$multipart.decoder");
-
-    private static final String ENCODING_KEY = "multipart.charset";
-    private static final String USE_DISK_KEY = "multipart.use-disk";
-    private static final String MEM_THRESHOLD_KEY = "multipart.memory-threshold";
-    private static final String MAX_SIZE_KEY = "multipart.max-size";
-    private static final String TEMP_DIR_KEY = "multipart.temp-dir";
+    static final AttributeKey<List<MultipartFile>> MULTIPART_FILES = AttributeKey.valueOf("$multipart.files");
 
     private static final Logger logger =
             LoggerFactory.getLogger(AbstractMultipartParamResolver.class);
 
+    private static final AttributeKey<HttpPostMultipartRequestDecoder> MULTIPART_DECODER =
+            AttributeKey.valueOf("$multipart.decoder");
     private static final AttributeKey<Boolean> MULTIPART_BODY_RESOLVED = AttributeKey.valueOf("$multipart.resolved");
     private static final AttributeKey<String> CLEANER_LISTENER = AttributeKey.stringKey("$multipart.cleaner");
-    static final AttributeKey<List<MultipartFile>> MULTIPART_FILES = AttributeKey.valueOf("$multipart.files");
 
-    private HttpDataFactory factory;
+    private final HttpDataFactory factory;
 
-    @Override
-    public Optional<ParamResolverFactory> factoryBean(DeployContext ctx) {
-        initFactory(Checks.checkNotNull(buildConfig(ctx), "config"));
-        return super.factoryBean(ctx);
+    AbstractMultipartParamResolver(HttpDataFactory factory) {
+        Checks.checkNotNull(factory, "factory");
+        this.factory = factory;
     }
 
     @SuppressWarnings("rawtypes")
     @Override
-    public NameAndValueResolver createResolver(Param param, HandlerResolverFactory resolverFactory) {
-        final NameAndValueResolver resolver = doCreateResolver(param, resolverFactory);
+    protected NameAndValueResolver createResolver(Param param,
+                                                  Function3<Class<?>, Type, Param, StringConverter> converterFunc) {
+        final NameAndValueResolver resolver = doCreateResolver(param, converterFunc);
         Checks.checkNotNull(resolver, "resolver");
         return new NameAndValueResolver() {
             @Override
@@ -138,37 +126,17 @@ abstract class AbstractMultipartParamResolver extends NameAndValueResolverFactor
         }
     }
 
-    protected abstract NameAndValueResolver doCreateResolver(Param param, HandlerResolverFactory resolverFactory);
+    /**
+     * Creates {@link NameAndValueResolver} by given {@code param} and {@code converterFunc}.
+     *
+     * @param param             param
+     * @param converterFunc     converter function
+     * @return                  resolver
+     */
+    protected abstract NameAndValueResolver doCreateResolver(Param param,
+                                                             Function3<Class<?>, Type, Param,
+                                                                     StringConverter> converterFunc);
 
-    MultipartConfig buildConfig(DeployContext ctx) {
-        MultipartConfig config;
-
-        // Try to get useDiskValue from options, if absent then try to get minSizeValue.
-        final Optional<String> useDiskValue = ctx.options().extOption(USE_DISK_KEY);
-        config = useDiskValue.map(s -> new MultipartConfig(Boolean.parseBoolean(s)))
-                .orElseGet(() -> new MultipartConfig(ctx.options()
-                        .extOption(MEM_THRESHOLD_KEY)
-                        .map(Long::valueOf)
-                        .orElse(0L)));
-
-        ctx.options().extOption(MAX_SIZE_KEY).ifPresent((s) -> config.setMaxSize(Long.parseLong(s)));
-        ctx.options().extOption(ENCODING_KEY).ifPresent((s) -> config.setCharset(Charset.forName(s)));
-        ctx.options().extOption(TEMP_DIR_KEY).ifPresent((s) -> config.setTempDir(StringUtils.trim(s)));
-        return config;
-    }
-
-    void initFactory(final MultipartConfig config) {
-        if (config.isUseDisk()) {
-            this.factory = new DefaultHttpDataFactory(config.isUseDisk(), config.getCharset());
-        } else {
-            this.factory = new DefaultHttpDataFactory(config.getMemoryThreshold(), config.getCharset());
-        }
-        this.factory.setMaxLimit(config.getMaxSize());
-        final String tempDir = config.getTempDir();
-        if (StringUtils.isNotEmpty(tempDir)) {
-            DiskFileUpload.baseDirectory = tempDir;
-        }
-    }
 
     private static String getAndClean(Attribute attr) throws IOException {
         try {

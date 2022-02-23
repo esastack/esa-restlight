@@ -20,6 +20,7 @@ import io.esastack.commons.net.http.HttpHeaderNames;
 import io.esastack.commons.net.http.MediaTypeUtil;
 import io.esastack.restlight.core.util.HttpHeaderUtils;
 import io.esastack.restlight.jaxrs.util.MediaTypeUtils;
+import io.esastack.restlight.jaxrs.util.RuntimeDelegateUtils;
 import io.esastack.restlight.server.util.LoggerUtils;
 import jakarta.ws.rs.core.EntityTag;
 import jakarta.ws.rs.core.GenericType;
@@ -33,15 +34,20 @@ import jakarta.ws.rs.ext.RuntimeDelegate;
 
 import java.lang.annotation.Annotation;
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
+import java.util.stream.Collectors;
 
 public class ResponseImpl extends Response {
 
@@ -293,7 +299,7 @@ public class ResponseImpl extends Response {
 
     @Override
     public MultivaluedMap<String, String> getStringHeaders() {
-        return new DelegatingMultivaluedMap(builder.headers());
+        return new StringHeadersMultivaluedMap(builder.headers());
     }
 
     @Override
@@ -304,6 +310,163 @@ public class ResponseImpl extends Response {
     private void checkClosed() {
         if (CLOSED_STATE.get(this) == 1) {
             throw new IllegalStateException("Response has been closed!");
+        }
+    }
+
+    static class StringHeadersMultivaluedMap implements MultivaluedMap<String, String> {
+
+        private final MultivaluedMap<String, Object> underlying;
+
+        StringHeadersMultivaluedMap(MultivaluedMap<String, Object> underlying) {
+            Checks.checkNotNull(underlying, "underlying");
+            this.underlying = underlying;
+        }
+
+        @Override
+        public void putSingle(String key, String value) {
+            underlying.putSingle(key, value);
+        }
+
+        @Override
+        public void add(String key, String value) {
+            underlying.add(key, value);
+        }
+
+        @Override
+        public String getFirst(String key) {
+            return RuntimeDelegateUtils.toString(underlying.getFirst(key));
+        }
+
+        @Override
+        public void addAll(String key, String... newValues) {
+            underlying.addAll(key, newValues);
+        }
+
+        @Override
+        public void addAll(String key, List<String> valueList) {
+            List<Object> values = null;
+            if (valueList != null) {
+                values = new ArrayList<>(valueList);
+            }
+            underlying.addAll(key, values);
+        }
+
+        @Override
+        public void addFirst(String key, String value) {
+            underlying.addFirst(key, value);
+        }
+
+        @Override
+        public boolean equalsIgnoreValueOrder(MultivaluedMap<String, String> otherMap) {
+            return RuntimeDelegateUtils.equalsIgnoreValueOrder(underlying, otherMap);
+        }
+
+        @Override
+        public int size() {
+            return underlying.size();
+        }
+
+        @Override
+        public boolean isEmpty() {
+            return underlying.isEmpty();
+        }
+
+        @Override
+        public boolean containsKey(Object key) {
+            return underlying.containsKey(key);
+        }
+
+        @Override
+        public boolean containsValue(Object value) {
+            return underlying.containsValue(value);
+        }
+
+        @Override
+        public List<String> get(Object key) {
+            List<Object> previous = underlying.get(key);
+            if (previous == null) {
+                return null;
+            }
+            return previous.stream().map(RuntimeDelegateUtils::toString).collect(Collectors.toList());
+        }
+
+        @Override
+        public List<String> put(String key, List<String> value) {
+            final List<Object> newValue;
+            if (value == null) {
+                newValue = null;
+            } else {
+                newValue = new ArrayList<>(value);
+            }
+            List<Object> previous = underlying.put(key, newValue);
+            if (previous == null) {
+                return null;
+            }
+            return previous.stream().map(RuntimeDelegateUtils::toString).collect(Collectors.toList());
+        }
+
+        @Override
+        public List<String> remove(Object key) {
+            List<Object> previous = underlying.remove(key);
+            if (previous == null) {
+                return null;
+            }
+            return previous.stream().map(RuntimeDelegateUtils::toString).collect(Collectors.toList());
+        }
+
+        @Override
+        public void putAll(Map<? extends String, ? extends List<String>> m) {
+            Map<String, List<Object>> entries = new LinkedHashMap<>();
+            m.forEach((k, v) -> entries.put(k, v == null ? null : new ArrayList<>(v)));
+            underlying.putAll(entries);
+        }
+
+        @Override
+        public void clear() {
+            underlying.clear();
+        }
+
+        @Override
+        public Set<String> keySet() {
+            return underlying.keySet();
+        }
+
+        @Override
+        public Collection<List<String>> values() {
+            Collection<List<String>> values = new ArrayList<>();
+            underlying.values().forEach(vs -> {
+                if (vs == null) {
+                    values.add(null);
+                } else {
+                    values.add(vs.stream().map(RuntimeDelegateUtils::toString).collect(Collectors.toList()));
+                }
+            });
+            return values;
+        }
+
+        @Override
+        public Set<Entry<String, List<String>>> entrySet() {
+            Set<Entry<String, List<String>>> entries = new LinkedHashSet<>();
+            underlying.forEach((key, value) -> entries.add(new Entry<String, List<String>>() {
+                @Override
+                public String getKey() {
+                    return key;
+                }
+
+                @Override
+                public List<String> getValue() {
+                    return value.stream().map(RuntimeDelegateUtils::toString)
+                            .collect(Collectors.toList());
+                }
+
+                @Override
+                public List<String> setValue(List<String> value) {
+                    List<String> previous = getValue();
+                    underlying.put(key, value == null ? null : new ArrayList<>(value));
+                    return previous;
+                }
+            }));
+            return entries;
         }
     }
 

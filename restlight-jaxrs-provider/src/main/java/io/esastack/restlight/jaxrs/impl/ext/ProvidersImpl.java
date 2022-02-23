@@ -17,6 +17,9 @@ package io.esastack.restlight.jaxrs.impl.ext;
 
 import esa.commons.Checks;
 import esa.commons.ClassUtils;
+import esa.commons.logging.Logger;
+import esa.commons.logging.LoggerFactory;
+import io.esastack.restlight.core.resolver.ExceptionResolver;
 import io.esastack.restlight.core.resolver.exception.DefaultExceptionMapper;
 import io.esastack.restlight.core.util.Ordered;
 import io.esastack.restlight.core.util.OrderedComparator;
@@ -42,8 +45,9 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class ProvidersImpl implements Providers {
 
-    public final ProvidersFactory providers;
+    private static final Logger logger = LoggerFactory.getLogger(ProvidersImpl.class);
 
+    private final ProvidersFactory providers;
     private final AtomicReference<ConsumesComponent<MessageBodyReader<?>>[]> messageBodyReaders
             = new AtomicReference<>();
     private final AtomicReference<ProducesComponent<MessageBodyWriter<?>>[]> messageBodyWriters
@@ -152,14 +156,28 @@ public class ProvidersImpl implements Providers {
                 return pre;
             }
             Map<Class<? extends Throwable>, JaxrsExceptionMapperAdapter<Throwable>> mappings = new HashMap<>();
-            for (Map.Entry<Class<Throwable>, ProxyComponent<ExceptionMapper<Throwable>>> entry :
-                    providers.exceptionMappers().entrySet()) {
-                mappings.put(entry.getKey(), new JaxrsExceptionMapperAdapter<>(entry.getValue().proxied()));
+            for (ProxyComponent<ExceptionMapper<Throwable>> item : providers.exceptionMappers()) {
+                Class<Throwable> matchedType = (Class<Throwable>) ClassUtils.findFirstGenericType(
+                        ClassUtils.getUserType(item.underlying())).orElse(Throwable.class);
+                JaxrsExceptionMapperAdapter<?> previous = mappings.put(matchedType,
+                        new JaxrsExceptionMapperAdapter<>(item));
+                if (previous != null) {
+                    logger.warn("Found ambiguous ExceptionMapper to handle {}, the previous {} is ignored.",
+                            mappings, ClassUtils.getUserType(previous.underlying().underlying()));
+                }
             }
-            return new DefaultExceptionMapper(mappings);
+            if (mappings.isEmpty()) {
+                return type1 -> null;
+            } else {
+                return new DefaultExceptionMapper(mappings);
+            }
         });
 
-        return (ExceptionMapper<T>) ((JaxrsExceptionMapperAdapter<?>) mapper.mapTo(type)).underlying();
+        ExceptionResolver<Throwable> mapped = mapper.mapTo(type);
+        if (mapped == null) {
+            return null;
+        }
+        return (ExceptionMapper<T>) ((JaxrsExceptionMapperAdapter<?>) mapped).underlying().proxied();
     }
 
     @SuppressWarnings("unchecked")
@@ -170,14 +188,14 @@ public class ProvidersImpl implements Providers {
                 return pre;
             }
 
-            Map<Class<?>, ProxyComponent<ContextResolver<?>>> resolvers0 = providers.contextResolvers();
+            Collection<ProxyComponent<ContextResolver<?>>> resolvers0 = providers.contextResolvers();
             ProducesComponent<ContextResolver<?>>[] current = new ProducesComponent[resolvers0.size()];
             int i = 0;
-            for (Map.Entry<Class<?>, ProxyComponent<ContextResolver<?>>> resolver : resolvers0.entrySet()) {
-                current[i++] = new ProducesComponent(resolver.getValue().proxied(),
-                        resolver.getKey(),
-                        JaxrsUtils.getOrder(resolver.getValue().underlying()),
-                        JaxrsUtils.produces(resolver.getValue().underlying()).toArray(new MediaType[0]));
+            for (ProxyComponent<ContextResolver<?>> resolver : resolvers0) {
+                current[i++] = new ProducesComponent(resolver.proxied(),
+                        ClassUtils.findFirstGenericType(resolver.underlying().getClass()).orElse(Object.class),
+                        JaxrsUtils.getOrder(resolver.underlying()),
+                        JaxrsUtils.produces(resolver.underlying()).toArray(new MediaType[0]));
             }
             return current;
         });
@@ -185,6 +203,13 @@ public class ProvidersImpl implements Providers {
         if (resolvers.length == 0) {
             return null;
         }
+
+        // follow specification, default to application/octet-stream.
+        if (mediaType == null) {
+            mediaType = MediaType.APPLICATION_OCTET_STREAM_TYPE;
+        }
+
+        OrderedComparator.sort(resolvers);
         List<ContextResolver<?>> filtered = new LinkedList<>();
         for (ProducesComponent<ContextResolver<?>> resolver : resolvers) {
             if (resolver.type.isAssignableFrom(contextType) && isCompatible(mediaType, resolver.produces)) {

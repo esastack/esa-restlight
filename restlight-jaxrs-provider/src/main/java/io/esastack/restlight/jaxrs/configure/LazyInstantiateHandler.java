@@ -26,8 +26,6 @@ class LazyInstantiateHandler implements InvocationHandler {
 
     private final DeployContext context;
     private final Class<?> clazz;
-    private final Object instantiateLock = new Object();
-    private final Object initLock = new Object();
 
     private volatile Object target;
     private volatile boolean initialized;
@@ -48,10 +46,10 @@ class LazyInstantiateHandler implements InvocationHandler {
         }
     }
 
-    private Object getInstanceThenInit() {
+    Object getInstanceThenInit() {
         Object instance = getInstance();
         if (!initialized) {
-            synchronized (initLock) {
+            synchronized (this) {
                 if (!initialized) {
                     context.handlerFactory().orElseThrow(() ->
                             new IllegalStateException("HandlerFactory is not present while initializing object," +
@@ -64,11 +62,11 @@ class LazyInstantiateHandler implements InvocationHandler {
         return instance;
     }
 
-    protected Object getInstance() {
+    Object getInstance() {
         if (target != null) {
             return target;
         }
-        synchronized (instantiateLock) {
+        synchronized (this) {
             if (target == null) {
                 target = context.handlerFactory().orElseThrow(() ->
                         new IllegalStateException("HandlerFactory is not present while instantiating class: " + clazz))

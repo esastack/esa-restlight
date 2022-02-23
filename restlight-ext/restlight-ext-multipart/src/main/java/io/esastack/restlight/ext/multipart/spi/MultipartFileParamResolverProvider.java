@@ -16,35 +16,54 @@
 package io.esastack.restlight.ext.multipart.spi;
 
 import esa.commons.StringUtils;
+import esa.commons.function.Function3;
 import io.esastack.restlight.core.method.Param;
-import io.esastack.restlight.core.resolver.HandlerResolverFactory;
+import io.esastack.restlight.core.resolver.StringConverter;
 import io.esastack.restlight.core.resolver.nav.NameAndValue;
 import io.esastack.restlight.core.resolver.nav.NameAndValueResolver;
 import io.esastack.restlight.ext.multipart.annotation.UploadFile;
 import io.esastack.restlight.ext.multipart.core.MultipartFile;
 import io.esastack.restlight.server.context.RequestContext;
+import io.netty.handler.codec.http.multipart.HttpDataFactory;
 
+import java.lang.reflect.Type;
 import java.util.LinkedList;
 import java.util.List;
 
-public class MultipartFileParamResolver extends AbstractMultipartParamResolver {
+import static io.esastack.restlight.ext.multipart.spi.AbstractMultipartParamResolver.MULTIPART_FILES;
+
+public class MultipartFileParamResolverProvider extends AbstractMultipartParamResolverProvider {
 
     @Override
-    public boolean supports(Param param) {
-        return param.hasAnnotation(UploadFile.class)
-                && (MultipartFile.class.isAssignableFrom(param.type())
-                || List.class.isAssignableFrom(param.type()));
+    protected AbstractMultipartParamResolver createResolver(HttpDataFactory factory) {
+        return new MultipartFileParamResolver(factory);
     }
 
-    @Override
-    protected NameAndValueResolver doCreateResolver(Param param, HandlerResolverFactory resolverFactory) {
-        if (MultipartFile.class.isAssignableFrom(param.type())) {
-            return new SingleFileResolver();
+    final class MultipartFileParamResolver extends AbstractMultipartParamResolver {
+
+        MultipartFileParamResolver(HttpDataFactory factory) {
+            super(factory);
         }
-        if (List.class.isAssignableFrom(param.type())) {
-            return new FilesResolver();
+
+        @Override
+        public boolean supports(Param param) {
+            return param.hasAnnotation(UploadFile.class)
+                    && (MultipartFile.class.isAssignableFrom(param.type())
+                    || List.class.isAssignableFrom(param.type()));
         }
-        throw new IllegalStateException("Unexpected");
+
+        @Override
+        protected NameAndValueResolver doCreateResolver(Param param,
+                                                        Function3<Class<?>, Type, Param, StringConverter>
+                                                                converterFunc) {
+            if (MultipartFile.class.isAssignableFrom(param.type())) {
+                return new SingleFileResolver();
+            }
+            if (List.class.isAssignableFrom(param.type())) {
+                return new FilesResolver();
+            }
+            throw new IllegalStateException("Unexpected");
+        }
     }
 
     private NameAndValue<Object> createNameAndValue(Param param) {
@@ -68,7 +87,7 @@ public class MultipartFileParamResolver extends AbstractMultipartParamResolver {
         return result;
     }
 
-    private class SingleFileResolver implements NameAndValueResolver {
+    private final class SingleFileResolver implements NameAndValueResolver {
 
         @Override
         public Object resolve(String name, RequestContext ctx) {
@@ -81,11 +100,11 @@ public class MultipartFileParamResolver extends AbstractMultipartParamResolver {
 
         @Override
         public NameAndValue<Object> createNameAndValue(Param param) {
-            return MultipartFileParamResolver.this.createNameAndValue(param);
+            return MultipartFileParamResolverProvider.this.createNameAndValue(param);
         }
     }
 
-    private class FilesResolver implements NameAndValueResolver {
+    private final class FilesResolver implements NameAndValueResolver {
 
         @Override
         public Object resolve(String name, RequestContext ctx) {
@@ -94,7 +113,7 @@ public class MultipartFileParamResolver extends AbstractMultipartParamResolver {
 
         @Override
         public NameAndValue<Object> createNameAndValue(Param param) {
-            return MultipartFileParamResolver.this.createNameAndValue(param);
+            return MultipartFileParamResolverProvider.this.createNameAndValue(param);
         }
     }
 }

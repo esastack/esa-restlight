@@ -1,2 +1,2 @@
-io.esastack.restlight.ext.multipart.spi.MultipartAttrParamResolver
-io.esastack.restlight.ext.multipart.spi.MultipartFileParamResolver
+io.esastack.restlight.ext.multipart.spi.MultipartAttrParamResolverProvider
+io.esastack.restlight.ext.multipart.spi.MultipartFileParamResolverProvider
