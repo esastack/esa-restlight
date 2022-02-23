@@ -16,14 +16,17 @@
 package io.esastack.restlight.core.resolver.param;
 
 import esa.commons.StringUtils;
+import esa.commons.function.Function3;
 import io.esastack.restlight.core.method.Param;
-import io.esastack.restlight.core.resolver.HandlerResolverFactory;
+import io.esastack.restlight.core.resolver.StringConverter;
 import io.esastack.restlight.core.resolver.nav.NameAndStringValueResolver;
 import io.esastack.restlight.core.resolver.nav.NameAndValue;
 import io.esastack.restlight.core.resolver.nav.NameAndValueResolver;
 import io.esastack.restlight.core.resolver.nav.NameAndValueResolverFactory;
 import io.esastack.restlight.server.context.RequestContext;
 import io.esastack.restlight.server.util.PathVariableUtils;
+
+import java.lang.reflect.Type;
 
 /**
  * Implementation of {@link NameAndValueResolverFactory} for resolving argument that annotated by
@@ -32,13 +35,20 @@ import io.esastack.restlight.server.util.PathVariableUtils;
 public abstract class AbstractPathVariableParamResolver extends NameAndValueResolverFactory {
 
     @Override
-    public NameAndValueResolver createResolver(Param param, HandlerResolverFactory resolverFactory) {
+    protected NameAndValueResolver createResolver(Param param,
+                                                  Function3<Class<?>, Type, Param, StringConverter> converterFunc) {
         return new NameAndStringValueResolver(param,
-                resolverFactory,
+                converterFunc,
                 this::extractValue,
                 createNameAndValue(param));
     }
 
+    /**
+     * Creates {@link NameAndValue} for given {@code param}.
+     *
+     * @param param     param
+     * @return          name and value
+     */
     protected abstract NameAndValue<String> createNameAndValue(Param param);
 
     protected String extractValue(String name, RequestContext ctx) {

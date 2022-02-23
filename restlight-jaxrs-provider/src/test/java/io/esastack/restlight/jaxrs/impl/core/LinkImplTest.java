@@ -19,14 +19,17 @@ import jakarta.ws.rs.core.Link;
 import org.junit.jupiter.api.Test;
 
 import java.net.URI;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class LinkImplTest {
 
@@ -60,6 +63,9 @@ class LinkImplTest {
         assertEquals("xyz1", rels.get(1));
         assertEquals("xyz2", rels.get(2));
         assertEquals("xyz3", rels.get(3));
+
+        final Link link2 = new LinkImpl(uri, Collections.emptyMap());
+        assertTrue(link2.getRels().isEmpty());
     }
 
     @Test
@@ -75,6 +81,8 @@ class LinkImplTest {
         final Link link2 = new LinkImpl(uri, params);
         assertEquals(link1, link2);
         assertEquals(link2, link1);
+        assertNotEquals(link1, null);
+        assertNotEquals(link1, new Object());
     }
 
     @Test
@@ -86,6 +94,8 @@ class LinkImplTest {
         params.put(Link.TYPE, "application/json");
         params.put("name", "value");
         final Link link = new LinkImpl(uri, params);
+        assertEquals("</abc/def>;rel=\"xyz\";title=\"pq\";type=\"application/json\";name=\"value\"",
+                link.toString());
         assertEquals("</abc/def>;rel=\"xyz\";title=\"pq\";type=\"application/json\";name=\"value\"",
                 link.toString());
     }

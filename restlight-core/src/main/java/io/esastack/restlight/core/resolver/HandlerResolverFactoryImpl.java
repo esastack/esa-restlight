@@ -270,7 +270,8 @@ public class HandlerResolverFactoryImpl implements HandlerResolverFactory {
         //resolve the fixed parameter resolver
         return paramResolvers.stream().filter(r -> r.supports(param))
                 .findFirst()
-                .map(factory -> Checks.checkNotNull(factory.createResolver(param, rxSerializers),
+                .map(factory -> Checks.checkNotNull(factory.createResolver(param, this::getStringConverter,
+                        rxSerializers),
                         "Failed to create ParamResolver for parameter: " + param))
                 .orElse(null);
     }

@@ -28,8 +28,9 @@ class LazyInjectHandler extends LazyInstantiateHandler {
     }
 
     @Override
-    protected Object getInstance() {
+    Object getInstance() {
         return target;
     }
+
 }
 

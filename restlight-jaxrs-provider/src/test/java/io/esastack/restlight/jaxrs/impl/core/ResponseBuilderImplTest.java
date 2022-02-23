@@ -94,6 +94,12 @@ class ResponseBuilderImplTest {
         assertEquals("value", response.getHeaderString("name"));
         assertEquals("value1", response.getHeaderString("name1"));
         assertTrue(builder.headers().isEmpty());
+
+        final Object entity = new Object();
+        builder.entity(entity);
+        final Response response1 = builder.build();
+        assertEquals(200, response1.getStatus());
+        assertSame(entity, response1.getEntity());
     }
 
     @Test
@@ -118,7 +124,7 @@ class ResponseBuilderImplTest {
         assertTrue(methods2.contains("XYZ"));
         assertTrue(methods2.contains("AB"));
 
-        builder2.allow((String[]) null);
+        builder2.allow((Set<String>) null);
         assertNull(builder2.headers().get(HttpHeaders.ALLOW));
     }
 
@@ -314,7 +320,7 @@ class ResponseBuilderImplTest {
         assertEquals(2, builder.headers().get(HttpHeaders.VARY).size());
         assertSame(variant1, builder.headers().get(HttpHeaders.VARY).get(0));
         assertSame(variant2, builder.headers().get(HttpHeaders.VARY).get(1));
-        builder.variants((Variant[]) null);
+        builder.variants((List<Variant>) null);
         assertNull(builder.headers().get(HttpHeaders.VARY));
     }
 
@@ -327,6 +333,8 @@ class ResponseBuilderImplTest {
         assertEquals(2, builder.headers().get(HttpHeaders.LINK).size());
         assertSame(link1, builder.headers().get(HttpHeaders.LINK).get(0));
         assertSame(link2, builder.headers().get(HttpHeaders.LINK).get(1));
+        builder.links((Link[]) null);
+        assertNull(builder.headers().get(HttpHeaders.LINK));
     }
 
     @Test

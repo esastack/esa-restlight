@@ -51,12 +51,12 @@ public class MessageBodyWriterAdapter<T> implements ResponseEntityResolverAdapte
         }
         Class<?> type = entity.type();
         if (type == null) {
-            type = ClassUtils.getUserType(entity.response().entity());
+            entity.type(ClassUtils.getUserType(entity.response().entity()));
         }
 
         for (io.esastack.commons.net.http.MediaType mediaType : ResponseEntityUtils.getMediaTypes(context)) {
             MediaType mediaType0 = MediaTypeUtils.convert(mediaType);
-            MessageBodyWriter<T> writer = (MessageBodyWriter<T>) providers.getMessageBodyWriter(type,
+            MessageBodyWriter<T> writer = (MessageBodyWriter<T>) providers.getMessageBodyWriter(entity.type(),
                     entity.genericType(), entity.annotations(), mediaType0);
             if (writer != null) {
                 T value = (T) entity.response().entity();
@@ -64,12 +64,12 @@ public class MessageBodyWriterAdapter<T> implements ResponseEntityResolverAdapte
                 RuntimeDelegateUtils.addHeadersToMap(context.response().headers(), headers);
                 try {
                     writer.writeTo(value, entity.type(), entity.genericType(), entity.annotations(),
-                            mediaType0, headers, ResponseEntityStreamClose.getNonClosableOutputStream(context));
+                            mediaType0, headers, ResponseEntityStreamUtils.getUnClosableOutputStream(context));
                 } finally {
                     RuntimeDelegateUtils.addHeadersFromMap(context.response().headers(), headers, true);
                 }
 
-                ResponseEntityStreamClose.close(context);
+                ResponseEntityStreamUtils.close(context);
                 return HandledValue.succeed(null);
             }
         }

@@ -33,11 +33,11 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-public class DelegatingContainerRequestContext implements ContainerRequestContext {
+class DelegatingContainerRequestContext implements ContainerRequestContext {
 
     private final AbstractContainerRequestContext underlying;
 
-    public DelegatingContainerRequestContext(AbstractContainerRequestContext underlying) {
+    DelegatingContainerRequestContext(AbstractContainerRequestContext underlying) {
         Checks.checkNotNull(underlying, "underlying");
         this.underlying = underlying;
     }

@@ -43,7 +43,7 @@ public class JaxrsContextResolverAdapter implements ParamResolverAdapter {
         for (MediaType mediaType : ResponseEntityUtils.getMediaTypes(context)) {
             if ((resolver = providers.getContextResolver(param.type(),
                     MediaTypeUtils.convert(mediaType))) != null) {
-                return resolver;
+                return resolver.getContext(param.type());
             }
         }
         return null;

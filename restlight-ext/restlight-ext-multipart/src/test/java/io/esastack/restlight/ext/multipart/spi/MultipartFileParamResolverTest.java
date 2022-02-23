@@ -16,9 +16,7 @@
 package io.esastack.restlight.ext.multipart.spi;
 
 import io.esastack.restlight.core.method.MethodParam;
-import io.esastack.restlight.core.resolver.HandlerResolverFactory;
 import io.esastack.restlight.core.resolver.ParamResolver;
-import io.esastack.restlight.core.resolver.nav.NameAndValueResolverAdapter;
 import io.esastack.restlight.core.spi.impl.DefaultStringConverterFactory;
 import io.esastack.restlight.ext.multipart.core.MultipartFile;
 import io.esastack.restlight.server.bootstrap.WebServerException;
@@ -33,8 +31,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 class MultipartFileParamResolverTest extends AbstractMultipartResolverTest {
 
@@ -43,28 +39,24 @@ class MultipartFileParamResolverTest extends AbstractMultipartResolverTest {
     private static Object createResolverAndResolve(HttpRequest request,
                                                    String method,
                                                    int index) throws Exception {
-        final MethodParam parameter = handlerMethods.get(method).parameters()[index];
-        assertTrue(fileResolver.supports(parameter));
-        HandlerResolverFactory resolverFactory = mock(HandlerResolverFactory.class);
-        final ParamResolver resolver = new NameAndValueResolverAdapter(parameter,
-                fileResolver.createResolver(parameter, resolverFactory));
-        return resolver.resolve(parameter, new RequestContextImpl(request,
+        final MethodParam param = handlerMethods.get(method).parameters()[index];
+        AbstractMultipartParamResolver factory = fileResolver.createResolver(fileResolver.buildFactory(config));
+        assertTrue(factory.supports(param));
+        final ParamResolver resolver = factory.createResolver(param, (clazz, type, p) -> null, null);
+        return resolver.resolve(param, new RequestContextImpl(request,
                 MockHttpResponse.aMockResponse().build()));
     }
 
     private static Object createFormResolverAndResolve(HttpRequest request,
                                                        String method,
                                                        int index) throws Exception {
-        final MethodParam parameter = handlerMethods.get(method).parameters()[index];
-        HandlerResolverFactory resolverFactory = mock(HandlerResolverFactory.class);
-        when(resolverFactory
-                .getStringConverter(parameter.type(), parameter.genericType(), parameter))
-                .thenReturn(CONVERTER_FACTORY
-                        .createConverter(parameter.type(), parameter.genericType(), parameter).get());
-        final ParamResolver resolver = new NameAndValueResolverAdapter(parameter,
-                attrResolver.createResolver(parameter, resolverFactory));
-        return resolver.resolve(parameter, new RequestContextImpl(request,
-                MockHttpResponse.aMockResponse().build()));
+        final MethodParam param = handlerMethods.get(method).parameters()[index];
+        AbstractMultipartParamResolver factory = attrResolver.createResolver(attrResolver.buildFactory(config));
+        assertTrue(factory.supports(param));
+        final ParamResolver resolver = factory.createResolver(param, (clazz, type, p) -> CONVERTER_FACTORY
+                .createConverter(p.type(), p.genericType(), p).get(),
+                null);
+        return resolver.resolve(param, new RequestContextImpl(request, MockHttpResponse.aMockResponse().build()));
     }
 
     @Test
@@ -209,7 +201,8 @@ class MultipartFileParamResolverTest extends AbstractMultipartResolverTest {
         assertEquals(1, resolved0.size());
         assertEquals("foo.tab", resolved0.get(0).originalFilename());
 
-        final Object resolved1 = createFormResolverAndResolve(build(body), "multipartFileAndFormParam1", 0);
+        final Object resolved1 = createFormResolverAndResolve(build(body),
+                "multipartFileAndFormParam1", 0);
         assertEquals("value2", resolved1);
     }
 

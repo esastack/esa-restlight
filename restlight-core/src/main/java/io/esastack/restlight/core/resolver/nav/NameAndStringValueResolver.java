@@ -16,11 +16,12 @@
 package io.esastack.restlight.core.resolver.nav;
 
 import esa.commons.Checks;
+import esa.commons.function.Function3;
 import io.esastack.restlight.core.method.Param;
-import io.esastack.restlight.core.resolver.HandlerResolverFactory;
 import io.esastack.restlight.core.resolver.StringConverter;
 import io.esastack.restlight.server.context.RequestContext;
 
+import java.lang.reflect.Type;
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
@@ -31,14 +32,12 @@ public class NameAndStringValueResolver implements NameAndValueResolver {
     private final NameAndValue<Object> nav;
 
     public NameAndStringValueResolver(Param param,
-                                      HandlerResolverFactory resolverFactory,
+                                      Function3<Class<?>, Type, Param, StringConverter> converterFunc,
                                       BiFunction<String, RequestContext, String> paramValueFunc,
                                       NameAndValue<String> nav) {
-        Checks.checkNotNull(resolverFactory, "resolverFactory");
+        Checks.checkNotNull(converterFunc, "converterFunc");
         this.paramValueFunc = Checks.checkNotNull(paramValueFunc, "paramValueFunc");
-        this.converter = resolverFactory.getStringConverter(param.type(),
-                param.genericType(),
-                param);
+        this.converter = converterFunc.apply(param.type(), param.genericType(), param);
         if (this.converter == null) {
             throw new IllegalStateException("There is no suitable StringConverter for param(" + param + ").");
         }

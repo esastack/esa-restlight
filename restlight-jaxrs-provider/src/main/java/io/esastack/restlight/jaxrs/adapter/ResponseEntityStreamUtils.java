@@ -22,42 +22,33 @@ import io.esastack.restlight.server.context.RequestContext;
 import io.esastack.restlight.server.core.HttpOutputStream;
 import io.esastack.restlight.server.core.impl.HttpOutputStreamImpl;
 
-import java.io.OutputStream;
+final class ResponseEntityStreamUtils {
 
-final class ResponseEntityStreamClose {
+    private static final AttributeKey<HttpOutputStream> CLOSABLE_STREAM = AttributeKey.valueOf("$closable.stream");
 
-    private static final AttributeKey<HttpOutputStream> CLOSURE_STREAM = AttributeKey.valueOf("$closure.stream");
-
-    static HttpOutputStreamClosure getNonClosableOutputStream(RequestContext context) {
+    static HttpOutputStream getUnClosableOutputStream(RequestContext context) {
         HttpOutputStream outputStream = ResponseEntityStreamChannelImpl.get(context).outputStream();
-        if (!context.attrs().hasAttr(CLOSURE_STREAM)) {
-            context.attrs().attr(CLOSURE_STREAM).set(outputStream);
+        if (!context.attrs().hasAttr(CLOSABLE_STREAM)) {
+            context.attrs().attr(CLOSABLE_STREAM).set(outputStream);
             context.response().onEnd((rsp) -> close(context));
         }
-        return new HttpOutputStreamClosure(outputStream);
+        return new HttpOutputStreamImpl(outputStream) {
+            @Override
+            public void close() {
+                // do nothing
+                // NOTE: the close should only be invoked when the request has ended.
+            }
+        };
     }
 
     static void close(RequestContext context) {
         HttpOutputStream closable;
-        if ((closable = context.attrs().attr(CLOSURE_STREAM).getAndRemove()) != null) {
+        if ((closable = context.attrs().attr(CLOSABLE_STREAM).getAndRemove()) != null) {
             IOUtils.closeQuietly(closable);
         }
     }
 
-    private static class HttpOutputStreamClosure extends HttpOutputStreamImpl {
-
-        private HttpOutputStreamClosure(OutputStream underlying) {
-            super(underlying);
-        }
-
-        @Override
-        public void close() {
-            // do nothing
-            // NOTE: the close should only be invoked when the request has ended.
-        }
-    }
-
-    private ResponseEntityStreamClose() {
+    private ResponseEntityStreamUtils() {
     }
 
 }

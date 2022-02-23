@@ -16,11 +16,13 @@
 package io.esastack.restlight.core.resolver;
 
 import esa.commons.Checks;
+import esa.commons.function.Function3;
 import esa.commons.spi.SPI;
 import io.esastack.restlight.core.method.Param;
 import io.esastack.restlight.core.serialize.HttpRequestSerializer;
 import io.esastack.restlight.core.util.Ordered;
 
+import java.lang.reflect.Type;
 import java.util.List;
 
 @SPI
@@ -29,7 +31,7 @@ public interface ParamResolverFactory extends ParamPredicate, Ordered {
     /**
      * Converts given {@link ParamResolverAdapter} to {@link ParamResolverFactory} which
      * always use the given {@link ParamResolverAdapter} as the result of
-     * {@link #createResolver(Param, List)}
+     * {@link #createResolver(Param, Function3, List)}
      *
      * @param resolver resolver
      * @return of factory bean
@@ -41,11 +43,14 @@ public interface ParamResolverFactory extends ParamPredicate, Ordered {
     /**
      * Creates a instance of {@link ParamResolver} for given handler method.
      *
-     * @param param       method
-     * @param serializers all the {@link HttpRequestSerializer}s of current context
+     * @param param         method
+     * @param converterFunc converter function which is used to get a {@link StringConverter} for given {@link Param},
+     *                      see {@link HandlerResolverFactory#getStringConverter(Class, Type, Param)}.
+     * @param serializers   all the {@link HttpRequestSerializer}s of current context
      * @return resolver
      */
     ParamResolver createResolver(Param param,
+                                 Function3<Class<?>, Type, Param, StringConverter> converterFunc,
                                  List<? extends HttpRequestSerializer> serializers);
 
     /**
@@ -69,6 +74,7 @@ public interface ParamResolverFactory extends ParamPredicate, Ordered {
 
         @Override
         public ParamResolver createResolver(Param param,
+                                            Function3<Class<?>, Type, Param, StringConverter> converter,
                                             List<? extends HttpRequestSerializer> serializers) {
             return resolver;
         }

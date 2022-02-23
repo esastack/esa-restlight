@@ -122,7 +122,7 @@ public final class RuntimeDelegateUtils {
             return true;
         }
 
-        if (!m1.keySet().equals(m2.keySet())) {
+        if (m1.keySet().size() != m2.keySet().size()) {
             return false;
         }
         for (Map.Entry<K, List<V1>> e : m1.entrySet()) {

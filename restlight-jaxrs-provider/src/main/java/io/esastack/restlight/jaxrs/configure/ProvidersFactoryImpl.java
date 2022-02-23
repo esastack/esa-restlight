@@ -77,29 +77,27 @@ public class ProvidersFactoryImpl implements ProvidersFactory {
 
     @SuppressWarnings("unchecked")
     @Override
-    public Map<Class<Throwable>, ProxyComponent<ExceptionMapper<Throwable>>> exceptionMappers() {
-        Map<Class<Throwable>, ProxyComponent<ExceptionMapper<Throwable>>> mappers = new HashMap<>();
+    public Collection<ProxyComponent<ExceptionMapper<Throwable>>> exceptionMappers() {
+        List<ProxyComponent<ExceptionMapper<Throwable>>> mappers = new LinkedList<>();
         getFromClasses(configuration.getProviderClasses(), ExceptionMapper.class).forEach((clazz, instance) ->
-                mappers.put((Class<Throwable>) ClassUtils.findFirstGenericType(clazz).orElse(Throwable.class),
-                        new ProxyComponent<>(instance.underlying(),
+                mappers.add(new ProxyComponent<>(instance.underlying(),
                                 (ExceptionMapper<Throwable>) instance.proxied())));
         getFromInstances(configuration.getProviderInstances(), ExceptionMapper.class).forEach((clazz, instance) ->
-                mappers.put((Class<Throwable>) ClassUtils.findFirstGenericType(clazz).orElse(Throwable.class),
-                        new ProxyComponent<>(instance.underlying(),
+                mappers.add(new ProxyComponent<>(instance.underlying(),
                                 (ExceptionMapper<Throwable>) instance.proxied())));
-        return Collections.unmodifiableMap(mappers);
+        return Collections.unmodifiableList(mappers);
     }
 
     @Override
-    public Map<Class<?>, ProxyComponent<ContextResolver<?>>> contextResolvers() {
-        Map<Class<?>, ProxyComponent<ContextResolver<?>>> resolvers = new HashMap<>();
+    public Collection<ProxyComponent<ContextResolver<?>>> contextResolvers() {
+        List<ProxyComponent<ContextResolver<?>>> resolvers = new LinkedList<>();
         getFromClasses(configuration.getProviderClasses(), ContextResolver.class).forEach((clazz, instance) ->
-                resolvers.put(ClassUtils.getRawType(clazz), new ProxyComponent<>(instance.underlying(),
+                resolvers.add(new ProxyComponent<>(instance.underlying(),
                         (ContextResolver<?>) instance.proxied())));
         getFromInstances(configuration.getProviderInstances(), ContextResolver.class).forEach((clazz, instance) ->
-                resolvers.put(ClassUtils.getRawType(clazz), new ProxyComponent<>(instance.underlying(),
+                resolvers.add(new ProxyComponent<>(instance.underlying(),
                         (ContextResolver<?>) instance.proxied())));
-        return Collections.unmodifiableMap(resolvers);
+        return Collections.unmodifiableList(resolvers);
     }
 
     @Override

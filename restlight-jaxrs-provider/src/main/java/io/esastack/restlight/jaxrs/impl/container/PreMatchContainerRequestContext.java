@@ -42,7 +42,7 @@ public class PreMatchContainerRequestContext extends AbstractContainerRequestCon
     @Override
     public void setMethod(String method) {
         Checks.checkNotNull(method, "method");
-        ((FilterContext) context).request().method(HttpMethod.valueOf(method));
+        ((FilterContext) context).request().method(HttpMethod.valueOf(method.toUpperCase()));
     }
 
     @Override

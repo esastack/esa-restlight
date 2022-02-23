@@ -60,8 +60,8 @@ public class DynamicFeatureAdapter implements HandlerConfigure {
                                  List<Class<? extends Annotation>> appNameBindings,
                                  Collection<ProxyComponent<DynamicFeature>> features,
                                  ConfigurationImpl parent) {
-        Checks.checkNotNull(parent, "parent");
         Checks.checkNotNull(context, "context");
+        Checks.checkNotNull(parent, "parent");
         this.context = context;
         this.appNameBindings = appNameBindings;
         this.features = features == null || features.isEmpty()
@@ -137,17 +137,15 @@ public class DynamicFeatureAdapter implements HandlerConfigure {
     }
 
     private <T> List<OrderComponent<T>> filterByNameBindings(HandlerMethod method,
-                                                             Collection<ProxyComponent<T>> all,
+                                                             Collection<ProxyComponent<T>> components,
                                                              boolean skipPreMatching) {
-        if (all.isEmpty()) {
+        if (components.isEmpty()) {
             return Collections.emptyList();
         }
         List<Class<? extends Annotation>> methodAnnotations = JaxrsUtils
                 .findNameBindings(method.method(), true);
         List<OrderComponent<T>> bound = new LinkedList<>();
-        for (ProxyComponent<T> component : all) {
-            // NOTE: follow specification description, filers or interceptors added by DynamicFeature is
-            // bound to current resource method.
+        for (ProxyComponent<T> component : components) {
             if (skipPreMatching && JaxrsUtils.isPreMatched(component.underlying())) {
                 continue;
             }

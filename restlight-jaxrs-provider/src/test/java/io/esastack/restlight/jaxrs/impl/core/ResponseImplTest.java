@@ -21,14 +21,22 @@ import jakarta.ws.rs.core.GenericType;
 import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.Link;
 import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.MultivaluedHashMap;
+import jakarta.ws.rs.core.MultivaluedMap;
 import jakarta.ws.rs.core.NewCookie;
 import jakarta.ws.rs.core.Response;
 import org.junit.jupiter.api.Test;
 
 import java.lang.annotation.Annotation;
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
@@ -91,6 +99,9 @@ class ResponseImplTest {
 
         response.setStatus(Response.Status.ACCEPTED);
         assertSame(Response.Status.ACCEPTED, response.getStatusInfo());
+
+        response.setStatus(302);
+        assertSame(Response.Status.FOUND, response.getStatusInfo());
     }
 
     @Test
@@ -245,6 +256,7 @@ class ResponseImplTest {
         assertFalse(response1.hasLink("/abc"));
         assertNull(response1.getLink("/abc"));
         assertNull(response1.getLinkBuilder("/abc"));
+        assertNull(response1.getLink(null));
 
         final ResponseBuilderImpl builder2 = new ResponseBuilderImpl();
         final ResponseImpl response2 = new ResponseImpl(builder2);
@@ -252,6 +264,7 @@ class ResponseImplTest {
         final Link link = new LinkImpl(URI.create("/abc"), Collections.singletonMap(REL, "def"));
         builder2.header(HttpHeaders.LINK, link);
         builder2.header(HttpHeaders.LINK, "<abc0>; rel=\"preload\"");
+        builder2.header(HttpHeaders.LINK, new Object());
         response2.getLinks();
         assertEquals(2, response2.getLinks().size());
         assertTrue(response2.hasLink("def"));
@@ -267,13 +280,193 @@ class ResponseImplTest {
         final ResponseBuilderImpl builder = new ResponseBuilderImpl();
         final ResponseImpl response = new ResponseImpl(builder);
         assertSame(builder.headers(), response.getMetadata());
-        assertTrue(response.getStringHeaders() instanceof DelegatingMultivaluedMap);
+        assertTrue(response.getStringHeaders() instanceof ResponseImpl.StringHeadersMultivaluedMap);
 
         builder.header("name", "value1");
         builder.header("name", "value2");
         builder.header("name", "value3");
 
         assertEquals("value1,value2,value3", response.getHeaderString("name"));
+    }
+
+    @Test
+    void testClose() {
+        final ResponseBuilderImpl builder = new ResponseBuilderImpl();
+        final ResponseImpl response = new ResponseImpl(builder);
+        response.close();
+        assertThrows(IllegalStateException.class, () -> response.setEntity(new Object()));
+    }
+
+    @Test
+    void testStringHeadersMultivaluedMap() {
+        assertThrows(NullPointerException.class,
+                () -> new ResponseImpl.StringHeadersMultivaluedMap(null));
+
+        final MultivaluedMap<String, Object> underlying = new MultivaluedHashMap<>();
+        final ResponseImpl.StringHeadersMultivaluedMap proxied =
+                new ResponseImpl.StringHeadersMultivaluedMap(underlying);
+        assertEquals(underlying.size(), proxied.size());
+        assertEquals(underlying.isEmpty(), proxied.isEmpty());
+        assertEquals(underlying.keySet(), proxied.keySet());
+        assertTrue(underlying.values().isEmpty() && proxied.values().isEmpty());
+        assertTrue(isValuesEquals(underlying, proxied));
+
+        proxied.putSingle("name", "value");
+        assertEquals(1, underlying.size());
+        assertEquals("value", underlying.getFirst("name"));
+
+        proxied.add("name1", "value1");
+        assertEquals(2, underlying.size());
+        assertEquals("value1", underlying.getFirst("name1"));
+
+        proxied.addAll("name2", "value21", "value22");
+        assertEquals(3, underlying.size());
+        List<Object> value2 = underlying.get("name2");
+        assertEquals(2, value2.size());
+        assertEquals("value21", value2.get(0));
+        assertEquals("value22", value2.get(1));
+
+        proxied.addAll("name3", Collections.singletonList("value31"));
+        List<Object> value3 = underlying.get("name3");
+        assertEquals(1, value3.size());
+        assertEquals("value31", value3.get(0));
+
+        proxied.addFirst("name4", "value4");
+        List<Object> value4 = underlying.get("name4");
+        assertEquals(1, value4.size());
+        assertEquals("value4", value4.get(0));
+
+        assertEquals(underlying.size(), proxied.size());
+        assertEquals(underlying.isEmpty(), proxied.isEmpty());
+        assertEquals(underlying.keySet(), proxied.keySet());
+        assertTrue(isValuesEquals(underlying, proxied));
+        assertTrue(!underlying.values().isEmpty() && !proxied.values().isEmpty());
+        assertEquals(underlying.containsKey("name"), proxied.containsKey("name"));
+        assertEquals(underlying.containsKey("name1"), proxied.containsKey("name1"));
+        assertEquals(underlying.containsKey("name2"), proxied.containsKey("name2"));
+        assertEquals(underlying.containsKey("name3"), proxied.containsKey("name3"));
+        assertEquals(underlying.containsKey("name4"), proxied.containsKey("name4"));
+
+        assertEquals(underlying.containsValue("value"), proxied.containsValue("value"));
+        assertEquals(underlying.containsValue("value1"), proxied.containsValue("value1"));
+        assertEquals(underlying.containsValue("value21"), proxied.containsValue("value21"));
+        assertEquals(underlying.containsValue("value22"), proxied.containsValue("value22"));
+        assertEquals(underlying.containsValue("value31"), proxied.containsValue("value31"));
+        assertEquals(underlying.containsValue("value4"), proxied.containsValue("value4"));
+
+        underlying.clear();
+        assertEquals(0, proxied.size());
+        assertTrue(proxied.isEmpty());
+
+        // test getFirst
+        final Map<String, String> params = new HashMap<>();
+        params.put("name1", "value1");
+        params.put("name2", "value2");
+        final Link link = new LinkImpl(URI.create("/abc/def"), params);
+        underlying.add("link", link);
+        assertEquals(link.toString(), proxied.getFirst("link"));
+
+        // test equalsIgnoreValueOrder
+        final MultivaluedMap<String, String> otherMap = new MultivaluedHashMap<>();
+        otherMap.add("link", link.toString());
+        assertFalse(proxied.equalsIgnoreValueOrder(otherMap));
+        underlying.clear();
+
+        // test get
+        final Link link1 = new LinkImpl(URI.create("/def/mn"), params);
+        underlying.add("name", link);
+        underlying.add("name", link1);
+        final List<String> values1 = proxied.get("name");
+        assertEquals(2, values1.size());
+        assertEquals(link.toString(), values1.get(0));
+        assertEquals(link1.toString(), values1.get(1));
+        assertNull(proxied.get("name1"));
+
+        // test put
+        final List<String> newValues = new ArrayList<>();
+        newValues.add("value1");
+        newValues.add("value2");
+        List<String> previous = proxied.put("name", newValues);
+        assertNotNull(previous);
+        assertEquals(2, previous.size());
+        assertEquals(link.toString(), previous.get(0));
+        assertEquals(link1.toString(), previous.get(1));
+
+        List<String> previous1 = proxied.put("name", null);
+        assertNotNull(previous1);
+        assertEquals(2, previous1.size());
+        assertEquals("value1", previous1.get(0));
+        assertEquals("value2", previous1.get(1));
+
+        // test remove
+        underlying.clear();
+        underlying.add("name", link);
+        underlying.add("name", link1);
+        List<String> previous2 = proxied.remove("name");
+        assertNotNull(previous2);
+        assertEquals(link.toString(), previous2.get(0));
+        assertEquals(link1.toString(), previous2.get(1));
+        assertNull(proxied.remove("name2"));
+        assertTrue(underlying.isEmpty());
+
+        // test putAll
+        Map<String, List<String>> m = new HashMap<>();
+        m.put("name1", null);
+        final List<String> values = new ArrayList<>(2);
+        values.add("value1");
+        values.add("value2");
+        m.put("name", values);
+        proxied.putAll(m);
+        assertEquals(2, underlying.keySet().size());
+        assertNull(underlying.get("name1"));
+        assertEquals(2, underlying.get("name").size());
+        assertEquals("value1", underlying.get("name").get(0));
+        assertEquals("value2", underlying.get("name").get(1));
+
+        // test values
+        assertEquals(2, proxied.values().size());
+        final List<String> values00 = new ArrayList<>(proxied.values()).get(0);
+        assertEquals(2, values00.size());
+        assertEquals("value1", values00.get(0));
+        assertEquals("value2", values00.get(1));
+
+        // test entrySet
+        Set<Map.Entry<String, List<String>>> entries = proxied.entrySet();
+        assertEquals(2, entries.size());
+        List<Map.Entry<String, List<String>>> entriesList = new ArrayList<>(entries);
+        Map.Entry<String, List<String>> entryItem = entriesList.get(0);
+        assertEquals("name", entryItem.getKey());
+        assertEquals(2, entryItem.getValue().size());
+        assertEquals("value1", entryItem.getValue().get(0));
+        assertEquals("value2", entryItem.getValue().get(1));
+    }
+
+    private boolean isValuesEquals(MultivaluedMap<String, Object> underlying,
+                                   ResponseImpl.StringHeadersMultivaluedMap proxied) {
+        final Collection<List<Object>> values1 = underlying.values();
+        final Collection<List<String>> values2 = proxied.values();
+        if (values1 == null) {
+            return values2 == null;
+        } else if (values2 == null) {
+            return false;
+        }
+
+        if (values1.size() != values2.size()) {
+            return false;
+        }
+        final Iterator<List<Object>> i1 = values1.iterator();
+        final Iterator<List<String>> i2 = values2.iterator();
+        while (i1.hasNext()) {
+            List<Object> l1 = i1.next();
+            if (!i2.hasNext()) {
+                return false;
+            }
+            List<String> l2 = i2.next();
+            if (!Arrays.equals(l1.toArray(), l2.toArray())) {
+                return false;
+            }
+        }
+        return true;
     }
 
 }
