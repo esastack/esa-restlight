@@ -15,6 +15,7 @@
  */
 package io.esastack.restlight.core;
 
+import esa.commons.function.Function3;
 import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.core.config.RestlightOptionsConfigure;
 import io.esastack.restlight.core.handler.impl.HandlerAdvicesFactoryImpl;
@@ -27,6 +28,7 @@ import io.esastack.restlight.server.context.RequestContext;
 import io.esastack.restlight.server.handler.RestlightHandler;
 import org.junit.jupiter.api.Test;
 
+import java.lang.reflect.Type;
 import java.net.SocketAddress;
 import java.util.Arrays;
 import java.util.Collections;
@@ -256,8 +258,9 @@ class DeploymentsTest {
             return false;
         }
 
+
         @Override
-        public ParamResolver createResolver(Param param, List<? extends HttpRequestSerializer> serializers) {
+        public ParamResolver createResolver(Param param, Function3<Class<?>, Type, Param, StringConverter> converterFunc, List<? extends HttpRequestSerializer> serializers) {
             return null;
         }
     }
