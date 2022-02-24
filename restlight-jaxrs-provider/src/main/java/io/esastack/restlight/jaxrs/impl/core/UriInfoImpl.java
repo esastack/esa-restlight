@@ -148,13 +148,13 @@ public class UriInfoImpl implements UriInfo {
     public MultivaluedMap<String, String> getPathParameters(boolean decode) {
         Map<String, String> variables = PathVariableUtils.getPathVariables(context);
         if (variables == null || variables.isEmpty()) {
-            return new UnmodifiableMultivaluedMap<>(new MultivaluedHashMap<>());
+            return new MultivaluedHashMap<>();
         } else {
             MultivaluedMap<String, String> params = new MultivaluedHashMap<>();
             for (Map.Entry<String, String> entry : variables.entrySet()) {
                 params.add(entry.getKey(), decode ? decode(entry.getValue()) : entry.getValue());
             }
-            return new UnmodifiableMultivaluedMap<>(params);
+            return params;
         }
     }
 
@@ -167,7 +167,7 @@ public class UriInfoImpl implements UriInfo {
     public MultivaluedMap<String, String> getQueryParameters(boolean decode) {
         MultivaluedMap<String, String> parameters = new MultivaluedHashMap<>();
         if (StringUtils.isEmpty(context.request().query())) {
-            return new UnmodifiableMultivaluedMap<>(parameters);
+            return parameters;
         }
         for (String item : context.request().query().split("&")) {
             if (StringUtils.isEmpty(item)) {
@@ -179,7 +179,7 @@ public class UriInfoImpl implements UriInfo {
             }
             parameters.add(pairs[0], pairs[1]);
         }
-        return new UnmodifiableMultivaluedMap<>(parameters);
+        return parameters;
     }
 
     @Override

@@ -28,11 +28,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class InterceptorContextImpl implements InterceptorContext {
+class InterceptorContextImpl implements InterceptorContext {
 
     private final HttpEntityResolverContext underlying;
 
-    public InterceptorContextImpl(HttpEntityResolverContext underlying) {
+    InterceptorContextImpl(HttpEntityResolverContext underlying) {
         Checks.checkNotNull(underlying, "underlying");
         this.underlying = underlying;
     }

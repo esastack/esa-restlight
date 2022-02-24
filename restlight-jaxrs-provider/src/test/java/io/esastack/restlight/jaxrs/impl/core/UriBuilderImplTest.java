@@ -53,6 +53,7 @@ class UriBuilderImplTest {
                 .path(path)
                 .replaceQuery(query)
                 .fragment(fragment)
+                .clone()
                 .build();
         assertEquals(scheme, uri.getScheme());
         assertEquals(userInfo, uri.getRawUserInfo());
@@ -105,6 +106,7 @@ class UriBuilderImplTest {
         final UriBuilder builder = new UriBuilderImpl();
         assertThrows(IllegalArgumentException.class, () -> builder.schemeSpecificPart(null));
 
+        builder.fragment("xyz");
         final URI uri = builder.schemeSpecificPart("LiMing.com@localhost:9090/abc/def")
                 .build();
         assertEquals("http", uri.getScheme());
@@ -113,8 +115,8 @@ class UriBuilderImplTest {
         assertEquals("localhost", uri.getHost());
         assertEquals(9090, uri.getPort());
         assertEquals("/abc/def", uri.getPath());
+        assertEquals("xyz", uri.getFragment());
         assertNull(uri.getQuery());
-        assertNull(uri.getFragment());
     }
 
     @Test

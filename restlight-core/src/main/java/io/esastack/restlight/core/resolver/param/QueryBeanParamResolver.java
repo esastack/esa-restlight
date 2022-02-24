@@ -16,14 +16,18 @@
 package io.esastack.restlight.core.resolver.param;
 
 import esa.commons.StringUtils;
+import esa.commons.function.Function3;
 import io.esastack.restlight.core.DeployContext;
 import io.esastack.restlight.core.annotation.QueryBean;
 import io.esastack.restlight.core.method.FieldParam;
 import io.esastack.restlight.core.method.Param;
 import io.esastack.restlight.core.resolver.HandlerResolverFactory;
 import io.esastack.restlight.core.resolver.ParamResolver;
+import io.esastack.restlight.core.resolver.StringConverter;
 import io.esastack.restlight.core.resolver.nav.NameAndValue;
 import io.esastack.restlight.core.resolver.nav.NameAndValueResolverAdapter;
+
+import java.lang.reflect.Type;
 
 /**
  * @see QueryBean
@@ -40,8 +44,11 @@ public class QueryBeanParamResolver extends RequestBeanParamResolver {
     }
 
     @Override
-    protected RequestBeanParamResolver.TypeMeta newTypeMeta(Class<?> type, HandlerResolverFactory resolverFactory) {
-        return new TypeMeta(type, resolverFactory);
+    protected RequestBeanParamResolver.TypeMeta newTypeMeta(Class<?> type,
+                                                            Function3<Class<?>, Type, Param, StringConverter>
+                                                                    converterFunc,
+                                                            HandlerResolverFactory resolverFactory) {
+        return new TypeMeta(type, converterFunc, resolverFactory);
     }
 
     @Override
@@ -51,14 +58,18 @@ public class QueryBeanParamResolver extends RequestBeanParamResolver {
 
     private static class TypeMeta extends RequestBeanParamResolver.TypeMeta {
 
-        private TypeMeta(Class<?> c, HandlerResolverFactory resolverFactory) {
-            super(c, resolverFactory);
+        private TypeMeta(Class<?> c,
+                         Function3<Class<?>, Type, Param, StringConverter> converterFunc,
+                         HandlerResolverFactory resolverFactory) {
+            super(c, converterFunc, resolverFactory);
         }
 
         @Override
-        protected ParamResolver findResolver(FieldParam fieldParam, HandlerResolverFactory resolverFactory) {
+        protected ParamResolver findResolver(FieldParam fieldParam,
+                                             Function3<Class<?>, Type, Param, StringConverter> converterFunc,
+                                             HandlerResolverFactory resolverFactory) {
             return new NameAndValueResolverAdapter(
-                    fieldParam, AlwaysUseParamArgumentResolver.INSTANCE.createResolver(fieldParam, resolverFactory));
+                    fieldParam, AlwaysUseParamArgumentResolver.INSTANCE.createResolver(fieldParam, converterFunc));
         }
     }
 

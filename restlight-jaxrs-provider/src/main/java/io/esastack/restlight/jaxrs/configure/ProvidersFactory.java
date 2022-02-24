@@ -29,7 +29,6 @@ import jakarta.ws.rs.ext.ReaderInterceptor;
 import jakarta.ws.rs.ext.WriterInterceptor;
 
 import java.util.Collection;
-import java.util.Map;
 
 /**
  * This factory is designed to create proxy for {@link ConfigurationImpl#getProviderClasses()} and
@@ -63,7 +62,7 @@ public interface ProvidersFactory {
      *
      * @return immutable mappers, which must not be {@code null}.
      */
-    Map<Class<Throwable>, ProxyComponent<ExceptionMapper<Throwable>>> exceptionMappers();
+    Collection<ProxyComponent<ExceptionMapper<Throwable>>> exceptionMappers();
 
     /**
      * Obtains an immutable collection of {@link ContextResolver}s, which are proxied to instantiate and inject
@@ -71,7 +70,7 @@ public interface ProvidersFactory {
      *
      * @return immutable resolvers, which must not be {@code null}.
      */
-    Map<Class<?>, ProxyComponent<ContextResolver<?>>> contextResolvers();
+    Collection<ProxyComponent<ContextResolver<?>>> contextResolvers();
 
     /**
      * Obtains an immutable collection of {@link Feature}s, which are proxied to instantiate and inject

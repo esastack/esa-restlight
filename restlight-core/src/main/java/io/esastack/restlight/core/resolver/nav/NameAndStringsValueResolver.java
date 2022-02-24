@@ -16,8 +16,8 @@
 package io.esastack.restlight.core.resolver.nav;
 
 import esa.commons.Checks;
+import esa.commons.function.Function3;
 import io.esastack.restlight.core.method.Param;
-import io.esastack.restlight.core.resolver.HandlerResolverFactory;
 import io.esastack.restlight.core.resolver.StringConverter;
 import io.esastack.restlight.core.util.ConverterUtils;
 import io.esastack.restlight.server.context.RequestContext;
@@ -37,17 +37,15 @@ public class NameAndStringsValueResolver implements NameAndValueResolver {
     private final NameAndValue<Object> nav;
 
     public NameAndStringsValueResolver(Param param,
-                                       HandlerResolverFactory resolverFactory,
+                                       Function3<Class<?>, Type, Param, StringConverter> converterFunc,
                                        BiFunction<String, RequestContext, Collection<String>> paramValuesFunc,
                                        NameAndValue<String> nav) {
-        Checks.checkNotNull(resolverFactory, "resolverFactory");
+        Checks.checkNotNull(converterFunc, "converterFunc");
         this.paramValuesFunc = Checks.checkNotNull(paramValuesFunc, "paramValuesFunc");
-        this.strConverter = resolverFactory.getStringConverter(param.type(),
-                param.genericType(),
-                param);
+        this.strConverter = converterFunc.apply(param.type(), param.genericType(), param);
 
         BiFunction<Class<?>, Type, StringConverter> converterLookup = (baseType, baseGenericType) ->
-                resolverFactory.getStringConverter(baseType, baseGenericType, param);
+                converterFunc.apply(baseType, baseGenericType, param);
 
         this.strsConverter = ConverterUtils.strs2ObjectConverter(param.type(),
                 param.genericType(),

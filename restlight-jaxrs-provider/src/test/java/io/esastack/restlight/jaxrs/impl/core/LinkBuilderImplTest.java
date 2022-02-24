@@ -57,6 +57,8 @@ class LinkBuilderImplTest {
         assertEquals("xyz", link.getRel());
         assertEquals("pq", link.getTitle());
         assertEquals("application/json", link.getType());
+
+        assertThrows(NullPointerException.class, () -> new LinkBuilderImpl().link((String) null).build());
     }
 
     @Test

@@ -99,10 +99,8 @@ public final class HttpHeaderUtils {
     }
 
     public static String concatHeaderValues(List<String> values) {
-        if (values == null) {
+        if (values == null || values.isEmpty()) {
             return null;
-        } else if (values.isEmpty()) {
-            return StringUtils.EMPTY_STRING;
         }
         StringBuilder sb = new StringBuilder();
         boolean first = true;

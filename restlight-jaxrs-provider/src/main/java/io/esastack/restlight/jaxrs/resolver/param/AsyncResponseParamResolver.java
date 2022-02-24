@@ -15,9 +15,11 @@
  */
 package io.esastack.restlight.jaxrs.resolver.param;
 
+import esa.commons.function.Function3;
 import io.esastack.restlight.core.method.Param;
 import io.esastack.restlight.core.resolver.ParamResolver;
 import io.esastack.restlight.core.resolver.ParamResolverFactory;
+import io.esastack.restlight.core.resolver.StringConverter;
 import io.esastack.restlight.core.serialize.HttpRequestSerializer;
 import io.esastack.restlight.jaxrs.impl.JaxrsContextUtils;
 import io.esastack.restlight.jaxrs.impl.container.AsyncResponseImpl;
@@ -26,6 +28,7 @@ import io.esastack.restlight.server.context.RequestContext;
 import jakarta.ws.rs.container.AsyncResponse;
 import jakarta.ws.rs.container.Suspended;
 
+import java.lang.reflect.Type;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
@@ -33,11 +36,14 @@ public class AsyncResponseParamResolver implements ParamResolverFactory {
 
     @Override
     public boolean supports(Param param) {
-        return JaxrsUtils.hasAnnotation(param, Suspended.class) && AsyncResponse.class.equals(param.type());
+        return JaxrsUtils.hasAnnotation(param, Suspended.class) && param.isMethodParam()
+                && AsyncResponse.class.equals(param.type());
     }
 
     @Override
-    public ParamResolver createResolver(Param param, List<? extends HttpRequestSerializer> serializers) {
+    public ParamResolver createResolver(Param param,
+                                        Function3<Class<?>, Type, Param, StringConverter> converterFunc,
+                                        List<? extends HttpRequestSerializer> serializers) {
         return new AsyncResponseResolver();
     }
 

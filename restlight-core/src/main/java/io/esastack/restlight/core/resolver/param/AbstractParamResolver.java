@@ -17,14 +17,16 @@ package io.esastack.restlight.core.resolver.param;
 
 import esa.commons.ClassUtils;
 import esa.commons.StringUtils;
+import esa.commons.function.Function3;
 import io.esastack.restlight.core.method.Param;
-import io.esastack.restlight.core.resolver.HandlerResolverFactory;
+import io.esastack.restlight.core.resolver.StringConverter;
 import io.esastack.restlight.core.resolver.nav.NameAndStringsValueResolver;
 import io.esastack.restlight.core.resolver.nav.NameAndValue;
 import io.esastack.restlight.core.resolver.nav.NameAndValueResolver;
 import io.esastack.restlight.core.resolver.nav.NameAndValueResolverFactory;
 import io.esastack.restlight.server.context.RequestContext;
 
+import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -38,7 +40,8 @@ import java.util.Map;
 public abstract class AbstractParamResolver extends NameAndValueResolverFactory {
 
     @Override
-    public NameAndValueResolver createResolver(Param param, HandlerResolverFactory resolverFactory) {
+    protected NameAndValueResolver createResolver(Param param,
+                                                  Function3<Class<?>, Type, Param, StringConverter> converterFunc) {
         String name = extractName(param);
         if (StringUtils.isEmpty(name)
                 && Map.class.equals(param.type())) {
@@ -56,13 +59,25 @@ public abstract class AbstractParamResolver extends NameAndValueResolverFactory 
         }
 
         return new NameAndStringsValueResolver(param,
-                resolverFactory,
+                converterFunc,
                 this::extractValue,
                 createNameAndValue(param));
     }
 
+    /**
+     * Extracts name of given {@code param}.
+     *
+     * @param param     param
+     * @return          name
+     */
     protected abstract String extractName(Param param);
 
+    /**
+     * Creates {@link NameAndValue} for given {@code param}.
+     *
+     * @param param     param
+     * @return          name and value
+     */
     protected abstract NameAndValue<String> createNameAndValue(Param param);
 
     private Collection<String> extractValue(String name, RequestContext ctx) {

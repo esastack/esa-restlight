@@ -122,6 +122,7 @@ class ConfigurationImplTest {
         assertTrue(configuration.isEnabled(DemoFeature.class));
         assertFalse(configuration.isEnabled(new CompositeFeature1()));
         assertTrue(configuration.isEnabled(CompositeFeature1.class));
+        assertFalse(configuration.isEnabled(context -> false));
     }
 
     @Test
@@ -158,6 +159,7 @@ class ConfigurationImplTest {
         assertTrue(configuration.isRegistered(CompositeFeature2.class));
         assertTrue(configuration.isRegistered(component4));
         assertTrue(configuration.isRegistered(component4.getClass()));
+        assertFalse(configuration.isRegistered(Object.class));
 
         assertEquals(2, configuration.getProviderInstances().size());
         assertTrue(configuration.getProviderInstances().contains(interceptor2));
@@ -203,6 +205,9 @@ class ConfigurationImplTest {
         assertEquals(2, configuration.getProviderClasses().size());
         assertTrue(configuration.getProviderClasses().contains(ReaderInterceptor1.class));
         assertTrue(configuration.getProviderClasses().contains(CompositeFeature2.class));
+
+        configuration.addProviderInstance(new RequestFilter1(), Collections.emptyMap());
+        configuration.addProviderClass(RequestFilter1.class, Collections.emptyMap());
     }
 
     @Test
@@ -225,6 +230,11 @@ class ConfigurationImplTest {
         assertTrue(configuration.getInstances().contains(h1));
         assertEquals(1, configuration.getClasses().size());
         assertTrue(configuration.getClasses().contains(HelloWorld2.class));
+
+        configuration.addResourceClass(Object.class);
+        assertEquals(1, configuration.getClasses().size());
+        configuration.addResourceInstance(new HelloWorld3());
+        assertEquals(1, configuration.getInstances().size());
     }
 
     @Path("/abc")
@@ -245,6 +255,13 @@ class ConfigurationImplTest {
             return "Hello";
         }
 
+    }
+
+    private static final class HelloWorld3 {
+        @GET
+        public String hello() {
+            return "Hello";
+        }
     }
 
     private static final class DemoFeature implements Feature {

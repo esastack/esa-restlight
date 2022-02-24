@@ -66,7 +66,8 @@ class DynamicFeatureContextTest {
     void testRegister() {
         final ConfigurationImpl configuration = new ConfigurationImpl();
         DynamicFeatureContext context = new DynamicFeatureContext(DynamicFeatureContextTest.class, configuration);
-
+        context.register((Object) null);
+        assertEquals(0, configuration.getProviderInstances().size());
         context.register(new RequestFilter1());
         assertEquals(1, configuration.getProviderInstances().size());
         assertTrue(configuration.getProviderClasses().isEmpty());
@@ -75,6 +76,8 @@ class DynamicFeatureContextTest {
         assertEquals(1, contracts1.size());
         assertEquals(100, contracts1.get(ContainerRequestFilter.class));
 
+        context.register((Object) null, 100);
+        assertEquals(1, configuration.getProviderInstances().size());
         context.register(new ResponseFilter1(), 100);
         assertEquals(2, configuration.getProviderInstances().size());
         assertTrue(configuration.getProviderClasses().isEmpty());
@@ -83,6 +86,10 @@ class DynamicFeatureContextTest {
         assertEquals(1, contracts2.size());
         assertEquals(100, contracts2.get(ContainerResponseFilter.class));
 
+        context.register((Object) null, new Class[] { ContainerRequestFilter.class,
+                ContainerResponseFilter.class, ExceptionMapper.class, ContextResolver.class});
+        context.register(new CompositeFilter1(), (Class<?>[]) null);
+        assertEquals(2, configuration.getProviderInstances().size());
         context.register(new CompositeFilter1(), new Class[] { ContainerRequestFilter.class,
                 ContainerResponseFilter.class, ExceptionMapper.class, ContextResolver.class});
         assertEquals(3, configuration.getProviderInstances().size());
@@ -95,6 +102,10 @@ class DynamicFeatureContextTest {
 
         final Map<Class<?>, Integer> contracts00 = new HashMap<>();
         contracts00.put(ContainerResponseFilter.class, 200);
+
+        context.register((Object) null, contracts00);
+        context.register(new CompositeFilter2(), (Map<Class<?>, Integer>) null);
+        assertEquals(3, configuration.getProviderInstances().size());
         context.register(new CompositeFilter2(), contracts00);
 
         assertEquals(4, configuration.getProviderInstances().size());
@@ -105,7 +116,8 @@ class DynamicFeatureContextTest {
         assertEquals(200, contracts4.get(ContainerResponseFilter.class));
 
 
-
+        context.register(null);
+        assertEquals(0, configuration.getProviderClasses().size());
         context.register(ReaderInterceptor1.class);
         assertEquals(4, configuration.getProviderInstances().size());
         assertEquals(1, configuration.getProviderClasses().size());
@@ -114,6 +126,8 @@ class DynamicFeatureContextTest {
         assertEquals(1, contracts5.size());
         assertEquals(500, contracts5.get(ReaderInterceptor.class));
 
+        context.register(null, 100);
+        assertEquals(1, configuration.getProviderClasses().size());
         context.register(WriterInterceptor1.class, 100);
         assertEquals(4, configuration.getProviderInstances().size());
         assertEquals(2, configuration.getProviderClasses().size());
@@ -122,20 +136,22 @@ class DynamicFeatureContextTest {
         assertEquals(1, contracts6.size());
         assertEquals(100, contracts6.get(WriterInterceptor.class));
 
-        final Map<Class<?>, Integer> contracts01 = new HashMap<>(3);
-        contracts01.put(ReaderInterceptor.class, 100);
-        contracts01.put(ExceptionMapper.class, 300);
-        contracts01.put(Feature.class, 400);
-        context.register(CompositeInterceptor1.class, contracts01);
+        context.register(null, ReaderInterceptor.class);
+        context.register(CompositeInterceptor1.class, (Class<?>[]) null);
+        assertEquals(2, configuration.getProviderClasses().size());
+        context.register(CompositeInterceptor1.class, ReaderInterceptor.class, ExceptionMapper.class, Feature.class);
         assertEquals(4, configuration.getProviderInstances().size());
         assertEquals(3, configuration.getProviderClasses().size());
 
         Map<Class<?>, Integer> contracts7 = configuration.getContracts(CompositeInterceptor1.class);
         assertEquals(1, contracts7.size());
-        assertEquals(100, contracts7.get(ReaderInterceptor.class));
+        assertEquals(700, contracts7.get(ReaderInterceptor.class));
 
         final Map<Class<?>, Integer> contracts11 = new HashMap<>();
         contracts11.put(WriterInterceptor.class, 200);
+        context.register(null, contracts11);
+        context.register(WriterInterceptor.class, (Map<Class<?>, Integer>) null);
+        assertEquals(3, configuration.getProviderClasses().size());
         context.register(CompositeInterceptor2.class, contracts11);
 
         assertEquals(4, configuration.getProviderInstances().size());

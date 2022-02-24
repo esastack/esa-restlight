@@ -62,7 +62,7 @@ public class JaxrsResponseFiltersAdapter implements Filter {
         return Ordered.LOWEST_PRECEDENCE;
     }
 
-    private ContainerResponseFilter[] getBoundFilters(RequestContext context) {
+    ContainerResponseFilter[] getBoundFilters(RequestContext context) {
         ContainerResponseFilter[] bound;
         if ((bound = context.attrs().attr(HAS_BOUND_FILTERS).getAndRemove()) != null) {
             return bound;
@@ -71,7 +71,7 @@ public class JaxrsResponseFiltersAdapter implements Filter {
         }
     }
 
-    private CompletableFuture<Void> applyResponseFilters(RequestContext context, ContainerResponseFilter[] filters) {
+    static CompletableFuture<Void> applyResponseFilters(RequestContext context, ContainerResponseFilter[] filters) {
         if (!isSuccess(context) || filters == null || filters.length == 0) {
             return Futures.completedFuture();
         }
@@ -80,7 +80,7 @@ public class JaxrsResponseFiltersAdapter implements Filter {
         final ContainerRequestContext reqCtx = new ResponseContainerContext(JaxrsContextUtils
                 .getRequestContext(context));
         final ContainerResponseContextImpl rspCtx = new ContainerResponseContextImpl(
-                ResponseEntityStreamClose.getNonClosableOutputStream(context), rsp);
+                ResponseEntityStreamUtils.getUnClosableOutputStream(context), rsp);
         for (ContainerResponseFilter filter : filters) {
             try {
                 filter.filter(reqCtx, rspCtx);
@@ -93,11 +93,11 @@ public class JaxrsResponseFiltersAdapter implements Filter {
         return Futures.completedFuture();
     }
 
-    private boolean isSuccess(RequestContext context) {
+    static boolean isSuccess(RequestContext context) {
         return context.response().status() < 400;
     }
 
-    private static ResponseImpl getResponse(RequestContext context) {
+    static ResponseImpl getResponse(RequestContext context) {
         final Response response;
         if (context.response().entity() instanceof Response) {
             response = (Response) context.response().entity();

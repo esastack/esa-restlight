@@ -15,9 +15,11 @@
  */
 package io.esastack.restlight.jaxrs.resolver.param;
 
+import esa.commons.function.Function3;
 import io.esastack.restlight.core.method.Param;
 import io.esastack.restlight.core.resolver.ParamResolver;
 import io.esastack.restlight.core.resolver.ParamResolverFactory;
+import io.esastack.restlight.core.resolver.StringConverter;
 import io.esastack.restlight.core.serialize.HttpRequestSerializer;
 import io.esastack.restlight.jaxrs.impl.JaxrsContextUtils;
 import io.esastack.restlight.jaxrs.util.JaxrsUtils;
@@ -25,6 +27,7 @@ import io.esastack.restlight.server.context.RequestContext;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.HttpHeaders;
 
+import java.lang.reflect.Type;
 import java.util.List;
 
 public class HttpHeadersParamResolver implements ParamResolverFactory {
@@ -35,7 +38,9 @@ public class HttpHeadersParamResolver implements ParamResolverFactory {
     }
 
     @Override
-    public ParamResolver createResolver(Param param, List<? extends HttpRequestSerializer> serializers) {
+    public ParamResolver createResolver(Param param,
+                                        Function3<Class<?>, Type, Param, StringConverter> converterFunc,
+                                        List<? extends HttpRequestSerializer> serializers) {
         return new HttpHeadersResolver();
     }
 

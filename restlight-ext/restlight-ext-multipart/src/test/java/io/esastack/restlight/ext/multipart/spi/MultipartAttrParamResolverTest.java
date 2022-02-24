@@ -16,9 +16,7 @@
 package io.esastack.restlight.ext.multipart.spi;
 
 import io.esastack.restlight.core.method.MethodParam;
-import io.esastack.restlight.core.resolver.HandlerResolverFactory;
 import io.esastack.restlight.core.resolver.ParamResolver;
-import io.esastack.restlight.core.resolver.nav.NameAndValueResolverAdapter;
 import io.esastack.restlight.core.spi.impl.DefaultStringConverterFactory;
 import io.esastack.restlight.server.bootstrap.WebServerException;
 import io.esastack.restlight.server.context.impl.RequestContextImpl;
@@ -32,25 +30,20 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 class MultipartAttrParamResolverTest extends AbstractMultipartResolverTest {
 
     private static final DefaultStringConverterFactory CONVERTER_FACTORY = new DefaultStringConverterFactory();
 
     private static Object createResolverAndResolve(HttpRequest request, String method) throws Exception {
-        final MethodParam parameter = handlerMethods.get(method).parameters()[0];
-        assertTrue(attrResolver.supports(parameter));
-        HandlerResolverFactory resolverFactory = mock(HandlerResolverFactory.class);
-        when(resolverFactory
-                .getStringConverter(parameter.type(), parameter.genericType(), parameter))
-                .thenReturn(CONVERTER_FACTORY
-                        .createConverter(parameter.type(), parameter.genericType(), parameter).get());
-        final ParamResolver resolver = new NameAndValueResolverAdapter(parameter,
-                attrResolver.createResolver(parameter, resolverFactory));
-        return resolver.resolve(parameter, new RequestContextImpl(request,
-                MockHttpResponse.aMockResponse().build()));
+        final MethodParam param = handlerMethods.get(method).parameters()[0];
+        AbstractMultipartParamResolver factory = attrResolver.createResolver(attrResolver.buildFactory(config));
+        assertTrue(factory.supports(param));
+
+        final ParamResolver resolver = factory.createResolver(param, (clazz, type, p) -> CONVERTER_FACTORY
+                .createConverter(p.type(), p.genericType(), p).get(),
+                null);
+        return resolver.resolve(param, new RequestContextImpl(request, MockHttpResponse.aMockResponse().build()));
     }
 
     @Test

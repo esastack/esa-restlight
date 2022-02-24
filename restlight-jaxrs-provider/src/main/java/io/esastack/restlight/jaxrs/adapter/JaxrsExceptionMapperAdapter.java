@@ -17,6 +17,7 @@ package io.esastack.restlight.jaxrs.adapter;
 
 import esa.commons.Checks;
 import io.esastack.restlight.core.resolver.ExceptionResolver;
+import io.esastack.restlight.jaxrs.configure.ProxyComponent;
 import io.esastack.restlight.server.context.RequestContext;
 import io.esastack.restlight.server.util.Futures;
 import jakarta.ws.rs.core.Response;
@@ -28,9 +29,9 @@ import static jakarta.ws.rs.core.Response.Status.NO_CONTENT;
 
 public class JaxrsExceptionMapperAdapter<T extends Throwable> implements ExceptionResolver<T> {
 
-    private final ExceptionMapper<T> underlying;
+    private final ProxyComponent<ExceptionMapper<T>> underlying;
 
-    public JaxrsExceptionMapperAdapter(ExceptionMapper<T> underlying) {
+    public JaxrsExceptionMapperAdapter(ProxyComponent<ExceptionMapper<T>> underlying) {
         Checks.checkNotNull(underlying, "underlying");
         this.underlying = underlying;
     }
@@ -39,7 +40,7 @@ public class JaxrsExceptionMapperAdapter<T extends Throwable> implements Excepti
     public CompletableFuture<Void> handleException(RequestContext context, T t) {
         Response response;
         try {
-            response = underlying.toResponse(t);
+            response = underlying.proxied().toResponse(t);
             if (response == null) {
                 response = Response.status(NO_CONTENT).build();
             }
@@ -50,7 +51,7 @@ public class JaxrsExceptionMapperAdapter<T extends Throwable> implements Excepti
         }
     }
 
-    public ExceptionMapper<T> underlying() {
+    public ProxyComponent<ExceptionMapper<T>> underlying() {
         return underlying;
     }
 }

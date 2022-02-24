@@ -40,6 +40,7 @@ import org.junit.jupiter.api.Test;
 import javax.annotation.Priority;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -76,6 +77,9 @@ class ConfigurableImplTest {
         final ConfigurationImpl configuration = new ConfigurationImpl();
         final ConfigurableImpl configurable = new ConfigurableImpl(configuration);
 
+        configurable.register((Object) null);
+        assertEquals(0, configuration.getProviderClasses().size());
+        assertEquals(0, configuration.getProviderInstances().size());
         configurable.register(new RequestFilter1());
         assertEquals(1, configuration.getProviderInstances().size());
         assertTrue(configuration.getProviderClasses().isEmpty());
@@ -84,6 +88,8 @@ class ConfigurableImplTest {
         assertEquals(1, contracts1.size());
         assertEquals(100, contracts1.get(ContainerRequestFilter.class));
 
+        configurable.register((Object) null, 100);
+        assertEquals(1, configuration.getProviderInstances().size());
         configurable.register(new ResponseFilter1(), 100);
         assertEquals(2, configuration.getProviderInstances().size());
         assertTrue(configuration.getProviderClasses().isEmpty());
@@ -92,6 +98,9 @@ class ConfigurableImplTest {
         assertEquals(1, contracts2.size());
         assertEquals(100, contracts2.get(ContainerResponseFilter.class));
 
+        configurable.register((Object) null, new Class[]{ContainerRequestFilter.class});
+        configurable.register(new CompositeFeature1(), (Class<?>[]) null);
+        assertEquals(2, configuration.getProviderInstances().size());
         configurable.register(new CompositeFeature1(), new Class[]{ContainerRequestFilter.class,
                 ContainerResponseFilter.class, ExceptionMapper.class, ContextResolver.class, Feature.class});
         assertEquals(3, configuration.getProviderInstances().size());
@@ -103,31 +112,52 @@ class ConfigurableImplTest {
         assertEquals(150, contracts3.get(ContextResolver.class));
         assertEquals(150, contracts3.get(Feature.class));
 
-
-        configurable.register(ReaderInterceptor1.class);
+        configurable.register(new CompositeFeature4(), (Map<Class<?>, Integer>) null);
+        configurable.register(null, Collections.singletonMap(ReaderInterceptor.class, 200));
         assertEquals(3, configuration.getProviderInstances().size());
+        configurable.register(new CompositeFeature4(), Collections.singletonMap(ContextResolver.class, 200));
+        assertEquals(1, configuration.getContracts(CompositeFeature4.class).size());
+        assertEquals(200, configuration.getContracts(CompositeFeature4.class).get(ContextResolver.class));
+        assertEquals(4, configuration.getProviderInstances().size());
+
+        configurable.register(null);
+        assertEquals(0, configuration.getProviderClasses().size());
+        configurable.register(ReaderInterceptor1.class);
+        assertEquals(4, configuration.getProviderInstances().size());
         assertEquals(1, configuration.getProviderClasses().size());
 
         Map<Class<?>, Integer> contracts4 = configuration.getContracts(ReaderInterceptor1.class);
         assertEquals(1, contracts4.size());
         assertEquals(170, contracts4.get(ReaderInterceptor.class));
 
-        configurable.register(WriterInterceptor1.class);
-        assertEquals(3, configuration.getProviderInstances().size());
+        configurable.register(null, 100);
+        assertEquals(1, configuration.getProviderClasses().size());
+        configurable.register(WriterInterceptor1.class, 100);
+        assertEquals(4, configuration.getProviderInstances().size());
         assertEquals(2, configuration.getProviderClasses().size());
 
         Map<Class<?>, Integer> contracts5 = configuration.getContracts(WriterInterceptor1.class);
         assertEquals(1, contracts5.size());
-        assertEquals(180, contracts5.get(WriterInterceptor.class));
+        assertEquals(100, contracts5.get(WriterInterceptor.class));
+
+        configurable.register(null, Collections.singletonMap(Feature.class, 100));
+        configurable.register(CompositeFeature3.class, (Map<Class<?>, Integer>) null);
+        assertEquals(2, configuration.getProviderClasses().size());
+        configurable.register(CompositeFeature3.class, Collections.singletonMap(Feature.class, 100));
+        assertEquals(1, configuration.getContracts(CompositeFeature3.class).size());
+        assertEquals(100, configuration.getContracts(CompositeFeature3.class).get(Feature.class));
 
         final Map<Class<?>, Integer> contracts00 = new HashMap<>(4);
         contracts00.put(ReaderInterceptor.class, 100);
         contracts00.put(WriterInterceptor.class, 200);
         contracts00.put(ExceptionMapper.class, 300);
         contracts00.put(DynamicFeature.class, 400);
-        configurable.register(CompositeFeature2.class, contracts00);
-        assertEquals(3, configuration.getProviderInstances().size());
+        configurable.register(null, contracts00);
+        configurable.register(CompositeFeature2.class, (Map<Class<?>, Integer>) null);
         assertEquals(3, configuration.getProviderClasses().size());
+        configurable.register(CompositeFeature2.class, contracts00);
+        assertEquals(4, configuration.getProviderInstances().size());
+        assertEquals(4, configuration.getProviderClasses().size());
 
         Map<Class<?>, Integer> contracts6 = configuration.getContracts(CompositeFeature2.class);
         assertEquals(2, contracts6.size());
@@ -241,7 +271,7 @@ class ConfigurableImplTest {
     }
 
     @Priority(210)
-    private static final class CompositeFeature3 implements ExceptionMapper<Throwable>, ContextResolver<String>,
+    private static class CompositeFeature3 implements ExceptionMapper<Throwable>, ContextResolver<String>,
             Feature, DynamicFeature, Providers {
 
         @Override
@@ -290,6 +320,10 @@ class ConfigurableImplTest {
                                                          MediaType mediaType) {
             return null;
         }
+    }
+
+    @Priority(210)
+    private static final class CompositeFeature4 extends CompositeFeature3 {
     }
 
 }

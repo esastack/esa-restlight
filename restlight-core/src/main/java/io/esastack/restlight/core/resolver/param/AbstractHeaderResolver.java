@@ -15,15 +15,17 @@
  */
 package io.esastack.restlight.core.resolver.param;
 
+import esa.commons.function.Function3;
 import io.esastack.commons.net.http.HttpHeaders;
 import io.esastack.restlight.core.method.Param;
-import io.esastack.restlight.core.resolver.HandlerResolverFactory;
+import io.esastack.restlight.core.resolver.StringConverter;
 import io.esastack.restlight.core.resolver.nav.NameAndStringsValueResolver;
 import io.esastack.restlight.core.resolver.nav.NameAndValue;
 import io.esastack.restlight.core.resolver.nav.NameAndValueResolver;
 import io.esastack.restlight.core.resolver.nav.NameAndValueResolverFactory;
 import io.esastack.restlight.server.context.RequestContext;
 
+import java.lang.reflect.Type;
 import java.util.List;
 
 /**
@@ -33,12 +35,13 @@ import java.util.List;
 public abstract class AbstractHeaderResolver extends NameAndValueResolverFactory {
 
     @Override
-    public NameAndValueResolver createResolver(Param param, HandlerResolverFactory resolverFactory) {
+    protected NameAndValueResolver createResolver(Param param,
+                                                  Function3<Class<?>, Type, Param, StringConverter> converterFunc) {
         if (HttpHeaders.class.equals(param.type())) {
             return new HeadersResolver();
         }
         return new NameAndStringsValueResolver(param,
-                resolverFactory,
+                converterFunc,
                 this::extractHeaderValues,
                 createNameAndValue(param));
     }
@@ -47,6 +50,12 @@ public abstract class AbstractHeaderResolver extends NameAndValueResolverFactory
         return ctx.request().headers().getAll(name);
     }
 
+    /**
+     * Creates {@link NameAndValue} for given {@link Param}.
+     *
+     * @param param     param
+     * @return          name and value
+     */
     protected abstract NameAndValue<String> createNameAndValue(Param param);
 
     private class HeadersResolver implements NameAndValueResolver {
