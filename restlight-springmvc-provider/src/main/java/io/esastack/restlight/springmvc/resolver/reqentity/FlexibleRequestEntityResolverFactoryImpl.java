@@ -13,9 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.esastack.restlight.springmvc.reqentity;
+package io.esastack.restlight.springmvc.resolver.reqentity;
 
 import io.esastack.restlight.core.method.Param;
+import io.esastack.restlight.core.resolver.nav.NameAndValue;
 import io.esastack.restlight.core.resolver.reqentity.FlexibleRequestEntityResolverFactory;
 import io.esastack.restlight.springmvc.annotation.shaded.RequestBody0;
 
@@ -28,6 +29,12 @@ public class FlexibleRequestEntityResolverFactoryImpl extends FlexibleRequestEnt
     @Override
     public boolean supports(Param param) {
         return super.supports(param) || param.hasAnnotation(RequestBody0.shadedClass());
+    }
+
+    @Override
+    protected NameAndValue<String> createNameAndValue(Param param) {
+        return new NameAndValue<>(param.name(), param.hasAnnotation(RequestBody0.shadedClass())
+                && RequestBody0.fromShade(param.getAnnotation(RequestBody0.shadedClass())).required());
     }
 
     @Override

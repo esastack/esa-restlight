@@ -108,9 +108,8 @@ class BeanParamResolverTest {
         assertTrue(resolverFactory.supports(param));
         new PatternsPredicate(JaxrsMappingUtils.extractMapping(SUBJECT.getClass(),
                 param.method(), StringUtils.empty()).get().path()).test(context);
-        final ParamResolver resolver = resolverFactory.createResolver(param, (type, genericType, p) ->
-                new DefaultStringConverterFactory().createConverter(type, genericType, p)
-                        .orElse(null), null);
+        final ParamResolver resolver = resolverFactory.createResolver(param,
+                ResolverUtils.defaultConverterFunc(), null);
         return resolver.resolve(param, context);
     }
 

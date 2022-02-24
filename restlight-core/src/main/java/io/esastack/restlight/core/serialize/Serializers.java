@@ -28,7 +28,7 @@ import java.nio.charset.StandardCharsets;
 
 public final class Serializers {
 
-    private static final byte[] ALREADY_WRITE = new byte[0];
+    public static final byte[] ALREADY_WRITE = new byte[0];
 
     public static HandledValue<byte[]> serializeBySerializer(HttpResponseSerializer serializer,
                                                              ResponseEntity entity) throws Exception {

@@ -16,10 +16,16 @@
 package io.esastack.restlight.jaxrs.resolver.reqentity;
 
 import io.esastack.restlight.core.method.Param;
+import io.esastack.restlight.core.resolver.nav.NameAndValue;
 import io.esastack.restlight.core.resolver.reqentity.FlexibleRequestEntityResolverFactory;
+import io.esastack.restlight.jaxrs.util.JaxrsMappingUtils;
 import jakarta.ws.rs.core.Context;
 
 public class FlexibleRequestEntityResolverFactoryImpl extends FlexibleRequestEntityResolverFactory {
+
+    public FlexibleRequestEntityResolverFactoryImpl() {
+        super(false, null);
+    }
 
     public FlexibleRequestEntityResolverFactoryImpl(boolean negotiation, String paramName) {
         super(negotiation, paramName);
@@ -31,6 +37,11 @@ public class FlexibleRequestEntityResolverFactoryImpl extends FlexibleRequestEnt
         // All of the parameters which is not annotated by argument annotation like @QueryParam and @HeaderParam will
         // be regarded as a body parameter.
         return param.isMethodParam() && !param.hasAnnotation(Context.class);
+    }
+
+    @Override
+    protected NameAndValue<String> createNameAndValue(Param param) {
+        return new NameAndValue<>(param.name(), false, JaxrsMappingUtils.extractDefaultValue(param));
     }
 
     @Override
