@@ -17,6 +17,7 @@ package io.esastack.restlight.test.bootstrap;
 
 import esa.commons.Checks;
 import io.esastack.restlight.server.bootstrap.RestlightServer;
+import io.esastack.restlight.server.handler.RestlightHandler;
 import io.esastack.restlight.server.schedule.AbstractRestlightHandler;
 
 import java.net.SocketAddress;
@@ -28,9 +29,13 @@ class FakeServer implements RestlightServer {
     final AbstractRestlightHandler handler;
     private volatile CompletableFuture<Void> stopFuture;
 
-    FakeServer(AbstractRestlightHandler handler) {
+    FakeServer(RestlightHandler handler) {
         Checks.checkNotNull(handler, "handler");
-        this.handler = handler;
+        if(handler instanceof AbstractRestlightHandler) {
+            this.handler = (AbstractRestlightHandler)handler;
+        }else {
+            throw new IllegalArgumentException("The type of handler should be AbstractRestlightHandler.");
+        }
     }
 
     @Override

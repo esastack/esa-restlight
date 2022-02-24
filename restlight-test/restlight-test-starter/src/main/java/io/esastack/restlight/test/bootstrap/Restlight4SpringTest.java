@@ -18,7 +18,7 @@ package io.esastack.restlight.test.bootstrap;
 import esa.commons.Checks;
 import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.server.bootstrap.RestlightServer;
-import io.esastack.restlight.server.schedule.AbstractRestlightHandler;
+import io.esastack.restlight.server.handler.RestlightHandler;
 import io.esastack.restlight.spring.AbstractRestlight4Spring;
 import io.esastack.restlight.test.autoconfig.AutoMockMvcOptions;
 import org.springframework.context.ApplicationContext;
@@ -50,7 +50,7 @@ class Restlight4SpringTest extends AbstractRestlight4Spring {
     }
 
     @Override
-    protected final RestlightServer doBuildServer(AbstractRestlightHandler handler) {
+    protected final RestlightServer doBuildServer(RestlightHandler handler) {
         return new FakeServer(handler);
     }
 }
