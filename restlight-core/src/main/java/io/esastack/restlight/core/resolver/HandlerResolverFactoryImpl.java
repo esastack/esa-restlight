@@ -308,7 +308,7 @@ public class HandlerResolverFactoryImpl implements HandlerResolverFactory {
         List<RequestEntityResolver> resolvers = new ArrayList<>();
         requestEntityResolvers.forEach(factory -> {
             if (factory.supports(param)) {
-                resolvers.add(factory.createResolver(param, rxSerializers));
+                resolvers.add(factory.createResolver(param, this::getStringConverter, rxSerializers));
             }
         });
         return Collections.unmodifiableList(resolvers);

@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 OPPO ESA Stack Project
+ * Copyright 2022 OPPO ESA Stack Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.esastack.restlight.test.context;
+package io.esastack.restlight.server.mock;
 
 import esa.commons.Checks;
 import esa.commons.ExceptionUtils;
@@ -27,7 +27,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicReferenceFieldUpdater;
 
-class MockResponseContent implements ResponseContent {
+public class MockResponseContent implements ResponseContent {
 
     private volatile Object committed;
 
@@ -38,7 +38,7 @@ class MockResponseContent implements ResponseContent {
 
     private final Buffer buffer;
 
-    MockResponseContent(Buffer buffer) {
+    public MockResponseContent(Buffer buffer) {
         Checks.checkNotNull(buffer, "buffer");
         this.buffer = buffer;
     }
@@ -157,4 +157,5 @@ class MockResponseContent implements ResponseContent {
     }
 
 }
+
 

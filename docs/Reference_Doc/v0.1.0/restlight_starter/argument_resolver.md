@@ -24,10 +24,10 @@ sort: 5
 public interface ArgumentResolver {
 
     /**
-     * 从AsyncRequest中解析出对应parameter的值
-     * 解析后的Object必须能和MethodParameter类型匹配
+     * 从AsyncRequest中解析出对应参数的值
+     * 解析后的Object必须能和Param类型匹配
      */
-    Object resolve(AsyncRequest request) throws Exception;
+    Object resolve(AsyncRequest request, AsyncResponse response) throws Exception;
     
 }
 ```
@@ -43,9 +43,9 @@ public interface ArgumentResolver {
 public interface ArgumentResolverPredicate {
 
     /**
-     * 判断当前ArgumentResolver是否支持给定paramter解析
-     * Controller中的每个参数都对应一个MethodParameter实例， 
-     * 可以通过MethodParameter获取注解等各类反射相关的元数据信息
+     * 判断当前ArgumentResolver是否支持给定Param解析
+     * Controller中的每个参数都对应一个Param实例， 
+     * 可以通过Param获取注解等各类反射相关的元数据信息
      */
     boolean supports(Param param);
 
@@ -63,12 +63,12 @@ public interface ArgumentResolverAdapter extends ArgumentResolverPredicate, Argu
 初始化逻辑： 
 
 1. 按照`getOrder()`方法的返回将Spring容器中所有的`ArgumentResolver`进行排序
-2. 按照排序后的顺序依次调用`supports(MethodParameter parameter)`方法， 返回`true`则将其作为该参数的`ArgumentResolver`， 运行时每次请求都将调用`resolve(AsyncRequest request)`方法进行参数解析， 并且运行时不会改变。
+2. 按照排序后的顺序依次调用`supports(Param param)`方法， 返回`true`则将其作为该参数的`ArgumentResolver`， 运行时每次请求都将调用`resolve(AsyncRequest request, AsyncResponse response)`方法进行参数解析， 并且运行时不会改变。
 3. 未找到则启动报错。
 
 细心的人可能会发现该设计可能并不能覆盖到以下场景
 
-- 因为`resolve(AsyncRequest request)`方法参数中并没有传递`MethodParameter参数`， 虽然初始化阶段能根据`supports(MethodParameter parameter)`方法获取参数元数据信息（获取某个注解， 获取参数类型等等）判断是否支持， 但是如果运行时也需要获取参数的元数据信息（某个注解的值等）的话，此接口则无法满足需求。
+- 因为`resolve(AsyncRequest request, AsyncResponse response)`方法参数中并没有传递`Param参数`， 虽然初始化阶段能根据`supports(Param param)`方法获取参数元数据信息（获取某个注解， 获取参数类型等等）判断是否支持， 但是如果运行时也需要获取参数的元数据信息（某个注解的值等）的话，此接口则无法满足需求。
 - 假如`ArgumentResolver`实现中需要做序列化操作， 因此期望获取到Spring容器中的序列化器时，则该接口无法支持（例如`@RequestBody`的场景）。
 
 针对以上问题， 答案是确实无法支持。因为`Restlight`的设计理念是
@@ -84,7 +84,7 @@ public interface ArgumentResolverAdapter extends ArgumentResolverPredicate, Argu
 ```java
 public interface ArgumentResolverFactory extends ArgumentResolverPredicate, Ordered {
 
-    ArgumentResolver createResolver(MethodParameter parameter,
+    ArgumentResolver createResolver(Param param,
                                     List<? extends HttpRequestSerializer> serializers);
 
     @Override
@@ -99,15 +99,15 @@ public interface ArgumentResolverFactory extends ArgumentResolverPredicate, Orde
 初始化逻辑：
 
 1. 按照`getOrder()`方法的返回将所有的`ArgumentResolverFactory`进行排序
-2. 按照排序后的顺序依次调用`supports(MethodParameter parameter)`方法， 返回`true`则将其作为该参数的`ArgumentResolverFactory`， 同时调用`createResolver(MethodParameter parameter, List<? extends HttpRequestSerializer> serializers)`方法创建出对应的`ArgumentResolver`
+2. 按照排序后的顺序依次调用`supports(Param param)`方法， 返回`true`则将其作为该参数的`ArgumentResolverFactory`， 同时调用`createResolver(Param param, List<? extends HttpRequestSerializer> serializers)`方法创建出对应的`ArgumentResolver`
 3. 未找到则启动报错。
 
-由于初始化时通过`createResolver(MethodParameter parameter, List<? extends HttpRequestSerializer> serializers)`方法传入了`MethodParameter`以及序列化器， 因此能满足上面的要求。
+由于初始化时通过`createResolver(Param param, List<? extends HttpRequestSerializer> serializers)`方法传入了`Param`以及序列化器， 因此能满足上面的要求。
 
 **两种模式的定位**
 
 - `ArgumentResolver`： 适用于参数解析器不依赖方法元数据信息以及序列化的场景。例如： 如果参数上使用了@XXX注解则返回某个固定的值。
-- `ArgumentResolverFactory`： 适用于参数解析器依赖方法元数据信息以及序列化的场景。例如： @RequestBody， @RequestParameter(name = "foo")。
+- `ArgumentResolverFactory`： 适用于参数解析器依赖方法元数据信息以及序列化的场景。例如： `@RequestBody`， `@RequestParameter(name = "foo")`。
 
 ## 自定义参数解析器
 
@@ -131,13 +131,13 @@ public @interface AppId {
 public ArgumentResolverAdapter resolver() {
     return new ArgumentResolverAdapter() {
         @Override
-        public boolean supports(MethodParameter parameter) {
+        public boolean supports(Param param) {
             // 当方法上有此注解时生效
-            return parameter.hasParameterAnnotation(AppId.class);
+            return param.hasParameterAnnotation(AppId.class);
         }
  
         @Override
-        public Object resolve(AsyncRequest request) {
+        public Object resolve(AsyncRequest request, AsyncResponse response) {
             return "your appid";
         }
     };
@@ -180,15 +180,15 @@ public @interface CustomHeader {
 public ArgumentResolverFactory resolver() {
     return new ArgumentResolverFactory() {
         @Override
-        public boolean supports(MethodParameter parameter) {
+        public boolean supports(Param param) {
             // 当方法上有此注解时生效
-            return parameter.hasParameterAnnotation(CustomHeader.class);
+            return param.hasParameterAnnotation(CustomHeader.class);
         }
 
         @Override
-        ArgumentResolver createResolver(MethodParameter parameter,
+        ArgumentResolver createResolver(Param param,
                                         List<? extends HttpRequestSerializer> serializers) {
-            return new Resolver(parameter);
+            return new Resolver(param);
         }
     };
 }
@@ -200,8 +200,8 @@ private static class Resolver implements ArgumentResolver {
 
     private final String headerName;
 
-    private Resolver(MethodParameter parameter) {
-        CustomHeader anno = parameter.getParameterAnnotation(CustomHeader.class);
+    private Resolver(Param param) {
+        CustomHeader anno = param.getParameterAnnotation(CustomHeader.class);
         if (anno.value().length() == 0) {
             throw new IllegalArgumentException("Name of header must not be empty.");
         }
@@ -210,7 +210,7 @@ private static class Resolver implements ArgumentResolver {
     }
 
     @Override
-    public Object resolve(AsyncRequest request) {
+    public Object resolve(AsyncRequest request, AsyncResponse response) {
         // 运行时直接获取Header
         return request.getHeader(headerName);
     }

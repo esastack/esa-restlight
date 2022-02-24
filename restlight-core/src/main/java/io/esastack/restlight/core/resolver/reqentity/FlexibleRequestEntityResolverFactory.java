@@ -16,20 +16,25 @@
 package io.esastack.restlight.core.resolver.reqentity;
 
 import esa.commons.StringUtils;
+import esa.commons.function.Function3;
 import io.esastack.commons.net.http.MediaType;
 import io.esastack.restlight.core.method.Param;
 import io.esastack.restlight.core.resolver.HandledValue;
 import io.esastack.restlight.core.resolver.RequestEntity;
 import io.esastack.restlight.core.resolver.RequestEntityResolver;
 import io.esastack.restlight.core.resolver.RequestEntityResolverFactory;
+import io.esastack.restlight.core.resolver.StringConverter;
+import io.esastack.restlight.core.resolver.nav.NameAndValue;
 import io.esastack.restlight.core.serialize.HttpRequestSerializer;
 import io.esastack.restlight.core.serialize.ProtoBufHttpBodySerializer;
 import io.esastack.restlight.core.util.Constants;
-import io.esastack.restlight.core.util.ConverterUtils;
+import io.esastack.restlight.server.bootstrap.WebServerException;
 import io.esastack.restlight.server.context.RequestContext;
 
+import java.lang.reflect.Type;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.util.function.Function;
+import java.util.function.Supplier;
 
 public abstract class FlexibleRequestEntityResolverFactory implements RequestEntityResolverFactory {
 
@@ -50,25 +55,57 @@ public abstract class FlexibleRequestEntityResolverFactory implements RequestEnt
 
     @Override
     public RequestEntityResolver createResolver(Param param,
+                                                Function3<Class<?>, Type, Param, StringConverter> converterFunc,
                                                 List<? extends HttpRequestSerializer> serializers) {
+        StringConverter converter = converterFunc.apply(param.type(), param.genericType(), param);
+        if (converter == null) {
+            converter = value -> value;
+        }
         return negotiation
-                ? new NegotiationResolver(serializers, param, paramName)
-                : new DefaultResolver(serializers, param);
+                ? new NegotiationResolver(converter, serializers, param, paramName)
+                : new DefaultResolver(converter, serializers, param);
     }
+
+    /**
+     * Creates {@link NameAndValue} for given {@link Param}.
+     *
+     * @param param     param
+     * @return          NameAndValue
+     */
+    protected abstract NameAndValue<String> createNameAndValue(Param param);
 
     @Override
     public int getOrder() {
         return 100;
     }
 
-    private static class DefaultResolver implements RequestEntityResolver {
+    protected static HandledValue<Object> checkRequired(NameAndValue<String> nav,
+                                                        StringConverter converter,
+                                                        HandledValue<Object> handled) {
+        if (handled.value() != null) {
+            return handled;
+        }
+        Supplier<String> defaultValue;
+        if ((defaultValue = nav.defaultValue()) != null) {
+            return HandledValue.succeed(converter.fromString(defaultValue.get()));
+        } else if (nav.required()) {
+            throw WebServerException.badRequest("Missing required value: " + nav.name());
+        }
+        return handled;
+    }
 
+    private class DefaultResolver implements RequestEntityResolver {
+
+        private final NameAndValue<String> nav;
+        private final StringConverter converter;
         private final List<? extends HttpRequestSerializer> serializers;
-        final Function<String, Object> converter;
 
-        private DefaultResolver(List<? extends HttpRequestSerializer> serializers, Param param) {
+        private DefaultResolver(StringConverter converter,
+                                List<? extends HttpRequestSerializer> serializers,
+                                Param param) {
             this.serializers = serializers;
-            this.converter = ConverterUtils.str2ObjectConverter(param.genericType(), p -> p);
+            this.nav = createNameAndValue(param);
+            this.converter = converter;
         }
 
         @Override
@@ -79,19 +116,20 @@ public abstract class FlexibleRequestEntityResolverFactory implements RequestEnt
             if (contentType == null || MediaType.TEXT_PLAIN.isCompatibleWith(contentType)) {
                 //ignore empty body.
                 if (entity.inputStream().available() == 0) {
-                    return HandledValue.succeed(null);
+                    return checkRequired(nav, converter, HandledValue.succeed(null));
                 }
-                return HandledValue.failed();
+                return checkRequired(nav, converter, HandledValue.succeed(converter
+                        .fromString(context.request().body().string(StandardCharsets.UTF_8))));
             }
 
             //search serializer to resolve argument
             HandledValue<Object> handled;
             for (HttpRequestSerializer serializer : serializers) {
                 if ((handled = serializer.deserialize(entity)).isSuccess()) {
-                    return handled;
+                    return checkRequired(nav, converter, handled);
                 }
             }
-            return HandledValue.failed();
+            return checkRequired(nav, converter, HandledValue.failed());
         }
 
         protected MediaType getMediaType(RequestEntity entity) {
@@ -103,10 +141,11 @@ public abstract class FlexibleRequestEntityResolverFactory implements RequestEnt
 
         private final String paramName;
 
-        private NegotiationResolver(List<? extends HttpRequestSerializer> serializers,
+        private NegotiationResolver(StringConverter converter,
+                                    List<? extends HttpRequestSerializer> serializers,
                                     Param param,
                                     String paramName) {
-            super(serializers, param);
+            super(converter, serializers, param);
             this.paramName = paramName;
         }
 

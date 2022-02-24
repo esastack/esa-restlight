@@ -19,7 +19,7 @@ import io.esastack.restlight.core.DeployContext;
 import io.esastack.restlight.core.config.SerializeOptions;
 import io.esastack.restlight.core.resolver.RequestEntityResolverFactory;
 import io.esastack.restlight.core.spi.RequestEntityResolverProvider;
-import io.esastack.restlight.springmvc.reqentity.FlexibleRequestEntityResolverFactoryImpl;
+import io.esastack.restlight.springmvc.resolver.reqentity.FlexibleRequestEntityResolverFactoryImpl;
 
 import java.util.Optional;
 

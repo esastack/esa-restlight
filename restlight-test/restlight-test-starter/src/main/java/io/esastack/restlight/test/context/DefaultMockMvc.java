@@ -20,6 +20,7 @@ import io.esastack.restlight.server.context.RequestContext;
 import io.esastack.restlight.server.context.impl.RequestContextImpl;
 import io.esastack.restlight.server.mock.MockHttpRequest;
 import io.esastack.restlight.server.mock.MockHttpResponse;
+import io.esastack.restlight.server.mock.MockResponseContent;
 import io.esastack.restlight.server.schedule.AbstractRestlightHandler;
 import io.esastack.restlight.test.result.DefaultMvcResult;
 import io.esastack.restlight.test.result.MvcResult;
