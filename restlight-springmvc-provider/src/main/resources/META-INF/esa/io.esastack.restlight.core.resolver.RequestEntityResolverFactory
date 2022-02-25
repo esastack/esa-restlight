@@ -1,1 +1,1 @@
-io.esastack.restlight.springmvc.reqentity.FixedRequestEntityResolverFactoryImpl
+io.esastack.restlight.springmvc.resolver.reqentity.FixedRequestEntityResolverFactoryImpl

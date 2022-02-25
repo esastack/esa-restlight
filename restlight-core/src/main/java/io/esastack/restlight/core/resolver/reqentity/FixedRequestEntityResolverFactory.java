@@ -15,6 +15,7 @@
  */
 package io.esastack.restlight.core.resolver.reqentity;
 
+import esa.commons.function.Function3;
 import esa.commons.reflect.AnnotationUtils;
 import io.esastack.restlight.core.annotation.RequestSerializer;
 import io.esastack.restlight.core.annotation.Serializer;
@@ -23,11 +24,16 @@ import io.esastack.restlight.core.resolver.HandledValue;
 import io.esastack.restlight.core.resolver.RequestEntity;
 import io.esastack.restlight.core.resolver.RequestEntityResolver;
 import io.esastack.restlight.core.resolver.RequestEntityResolverFactory;
+import io.esastack.restlight.core.resolver.StringConverter;
+import io.esastack.restlight.core.resolver.nav.NameAndValue;
 import io.esastack.restlight.core.serialize.HttpRequestSerializer;
 import io.esastack.restlight.server.context.RequestContext;
 
 import java.lang.reflect.Modifier;
+import java.lang.reflect.Type;
 import java.util.List;
+
+import static io.esastack.restlight.core.resolver.reqentity.FlexibleRequestEntityResolverFactory.checkRequired;
 
 /**
  * Implementation of {@link RequestEntityResolverFactory} for resolving argument that annotated by the
@@ -52,7 +58,9 @@ public abstract class FixedRequestEntityResolverFactory implements RequestEntity
     }
 
     @Override
-    public RequestEntityResolver createResolver(Param param, List<? extends HttpRequestSerializer> serializers) {
+    public RequestEntityResolver createResolver(Param param,
+                                                Function3<Class<?>, Type, Param, StringConverter> converterFunc,
+                                                List<? extends HttpRequestSerializer> serializers) {
         final Class<? extends HttpRequestSerializer> target = findRequestSerializer(param);
         //findFor the first matched one
         HttpRequestSerializer serializer = serializers.stream()
@@ -61,8 +69,20 @@ public abstract class FixedRequestEntityResolverFactory implements RequestEntity
                 .orElseThrow(() -> new IllegalArgumentException("Could not findFor RequestBody serializer. " +
                         "target type:" + target.getName()));
 
-        return new Resolver(serializer);
+        StringConverter converter = converterFunc.apply(param.type(), param.genericType(), param);
+        if (converter == null) {
+            converter = value -> value;
+        }
+        return new Resolver(converter, serializer, param);
     }
+
+    /**
+     * Creates {@link NameAndValue} by given {@link Param}.
+     *
+     * @param param     param
+     * @return          NameAndValue
+     */
+    protected abstract NameAndValue<String> createNameAndValue(Param param);
 
     protected boolean supports0(Param param) {
         // current parameter only
@@ -105,18 +125,24 @@ public abstract class FixedRequestEntityResolverFactory implements RequestEntity
         return target;
     }
 
-    private static class Resolver implements RequestEntityResolver {
+    private class Resolver implements RequestEntityResolver {
 
+        private final NameAndValue<String> nav;
+        private final StringConverter converter;
         private final HttpRequestSerializer serializer;
 
-        private Resolver(HttpRequestSerializer serializer) {
+        private Resolver(StringConverter converter,
+                         HttpRequestSerializer serializer,
+                         Param param) {
+            this.nav = createNameAndValue(param);
+            this.converter = converter;
             this.serializer = serializer;
         }
 
         @Override
         public HandledValue<Object> readFrom(Param param, RequestEntity entity,
                                              RequestContext context) throws Exception {
-            return serializer.deserialize(entity);
+            return checkRequired(nav, converter, serializer.deserialize(entity));
         }
     }
 }

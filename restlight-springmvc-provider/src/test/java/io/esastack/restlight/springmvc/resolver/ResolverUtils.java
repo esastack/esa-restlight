@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.esastack.restlight.jaxrs.resolver;
+package io.esastack.restlight.springmvc.resolver;
 
 import esa.commons.ClassUtils;
 import esa.commons.function.Function3;
@@ -68,5 +68,5 @@ public class ResolverUtils {
 
     private ResolverUtils() {
     }
-}
 
+}
