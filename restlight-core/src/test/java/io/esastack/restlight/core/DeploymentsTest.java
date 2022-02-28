@@ -18,13 +18,20 @@ package io.esastack.restlight.core;
 import esa.commons.function.Function3;
 import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.core.config.RestlightOptionsConfigure;
+import io.esastack.restlight.core.handler.HandlerMapping;
+import io.esastack.restlight.core.handler.RouteFilter;
+import io.esastack.restlight.core.handler.RouteFilterAdapter;
+import io.esastack.restlight.core.handler.RouteFilterChain;
 import io.esastack.restlight.core.handler.impl.HandlerAdvicesFactoryImpl;
 import io.esastack.restlight.core.interceptor.HandlerInterceptor;
+import io.esastack.restlight.core.method.HandlerMethod;
 import io.esastack.restlight.core.method.Param;
 import io.esastack.restlight.core.resolver.*;
 import io.esastack.restlight.core.serialize.HttpRequestSerializer;
+import io.esastack.restlight.core.spi.RouteFilterFactory;
 import io.esastack.restlight.server.bootstrap.RestlightServer;
 import io.esastack.restlight.server.context.RequestContext;
+import io.esastack.restlight.server.context.RouteContext;
 import io.esastack.restlight.server.handler.RestlightHandler;
 import org.junit.jupiter.api.Test;
 
@@ -34,6 +41,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletionStage;
 import java.util.concurrent.Executor;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -112,6 +120,42 @@ class DeploymentsTest {
 //                .addReturnValueResolverAdvice(new RetAdvice())
 //                .addReturnValueResolverAdvice(new RetAdviceFactory())
                 .addController(new A())
+                .addFilter((context, chain) -> chain.doFilter(context))
+                .addFilter(ctx0 -> Optional.of((context, chain) -> chain.doFilter(context)))
+                .addFilters(Collections.singletonList(ctx0 -> Optional.of((context, chain) -> chain.doFilter(context))))
+                .addRouteFilter(new RouteFilterAdapter() {
+                    @Override
+                    public boolean supports(HandlerMethod method) {
+                        return true;
+                    }
+
+                    @Override
+                    public CompletionStage<Void> routed(HandlerMapping mapping, RouteContext context, RouteFilterChain next) {
+                        return next.doNext(mapping, context);
+                    }
+                })
+                .addRouteFilter(new RouteFilterFactory() {
+                    @Override
+                    public Optional<RouteFilter> create(HandlerMethod method) {
+                        return Optional.of((mapping, context, next) -> next.doNext(mapping, context));
+                    }
+
+                    @Override
+                    public boolean supports(HandlerMethod method) {
+                        return true;
+                    }
+                })
+                .addRouteFilters(Collections.singletonList(new RouteFilterFactory() {
+                    @Override
+                    public Optional<RouteFilter> create(HandlerMethod method) {
+                        return Optional.of((mapping, context, next) -> next.doNext(mapping, context));
+                    }
+
+                    @Override
+                    public boolean supports(HandlerMethod method) {
+                        return true;
+                    }
+                }))
                 .addControllers(Arrays.asList(new B(), new C()))
                 .addControllers(null)
                 .addControllers(Collections.emptyList())
@@ -188,6 +232,8 @@ class DeploymentsTest {
         assertTrue(ctx.handlerAdvicesFactory().get() instanceof HandlerAdvicesFactoryImpl);
         assertTrue(ctx.advices().isPresent());
         assertEquals(3, ctx.advices().get().size());
+        assertEquals(3, restlight.deployments().filters().size());
+
 //        assertTrue(ctx.prototypeControllers().isPresent());
 //        assertEquals(3, ctx.prototypeControllers().get().size());
         assertTrue(ctx.interceptors().isPresent());
