@@ -28,7 +28,7 @@ public class FlexibleResponseEntityResolverProvider implements ResponseEntityRes
 
     @Override
     public Optional<ResponseEntityResolverFactory> factoryBean(DeployContext ctx) {
-        SerializeOptions serializeOptions = ctx.options().getSerialize().getRequest();
+        SerializeOptions serializeOptions = ctx.options().getSerialize().getResponse();
         if (serializeOptions.isNegotiation()) {
             return Optional.of(new NegotiationResponseResolverFactory(
                     serializeOptions.getNegotiationParam()));

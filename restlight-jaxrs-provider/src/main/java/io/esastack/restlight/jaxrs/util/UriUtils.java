@@ -40,8 +40,10 @@ public final class UriUtils {
      *                               that are not followed by two hexadecimal numbers will be encoded, otherwise not.
      * @return encoded value
      */
-    public static String encode(String target, boolean encodeSlashInPath,
-                                boolean encodePercentAnyway, boolean encodePercentCondition) {
+    public static String encode(String target,
+                                boolean encodeSlashInPath,
+                                boolean encodePercentAnyway,
+                                boolean encodePercentCondition) {
         if (StringUtils.isEmpty(target)) {
             return target;
         }
@@ -58,12 +60,15 @@ public final class UriUtils {
             } else if ('%' == current) {
                 if (encodePercentAnyway) {
                     sb.append("%25");
-                } else if (encodePercentCondition
-                        && (i + 1 < target.length() && isHex(target.charAt(i + 1)))
-                        && (i + 2 < target.length() && isHex(target.charAt(i + 2)))) {
-                    sb.append(current);
+                } else if (encodePercentCondition) {
+                    if ((i + 1 < target.length() && isHex(target.charAt(i + 1)))
+                            && (i + 2 < target.length() && isHex(target.charAt(i + 2)))) {
+                        sb.append(current);
+                    } else {
+                        sb.append("%25");
+                    }
                 } else {
-                    sb.append("%25");
+                    sb.append(current);
                 }
             } else {
                 sb.append(current);

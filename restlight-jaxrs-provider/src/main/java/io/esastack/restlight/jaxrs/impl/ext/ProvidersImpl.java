@@ -19,6 +19,7 @@ import esa.commons.Checks;
 import esa.commons.ClassUtils;
 import esa.commons.logging.Logger;
 import esa.commons.logging.LoggerFactory;
+import esa.commons.reflect.AnnotationUtils;
 import io.esastack.restlight.core.resolver.ExceptionResolver;
 import io.esastack.restlight.core.resolver.exception.DefaultExceptionMapper;
 import io.esastack.restlight.core.util.Ordered;
@@ -27,6 +28,8 @@ import io.esastack.restlight.jaxrs.adapter.JaxrsExceptionMapperAdapter;
 import io.esastack.restlight.jaxrs.configure.ProvidersFactory;
 import io.esastack.restlight.jaxrs.configure.ProxyComponent;
 import io.esastack.restlight.jaxrs.util.JaxrsUtils;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.ext.ContextResolver;
 import jakarta.ws.rs.ext.ExceptionMapper;
@@ -36,7 +39,9 @@ import jakarta.ws.rs.ext.Providers;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -79,7 +84,7 @@ public class ProvidersImpl implements Providers {
                 current[i++] = new ConsumesComponent(reader.proxied(),
                         ClassUtils.findFirstGenericType(reader.underlying().getClass()).orElse(Object.class),
                         JaxrsUtils.getOrder(reader.underlying()),
-                        JaxrsUtils.consumes(reader.underlying()).toArray(new MediaType[0]));
+                        consumes(reader.underlying()).toArray(new MediaType[0]));
             }
             return current;
         });
@@ -124,7 +129,7 @@ public class ProvidersImpl implements Providers {
                 current[i++] = new ProducesComponent(reader.proxied(),
                         ClassUtils.findFirstGenericType(reader.underlying().getClass()).orElse(Object.class),
                         JaxrsUtils.getOrder(reader.underlying()),
-                        JaxrsUtils.produces(reader.underlying()).toArray(new MediaType[0]));
+                        produces(reader.underlying()).toArray(new MediaType[0]));
             }
             return current;
         });
@@ -195,7 +200,7 @@ public class ProvidersImpl implements Providers {
                 current[i++] = new ProducesComponent(resolver.proxied(),
                         ClassUtils.findFirstGenericType(resolver.underlying().getClass()).orElse(Object.class),
                         JaxrsUtils.getOrder(resolver.underlying()),
-                        JaxrsUtils.produces(resolver.underlying()).toArray(new MediaType[0]));
+                        produces(resolver.underlying()).toArray(new MediaType[0]));
             }
             return current;
         });
@@ -221,6 +226,27 @@ public class ProvidersImpl implements Providers {
             return null;
         }
         return (ContextResolver<T>) filtered.get(0);
+    }
+
+    static List<MediaType> consumes(Object obj) {
+        Consumes consumes = AnnotationUtils.findAnnotation(ClassUtils.getUserType(obj), Consumes.class);
+        return convertToMediaTypes(consumes == null ? new String[0] : consumes.value());
+    }
+
+    static List<MediaType> produces(Object obj) {
+        Produces produces = AnnotationUtils.findAnnotation(ClassUtils.getUserType(obj), Produces.class);
+        return convertToMediaTypes(produces == null ? new String[0] : produces.value());
+    }
+
+    private static List<MediaType> convertToMediaTypes(String[] values) {
+        if (values == null || values.length == 0) {
+            return Collections.emptyList();
+        }
+        List<MediaType> mediaTypes = new ArrayList<>(values.length);
+        for (String value : values) {
+            mediaTypes.add(MediaType.valueOf(value));
+        }
+        return mediaTypes;
     }
 
     private boolean isCompatible(MediaType current, MediaType[] target) {

@@ -18,7 +18,7 @@ package io.esastack.restlight.jaxrs.impl.core;
 
 import esa.commons.Checks;
 import io.esastack.commons.net.http.HttpHeaders;
-import io.esastack.restlight.jaxrs.util.RuntimeDelegateUtils;
+import io.esastack.restlight.jaxrs.util.JaxrsUtils;
 import jakarta.ws.rs.core.MultivaluedMap;
 
 import java.util.ArrayList;
@@ -82,7 +82,7 @@ public final class ModifiableMultivaluedMap implements MultivaluedMap<String, St
 
     @Override
     public boolean equalsIgnoreValueOrder(MultivaluedMap<String, String> otherMap) {
-        return RuntimeDelegateUtils.equalsIgnoreValueOrder(this, otherMap);
+        return JaxrsUtils.equalsIgnoreValueOrder(this, otherMap);
     }
 
     @Override

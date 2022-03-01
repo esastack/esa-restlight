@@ -36,6 +36,9 @@ public class LinkDelegateFactory implements HeaderDelegateFactory {
 
         @Override
         public Link fromString(String value) {
+            if (value == null) {
+                throw new IllegalArgumentException("Failed to parse a null to Link");
+            }
             String[] tokens = StringUtils.isEmpty(value) ? new String[0] : value.split(";");
 
             String uri = null;
@@ -59,6 +62,9 @@ public class LinkDelegateFactory implements HeaderDelegateFactory {
 
         @Override
         public String toString(Link value) {
+            if (value == null) {
+                throw new IllegalArgumentException("Failed to parse a null(Link) to String");
+            }
             final StringBuilder sb = new StringBuilder("<")
                     .append(value.getUri().toString())
                     .append(">");

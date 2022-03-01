@@ -101,7 +101,7 @@ public class DateUtils {
         }
         for (SimpleDateFormat format : DEFAULT_SDFS) {
             try {
-                format.parse(date);
+                return format.parse(date);
             } catch (Throwable ignore) {
 
             }

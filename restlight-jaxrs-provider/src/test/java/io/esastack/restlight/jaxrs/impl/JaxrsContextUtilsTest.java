@@ -26,6 +26,8 @@ import io.esastack.restlight.server.context.RequestContext;
 import io.esastack.restlight.server.core.FilteringRequest;
 import io.esastack.restlight.server.core.HttpRequest;
 import io.esastack.restlight.server.core.HttpResponse;
+import io.esastack.restlight.server.mock.MockHttpRequest;
+import io.esastack.restlight.server.mock.MockHttpResponse;
 import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.Request;
 import jakarta.ws.rs.core.SecurityContext;
@@ -62,8 +64,8 @@ class JaxrsContextUtilsTest {
         final Attributes attrs = new AttributeMap();
         final RequestContext context = mock(RequestContext.class);
         when(context.attrs()).thenReturn(attrs);
-        when(context.request()).thenReturn(mock(HttpRequest.class));
-        when(context.response()).thenReturn(mock(HttpResponse.class));
+        when(context.request()).thenReturn(MockHttpRequest.aMockRequest().build());
+        when(context.response()).thenReturn(MockHttpResponse.aMockResponse().build());
 
         UriInfo uriInfo = JaxrsContextUtils.getUriInfo(context);
         assertNotNull(uriInfo);
@@ -94,6 +96,7 @@ class JaxrsContextUtilsTest {
         when(request1.headers()).thenReturn(new Http1HeadersImpl());
         when(context1.request()).thenReturn(request1);
         when(context1.response()).thenReturn(mock(HttpResponse.class));
+        when(request1.scheme()).thenReturn("http");
 
         AbstractContainerRequestContext reqCtx1 = JaxrsContextUtils.getRequestContext(context1);
         assertNotNull(reqCtx1);
@@ -109,6 +112,7 @@ class JaxrsContextUtilsTest {
         when(context2.request()).thenReturn(request2);
         when(context2.response()).thenReturn(mock(HttpResponse.class));
 
+        when(request2.scheme()).thenReturn("https");
         AbstractContainerRequestContext reqCtx2 = JaxrsContextUtils.getRequestContext(context2);
         assertNotNull(reqCtx2);
         assertTrue(reqCtx2 instanceof PreMatchContainerRequestContext);

@@ -72,6 +72,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.lang.reflect.Type;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -304,7 +305,7 @@ class JaxrsExtensionsHandlerTest {
             return null;
         });
 
-        handler.convertThenAddProviders(Collections.emptyList(), factory, configuration, providers, deployments);
+        handler.convertThenAddProviders(Collections.emptySet(), factory, configuration, providers, deployments);
         assertTrue(configuration.isEnabled(feature));
         assertEquals(1, requestResolvers.size());
         assertTrue(requestResolvers.get(0) instanceof MessageBodyReaderAdapter);
@@ -335,7 +336,7 @@ class JaxrsExtensionsHandlerTest {
             filters.add(invocationOnMock.getArgument(0));
             return null;
         });
-        handler.convertThenAddFilters(Collections.emptyList(), deployments, factory);
+        handler.convertThenAddFilters(Collections.emptySet(), deployments, factory);
         assertEquals(1, filters.size());
         assertTrue(filters.get(0) instanceof JaxrsResponseFiltersAdapter);
 
@@ -350,7 +351,7 @@ class JaxrsExtensionsHandlerTest {
         when(factory.requestFilters()).thenReturn(requestFilters);
         when(factory.responseFilters()).thenReturn(responseFilters);
 
-        final List<Class<? extends Annotation>> appNameBindings = new LinkedList<>();
+        final Set<Class<? extends Annotation>> appNameBindings = new HashSet<>();
         appNameBindings.add(NameBinding1.class);
         appNameBindings.add(NameBinding2.class);
         appNameBindings.add(NameBinding3.class);
@@ -365,7 +366,7 @@ class JaxrsExtensionsHandlerTest {
         final DeployContext deployContext = mock(DeployContext.class);
         when(deployments.deployContext()).thenReturn(deployContext);
 
-        final List<Class<? extends Annotation>> appNameBindings = new LinkedList<>();
+        final Set<Class<? extends Annotation>> appNameBindings = new HashSet<>();
         appNameBindings.add(NameBinding1.class);
         appNameBindings.add(NameBinding2.class);
         appNameBindings.add(NameBinding3.class);

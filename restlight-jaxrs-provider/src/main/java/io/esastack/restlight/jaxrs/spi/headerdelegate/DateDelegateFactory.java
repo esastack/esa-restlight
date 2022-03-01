@@ -43,7 +43,7 @@ public class DateDelegateFactory implements HeaderDelegateFactory {
             if (value == null) {
                 throw new IllegalArgumentException("Failed to parse a null(Date) to String");
             }
-            return esa.commons.DateUtils.toString(value, esa.commons.DateUtils.yyyyMMddHHmmss);
+            return DateUtils.format(value.getTime());
         }
     }
 

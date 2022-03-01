@@ -18,30 +18,34 @@ package io.esastack.restlight.jaxrs.util;
 import esa.commons.ClassUtils;
 import esa.commons.reflect.AnnotationUtils;
 import esa.commons.reflect.ReflectionUtils;
+import io.esastack.commons.net.http.HttpHeaders;
 import io.esastack.restlight.core.method.MethodParam;
 import io.esastack.restlight.core.method.Param;
 import io.esastack.restlight.core.util.OrderedComparator;
 import io.esastack.restlight.jaxrs.configure.OrderComponent;
+import io.esastack.restlight.jaxrs.impl.core.ResponseImpl;
+import io.esastack.restlight.server.core.HttpResponse;
 import io.esastack.restlight.server.util.LoggerUtils;
 import jakarta.ws.rs.ConstrainedTo;
-import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.NameBinding;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Priorities;
-import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.RuntimeType;
 import jakarta.ws.rs.container.ContainerRequestFilter;
 import jakarta.ws.rs.container.ContainerResponseFilter;
 import jakarta.ws.rs.container.DynamicFeature;
 import jakarta.ws.rs.container.PreMatching;
 import jakarta.ws.rs.core.Feature;
-import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.MultivaluedHashMap;
+import jakarta.ws.rs.core.MultivaluedMap;
+import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.ContextResolver;
 import jakarta.ws.rs.ext.ExceptionMapper;
 import jakarta.ws.rs.ext.MessageBodyReader;
 import jakarta.ws.rs.ext.MessageBodyWriter;
 import jakarta.ws.rs.ext.ParamConverterProvider;
 import jakarta.ws.rs.ext.ReaderInterceptor;
+import jakarta.ws.rs.ext.RuntimeDelegate;
 import jakarta.ws.rs.ext.WriterInterceptor;
 
 import javax.annotation.Priority;
@@ -51,9 +55,11 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public final class JaxrsUtils {
@@ -83,6 +89,113 @@ public final class JaxrsUtils {
             return defaultOrder();
         }
         return priority.value();
+    }
+
+    public static String toString(Object object) {
+        if (object == null) {
+            return null;
+        }
+
+        @SuppressWarnings("unchecked")
+        RuntimeDelegate.HeaderDelegate<Object> delegate = (RuntimeDelegate.HeaderDelegate<Object>)
+                RuntimeDelegate.getInstance().createHeaderDelegate(ClassUtils.getUserType(object));
+        if (delegate != null) {
+            return delegate.toString(object);
+        }
+        return object.toString();
+    }
+
+    public static MultivaluedMap<String, Object> convertToMap(HttpHeaders headers) {
+        MultivaluedMap<String, Object> dest = new MultivaluedHashMap<>();
+        if (headers == null) {
+            return dest;
+        }
+        for (String name : headers.names()) {
+            dest.addAll(name, new ArrayList<>(headers.getAll(name)));
+        }
+        return dest;
+    }
+
+    public static void convertThenAddToHeaders(MultivaluedMap<String, Object> values, HttpHeaders headers) {
+        if (values == null || values.isEmpty()) {
+            return;
+        }
+        headers.clear();
+        for (Map.Entry<String, List<Object>> entry : values.entrySet()) {
+            List<Object> value = entry.getValue();
+            if (value == null || value.isEmpty()) {
+                continue;
+            }
+            headers.add(entry.getKey(), value.stream().map(JaxrsUtils::toString)
+                    .collect(Collectors.toList()));
+        }
+    }
+
+    public static void addMetadataToJakarta(HttpResponse from, ResponseImpl to) {
+        if (from == null || to == null) {
+            return;
+        }
+
+        // when the from.entity instanceof Response which means the to is generated from from.entity,
+        // we should avoid endless loop setting.
+        if (!(from.entity() instanceof Response)) {
+            to.setEntity(from.entity());
+            to.setStatus(from.status());
+        }
+
+        for (Map.Entry<String, String> entry : from.headers()) {
+            to.getHeaders().add(entry.getKey(), entry.getValue());
+        }
+    }
+
+    public static void addMetadataFromJakarta(ResponseImpl from, HttpResponse to) {
+        if (from == null || to == null) {
+            return;
+        }
+        to.status(from.getStatus());
+
+        // when the from.entity instanceof Response which means the to is generated from from.entity,
+        // we should avoid endless loop setting.
+        if (!(to.entity() instanceof Response)) {
+            to.entity(from.getEntity());
+        }
+
+        to.headers().clear();
+        MultivaluedMap<String, String> headers = from.getStringHeaders();
+        for (String name : headers.keySet()) {
+            to.headers().add(name, headers.get(name));
+        }
+    }
+
+    public static <K, V1, V2> boolean equalsIgnoreValueOrder(MultivaluedMap<K, V1> m1, MultivaluedMap<K, V2> m2) {
+        if (m1 == null) {
+            return m2 == null;
+        }
+        if (m2 == null) {
+            return false;
+        }
+        if (m1.keySet().size() != m2.keySet().size()) {
+            return false;
+        }
+        for (Map.Entry<K, List<V1>> e : m1.entrySet()) {
+            List<V2> olist2 = m2.get(e.getKey());
+            List<V1> olist1 = e.getValue();
+            if (olist1 == null) {
+                return olist2 == null;
+            }
+            if (olist2 == null) {
+                return false;
+            }
+            if (olist1.size() != olist2.size()) {
+                return false;
+            }
+            for (V1 v : olist1) {
+                if (!olist2.contains(v)) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     public static boolean isServerSide(Class<?> clazz) {
@@ -116,39 +229,23 @@ public final class JaxrsUtils {
         }
     }
 
-    public static List<MediaType> consumes(Object obj) {
-        Consumes consumes = AnnotationUtils.findAnnotation(ClassUtils.getUserType(obj), Consumes.class);
-        return convertToMediaTypes(consumes == null ? new String[0] : consumes.value());
-    }
-
-    public static List<MediaType> produces(Object obj) {
-        Produces produces = AnnotationUtils.findAnnotation(ClassUtils.getUserType(obj), Produces.class);
-        return convertToMediaTypes(produces == null ? new String[0] : produces.value());
-    }
-
-    public static List<Class<? extends Annotation>> annotations(Object obj) {
-        Class<?> clazz = ClassUtils.getUserType(obj);
-        List<Class<? extends Annotation>> annotations = new LinkedList<>();
-        for (Annotation declaredAnn : clazz.getDeclaredAnnotations()) {
-            annotations.add(declaredAnn.annotationType());
+    public static Set<Class<? extends Annotation>> findNameBindings(Method method, boolean alsoUseClass) {
+        if (method == null) {
+            return Collections.emptySet();
         }
-        return annotations;
-    }
-
-    public static List<Class<? extends Annotation>> findNameBindings(Method method, boolean alsoUseClass) {
-        List<Class<? extends Annotation>> annotations = new LinkedList<>(findNameBindings(method));
+        Set<Class<? extends Annotation>> annotations = new HashSet<>(findNameBindings(method));
         if (alsoUseClass) {
             annotations.addAll(findNameBindings(method.getDeclaringClass()));
         }
         return annotations;
     }
 
-    public static List<Class<? extends Annotation>> findNameBindings(AnnotatedElement obj) {
+    public static Set<Class<? extends Annotation>> findNameBindings(AnnotatedElement obj) {
         if (obj == null) {
-            return Collections.emptyList();
+            return Collections.emptySet();
         }
 
-        List<Class<? extends Annotation>> result = new ArrayList<>(obj.getDeclaredAnnotations().length);
+        Set<Class<? extends Annotation>> result = new HashSet<>(obj.getDeclaredAnnotations().length);
         for (Annotation declaredAnn : obj.getDeclaredAnnotations()) {
             Class<? extends Annotation> type = declaredAnn.annotationType();
             if (type.getDeclaredAnnotation(NameBinding.class) != null) {
@@ -172,17 +269,6 @@ public final class JaxrsUtils {
 
     public static Map<Class<?>, Integer> extractContracts(Object obj, int defaultOrder) {
         return extractContracts(ClassUtils.getUserType(obj), defaultOrder);
-    }
-
-    public static Map<Class<?>, Integer> extractContracts(Class<?> clazz, int defaultOrder) {
-        if (clazz == null) {
-            return Collections.emptyMap();
-        }
-
-        Map<Class<?>, Integer> values = new HashMap<>();
-        List<Class<?>> components = getComponents(clazz);
-        components.forEach(component -> values.put(component, defaultOrder));
-        return values;
     }
 
     public static boolean isRootResource(Class<?> clazz) {
@@ -256,6 +342,17 @@ public final class JaxrsUtils {
         return classes;
     }
 
+    private static Map<Class<?>, Integer> extractContracts(Class<?> clazz, int defaultOrder) {
+        if (clazz == null) {
+            return Collections.emptyMap();
+        }
+
+        Map<Class<?>, Integer> values = new HashMap<>();
+        List<Class<?>> components = getComponents(clazz);
+        components.forEach(component -> values.put(component, defaultOrder));
+        return values;
+    }
+
     private static boolean isSetterParam(Param param, Class<? extends Annotation> target) {
         if (!param.isMethodParam()) {
             return false;
@@ -275,7 +372,7 @@ public final class JaxrsUtils {
             return;
         }
 
-        if (depth > 0 && isComponent(clazz)) {
+        if (depth > 0 && isComponent(clazz) && clazz.getName().startsWith("jakarta.ws.rs")) {
             classes.add(clazz);
         }
 
@@ -284,17 +381,6 @@ public final class JaxrsUtils {
             getComponentsRecursively(interface0, classes, depth);
         }
         getComponentsRecursively(clazz.getSuperclass(), classes, depth);
-    }
-
-    private static List<MediaType> convertToMediaTypes(String[] values) {
-        if (values == null || values.length == 0) {
-            return Collections.emptyList();
-        }
-        List<MediaType> mediaTypes = new ArrayList<>(values.length);
-        for (String value : values) {
-            mediaTypes.add(MediaType.valueOf(value));
-        }
-        return mediaTypes;
     }
 
     private JaxrsUtils() {

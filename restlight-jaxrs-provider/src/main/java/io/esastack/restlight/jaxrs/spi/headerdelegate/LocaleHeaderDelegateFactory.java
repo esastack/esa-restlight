@@ -15,6 +15,7 @@
  */
 package io.esastack.restlight.jaxrs.spi.headerdelegate;
 
+import esa.commons.StringUtils;
 import io.esastack.restlight.core.util.HttpHeaderUtils;
 import io.esastack.restlight.jaxrs.spi.HeaderDelegateFactory;
 import jakarta.ws.rs.ext.RuntimeDelegate;
@@ -43,7 +44,11 @@ public class LocaleHeaderDelegateFactory implements HeaderDelegateFactory {
             if (value == null) {
                 throw new IllegalArgumentException("Failed to parse a null(Locale) to String");
             }
-            return value.toString();
+            if (StringUtils.isEmpty(value.getCountry())) {
+                return value.getLanguage();
+            } else {
+                return value.getLanguage() + '-' + value.getCountry();
+            }
         }
 
     }

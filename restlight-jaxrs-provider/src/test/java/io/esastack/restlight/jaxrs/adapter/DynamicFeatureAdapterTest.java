@@ -45,8 +45,10 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
@@ -126,7 +128,7 @@ class DynamicFeatureAdapterTest {
 
         // when features\interceptors\filters arent' empty.    ====> method
         final DynamicFeatureAdapter feature1 = new DynamicFeatureAdapter(deployContext,
-                Collections.singletonList(NameBinding1.class),
+                Collections.singleton(NameBinding1.class),
                 Collections.singletonList(new ProxyComponent<>(f, f)), configuration);
         final ConfigurableImpl c = new ConfigurableImpl(configuration);
 
@@ -153,7 +155,7 @@ class DynamicFeatureAdapterTest {
         contextResolvers.clear();
         count.set(0);
 
-        final List<Class<? extends Annotation>> appNameBindings = new LinkedList<>();
+        final Set<Class<? extends Annotation>> appNameBindings = new HashSet<>();
         appNameBindings.add(NameBinding1.class);
         appNameBindings.add(NameBinding2.class);
         appNameBindings.add(NameBinding3.class);
