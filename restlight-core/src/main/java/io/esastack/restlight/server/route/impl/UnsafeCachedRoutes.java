@@ -39,6 +39,7 @@ class UnsafeCachedRoutes extends RhsPadding implements CachedRoutes {
         }
         this.rate = computeRate;
         this.cache = new CountedRoute[0];
+        UNSAFE.putOrderedObject(this, CACHE_OFFSET, this.cache);
     }
 
     @Override
@@ -57,15 +58,15 @@ class UnsafeCachedRoutes extends RhsPadding implements CachedRoutes {
 
     @Override
     public void add(CountedRoute r) {
-        CountedRoute[] rs = (CountedRoute[]) UNSAFE.getObjectVolatile(this, CTL_OFFSET);
+        CountedRoute[] rs = (CountedRoute[]) UNSAFE.getObjectVolatile(this, CACHE_OFFSET);
         CountedRoute[] updated = Arrays.copyOf(rs, rs.length + 1);
         updated[updated.length - 1] = r;
-        UNSAFE.putOrderedObject(this, CTL_OFFSET, updated);
+        UNSAFE.putOrderedObject(this, CACHE_OFFSET, updated);
     }
 
     @Override
     public void remove(CountedRoute r) {
-        CountedRoute[] rs = (CountedRoute[]) UNSAFE.getObjectVolatile(this, CTL_OFFSET);
+        CountedRoute[] rs = (CountedRoute[]) UNSAFE.getObjectVolatile(this, CACHE_OFFSET);
         List<CountedRoute> updated = new LinkedList<>();
         for (CountedRoute item : rs) {
             if (!AbstractRouteRegistry.isEquals(r, item)) {
@@ -77,7 +78,7 @@ class UnsafeCachedRoutes extends RhsPadding implements CachedRoutes {
 
     @Override
     public CountedRoute[] lookup() {
-        return cache;
+        return (CountedRoute[]) UNSAFE.getObjectVolatile(this, CACHE_OFFSET);
     }
 }
 
