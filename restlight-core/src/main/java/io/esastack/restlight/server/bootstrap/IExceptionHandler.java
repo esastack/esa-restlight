@@ -18,12 +18,21 @@ package io.esastack.restlight.server.bootstrap;
 import esa.commons.annotation.Internal;
 import io.esastack.restlight.core.util.Ordered;
 import io.esastack.restlight.server.context.RequestContext;
+import io.esastack.restlight.server.route.ExceptionHandler;
+import io.esastack.restlight.server.route.RouteFailureException;
 
 import java.util.concurrent.CompletionStage;
 
 /**
  * This {@link IExceptionHandler} is designed for internal using. The exception caught will be proceed by
- * sorted {@link IExceptionHandler}s one by one.
+ * sorted {@link IExceptionHandler}s one by one. Generally speaking, we expect that all exception should
+ * be handled by matched custom {@link ExceptionHandler}s, but there is no guarantee that each exception
+ * has a matching {@link ExceptionHandler}(eg. route hasn't matched, absent exception handlers), in this
+ * case, we still want to handle some exception internally, such as {@link RouteFailureException}. So we
+ * design this {@link IExceptionHandler} to handle exception one by one and in most case, the last one
+ * of the {@link ExceptionHandlerChain} is matched {@link ExceptionHandler}.
+ *
+ * @see ExceptionHandlerChain
  */
 @Internal
 @FunctionalInterface

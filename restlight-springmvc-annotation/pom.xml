@@ -92,13 +92,13 @@
                                 <relocation>
                                     <pattern>org.springframework.web.bind.annotation</pattern>
                                     <shadedPattern>
-                                        esa.restlight.spring.shaded.org.springframework.web.bind.annotation
+                                        io.esastack.restlight.spring.shaded.org.springframework.web.bind.annotation
                                     </shadedPattern>
                                 </relocation>
                                 <relocation>
                                     <pattern>org.springframework.http</pattern>
                                     <shadedPattern>
-                                        esa.restlight.spring.shaded.org.springframework.http
+                                        io.esastack.restlight.spring.shaded.org.springframework.http
                                     </shadedPattern>
                                 </relocation>
                             </relocations>

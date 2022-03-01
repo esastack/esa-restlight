@@ -17,6 +17,7 @@ package io.esastack.restlight.jaxrs.impl.core;
 
 import io.esastack.commons.net.http.HttpHeaders;
 import io.esastack.commons.net.http.MediaType;
+import io.esastack.commons.net.netty.http.CookieImpl;
 import io.esastack.commons.net.netty.http.Http1HeadersImpl;
 import io.esastack.restlight.server.core.HttpRequest;
 import io.esastack.restlight.server.mock.MockHttpRequest;
@@ -28,9 +29,11 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 import static io.esastack.commons.net.http.HttpHeaderNames.ACCEPT_LANGUAGE;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
@@ -100,8 +103,10 @@ class HttpRequestHeadersTest {
         assertEquals(Locale.SIMPLIFIED_CHINESE, proxied.getLanguage());
 
         assertEquals(0, proxied.getCookies().size());
-        headers.add(jakarta.ws.rs.core.HttpHeaders.SET_COOKIE, "name1=value1");
-        headers.add(jakarta.ws.rs.core.HttpHeaders.SET_COOKIE, "name2=value2");
+        final Set<io.esastack.commons.net.http.Cookie> cookies = new HashSet<>();
+        cookies.add(new CookieImpl("name1", "value1"));
+        cookies.add(new CookieImpl("name2", "value2"));
+        when(request.cookies()).thenReturn(cookies);
         Map<String, Cookie> cookieMap = proxied.getCookies();
         assertEquals(2, cookieMap.size());
         assertEquals("value1", cookieMap.get("name1").getValue());

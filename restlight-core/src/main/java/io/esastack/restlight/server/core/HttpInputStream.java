@@ -25,11 +25,6 @@ import java.nio.charset.Charset;
 public abstract class HttpInputStream extends InputStream implements DataInput {
 
     /**
-     * Returns the number of read bytes by this stream so far.
-     */
-    public abstract int readBytes();
-
-    /**
      * Decodes this readable bytes into a string with the specified character set name.
      */
     public abstract String readString(Charset charset);

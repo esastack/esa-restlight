@@ -45,6 +45,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import static io.esastack.restlight.jaxrs.util.JaxrsUtils.ascendingOrdered;
 import static io.esastack.restlight.jaxrs.util.JaxrsUtils.descendingOrder;
@@ -52,12 +53,12 @@ import static io.esastack.restlight.jaxrs.util.JaxrsUtils.descendingOrder;
 public class DynamicFeatureAdapter implements HandlerConfigure {
 
     private final DeployContext context;
-    private final List<Class<? extends Annotation>> appNameBindings;
+    private final Set<Class<? extends Annotation>> appNameBindings;
     private final Collection<ProxyComponent<DynamicFeature>> features;
     private final ConfigurationImpl parent;
 
     public DynamicFeatureAdapter(DeployContext context,
-                                 List<Class<? extends Annotation>> appNameBindings,
+                                 Set<Class<? extends Annotation>> appNameBindings,
                                  Collection<ProxyComponent<DynamicFeature>> features,
                                  ConfigurationImpl parent) {
         Checks.checkNotNull(context, "context");
@@ -142,14 +143,14 @@ public class DynamicFeatureAdapter implements HandlerConfigure {
         if (components.isEmpty()) {
             return Collections.emptyList();
         }
-        List<Class<? extends Annotation>> methodAnnotations = JaxrsUtils
+        Set<Class<? extends Annotation>> methodAnnotations = JaxrsUtils
                 .findNameBindings(method.method(), true);
         List<OrderComponent<T>> bound = new LinkedList<>();
         for (ProxyComponent<T> component : components) {
             if (skipPreMatching && JaxrsUtils.isPreMatched(component.underlying())) {
                 continue;
             }
-            List<Class<? extends Annotation>> annotations = JaxrsUtils.findNameBindings(
+            Set<Class<? extends Annotation>> annotations = JaxrsUtils.findNameBindings(
                     ClassUtils.getUserType(component.underlying()));
             if (appNameBindings.containsAll(annotations)
                     || methodAnnotations.containsAll(annotations)) {

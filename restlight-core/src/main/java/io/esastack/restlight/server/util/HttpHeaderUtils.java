@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.esastack.restlight.core.util;
+package io.esastack.restlight.server.util;
 
 import esa.commons.StringUtils;
 import io.esastack.commons.net.http.HttpHeaderNames;
@@ -71,11 +71,14 @@ public final class HttpHeaderUtils {
     }
 
     public static Locale getLanguage(HttpHeaders headers) {
+        if (headers == null) {
+            return null;
+        }
         String language = headers.get(HttpHeaderNames.CONTENT_LANGUAGE);
         if (StringUtils.isEmpty(language)) {
             return null;
         }
-        return new Locale(language);
+        return parseToLanguage(language.split(",")[0].trim());
     }
 
     public static String parseToEncoding(String target) {
