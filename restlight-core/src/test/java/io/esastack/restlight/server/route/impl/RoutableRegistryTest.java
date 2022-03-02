@@ -39,18 +39,18 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class RoutableRegistryTest {
+class RoutableRegistryTest {
 
     @Test
     void testAll() {
-        AbstractRouteRegistry underlying = new SimpleRouteRegistry();
-        DeployContext context = mock(DeployContext.class);
-        RestlightOptions options = mock(RestlightOptions.class);
+        final AbstractRouteRegistry underlying = new SimpleRouteRegistry();
+        final DeployContext context = mock(DeployContext.class);
+        final RestlightOptions options = mock(RestlightOptions.class);
         when(context.options()).thenReturn(options);
         Map<String, Scheduler> schedulers = new HashMap<>();
-        Scheduler bizScheduler = mock(Scheduler.class);
-        Scheduler defaultScheduler = mock(Scheduler.class);
-        String defaultKey = "defaultKey";
+        final Scheduler bizScheduler = mock(Scheduler.class);
+        final Scheduler defaultScheduler = mock(Scheduler.class);
+        final String defaultKey = "defaultKey";
         schedulers.put(Schedulers.BIZ, bizScheduler);
         schedulers.put(defaultKey, defaultScheduler);
         when(context.schedulers()).thenReturn(schedulers);

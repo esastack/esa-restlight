@@ -21,11 +21,11 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
-public class RouteHandlerMethodImplTest {
+class RouteHandlerMethodImplTest {
 
     @Test
     void testAll() throws NoSuchMethodException {
-        RouteHandlerMethod handlerMethod = RouteHandlerMethodImpl.of(Subject.class,
+        final RouteHandlerMethod handlerMethod = RouteHandlerMethodImpl.of(Subject.class,
                 Subject.class.getDeclaredMethod("method"), false, "");
 
         assertFalse(handlerMethod.intercepted());

@@ -25,16 +25,16 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 
-public class RouteContextImplTest {
+class RouteContextImplTest {
     @Test
     void testAll() {
-        RoutedRequest request = mock(RoutedRequest.class);
-        HttpResponse response = mock(HttpResponse.class);
-        RouteContext context = new RouteContextImpl(new AttributeMap(),request, response);
+        final RoutedRequest request = mock(RoutedRequest.class);
+        final HttpResponse response = mock(HttpResponse.class);
+        final RouteContext context = new RouteContextImpl(new AttributeMap(),request, response);
         assertEquals(context.request(), request);
         assertEquals(context.response(), response);
-        String key = "key";
-        String value = "value";
+        final String key = "key";
+        final String value = "value";
         context.attrs().attr(AttributeKey.stringKey(key)).set(value);
         assertEquals(value, context.attrs().attr(AttributeKey.stringKey(key)).get());
     }

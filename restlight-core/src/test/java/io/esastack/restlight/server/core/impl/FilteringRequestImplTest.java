@@ -28,7 +28,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class FilteringRequestImplTest {
+class FilteringRequestImplTest {
 
     private HttpRequest underlying;
     private FilteringRequest request;
@@ -50,8 +50,8 @@ public class FilteringRequestImplTest {
 
     @Test
     void testUri() {
-        String origin = "http://origin/123/123?aaa=bbb";
-        String changed = "http://origin/456/456?aaa=ccc";
+        final String origin = "http://origin/123/123?aaa=bbb";
+        final String changed = "http://origin/456/456?aaa=ccc";
         when(underlying.uri()).thenReturn(origin);
         assertEquals(origin, request.uri());
         request.uri(changed);
@@ -64,8 +64,8 @@ public class FilteringRequestImplTest {
 
     @Test
     void testBody() {
-        Buffer origin = mock(Buffer.class);
-        Buffer changed = mock(Buffer.class);
+        final Buffer origin = mock(Buffer.class);
+        final Buffer changed = mock(Buffer.class);
         when(underlying.body()).thenReturn(origin);
         assertEquals(origin, request.body());
         request.body(changed);
@@ -79,8 +79,8 @@ public class FilteringRequestImplTest {
 
     @Test
     void testInputStream() {
-        HttpInputStream origin = mock(HttpInputStream.class);
-        HttpInputStream changed = mock(HttpInputStream.class);
+        final HttpInputStream origin = mock(HttpInputStream.class);
+        final HttpInputStream changed = mock(HttpInputStream.class);
         when(underlying.inputStream()).thenReturn(origin);
         assertEquals(origin, request.inputStream());
         request.inputStream(changed);

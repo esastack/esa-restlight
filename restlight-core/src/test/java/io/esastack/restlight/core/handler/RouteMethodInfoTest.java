@@ -23,13 +23,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 
-public class RouteMethodInfoTest {
+class RouteMethodInfoTest {
 
     @Test
     void testAll() {
-        RouteHandlerMethod method = mock(RouteHandlerMethod.class);
-        HttpStatus status = HttpStatus.BAD_REQUEST;
-        RouteMethodInfo methodInfo = new RouteMethodInfo(method, true, status);
+        final RouteHandlerMethod method = mock(RouteHandlerMethod.class);
+        final HttpStatus status = HttpStatus.BAD_REQUEST;
+        final RouteMethodInfo methodInfo = new RouteMethodInfo(method, true, status);
         assertEquals(method, methodInfo.handlerMethod());
         assertEquals(status, methodInfo.customStatus());
         assertTrue(methodInfo.isLocator());

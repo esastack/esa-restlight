@@ -32,7 +32,7 @@ class HeadersPredicateTest {
     private static HttpRequest request;
 
     @BeforeAll
-    public static void setUpRequest() {
+    static void setUpRequest() {
         request = MockHttpRequest
                 .aMockRequest()
                 .withHeader("foo", "a")

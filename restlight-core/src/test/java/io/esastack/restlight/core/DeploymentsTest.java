@@ -255,23 +255,23 @@ class DeploymentsTest {
 
     private static class MockBean {
 
-        public String hello() {
+        String hello() {
             return "";
         }
 
-        public String index() {
+        String index() {
             return "";
         }
 
-        public String list() {
+        String list() {
             return "";
         }
 
-        public String index0() {
+        String index0() {
             return "";
         }
 
-        public String list0() {
+        String list0() {
             return "";
         }
     }
@@ -327,19 +327,19 @@ class DeploymentsTest {
 //    private static class Ret implements ReturnValueResolverAdapter {
 //
 //        @Override
-//        public byte[] resolve(Object returnValue, HttpRequest request, HttpResponse response) throws Exception {
+//        byte[] resolve(Object returnValue, HttpRequest request, HttpResponse response) throws Exception {
 //            return new byte[0];
 //        }
 //
 //        @Override
-//        public boolean supports(InvocableMethod invocableMethod) {
+//        boolean supports(InvocableMethod invocableMethod) {
 //            return false;
 //        }
 //    }
 //
 //    private static class RetAdvice implements ReturnValueResolverAdviceAdapter {
 //        @Override
-//        public boolean supports(InvocableMethod invocableMethod) {
+//        boolean supports(InvocableMethod invocableMethod) {
 //            return false;
 //        }
 //    }
@@ -347,25 +347,25 @@ class DeploymentsTest {
 //    private static class RetFactory implements ReturnValueResolverFactory {
 //
 //        @Override
-//        public ReturnValueResolver createResolver(InvocableMethod method,
+//        ReturnValueResolver createResolver(InvocableMethod method,
 //                                                  List<? extends HttpResponseSerializer> serializers) {
 //            return null;
 //        }
 //
 //        @Override
-//        public boolean supports(InvocableMethod invocableMethod) {
+//        boolean supports(InvocableMethod invocableMethod) {
 //            return false;
 //        }
 //    }
 //
 //    private static class RetAdviceFactory implements ReturnValueResolverAdviceFactory {
 //        @Override
-//        public ReturnValueResolverAdvice createResolverAdvice(InvocableMethod method, ReturnValueResolver resolver) {
+//        ReturnValueResolverAdvice createResolverAdvice(InvocableMethod method, ReturnValueResolver resolver) {
 //            return null;
 //        }
 //
 //        @Override
-//        public boolean supports(InvocableMethod invocableMethod) {
+//        boolean supports(InvocableMethod invocableMethod) {
 //            return false;
 //        }
 //    }
@@ -373,17 +373,17 @@ class DeploymentsTest {
 //    private static class Rx implements HttpRequestSerializer {
 //
 //        @Override
-//        public boolean supportsRead(MediaType mediaType, Type type) {
+//        boolean supportsRead(MediaType mediaType, Type type) {
 //            return false;
 //        }
 //
 //        @Override
-//        public <T> T deSerialize(byte[] data, Type type) throws Exception {
+//        <T> T deSerialize(byte[] data, Type type) throws Exception {
 //            return null;
 //        }
 //
 //        @Override
-//        public <T> T deSerialize(HttpInputStream inputStream, Type type) throws Exception {
+//        <T> T deSerialize(HttpInputStream inputStream, Type type) throws Exception {
 //            return null;
 //        }
 //    }
@@ -391,76 +391,76 @@ class DeploymentsTest {
 //    private static class Tx implements HttpResponseSerializer {
 //
 //        @Override
-//        public boolean supportsWrite(MediaType mediaType, Type type) {
+//        boolean supportsWrite(MediaType mediaType, Type type) {
 //            return false;
 //        }
 //
 //        @Override
-//        public Object customResponse(HttpRequest request, HttpResponse response, Object returnValue) {
+//        Object customResponse(HttpRequest request, HttpResponse response, Object returnValue) {
 //            return null;
 //        }
 //
 //        @Override
-//        public byte[] serialize(Object target) throws Exception {
+//        byte[] serialize(Object target) throws Exception {
 //            return new byte[0];
 //        }
 //
 //        @Override
-//        public void serialize(Object target, HttpOutputStream outputStream) throws Exception {
+//        void serialize(Object target, HttpOutputStream outputStream) throws Exception {
 //
 //        }
 //    }
 //
 //    private static class RxBody implements HttpBodySerializer {
 //        @Override
-//        public Object customResponse(HttpRequest request, HttpResponse response, Object returnValue) {
+//        Object customResponse(HttpRequest request, HttpResponse response, Object returnValue) {
 //            return null;
 //        }
 //
 //        @Override
-//        public <T> T deSerialize(byte[] data, Type type) throws Exception {
+//        <T> T deSerialize(byte[] data, Type type) throws Exception {
 //            return null;
 //        }
 //
 //        @Override
-//        public <T> T deSerialize(HttpInputStream inputStream, Type type) throws Exception {
+//        <T> T deSerialize(HttpInputStream inputStream, Type type) throws Exception {
 //            return null;
 //        }
 //
 //        @Override
-//        public byte[] serialize(Object target) throws Exception {
+//        byte[] serialize(Object target) throws Exception {
 //            return new byte[0];
 //        }
 //
 //        @Override
-//        public void serialize(Object target, HttpOutputStream outputStream) throws Exception {
+//        void serialize(Object target, HttpOutputStream outputStream) throws Exception {
 //
 //        }
 //    }
 //
 //    private static class TxBody implements HttpBodySerializer {
 //        @Override
-//        public Object customResponse(HttpRequest request, HttpResponse response, Object returnValue) {
+//        Object customResponse(HttpRequest request, HttpResponse response, Object returnValue) {
 //            return null;
 //        }
 //
 //        @Override
-//        public <T> T deSerialize(byte[] data, Type type) throws Exception {
+//        <T> T deSerialize(byte[] data, Type type) throws Exception {
 //            return null;
 //        }
 //
 //        @Override
-//        public <T> T deSerialize(HttpInputStream inputStream, Type type) throws Exception {
+//        <T> T deSerialize(HttpInputStream inputStream, Type type) throws Exception {
 //            return null;
 //        }
 //
 //        @Override
-//        public byte[] serialize(Object target) throws Exception {
+//        byte[] serialize(Object target) throws Exception {
 //            return new byte[0];
 //        }
 //
 //        @Override
-//        public void serialize(Object target, HttpOutputStream outputStream) throws Exception {
+//        void serialize(Object target, HttpOutputStream outputStream) throws Exception {
 //
 //        }
 //    }

@@ -33,12 +33,12 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class FilteredHandlerTest {
+class FilteredHandlerTest {
 
     @Test
     void testFilter() {
-        RestlightHandler handler = mock(RestlightHandler.class);
-        List<Filter> filters = new ArrayList<>();
+        final RestlightHandler handler = mock(RestlightHandler.class);
+        final List<Filter> filters = new ArrayList<>();
         filters.add((context, chain) -> {
             context.attrs().attr(AttributeKey.stringKey("1")).set("1");
             return chain.doFilter(context);
@@ -64,10 +64,10 @@ public class FilteredHandlerTest {
         when(handler.process(any(RequestContext.class)))
                 .thenReturn(CompletableFuture.completedFuture(null));
 
-        FilteredHandler filteredHandler = new FilteredHandler(handler, filters);
-        FilteringRequest request = mock(FilteringRequest.class);
-        HttpResponse response = mock(HttpResponse.class);
-        FilterContext context = new FilterContextImpl(new AttributeMap(),request, response);
+        final FilteredHandler filteredHandler = new FilteredHandler(handler, filters);
+        final FilteringRequest request = mock(FilteringRequest.class);
+        final HttpResponse response = mock(HttpResponse.class);
+        final FilterContext context = new FilterContextImpl(new AttributeMap(),request, response);
         filteredHandler.process(context);
         assertEquals("1",context.attrs().attr(AttributeKey.stringKey("1")).get());
         assertEquals("2",context.attrs().attr(AttributeKey.stringKey("2")).get());

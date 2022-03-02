@@ -25,17 +25,17 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 
-public class FilterContextImplTest {
+class FilterContextImplTest {
 
     @Test
     void testAll() {
-        FilteringRequest request = mock(FilteringRequest.class);
-        HttpResponse response = mock(HttpResponse.class);
-        FilterContext context = new FilterContextImpl(new AttributeMap(),request, response);
+        final FilteringRequest request = mock(FilteringRequest.class);
+        final HttpResponse response = mock(HttpResponse.class);
+        final FilterContext context = new FilterContextImpl(new AttributeMap(),request, response);
         assertEquals(context.request(), request);
         assertEquals(context.response(), response);
-        String key = "key";
-        String value = "value";
+        final String key = "key";
+        final String value = "value";
         context.attrs().attr(AttributeKey.stringKey(key)).set(value);
         assertEquals(value, context.attrs().attr(AttributeKey.stringKey(key)).get());
     }

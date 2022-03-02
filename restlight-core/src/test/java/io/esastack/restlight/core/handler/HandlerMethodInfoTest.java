@@ -23,13 +23,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 
-public class HandlerMethodInfoTest {
+class HandlerMethodInfoTest {
 
     @Test
     void testAll() {
-        HandlerMethod method = mock(HandlerMethod.class);
-        HttpStatus status = HttpStatus.BAD_REQUEST;
-        HandlerMethodInfo methodInfo = new HandlerMethodInfo(method, true, status);
+        final HandlerMethod method = mock(HandlerMethod.class);
+        final HttpStatus status = HttpStatus.BAD_REQUEST;
+        final HandlerMethodInfo methodInfo = new HandlerMethodInfo(method, true, status);
         assertEquals(method, methodInfo.handlerMethod());
         assertEquals(status, methodInfo.customStatus());
         assertTrue(methodInfo.isLocator());

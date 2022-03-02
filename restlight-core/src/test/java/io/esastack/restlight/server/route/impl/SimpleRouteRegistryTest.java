@@ -29,7 +29,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.mock;
 
-public class SimpleRouteRegistryTest {
+class SimpleRouteRegistryTest {
 
     protected AbstractRouteRegistry buildMapperRegistry() {
         return new SimpleRouteRegistry();

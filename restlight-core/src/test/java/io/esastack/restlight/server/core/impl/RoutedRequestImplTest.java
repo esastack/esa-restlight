@@ -27,7 +27,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class RoutedRequestImplTest {
+class RoutedRequestImplTest {
 
     private HttpRequest underlying;
     private RoutedRequest request;
@@ -40,8 +40,8 @@ public class RoutedRequestImplTest {
 
     @Test
     void testBody() {
-        Buffer origin = mock(Buffer.class);
-        Buffer changed = mock(Buffer.class);
+        final Buffer origin = mock(Buffer.class);
+        final Buffer changed = mock(Buffer.class);
         when(underlying.body()).thenReturn(origin);
         assertEquals(origin, request.body());
         request.body(changed);
@@ -55,8 +55,8 @@ public class RoutedRequestImplTest {
 
     @Test
     void testInputStream() {
-        HttpInputStream origin = mock(HttpInputStream.class);
-        HttpInputStream changed = mock(HttpInputStream.class);
+        final HttpInputStream origin = mock(HttpInputStream.class);
+        final HttpInputStream changed = mock(HttpInputStream.class);
         when(underlying.inputStream()).thenReturn(origin);
         assertEquals(origin, request.inputStream());
         request.inputStream(changed);

@@ -30,11 +30,11 @@ import java.util.concurrent.CompletableFuture;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 
-public class LinkedRouteFilterChainTest {
+class LinkedRouteFilterChainTest {
 
     @Test
     void testDoNext() {
-        List<RouteFilter> filters = new ArrayList<>();
+        final List<RouteFilter> filters = new ArrayList<>();
         filters.add((mapping, context, next) -> {
             context.attrs().attr(AttributeKey.stringKey("1")).set("1");
             return next.doNext(mapping, context);
@@ -56,12 +56,12 @@ public class LinkedRouteFilterChainTest {
             throw new IllegalStateException();
         });
 
-        LinkedRouteFilterChain chain = LinkedRouteFilterChain.immutable(filters.toArray(new RouteFilter[0]),
+        final LinkedRouteFilterChain chain = LinkedRouteFilterChain.immutable(filters.toArray(new RouteFilter[0]),
                 (context) -> CompletableFuture.completedFuture(null));
 
-        RoutedRequest request = mock(RoutedRequest.class);
-        HttpResponse response = mock(HttpResponse.class);
-        RouteContext context = new RouteContextImpl(new AttributeMap(), request, response);
+        final RoutedRequest request = mock(RoutedRequest.class);
+        final HttpResponse response = mock(HttpResponse.class);
+        final RouteContext context = new RouteContextImpl(new AttributeMap(), request, response);
         chain.doNext(mock(HandlerMapping.class), context);
         assertEquals("1", context.attrs().attr(AttributeKey.stringKey("1")).get());
         assertEquals("2", context.attrs().attr(AttributeKey.stringKey("2")).get());

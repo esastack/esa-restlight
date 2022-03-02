@@ -15,7 +15,7 @@
  */
 package io.esastack.restlight.server.route.impl;
 
-public class CachedRouteRegistryTest extends SimpleRouteRegistryTest {
+class CachedRouteRegistryTest extends SimpleRouteRegistryTest {
 
     @Override
     public AbstractRouteRegistry buildMapperRegistry() {

@@ -30,24 +30,23 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 
-public class ResponseContentImplTest {
+class ResponseContentImplTest {
 
     @Test
     void testAll() {
-        Response response = mock(Response.class);
-        ResponseContent content = new ResponseContentImpl(response);
-        byte[] data = new byte[1];
-        Future<Void> future = new SucceededFuture<>(null, null);
+        final Response response = mock(Response.class);
+        final ResponseContent content = new ResponseContentImpl(response);
+        final byte[] data = new byte[1];
+        final Future<Void> future = new SucceededFuture<>(null, null);
 
         when(response.write(data)).thenReturn(future);
         content.write(data);
         verify(response, Mockito.times(1)).write(data);
 
-        Buffer buffer = null;
-        content.write(buffer);
+        content.write((Buffer)null);
         verify(response, Mockito.times(0)).write((ByteBuf) null);
 
-        File file = mock(File.class);
+        final File file = mock(File.class);
         when(response.sendFile(file)).thenReturn(future);
         when(response.end()).thenReturn(future);
         content.writeThenEnd(file);

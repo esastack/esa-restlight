@@ -24,17 +24,17 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 
-public class RequestContextImplTest {
+class RequestContextImplTest {
 
     @Test
     void testAll() {
-        HttpRequest request = mock(HttpRequest.class);
-        HttpResponse response = mock(HttpResponse.class);
-        RequestContext context = new RequestContextImpl(request, response);
+        final HttpRequest request = mock(HttpRequest.class);
+        final HttpResponse response = mock(HttpResponse.class);
+        final RequestContext context = new RequestContextImpl(request, response);
         assertEquals(context.request(), request);
         assertEquals(context.response(), response);
-        String key = "key";
-        String value = "value";
+        final String key = "key";
+        final String value = "value";
         context.attrs().attr(AttributeKey.stringKey(key)).set(value);
         assertEquals(value, context.attrs().attr(AttributeKey.stringKey(key)).get());
     }
