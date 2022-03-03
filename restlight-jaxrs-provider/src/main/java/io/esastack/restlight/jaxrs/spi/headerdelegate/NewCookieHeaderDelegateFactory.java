@@ -15,13 +15,13 @@
  */
 package io.esastack.restlight.jaxrs.spi.headerdelegate;
 
+import esa.commons.StringUtils;
 import io.esastack.restlight.jaxrs.spi.HeaderDelegateFactory;
-import io.netty.handler.codec.http.cookie.Cookie;
-import io.netty.handler.codec.http.cookie.ServerCookieDecoder;
+import io.esastack.restlight.server.util.DateUtils;
 import jakarta.ws.rs.core.NewCookie;
 import jakarta.ws.rs.ext.RuntimeDelegate;
 
-import java.util.Set;
+import java.util.Date;
 
 public class NewCookieHeaderDelegateFactory implements HeaderDelegateFactory {
 
@@ -32,20 +32,62 @@ public class NewCookieHeaderDelegateFactory implements HeaderDelegateFactory {
 
     static class NewCookieHeaderDelegate implements RuntimeDelegate.HeaderDelegate<NewCookie> {
 
+        private static final String VERSION = "Version";
+        private static final String PATH = "Path";
+        private static final String DOMAIN = "Domain";
+        private static final String MAX_AGE = "Max-Age";
+        private static final String COMMENT = "Comment";
+        private static final String SECURE = "Secure";
+        private static final String EXPIRES = "Expires";
+        private static final String HTTPONLY = "HttpOnly";
+
         @Override
-        public NewCookie fromString(String value) {
-            if (value == null) {
+        public NewCookie fromString(String str) {
+            if (str == null) {
                 throw new IllegalArgumentException("Failed to parse a null to NewCookie");
             }
-            Set<Cookie> cookies = ServerCookieDecoder.STRICT.decode(value);
-            if (cookies.isEmpty()) {
-                return null;
+
+            String name = null;
+            String value = null;
+            String path = null;
+            String domain = null;
+            String comment = null;
+            int maxAge = NewCookie.DEFAULT_MAX_AGE;
+            Date expiry = null;
+            boolean secure = false;
+            boolean httpOnly = false;
+
+            String[] tokens = str.split(";");
+            for (String token : tokens) {
+                String trimmed = StringUtils.trim(token);
+                if (token.startsWith(MAX_AGE)) {
+                    maxAge = Integer.parseInt(trimmed.substring(MAX_AGE.length() + 1));
+                } else if (trimmed.startsWith(PATH)) {
+                    path = trimmed.substring(PATH.length() + 1);
+                } else if (trimmed.startsWith(DOMAIN)) {
+                    domain = trimmed.substring(DOMAIN.length() + 1);
+                } else if (trimmed.startsWith(COMMENT)) {
+                    comment = trimmed.substring(COMMENT.length() + 1);
+                } else if (trimmed.startsWith(EXPIRES)) {
+                    expiry = DateUtils.parse(trimmed.substring(EXPIRES.length() + 1));
+                } else if (trimmed.startsWith(SECURE)) {
+                    secure = true;
+                } else if (trimmed.startsWith(HTTPONLY)) {
+                    httpOnly = true;
+                } else {
+                    int index = trimmed.indexOf('=');
+                    if (index != -1) {
+                        name = trimmed.substring(0, index);
+                        value = index == trimmed.length() + 1 ? "" : trimmed.substring(index + 1);
+                    }
+                }
             }
-            for (io.netty.handler.codec.http.cookie.Cookie cookie : cookies) {
-                return new NewCookie(cookie.name(), cookie.value(), cookie.path(), cookie.domain(),
-                        NewCookie.DEFAULT_VERSION, null, (int) cookie.maxAge(), cookie.isSecure());
+
+            if (name == null || value == null) {
+                throw new IllegalArgumentException("Failed to parse '" + str + "' to NewCookie");
             }
-            return null;
+            return new NewCookie(name, value, path, domain, jakarta.ws.rs.core.Cookie.DEFAULT_VERSION, comment,
+                    maxAge, expiry, secure, httpOnly);
         }
 
         @Override
@@ -53,18 +95,30 @@ public class NewCookieHeaderDelegateFactory implements HeaderDelegateFactory {
             if (value == null) {
                 throw new IllegalArgumentException("Failed to parse a null(NewCookie) to String");
             }
-            final StringBuilder sb = new StringBuilder("NewCookie{");
-            sb.append("name=").append(value.getName());
-            sb.append(", value=").append(value.getValue());
-            sb.append(", domain=").append(value.getDomain());
-            sb.append(", path=").append(value.getPath());
-            sb.append(", version=").append(value.getVersion());
-            sb.append(", comment=").append(value.getComment());
-            sb.append(", maxAge=").append(value.getMaxAge());
-            sb.append(", expiry=").append(value.getExpiry());
-            sb.append(", secure=").append(value.isSecure());
-            sb.append(", httpOnly=").append(value.isHttpOnly());
-            sb.append('}');
+            StringBuilder sb = new StringBuilder();
+            sb.append(value.getName()).append('=').append(value.getValue());
+            if (value.getDomain() != null) {
+                sb.append(';').append(DOMAIN).append('=').append(value.getDomain());
+            }
+            if (value.getPath() != null) {
+                sb.append(';').append(PATH).append('=').append(value.getPath());
+            }
+            if (value.getMaxAge() != -1) {
+                sb.append(';').append(MAX_AGE).append('=').append(value.getMaxAge());
+            }
+            if (value.getExpiry() != null) {
+                sb.append(';').append(EXPIRES).append('=').append(DateUtils.format(value.getExpiry().getTime()));
+            }
+            if (value.getComment() != null) {
+                sb.append(';').append(COMMENT).append('=').append(value.getComment());
+            }
+            if (value.isSecure()) {
+                sb.append(';').append(SECURE);
+            }
+            if (value.isHttpOnly()) {
+                sb.append(';').append(HTTPONLY);
+            }
+            sb.append(';').append(VERSION).append('=').append(value.getVersion());
             return sb.toString();
         }
 

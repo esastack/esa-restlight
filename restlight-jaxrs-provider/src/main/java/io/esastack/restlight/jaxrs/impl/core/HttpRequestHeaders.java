@@ -16,15 +16,13 @@
 package io.esastack.restlight.jaxrs.impl.core;
 
 import esa.commons.Checks;
-import io.esastack.restlight.core.util.HttpHeaderUtils;
 import io.esastack.restlight.jaxrs.util.MediaTypeUtils;
 import io.esastack.restlight.server.core.HttpRequest;
+import io.esastack.restlight.server.util.HttpHeaderUtils;
 import jakarta.ws.rs.core.Cookie;
 import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.MultivaluedMap;
-import jakarta.ws.rs.core.NewCookie;
-import jakarta.ws.rs.ext.RuntimeDelegate;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -33,6 +31,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 public class HttpRequestHeaders implements HttpHeaders {
 
@@ -88,19 +87,15 @@ public class HttpRequestHeaders implements HttpHeaders {
 
     @Override
     public Map<String, Cookie> getCookies() {
-        List<String> cookieValues = headers.get(HttpHeaders.SET_COOKIE);
-        if (cookieValues == null || cookieValues.isEmpty()) {
+        Set<io.esastack.commons.net.http.Cookie> underlying = request.cookies();
+        if (underlying.isEmpty()) {
             return Collections.emptyMap();
-        } else {
-            Map<String, Cookie> cookies = new HashMap<>();
-            for (Object item : cookieValues) {
-                NewCookie newCookie = RuntimeDelegate.getInstance()
-                        .createHeaderDelegate(NewCookie.class)
-                        .fromString(item.toString());
-                cookies.put(newCookie.getName(), newCookie);
-            }
-            return cookies;
         }
+        final Map<String, Cookie> cookies = new HashMap<>(underlying.size());
+        for (io.esastack.commons.net.http.Cookie cookie : underlying) {
+            cookies.put(cookie.name(), new Cookie(cookie.name(), cookie.value(), cookie.path(), cookie.domain()));
+        }
+        return cookies;
     }
 
     @Override

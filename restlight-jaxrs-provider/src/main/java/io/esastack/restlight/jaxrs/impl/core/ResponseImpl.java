@@ -18,9 +18,9 @@ package io.esastack.restlight.jaxrs.impl.core;
 import esa.commons.Checks;
 import io.esastack.commons.net.http.HttpHeaderNames;
 import io.esastack.commons.net.http.MediaTypeUtil;
-import io.esastack.restlight.core.util.HttpHeaderUtils;
+import io.esastack.restlight.jaxrs.util.JaxrsUtils;
 import io.esastack.restlight.jaxrs.util.MediaTypeUtils;
-import io.esastack.restlight.jaxrs.util.RuntimeDelegateUtils;
+import io.esastack.restlight.server.util.HttpHeaderUtils;
 import io.esastack.restlight.server.util.LoggerUtils;
 import jakarta.ws.rs.core.EntityTag;
 import jakarta.ws.rs.core.GenericType;
@@ -196,12 +196,12 @@ public class ResponseImpl extends Response {
 
     @Override
     public Map<String, NewCookie> getCookies() {
-        List<Object> cookieValues = builder.headers().get(HttpHeaders.SET_COOKIE);
-        if (cookieValues == null) {
+        List<Object> underlying = builder.headers().get(HttpHeaders.SET_COOKIE);
+        if (underlying == null) {
             return Collections.emptyMap();
         } else {
             Map<String, NewCookie> cookies = new HashMap<>();
-            for (Object item : cookieValues) {
+            for (Object item : underlying) {
                 NewCookie newCookie = RuntimeDelegate.getInstance().createHeaderDelegate(NewCookie.class)
                         .fromString(item.toString());
                 cookies.put(newCookie.getName(), newCookie);
@@ -334,7 +334,7 @@ public class ResponseImpl extends Response {
 
         @Override
         public String getFirst(String key) {
-            return RuntimeDelegateUtils.toString(underlying.getFirst(key));
+            return JaxrsUtils.toString(underlying.getFirst(key));
         }
 
         @Override
@@ -358,7 +358,7 @@ public class ResponseImpl extends Response {
 
         @Override
         public boolean equalsIgnoreValueOrder(MultivaluedMap<String, String> otherMap) {
-            return RuntimeDelegateUtils.equalsIgnoreValueOrder(underlying, otherMap);
+            return JaxrsUtils.equalsIgnoreValueOrder(underlying, otherMap);
         }
 
         @Override
@@ -387,7 +387,7 @@ public class ResponseImpl extends Response {
             if (previous == null) {
                 return null;
             }
-            return previous.stream().map(RuntimeDelegateUtils::toString).collect(Collectors.toList());
+            return previous.stream().map(JaxrsUtils::toString).collect(Collectors.toList());
         }
 
         @Override
@@ -402,7 +402,7 @@ public class ResponseImpl extends Response {
             if (previous == null) {
                 return null;
             }
-            return previous.stream().map(RuntimeDelegateUtils::toString).collect(Collectors.toList());
+            return previous.stream().map(JaxrsUtils::toString).collect(Collectors.toList());
         }
 
         @Override
@@ -411,7 +411,7 @@ public class ResponseImpl extends Response {
             if (previous == null) {
                 return null;
             }
-            return previous.stream().map(RuntimeDelegateUtils::toString).collect(Collectors.toList());
+            return previous.stream().map(JaxrsUtils::toString).collect(Collectors.toList());
         }
 
         @Override
@@ -438,7 +438,7 @@ public class ResponseImpl extends Response {
                 if (vs == null) {
                     values.add(null);
                 } else {
-                    values.add(vs.stream().map(RuntimeDelegateUtils::toString).collect(Collectors.toList()));
+                    values.add(vs.stream().map(JaxrsUtils::toString).collect(Collectors.toList()));
                 }
             });
             return values;
@@ -455,7 +455,7 @@ public class ResponseImpl extends Response {
 
                 @Override
                 public List<String> getValue() {
-                    return value.stream().map(RuntimeDelegateUtils::toString)
+                    return value.stream().map(JaxrsUtils::toString)
                             .collect(Collectors.toList());
                 }
 

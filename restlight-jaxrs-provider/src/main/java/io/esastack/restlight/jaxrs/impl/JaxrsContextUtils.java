@@ -104,7 +104,7 @@ public final class JaxrsContextUtils {
     public static URI extractURI(RequestContext context) {
         HttpRequest request = context.request();
         StringBuilder sb = new StringBuilder();
-        sb.append(request.scheme())
+        sb.append(request.scheme().toLowerCase())
                 .append("://")
                 .append(request.localAddr())
                 .append(":")

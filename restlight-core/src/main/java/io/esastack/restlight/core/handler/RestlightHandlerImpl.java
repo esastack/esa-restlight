@@ -38,11 +38,15 @@ import io.esastack.restlight.server.bootstrap.WebServerException;
 import io.esastack.restlight.server.context.RequestContext;
 import io.esastack.restlight.server.core.HttpRequest;
 import io.esastack.restlight.server.core.HttpResponse;
+import io.esastack.restlight.server.handler.Filter;
 import io.esastack.restlight.server.handler.RestlightHandler;
+import io.esastack.restlight.server.route.ExceptionHandler;
+import io.esastack.restlight.server.route.Route;
 import io.esastack.restlight.server.schedule.AbstractRestlightHandler;
 import io.esastack.restlight.server.util.Futures;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
 public class RestlightHandlerImpl extends AbstractRestlightHandler {
@@ -119,6 +123,17 @@ public class RestlightHandlerImpl extends AbstractRestlightHandler {
         });
     }
 
+    /**
+     * The exception occurred before routing should be handled by the {@link ExceptionHandlerChain} which uses
+     * custom {@link ExceptionHandler}s as the last of the chain, such as the exception thrown by {@link Filter}
+     * should be handled. When the route has matched, all exception should be handled
+     * at {@link DispatcherHandlerImpl#service(RequestContext, CompletableFuture, Route)} and there is no necessary
+     * to be handled here again.
+     *
+     * @param context context
+     * @param th      th
+     * @return        whether current request context should be handled or not.
+     */
     @Override
     protected boolean isHandleable(RequestContext context, Throwable th) {
         return RouteTracking.matchedMethod(context) == null;

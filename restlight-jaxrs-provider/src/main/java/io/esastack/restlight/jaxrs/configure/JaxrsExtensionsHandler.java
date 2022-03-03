@@ -130,9 +130,9 @@ public class JaxrsExtensionsHandler implements ExtensionsHandler {
 
         convertThenAddExtensions(configuration, deployments, handleableExtensions);
 
-        List<Class<? extends Annotation>> appNameBindings;
+        Set<Class<? extends Annotation>> appNameBindings;
         if (application == null) {
-            appNameBindings = Collections.emptyList();
+            appNameBindings = Collections.emptySet();
         } else {
             appNameBindings = JaxrsUtils.findNameBindings(ClassUtils.getUserType(application.underlying()));
         }
@@ -212,7 +212,7 @@ public class JaxrsExtensionsHandler implements ExtensionsHandler {
     }
 
     @SuppressWarnings("unchecked")
-    void convertThenAddProviders(List<Class<? extends Annotation>> appNameBindings,
+    void convertThenAddProviders(Set<Class<? extends Annotation>> appNameBindings,
                                  ProvidersFactory factory,
                                  ConfigurationImpl configuration,
                                  Providers providers,
@@ -248,7 +248,7 @@ public class JaxrsExtensionsHandler implements ExtensionsHandler {
                 factory.dynamicFeatures(), configuration));
     }
 
-    void convertThenAddFilters(List<Class<? extends Annotation>> appNameBindings,
+    void convertThenAddFilters(Set<Class<? extends Annotation>> appNameBindings,
                                MiniConfigurableDeployments deployments,
                                ProvidersFactory factory) {
         // convert @PreMatching ContainerRequestFilters
@@ -274,7 +274,7 @@ public class JaxrsExtensionsHandler implements ExtensionsHandler {
                 .toArray(new ContainerResponseFilter[0])));
     }
 
-    void convertThenAddInterceptors(List<Class<? extends Annotation>> appNameBindings,
+    void convertThenAddInterceptors(Set<Class<? extends Annotation>> appNameBindings,
                                     MiniConfigurableDeployments deployments,
                                     ProvidersFactory factory) {
         // covert ReaderInterceptors which can apply to all methods(even if it's null).
@@ -349,8 +349,8 @@ public class JaxrsExtensionsHandler implements ExtensionsHandler {
         }
     }
 
-    private static boolean isGlobalComponent(List<Class<? extends Annotation>> appNameBindings, Object target) {
-        List<Class<? extends Annotation>> targetNameBindings = JaxrsUtils
+    private static boolean isGlobalComponent(Set<Class<? extends Annotation>> appNameBindings, Object target) {
+        Set<Class<? extends Annotation>> targetNameBindings = JaxrsUtils
                 .findNameBindings(ClassUtils.getUserType(target));
         return targetNameBindings.isEmpty() || appNameBindings.containsAll(targetNameBindings);
     }

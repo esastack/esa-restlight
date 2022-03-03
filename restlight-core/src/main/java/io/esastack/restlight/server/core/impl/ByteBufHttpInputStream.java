@@ -20,7 +20,7 @@ import io.esastack.commons.net.buffer.BufferUtil;
 import io.esastack.restlight.server.core.HttpInputStream;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufInputStream;
-import io.netty.buffer.Unpooled;
+import io.netty.buffer.UnpooledByteBufAllocator;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -151,13 +151,12 @@ public class ByteBufHttpInputStream extends HttpInputStream {
     }
 
     @Override
-    public int readBytes() {
-        return delegate.readBytes();
-    }
-
-    @Override
     public String readString(Charset charset) {
         return byteBuf.toString(charset);
+    }
+
+    public int readBytes() {
+        return delegate.readBytes();
     }
 
     static ByteBuf toByteBuf(Buffer buffer) {
@@ -167,7 +166,9 @@ public class ByteBufHttpInputStream extends HttpInputStream {
         } else {
             byte[] bytes = new byte[buffer.readableBytes()];
             buffer.readBytes(bytes);
-            return Unpooled.wrappedBuffer(bytes);
+            ByteBuf buf = new UnpooledByteBufAllocator(false).buffer();
+            buf.writeBytes(bytes);
+            return buf;
         }
     }
 }

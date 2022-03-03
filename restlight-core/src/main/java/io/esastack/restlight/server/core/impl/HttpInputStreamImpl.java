@@ -36,15 +36,6 @@ public class HttpInputStreamImpl extends HttpInputStream {
     }
 
     @Override
-    public int readBytes() {
-        try {
-            return dataIns.readByte();
-        } catch (IOException ex) {
-            throw new RuntimeException("Failed to get readBytes from given InputStream", ex);
-        }
-    }
-
-    @Override
     public String readString(Charset charset) {
         try {
             return IOUtils.toString(underlying);

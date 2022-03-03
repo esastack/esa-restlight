@@ -40,9 +40,11 @@ import java.io.OutputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Proxy;
 import java.lang.reflect.Type;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -199,6 +201,42 @@ class ProvidersImplTest {
         // ordered by priority
         assertTrue(Proxy.isProxyClass(providers1.getContextResolver(String.class,
                 MediaType.WILDCARD_TYPE).getClass()));
+    }
+
+    @Test
+    void testConsumes() throws NoSuchMethodException {
+        assertEquals(0, ProvidersImpl.consumes(null).size());
+        final List<MediaType> types0 = ProvidersImpl.consumes(new MediaTypeDemo());
+        assertEquals(1, types0.size());
+        assertEquals(MediaType.TEXT_HTML_TYPE, types0.get(0));
+        final List<MediaType> types1 = ProvidersImpl.consumes(MediaTypeDemo.class.getDeclaredMethod("sayHello"));
+        assertEquals(0, types1.size());
+    }
+
+    @Test
+    void testProduces() throws NoSuchMethodException {
+        assertEquals(0, ProvidersImpl.produces(null).size());
+        final List<MediaType> types0 = ProvidersImpl.produces(new MediaTypeDemo());
+        assertEquals(1, types0.size());
+        assertEquals(MediaType.APPLICATION_JSON_TYPE, types0.get(0));
+        final List<MediaType> types1 = ProvidersImpl.produces(MediaTypeDemo.class.getDeclaredMethod("sayHello"));
+        assertEquals(0, types1.size());
+    }
+
+    @Consumes("text/html")
+    @Produces("application/json")
+    private static final class MediaTypeDemo {
+
+        @Consumes
+        @Produces
+        public String sayHello() {
+            return "";
+        }
+
+        public String foo() {
+            return "";
+        }
+
     }
 
     @Produces("application/json")

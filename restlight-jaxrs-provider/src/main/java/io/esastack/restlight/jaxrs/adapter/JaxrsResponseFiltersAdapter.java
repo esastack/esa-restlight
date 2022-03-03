@@ -25,7 +25,7 @@ import io.esastack.restlight.jaxrs.impl.JaxrsContextUtils;
 import io.esastack.restlight.jaxrs.impl.container.ContainerResponseContextImpl;
 import io.esastack.restlight.jaxrs.impl.container.ResponseContainerContext;
 import io.esastack.restlight.jaxrs.impl.core.ResponseImpl;
-import io.esastack.restlight.jaxrs.util.RuntimeDelegateUtils;
+import io.esastack.restlight.jaxrs.util.JaxrsUtils;
 import io.esastack.restlight.server.context.FilterContext;
 import io.esastack.restlight.server.context.RequestContext;
 import io.esastack.restlight.server.context.RouteContext;
@@ -76,7 +76,7 @@ public class JaxrsResponseFiltersAdapter implements Filter {
             return Futures.completedFuture();
         }
         ResponseImpl rsp = getResponse(context);
-        RuntimeDelegateUtils.addMetadataToJakarta(context.response(), rsp);
+        JaxrsUtils.addMetadataToJakarta(context.response(), rsp);
         final ContainerRequestContext reqCtx = new ResponseContainerContext(JaxrsContextUtils
                 .getRequestContext(context));
         final ContainerResponseContextImpl rspCtx = new ContainerResponseContextImpl(
@@ -85,11 +85,11 @@ public class JaxrsResponseFiltersAdapter implements Filter {
             try {
                 filter.filter(reqCtx, rspCtx);
             } catch (Throwable ex) {
-                RuntimeDelegateUtils.addMetadataToNetty(rsp, context.response(), true);
+                JaxrsUtils.addMetadataFromJakarta(rsp, context.response());
                 return Futures.completedExceptionally(ex);
             }
         }
-        RuntimeDelegateUtils.addMetadataToNetty(rsp, context.response(), true);
+        JaxrsUtils.addMetadataFromJakarta(rsp, context.response());
         return Futures.completedFuture();
     }
 

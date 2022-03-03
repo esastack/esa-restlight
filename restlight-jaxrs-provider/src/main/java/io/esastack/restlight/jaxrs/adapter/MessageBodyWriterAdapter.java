@@ -23,11 +23,10 @@ import io.esastack.restlight.core.resolver.ResponseEntityChannel;
 import io.esastack.restlight.core.resolver.ResponseEntityResolverAdapter;
 import io.esastack.restlight.core.util.Ordered;
 import io.esastack.restlight.core.util.ResponseEntityUtils;
+import io.esastack.restlight.jaxrs.util.JaxrsUtils;
 import io.esastack.restlight.jaxrs.util.MediaTypeUtils;
-import io.esastack.restlight.jaxrs.util.RuntimeDelegateUtils;
 import io.esastack.restlight.server.context.RequestContext;
 import jakarta.ws.rs.core.MediaType;
-import jakarta.ws.rs.core.MultivaluedHashMap;
 import jakarta.ws.rs.core.MultivaluedMap;
 import jakarta.ws.rs.ext.MessageBodyWriter;
 import jakarta.ws.rs.ext.Providers;
@@ -60,13 +59,12 @@ public class MessageBodyWriterAdapter<T> implements ResponseEntityResolverAdapte
                     entity.genericType(), entity.annotations(), mediaType0);
             if (writer != null) {
                 T value = (T) entity.response().entity();
-                MultivaluedMap<String, Object> headers = new MultivaluedHashMap<>();
-                RuntimeDelegateUtils.addHeadersToMap(context.response().headers(), headers);
+                MultivaluedMap<String, Object> headers = JaxrsUtils.convertToMap(context.response().headers());
                 try {
                     writer.writeTo(value, entity.type(), entity.genericType(), entity.annotations(),
                             mediaType0, headers, ResponseEntityStreamUtils.getUnClosableOutputStream(context));
                 } finally {
-                    RuntimeDelegateUtils.addHeadersFromMap(context.response().headers(), headers, true);
+                    JaxrsUtils.convertThenAddToHeaders(headers, context.response().headers());
                 }
 
                 ResponseEntityStreamUtils.close(context);

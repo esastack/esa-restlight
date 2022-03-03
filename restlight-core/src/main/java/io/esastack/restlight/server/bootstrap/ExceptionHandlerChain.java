@@ -22,6 +22,8 @@ import java.util.concurrent.CompletionStage;
 
 /**
  * This is a chained {@link IExceptionHandler} which is used to handle {@link Throwable}.
+ *
+ * @see IExceptionHandler
  */
 @Internal
 public interface ExceptionHandlerChain {

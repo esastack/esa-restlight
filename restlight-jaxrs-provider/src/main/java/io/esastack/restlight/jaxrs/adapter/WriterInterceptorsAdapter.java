@@ -20,8 +20,7 @@ import io.esastack.restlight.core.resolver.ResponseEntity;
 import io.esastack.restlight.core.resolver.ResponseEntityResolverAdviceAdapter;
 import io.esastack.restlight.core.resolver.ResponseEntityResolverContext;
 import io.esastack.restlight.jaxrs.impl.ext.WriterInterceptorContextImpl;
-import io.esastack.restlight.jaxrs.util.RuntimeDelegateUtils;
-import jakarta.ws.rs.core.MultivaluedHashMap;
+import io.esastack.restlight.jaxrs.util.JaxrsUtils;
 import jakarta.ws.rs.core.MultivaluedMap;
 import jakarta.ws.rs.ext.WriterInterceptor;
 
@@ -40,14 +39,13 @@ public class WriterInterceptorsAdapter implements ResponseEntityResolverAdviceAd
     @Override
     public void aroundWrite(ResponseEntityResolverContext context) throws Exception {
         if (predicate.test(context.context())) {
-            MultivaluedMap<String, Object> headers = new MultivaluedHashMap<>();
-            RuntimeDelegateUtils.addHeadersToMap(context.context().response().headers(), headers);
+            MultivaluedMap<String, Object> headers = JaxrsUtils.convertToMap(context.context().response().headers());
             try {
                 new WriterInterceptorContextImpl(context,
                         ResponseEntityStreamUtils.getUnClosableOutputStream(context.context()),
                         headers, interceptors).proceed();
             } catch (Throwable th) {
-                RuntimeDelegateUtils.addHeadersFromMap(context.context().response().headers(), headers, true);
+                JaxrsUtils.convertThenAddToHeaders(headers, context.context().response().headers());
                 throw th;
             }
         } else {

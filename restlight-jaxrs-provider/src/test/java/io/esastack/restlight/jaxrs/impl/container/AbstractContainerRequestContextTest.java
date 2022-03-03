@@ -20,10 +20,12 @@ import esa.commons.collection.AttributeMap;
 import esa.commons.collection.Attributes;
 import io.esastack.commons.net.buffer.Buffer;
 import io.esastack.commons.net.buffer.BufferAllocator;
+import io.esastack.commons.net.http.Cookie;
 import io.esastack.commons.net.http.HttpHeaderNames;
 import io.esastack.commons.net.http.HttpHeaders;
 import io.esastack.commons.net.http.HttpMethod;
 import io.esastack.commons.net.http.MediaType;
+import io.esastack.commons.net.netty.http.CookieImpl;
 import io.esastack.commons.net.netty.http.Http1HeadersImpl;
 import io.esastack.restlight.server.context.RequestContext;
 import io.esastack.restlight.server.context.impl.RequestContextImpl;
@@ -39,8 +41,10 @@ import java.io.InputStream;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -64,6 +68,7 @@ class AbstractContainerRequestContextTest {
         final Attributes attrs = new AttributeMap();
         when(request.headers()).thenReturn(headers);
         when(request.body()).thenReturn(buffer);
+        when(request.scheme()).thenReturn("https");
 
         final AbstractContainerRequestContext context = new ContainerRequestContextImpl(
                 new RequestContextImpl(attrs, request, response));
@@ -134,8 +139,10 @@ class AbstractContainerRequestContextTest {
         assertEquals(jakarta.ws.rs.core.MediaType.APPLICATION_JSON,
                 context.getAcceptableMediaTypes().get(1).toString());
 
-        headers.add(HttpHeaderNames.SET_COOKIE, "a=b");
-        headers.add(HttpHeaderNames.SET_COOKIE, "c=d");
+        final Set<Cookie> cookies = new HashSet<>();
+        cookies.add(new CookieImpl("a", "b"));
+        cookies.add(new CookieImpl("c", "d"));
+        when(request.cookies()).thenReturn(cookies);
         assertEquals(2, context.getCookies().size());
         assertEquals("b", context.getCookies().get("a").getValue());
         assertEquals("d", context.getCookies().get("c").getValue());
