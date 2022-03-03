@@ -22,13 +22,7 @@ import io.esastack.restlight.server.route.Route;
 import io.esastack.restlight.server.route.Router;
 import io.esastack.restlight.server.util.PathMatcher;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -97,9 +91,19 @@ abstract class AbstractRouter<R extends RouteWrap> implements Router {
 
     void removeConverted(R r) {
         Mapping mapping = r.route.mapping();
-        Map<String, RouteWrap> directs = new HashMap<>();
-        getDirectUrls(mapping).forEach(direct -> directs.put(direct, r));
-        directs.keySet().forEach(urlLookups::remove);
+        getDirectUrls(mapping).forEach(direct -> urlLookups.compute(direct, (s, oldValues) -> {
+            if (oldValues == null) {
+                return null;
+            }
+            List<R> newValues = new ArrayList<>(oldValues.length);
+            for (R old : oldValues) {
+                if (!r.equals(old)) {
+                    newValues.add(old);
+                }
+            }
+
+            return (R[]) Arrays.copyOf(newValues.toArray(), newValues.size(), oldValues.getClass());
+        }));
 
         mappingLookups.remove(r);
     }

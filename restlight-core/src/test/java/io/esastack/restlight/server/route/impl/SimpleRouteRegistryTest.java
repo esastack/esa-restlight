@@ -24,15 +24,32 @@ import io.esastack.restlight.server.route.Route;
 import org.junit.jupiter.api.Test;
 
 import static io.esastack.restlight.server.route.Mapping.get;
+import static io.esastack.restlight.server.route.Mapping.post;
 import static io.esastack.restlight.server.route.Route.route;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 
 class SimpleRouteRegistryTest {
 
     protected AbstractRouteRegistry buildMapperRegistry() {
         return new SimpleRouteRegistry();
+    }
+
+    @Test
+    void testRegisterRoute() {
+        final AbstractRouteRegistry registry = buildMapperRegistry();
+        registry.register(route(get("/foo")));
+        registry.register(route(post("/foo")));
+        assertEquals(2, registry.routes().size());
+    }
+
+    @Test
+    void testDeregisterRoute() {
+        final AbstractRouteRegistry registry = buildMapperRegistry();
+        registry.register(route(get("/foo")));
+        registry.register(route(post("/foo")));
+        registry.deRegister(route(get("/foo")));
+        assertEquals(1, registry.routes().size());
     }
 
     @Test
@@ -68,5 +85,4 @@ class SimpleRouteRegistryTest {
         final Route route2 = registry.route(context);
         assertNull(route2);
     }
-
 }
