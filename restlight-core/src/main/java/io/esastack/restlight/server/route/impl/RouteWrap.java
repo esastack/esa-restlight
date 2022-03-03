@@ -66,6 +66,11 @@ class RouteWrap implements Route, RequestPredicate {
     }
 
     @Override
+    public int hashCode() {
+        return mapping().hashCode();
+    }
+
+    @Override
     public String toString() {
         if (strVal == null) {
             StringBuilder sb = new StringBuilder();
