@@ -79,7 +79,7 @@ class SimpleRouterTest {
 
     @Test
     void testMatchByAll() {
-        SimpleRouter router = new SimpleRouter();
+        final AbstractRouter router = buildRouter();
         router.add(new RouteWrap(route(get("/foo"))));
         router.add(new RouteWrap(route(post("/foo"))));
         HttpRequest request = MockHttpRequest.aMockRequest()
