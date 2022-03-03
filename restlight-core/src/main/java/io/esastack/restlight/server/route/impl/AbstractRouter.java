@@ -98,15 +98,15 @@ abstract class AbstractRouter<R extends RouteWrap> implements Router {
             }
             List<R> newValues = new ArrayList<>(oldValues.length);
             for (R old : oldValues) {
-                if (!r.equals(old)) {
+                if (!AbstractRouteRegistry.isEquals(r, old)) {
                     newValues.add(old);
+                } else {
+                    mappingLookups.remove(old);
                 }
             }
-
             return (R[]) Arrays.copyOf(newValues.toArray(), newValues.size(), oldValues.getClass());
         }));
 
-        mappingLookups.remove(r);
     }
 
     /**

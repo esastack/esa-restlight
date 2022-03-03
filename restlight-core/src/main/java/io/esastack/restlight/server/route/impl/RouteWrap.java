@@ -57,20 +57,6 @@ class RouteWrap implements Route, RequestPredicate {
     }
 
     @Override
-    public boolean equals(Object other) {
-        if (other instanceof Route) {
-            return mapping().equals(((Route) other).mapping());
-        } else {
-            return false;
-        }
-    }
-
-    @Override
-    public int hashCode() {
-        return mapping().hashCode();
-    }
-
-    @Override
     public String toString() {
         if (strVal == null) {
             StringBuilder sb = new StringBuilder();

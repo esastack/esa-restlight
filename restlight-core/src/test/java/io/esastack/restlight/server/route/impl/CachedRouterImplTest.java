@@ -17,6 +17,7 @@ package io.esastack.restlight.server.route.impl;
 
 public class CachedRouterImplTest extends SimpleRouterTest {
 
+    @SuppressWarnings("rawtypes")
     protected AbstractRouter buildRouter() {
         return new CachedRouter(1000);
     }

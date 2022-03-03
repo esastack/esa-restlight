@@ -29,6 +29,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.mock;
 
+@SuppressWarnings("rawtypes")
 class SimpleRouterTest {
 
     protected AbstractRouter buildRouter() {
@@ -62,12 +63,12 @@ class SimpleRouterTest {
                 .withUri("/foo")
                 .withMethod(HttpMethod.GET)
                 .build();
-        assertEquals(new RouteWrap(route(get("/foo"))),
-                router.matchByUri(new RequestContextImpl(request, mock(HttpResponse.class))));
+        assertEquals(new RouteWrap(route(get("/foo"))).mapping(),
+                router.matchByUri(new RequestContextImpl(request, mock(HttpResponse.class))).mapping());
 
         router.remove(new RouteWrap(route(post("/foo"))));
-        assertEquals(new RouteWrap(route(get("/foo"))),
-                router.matchByUri(new RequestContextImpl(request, mock(HttpResponse.class))));
+        assertEquals(new RouteWrap(route(get("/foo"))).mapping(),
+                router.matchByUri(new RequestContextImpl(request, mock(HttpResponse.class))).mapping());
 
         request = MockHttpRequest.aMockRequest()
                 .withUri("/foo")
@@ -86,12 +87,12 @@ class SimpleRouterTest {
                 .withUri("/foo")
                 .withMethod(HttpMethod.GET)
                 .build();
-        assertEquals(new RouteWrap(route(get("/foo"))),
-                router.matchAll(new RequestContextImpl(request, mock(HttpResponse.class))));
+        assertEquals(new RouteWrap(route(get("/foo"))).mapping(),
+                router.matchAll(new RequestContextImpl(request, mock(HttpResponse.class))).mapping());
 
         router.remove(new RouteWrap(route(post("/foo"))));
-        assertEquals(new RouteWrap(route(get("/foo"))),
-                router.matchAll(new RequestContextImpl(request, mock(HttpResponse.class))));
+        assertEquals(new RouteWrap(route(get("/foo"))).mapping(),
+                router.matchAll(new RequestContextImpl(request, mock(HttpResponse.class))).mapping());
 
         request = MockHttpRequest.aMockRequest()
                 .withUri("/foo")
