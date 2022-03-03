@@ -89,6 +89,7 @@ abstract class AbstractRouter<R extends RouteWrap> implements Router {
         mappingLookups.add(r);
     }
 
+    @SuppressWarnings("unchecked")
     void removeConverted(R r) {
         Mapping mapping = r.route.mapping();
         getDirectUrls(mapping).forEach(direct -> urlLookups.compute(direct, (s, oldValues) -> {

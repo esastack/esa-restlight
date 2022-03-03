@@ -39,7 +39,6 @@ class UnsafeCachedRoutes extends RhsPadding implements CachedRoutes {
         }
         this.rate = computeRate;
         this.cache = new CountedRoute[0];
-        UNSAFE.putOrderedObject(this, CACHE_OFFSET, this.cache);
     }
 
     @Override
@@ -73,7 +72,7 @@ class UnsafeCachedRoutes extends RhsPadding implements CachedRoutes {
                 updated.add(item);
             }
         }
-        UNSAFE.putOrderedObject(this, CTL_OFFSET, updated);
+        UNSAFE.putOrderedObject(this, CACHE_OFFSET, updated.toArray(new CountedRoute[0]));
     }
 
     @Override
