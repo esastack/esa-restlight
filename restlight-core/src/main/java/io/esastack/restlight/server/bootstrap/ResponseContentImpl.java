@@ -46,6 +46,7 @@ public class ResponseContentImpl implements ResponseContent {
         Object unwrap = BufferUtil.unwrap(buffer);
         if (unwrap instanceof ByteBuf) {
             response.write((ByteBuf) unwrap);
+            return;
         }
         byte[] data = new byte[buffer.readableBytes()];
         buffer.readBytes(data);

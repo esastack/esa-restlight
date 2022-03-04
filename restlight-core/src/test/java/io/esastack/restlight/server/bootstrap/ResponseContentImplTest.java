@@ -33,25 +33,53 @@ import static org.mockito.Mockito.*;
 class ResponseContentImplTest {
 
     @Test
-    void testAll() {
+    void testWrite() {
         final Response response = mock(Response.class);
         final ResponseContent content = new ResponseContentImpl(response);
         final byte[] data = new byte[1];
         final Future<Void> future = new SucceededFuture<>(null, null);
-
         when(response.write(data)).thenReturn(future);
         content.write(data);
         verify(response, Mockito.times(1)).write(data);
+    }
 
-        content.write((Buffer)null);
+    @Test
+    void testWriteBuffer() {
+        final Response response = mock(Response.class);
+        final ResponseContent content = new ResponseContentImpl(response);
+
+        //write null
+        content.write((Buffer) null);
         verify(response, Mockito.times(0)).write((ByteBuf) null);
 
+        //write buffer without ByteBuf
+        final Buffer buffer = mock(Buffer.class);
+        final Future<Void> future = new SucceededFuture<>(null, null);
+        when(response.write((byte[]) any())).thenReturn(future);
+        content.write(buffer);
+        verify(response, Mockito.times(1)).write((byte[]) any());
+
+        //can,t test write buffer with ByteBuf,because unwrap() is a private method.
+    }
+
+    @Test
+    void testSendFile() {
+        final Response response = mock(Response.class);
+        final ResponseContent content = new ResponseContentImpl(response);
+        final Future<Void> future = new SucceededFuture<>(null, null);
         final File file = mock(File.class);
+
         when(response.sendFile(file)).thenReturn(future);
         when(response.end()).thenReturn(future);
         content.writeThenEnd(file);
         verify(response, Mockito.times(1)).sendFile(file);
         verify(response, Mockito.times(1)).end();
+    }
+
+    @Test
+    void testEndAndCommitted() {
+        final Response response = mock(Response.class);
+        final ResponseContent content = new ResponseContentImpl(response);
 
         content.end();
         verify(response, Mockito.times(2)).end();
@@ -61,9 +89,16 @@ class ResponseContentImplTest {
 
         when(response.isEnded()).thenReturn(true);
         assertTrue(content.isEnded());
+    }
+
+    @Test
+    void testAlloc() {
+        final Response response = mock(Response.class);
+        final ResponseContent content = new ResponseContentImpl(response);
 
         ByteBufAllocator allocator = mock(ByteBufAllocator.class);
         when(response.alloc()).thenReturn(allocator);
         assertEquals(content.alloc(), allocator);
     }
+
 }
