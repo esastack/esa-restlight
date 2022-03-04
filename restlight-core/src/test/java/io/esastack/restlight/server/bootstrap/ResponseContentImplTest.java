@@ -82,7 +82,7 @@ class ResponseContentImplTest {
         final ResponseContent content = new ResponseContentImpl(response);
 
         content.end();
-        verify(response, Mockito.times(2)).end();
+        verify(response, Mockito.times(1)).end();
 
         when(response.isCommitted()).thenReturn(true);
         assertTrue(content.isCommitted());
