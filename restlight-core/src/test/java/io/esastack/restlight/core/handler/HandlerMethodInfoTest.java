@@ -53,12 +53,11 @@ class HandlerMethodInfoTest {
         final HandlerMethod method = mock(HandlerMethod.class);
         final HttpStatus status = HttpStatus.BAD_REQUEST;
         final HandlerMethodInfo methodInfo = new HandlerMethodInfo(method, locator, status);
-        final StringBuilder sb = new StringBuilder("HandlerMethodInfo{");
-        sb.append("locator=").append(locator);
-        sb.append(", handlerMethod=").append(method);
-        sb.append(", customStatus=").append(status);
-        sb.append('}');
-        assertEquals(methodInfo.toString(), sb.toString());
+        String sb = "HandlerMethodInfo{" + "locator=" + locator +
+                ", handlerMethod=" + method +
+                ", customStatus=" + status +
+                '}';
+        assertEquals(methodInfo.toString(), sb);
     }
 
 }

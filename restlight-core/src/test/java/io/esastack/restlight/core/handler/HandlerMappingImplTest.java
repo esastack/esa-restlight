@@ -19,13 +19,13 @@ import io.esastack.restlight.core.handler.impl.HandlerMappingImpl;
 import io.esastack.restlight.server.route.Mapping;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 
 class HandlerMappingImplTest {
 
     @Test
-    void testProps() {
+    void testConstruct() {
         final Subject bean = new Subject();
         final RouteMethodInfo routeMethodInfo = mock(RouteMethodInfo.class);
         final Mapping mapping = mock(Mapping.class);
@@ -39,6 +39,49 @@ class HandlerMappingImplTest {
         assertEquals(bean, handlerMapping.bean().get());
         assertEquals(routeMethodInfo, handlerMapping.methodInfo());
         assertEquals(parent, handlerMapping.parent().get());
+    }
+
+    @Test
+    void testEqual() {
+        final Subject bean = new Subject();
+        final RouteMethodInfo routeMethodInfo = mock(RouteMethodInfo.class);
+        final Mapping mapping = mock(Mapping.class);
+        final HandlerMapping parent = mock(HandlerMapping.class);
+
+        final HandlerMapping handlerMapping = new HandlerMappingImpl(mapping,
+                routeMethodInfo,
+                bean,
+                parent);
+
+        assertFalse(handlerMapping.equals(null));
+        assertNotEquals(handlerMapping, new HandlerMappingImpl(mapping,
+                routeMethodInfo,
+                null,
+                null));
+        assertEquals(handlerMapping, new HandlerMappingImpl(mapping,
+                routeMethodInfo,
+                bean,
+                parent));
+    }
+
+    @Test
+    void testToString() {
+        final Subject bean = new Subject();
+        final RouteMethodInfo routeMethodInfo = mock(RouteMethodInfo.class);
+        final Mapping mapping = mock(Mapping.class);
+        final HandlerMapping parent = mock(HandlerMapping.class);
+
+        final HandlerMapping handlerMapping = new HandlerMappingImpl(mapping,
+                routeMethodInfo,
+                bean,
+                parent);
+
+        String sb = "HandlerMappingImpl{" + "mapping=" + mapping +
+                ", methodInfo=" + routeMethodInfo +
+                ", parent=" + parent +
+                ", bean=" + bean +
+                '}';
+        assertEquals(sb, handlerMapping.toString());
     }
 
     private static class Subject {
