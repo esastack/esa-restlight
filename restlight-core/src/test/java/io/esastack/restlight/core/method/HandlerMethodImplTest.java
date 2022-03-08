@@ -34,6 +34,7 @@ class HandlerMethodImplTest {
                 = new HandlerMethodImpl(Subject.class, Subject.class.getDeclaredMethod("method"));
         assertEquals(Subject.class, handlerMethod.beanType());
         assertEquals(Subject.class.getDeclaredMethod("method"), handlerMethod.method());
+        assertEquals(0, handlerMethod.parameters().length);
     }
 
     @Test
@@ -69,12 +70,15 @@ class HandlerMethodImplTest {
         assertTrue(handlerMethod.hasMethodAnnotation(Intercepted.class, true));
         assertFalse(handlerMethod.getMethodAnnotation(Intercepted.class, true).value());
         assertFalse(handlerMethod.hasMethodAnnotation(Scheduled.class, true));
+        assertNotNull(handlerMethod.getClassAnnotation(Intercepted.class, true));
+        assertFalse(handlerMethod.getClassAnnotation(Intercepted.class, true).value());
+        assertNull(handlerMethod.getClassAnnotation(Scheduled.class, true));
 
         assertTrue(handlerMethod.parameters()[0].hasAnnotation(QueryBean.class));
         assertFalse(handlerMethod.parameters()[0].hasAnnotation(Intercepted.class));
     }
 
-
+    @Intercepted(false)
     private static class Subject {
 
         void method() {

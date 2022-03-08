@@ -32,10 +32,10 @@ class MethodParamImplTest {
         assertEquals("bbb", param.name());
         assertEquals(method, param.method());
         assertTrue(param.hasMethodAnnotation(Intercepted.class));
+        assertEquals(1, param.annotations().length);
         assertNotNull(param.getAnnotation(QueryBean.class));
         assertEquals(String.class, param.type());
         assertEquals(1, param.index());
-        assertEquals(1, param.annotations().length);
         assertEquals(String.class, param.genericType());
         assertEquals(String.class, param.parameter().getParameterizedType());
     }
