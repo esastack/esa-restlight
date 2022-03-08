@@ -18,18 +18,30 @@ package io.esastack.restlight.core.method;
 import io.esastack.restlight.server.schedule.Schedulers;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import java.lang.reflect.Method;
 
-class RouteHandlerMethodImplTest {
+import static org.junit.jupiter.api.Assertions.*;
+
+class RouteHandlerMethodImplTest extends HandlerMethodImplTest {
+
+    @Override
+    protected HandlerMethod buildHandlerMethod(Class<?> beanType, Method method) {
+        return RouteHandlerMethodImpl.of(beanType, method);
+    }
 
     @Test
-    void testAll() throws NoSuchMethodException {
-        final RouteHandlerMethod handlerMethod = RouteHandlerMethodImpl.of(Subject.class,
+    void testInterceptedAndScheduler() throws NoSuchMethodException {
+        RouteHandlerMethod handlerMethod = RouteHandlerMethodImpl.of(Subject.class,
                 Subject.class.getDeclaredMethod("method"), false, "");
 
         assertFalse(handlerMethod.intercepted());
         assertEquals(Schedulers.BIZ, handlerMethod.scheduler());
+
+        handlerMethod = RouteHandlerMethodImpl.of(Subject.class,
+                Subject.class.getDeclaredMethod("method"), true, "aaa");
+
+        assertTrue(handlerMethod.intercepted());
+        assertEquals("aaa", handlerMethod.scheduler());
     }
 
     private static class Subject {

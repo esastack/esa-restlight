@@ -20,6 +20,7 @@ import io.esastack.restlight.core.annotation.QueryBean;
 import io.esastack.restlight.core.annotation.Scheduled;
 import org.junit.jupiter.api.Test;
 
+import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.List;
@@ -28,10 +29,14 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class HandlerMethodImplTest {
 
+    protected HandlerMethod buildHandlerMethod(Class<?> beanType, Method method) {
+        return new HandlerMethodImpl(beanType, method);
+    }
+
     @Test
     void testTypes() throws NoSuchMethodException {
         final HandlerMethod handlerMethod
-                = new HandlerMethodImpl(Subject.class, Subject.class.getDeclaredMethod("method"));
+                = buildHandlerMethod(Subject.class, Subject.class.getDeclaredMethod("method"));
         assertEquals(Subject.class, handlerMethod.beanType());
         assertEquals(Subject.class.getDeclaredMethod("method"), handlerMethod.method());
         assertEquals(0, handlerMethod.parameters().length);
@@ -40,7 +45,7 @@ class HandlerMethodImplTest {
     @Test
     void testParameters() throws NoSuchMethodException {
         final HandlerMethod handlerMethod
-                = new HandlerMethodImpl(Subject.class, Subject.class.getDeclaredMethod("params", String.class, int.class, List.class));
+                = buildHandlerMethod(Subject.class, Subject.class.getDeclaredMethod("params", String.class, int.class, List.class));
         assertNotNull(handlerMethod.parameters());
         assertEquals(3, handlerMethod.parameters().length);
 
@@ -63,7 +68,7 @@ class HandlerMethodImplTest {
     @Test
     void testAnnotations() throws NoSuchMethodException {
         final HandlerMethod handlerMethod
-                = new HandlerMethodImpl(Subject.class, Subject.class.getDeclaredMethod("ann", String.class));
+                = buildHandlerMethod(Subject.class, Subject.class.getDeclaredMethod("ann", String.class));
         assertNotNull(handlerMethod.parameters());
         assertEquals(1, handlerMethod.parameters().length);
 
