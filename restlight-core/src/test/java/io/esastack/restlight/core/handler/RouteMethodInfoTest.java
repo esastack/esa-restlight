@@ -26,7 +26,7 @@ import static org.mockito.Mockito.mock;
 class RouteMethodInfoTest {
 
     @Test
-    void testAll() {
+    void testConstruct() {
         final RouteHandlerMethod method = mock(RouteHandlerMethod.class);
         final HttpStatus status = HttpStatus.BAD_REQUEST;
         final RouteMethodInfo methodInfo = new RouteMethodInfo(method, true, status);

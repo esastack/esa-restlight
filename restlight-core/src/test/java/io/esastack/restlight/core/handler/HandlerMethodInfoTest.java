@@ -17,22 +17,48 @@ package io.esastack.restlight.core.handler;
 
 import io.esastack.commons.net.http.HttpStatus;
 import io.esastack.restlight.core.method.HandlerMethod;
+import io.esastack.restlight.core.method.RouteHandlerMethod;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 
 class HandlerMethodInfoTest {
 
     @Test
-    void testAll() {
+    void testConstruct() {
+        final boolean locator = true;
         final HandlerMethod method = mock(HandlerMethod.class);
         final HttpStatus status = HttpStatus.BAD_REQUEST;
-        final HandlerMethodInfo methodInfo = new HandlerMethodInfo(method, true, status);
+        final HandlerMethodInfo methodInfo = new HandlerMethodInfo(method, locator, status);
         assertEquals(method, methodInfo.handlerMethod());
         assertEquals(status, methodInfo.customStatus());
         assertTrue(methodInfo.isLocator());
+    }
+
+    @Test
+    void testEquals() {
+        final boolean locator = true;
+        final HandlerMethod method = mock(HandlerMethod.class);
+        final HttpStatus status = HttpStatus.BAD_REQUEST;
+        final HandlerMethodInfo methodInfo = new HandlerMethodInfo(method, locator, status);
+        assertFalse(methodInfo.equals(null));
+        assertNotEquals(methodInfo, new RouteMethodInfo(mock(RouteHandlerMethod.class), locator, status));
+        assertEquals(methodInfo, new HandlerMethodInfo(method, locator, status));
+    }
+
+    @Test
+    void testToString() {
+        final boolean locator = true;
+        final HandlerMethod method = mock(HandlerMethod.class);
+        final HttpStatus status = HttpStatus.BAD_REQUEST;
+        final HandlerMethodInfo methodInfo = new HandlerMethodInfo(method, locator, status);
+        final StringBuilder sb = new StringBuilder("HandlerMethodInfo{");
+        sb.append("locator=").append(locator);
+        sb.append(", handlerMethod=").append(method);
+        sb.append(", customStatus=").append(status);
+        sb.append('}');
+        assertEquals(methodInfo.toString(), sb.toString());
     }
 
 }
