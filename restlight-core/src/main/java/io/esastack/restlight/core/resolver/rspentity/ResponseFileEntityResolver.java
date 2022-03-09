@@ -30,7 +30,7 @@ public class ResponseFileEntityResolver implements ResponseEntityResolverAdapter
     public HandledValue<Void> writeTo(ResponseEntity entity,
                                       ResponseEntityChannel channel,
                                       RequestContext context) throws Exception {
-        if (ResponseEntityUtils.isAssignableFrom(entity, File.class)) {
+        if (!ResponseEntityUtils.isAssignableFrom(entity, File.class)) {
             return HandledValue.failed();
         }
         channel.writeThenEnd((File) entity.response().entity());

@@ -16,7 +16,6 @@
 package io.esastack.restlight.jaxrs.resolver.rspentity;
 
 import io.esastack.restlight.core.method.HandlerMethod;
-import io.esastack.restlight.core.resolver.ResponseEntity;
 import io.esastack.restlight.core.resolver.ResponseEntityResolver;
 import io.esastack.restlight.core.resolver.ResponseEntityResolverFactory;
 import io.esastack.restlight.core.resolver.rspentity.FlexibleResponseEntityResolver;
@@ -29,25 +28,12 @@ public class FlexibleResponseEntityResolverFactory implements ResponseEntityReso
     @Override
     public ResponseEntityResolver createResolver(HandlerMethod method,
                                                  List<? extends HttpResponseSerializer> serializers) {
-        return new FlexibleResponseEntityResolver0(serializers);
+        return new FlexibleResponseEntityResolver(serializers);
     }
 
     @Override
     public int getOrder() {
         return 310;
-    }
-
-    private static class FlexibleResponseEntityResolver0 extends FlexibleResponseEntityResolver {
-
-        private FlexibleResponseEntityResolver0(List<? extends HttpResponseSerializer> serializers) {
-            super(serializers);
-        }
-
-        @Override
-        protected boolean supports(ResponseEntity entity) {
-            return true;
-        }
-
     }
 
 }

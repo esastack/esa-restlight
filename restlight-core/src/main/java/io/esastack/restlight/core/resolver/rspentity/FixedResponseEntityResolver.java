@@ -15,72 +15,33 @@
  */
 package io.esastack.restlight.core.resolver.rspentity;
 
-import esa.commons.collection.AttributeKey;
+import esa.commons.Checks;
 import io.esastack.commons.net.http.MediaType;
-import io.esastack.restlight.core.annotation.ResponseSerializer;
-import io.esastack.restlight.core.annotation.Serializer;
 import io.esastack.restlight.core.method.HandlerMethod;
 import io.esastack.restlight.core.resolver.HandledValue;
 import io.esastack.restlight.core.resolver.ResponseEntity;
-import io.esastack.restlight.core.resolver.ResponseEntityChannel;
 import io.esastack.restlight.core.serialize.HttpResponseSerializer;
 import io.esastack.restlight.core.serialize.Serializers;
 import io.esastack.restlight.core.util.FutureUtils;
 import io.esastack.restlight.server.context.RequestContext;
 
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
 
-public abstract class FixedResponseEntityResolver extends AbstractResponseEntityResolver {
+public class FixedResponseEntityResolver extends AbstractResponseEntityResolver {
 
-    private static final AttributeKey<HttpResponseSerializer> MATCHED_SERIALIZER = AttributeKey
-            .valueOf("$matched_response_serializer");
+    private final HttpResponseSerializer serializer;
 
-    private final ConcurrentHashMap<Method, Optional<Class<? extends HttpResponseSerializer>>> cachedSerializers =
-            new ConcurrentHashMap<>(64);
-
-    private final List<? extends HttpResponseSerializer> serializers;
-
-    protected FixedResponseEntityResolver(List<? extends HttpResponseSerializer> serializers) {
+    public FixedResponseEntityResolver(HttpResponseSerializer serializer) {
         super(true);
-        this.serializers = serializers;
-    }
-
-    @Override
-    public HandledValue<Void> writeTo(ResponseEntity entity,
-                                      ResponseEntityChannel channel,
-                                      RequestContext context) throws Exception {
-        if (!supports(entity) || !entity.handler().isPresent()) {
-            return HandledValue.failed();
-        }
-        Class<? extends HttpResponseSerializer> target = getResponseSerializer(entity.handler().get());
-        if (target != null && target != HttpResponseSerializer.class) {
-            if (target.isInterface() || Modifier.isAbstract(target.getModifiers())) {
-                throw new IllegalArgumentException("Could not resolve ResponseBody serializer class. target type " +
-                        "is interface or abstract class. target type:" + target.getName());
-            }
-            //findFor the first matched one
-            HttpResponseSerializer serializer = serializers.stream()
-                    .filter(s -> target.isAssignableFrom(s.getClass()))
-                    .findFirst()
-                    .orElseThrow(() -> new IllegalArgumentException("Could not findFor ResponseBody serializer. " +
-                            "target type:" + target.getName()));
-            context.attrs().attr(MATCHED_SERIALIZER).set(serializer);
-            return super.writeTo(entity, channel, context);
-        } else {
-            return HandledValue.failed();
-        }
+        Checks.checkNotNull(serializer, "serializer");
+        this.serializer = serializer;
     }
 
     @Override
     protected byte[] serialize(ResponseEntity entity,
                                List<MediaType> mediaTypes,
                                RequestContext context) throws Exception {
-        final HttpResponseSerializer serializer = context.attrs().attr(MATCHED_SERIALIZER).getAndRemove();
         HandledValue<byte[]> handled = Serializers.serializeBySerializer(serializer, entity);
         if (handled.isSuccess()) {
             return handled.value();
@@ -103,33 +64,6 @@ public abstract class FixedResponseEntityResolver extends AbstractResponseEntity
     @Override
     protected List<MediaType> getMediaTypes(RequestContext context) {
         return Collections.emptyList();
-    }
-
-    private Class<? extends HttpResponseSerializer> getResponseSerializer(HandlerMethod method) {
-        return cachedSerializers.computeIfAbsent(method.method(), (m) -> findResponseSerializer(method))
-                .orElse(null);
-    }
-
-    private Optional<Class<? extends HttpResponseSerializer>> findResponseSerializer(HandlerMethod method) {
-        Class<? extends HttpResponseSerializer> target = null;
-
-        // find @ResponseSerializer from the method and class
-        ResponseSerializer responseSerializer;
-        if ((responseSerializer = method.getMethodAnnotation(ResponseSerializer.class, true)) != null
-                || (responseSerializer = method.getClassAnnotation(ResponseSerializer.class, true)) != null) {
-            target = responseSerializer.value();
-        }
-
-        // find @Serializer from the method and class
-        if (target == null) {
-            Serializer serializer;
-            if ((serializer = method.getMethodAnnotation(Serializer.class, true)) != null
-                    || (serializer = method.getClassAnnotation(Serializer.class, true)) != null) {
-                target = serializer.value();
-            }
-
-        }
-        return Optional.ofNullable(target);
     }
 
 }

@@ -30,11 +30,11 @@ import java.util.List;
 /**
  * Implementation of {@link ParamResolverFactory} for resolving argument that annotated by the ResponseBody.
  */
-public abstract class FlexibleResponseEntityResolver extends AbstractResponseEntityResolver {
+public class FlexibleResponseEntityResolver extends AbstractResponseEntityResolver {
 
     private final List<? extends HttpResponseSerializer> serializers;
 
-    protected FlexibleResponseEntityResolver(List<? extends HttpResponseSerializer> serializers) {
+    public FlexibleResponseEntityResolver(List<? extends HttpResponseSerializer> serializers) {
         super(true);
         this.serializers = serializers;
     }
