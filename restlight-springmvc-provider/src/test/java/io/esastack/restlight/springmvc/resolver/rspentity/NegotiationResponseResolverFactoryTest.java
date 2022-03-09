@@ -155,7 +155,7 @@ class NegotiationResponseResolverFactoryTest {
                                                    HttpResponse response,
                                                    String method) throws Exception {
         final HandlerMethod handlerMethod = handlerMethods.get(method);
-        final ResponseEntityResolver resolver = resolverFactory.createResolver(
+        final ResponseEntityResolver resolver = resolverFactory.createResolver(null,
                 Collections.singletonList(new FastJsonHttpBodySerializer()));
         return ResolverUtils.writtenContent(request, response, returnValue, handlerMethod, resolver);
     }
@@ -165,7 +165,7 @@ class NegotiationResponseResolverFactoryTest {
                                                         HttpResponse response,
                                                         String method) throws Exception {
         final HandlerMethod handlerMethod = handlerMethods.get(method);
-        final ResponseEntityResolver resolver = resolverFactory.createResolver(
+        final ResponseEntityResolver resolver = resolverFactory.createResolver(null,
                 Arrays.asList(new JacksonHttpBodySerializer() {
                     @Override
                     public int getOrder() {

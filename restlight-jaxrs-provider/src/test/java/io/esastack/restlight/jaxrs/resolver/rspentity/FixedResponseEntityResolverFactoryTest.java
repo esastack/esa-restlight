@@ -66,7 +66,7 @@ class FixedResponseEntityResolverFactoryTest {
 
     @Test
     void testSupport() throws Throwable {
-        ResponseEntityResolver resolver = resolverFactory.createResolver(Collections.emptyList());
+        ResponseEntityResolver resolver = resolverFactory.createResolver(null, Collections.emptyList());
         final HandlerMethod absent = handlerMethods.get("none");
         assertFalse(resolver.writeTo(new ResponseEntityImpl(absent,
                 MockHttpResponse.aMockResponse().build(), null),
@@ -93,7 +93,8 @@ class FixedResponseEntityResolverFactoryTest {
         context.attrs().attr(RequestContextImpl.RESPONSE_CONTENT).set(
                 new MockResponseContent(BufferAllocator.getDefault().buffer()));
 
-        assertTrue(resolverFactory.createResolver(Collections.singletonList(new JacksonHttpBodySerializer()))
+        assertTrue(resolverFactory.createResolver(null,
+                Collections.singletonList(new JacksonHttpBodySerializer()))
                 .writeTo(new ResponseEntityImpl(support, MockHttpResponse.aMockResponse().build(), null),
                 new ResponseEntityChannelImpl(context), context).isSuccess());
     }
@@ -167,7 +168,7 @@ class FixedResponseEntityResolverFactoryTest {
                                                         HttpResponse response,
                                                         String method) throws Exception {
         final HandlerMethod handlerMethod = handlerMethods.get(method);
-        final ResponseEntityResolver resolver = resolverFactory.createResolver(
+        final ResponseEntityResolver resolver = resolverFactory.createResolver(null,
                 Arrays.asList(new JacksonHttpBodySerializer() {
                     @Override
                     public int getOrder() {

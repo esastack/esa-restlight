@@ -27,8 +27,8 @@ import io.esastack.restlight.core.serialize.HttpResponseSerializer;
 import io.esastack.restlight.core.spi.FutureTransferFactory;
 import io.esastack.restlight.core.spi.RouteFilterFactory;
 import io.esastack.restlight.core.util.OrderedComparator;
-import io.netty.util.internal.InternalThreadLocalMap;
 
+import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -36,6 +36,8 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -64,9 +66,10 @@ public class HandlerResolverFactoryImpl implements HandlerResolverFactory {
     /**
      * Customize response entity resolvers
      */
-    private final List<ResponseEntityResolver> responseEntityResolvers;
-    private final List<ResponseEntityResolverFactory> responseEntityResolverFactories;
+    private final List<ResponseEntityResolverFactory> responseEntityResolvers;
     private final List<ResponseEntityResolverAdviceFactory> responseEntityResolverAdvices;
+
+    private final ResponseResolversFactory responseResolversFactory;
 
     public HandlerResolverFactoryImpl(Collection<? extends HttpRequestSerializer> rxSerializers,
                                       Collection<? extends HttpResponseSerializer> txSerializers,
@@ -111,24 +114,11 @@ public class HandlerResolverFactoryImpl implements HandlerResolverFactory {
                 requestEntityResolverFactories);
         this.requestEntityResolverAdvices = getRequestEntityResolverAdvices(requestEntityResolverAdvices,
                 requestEntityResolverAdviceFactories);
-        this.responseEntityResolverFactories = getResponseEntityResolvers(responseEntityResolvers,
+        this.responseEntityResolvers = getResponseEntityResolvers(responseEntityResolvers,
                 responseEntityResolverFactories);
-        this.responseEntityResolvers = instantiateResponseEntityResolvers(this.responseEntityResolverFactories,
-                txSerializers);
         this.responseEntityResolverAdvices = getResponseEntityResolverAdvices(responseEntityResolverAdvices,
                 responseEntityResolverAdviceFactories);
-    }
-
-    private static List<ResponseEntityResolver> instantiateResponseEntityResolvers(List<ResponseEntityResolverFactory>
-                                                                                           factories,
-                                                                                   Collection<? extends
-                                                                                           HttpResponseSerializer>
-                                                                                           txSerializers) {
-        final List<HttpResponseSerializer> txSerializers0 = new ArrayList<>(txSerializers.size());
-        txSerializers0.addAll(txSerializers);
-        final List<ResponseEntityResolver> resolvers = new ArrayList<>(factories.size());
-        factories.forEach(factory -> resolvers.add(factory.createResolver(txSerializers0)));
-        return resolvers;
+        this.responseResolversFactory = new ResponseResolversFactory();
     }
 
     private static List<RequestEntityResolverFactory> getRequestEntityResolvers(
@@ -315,14 +305,14 @@ public class HandlerResolverFactoryImpl implements HandlerResolverFactory {
     }
 
     @Override
-    public List<RequestEntityResolverAdvice> getRequestEntityResolverAdvices(HandlerMethod method) {
+    public List<RequestEntityResolverAdvice> getRequestEntityResolverAdvices(Param param) {
         if (requestEntityResolverAdvices != null && !requestEntityResolverAdvices.isEmpty()) {
             List<RequestEntityResolverAdvice> advices =
                     requestEntityResolverAdvices.stream()
-                            .filter(advice -> advice.supports(method))
-                            .map(factory -> Checks.checkNotNull(factory.createResolverAdvice(method),
+                            .filter(advice -> advice.supports(param))
+                            .map(factory -> Checks.checkNotNull(factory.createResolverAdvice(param),
                                     "Failed to create RequestEntityResolverAdvice for handler: "
-                                            + method))
+                                            + param))
                             .collect(Collectors.toList());
             if (!advices.isEmpty()) {
                 return Collections.unmodifiableList(advices);
@@ -332,25 +322,13 @@ public class HandlerResolverFactoryImpl implements HandlerResolverFactory {
     }
 
     @Override
-    public List<ResponseEntityResolver> getResponseEntityResolvers() {
-        return responseEntityResolvers;
+    public List<ResponseEntityResolver> getResponseEntityResolvers(HandlerMethod handlerMethod) {
+        return responseResolversFactory.getResolvers(responseEntityResolvers, txSerializers(), handlerMethod);
     }
 
     @Override
-    public List<ResponseEntityResolverAdvice> getResponseEntityResolverAdvices(ResponseEntity entity) {
-        if (responseEntityResolverAdvices != null && responseEntityResolverAdvices.size() != 0) {
-            List<ResponseEntityResolverAdvice> advices = InternalThreadLocalMap.get()
-                    .arrayList(responseEntityResolverAdvices.size());
-
-            ResponseEntityResolverAdvice advice;
-            for (ResponseEntityResolverAdviceFactory factory : responseEntityResolverAdvices) {
-                if (factory.supports(entity) && (advice = factory.createResolverAdvice(entity)) != null) {
-                    advices.add(advice);
-                }
-            }
-            return advices;
-        }
-        return Collections.emptyList();
+    public List<ResponseEntityResolverAdvice> getResponseEntityResolverAdvices(HandlerMethod handlerMethod) {
+        return responseResolversFactory.getResolverAdvices(responseEntityResolverAdvices, handlerMethod);
     }
 
     @Override
@@ -380,7 +358,7 @@ public class HandlerResolverFactoryImpl implements HandlerResolverFactory {
                     new LinkedList<>(factory.contextResolvers),
                     new LinkedList<>(factory.requestEntityResolvers),
                     new LinkedList<>(factory.requestEntityResolverAdvices),
-                    new LinkedList<>(factory.responseEntityResolverFactories),
+                    new LinkedList<>(factory.responseEntityResolvers),
                     new LinkedList<>(factory.responseEntityResolverAdvices));
         } else {
             return new HandlerConfiguration(attributes,
@@ -395,4 +373,76 @@ public class HandlerResolverFactoryImpl implements HandlerResolverFactory {
                     Collections.emptyList());
         }
     }
+
+    private static final class ResponseResolversFactory {
+
+        private final AtomicReference<List<ResponseEntityResolver>> resolvers4MissingHandler
+                = new AtomicReference<>();
+        private final AtomicReference<List<ResponseEntityResolverAdvice>> advices4MissingHandler
+                = new AtomicReference<>();
+
+        private final ConcurrentHashMap<Method, List<ResponseEntityResolver>> resolversMap =
+                new ConcurrentHashMap<>(8);
+        private final ConcurrentHashMap<Method, List<ResponseEntityResolverAdvice>> advicesMap =
+                new ConcurrentHashMap<>(8);
+
+        private List<ResponseEntityResolver> getResolvers(List<ResponseEntityResolverFactory> factories,
+                                                          List<HttpResponseSerializer> txSerializers,
+                                                          HandlerMethod method) {
+            if (method == null) {
+                resolvers4MissingHandler.compareAndSet(null, buildResolvers(factories, txSerializers,
+                        null));
+                return resolvers4MissingHandler.get();
+            }
+            return resolversMap.computeIfAbsent(method.method(),
+                    m -> buildResolvers(factories, txSerializers, method));
+        }
+
+        private List<ResponseEntityResolverAdvice> getResolverAdvices(List<ResponseEntityResolverAdviceFactory>
+                                                                              factories,
+                                                                      HandlerMethod method) {
+            if (method == null) {
+                advices4MissingHandler.compareAndSet(null, buildResolverAdvices(factories, null));
+                return advices4MissingHandler.get();
+            }
+            return advicesMap.computeIfAbsent(method.method(), m -> buildResolverAdvices(factories, method));
+        }
+
+        private List<ResponseEntityResolver> buildResolvers(List<ResponseEntityResolverFactory> factories,
+                                                            List<HttpResponseSerializer> txSerializers,
+                                                            HandlerMethod method) {
+            if (factories == null || factories.isEmpty()) {
+                return Collections.emptyList();
+            }
+            List<ResponseEntityResolver> resolvers = new LinkedList<>();
+            for (ResponseEntityResolverFactory factory : factories) {
+                try {
+                    if (factory.supports(method)) {
+                        resolvers.add(factory.createResolver(method, txSerializers));
+                    }
+                } catch (Throwable ignore) {
+                }
+            }
+            return resolvers;
+        }
+
+        private List<ResponseEntityResolverAdvice> buildResolverAdvices(List<ResponseEntityResolverAdviceFactory>
+                                                                                factories,
+                                                                        HandlerMethod method) {
+            if (factories == null || factories.isEmpty()) {
+                return Collections.emptyList();
+            }
+            List<ResponseEntityResolverAdvice> advices = new LinkedList<>();
+            for (ResponseEntityResolverAdviceFactory factory : factories) {
+                try {
+                    if (factory.supports(method)) {
+                        advices.add(factory.createResolverAdvice(method));
+                    }
+                } catch (Throwable ignore) {
+                }
+            }
+            return advices;
+        }
+    }
+
 }

@@ -25,6 +25,7 @@ import io.esastack.restlight.core.resolver.ResponseEntity;
 import io.esastack.restlight.core.resolver.ResponseEntityChannel;
 import io.esastack.restlight.core.resolver.ResponseEntityResolverAdapter;
 import io.esastack.restlight.core.resolver.ResponseEntityResolverAdviceAdapter;
+import io.esastack.restlight.core.resolver.ResponseEntityResolverContext;
 import io.esastack.restlight.core.serialize.HttpBodySerializer;
 import io.esastack.restlight.server.context.RequestContext;
 import io.esastack.restlight.server.mock.MockHttpRequest;
@@ -132,8 +133,8 @@ class MinorityMockMvcBuilderTest {
         }
 
         @Override
-        public boolean supports(ResponseEntity entity) {
-            return false;
+        public void aroundWrite(ResponseEntityResolverContext context) throws Exception {
+            context.proceed();
         }
     }
 

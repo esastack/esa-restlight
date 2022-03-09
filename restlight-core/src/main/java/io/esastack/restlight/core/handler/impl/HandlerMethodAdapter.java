@@ -54,6 +54,11 @@ public class HandlerMethodAdapter<H extends HandlerMethod> implements HandlerMet
         this.paramResolvers = buildParamResolvers(handlerMethod,
                 context.paramPredicate().orElseThrow(() -> new IllegalStateException("paramPredicate is null")),
                 context.resolverFactory().orElseThrow(() -> new IllegalStateException("resolverFactory is null")));
+        // binds ResponseEntityResolvers and ResponseEntityResolverAdvices to current handler method timely.
+        if (context.resolverFactory().isPresent()) {
+            context.resolverFactory().get().getResponseEntityResolvers(handlerMethod);
+            context.resolverFactory().get().getResponseEntityResolverAdvices(handlerMethod);
+        }
     }
 
     @Override
@@ -118,7 +123,7 @@ public class HandlerMethodAdapter<H extends HandlerMethod> implements HandlerMet
                             + param.toString() + "]");
                 } else {
                     return new ResolvableParam<>(param, new AdvisedRequestEntityResolver(handlerMethod, param,
-                            requestEntityResolvers, factory.getRequestEntityResolverAdvices(handlerMethod)));
+                            requestEntityResolvers, factory.getRequestEntityResolverAdvices(param)));
                 }
             }
         }

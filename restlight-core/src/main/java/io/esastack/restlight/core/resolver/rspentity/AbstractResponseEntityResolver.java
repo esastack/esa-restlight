@@ -21,6 +21,7 @@ import io.esastack.restlight.core.resolver.HandledValue;
 import io.esastack.restlight.core.resolver.ResponseEntity;
 import io.esastack.restlight.core.resolver.ResponseEntityChannel;
 import io.esastack.restlight.core.resolver.ResponseEntityResolver;
+import io.esastack.restlight.core.resolver.ResponseEntityResolverAdapter;
 import io.esastack.restlight.core.serialize.Serializers;
 import io.esastack.restlight.core.util.ResponseEntityUtils;
 import io.esastack.restlight.server.context.RequestContext;
@@ -35,7 +36,7 @@ import java.util.List;
  * {@link CharSequence}, {@link byte}s, {@link ByteBuf} and {@link Primitives}, and you can get more information
  * from {@link Serializers#serializeIfPossible(Object, HttpResponse, MediaType)}.
  */
-public abstract class AbstractResponseEntityResolver implements ResponseEntityResolver {
+public abstract class AbstractResponseEntityResolver implements ResponseEntityResolverAdapter {
 
     /**
      * Whether to serialize the simple response entity by selected type or not.

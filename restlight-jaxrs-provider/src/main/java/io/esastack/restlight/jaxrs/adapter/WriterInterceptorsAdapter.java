@@ -16,7 +16,6 @@
 package io.esastack.restlight.jaxrs.adapter;
 
 import esa.commons.Checks;
-import io.esastack.restlight.core.resolver.ResponseEntity;
 import io.esastack.restlight.core.resolver.ResponseEntityResolverAdviceAdapter;
 import io.esastack.restlight.core.resolver.ResponseEntityResolverContext;
 import io.esastack.restlight.jaxrs.impl.ext.WriterInterceptorContextImpl;
@@ -53,9 +52,5 @@ public class WriterInterceptorsAdapter implements ResponseEntityResolverAdviceAd
         }
     }
 
-    @Override
-    public boolean supports(ResponseEntity entity) {
-        return true;
-    }
 }
 

@@ -16,6 +16,7 @@
 package io.esastack.restlight.core.resolver.rspentity;
 
 import io.esastack.commons.net.http.MediaType;
+import io.esastack.restlight.core.method.HandlerMethod;
 import io.esastack.restlight.core.resolver.ResponseEntity;
 import io.esastack.restlight.core.resolver.ResponseEntityResolver;
 import io.esastack.restlight.core.resolver.ResponseEntityResolverFactory;
@@ -29,7 +30,8 @@ import java.util.List;
 public class CharSequenceEntityResolverFactory implements ResponseEntityResolverFactory {
 
     @Override
-    public ResponseEntityResolver createResolver(List<? extends HttpResponseSerializer> serializers) {
+    public ResponseEntityResolver createResolver(HandlerMethod method,
+                                                 List<? extends HttpResponseSerializer> serializers) {
         return new CharSequenceResolver();
     }
 

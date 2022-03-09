@@ -86,18 +86,18 @@ public class DynamicFeatureAdapter implements HandlerConfigure {
         List<OrderComponent<ReaderInterceptor>> readerInterceptors = filterByNameBindings(handlerMethod,
                 providers.readerInterceptors(), false);
         if (!readerInterceptors.isEmpty()) {
-            configurable.addRequestEntityResolverAdvices(Collections.singleton(
-                    new ReaderInterceptorsAdapter(ascendingOrdered(readerInterceptors)
-                            .toArray(new ReaderInterceptor[0]), ProvidersPredicate.BINDING_HANDLER)));
+            configurable.addRequestEntityResolverAdvice(new ReaderInterceptorsAdapter(
+                    ascendingOrdered(readerInterceptors).toArray(new ReaderInterceptor[0]),
+                    ProvidersPredicate.BINDING_HANDLER));
         }
 
         // bound WriterInterceptors(only be active when handler method has matched)
         List<OrderComponent<WriterInterceptor>> writerInterceptors = filterByNameBindings(handlerMethod,
                 providers.writerInterceptors(), false);
         if (!writerInterceptors.isEmpty()) {
-            configurable.addResponseEntityResolverAdvices(Collections.singleton(
-                    new WriterInterceptorsAdapter(ascendingOrdered(writerInterceptors)
-                            .toArray(new WriterInterceptor[0]), ProvidersPredicate.BINDING_HANDLER)));
+            configurable.addResponseEntityResolverAdvice(new WriterInterceptorsAdapter(
+                    ascendingOrdered(writerInterceptors).toArray(new WriterInterceptor[0]),
+                    ProvidersPredicate.BINDING_HANDLER));
         }
 
         // handle bound postMatch ContainerRequestFilters (only apply to resource method)
@@ -106,8 +106,8 @@ public class DynamicFeatureAdapter implements HandlerConfigure {
                     filterByNameBindings(handlerMethod, providers.requestFilters(),
                             true);
             if (!filters.isEmpty()) {
-                configurable.addRouteFilters(Collections.singleton(new PostMatchRequestFiltersAdapter(
-                        ascendingOrdered(filters).toArray(new ContainerRequestFilter[0]))));
+                configurable.addRouteFilter(new PostMatchRequestFiltersAdapter(
+                        ascendingOrdered(filters).toArray(new ContainerRequestFilter[0])));
             }
         }
 
@@ -116,8 +116,7 @@ public class DynamicFeatureAdapter implements HandlerConfigure {
             ContainerResponseFilter[] filters = descendingOrder(
                     filterByNameBindings(handlerMethod, providers.responseFilters(), false))
                     .toArray(new ContainerResponseFilter[0]);
-            configurable.addRouteFilters(Collections.singleton(
-                    new JaxrsResponseFiltersAdapter.ContainerResponseFilterBinder(filters)));
+            configurable.addRouteFilter(new JaxrsResponseFiltersAdapter.ContainerResponseFilterBinder(filters));
         }
 
         // add context resolvers, which should have higher precedence than those added at

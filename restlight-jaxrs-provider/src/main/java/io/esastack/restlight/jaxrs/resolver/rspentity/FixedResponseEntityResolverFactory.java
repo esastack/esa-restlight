@@ -15,6 +15,7 @@
  */
 package io.esastack.restlight.jaxrs.resolver.rspentity;
 
+import io.esastack.restlight.core.method.HandlerMethod;
 import io.esastack.restlight.core.resolver.ResponseEntity;
 import io.esastack.restlight.core.resolver.ResponseEntityResolver;
 import io.esastack.restlight.core.resolver.ResponseEntityResolverFactory;
@@ -26,8 +27,14 @@ import java.util.List;
 public class FixedResponseEntityResolverFactory implements ResponseEntityResolverFactory {
 
     @Override
-    public ResponseEntityResolver createResolver(List<? extends HttpResponseSerializer> serializers) {
+    public ResponseEntityResolver createResolver(HandlerMethod method,
+                                                 List<? extends HttpResponseSerializer> serializers) {
         return new FixedResponseEntityResolver0(serializers);
+    }
+
+    @Override
+    public boolean supports(HandlerMethod method) {
+        return method != null;
     }
 
     @Override

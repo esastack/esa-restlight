@@ -16,12 +16,12 @@
 package io.esastack.restlight.jaxrs.adapter;
 
 import esa.commons.ClassUtils;
-import io.esastack.restlight.core.resolver.ResponseEntityResolverAdvice;
+import io.esastack.restlight.core.resolver.ResponseEntityResolverAdviceAdapter;
 import io.esastack.restlight.core.resolver.ResponseEntityResolverContext;
 import jakarta.ws.rs.core.GenericEntity;
 import jakarta.ws.rs.core.Response;
 
-public class JaxrsResponseAdapter implements ResponseEntityResolverAdvice {
+public class JaxrsResponseAdapter implements ResponseEntityResolverAdviceAdapter {
 
     @Override
     public void aroundWrite(ResponseEntityResolverContext context) throws Exception {

@@ -61,7 +61,7 @@ class ResponseStatusEntityResolverFactoryTest {
 
     @Test
     void testSupport() throws Throwable {
-        ResponseEntityResolver resolver = resolverFactory.createResolver(Collections.emptyList());
+        ResponseEntityResolver resolver = resolverFactory.createResolver(null, Collections.emptyList());
         final HandlerMethod absent = handlerMethods.get("none");
         assertFalse(resolver.writeTo(new ResponseEntityImpl(absent,
                         MockHttpResponse.aMockResponse().build(), null),
@@ -128,7 +128,7 @@ class ResponseStatusEntityResolverFactoryTest {
                                                    String method,
                                                    Map<String, HandlerMethod> handlerMethods) throws Exception {
         final HandlerMethod handlerMethod = handlerMethods.get(method);
-        final ResponseEntityResolver resolver = resolverFactory.createResolver(
+        final ResponseEntityResolver resolver = resolverFactory.createResolver(null,
                 Collections.singletonList(new FastJsonHttpBodySerializer()));
         return ResolverUtils.writtenContent(request, response, returnValue, handlerMethod, resolver);
     }

@@ -15,8 +15,7 @@
  */
 package io.esastack.restlight.jaxrs.spi;
 
-import esa.commons.ClassUtils;
-import io.esastack.restlight.core.resolver.ResponseEntity;
+import io.esastack.restlight.core.method.HandlerMethod;
 import io.esastack.restlight.core.resolver.ResponseEntityResolverAdvice;
 import io.esastack.restlight.core.resolver.ResponseEntityResolverAdviceFactory;
 import io.esastack.restlight.core.util.Ordered;
@@ -33,18 +32,7 @@ public class JaxrsResponseAdapterFactory implements ResponseEntityResolverAdvice
     private static final ResponseEntityResolverAdvice SINGLETON = new JaxrsResponseAdapter();
 
     @Override
-    public boolean supports(ResponseEntity entity) {
-        Class<?> type = ClassUtils.getUserType(entity.response().entity());
-        if (type == null) {
-            return false;
-        }
-        return Response.class.isAssignableFrom(type)
-                || Response.ResponseBuilder.class.isAssignableFrom(type)
-                || GenericEntity.class.isAssignableFrom(type);
-    }
-
-    @Override
-    public ResponseEntityResolverAdvice createResolverAdvice(ResponseEntity entity) {
+    public ResponseEntityResolverAdvice createResolverAdvice(HandlerMethod method) {
         return SINGLETON;
     }
 

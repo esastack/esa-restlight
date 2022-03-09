@@ -34,8 +34,14 @@ public class NegotiationResponseResolverFactory implements ResponseEntityResolve
     }
 
     @Override
-    public ResponseEntityResolver createResolver(List<? extends HttpResponseSerializer> serializers) {
+    public ResponseEntityResolver createResolver(HandlerMethod method,
+                                                 List<? extends HttpResponseSerializer> serializers) {
         return new NegotiationResponseResolver0(paramName, serializers);
+    }
+
+    @Override
+    public boolean supports(HandlerMethod method) {
+        return method != null;
     }
 
     @Override

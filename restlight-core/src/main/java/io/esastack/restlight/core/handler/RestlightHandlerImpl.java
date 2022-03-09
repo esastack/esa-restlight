@@ -84,8 +84,8 @@ public class RestlightHandlerImpl extends AbstractRestlightHandler {
                     mediaTypes.isEmpty() ? null : mediaTypes.get(0));
             HandlerResolverFactory resolverFactory = getResolverFactory(method);
             final ResponseEntityResolverContext rspCtx = new ResponseEntityResolverContextImpl(context,
-                    entity, channelFactory.create(context), resolverFactory.getResponseEntityResolvers(),
-                    resolverFactory.getResponseEntityResolverAdvices(entity));
+                    entity, channelFactory.create(context), resolverFactory.getResponseEntityResolvers(method),
+                    resolverFactory.getResponseEntityResolverAdvices(method));
 
             setEntityTypeIfNecessary(rspCtx, context.response());
             final HttpRequest request = context.request();

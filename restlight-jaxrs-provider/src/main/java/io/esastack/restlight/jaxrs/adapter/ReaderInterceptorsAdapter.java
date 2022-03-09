@@ -16,7 +16,6 @@
 package io.esastack.restlight.jaxrs.adapter;
 
 import esa.commons.Checks;
-import io.esastack.restlight.core.method.HandlerMethod;
 import io.esastack.restlight.core.resolver.RequestEntityResolverAdviceAdapter;
 import io.esastack.restlight.core.resolver.RequestEntityResolverContext;
 import io.esastack.restlight.jaxrs.impl.ext.ReaderInterceptorContextImpl;
@@ -41,11 +40,6 @@ public class ReaderInterceptorsAdapter implements RequestEntityResolverAdviceAda
         } else {
             return context.proceed();
         }
-    }
-
-    @Override
-    public boolean supports(HandlerMethod method) {
-        return true;
     }
 }
 
