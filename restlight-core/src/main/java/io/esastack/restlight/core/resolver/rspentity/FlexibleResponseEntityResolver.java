@@ -48,21 +48,21 @@ public abstract class FlexibleResponseEntityResolver extends AbstractResponseEnt
                     "), acceptMediaTypes: " + mediaTypes);
         }
 
-        HandledValue<byte[]> value;
+        HandledValue<byte[]> handled;
         if (mediaTypes.isEmpty()) {
             for (HttpResponseSerializer ser : serializers) {
-                value = Serializers.serializeBySerializer(ser, entity);
-                if (value.isSuccess()) {
-                    return value.value();
+                handled = Serializers.serializeBySerializer(ser, entity);
+                if (handled.isSuccess()) {
+                    return handled.value();
                 }
             }
         } else {
             for (MediaType mediaType : mediaTypes) {
                 for (HttpResponseSerializer ser : serializers) {
                     entity.mediaType(mediaType);
-                    value = Serializers.serializeBySerializer(ser, entity);
-                    if (value.isSuccess()) {
-                        return value.value();
+                    handled = Serializers.serializeBySerializer(ser, entity);
+                    if (handled.isSuccess()) {
+                        return handled.value();
                     }
                 }
             }

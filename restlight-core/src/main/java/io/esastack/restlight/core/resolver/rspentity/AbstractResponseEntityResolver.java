@@ -43,6 +43,10 @@ public abstract class AbstractResponseEntityResolver implements ResponseEntityRe
      */
     private final boolean maySimpleType;
 
+    protected AbstractResponseEntityResolver() {
+        this.maySimpleType = false;
+    }
+
     protected AbstractResponseEntityResolver(boolean maySimpleType) {
         this.maySimpleType = maySimpleType;
     }

@@ -81,9 +81,9 @@ public abstract class FixedResponseEntityResolver extends AbstractResponseEntity
                                List<MediaType> mediaTypes,
                                RequestContext context) throws Exception {
         final HttpResponseSerializer serializer = context.attrs().attr(MATCHED_SERIALIZER).getAndRemove();
-        HandledValue<byte[]> value = Serializers.serializeBySerializer(serializer, entity);
-        if (value.isSuccess()) {
-            return value.value();
+        HandledValue<byte[]> handled = Serializers.serializeBySerializer(serializer, entity);
+        if (handled.isSuccess()) {
+            return handled.value();
         } else {
             throw new IllegalStateException("Could not resolve the return value(type=" + entity.type().getName()
                     + ") by specified HttpResponseSerializer: " + serializer.getClass().getName());
