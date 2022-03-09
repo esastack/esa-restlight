@@ -16,7 +16,6 @@
 package io.esastack.restlight.core.handler.impl;
 
 import io.esastack.restlight.core.DeployContext;
-import io.esastack.restlight.core.method.Param;
 import io.esastack.restlight.core.resolver.ParamResolver;
 import io.esastack.restlight.core.resolver.ParamResolverAdvice;
 import io.esastack.restlight.core.resolver.ParamResolverContextImpl;
@@ -37,12 +36,11 @@ class AdvisedParamResolver implements ResolverWrap {
     }
 
     @Override
-    public Object resolve(DeployContext deployContext,
-                          Param param, RequestContext context) throws Exception {
+    public Object resolve(DeployContext deployContext, RequestContext context) throws Exception {
         if (absentAdvices) {
-            return resolver.resolve(param, context);
+            return resolver.resolve(context);
         }
-        return new ParamResolverContextImpl(context, param, resolver, advices).proceed();
+        return new ParamResolverContextImpl(context, resolver, advices).proceed();
     }
 }
 

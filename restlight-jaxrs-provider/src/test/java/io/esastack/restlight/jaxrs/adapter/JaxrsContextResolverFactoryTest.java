@@ -40,13 +40,13 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-class JaxrsContextResolverAdapterTest {
+class JaxrsContextResolverFactoryTest {
 
     @Test
     void testBasic() throws Throwable {
-        assertThrows(NullPointerException.class, () -> new JaxrsContextResolverAdapter(null));
+        assertThrows(NullPointerException.class, () -> new JaxrsContextResolverFactory(null));
         final Providers providers = mock(Providers.class);
-        final JaxrsContextResolverAdapter resolver = new JaxrsContextResolverAdapter(providers);
+        final JaxrsContextResolverFactory resolver = new JaxrsContextResolverFactory(providers);
         assertEquals(Ordered.LOWEST_PRECEDENCE, resolver.getOrder());
 
         final Method method = this.getClass().getDeclaredMethod("demo", String.class, String.class);
@@ -62,10 +62,12 @@ class JaxrsContextResolverAdapterTest {
         attributes.attr(ProducesPredicate.COMPATIBLE_MEDIA_TYPES)
                 .set(Collections.singletonList(io.esastack.commons.net.http.MediaType.ALL));
         when(providers.getContextResolver(String.class, MediaType.WILDCARD_TYPE)).thenReturn(type -> "Hello");
-        assertEquals("Hello", resolver.resolve(new MethodParamImpl(method, 0), context));
+        assertEquals("Hello", resolver.createResolver(new MethodParamImpl(method, 0),
+                null, null).resolve(context));
         attributes.attr(ProducesPredicate.COMPATIBLE_MEDIA_TYPES)
                 .set(Collections.singletonList(io.esastack.commons.net.http.MediaType.APPLICATION_JSON));
-        assertNull(resolver.resolve(new MethodParamImpl(method, 0), context));
+        assertNull(resolver.createResolver(new MethodParamImpl(method, 0),
+                null, null).resolve(context));
     }
 
     private String demo(@Context String name, String address) {

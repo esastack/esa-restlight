@@ -35,7 +35,7 @@ public class ApplicationResolverAdapter extends AbstractContextResolverAdapter {
     }
 
     @Override
-    public Object resolve(Param param, DeployContext context) {
+    public Object resolve(DeployContext context) {
         return application;
     }
 

@@ -160,9 +160,7 @@ class FlexibleRequestEntityResolverFactoryImplTest {
                 .build();
         final RequestContext context = new RequestContextImpl(request,
                 MockHttpResponse.aMockResponse().build());
-        final Object resolvedWithJson = resolver.readFrom(param,
-                new RequestEntityImpl(handlerMethods.get("requestBody"), param, context),
-                context).value();
+        final Object resolvedWithJson = resolver.readFrom(new RequestEntityImpl(param, context), context).value();
         assertEquals(origin, resolvedWithJson);
 
         final HttpRequest request2 = MockHttpRequest
@@ -172,9 +170,7 @@ class FlexibleRequestEntityResolverFactoryImplTest {
                 .build();
         final RequestContext context2 = new RequestContextImpl(request2,
                 MockHttpResponse.aMockResponse().build());
-        final Object resolvedWithXml = resolver.readFrom(param,
-                new RequestEntityImpl(handlerMethods.get("requestBody"), param, context2),
-                context2).value();
+        final Object resolvedWithXml = resolver.readFrom(new RequestEntityImpl(param, context2), context2).value();
         assertEquals(origin, resolvedWithXml);
     }
 
@@ -187,8 +183,7 @@ class FlexibleRequestEntityResolverFactoryImplTest {
 
         final RequestContext context = new RequestContextImpl(request,
                 MockHttpResponse.aMockResponse().build());
-        return resolver.readFrom(param,
-                new RequestEntityImpl(handlerMethods.get(method), param, context), context).value();
+        return resolver.readFrom(new RequestEntityImpl(param, context), context).value();
     }
 
     private static class Subject {

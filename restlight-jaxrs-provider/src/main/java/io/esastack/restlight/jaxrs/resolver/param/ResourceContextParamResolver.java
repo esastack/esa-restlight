@@ -62,7 +62,7 @@ public class ResourceContextParamResolver implements ParamResolverFactory {
         }
 
         @Override
-        public Object resolve(Param param, RequestContext context) throws Exception {
+        public Object resolve(RequestContext context) throws Exception {
             return new ResourceContextImpl(this.context.handlerFactory().orElse(null), context);
         }
     }

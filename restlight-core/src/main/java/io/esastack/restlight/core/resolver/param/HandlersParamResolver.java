@@ -46,7 +46,7 @@ public class HandlersParamResolver implements ParamResolverFactory {
     public ParamResolver createResolver(Param param,
                                         Function3<Class<?>, Type, Param, StringConverter> converterFunc,
                                         List<? extends HttpRequestSerializer> serializers) {
-        return (p, ctx) -> deployContext.handlers().orElse(null);
+        return (ctx) -> deployContext.handlers().orElse(null);
     }
 
 }

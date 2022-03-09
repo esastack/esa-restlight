@@ -15,7 +15,6 @@
  */
 package io.esastack.restlight.core.resolver;
 
-import io.esastack.restlight.core.method.Param;
 import io.esastack.restlight.server.context.RequestContext;
 
 /**
@@ -25,7 +24,7 @@ import io.esastack.restlight.server.context.RequestContext;
 public interface ParamResolverAdvice {
 
     /**
-     * This method is called around {@link ParamResolver#resolve(Param, RequestContext)}.
+     * This method is called around {@link ParamResolver#resolve(RequestContext)}.
      *
      * @param context context
      * @return resolved arg value

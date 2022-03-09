@@ -38,7 +38,7 @@ class ApplicationResolverAdapterTest {
         final ApplicationResolverAdapter adapter = new ApplicationResolverAdapter(application);
         assertEquals(1000, adapter.getOrder());
 
-        assertSame(application, adapter.resolve(null, null));
+        assertSame(application, adapter.resolve(null));
         assertTrue(adapter.supports(new ConstructorParamImpl(A.class.getConstructor(Application.class), 0)));
         assertTrue(adapter.supports(new FieldParamImpl(A.class.getDeclaredField("application"))));
         assertTrue(adapter.supports(new MethodParamImpl(A.class.getDeclaredMethod("setApplication",

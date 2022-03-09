@@ -35,7 +35,7 @@ public class ProvidersResolverAdapter extends AbstractContextResolverAdapter {
     }
 
     @Override
-    public Object resolve(Param param, DeployContext context) throws Exception {
+    public Object resolve(DeployContext context) throws Exception {
         return providers;
     }
 

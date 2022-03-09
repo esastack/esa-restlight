@@ -102,8 +102,7 @@ class FixedRequestEntityResolverFactoryImplTest {
 
         final RequestContext context = new RequestContextImpl(request,
                 MockHttpResponse.aMockResponse().build());
-        return resolver.readFrom(param,
-                new RequestEntityImpl(handlerMethods.get(method), param, context), context).value();
+        return resolver.readFrom(new RequestEntityImpl(param, context), context).value();
     }
 
     private static class Subject {

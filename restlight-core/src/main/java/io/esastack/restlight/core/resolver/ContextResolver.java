@@ -23,12 +23,11 @@ public interface ContextResolver extends Resolver {
     /**
      * Resolves global context {@link Param} into an param value.
      *
-     * @param param   param
      * @param context context
      * @return value resolved
      * @throws Exception ex
      */
-    Object resolve(Param param, DeployContext context) throws Exception;
+    Object resolve(DeployContext context) throws Exception;
 
 }
 

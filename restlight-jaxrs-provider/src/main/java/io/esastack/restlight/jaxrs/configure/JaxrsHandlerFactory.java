@@ -68,7 +68,7 @@ public class JaxrsHandlerFactory extends HandlerFactoryImpl {
             int index = 0;
             for (ResolvableParam<ConstructorParam, ContextResolver> param : consParams) {
                 try {
-                    consArgs[index++] = param.resolver().resolve(param.param(), handlerContext);
+                    consArgs[index++] = param.resolver().resolve(handlerContext);
                 } catch (Throwable th) {
                     //wrap exception
                     throw WebServerException.wrap(th);
@@ -103,7 +103,7 @@ public class JaxrsHandlerFactory extends HandlerFactoryImpl {
                 if (r.resolver() != null) {
                     //it may return a null value
                     try {
-                        Object arg = r.resolver().resolve(param, handlerContext);
+                        Object arg = r.resolver().resolve(handlerContext);
                         ReflectionUtils.invokeMethod(param.method(), instance, arg);
                     } catch (InvocationTargetException ex) {
                         throw new IllegalStateException("Failed to invoke method: [" + param.method() + "]",
@@ -119,8 +119,7 @@ public class JaxrsHandlerFactory extends HandlerFactoryImpl {
                 //resolve args with resolver
                 if (r.resolver() != null) {
                     try {
-                        BeanUtils.setFieldValue(instance, param.name(),
-                                r.resolver().resolve(param, handlerContext));
+                        BeanUtils.setFieldValue(instance, param.name(), r.resolver().resolve(handlerContext));
                     } catch (Exception e) {
                         //wrap exception
                         throw WebServerException.wrap(e);

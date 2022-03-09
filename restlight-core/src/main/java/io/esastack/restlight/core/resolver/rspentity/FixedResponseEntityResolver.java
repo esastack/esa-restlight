@@ -30,11 +30,15 @@ import java.util.List;
 
 public class FixedResponseEntityResolver extends AbstractResponseEntityResolver {
 
+    private final boolean simpleType;
     private final HttpResponseSerializer serializer;
 
-    public FixedResponseEntityResolver(HttpResponseSerializer serializer) {
+    public FixedResponseEntityResolver(HandlerMethod method, HttpResponseSerializer serializer) {
         super(true);
+        Checks.checkNotNull(method, "method");
         Checks.checkNotNull(serializer, "serializer");
+        this.simpleType = Object.class.equals(method.method().getReturnType())
+                || Object.class.equals(FutureUtils.retrieveFirstGenericTypeOfFutureReturnType(method.method()));
         this.serializer = serializer;
     }
 
@@ -53,12 +57,7 @@ public class FixedResponseEntityResolver extends AbstractResponseEntityResolver 
 
     @Override
     protected boolean isSimpleType(ResponseEntity entity) {
-        HandlerMethod method = entity.handler().orElse(null);
-        if (method == null) {
-            return false;
-        }
-        return Object.class.equals(method.method().getReturnType())
-                || Object.class.equals(FutureUtils.retrieveFirstGenericTypeOfFutureReturnType(method.method()));
+        return simpleType;
     }
 
     @Override

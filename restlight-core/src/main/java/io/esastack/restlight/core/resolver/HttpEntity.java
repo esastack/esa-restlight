@@ -16,14 +16,9 @@
 package io.esastack.restlight.core.resolver;
 
 import io.esastack.commons.net.http.MediaType;
-import io.esastack.restlight.core.handler.Handler;
-import io.esastack.restlight.core.method.HandlerMethod;
-import io.esastack.restlight.server.context.RequestContext;
-import io.esastack.restlight.server.handler.Filter;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
-import java.util.Optional;
 
 public interface HttpEntity {
 
@@ -83,12 +78,5 @@ public interface HttpEntity {
      */
     void mediaType(MediaType mediaType);
 
-    /**
-     * Obtains the {@link HandlerMethod} if current value is produced by
-     * {@link Handler#invoke(RequestContext, Object[])}, otherwise the value may be produces by {@link Filter}.
-     *
-     * @return handler method if present.
-     */
-    Optional<HandlerMethod> handler();
 }
 

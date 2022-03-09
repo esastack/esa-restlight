@@ -96,8 +96,8 @@ class FixedRequestEntityResolverFactoryImplTest {
                 ResolverUtils.defaultConverterFunc(),
                 Collections.singletonList(new JacksonHttpBodySerializer()));
         final RequestContext context = new RequestContextImpl(request, MockHttpResponse.aMockResponse().build());
-        final RequestEntity entity = new RequestEntityImpl(handlerMethods.get(method), param, context);
-        return resolver.readFrom(param, entity, context).value();
+        final RequestEntity entity = new RequestEntityImpl(param, context);
+        return resolver.readFrom(entity, context).value();
     }
 
     private static class Subject {

@@ -121,7 +121,7 @@ public class HandlerFactoryImpl implements HandlerFactory {
             if (resolvable.resolver() != null) {
                 //it may return a null value
                 try {
-                    args[i] = resolvable.resolver().resolve(handlerContext, param, context);
+                    args[i] = resolvable.resolver().resolve(handlerContext, context);
                 } catch (Exception e) {
                     //wrap exception
                     throw WebServerException.wrap(e);
@@ -149,8 +149,7 @@ public class HandlerFactoryImpl implements HandlerFactory {
             if (r.resolver() != null) {
                 //it may return a null value
                 try {
-                    BeanUtils.setFieldValue(instance, param.name(), r.resolver().resolve(handlerContext,
-                            param, context));
+                    BeanUtils.setFieldValue(instance, param.name(), r.resolver().resolve(handlerContext, context));
                 } catch (Exception e) {
                     //wrap exception
                     throw WebServerException.wrap(e);
@@ -165,7 +164,7 @@ public class HandlerFactoryImpl implements HandlerFactory {
             if (r.resolver() != null) {
                 //it may return a null value
                 try {
-                    Object arg = r.resolver().resolve(handlerContext, param, context);
+                    Object arg = r.resolver().resolve(handlerContext, context);
                     ReflectionUtils.invokeMethod(param.method(), instance, arg);
                 } catch (InvocationTargetException ex) {
                     throw new IllegalArgumentException("Error occurred while invoking method: [" +

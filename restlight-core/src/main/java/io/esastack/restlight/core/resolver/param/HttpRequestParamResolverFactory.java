@@ -21,6 +21,7 @@ import io.esastack.restlight.core.resolver.ParamResolver;
 import io.esastack.restlight.core.resolver.ParamResolverFactory;
 import io.esastack.restlight.core.resolver.StringConverter;
 import io.esastack.restlight.core.serialize.HttpRequestSerializer;
+import io.esastack.restlight.server.context.RequestContext;
 import io.esastack.restlight.server.core.HttpRequest;
 
 import java.lang.reflect.Type;
@@ -35,7 +36,7 @@ public class HttpRequestParamResolverFactory implements ParamResolverFactory {
     public ParamResolver createResolver(Param param,
                                         Function3<Class<?>, Type, Param, StringConverter> converterFunc,
                                         List<? extends HttpRequestSerializer> serializers) {
-        return (param0, context) -> context.request();
+        return RequestContext::request;
     }
 
     @Override

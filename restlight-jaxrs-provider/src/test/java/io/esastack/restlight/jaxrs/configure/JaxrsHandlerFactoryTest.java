@@ -19,6 +19,7 @@ import io.esastack.restlight.core.DeployContext;
 import io.esastack.restlight.core.configure.Handlers;
 import io.esastack.restlight.core.handler.HandlerFactory;
 import io.esastack.restlight.core.handler.impl.HandlerContext;
+import io.esastack.restlight.core.method.Param;
 import io.esastack.restlight.core.resolver.ContextResolver;
 import io.esastack.restlight.core.resolver.HandlerResolverFactory;
 import io.esastack.restlight.jaxrs.impl.container.ResourceContextImpl;
@@ -66,14 +67,15 @@ class JaxrsHandlerFactoryTest {
         final ResourceContext resourceContext = new ResourceContextImpl(mock(HandlerFactory.class),
                 mock(RequestContext.class));
         when(resolverFactory.getContextResolver(any())).thenAnswer(invocationOnMock ->
-                (ContextResolver) (param1, context) -> {
-                    if (param1.type().equals(Configuration.class)) {
+                (ContextResolver) (context) -> {
+                    Param param = invocationOnMock.getArgument(0);
+                    if (param.type().equals(Configuration.class)) {
                         return configuration;
-                    } else if (param1.type().equals(Providers.class)) {
+                    } else if (param.type().equals(Providers.class)) {
                         return providers;
-                    } else if (param1.type().equals(ResourceContext.class)) {
+                    } else if (param.type().equals(ResourceContext.class)) {
                         return resourceContext;
-                    } else if (param1.type().equals(Application.class)) {
+                    } else if (param.type().equals(Application.class)) {
                         return application;
                     }
                     return null;

@@ -37,7 +37,7 @@ public class DefaultValueParamResolver implements ParamResolverFactory {
         DefaultValue ann = JaxrsUtils.getAnnotation(param, DefaultValue.class);
         final Object defaultValue =
                 ConverterUtils.forceConvertStringValue(ann.value(), param.genericType());
-        return (request, response) -> defaultValue;
+        return (ctx) -> defaultValue;
     }
 
     @Override

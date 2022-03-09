@@ -17,7 +17,6 @@ package io.esastack.restlight.core.handler.impl;
 
 import esa.commons.Checks;
 import io.esastack.restlight.core.DeployContext;
-import io.esastack.restlight.core.method.Param;
 import io.esastack.restlight.core.resolver.ContextResolver;
 import io.esastack.restlight.server.context.RequestContext;
 
@@ -32,9 +31,8 @@ class ContextResolverWrap implements ResolverWrap {
 
     @Override
     public Object resolve(DeployContext deployContext,
-                          Param param,
                           RequestContext context) throws Exception {
-        return underlying.resolve(param, deployContext);
+        return underlying.resolve(deployContext);
     }
 }
 
