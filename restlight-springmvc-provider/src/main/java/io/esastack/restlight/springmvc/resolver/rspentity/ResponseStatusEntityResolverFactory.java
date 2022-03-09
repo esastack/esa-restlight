@@ -30,7 +30,6 @@ import io.netty.handler.codec.http.HttpHeaderNames;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * Implementation of {@link ParamResolverFactory} for resolving argument that annotated by the ResponseStatus which
@@ -41,7 +40,8 @@ public class ResponseStatusEntityResolverFactory implements ResponseEntityResolv
     @Override
     public ResponseEntityResolver createResolver(HandlerMethod method,
                                                  List<? extends HttpResponseSerializer> serializers) {
-        return new Resolver();
+        ResponseStatus0 anno = getResponseStatus(method);
+        return new Resolver(anno);
     }
 
     @Override
@@ -71,8 +71,11 @@ public class ResponseStatusEntityResolverFactory implements ResponseEntityResolv
 
     private static class Resolver extends AbstractResponseEntityResolver {
 
-        private Resolver() {
+        private final ResponseStatus0 anno;
+
+        private Resolver(ResponseStatus0 anno) {
             super(false);
+            this.anno = anno;
         }
 
         @Override
@@ -80,8 +83,7 @@ public class ResponseStatusEntityResolverFactory implements ResponseEntityResolv
                                    List<MediaType> mediaTypes,
                                    RequestContext context) throws Exception {
             entity.response().headers().set(HttpHeaderNames.CONTENT_TYPE, MediaType.TEXT_PLAIN.value());
-            return getResponseStatus(Objects.requireNonNull(entity.handler().orElse(null))).reason()
-                    .getBytes(StandardCharsets.UTF_8);
+            return anno.reason().getBytes(StandardCharsets.UTF_8);
         }
     }
 

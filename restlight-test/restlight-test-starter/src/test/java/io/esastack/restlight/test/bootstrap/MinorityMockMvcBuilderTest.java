@@ -89,7 +89,7 @@ class MinorityMockMvcBuilderTest {
         }
 
         @Override
-        public Object resolve(Param param, RequestContext context) {
+        public Object resolve(RequestContext context) {
             return null;
         }
 

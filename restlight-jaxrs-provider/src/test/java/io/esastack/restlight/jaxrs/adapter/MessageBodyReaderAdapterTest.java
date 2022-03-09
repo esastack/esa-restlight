@@ -61,12 +61,12 @@ class MessageBodyReaderAdapterTest {
         when(context.request()).thenReturn(request);
         when(request.headers()).thenReturn(new Http1HeadersImpl());
         MessageBodyReaderAdapter<?> adapter = new MessageBodyReaderAdapter<>(providers);
-        assertFalse(adapter.readFrom(null, entity, context).isSuccess());
+        assertFalse(adapter.readFrom(entity, context).isSuccess());
 
         doReturn(String.class).when(entity).type();
         when(entity.mediaType()).thenReturn(MediaType.ALL);
         when(providers.getMessageBodyReader(any(), any(), any(), any())).thenReturn(null);
-        assertFalse(adapter.readFrom(null, entity, context).isSuccess());
+        assertFalse(adapter.readFrom(entity, context).isSuccess());
 
         when(providers.getMessageBodyReader(any(), any(), any(), any())).thenReturn(new MessageBodyReader<Object>() {
             @Override
@@ -83,7 +83,7 @@ class MessageBodyReaderAdapterTest {
                 return "DEF";
             }
         });
-        HandledValue<Object> handled = adapter.readFrom(null, entity, context);
+        HandledValue<Object> handled = adapter.readFrom(entity, context);
         assertTrue(handled.isSuccess());
         assertEquals("DEF", handled.value());
     }

@@ -16,7 +16,6 @@
 package io.esastack.restlight.core.handler.impl;
 
 import io.esastack.restlight.core.DeployContext;
-import io.esastack.restlight.core.method.Param;
 import io.esastack.restlight.core.resolver.Resolver;
 import io.esastack.restlight.server.context.RequestContext;
 
@@ -26,13 +25,11 @@ interface ResolverWrap extends Resolver {
      * Resolves the param by given {@link DeployContext} and {@link RequestContext}.
      *
      * @param deployContext deploy context
-     * @param param         param
      * @param context       context
      * @return resolved value
      * @throws Exception exception
      */
-    Object resolve(DeployContext deployContext,
-                   Param param, RequestContext context) throws Exception;
+    Object resolve(DeployContext deployContext, RequestContext context) throws Exception;
 
 }
 

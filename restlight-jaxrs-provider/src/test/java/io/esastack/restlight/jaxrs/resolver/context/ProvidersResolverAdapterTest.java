@@ -38,7 +38,7 @@ class ProvidersResolverAdapterTest {
         final ProvidersResolverAdapter adapter = new ProvidersResolverAdapter(providers);
         assertEquals(1000, adapter.getOrder());
 
-        assertSame(providers, adapter.resolve(null, null));
+        assertSame(providers, adapter.resolve(null));
         assertTrue(adapter.supports(new ConstructorParamImpl(A.class.getConstructor(Providers.class), 0)));
         assertTrue(adapter.supports(new FieldParamImpl(A.class.getDeclaredField("providers"))));
         assertTrue(adapter.supports(new MethodParamImpl(A.class.getDeclaredMethod("setProviders",

@@ -33,7 +33,7 @@ public class RequestContextResolverFactory implements ParamResolverFactory {
     public ParamResolver createResolver(Param param,
                                         Function3<Class<?>, Type, Param, StringConverter> converterFunc,
                                         List<? extends HttpRequestSerializer> serializers) {
-        return (p, context) -> context;
+        return (context) -> context;
     }
 
     @Override

@@ -37,7 +37,7 @@ public abstract class FixedResponseEntityResolverFactory implements ResponseEnti
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("Could not findFor ResponseBody serializer. " +
                         "target type:" + target.getName()));
-        return new FixedResponseEntityResolver(serializer);
+        return new FixedResponseEntityResolver(method, serializer);
     }
 
     @Override

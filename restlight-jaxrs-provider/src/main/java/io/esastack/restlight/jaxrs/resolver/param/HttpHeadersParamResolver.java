@@ -50,7 +50,7 @@ public class HttpHeadersParamResolver implements ParamResolverFactory {
         }
 
         @Override
-        public Object resolve(Param param, RequestContext context) {
+        public Object resolve(RequestContext context) {
             return JaxrsContextUtils.getHeaders(context);
         }
 

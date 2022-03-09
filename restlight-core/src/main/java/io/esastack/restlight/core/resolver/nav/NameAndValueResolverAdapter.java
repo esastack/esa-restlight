@@ -38,7 +38,7 @@ public class NameAndValueResolverAdapter implements ParamResolver {
     }
 
     @Override
-    public Object resolve(Param param, RequestContext ctx) {
+    public Object resolve(RequestContext ctx) {
         Object arg = resolver.resolve(nav.name(), ctx);
         if (arg == null) {
             Supplier<?> defaultValue = nav.defaultValue();

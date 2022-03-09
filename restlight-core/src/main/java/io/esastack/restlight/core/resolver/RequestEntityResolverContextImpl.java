@@ -62,7 +62,7 @@ public class RequestEntityResolverContextImpl implements RequestEntityResolverCo
         if (advices == null || index >= advicesSize) {
             HandledValue<Object> handled;
             for (RequestEntityResolver resolver : resolvers) {
-                handled = resolver.readFrom(param, entity, context);
+                handled = resolver.readFrom(entity, context);
                 if (handled.isSuccess()) {
                     return handled.value();
                 }

@@ -27,7 +27,7 @@ import io.esastack.restlight.core.configure.MiniConfigurableDeployments;
 import io.esastack.restlight.core.method.ResolvableParamPredicate;
 import io.esastack.restlight.core.util.ConstructorUtils;
 import io.esastack.restlight.jaxrs.adapter.DynamicFeatureAdapter;
-import io.esastack.restlight.jaxrs.adapter.JaxrsContextResolverAdapter;
+import io.esastack.restlight.jaxrs.adapter.JaxrsContextResolverFactory;
 import io.esastack.restlight.jaxrs.adapter.JaxrsExceptionMapperAdapter;
 import io.esastack.restlight.jaxrs.adapter.JaxrsResponseFiltersAdapter;
 import io.esastack.restlight.jaxrs.adapter.MessageBodyReaderAdapter;
@@ -236,7 +236,7 @@ public class JaxrsExtensionsHandler implements ExtensionsHandler {
                     ClassUtils.getUserType(mapper.underlying())).orElse(Throwable.class),
                     new JaxrsExceptionMapperAdapter<>(mapper));
         }
-        deployments.addParamResolver(new JaxrsContextResolverAdapter(providers));
+        deployments.addParamResolver(new JaxrsContextResolverFactory(providers));
         for (ProxyComponent<ParamConverterProvider> provider : factory.paramConverterProviders()) {
             deployments.addStringConverter(new StringConverterProviderAdapter(provider.proxied(),
                     JaxrsUtils.getOrder(provider.underlying())));

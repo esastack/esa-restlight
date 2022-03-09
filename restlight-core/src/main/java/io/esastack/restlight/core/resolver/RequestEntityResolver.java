@@ -15,7 +15,6 @@
  */
 package io.esastack.restlight.core.resolver;
 
-import io.esastack.restlight.core.method.Param;
 import io.esastack.restlight.server.context.RequestContext;
 
 /**
@@ -26,13 +25,12 @@ public interface RequestEntityResolver extends Resolver {
     /**
      * Deserialize the given {@code entity} to result.
      *
-     * @param param   param
      * @param entity  entity
      * @param context context
      * @return resolved value, which must not be null.
      * @throws Exception any exception
      */
-    HandledValue<Object> readFrom(Param param, RequestEntity entity, RequestContext context) throws Exception;
+    HandledValue<Object> readFrom(RequestEntity entity, RequestContext context) throws Exception;
 
 }
 

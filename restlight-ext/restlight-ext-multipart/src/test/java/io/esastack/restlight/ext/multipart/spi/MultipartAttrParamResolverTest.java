@@ -43,7 +43,7 @@ class MultipartAttrParamResolverTest extends AbstractMultipartResolverTest {
         final ParamResolver resolver = factory.createResolver(param, (clazz, type, p) -> CONVERTER_FACTORY
                 .createConverter(p.type(), p.genericType(), p).get(),
                 null);
-        return resolver.resolve(param, new RequestContextImpl(request, MockHttpResponse.aMockResponse().build()));
+        return resolver.resolve(new RequestContextImpl(request, MockHttpResponse.aMockResponse().build()));
     }
 
     @Test

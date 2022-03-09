@@ -102,8 +102,7 @@ class FlexibleRequestEntityResolverFactoryImplTest {
                 .withBody(JacksonSerializer.getDefaultMapper().writeValueAsBytes(origin))
                 .build();
         final RequestContext context = new RequestContextImpl(request, MockHttpResponse.aMockResponse().build());
-        final Object resolvedWithJson = resolver.readFrom(param,
-                new RequestEntityImpl(handlerMethods.get("none"), param, context), context).value();
+        final Object resolvedWithJson = resolver.readFrom(new RequestEntityImpl(param, context), context).value();
         assertEquals(origin, resolvedWithJson);
 
         final HttpRequest request2 = MockHttpRequest
@@ -112,8 +111,7 @@ class FlexibleRequestEntityResolverFactoryImplTest {
                 .withBody(JacksonSerializer.getDefaultMapper().writeValueAsBytes(origin))
                 .build();
         final RequestContext context2 = new RequestContextImpl(request2, MockHttpResponse.aMockResponse().build());
-        final Object resolvedWithXml = resolver.readFrom(param,
-                new RequestEntityImpl(handlerMethods.get("none"), param, context2), context2).value();
+        final Object resolvedWithXml = resolver.readFrom(new RequestEntityImpl(param, context2), context2).value();
 
         assertEquals(origin, resolvedWithXml);
     }
@@ -126,8 +124,8 @@ class FlexibleRequestEntityResolverFactoryImplTest {
                 Collections.singletonList(new JacksonHttpBodySerializer()));
 
         final RequestContext context = new RequestContextImpl(request, MockHttpResponse.aMockResponse().build());
-        final RequestEntity entity = new RequestEntityImpl(handlerMethods.get(method), param, context);
-        return resolver.readFrom(param, entity, context).value();
+        final RequestEntity entity = new RequestEntityImpl(param, context);
+        return resolver.readFrom(entity, context).value();
     }
 
     private static class Subject {

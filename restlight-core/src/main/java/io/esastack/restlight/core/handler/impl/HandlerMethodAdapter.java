@@ -122,7 +122,7 @@ public class HandlerMethodAdapter<H extends HandlerMethod> implements HandlerMet
                     throw new IllegalArgumentException("There is no suitable resolver to handle param: ["
                             + param.toString() + "]");
                 } else {
-                    return new ResolvableParam<>(param, new AdvisedRequestEntityResolver(handlerMethod, param,
+                    return new ResolvableParam<>(param, new AdvisedRequestEntityResolver(param,
                             requestEntityResolvers, factory.getRequestEntityResolverAdvices(param)));
                 }
             }

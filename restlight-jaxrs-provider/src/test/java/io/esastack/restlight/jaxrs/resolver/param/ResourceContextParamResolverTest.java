@@ -68,8 +68,8 @@ class ResourceContextParamResolverTest {
         final RequestContext ctx = new RequestContextImpl(request, response);
 
         when(context.handlerFactory()).thenReturn(Optional.of(mock(HandlerFactory.class)));
-        assertNotNull(resolver.resolve(param, ctx));
-        assertTrue(resolver.resolve(param, ctx) instanceof ResourceContextImpl);
+        assertNotNull(resolver.resolve(ctx));
+        assertTrue(resolver.resolve(ctx) instanceof ResourceContextImpl);
     }
 
     private static class Subject {

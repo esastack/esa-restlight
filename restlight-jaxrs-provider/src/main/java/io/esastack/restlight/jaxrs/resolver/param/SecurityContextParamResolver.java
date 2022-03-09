@@ -47,7 +47,7 @@ public class SecurityContextParamResolver implements ParamResolverFactory {
     private static class SecurityContextResolver implements ParamResolver {
 
         @Override
-        public Object resolve(Param param, RequestContext context) throws Exception {
+        public Object resolve(RequestContext context) throws Exception {
             return JaxrsContextUtils.getSecurityContext(context);
         }
     }

@@ -21,7 +21,6 @@ import io.esastack.restlight.core.configure.HandlerConfigure;
 import io.esastack.restlight.core.configure.MiniConfigurableDeployments;
 import io.esastack.restlight.core.resolver.ContextResolverAdapter;
 import io.esastack.restlight.core.resolver.ExceptionResolver;
-import io.esastack.restlight.core.resolver.ParamResolverAdapter;
 import io.esastack.restlight.core.resolver.ParamResolverFactory;
 import io.esastack.restlight.core.resolver.RequestEntityResolverAdapter;
 import io.esastack.restlight.core.resolver.RequestEntityResolverAdviceAdapter;
@@ -29,7 +28,7 @@ import io.esastack.restlight.core.resolver.ResponseEntityResolverAdapter;
 import io.esastack.restlight.core.resolver.ResponseEntityResolverAdviceAdapter;
 import io.esastack.restlight.core.resolver.StringConverterFactory;
 import io.esastack.restlight.jaxrs.adapter.DynamicFeatureAdapter;
-import io.esastack.restlight.jaxrs.adapter.JaxrsContextResolverAdapter;
+import io.esastack.restlight.jaxrs.adapter.JaxrsContextResolverFactory;
 import io.esastack.restlight.jaxrs.adapter.JaxrsExceptionMapperAdapter;
 import io.esastack.restlight.jaxrs.adapter.JaxrsResponseFiltersAdapter;
 import io.esastack.restlight.jaxrs.adapter.MessageBodyReaderAdapter;
@@ -131,8 +130,9 @@ class JaxrsExtensionsHandlerTest {
         assertTrue(contextResolvers.get(0) instanceof ApplicationResolverAdapter);
         assertTrue(contextResolvers.get(1) instanceof ConfigurationResolverAdapter);
         assertTrue(contextResolvers.get(2) instanceof ProvidersResolverAdapter);
-        assertEquals(1, paramResolvers.size());
+        assertEquals(2, paramResolvers.size());
         assertTrue(paramResolvers.get(0) instanceof ResourceContextParamResolver);
+        assertTrue(paramResolvers.get(1) instanceof JaxrsContextResolverFactory);
     }
 
     @Test
@@ -272,7 +272,7 @@ class JaxrsExtensionsHandlerTest {
         final List<ResponseEntityResolverAdapter> responseResolvers = new LinkedList<>();
         final AtomicReference<Class<?>> exceptionClass = new AtomicReference<>();
         final AtomicReference<ExceptionResolver<?>> exceptionResolver = new AtomicReference<>();
-        final List<ParamResolverAdapter> paramResolvers = new LinkedList<>();
+        final List<ParamResolverFactory> paramResolvers = new LinkedList<>();
         final List<StringConverterFactory> stringConverters = new LinkedList<>();
         final List<HandlerConfigure> configures = new LinkedList<>();
         when(deployments.addRequestEntityResolver(any(RequestEntityResolverAdapter.class)))
@@ -290,9 +290,9 @@ class JaxrsExtensionsHandlerTest {
             exceptionResolver.set((ExceptionResolver<?>) invocationOnMock.getArguments()[1]);
             return null;
         });
-        when(deployments.addParamResolver(any(ParamResolverAdapter.class)))
+        when(deployments.addParamResolver(any(ParamResolverFactory.class)))
                 .thenAnswer(invocationOnMock -> {
-                    paramResolvers.add((ParamResolverAdapter) invocationOnMock.getArguments()[0]);
+                    paramResolvers.add((ParamResolverFactory) invocationOnMock.getArguments()[0]);
                     return null;
                 });
         when(deployments.addStringConverter(any(StringConverterFactory.class)))
@@ -314,7 +314,7 @@ class JaxrsExtensionsHandlerTest {
         assertEquals(RuntimeException.class, exceptionClass.get());
         assertTrue(exceptionResolver.get() instanceof JaxrsExceptionMapperAdapter);
         assertEquals(1, paramResolvers.size());
-        assertTrue(paramResolvers.get(0) instanceof JaxrsContextResolverAdapter);
+        assertTrue(paramResolvers.get(0) instanceof JaxrsContextResolverFactory);
         assertEquals(1, stringConverters.size());
         assertTrue(stringConverters.get(0) instanceof StringConverterProviderAdapter);
         assertEquals(1, configures.size());

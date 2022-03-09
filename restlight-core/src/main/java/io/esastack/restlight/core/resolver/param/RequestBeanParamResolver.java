@@ -102,13 +102,13 @@ public class RequestBeanParamResolver implements ParamResolverFactory {
         }
 
         @Override
-        public Object resolve(Param param, RequestContext context) throws Exception {
+        public Object resolve(RequestContext context) throws Exception {
             final Object allocated = typeMeta.alloc.alloc();
 
             // set the value to the instance one by one
             for (FieldAndSetter fieldAndSetter : typeMeta.fas) {
                 if (fieldAndSetter.resolver != null) {
-                    Object resolved = fieldAndSetter.resolver.resolve(param, context);
+                    Object resolved = fieldAndSetter.resolver.resolve(context);
                     if (resolved != null) {
                         fieldAndSetter.setter.accept(allocated, resolved);
                     }

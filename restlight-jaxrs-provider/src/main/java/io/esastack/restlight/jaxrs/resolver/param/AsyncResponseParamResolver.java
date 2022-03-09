@@ -50,7 +50,7 @@ public class AsyncResponseParamResolver implements ParamResolverFactory {
     private static class AsyncResponseResolver implements ParamResolver {
 
         @Override
-        public Object resolve(Param param, RequestContext context) throws Exception {
+        public Object resolve(RequestContext context) throws Exception {
             CompletableFuture<Object> asyncResponse = new CompletableFuture<>();
             JaxrsContextUtils.setAsyncResponse(context, asyncResponse);
             return new AsyncResponseImpl(asyncResponse);

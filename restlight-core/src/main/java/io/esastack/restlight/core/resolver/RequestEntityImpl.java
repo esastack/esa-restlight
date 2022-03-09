@@ -19,7 +19,6 @@ import esa.commons.Checks;
 import esa.commons.io.IOUtils;
 import io.esastack.commons.net.buffer.Buffer;
 import io.esastack.commons.net.buffer.BufferUtil;
-import io.esastack.restlight.core.method.HandlerMethod;
 import io.esastack.restlight.core.method.Param;
 import io.esastack.restlight.server.context.RequestContext;
 import io.esastack.restlight.server.core.HttpInputStream;
@@ -34,17 +33,14 @@ import java.io.InputStream;
 public class RequestEntityImpl extends HttpEntityImpl implements RequestEntity {
 
     private final HttpRequest request;
-    private final Param param;
     private Buffer body;
     private InputStream ins;
 
-    public RequestEntityImpl(HandlerMethod handler, Param param, RequestContext context) {
-        super(handler, context.request().contentType());
-        Checks.checkNotNull(handler, "handler");
+    public RequestEntityImpl(Param param, RequestContext context) {
+        super(context.request().contentType());
         Checks.checkNotNull(param, "param");
         Checks.checkNotNull(context, "context");
         this.request = context.request();
-        this.param = param;
         this.type = param.type();
         this.genericType = param.genericType();
         this.annotations = param.annotations();
@@ -78,11 +74,6 @@ public class RequestEntityImpl extends HttpEntityImpl implements RequestEntity {
     public void inputStream(InputStream ins) {
         IOUtils.closeQuietly(this.ins);
         this.ins = ins;
-    }
-
-    @Override
-    public Param param() {
-        return param;
     }
 
     @Override
