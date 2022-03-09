@@ -1,0 +1,136 @@
+/*
+ * Copyright 2022 OPPO ESA Stack Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package io.esastack.restlight.core.handler.impl;
+
+import esa.commons.collection.LinkedMultiValueMap;
+import esa.commons.collection.MultiValueMap;
+import io.esastack.restlight.core.annotation.Intercepted;
+import io.esastack.restlight.core.handler.HandlerMapping;
+import io.esastack.restlight.core.handler.HandlerValueResolver;
+import io.esastack.restlight.core.handler.RouteFilter;
+import io.esastack.restlight.core.handler.RouteMethodInfo;
+import io.esastack.restlight.core.interceptor.Interceptor;
+import io.esastack.restlight.core.interceptor.InterceptorPredicate;
+import io.esastack.restlight.core.method.DefaultResolvableParamPredicate;
+import io.esastack.restlight.core.method.HandlerMethod;
+import io.esastack.restlight.core.method.RouteHandlerMethod;
+import io.esastack.restlight.core.method.RouteHandlerMethodImpl;
+import io.esastack.restlight.core.resolver.*;
+
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+public class MockHandlerData {
+    final HandlerMapping mapping;
+    final RouteMethodInfo methodInfo;
+    final Method method;
+    final RouteHandlerMethod handlerMethod;
+    final HandlerContext context;
+    final HandlerResolverFactory resolverFactory;
+    final ExceptionResolver<Throwable> exceptionResolver;
+    final MultiValueMap<InterceptorPredicate, Interceptor> interceptors;
+    final HandlerValueResolver handlerValueResolver;
+
+    public MockHandlerData() throws NoSuchMethodException {
+        mapping = mock(HandlerMapping.class);
+        methodInfo = mock(RouteMethodInfo.class);
+        method = Subject.class
+                .getDeclaredMethod("params", String.class, int.class, List.class);
+        handlerMethod = RouteHandlerMethodImpl.of(Subject.class,
+                method,
+                true,
+                null);
+        when(mapping.methodInfo()).thenReturn(methodInfo);
+        when(methodInfo.handlerMethod()).thenReturn(handlerMethod);
+        context = mock(HandlerContext.class);
+        resolverFactory = mockResolverFactory(handlerMethod);
+        when(context.resolverFactory()).thenReturn(Optional.of(resolverFactory));
+        when(context.paramPredicate()).thenReturn(Optional.of(new DefaultResolvableParamPredicate()));
+        List<RouteFilter> filters = new ArrayList<>();
+        when(resolverFactory.getRouteFilters(handlerMethod)).thenReturn(filters);
+        handlerValueResolver = mock(HandlerValueResolver.class);
+        interceptors = new LinkedMultiValueMap<>();
+        exceptionResolver = mock(ExceptionResolver.class);
+    }
+
+    public HandlerMapping mapping() {
+        return mapping;
+    }
+
+    public RouteMethodInfo methodInfo() {
+        return methodInfo;
+    }
+
+    public Method method() {
+        return method;
+    }
+
+    public RouteHandlerMethod handlerMethod() {
+        return handlerMethod;
+    }
+
+    public HandlerContext context() {
+        return context;
+    }
+
+    public HandlerResolverFactory resolverFactory() {
+        return resolverFactory;
+    }
+
+    public ExceptionResolver<Throwable> exceptionResolver() {
+        return exceptionResolver;
+    }
+
+    public MultiValueMap<InterceptorPredicate, Interceptor> interceptors() {
+        return interceptors;
+    }
+
+    public HandlerValueResolver handlerValueResolver() {
+        return handlerValueResolver;
+    }
+
+    private HandlerResolverFactory mockResolverFactory(HandlerMethod handlerMethod) {
+        final HandlerResolverFactory resolverFactory = mock(HandlerResolverFactory.class);
+        ContextResolver p1Resolver = mock(ContextResolver.class);
+        when(resolverFactory.getContextResolver(handlerMethod.parameters()[0]))
+                .thenReturn(p1Resolver);
+
+        ParamResolver p2Resolver = mock(ParamResolver.class);
+        when(resolverFactory.getParamResolver(handlerMethod.parameters()[1]))
+                .thenReturn(p2Resolver);
+
+        List<RequestEntityResolver> p3Resolver = mock(List.class);
+        when(resolverFactory.getRequestEntityResolvers(handlerMethod.parameters()[2]))
+                .thenReturn(p3Resolver);
+        return resolverFactory;
+    }
+
+    @Intercepted(false)
+    private static class Subject {
+
+        @Intercepted(false)
+        CompletableFuture<Object> params(String p0, int p1, List<String> p2) {
+            return CompletableFuture.completedFuture(null);
+        }
+
+    }
+}
