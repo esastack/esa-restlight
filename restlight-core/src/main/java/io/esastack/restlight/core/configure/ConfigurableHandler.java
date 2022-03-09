@@ -22,11 +22,9 @@ import io.esastack.restlight.core.resolver.ContextResolverAdapter;
 import io.esastack.restlight.core.resolver.ParamResolverAdapter;
 import io.esastack.restlight.core.resolver.ParamResolverAdviceAdapter;
 import io.esastack.restlight.core.resolver.RequestEntityResolverAdapter;
-import io.esastack.restlight.core.resolver.RequestEntityResolverAdvice;
-import io.esastack.restlight.core.resolver.ResponseEntityResolver;
-import io.esastack.restlight.core.resolver.ResponseEntityResolverAdvice;
-
-import java.util.Collection;
+import io.esastack.restlight.core.resolver.RequestEntityResolverAdviceAdapter;
+import io.esastack.restlight.core.resolver.ResponseEntityResolverAdapter;
+import io.esastack.restlight.core.resolver.ResponseEntityResolverAdviceAdapter;
 
 public interface ConfigurableHandler {
 
@@ -40,10 +38,10 @@ public interface ConfigurableHandler {
     /**
      * Add {@link RouteFilter}s.
      *
-     * @param filters route filters corresponding with specified {@link HandlerMethod}.
+     * @param filter route filter corresponding with specified {@link HandlerMethod}.
      * @return this configurable handler
      */
-    ConfigurableHandler addRouteFilters(Collection<? extends RouteFilter> filters);
+    ConfigurableHandler addRouteFilter(RouteFilter filter);
 
     /**
      * Add {@link ParamResolverAdapter}s.
@@ -78,28 +76,28 @@ public interface ConfigurableHandler {
     ConfigurableHandler addRequestEntityResolver(RequestEntityResolverAdapter resolver);
 
     /**
-     * Add {@link RequestEntityResolverAdvice}s.
+     * Add {@link RequestEntityResolverAdviceAdapter}s.
      *
-     * @param advices advices corresponding with specified {@link HandlerMethod}.
+     * @param advice advices corresponding with specified {@link HandlerMethod}.
      * @return this configurable
      */
-    ConfigurableHandler addRequestEntityResolverAdvices(Collection<? extends RequestEntityResolverAdvice> advices);
+    ConfigurableHandler addRequestEntityResolverAdvice(RequestEntityResolverAdviceAdapter advice);
 
     /**
-     * Add {@link ResponseEntityResolver}s.
+     * Add {@link ResponseEntityResolverAdapter}s.
      *
-     * @param resolvers resolvers corresponding with specified {@link HandlerMethod}.
+     * @param resolver resolver corresponding with specified {@link HandlerMethod}.
      * @return this configurable
      */
-    ConfigurableHandler addResponseEntityResolvers(Collection<? extends ResponseEntityResolver> resolvers);
+    ConfigurableHandler addResponseEntityResolver(ResponseEntityResolverAdapter resolver);
 
     /**
-     * Add {@link ResponseEntityResolverAdvice}s.
+     * Add {@link ResponseEntityResolverAdviceAdapter}.
      *
-     * @param advices advices corresponding with specified {@link HandlerMethod}.
+     * @param advice advice corresponding with specified {@link HandlerMethod}.
      * @return this configurable
      */
-    ConfigurableHandler addResponseEntityResolverAdvices(Collection<? extends ResponseEntityResolverAdvice> advices);
+    ConfigurableHandler addResponseEntityResolverAdvice(ResponseEntityResolverAdviceAdapter advice);
 
 }
 

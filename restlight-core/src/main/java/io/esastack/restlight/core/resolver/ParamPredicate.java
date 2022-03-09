@@ -20,7 +20,7 @@ import io.esastack.restlight.core.method.Param;
 /**
  * Interface for predicating whether the implementations can used to handle the {@link Param}.
  */
-public interface ParamPredicate {
+interface ParamPredicate {
 
     /**
      * Whether current {@link ParamResolver} implementation is support given parameter.

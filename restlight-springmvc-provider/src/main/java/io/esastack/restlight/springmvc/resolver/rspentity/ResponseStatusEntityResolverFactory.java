@@ -39,8 +39,18 @@ import java.util.Objects;
 public class ResponseStatusEntityResolverFactory implements ResponseEntityResolverFactory {
 
     @Override
-    public ResponseEntityResolver createResolver(List<? extends HttpResponseSerializer> serializers) {
+    public ResponseEntityResolver createResolver(HandlerMethod method,
+                                                 List<? extends HttpResponseSerializer> serializers) {
         return new Resolver();
+    }
+
+    @Override
+    public boolean supports(HandlerMethod method) {
+        if (method == null) {
+            return false;
+        }
+        ResponseStatus0 anno = getResponseStatus(method);
+        return anno != null && !StringUtils.isEmpty(anno.reason());
     }
 
     @Override
@@ -63,16 +73,6 @@ public class ResponseStatusEntityResolverFactory implements ResponseEntityResolv
 
         private Resolver() {
             super(false);
-        }
-
-        @Override
-        protected boolean supports(ResponseEntity entity) {
-            HandlerMethod handlerMethod = entity.handler().orElse(null);
-            if (handlerMethod == null) {
-                return false;
-            }
-            ResponseStatus0 anno = getResponseStatus(handlerMethod);
-            return anno != null && !StringUtils.isEmpty(anno.reason());
         }
 
         @Override

@@ -55,7 +55,6 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyCollection;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -83,16 +82,16 @@ class DynamicFeatureAdapterTest {
         final List<RouteFilter> routeFilters = new LinkedList<>();
         final List<ContextResolverAdapter> contextResolvers = new LinkedList<>();
         final ConfigurableHandler configurable = mock(ConfigurableHandler.class);
-        when(configurable.addRequestEntityResolverAdvices(anyCollection())).thenAnswer(invocationOnMock -> {
-            requestAdvices.addAll(invocationOnMock.getArgument(0));
+        when(configurable.addRequestEntityResolverAdvice(any())).thenAnswer(invocationOnMock -> {
+            requestAdvices.add(invocationOnMock.getArgument(0));
             return null;
         });
-        when(configurable.addResponseEntityResolverAdvices(anyCollection())).thenAnswer(invocationOnMock -> {
-            responseAdvices.addAll(invocationOnMock.getArgument(0));
+        when(configurable.addResponseEntityResolverAdvice(any())).thenAnswer(invocationOnMock -> {
+            responseAdvices.add(invocationOnMock.getArgument(0));
             return null;
         });
-        when(configurable.addRouteFilters(anyCollection())).thenAnswer(invocationOnMock -> {
-            routeFilters.addAll(invocationOnMock.getArgument(0));
+        when(configurable.addRouteFilter(any())).thenAnswer(invocationOnMock -> {
+            routeFilters.add(invocationOnMock.getArgument(0));
             return null;
         });
         when(configurable.addContextResolver(any())).thenAnswer(invocationOnMock -> {

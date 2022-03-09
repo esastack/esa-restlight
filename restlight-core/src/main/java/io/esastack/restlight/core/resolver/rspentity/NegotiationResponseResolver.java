@@ -25,11 +25,11 @@ import io.netty.util.internal.InternalThreadLocalMap;
 
 import java.util.List;
 
-public abstract class NegotiationResponseResolver extends FlexibleResponseEntityResolver {
+public class NegotiationResponseResolver extends FlexibleResponseEntityResolver {
 
     private final String paramName;
 
-    protected NegotiationResponseResolver(String paramName, List<? extends HttpResponseSerializer> serializers) {
+    public NegotiationResponseResolver(String paramName, List<? extends HttpResponseSerializer> serializers) {
         super(serializers);
         this.paramName = StringUtils.nonEmptyOrElse(paramName, Constants.DEFAULT_NEGOTIATION_FORMAT_PARAMETER);
     }

@@ -15,31 +15,34 @@
  */
 package io.esastack.restlight.core.resolver.rspentity;
 
-import io.esastack.restlight.core.resolver.HandledValue;
+import io.esastack.commons.net.http.MediaType;
 import io.esastack.restlight.core.resolver.ResponseEntity;
-import io.esastack.restlight.core.resolver.ResponseEntityChannel;
-import io.esastack.restlight.core.resolver.ResponseEntityResolverAdapter;
+import io.esastack.restlight.core.serialize.Serializers;
 import io.esastack.restlight.core.util.ResponseEntityUtils;
 import io.esastack.restlight.server.context.RequestContext;
+import io.netty.buffer.ByteBuf;
 
-import java.io.File;
+import java.util.List;
 
-public class ResponseFileEntityResolver implements ResponseEntityResolverAdapter {
+public class ByteBufResponseEntityResolver extends AbstractResponseEntityResolver {
 
     @Override
-    public HandledValue<Void> writeTo(ResponseEntity entity,
-                                      ResponseEntityChannel channel,
-                                      RequestContext context) throws Exception {
-        if (!ResponseEntityUtils.isAssignableFrom(entity, File.class)) {
-            return HandledValue.failed();
-        }
-        channel.writeThenEnd((File) entity.response().entity());
-        return HandledValue.succeed(null);
+    protected boolean supports(ResponseEntity entity) {
+        return ResponseEntityUtils.isAssignableFrom(entity, ByteBuf.class);
+    }
+
+    @Override
+    protected byte[] serialize(ResponseEntity entity,
+                               List<MediaType> mediaTypes,
+                               RequestContext context) throws Exception {
+        return Serializers.serializeByteBuf((ByteBuf) context.response().entity(),
+                context.response(),
+                selectMediaType(mediaTypes));
     }
 
     @Override
     public int getOrder() {
-        return 500;
+        return 120;
     }
 
 }
