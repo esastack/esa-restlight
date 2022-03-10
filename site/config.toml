@@ -215,7 +215,7 @@ enable = false
 
 # multi-versions
 [[params.versions]]
-  version = "v1.0.0(Latest)"
+  version = "1.0.0-SNAPSHOT(Newest)"
   url = "/docs"
 [[params.versions]]
   version = "v0.1.1"

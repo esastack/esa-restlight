@@ -4,7 +4,7 @@ title: "返回值解析"
 linkTitle: "返回值解析"
 weight: 70
 description: >
-    返回值解析指将`Controller`返回值写入到`HttpResponse`中的过程（包含序列化）
+    返回值解析指将`Controller`返回值序列化并写入到`HttpResponse`中的过程。
 ---
 
 ## 返回值解析逻辑
@@ -23,13 +23,7 @@ Restlight默认支持的返回值解析方式包括
 public interface ResponseEntityResolver {
 
     /**
-     * Writes the given {@code value} to {@link HttpResponse}.
-     *
-     * @param entity  entity
-     * @param channel the channel to write resolved {@code entity}
-     * @param context context
-     * @return resolved value, which must not be {@code null}.
-     * @throws Exception any exception
+     * 解析出对应返回值并通过channel写回
      */
     HandledValue<Void> writeTo(ResponseEntity entity,
                                ResponseEntityChannel channel,
@@ -38,35 +32,48 @@ public interface ResponseEntityResolver {
 }
 ```
 
+{{< alert title="Tip" color="warning" >}}
+> 考虑到直接实现`ResponseEntityResolver`接口实现的复杂性，在实际使用时建议直接继承`AbstractResponseEntityResolver`类并重写
+> 其中的模版方法`serialize(ResponseEntity entity, List<MediaType> mediaTypes, RequestContext context)`将返回值序列化成byte[]，
+> 其余的操作由`AbstractResponseEntityResolver`自动完成，下文示例均采用该种方式。
+{{< /alert >}}
+
+框架会在启动的初始化阶段试图为每一个Controller中的每一个参数都找到一组与之匹配的`ResponseEntityResolver`用于响应的返回值解析。
+
 ## 框架如何确定`ResponseEntityResolver`
-**运行时匹配：**
 
-1. 按照`getOrder()`方法的返回将Spring容器中所有的`ResponseEntityResolver`进行排序（初始化时已经完成并且不会动态改变）
-2. 按照排序后的顺序依次调用`writeTo(ResponseEntity, ResponseEntityChannel, RequestContext)`方法， 返回`HandledValue.isSuccess()`则表示响应body成功序列化并写回，否则继续调用下一个`ResponseEntityResolver`的`writeTo`方法。
-3. 未找到则运行时报错。
+{{< alert title="Note" color="warning" >}}
+框架在**初始化阶段**会预先通过`HandlerPredicate#supports(HandlerMethod method)`来确定一组可以用来处理给定方法返回值的`ResponseEntityResolver`
+并进行排序，在**运行过程中**仍可在执行`ResponseEntityResolver#writeTo(ResponseEntity entity, ResponseEntityChannel channel, RequestContext context)`
+过程中再次进行判断，如果当前`ResponseEntityResolver`不支持处理当前请求的返回值，则可以直接返回`HandledValue.failed()`，框架将继续尝试下一个优先级的
+`ResponseEntityResolver`，直至遍历完所有跟当前方法绑定的`ResponseEntityResolver`。
 
-细心的人可能会发现该设计可能并不能覆盖到以下场景
+> 需要说明地是：1.大部分场景下在初始化阶段绑定到`HandlerMethod`上的`ResponseEntityResolver`在运行时均不需要再次进行判断，
+> 可以直接进行处理（这也是框架默认的行为），只有在特殊的场景下，请求执行过程中参数的改变将影响到返回值解析逻辑的时候才需要在
+> 实际处理过程中进行二次匹配，比如`JAX-RS`标准中定义的行为。2.下文所展示的均为初始化绑定的使用方式。
+{{< /alert >}}
 
-- 假如`ResponseEntityResolver`实现中需要做序列化操作， 因此期望获取到Spring容器中的序列化器时，则该接口无法支持（例如`@ResponseBody`的场景）。
-
-针对以上问题， 答案是确实无法支持。因为`Restlight`的设计理念是
-
-- `能在初始化阶段解决的问题就在初始化阶段解决`
-
-基于以上原因我们提供了另一个`ResponseEntityResolverFactory`的实现方式
-
-### `ResponseEntityResolverFactory`
+### `ResponseEntityResolverAdapter`
 
 ```java
-public interface ResponseEntityResolverFactory extends Ordered {
+
+public interface HandlerPredicate {
 
     /**
-     * Creates an instance of {@link ResponseEntityResolverAdvice} for given handler method.
-     *
-     * @param serializers all the {@link HttpResponseSerializer}s in the context
-     * @return resolver
+     * 判断当前ResponseEntityResolver是否支持给定HandlerMethod解析
+     * 每一个Controller都对应一个HandlerMethod实例， 
+     * 可以通过HandlerMethod获取注解, 返回值类型等各类反射相关的元数据信息
      */
-    ResponseEntityResolver createResolver(List<? extends HttpResponseSerializer> serializers);
+    boolean supports(HandlerMethod method);
+
+}
+
+public interface ResponseEntityResolverAdapter extends ResponseEntityResolver, HandlerPredicate, Ordered {
+
+    @Override
+    default boolean supports(HandlerMethod method) {
+        return true;
+    }
 
     @Override
     default int getOrder() {
@@ -75,7 +82,49 @@ public interface ResponseEntityResolverFactory extends Ordered {
 }
 ```
 
-由于初始化时通过`createResolver(List<? extends HttpResponseSerializer> serializers)`方法传入了序列化器， 因此能满足上面的要求。
+初始化逻辑：
+
+1. 按照`getOrder()`方法的返回将Spring容器中所有的`ResponseEntityResolverAdapter`进行排序
+2. 按照排序后的顺序依次调用`supports(HandlerMethod method)`方法， 返回`true`则将其作为该参数的`ResponseEntityResolver`，运行时每次请求都将按顺序调用`writeTo(ResponseEntity entity, ResponseEntityChannel channel, RequestContext context)`方法进行返回值处理，直至处理成功。
+3. 未找到则启动报错。
+
+细心的人可能会发现该设计可能并不能覆盖到以下场景
+
+- 因为`writeTo(ResponseEntity entity, ResponseEntityChannel channel, RequestContext context)`方法参数中并没有传递`HandlerMethod`参数，虽然初始化阶段能根据`HandlerMethod method`方法获取Controller方法元数据信息（获取某个注解，获取参数类型等等）判断是否支持，但是如果运行时也需要获取Controller方法的元数据信息（某个注解的值等）的话，此接口则无法满足需求。
+- 假如`ResponseEntityResolverAdapter`实现中需要做序列化操作，因此期望获取到Spring容器中的序列化器时，则该接口无法支持。
+
+针对以上问题， 答案是确实无法支持。因为`Restlight`的设计理念是
+
+- `能在初始化阶段解决的问题就在初始化阶段解决`
+
+因此不期望用户以及`Restlight`的开发人员大量的在运行时去频繁获取一些JVM启动后就不会变动的内容(如： 注解的值)， 甚至针对某些元数据信息使用`ConcurrentHashMap`进行缓存（看似是为了提高性能的缓存， 实际上初始化就固定了的内容反而增加了并发性能的损耗）。
+
+基于以上原因我们提供了另一个`ResponseEntityResolver`的实现方式
+
+### `ResponseEntityResolverFactory`
+
+```java
+public interface ResponseEntityResolverFactory extends HandlerPredicate, Ordered {
+
+    ResponseEntityResolver createResolver(HandlerMethod method,
+                                          List<? extends HttpResponseSerializer> serializers);
+
+    @Override
+    default int getOrder() {
+        return HIGHEST_PRECEDENCE;
+    }
+}
+```
+
+与上面的`ResponseEntityResolver`类似
+
+初始化逻辑：
+
+1. 按照`getOrder()`方法的返回将所有的`ResponseEntityResolverFactory`进行排序
+2. 按照排序后的顺序依次调用`supports(HandlerMethod method)`方法，返回`true`则将其作为该参数的`ResponseEntityResolverFactory`，同时调用`createResolver(HandlerMethod method, List<? extends HttpResponseSerializer> serializers)`方法创建出对应的`ResponseEntityResolver`
+3. 未找到则启动报错。
+
+由于初始化时通过`createResolver(HandlerMethod method, List<? extends HttpResponseSerializer> serializers)`方法传入了`HandlerMethod`以及序列化器，因此能满足上面的要求。
 
 **两种模式的定位**
 
@@ -84,9 +133,9 @@ public interface ResponseEntityResolverFactory extends Ordered {
 
 ## 自定义返回值解析器
 
-将自定义实现的`ResponseEntityResolver`或者`ResponseEntityResolverFactory`注入到Spring容器即可。
+将自定义实现的`ResponseEntityResolverAdapter`或者`ResponseEntityResolverFactory`注入到Spring容器即可。
 
-- `ResponseEntityResolver`案例
+- `ResponseEntityResolverAdapter`案例
 
 场景： 当Controller方法上有`@AppId`注解时， 返回固定的AppId
 
@@ -105,18 +154,24 @@ public ResponseEntityResolver resolver() {
 
     private static byte[] APP_ID = "your appid".getBytes(StandardCharsets.UTF_8);
 
-    return new ResponseEntityResolver() {
+    return new AbstractResponseEntityResolver() {
+
         @Override
-        public HandledValue<Void> writeTo(ResponseEntity entity, ResponseEntityChannel channel,
-            RequestContext context) throws Exception {
-                if (entity.handler().isPresent()
-                        && entity.handler().get().hasMethodAnnotation(APPID.class, false)) {
-                    channel.writeThenEnd(APP_ID);
-                    return HandledValue.succeed(null);
-                } else {
-                    return HandledValue.failed();
-                }
+        protected byte[] serialize(ResponseEntity entity,
+                                   List<MediaType> mediaTypes,
+                                   RequestContext context) {
+            return APP_ID;
+        }
+        
+        @Override
+        public boolean supports(HandlerMethod method) {
+            if (method == null) {
+                return false;
             }
+        
+            // 当方法上有此注解时生效
+            return method.hasMethodAnnotation(AppId.class);
+        }
     };
 }
 ```
@@ -135,7 +190,7 @@ public String foo() {
 上面的代码自定义实现了依据自定义注解获取固定appId的功能
 
 {{< alert title="Note" >}}
-自定义`ResponseEntityResolver`比框架自带的优先级高（如`@ResponseBody`）， 如果匹配上了自定义实现，框架默认的功能在当前方法上上将不生效。
+自定义`ResponseEntityResolverAdapter`比框架自带的优先级高（如`@ResponseBody`），如果匹配上了自定义实现，框架默认的功能在当前方法上上将不生效。
 {{< /alert >}}
 
 
@@ -156,32 +211,45 @@ public @interface Suffix {
     @Bean
     public ResponseEntityResolverFactory resolver() {
         return new ResponseEntityResolverFactory() {
+    
             @Override
-            public ResponseEntityResolver createResolver(List<? extends HttpResponseSerializer> serializers) {
-                return new Resolver();
+            public ResponseEntityResolver createResolver(HandlerMethod method,
+                                                         List<? extends HttpResponseSerializer> serializers) {
+                return new Resovler(method);
+            }
+            
+            @Override
+            public boolean supports(HandlerMethod method) {
+                if (method == null) {
+                    return false;
+                }
+                return String.class.equals(method.method().getReturnType()) 
+                        && method.hasMethodAnnotation(CustomHeader.class, false);
             }
         };
     }
 
     /**
-     * 实际ArgumentResolver实现
+     * 实际ResponseEntityResolver实现
      */
-    private static class Resolver implements ResponseEntityResolver {
+    private static class Resolver extends AbstractResponseEntityResolver {
+
+        private final String suffix;
+
+        private Resolver(HandlerMethod method) {
+            // 获取前缀
+            Suffix anno = method.getMethodAnnotation(Suffix.class, false);
+            this.suffix = anno.value();
+        }
 
         @Override
-        public HandledValue<Void> writeTo(ResponseEntity entity, ResponseEntityChannel channel,
-                                          RequestContext context) throws Exception {
-            Optional<HandlerMethod> method = entity.handler();
-            if (!method.isPresent() || !String.class.equals(method.get().method().getReturnType())) {
-                return HandledValue.failed();
-            }
-            if (!method.get().hasMethodAnnotation(CustomHeader.class, false)) {
-                return HandledValue.failed();
-            }
-            Suffix anno = method.get().getMethodAnnotation(Suffix.class);
-            channel.writeThenEnd((anno.value() + String.valueOf(entity.response().entity())).getBytes(StandardCharsets.UTF_8));
-            return HandledValue.succeed(null);
+        protected byte[] serialize(ResponseEntity entity,
+                                   List<MediaType> mediaTypes,
+                                   RequestContext context) {
+            // 拼接
+            return (suffix + entity.response().entity()).getBytes(StandardCharsets.UTF_8);
         }
+
     }
 ```
 controller使用
@@ -197,5 +265,5 @@ public String foo() {
 ```
 
 {{< alert title="Note" >}}
-自定义`ResponseEntityResolverFactory`比框架自带的优先级高（如`@ResponseBody`）， 如果匹配上了自定义实现，框架默认的功能在当前方法上上将不生效。
+自定义`ResponseEntityResolverFactory`比框架自带的优先级高（如`@ResponseBody`），如果匹配上了自定义实现，框架默认的功能在当前方法上上将不生效。
 {{< /alert >}}

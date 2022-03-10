@@ -8,18 +8,18 @@ description: >
 ---
 
 ## Notification
-`Restlight`1.0.0为不兼容的版本升级，如果你从其他版本升级到该版本可能会需要修改一定量的业务源代码，具体包括：
+`Restlight`1.0.0为不兼容的版本升级，如果你从其他版本升级到该版本可能会需要修改一定量的业务代码，具体包括：
 - 包名修改：之前`esa.restlight`开头的包将统一以`io.esastack.restlight`开头
 - 修改自定义`ArgumentResolver`相关的实现，包括：`ArgumentResolver`、`ArgumentResolverAdapter`、`ArgumentResolverFactory`
 、`ArgumentResolverAdvice`、`ArgumentResolverAdviceAdapter`、`ArgumentResolverAdviceFactory`等，最新用法请参考[参数解析](../restlight_starter/param_resolver)和[ParamResolverAdvice](../restlight_starter/param_resolver_advice)
 - 修改自定义`ReturnValueResolver`相关的实现，包括：`ReturnValueResolver`、`ReturnValueResolverAdapter`、`ReturnValueResolverFactory`、`ReturnValueResolverAdvice`、`ReturnValueResolverAdviceAdapter`、`ReturnValueResolverAdviceFactory`等，最新用法请参考[返回值解析](../restlight_starter/responseentity_resolver)和[ResponseEntityResolverAdvice](../restlight_starter/responseentity_resolver_advice)
 - 修改自定义拦截器，包括：`HandlerInterceptor`、`Interceptor`、`InterceptorFactory`、`MappingInterceptor`、`RouteInterceptor`等， 最新用法请参考[拦截器](../restlight_starter/interceptor)
 - 修改自定义`Filter`，最新用法请参考：[Filter](../restlight_starter/filter)
-- 其它使用`AsyncRequest`、`AsyncResponse`的地方，具体请参考[术语](../restlight_server/terminology)
+- 其它使用`AsyncRequest`、`AsyncResponse`的地方，具体请参考[术语](../restlight_core/terminology)
 
 ### Q&A
 ##### Q：为何不能兼容之前的版本？
-- 兼容JAX-RS3.0的需要：`Restlight`原有的请求处理流程和API设计无法满足JAX-RS3.0标准的需要，因此必须在框架核心逻辑上进行重新的设计和考量，而这势必导致接口无法完全向下兼容。
+- 全面支持JAX-RS3.0的需要：`Restlight`原有的请求处理流程和API设计无法满足JAX-RS3.0标准的需要，因此必须在框架核心逻辑上进行重新的设计和考量，而这势必导致接口无法完全向下兼容。
 - 之前的设计已阻碍框架的进一步演进，比如：用户需要在自定义的异常处理器或过滤器中返回指定的entity这一功能就无法实现，因为响应entity的序列化时机和接口API设计上都存在局限性，以至于在不进行重新设计的情况下永远无法实现该功能。
 - 接口易用性和可理解性的需要。
 

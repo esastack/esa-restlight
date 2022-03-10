@@ -26,7 +26,7 @@ public interface ResponseEntityResolverAdvice {
 
 ## 自定义`ResponseEntityResolverAdvice`
 
-与`ResponseEntityResolver`相同， `ResponseEntityResolverAdvice`自定应时同样需要实现`ResponseEntityResolverAdviceAdapter`或`ResponseEntityResolverAdviceFactory`接口
+与`ResponseEntityResolver`相同，`ResponseEntityResolverAdvice`自定应时同样需要实现`ResponseEntityResolverAdviceAdapter`或`ResponseEntityResolverAdviceFactory`接口
 
 ### 方式1 实现`ResponseEntityResolverAdviceAdapter`
 
@@ -34,11 +34,11 @@ public interface ResponseEntityResolverAdvice {
 
 ```java
 public interface ResponseEntityResolverAdviceAdapter
-        extends ResponseEntityPredicate, ResponseEntityResolverAdvice, Ordered {
+        extends HandlerPredicate, ResponseEntityResolverAdvice, Ordered {
 
     @Override
-    default void aroundWrite(ResponseEntityResolverContext context) {
-        context.proceed();
+    default boolean supports(HandlerMethod method) {
+        return true;
     }
 
     @Override
@@ -46,6 +46,7 @@ public interface ResponseEntityResolverAdviceAdapter
         return Ordered.HIGHEST_PRECEDENCE;
     }
 }
+
 ```
 
 ### 方式2：实现`ResponseEntityResolverAdviceFactory`
@@ -55,9 +56,9 @@ public interface ResponseEntityResolverAdviceAdapter
 ```java
 public interface ResponseEntityResolverAdviceFactory extends ResponseEntityPredicate, Ordered {
     /**
-     * 生成RResponseEntityResolverAdvice
+     * 生成ResponseEntityResolverAdvice
      */
-    ResponseEntityResolverAdvice createResolverAdvice(ResponseEntity entity);
+    ResponseEntityResolverAdvice createResolverAdvice(HandlerMethod method);
 
     @Override
     default int getOrder() {
@@ -66,4 +67,4 @@ public interface ResponseEntityResolverAdviceFactory extends ResponseEntityPredi
 }
 ```
 
-`ResponseEntityResolverAdviceAdapter`接口以及`ResponseEntityResolverAdviceFactory`接口与`ResponseEntityResolver`中的`ResponseEntityResolverAdapter`接口以及`ResponseEntityResolverFactory`接口的使用方式相同， 这里不过多赘述。
+`ResponseEntityResolverAdviceAdapter`接口以及`ResponseEntityResolverAdviceFactory`接口与`ResponseEntityResolver`中的`ResponseEntityResolverAdapter`接口以及`ResponseEntityResolverFactory`接口的使用方式相同，这里不过多赘述。

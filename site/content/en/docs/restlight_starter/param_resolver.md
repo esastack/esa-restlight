@@ -4,20 +4,20 @@ title: "参数解析"
 linkTitle: "参数解析"
 weight: 50
 description: >
-    参数解析指将从请求中解析出`Controller`参数值的过程（不包含请求Body的反序列化）
+    参数解析指从请求中解析出`Controller`参数值的过程（不包含请求实体数据的解析）
 ---
 
 典型的有
 
 - `@RequestParam`
 - `@RequestHeader`
-- `@RequestBody`
 - `@PathVariable`
 - `@CookieValue`
 - `@MatrixVariable`
 - `@QueryBean`
-- `AsyncRequest`
-- `AsyncResponse`
+- `RequestContext`
+- `HttpRequest`
+- `HttpResponse`
 
 ## 接口定义
 
@@ -32,6 +32,7 @@ public interface ParamResolver extends Resolver {
      * @throws Exception ex
      */
     Object resolve(RequestContext context) throws Exception;
+
 }
 ```
 
@@ -68,21 +69,22 @@ public interface ParamResolverAdapter extends ParamPredicate, ParamResolver, Ord
 初始化逻辑： 
 
 1. 按照`getOrder()`方法的返回将Spring容器中所有的`ParamResolver`进行排序
-2. 按照排序后的顺序依次调用`supports(Param param)`方法， 返回`true`则将其作为该参数的`ParamResolver`， 运行时每次请求都将调用`resolve(Param param, RequestContext context)`方法进行参数解析， 并且运行时不会改变。
+2. 按照排序后的顺序依次调用`supports(Param param)`方法， 返回`true`则将其作为该参数的`ParamResolver`，运行时每次请求都将调用`resolve(RequestContext context)`方法进行参数解析，并且运行时不会改变。
 3. 未找到则启动报错。
 
 {{< alert title="Note" >}}
-- 如果需要解析请求Body内容请参考[请求Body解析]()
+- 如果需要解析请求Body内容请参考[请求实体数据解析](../requestentity_resolver)
 {{< /alert >}}
 
 细心的人可能会发现该设计可能并不能覆盖到以下场景
-- 因为`Object resolve(RequestContext context)`方法参数中并没有传递`Param参数`， 虽然初始化阶段能根据`supports(Param param)`方法获取参数元数据信息（获取某个注解， 获取参数类型等等）判断是否支持， 但是如果运行时也需要获取参数的元数据信息（某个注解的值等）的话，此接口则无法满足需求。
+- 因为`resolve(RequestContext context)`方法参数中并没有传递`Param`参数， 虽然初始化阶段能根据`supports(Param param)`方法获取参数元数据信息（获取某个注解，获取参数类型等等）判断是否支持，但是如果运行时也需要获取参数的元数据信息（某个注解的值等）的话，此接口则无法满足需求。
+- 假如`ParamResolver`实现中需要做序列化操作， 因此期望获取到Spring容器中的序列化器时，则该接口无法支持。
 
 针对此问题，答案是确实无法支持。因为`Restlight`的设计理念是
 
 - `能在初始化阶段解决的问题就在初始化阶段解决`
 
-因此不期望用户以及`Restlight`的开发人员大量的在运行时去频繁获取一些JVM启动后就不会变动的内容(如： 注解的值)， 甚至针对某些元数据信息使用`ConcurrentHashMap`进行缓存（看似是为了提高性能的缓存， 实际上初始化就固定了的内容反而增加了并发性能的损耗）。
+因此不期望用户以及`Restlight`的开发人员大量的在运行时去频繁获取一些JVM启动后就不会变动的内容(如： 注解的值)，甚至针对某些元数据信息使用`ConcurrentHashMap`进行缓存（看似是为了提高性能的缓存，实际上初始化就固定了的内容反而增加了并发性能的损耗）。
 
 基于以上原因我们提供了另一个`ParamResolver`的实现方式
 
@@ -107,10 +109,10 @@ public interface ParamResolverFactory extends ParamPredicate, Ordered {
 初始化逻辑：
 
 1. 按照`getOrder()`方法的返回将所有的`ParamResolverFactory`进行排序
-2. 按照排序后的顺序依次调用`supports(Param param)`方法， 返回`true`则将其作为该参数的`ParamResolverFactory`， 同时调用`createResolver(Param param, Function3<Class<?>, Type, Param, StringConverter> converterFunc, List<? extends HttpRequestSerializer> serializers)`方法创建出对应的`ParamResolver`
+2. 按照排序后的顺序依次调用`supports(Param param)`方法，返回`true`则将其作为该参数的`ParamResolverFactory`，同时调用`createResolver(Param param, Function3<Class<?>, Type, Param, StringConverter> converterFunc, List<? extends HttpRequestSerializer> serializers)`方法创建出对应的`ParamResolver`
 3. 未找到则启动报错。
 
-由于初始化时通过`createResolver(Param param, Function3<Class<?>, Type, Param, StringConverter> converterFunc, List<? extends HttpRequestSerializer> serializers)`方法传入了`Param`以及序列化器， 因此能满足上面的要求。
+由于初始化时通过`createResolver(Param param, Function3<Class<?>, Type, Param, StringConverter> converterFunc, List<? extends HttpRequestSerializer> serializers)`方法传入了`Param`以及序列化器，因此能满足上面的要求。
 
 **两种模式的定位**
 
@@ -145,7 +147,7 @@ public ParamResolver resolver() {
         }
         
         @Override
-        public Object resolve(Param param, RequestContext context) throws Exception {
+        public Object resolve(RequestContext context) {
             return "your appid";
         }
         
@@ -187,7 +189,9 @@ public @interface CustomHeader {
 public ParamResolverFactory resolver() {
     return new ParamResolverFactory() {
         @Override
-        public ParamResolver createResolver(Param param, List<? extends HttpRequestSerializer> list) {
+        public ParamResolver createResolver(Param param,
+                                            Function3<Class<?>, Type, Param, StringConverter> converterFunc,
+                                            List<? extends HttpRequestSerializer> serializers) {
             return new Resolver(param);
         }
 
@@ -217,7 +221,7 @@ private static class Resolver implements ParamResolver {
     }
 
     @Override
-    public Object resolve(Param param, RequestContext context) {
+    public Object resolve(RequestContext context) {
         // 运行时直接获取Header
         return context.request().headers().get(headerName);
     }

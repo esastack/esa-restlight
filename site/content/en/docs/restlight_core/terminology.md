@@ -5,6 +5,43 @@ linkTitle: "术语"
 weight: 1
 ---
 
+## `RequestContext`
+ 表示一个请求处理过程中的上下文信息，包含：`HttpRequest`、`HttpResponse`、`Attributes`等
+
+```java
+public interface RequestContext {
+
+    /**
+     * Obtains current {@code request}.
+     *
+     * @return request
+     */
+    HttpRequest request();
+
+    /**
+     * Obtains current {@code response}.
+     *
+     * @return response
+     */
+    HttpResponse response();
+
+    /**
+     * Obtains {@link Attributes} corresponding with current {@link RequestContext}.
+     *
+     * @return attributes
+     */
+    Attributes attrs();
+
+}
+```
+
+{{< alert title="Tip" >}}
+- `RequestContext`所属包名为`io.esastack.restlight.server.context`
+- `HttpRequest`所属包名为`io.esastack.restlight.server.core`
+- `HttpResponse`所属包名为`io.esastack.restlight.server.core`
+- `Attributes`所属包名为`esa.commons.collection`
+{{< /alert >}}
+
 ## `Mapping`
 
  表示一个请求匹配的条件， 用于确定一个请求是否能够路由到某个目标对对象。

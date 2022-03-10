@@ -17,6 +17,7 @@ weight: 10
 - `@OPTIONS`
 - `@Consumes`
 - `@Produces`
+- `@Context`
 - `@QueryParam`
 - `@PathParam`
 - `@HeaderParam`
@@ -26,21 +27,11 @@ weight: 10
 - `@BeanParam`
 - `@DefaultValue`
 
-{{< alert title="Note">}}
-现阶段`Restlight`仅实现了`JAX-RS`的注解， 其余功能暂未实现（`Provider`, `Request`, `Response`）等暂不支持
-{{< /alert >}}
-
-## 注解使用
-
-`@QueryParam`, `@PathParam`,`@HeaderParam`,`@MatrixParam`, `@MatrixVariable`,`@FormParam`
-
-参数绑不支持`javax.ws.rs.ext.ParamConverterProvier`扩展
-
 ## 个别注解说明
 
 ### `@QueryParam`
 
-除普通用法外， 当未指定`value()`或者`name`且参数对象为`Map<String, List<String>`类型时， 将整个ParameterMap（即AsyncRequest.getParameterMap）作为参数的值。
+除普通用法外， 当未指定`value()`或者`name`且参数对象为`Map<String, List<String>`类型时， 将整个ParameterMap（即HttpRequest.paramsMap()）作为参数的值。
 
 eg.
 
@@ -63,7 +54,7 @@ public void foo(@CookieParam String c) {
 }
 ```
 
-`Cookie`对象(io.netty.handler.codec.http.cookie.Cookie)
+`Cookie`对象(io.esastack.commons.net.http.Cookie)
 
 ```java
 public void foo(@CookieParam Cookie c) {
@@ -80,17 +71,5 @@ public void foo(@CookieParam Set<Cookie> cookies) {
 ```
 
 {{< alert title="Note">}}
-不支持`JAX-RS`中的`jax.ws.rs.core.Cookie`， 仅支持`io.netty.handler.codec.http.cookie.Cookie`
+不支持`JAX-RS`中的`jakarta.ws.rs.core.Cookie`， 仅支持`io.esastack.commons.net.http.Cookie`
 {{< /alert >}}
-
-### `@HeaderParam`
-
-除获取单个header之外， 可以如果参数类型为`io.netty.handler.codec.http.HttpHeaders`则以所有的Header作为参数的值
-
-eg:
-
-```java
-public void foo(@HeaderParam HttpHeaders headers) {
-    //...
-}
-```

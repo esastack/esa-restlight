@@ -13,7 +13,7 @@ weight: 60
 public interface ParamResolverAdvice {
 
     /**
-     * This method is called around {@link ParamResolver#resolve(Param, RequestContext)}.
+     * This method is called around {@link ParamResolver#resolve(RequestContext)}.
      *
      * @param context context
      * @return resolved arg value
@@ -26,7 +26,7 @@ public interface ParamResolverAdvice {
 
 ## 自定义`ParamResolverAdvice`
 
-与`ParamResolver`相同， `ParamResolverAdvice`自定应时同样需要实现`ParamResolverAdviceAdapter`或`ParamResolverAdviceFactory`接口
+与`ParamResolver`相同，`ParamResolverAdvice`自定应时同样需要实现`ParamResolverAdviceAdapter`或`ParamResolverAdviceFactory`接口
 
 ### 方式1：实现 `ParamResolverAdviceAdapter`
 
@@ -34,11 +34,6 @@ public interface ParamResolverAdvice {
 
 ```java
 public interface ParamResolverAdviceAdapter extends ParamPredicate, ParamResolverAdvice, Ordered {
-
-    @Override
-    default Object aroundResolve(ParamResolverContext context) throws Exception {
-        return context.proceed();
-    }
 
     @Override
     default int getOrder() {
@@ -64,7 +59,7 @@ public interface ParamResolverAdviceFactory extends ParamPredicate, Ordered {
 }
 ```
 
-`ParamResolverAdviceAdapter`接口以及`ParamResolverAdviceFactory`接口与`ParamResolver`中的`ParamResolverAdapter`接口以及`ParamResolverFactory`接口的使用方式相同， 这里不过多赘述。
+`ParamResolverAdviceAdapter`接口以及`ParamResolverAdviceFactory`接口与`ParamResolver`中的`ParamResolverAdapter`接口以及`ParamResolverFactory`接口的使用方式相同，这里不过多赘述。
 
 {{< alert title="Note" >}}
 `ParamResolverAdvice`与`ParamResolver`生命周期是相同的, 即应用初始化的时候便会决定每个参数的`ParamResolverAdvice`

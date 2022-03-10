@@ -22,11 +22,6 @@ import io.esastack.restlight.core.util.Ordered;
 public interface ParamResolverAdviceAdapter extends ParamPredicate, ParamResolverAdvice, Ordered {
 
     @Override
-    default Object aroundResolve(ParamResolverContext context) throws Exception {
-        return context.proceed();
-    }
-
-    @Override
     default int getOrder() {
         return Ordered.HIGHEST_PRECEDENCE;
     }
