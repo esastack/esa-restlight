@@ -15,19 +15,23 @@
  */
 package io.esastack.restlight.core.handler.impl;
 
+import esa.commons.collection.LinkedMultiValueMap;
 import esa.commons.collection.MultiValueMap;
 import io.esastack.restlight.core.handler.HandlerMapping;
 import io.esastack.restlight.core.handler.HandlerValueResolver;
 import io.esastack.restlight.core.interceptor.Interceptor;
 import io.esastack.restlight.core.interceptor.InterceptorPredicate;
+import io.esastack.restlight.core.interceptor.InternalInterceptor;
 import io.esastack.restlight.core.resolver.ExceptionResolver;
 import io.esastack.restlight.server.context.RequestContext;
 import io.esastack.restlight.server.route.RouteExecution;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.mockito.Mockito.mock;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
 class RouteHandlerMethodAdapterTest {
 
@@ -63,8 +67,155 @@ class RouteHandlerMethodAdapterTest {
     }
 
     @Test
-    void testInterceptor(){
-        //TODO
+    void testMatchSimpleInterceptor() throws NoSuchMethodException {
+        final MultiValueMap<InterceptorPredicate, Interceptor> interceptors = new LinkedMultiValueMap<>();
+        final Interceptor interceptor0 = new Interceptor() {
+            @Override
+            public InterceptorPredicate predicate() {
+                return request -> true;
+            }
+
+            @Override
+            public int getOrder() {
+                return 0;
+            }
+        };
+        final Interceptor interceptor1 = new Interceptor() {
+            @Override
+            public InterceptorPredicate predicate() {
+                return request -> true;
+            }
+
+            @Override
+            public int getOrder() {
+                return -1;
+            }
+        };
+        final Interceptor interceptor2 = new Interceptor() {
+            @Override
+            public InterceptorPredicate predicate() {
+                return request -> false;
+            }
+
+            @Override
+            public int getOrder() {
+                return 1;
+            }
+        };
+        interceptors.add(interceptor0.predicate(), interceptor0);
+        interceptors.add(interceptor1.predicate(), interceptor1);
+        interceptors.add(interceptor2.predicate(), interceptor2);
+
+        final MockHandlerData mockData = new MockHandlerData();
+        final RouteHandlerMethodAdapter routeHandlerMethodAdapter = build(mockData.mapping(),
+                mockData.context(),
+                mockData.handlerValueResolver(),
+                interceptors,
+                mockData.exceptionResolver()
+        );
+
+        final List<InternalInterceptor> matched =
+                routeHandlerMethodAdapter.getMatchingInterceptors(mock(RequestContext.class));
+        assertNotNull(matched);
+        assertEquals(2, matched.size());
+        assertSame(interceptor1, matched.get(0));
+        assertSame(interceptor0, matched.get(1));
+    }
+
+    @Test
+    void testMatchComplexInterceptor() throws NoSuchMethodException {
+        final MultiValueMap<InterceptorPredicate, Interceptor> interceptors = new LinkedMultiValueMap<>();
+        final InterceptorPredicate p0 = mock(InterceptorPredicate.class);
+        when(p0.test(any())).thenReturn(true);
+        final InterceptorPredicate p1 = mock(InterceptorPredicate.class);
+        when(p1.test(any())).thenReturn(true);
+        final InterceptorPredicate p2 = mock(InterceptorPredicate.class);
+        when(p2.test(any())).thenReturn(false);
+        final Interceptor interceptor0 = new Interceptor() {
+            @Override
+            public InterceptorPredicate predicate() {
+                return p0;
+            }
+
+            @Override
+            public int affinity() {
+                return 30;
+            }
+
+            @Override
+            public int getOrder() {
+                return 0;
+            }
+        };
+        final Interceptor interceptor1 = new Interceptor() {
+            @Override
+            public InterceptorPredicate predicate() {
+                return p1;
+            }
+
+            @Override
+            public int affinity() {
+                return 30;
+            }
+
+            @Override
+            public int getOrder() {
+                return -1;
+            }
+        };
+        final Interceptor interceptor2 = new Interceptor() {
+            @Override
+            public InterceptorPredicate predicate() {
+                return p2;
+            }
+
+            @Override
+            public int affinity() {
+                return 30;
+            }
+
+            @Override
+            public int getOrder() {
+                return 1;
+            }
+        };
+        interceptors.add(p0, interceptor0);
+        interceptors.add(p0, interceptor0);
+        interceptors.add(p1, interceptor1);
+        interceptors.add(p1, interceptor1);
+        interceptors.add(p2, interceptor2);
+        interceptors.add(p2, interceptor2);
+
+        final MockHandlerData mockData = new MockHandlerData();
+        final RouteHandlerMethodAdapter routeHandlerMethodAdapter = build(mockData.mapping(),
+                mockData.context(),
+                mockData.handlerValueResolver(),
+                interceptors,
+                mockData.exceptionResolver()
+        );
+
+        List<InternalInterceptor> matched =
+                routeHandlerMethodAdapter.getMatchingInterceptors(mock(RequestContext.class));
+
+        assertNotNull(matched);
+        assertEquals(4, matched.size());
+        assertSame(interceptor1, matched.get(0));
+        assertSame(interceptor1, matched.get(1));
+        assertSame(interceptor0, matched.get(2));
+        assertSame(interceptor0, matched.get(3));
+        verify(p0, times(1)).test(any());
+        verify(p1, times(1)).test(any());
+
+        // match 2 times for testing cleared thread local status
+        matched = routeHandlerMethodAdapter.getMatchingInterceptors(mock(RequestContext.class));
+        assertNotNull(matched);
+        assertEquals(4, matched.size());
+        assertSame(interceptor1, matched.get(0));
+        assertSame(interceptor1, matched.get(1));
+        assertSame(interceptor0, matched.get(2));
+        assertSame(interceptor0, matched.get(3));
+        verify(p0, times(2)).test(any());
+        verify(p1, times(2)).test(any());
     }
 
 }
