@@ -15,13 +15,11 @@
  */
 package io.esastack.restlight.springmvc.resolver.rspentity;
 
-import esa.commons.reflect.AnnotationUtils;
 import io.esastack.restlight.core.method.HandlerMethod;
 import io.esastack.restlight.core.resolver.ResponseEntityResolver;
 import io.esastack.restlight.core.resolver.ResponseEntityResolverFactory;
 import io.esastack.restlight.core.resolver.rspentity.NegotiationResponseResolver;
 import io.esastack.restlight.core.serialize.HttpResponseSerializer;
-import io.esastack.restlight.springmvc.annotation.shaded.ResponseBody0;
 
 import java.util.List;
 
@@ -41,11 +39,12 @@ public class NegotiationResponseResolverFactory implements ResponseEntityResolve
 
     @Override
     public boolean supports(HandlerMethod method) {
-        if (method == null) {
-            return false;
-        }
-        return AnnotationUtils.hasAnnotation(method.beanType(), ResponseBody0.shadedClass())
-                || method.hasMethodAnnotation(ResponseBody0.shadedClass(), true);
+        return true;
+    }
+
+    @Override
+    public boolean alsoApplyWhenMissingHandler() {
+        return true;
     }
 
     @Override

@@ -42,9 +42,6 @@ public abstract class FixedResponseEntityResolverFactory implements ResponseEnti
 
     @Override
     public boolean supports(HandlerMethod method) {
-        if (method == null) {
-            return false;
-        }
         if (!supports0(method)) {
             return false;
         }

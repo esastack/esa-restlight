@@ -414,13 +414,13 @@ public class HandlerResolverFactoryImpl implements HandlerResolverFactory {
             if (factories == null || factories.isEmpty()) {
                 return Collections.emptyList();
             }
-            List<ResponseEntityResolver> resolvers = new LinkedList<>();
+            final List<ResponseEntityResolver> resolvers = new LinkedList<>();
+            final boolean missingHandler = (method == null);
+
             for (ResponseEntityResolverFactory factory : factories) {
-                try {
-                    if (factory.supports(method)) {
-                        resolvers.add(factory.createResolver(method, txSerializers));
-                    }
-                } catch (Throwable ignore) {
+                if ((missingHandler && factory.alsoApplyWhenMissingHandler())
+                        || (!missingHandler && factory.supports(method))) {
+                    resolvers.add(factory.createResolver(method, txSerializers));
                 }
             }
             return resolvers;
@@ -432,13 +432,13 @@ public class HandlerResolverFactoryImpl implements HandlerResolverFactory {
             if (factories == null || factories.isEmpty()) {
                 return Collections.emptyList();
             }
-            List<ResponseEntityResolverAdvice> advices = new LinkedList<>();
+            final List<ResponseEntityResolverAdvice> advices = new LinkedList<>();
+            final boolean missingHandler = (method == null);
+
             for (ResponseEntityResolverAdviceFactory factory : factories) {
-                try {
-                    if (factory.supports(method)) {
-                        advices.add(factory.createResolverAdvice(method));
-                    }
-                } catch (Throwable ignore) {
+                if ((missingHandler && factory.alsoApplyWhenMissingHandler())
+                        || (!missingHandler && factory.supports(method))) {
+                    advices.add(factory.createResolverAdvice(method));
                 }
             }
             return advices;

@@ -16,6 +16,7 @@
 package io.esastack.restlight.jaxrs.adapter;
 
 import esa.commons.ClassUtils;
+import io.esastack.restlight.core.method.HandlerMethod;
 import io.esastack.restlight.core.resolver.ResponseEntityResolverAdviceAdapter;
 import io.esastack.restlight.core.resolver.ResponseEntityResolverContext;
 import io.esastack.restlight.core.util.Ordered;
@@ -48,6 +49,16 @@ public class JaxrsResponseAdapter implements ResponseEntityResolverAdviceAdapter
             adaptResponse(response, context);
         }
         context.proceed();
+    }
+
+    @Override
+    public boolean supports(HandlerMethod method) {
+        return true;
+    }
+
+    @Override
+    public boolean alsoApplyWhenMissingHandler() {
+        return true;
     }
 
     @Override

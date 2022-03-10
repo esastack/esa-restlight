@@ -16,14 +16,17 @@
 package io.esastack.restlight.core.resolver.rspentity;
 
 import io.esastack.commons.net.http.MediaType;
+import io.esastack.restlight.core.method.HandlerMethod;
 import io.esastack.restlight.core.resolver.ResponseEntity;
+import io.esastack.restlight.core.resolver.ResponseEntityResolverAdapter;
 import io.esastack.restlight.core.serialize.Serializers;
 import io.esastack.restlight.core.util.ResponseEntityUtils;
 import io.esastack.restlight.server.context.RequestContext;
 
 import java.util.List;
 
-public class CharSequenceResponseEntityResolver extends AbstractResponseEntityResolver {
+public class CharSequenceResponseEntityResolver extends AbstractResponseEntityResolver
+        implements ResponseEntityResolverAdapter {
 
     @Override
     protected boolean supports(ResponseEntity entity) {
@@ -37,6 +40,16 @@ public class CharSequenceResponseEntityResolver extends AbstractResponseEntityRe
         return Serializers.serializeCharSequence(((CharSequence) context.response().entity()),
                 context.response(),
                 selectMediaType(mediaTypes));
+    }
+
+    @Override
+    public boolean supports(HandlerMethod method) {
+        return true;
+    }
+
+    @Override
+    public boolean alsoApplyWhenMissingHandler() {
+        return true;
     }
 
     @Override

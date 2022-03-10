@@ -72,9 +72,6 @@ public class ConfigurableHandlerImpl implements ConfigurableHandler {
 
             @Override
             public boolean supports(HandlerMethod method) {
-                if (method == null) {
-                    return false;
-                }
                 return ConfigurableHandlerImpl.this.method.method().equals(method.method());
             }
         }));
@@ -164,17 +161,23 @@ public class ConfigurableHandlerImpl implements ConfigurableHandler {
 
             @Override
             public boolean supports(HandlerMethod method) {
-                if (method != null) {
-                    return advice.supports(method)
-                            && ConfigurableHandlerImpl.this.method.method().equals(method.method());
-                } else {
-                    return false;
-                }
+                return advice.supports(method)
+                        && ConfigurableHandlerImpl.this.method.method().equals(method.method());
+            }
+
+            @Override
+            public boolean alsoApplyWhenMissingHandler() {
+                return advice.alsoApplyWhenMissingHandler();
             }
 
             @Override
             public ResponseEntityResolverAdvice createResolverAdvice(HandlerMethod method) {
                 return advice;
+            }
+
+            @Override
+            public int getOrder() {
+                return advice.getOrder();
             }
         }));
         return this;

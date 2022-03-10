@@ -17,12 +17,11 @@ package io.esastack.restlight.core.resolver;
 
 import esa.commons.Checks;
 import esa.commons.spi.SPI;
-import io.esastack.restlight.core.handler.HandlerPredicate;
 import io.esastack.restlight.core.method.HandlerMethod;
 import io.esastack.restlight.core.util.Ordered;
 
 @SPI
-public interface ResponseEntityResolverAdviceFactory extends HandlerPredicate, Ordered {
+public interface ResponseEntityResolverAdviceFactory extends ResponseEntityResolverPredicate, Ordered {
 
     /**
      * Converts given {@link ResponseEntityResolverAdviceAdapter} to {@link ResponseEntityResolverAdviceFactory} which
@@ -43,11 +42,6 @@ public interface ResponseEntityResolverAdviceFactory extends HandlerPredicate, O
      * @return advice
      */
     ResponseEntityResolverAdvice createResolverAdvice(HandlerMethod method);
-
-    @Override
-    default boolean supports(HandlerMethod method) {
-        return true;
-    }
 
     @Override
     default int getOrder() {
@@ -71,6 +65,11 @@ public interface ResponseEntityResolverAdviceFactory extends HandlerPredicate, O
         @Override
         public boolean supports(HandlerMethod method) {
             return resolver.supports(method);
+        }
+
+        @Override
+        public boolean alsoApplyWhenMissingHandler() {
+            return resolver.alsoApplyWhenMissingHandler();
         }
 
         @Override

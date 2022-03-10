@@ -71,11 +71,6 @@ public interface HandlerPredicate {
 public interface ResponseEntityResolverAdapter extends ResponseEntityResolver, HandlerPredicate, Ordered {
 
     @Override
-    default boolean supports(HandlerMethod method) {
-        return true;
-    }
-
-    @Override
     default int getOrder() {
         return Ordered.HIGHEST_PRECEDENCE;
     }
@@ -165,10 +160,6 @@ public ResponseEntityResolver resolver() {
         
         @Override
         public boolean supports(HandlerMethod method) {
-            if (method == null) {
-                return false;
-            }
-        
             // 当方法上有此注解时生效
             return method.hasMethodAnnotation(AppId.class);
         }
@@ -220,9 +211,6 @@ public @interface Suffix {
             
             @Override
             public boolean supports(HandlerMethod method) {
-                if (method == null) {
-                    return false;
-                }
                 return String.class.equals(method.method().getReturnType()) 
                         && method.hasMethodAnnotation(CustomHeader.class, false);
             }

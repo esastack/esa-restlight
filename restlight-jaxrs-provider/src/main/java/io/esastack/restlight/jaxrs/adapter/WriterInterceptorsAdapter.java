@@ -16,6 +16,7 @@
 package io.esastack.restlight.jaxrs.adapter;
 
 import esa.commons.Checks;
+import io.esastack.restlight.core.method.HandlerMethod;
 import io.esastack.restlight.core.resolver.ResponseEntityResolverAdviceAdapter;
 import io.esastack.restlight.core.resolver.ResponseEntityResolverContext;
 import io.esastack.restlight.jaxrs.impl.ext.WriterInterceptorContextImpl;
@@ -52,5 +53,14 @@ public class WriterInterceptorsAdapter implements ResponseEntityResolverAdviceAd
         }
     }
 
+    @Override
+    public boolean supports(HandlerMethod method) {
+        return true;
+    }
+
+    @Override
+    public boolean alsoApplyWhenMissingHandler() {
+        return true;
+    }
 }
 

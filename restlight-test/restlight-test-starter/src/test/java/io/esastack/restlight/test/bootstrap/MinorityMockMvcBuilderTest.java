@@ -17,6 +17,7 @@ package io.esastack.restlight.test.bootstrap;
 
 import io.esastack.commons.net.http.MediaType;
 import io.esastack.restlight.core.interceptor.HandlerInterceptor;
+import io.esastack.restlight.core.method.HandlerMethod;
 import io.esastack.restlight.core.method.Param;
 import io.esastack.restlight.core.resolver.HandledValue;
 import io.esastack.restlight.core.resolver.ParamResolverAdapter;
@@ -24,6 +25,7 @@ import io.esastack.restlight.core.resolver.ParamResolverAdviceAdapter;
 import io.esastack.restlight.core.resolver.ParamResolverContext;
 import io.esastack.restlight.core.resolver.RequestEntity;
 import io.esastack.restlight.core.resolver.ResponseEntity;
+import io.esastack.restlight.core.resolver.ResponseEntityResolverAdapter;
 import io.esastack.restlight.core.resolver.ResponseEntityResolverAdviceAdapter;
 import io.esastack.restlight.core.resolver.ResponseEntityResolverContext;
 import io.esastack.restlight.core.resolver.rspentity.AbstractResponseEntityResolver;
@@ -116,7 +118,8 @@ class MinorityMockMvcBuilderTest {
         }
     }
 
-    private static class ResponseEntityResolverImpl extends AbstractResponseEntityResolver {
+    private static class ResponseEntityResolverImpl extends AbstractResponseEntityResolver
+            implements ResponseEntityResolverAdapter {
 
         private ResponseEntityResolverImpl() {
         }
@@ -129,8 +132,8 @@ class MinorityMockMvcBuilderTest {
         }
 
         @Override
-        public int getOrder() {
-            return 10000;
+        public boolean supports(HandlerMethod method) {
+            return true;
         }
     }
 
@@ -142,6 +145,11 @@ class MinorityMockMvcBuilderTest {
         @Override
         public void aroundWrite(ResponseEntityResolverContext context) throws Exception {
             context.proceed();
+        }
+
+        @Override
+        public boolean supports(HandlerMethod method) {
+            return true;
         }
     }
 

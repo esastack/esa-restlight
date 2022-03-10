@@ -46,9 +46,6 @@ public class ResponseStatusEntityResolverFactory implements ResponseEntityResolv
 
     @Override
     public boolean supports(HandlerMethod method) {
-        if (method == null) {
-            return false;
-        }
         ResponseStatus0 anno = getResponseStatus(method);
         return anno != null && !StringUtils.isEmpty(anno.reason());
     }
