@@ -21,6 +21,7 @@ import io.esastack.restlight.core.method.Param;
 import io.esastack.restlight.core.resolver.HandledValue;
 import io.esastack.restlight.core.resolver.ParamResolverAdapter;
 import io.esastack.restlight.core.resolver.ParamResolverAdviceAdapter;
+import io.esastack.restlight.core.resolver.ParamResolverContext;
 import io.esastack.restlight.core.resolver.RequestEntity;
 import io.esastack.restlight.core.resolver.ResponseEntity;
 import io.esastack.restlight.core.resolver.ResponseEntityResolverAdviceAdapter;
@@ -102,6 +103,11 @@ class MinorityMockMvcBuilderTest {
     private static class ParamResolverAdviceImpl implements ParamResolverAdviceAdapter {
 
         private ParamResolverAdviceImpl() {
+        }
+
+        @Override
+        public Object aroundResolve(ParamResolverContext context) throws Exception {
+            return context.proceed();
         }
 
         @Override

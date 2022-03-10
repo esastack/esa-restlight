@@ -17,6 +17,7 @@ package io.esastack.restlight.core.interceptor;
 
 import esa.commons.spi.SPI;
 import io.esastack.restlight.core.util.Affinity;
+import io.esastack.restlight.server.context.RequestContext;
 import io.esastack.restlight.server.core.HttpRequest;
 import io.esastack.restlight.server.route.Route;
 
@@ -38,7 +39,7 @@ public interface Interceptor extends InternalInterceptor, Affinity {
 
     /**
      * Gets the predicate of current interceptor. determines whether current interceptor should be matched to a {@link
-     * HttpRequest}.
+     * RequestContext}.
      *
      * @return predicate, or {@code null} if {@link #affinity()} return's a negative value.
      */
