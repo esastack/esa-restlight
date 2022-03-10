@@ -16,11 +16,7 @@
 package io.esastack.restlight.core.handler.impl;
 
 import esa.commons.collection.MultiValueMap;
-import io.esastack.restlight.core.handler.HandlerAdvicesFactory;
-import io.esastack.restlight.core.handler.HandlerFactory;
-import io.esastack.restlight.core.handler.HandlerInvoker;
-import io.esastack.restlight.core.handler.HandlerMapping;
-import io.esastack.restlight.core.handler.HandlerValueResolver;
+import io.esastack.restlight.core.handler.*;
 import io.esastack.restlight.core.interceptor.Interceptor;
 import io.esastack.restlight.core.interceptor.InterceptorPredicate;
 import io.esastack.restlight.core.interceptor.InternalInterceptor;
@@ -67,7 +63,7 @@ public class PrototypeRouteMethod extends RouteHandlerMethodAdapter {
 
         @Override
         protected HandlerInvoker getInvoker(HandlerMethod handlerMethod, Object instance) {
-            return SingletonRouteMethod.buildInvoker(handlerMethod, instance, handlerAdvicesFactory);
+            return buildInvoker(handlerMethod, instance, handlerAdvicesFactory);
         }
     }
 }
