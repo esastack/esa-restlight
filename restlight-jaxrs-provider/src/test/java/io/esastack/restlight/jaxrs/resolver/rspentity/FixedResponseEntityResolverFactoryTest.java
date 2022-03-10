@@ -69,6 +69,8 @@ class FixedResponseEntityResolverFactoryTest {
 
         final HandlerMethod support = handlerMethods.get("jackson");
         assertTrue(resolverFactory.supports(support));
+
+        assertFalse(resolverFactory.alsoApplyWhenMissingHandler());
     }
 
     @Test

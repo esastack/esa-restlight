@@ -17,12 +17,12 @@ package io.esastack.restlight.core.resolver.rspentity;
 
 import esa.commons.Primitives;
 import io.esastack.commons.net.http.MediaType;
+import io.esastack.restlight.core.handler.HandlerPredicate;
 import io.esastack.restlight.core.method.HandlerMethod;
 import io.esastack.restlight.core.resolver.HandledValue;
 import io.esastack.restlight.core.resolver.ResponseEntity;
 import io.esastack.restlight.core.resolver.ResponseEntityChannel;
 import io.esastack.restlight.core.resolver.ResponseEntityResolver;
-import io.esastack.restlight.core.resolver.ResponseEntityResolverAdapter;
 import io.esastack.restlight.core.serialize.Serializers;
 import io.esastack.restlight.core.util.ResponseEntityUtils;
 import io.esastack.restlight.server.context.RequestContext;
@@ -37,7 +37,7 @@ import java.util.List;
  * {@link CharSequence}, {@link byte}s, {@link ByteBuf} and {@link Primitives}, and you can get more information
  * from {@link Serializers#serializeIfPossible(Object, HttpResponse, MediaType)}.
  */
-public abstract class AbstractResponseEntityResolver implements ResponseEntityResolverAdapter {
+public abstract class AbstractResponseEntityResolver implements ResponseEntityResolver {
 
     /**
      * Whether to serialize the simple response entity by selected type or not.
@@ -84,9 +84,9 @@ public abstract class AbstractResponseEntityResolver implements ResponseEntityRe
     /**
      * Whether current resolver supports given {@code entity} or not.
      *
-     * !NOTE: be different from {@link #supports(HandlerMethod)} which is designed to judge whether pre-bind current
-     * resolver to specified {@link HandlerMethod} at startup time, this method is used to judge whether current
-     * resolver can be used to resolve the given {@link ResponseEntity} at runtime.
+     * !NOTE: be different from {@link HandlerPredicate#supports(HandlerMethod)} which is designed to judge whether
+     * pre-bind current resolver to specified {@link HandlerMethod} at startup time, this method is used to judge
+     * whether current resolver can be used to resolve the given {@link ResponseEntity} at runtime.
      *
      * @param entity response entity
      * @return {@code true} if supports, otherwise {@code false}.

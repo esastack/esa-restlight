@@ -35,11 +35,13 @@ public class FlexibleResponseEntityResolverFactory implements ResponseEntityReso
 
     @Override
     public boolean supports(HandlerMethod method) {
-        if (method == null) {
-            return false;
-        }
         return AnnotationUtils.hasAnnotation(method.beanType(), ResponseBody0.shadedClass())
                 || method.hasMethodAnnotation(ResponseBody0.shadedClass(), true);
+    }
+
+    @Override
+    public boolean alsoApplyWhenMissingHandler() {
+        return true;
     }
 
     @Override

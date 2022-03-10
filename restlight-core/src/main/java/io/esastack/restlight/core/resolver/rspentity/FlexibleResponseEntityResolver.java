@@ -86,5 +86,4 @@ public class FlexibleResponseEntityResolver extends AbstractResponseEntityResolv
                 || Object.class.equals(FutureUtils.retrieveFirstGenericTypeOfFutureReturnType(entityType,
                 entity.genericType()));
     }
-
 }

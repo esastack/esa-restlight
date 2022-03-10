@@ -44,6 +44,7 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 class NegotiationResponseResolverFactoryTest {
@@ -57,6 +58,12 @@ class NegotiationResponseResolverFactoryTest {
     static void setUp() {
         assumeTrue(ResponseBody0.shadedClass().getName().startsWith("org.springframework"));
         handlerMethods = ResolverUtils.extractHandlerMethods(SUBJECT);
+    }
+
+    @Test
+    void testSupport() {
+        assertTrue(resolverFactory.supports(null));
+        assertTrue(resolverFactory.alsoApplyWhenMissingHandler());
     }
 
     @Test

@@ -15,6 +15,7 @@
  */
 package io.esastack.restlight.core.resolver.rspentity;
 
+import io.esastack.restlight.core.method.HandlerMethod;
 import io.esastack.restlight.core.resolver.HandledValue;
 import io.esastack.restlight.core.resolver.ResponseEntity;
 import io.esastack.restlight.core.resolver.ResponseEntityChannel;
@@ -35,6 +36,16 @@ public class ResponseFileEntityResolver implements ResponseEntityResolverAdapter
         }
         channel.writeThenEnd((File) entity.response().entity());
         return HandledValue.succeed(null);
+    }
+
+    @Override
+    public boolean alsoApplyWhenMissingHandler() {
+        return true;
+    }
+
+    @Override
+    public boolean supports(HandlerMethod method) {
+        return true;
     }
 
     @Override

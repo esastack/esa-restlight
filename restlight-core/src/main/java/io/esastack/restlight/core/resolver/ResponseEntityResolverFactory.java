@@ -17,7 +17,6 @@ package io.esastack.restlight.core.resolver;
 
 import esa.commons.Checks;
 import esa.commons.spi.SPI;
-import io.esastack.restlight.core.handler.HandlerPredicate;
 import io.esastack.restlight.core.method.HandlerMethod;
 import io.esastack.restlight.core.serialize.HttpResponseSerializer;
 import io.esastack.restlight.core.util.Ordered;
@@ -25,7 +24,7 @@ import io.esastack.restlight.core.util.Ordered;
 import java.util.List;
 
 @SPI
-public interface ResponseEntityResolverFactory extends HandlerPredicate, Ordered {
+public interface ResponseEntityResolverFactory extends ResponseEntityResolverPredicate, Ordered {
 
     /**
      * Converts given {@link ResponseEntityResolverAdapter} to {@link ResponseEntityResolverFactory} which
@@ -50,11 +49,6 @@ public interface ResponseEntityResolverFactory extends HandlerPredicate, Ordered
                                           List<? extends HttpResponseSerializer> serializers);
 
     @Override
-    default boolean supports(HandlerMethod method) {
-        return true;
-    }
-
-    @Override
     default int getOrder() {
         return Ordered.HIGHEST_PRECEDENCE;
     }
@@ -77,6 +71,11 @@ public interface ResponseEntityResolverFactory extends HandlerPredicate, Ordered
         @Override
         public boolean supports(HandlerMethod method) {
             return resolver.supports(method);
+        }
+
+        @Override
+        public boolean alsoApplyWhenMissingHandler() {
+            return resolver.alsoApplyWhenMissingHandler();
         }
 
         @Override

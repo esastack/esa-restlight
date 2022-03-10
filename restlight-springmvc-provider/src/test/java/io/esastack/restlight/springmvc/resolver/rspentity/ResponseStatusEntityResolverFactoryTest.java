@@ -66,6 +66,8 @@ class ResponseStatusEntityResolverFactoryTest {
 
         final HandlerMethod support = handlerMethods.get("responseWithReason");
         assertTrue(resolverFactory.supports(support));
+
+        assertFalse(resolverFactory.alsoApplyWhenMissingHandler());
     }
 
     @Test

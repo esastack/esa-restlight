@@ -32,6 +32,16 @@ public class FlexibleResponseEntityResolverFactory implements ResponseEntityReso
     }
 
     @Override
+    public boolean supports(HandlerMethod method) {
+        return true;
+    }
+
+    @Override
+    public boolean alsoApplyWhenMissingHandler() {
+        return true;
+    }
+
+    @Override
     public int getOrder() {
         return 310;
     }
