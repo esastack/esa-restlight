@@ -117,7 +117,7 @@ abstract class AbstractRouteExecution extends AbstractExecution<RouteHandlerMeth
         return handlerMethod().exceptionResolver();
     }
 
-    private CompletionStage<Boolean> applyPreHandle(RequestContext context, Object bean) {
+    CompletionStage<Boolean> applyPreHandle(RequestContext context, Object bean) {
         if (interceptorAbsent) {
             return Futures.completedFuture(Boolean.TRUE);
         }
@@ -151,7 +151,7 @@ abstract class AbstractRouteExecution extends AbstractExecution<RouteHandlerMeth
                 });
     }
 
-    private CompletionStage<Void> applyPostHandle(RequestContext context, Object bean) {
+    CompletionStage<Void> applyPostHandle(RequestContext context, Object bean) {
         if (interceptorAbsent) {
             return Futures.completedFuture();
         }
@@ -169,7 +169,7 @@ abstract class AbstractRouteExecution extends AbstractExecution<RouteHandlerMeth
         return future;
     }
 
-    private CompletionStage<Void> triggerAfterCompletion(RequestContext context, Throwable t) {
+    CompletionStage<Void> triggerAfterCompletion(RequestContext context, Throwable t) {
         if (this.interceptorAbsent) {
             return Futures.completedFuture();
         }
