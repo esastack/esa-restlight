@@ -18,8 +18,12 @@ package io.esastack.restlight.ext.multipart.spi;
 import esa.commons.ClassUtils;
 import io.esastack.commons.net.http.HttpHeaderNames;
 import io.esastack.restlight.core.method.HandlerMethodImpl;
+import io.esastack.restlight.core.method.Param;
 import io.esastack.restlight.core.method.RouteHandlerMethod;
 import io.esastack.restlight.core.method.RouteHandlerMethodImpl;
+import io.esastack.restlight.core.resolver.StringConverterFactory;
+import io.esastack.restlight.core.resolver.StringConverterProvider;
+import io.esastack.restlight.core.spi.impl.DefaultStringConverterFactory;
 import io.esastack.restlight.ext.multipart.core.MultipartConfig;
 import io.esastack.restlight.server.core.HttpRequest;
 import io.esastack.restlight.server.mock.MockHttpRequest;
@@ -36,6 +40,8 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public abstract class AbstractMultipartResolverTest {
+
+    private static final DefaultStringConverterFactory defaultResolver = new DefaultStringConverterFactory();
 
     private static final String CONTENT_TYPE = "multipart/form-data; boundary=---1234";
     private static final ResolverSubject SUBJECT = new ResolverSubject();
@@ -71,5 +77,10 @@ public abstract class AbstractMultipartResolverTest {
                 .withHeader(HttpHeaderNames.CONTENT_TYPE, CONTENT_TYPE)
                 .withBody(bytes)
                 .build();
+    }
+
+    static StringConverterProvider defaultConverters(Param param) {
+        return key -> defaultResolver.createConverter(StringConverterFactory.ConvertedKey
+                .of(key.genericType(), key.type(), param)).orElse(null);
     }
 }

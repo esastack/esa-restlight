@@ -19,9 +19,8 @@ import esa.commons.ClassUtils;
 import esa.commons.StringUtils;
 import esa.commons.collection.LinkedMultiValueMap;
 import esa.commons.collection.MultiValueMap;
-import esa.commons.function.Function3;
 import io.esastack.restlight.core.method.Param;
-import io.esastack.restlight.core.resolver.StringConverter;
+import io.esastack.restlight.core.resolver.StringConverterProvider;
 import io.esastack.restlight.core.resolver.nav.NameAndStringsValueResolver;
 import io.esastack.restlight.core.resolver.nav.NameAndValue;
 import io.esastack.restlight.core.resolver.nav.NameAndValueResolver;
@@ -30,7 +29,6 @@ import io.esastack.restlight.server.bootstrap.WebServerException;
 import io.esastack.restlight.server.context.RequestContext;
 import io.esastack.restlight.server.util.PathVariableUtils;
 
-import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -44,7 +42,7 @@ public abstract class AbstractMatrixParamResolver extends NameAndValueResolverFa
 
     @Override
     protected NameAndValueResolver createResolver(Param param,
-                                                  Function3<Class<?>, Type, Param, StringConverter> converterFunc) {
+                                                  StringConverterProvider converters) {
 
         String pathVar = getPathVar(param);
         if (isMatrixVariableMap(param, extractName(param))) {
@@ -52,7 +50,7 @@ public abstract class AbstractMatrixParamResolver extends NameAndValueResolverFa
         }
 
         return new NameAndStringsValueResolver(param,
-                converterFunc,
+                converters,
                 (name, ctx) -> extractValues(name, ctx, pathVar, param),
                 createNameAndValue(param));
     }

@@ -16,7 +16,6 @@
 package io.esastack.restlight.springmvc.resolver;
 
 import esa.commons.ClassUtils;
-import esa.commons.function.Function3;
 import io.esastack.commons.net.buffer.Buffer;
 import io.esastack.commons.net.buffer.BufferAllocator;
 import io.esastack.commons.net.http.MediaType;
@@ -26,7 +25,8 @@ import io.esastack.restlight.core.method.Param;
 import io.esastack.restlight.core.resolver.ResponseEntityChannelImpl;
 import io.esastack.restlight.core.resolver.ResponseEntityImpl;
 import io.esastack.restlight.core.resolver.ResponseEntityResolver;
-import io.esastack.restlight.core.resolver.StringConverter;
+import io.esastack.restlight.core.resolver.StringConverterFactory;
+import io.esastack.restlight.core.resolver.StringConverterProvider;
 import io.esastack.restlight.core.spi.impl.DefaultStringConverterFactory;
 import io.esastack.restlight.server.context.RequestContext;
 import io.esastack.restlight.server.context.impl.RequestContextImpl;
@@ -34,11 +34,12 @@ import io.esastack.restlight.server.core.HttpRequest;
 import io.esastack.restlight.server.core.HttpResponse;
 import io.esastack.restlight.server.mock.MockResponseContent;
 
-import java.lang.reflect.Type;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 public class ResolverUtils {
+
+    private static final StringConverterFactory defaultResolver = new DefaultStringConverterFactory();
 
     public static byte[] writtenContent(HttpRequest request,
                                         HttpResponse response,
@@ -61,9 +62,9 @@ public class ResolverUtils {
                 .collect(Collectors.toMap(h -> h.method().getName(), hm -> hm));
     }
 
-    public static Function3<Class<?>, Type, Param, StringConverter> defaultConverterFunc() {
-        return (type, genericType, p) -> new DefaultStringConverterFactory()
-                .createConverter(type, genericType, p).orElse(null);
+    public static StringConverterProvider defaultConverters(Param param) {
+        return key -> defaultResolver.createConverter(StringConverterFactory.ConvertedKey
+                .of(key.genericType(), key.type(), param)).orElse(null);
     }
 
     private ResolverUtils() {

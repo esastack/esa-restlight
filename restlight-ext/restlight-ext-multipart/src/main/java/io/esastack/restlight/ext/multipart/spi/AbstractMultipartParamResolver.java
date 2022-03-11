@@ -17,14 +17,13 @@ package io.esastack.restlight.ext.multipart.spi;
 
 import esa.commons.Checks;
 import esa.commons.collection.AttributeKey;
-import esa.commons.function.Function3;
 import esa.commons.logging.Logger;
 import esa.commons.logging.LoggerFactory;
 import io.esastack.commons.net.buffer.BufferUtil;
 import io.esastack.commons.net.netty.http.Http1HeadersAdaptor;
 import io.esastack.commons.net.netty.http.Http1HeadersImpl;
 import io.esastack.restlight.core.method.Param;
-import io.esastack.restlight.core.resolver.StringConverter;
+import io.esastack.restlight.core.resolver.StringConverterProvider;
 import io.esastack.restlight.core.resolver.nav.NameAndValue;
 import io.esastack.restlight.core.resolver.nav.NameAndValueResolver;
 import io.esastack.restlight.core.resolver.nav.NameAndValueResolverFactory;
@@ -45,7 +44,6 @@ import io.netty.handler.codec.http.multipart.HttpPostRequestDecoder;
 import io.netty.handler.codec.http.multipart.InterfaceHttpData;
 
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -72,8 +70,8 @@ abstract class AbstractMultipartParamResolver extends NameAndValueResolverFactor
     @SuppressWarnings("rawtypes")
     @Override
     protected NameAndValueResolver createResolver(Param param,
-                                                  Function3<Class<?>, Type, Param, StringConverter> converterFunc) {
-        final NameAndValueResolver resolver = doCreateResolver(param, converterFunc);
+                                                  StringConverterProvider converters) {
+        final NameAndValueResolver resolver = doCreateResolver(param, converters);
         Checks.checkNotNull(resolver, "resolver");
         return new NameAndValueResolver() {
             @Override
@@ -130,12 +128,11 @@ abstract class AbstractMultipartParamResolver extends NameAndValueResolverFactor
      * Creates {@link NameAndValueResolver} by given {@code param} and {@code converterFunc}.
      *
      * @param param             param
-     * @param converterFunc     converter function
+     * @param converters        converters
      * @return                  resolver
      */
     protected abstract NameAndValueResolver doCreateResolver(Param param,
-                                                             Function3<Class<?>, Type, Param,
-                                                                     StringConverter> converterFunc);
+                                                             StringConverterProvider converters);
 
 
     private static String getAndClean(Attribute attr) throws IOException {

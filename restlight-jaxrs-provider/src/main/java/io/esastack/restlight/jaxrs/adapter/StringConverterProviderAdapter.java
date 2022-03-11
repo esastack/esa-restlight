@@ -18,13 +18,11 @@ package io.esastack.restlight.jaxrs.adapter;
 import esa.commons.Checks;
 import esa.commons.ClassUtils;
 import esa.commons.reflect.AnnotationUtils;
-import io.esastack.restlight.core.method.Param;
 import io.esastack.restlight.core.resolver.StringConverter;
 import io.esastack.restlight.core.resolver.StringConverterFactory;
 import jakarta.ws.rs.ext.ParamConverter;
 import jakarta.ws.rs.ext.ParamConverterProvider;
 
-import java.lang.reflect.Type;
 import java.util.Optional;
 
 public class StringConverterProviderAdapter implements StringConverterFactory {
@@ -39,8 +37,9 @@ public class StringConverterProviderAdapter implements StringConverterFactory {
     }
 
     @Override
-    public Optional<StringConverter> createConverter(Class<?> type, Type genericType, Param param) {
-        ParamConverter<?> converter = underlying.getConverter(type, genericType, param.annotations());
+    public Optional<StringConverter> createConverter(ConvertedKey key) {
+        ParamConverter<?> converter = underlying.getConverter(key.type(), key.genericType(),
+                key.param().annotations());
         if (converter == null) {
             return Optional.empty();
         }

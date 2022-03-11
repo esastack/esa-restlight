@@ -16,13 +16,11 @@
 package io.esastack.restlight.core.resolver;
 
 import esa.commons.Checks;
-import esa.commons.function.Function3;
 import esa.commons.spi.SPI;
 import io.esastack.restlight.core.method.Param;
 import io.esastack.restlight.core.serialize.HttpRequestSerializer;
 import io.esastack.restlight.core.util.Ordered;
 
-import java.lang.reflect.Type;
 import java.util.List;
 
 @SPI
@@ -31,7 +29,7 @@ public interface RequestEntityResolverFactory extends ParamPredicate, Ordered {
     /**
      * Converts given {@link RequestEntityResolverAdapter} to {@link RequestEntityResolverFactory} which
      * always use the given {@link RequestEntityResolverAdapter} as the result of
-     * {@link #createResolver(Param, Function3, List)}
+     * {@link #createResolver(Param, StringConverterProvider, List)}
      *
      * @param resolver resolver
      * @return of factory bean
@@ -44,13 +42,13 @@ public interface RequestEntityResolverFactory extends ParamPredicate, Ordered {
      * Creates an instance of {@link RequestEntityResolver} for given handler method.
      *
      * @param param         param
-     * @param converterFunc converter function which is used to get a {@link StringConverter} for given {@link Param},
-     *                      see {@link HandlerResolverFactory#getStringConverter(Class, Type, Param)}.
+     * @param converters    the provider which is used to get a {@link StringConverter} when resolving
+     *                      given {@code param}.
      * @param serializers   all the {@link HttpRequestSerializer}s in the context
      * @return resolver
      */
     RequestEntityResolver createResolver(Param param,
-                                         Function3<Class<?>, Type, Param, StringConverter> converterFunc,
+                                         StringConverterProvider converters,
                                          List<? extends HttpRequestSerializer> serializers);
 
     @Override
@@ -74,7 +72,7 @@ public interface RequestEntityResolverFactory extends ParamPredicate, Ordered {
 
         @Override
         public RequestEntityResolver createResolver(Param param,
-                                                    Function3<Class<?>, Type, Param, StringConverter> converterFunc,
+                                                    StringConverterProvider converters,
                                                     List<? extends HttpRequestSerializer> serializers) {
             return resolver;
         }

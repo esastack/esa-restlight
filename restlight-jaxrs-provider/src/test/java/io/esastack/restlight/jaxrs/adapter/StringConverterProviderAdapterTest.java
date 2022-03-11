@@ -17,6 +17,7 @@ package io.esastack.restlight.jaxrs.adapter;
 
 import io.esastack.restlight.core.method.Param;
 import io.esastack.restlight.core.resolver.StringConverter;
+import io.esastack.restlight.core.resolver.StringConverterFactory;
 import jakarta.ws.rs.ext.ParamConverter;
 import jakarta.ws.rs.ext.ParamConverterProvider;
 import org.junit.jupiter.api.Test;
@@ -41,10 +42,12 @@ class StringConverterProviderAdapterTest {
         final StringConverterProviderAdapter adapter = new StringConverterProviderAdapter(provider, 100);
         assertEquals(100, adapter.getOrder());
 
-        assertFalse(adapter.createConverter(null, null, mock(Param.class)).isPresent());
+        assertFalse(adapter.createConverter(StringConverterFactory.ConvertedKey.of(null, null,
+                mock(Param.class))).isPresent());
 
         doReturn(new ParamConverterImpl()).when(provider).getConverter(any(), any(), any());
-        Optional<StringConverter> converter = adapter.createConverter(null, null, mock(Param.class));
+        Optional<StringConverter> converter = adapter.createConverter(StringConverterFactory.ConvertedKey
+                .of(null, null, mock(Param.class)));
         assertTrue(converter.isPresent());
         assertEquals("ABC", converter.get().fromString(null));
         assertTrue(converter.get().isLazy());

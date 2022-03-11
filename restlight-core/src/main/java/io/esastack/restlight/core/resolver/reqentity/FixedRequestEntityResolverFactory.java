@@ -15,7 +15,6 @@
  */
 package io.esastack.restlight.core.resolver.reqentity;
 
-import esa.commons.function.Function3;
 import esa.commons.reflect.AnnotationUtils;
 import io.esastack.restlight.core.annotation.RequestSerializer;
 import io.esastack.restlight.core.annotation.Serializer;
@@ -25,12 +24,12 @@ import io.esastack.restlight.core.resolver.RequestEntity;
 import io.esastack.restlight.core.resolver.RequestEntityResolver;
 import io.esastack.restlight.core.resolver.RequestEntityResolverFactory;
 import io.esastack.restlight.core.resolver.StringConverter;
+import io.esastack.restlight.core.resolver.StringConverterProvider;
 import io.esastack.restlight.core.resolver.nav.NameAndValue;
 import io.esastack.restlight.core.serialize.HttpRequestSerializer;
 import io.esastack.restlight.server.context.RequestContext;
 
 import java.lang.reflect.Modifier;
-import java.lang.reflect.Type;
 import java.util.List;
 
 import static io.esastack.restlight.core.resolver.reqentity.FlexibleRequestEntityResolverFactory.checkRequired;
@@ -59,7 +58,7 @@ public abstract class FixedRequestEntityResolverFactory implements RequestEntity
 
     @Override
     public RequestEntityResolver createResolver(Param param,
-                                                Function3<Class<?>, Type, Param, StringConverter> converterFunc,
+                                                StringConverterProvider converters,
                                                 List<? extends HttpRequestSerializer> serializers) {
         final Class<? extends HttpRequestSerializer> target = findRequestSerializer(param);
         //findFor the first matched one
@@ -69,7 +68,7 @@ public abstract class FixedRequestEntityResolverFactory implements RequestEntity
                 .orElseThrow(() -> new IllegalArgumentException("Could not findFor RequestBody serializer. " +
                         "target type:" + target.getName()));
 
-        StringConverter converter = converterFunc.apply(param.type(), param.genericType(), param);
+        StringConverter converter = converters.get(StringConverterProvider.Key.from(param));
         if (converter == null) {
             converter = value -> value;
         }

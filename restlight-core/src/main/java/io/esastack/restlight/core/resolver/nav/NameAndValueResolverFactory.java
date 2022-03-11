@@ -15,34 +15,32 @@
  */
 package io.esastack.restlight.core.resolver.nav;
 
-import esa.commons.function.Function3;
 import io.esastack.restlight.core.method.Param;
 import io.esastack.restlight.core.resolver.ParamResolver;
 import io.esastack.restlight.core.resolver.ParamResolverFactory;
 import io.esastack.restlight.core.resolver.StringConverter;
+import io.esastack.restlight.core.resolver.StringConverterProvider;
 import io.esastack.restlight.core.serialize.HttpRequestSerializer;
 
-import java.lang.reflect.Type;
 import java.util.List;
 
 public abstract class NameAndValueResolverFactory implements ParamResolverFactory {
 
     @Override
     public ParamResolver createResolver(Param param,
-                                        Function3<Class<?>, Type, Param, StringConverter> converterFunc,
+                                        StringConverterProvider converters,
                                         List<? extends HttpRequestSerializer> serializers) {
-        return new NameAndValueResolverAdapter(param, createResolver(param, converterFunc));
+        return new NameAndValueResolverAdapter(param, createResolver(param, converters));
     }
 
     /**
      * Creates an instance of {@link NameAndValueResolver} for given handler method.
      *
-     * @param param           method
-     * @param converterFunc   the function which is used to compute a {@link StringConverter} by specified param.
+     * @param param      method
+     * @param converters the function which is used to compute a {@link StringConverter} by specified param.
      * @return resolver
      */
     protected abstract NameAndValueResolver createResolver(Param param,
-                                                           Function3<Class<?>, Type, Param,
-                                                                   StringConverter> converterFunc);
+                                                           StringConverterProvider converters);
 
 }

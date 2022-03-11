@@ -15,35 +15,32 @@
  */
 package io.esastack.restlight.core.spi.impl;
 
-import io.esastack.restlight.core.method.Param;
 import io.esastack.restlight.core.resolver.StringConverter;
 import io.esastack.restlight.core.resolver.StringConverterFactory;
 import io.esastack.restlight.core.util.ConverterUtils;
 
-import java.lang.reflect.Type;
 import java.util.Optional;
 import java.util.function.Function;
 
 public class DefaultStringConverterFactory implements StringConverterFactory {
 
     @Override
-    public Optional<StringConverter> createConverter(Class<?> type, Type genericType, Param param) {
-        Function<String, Object> converter = null;
-        if (genericType != null) {
-            converter = ConverterUtils.str2ObjectConverter(genericType);
-        } else if (type != null) {
-            converter = ConverterUtils.str2ObjectConverter(type);
-        }
-
-        if (converter == null) {
+    public Optional<StringConverter> createConverter(ConvertedKey key) {
+        if (key.type() == null && key.genericType() == null) {
             return Optional.empty();
         }
 
-        Function<String, Object> finalConverter = converter;
+        final Function<String, Object> converter;
+        if (key.genericType() != null) {
+            converter = ConverterUtils.str2ObjectConverter(key.genericType());
+        } else {
+            converter = ConverterUtils.str2ObjectConverter(key.type());
+        }
+
         return Optional.of(new StringConverter() {
             @Override
             public Object fromString(String value) {
-                return finalConverter.apply(value);
+                return converter.apply(value);
             }
 
             @Override
