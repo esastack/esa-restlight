@@ -25,7 +25,6 @@ import io.esastack.restlight.core.handler.HandlerValueResolver;
 import io.esastack.restlight.core.method.HandlerMethod;
 import io.esastack.restlight.core.method.MethodParam;
 import io.esastack.restlight.core.method.ResolvableParam;
-import io.esastack.restlight.core.resolver.HandlerResolverFactory;
 import io.esastack.restlight.server.bootstrap.WebServerException;
 import io.esastack.restlight.server.context.RequestContext;
 import io.esastack.restlight.server.route.Execution;
@@ -52,7 +51,7 @@ abstract class AbstractExecution<H extends HandlerMethodAdapter> implements Exec
         Checks.checkNotNull(handlerMethod, "handlerMethod");
         Checks.checkState(handlerMethod.context().resolverFactory().isPresent(), "resolverFactory is null");
         this.handlerResolver = handlerResolver;
-        this.transfer = ((HandlerResolverFactory) handlerMethod.context().resolverFactory().get())
+        this.transfer = handlerMethod.context().resolverFactory().get()
                 .getFutureTransfer(handlerMethod.handlerMethod());
         this.handlerMethod = handlerMethod;
     }

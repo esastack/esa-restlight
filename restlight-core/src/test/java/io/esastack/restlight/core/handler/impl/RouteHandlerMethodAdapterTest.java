@@ -49,7 +49,7 @@ class RouteHandlerMethodAdapterTest {
     }
 
     @Test
-    void testConstruct() throws NoSuchMethodException {
+    void testConstruct() throws Exception {
         MockHandlerData mockData = new MockHandlerData();
 
         RouteHandlerMethodAdapter routeHandlerMethodAdapter = build(mockData.mapping(),
@@ -67,7 +67,7 @@ class RouteHandlerMethodAdapterTest {
     }
 
     @Test
-    void testMatchSimpleInterceptor() throws NoSuchMethodException {
+    void testMatchSimpleInterceptor() throws Exception {
         final MultiValueMap<InterceptorPredicate, Interceptor> interceptors = new LinkedMultiValueMap<>();
         final Interceptor interceptor0 = new Interceptor() {
             @Override
@@ -123,7 +123,7 @@ class RouteHandlerMethodAdapterTest {
     }
 
     @Test
-    void testMatchComplexInterceptor() throws NoSuchMethodException {
+    void testMatchComplexInterceptor() throws Exception {
         final MultiValueMap<InterceptorPredicate, Interceptor> interceptors = new LinkedMultiValueMap<>();
         final InterceptorPredicate p0 = mock(InterceptorPredicate.class);
         when(p0.test(any())).thenReturn(true);

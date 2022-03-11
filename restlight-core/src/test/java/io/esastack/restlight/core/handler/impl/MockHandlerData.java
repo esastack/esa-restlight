@@ -36,21 +36,23 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class MockHandlerData {
-    final HandlerMapping mapping;
-    final RouteMethodInfo methodInfo;
-    final Method method;
-    final RouteHandlerMethod handlerMethod;
-    final HandlerContext context;
-    final HandlerResolverFactory resolverFactory;
-    final ExceptionResolver<Throwable> exceptionResolver;
-    final MultiValueMap<InterceptorPredicate, Interceptor> interceptors;
-    final HandlerValueResolver handlerValueResolver;
+    private final HandlerMapping mapping;
+    private final RouteMethodInfo methodInfo;
+    private final Method method;
+    private final RouteHandlerMethod handlerMethod;
+    private final HandlerContext context;
+    private final HandlerResolverFactory resolverFactory;
+    private final ExceptionResolver<Throwable> exceptionResolver;
+    private final MultiValueMap<InterceptorPredicate, Interceptor> interceptors;
+    private final HandlerValueResolver handlerValueResolver;
+    private final HandlerMethodAdapter handlerMethodAdapter;
 
-    public MockHandlerData() throws NoSuchMethodException {
+    public MockHandlerData() throws Exception {
         mapping = mock(HandlerMapping.class);
         methodInfo = mock(RouteMethodInfo.class);
         method = Subject.class
@@ -70,6 +72,7 @@ public class MockHandlerData {
         handlerValueResolver = mock(HandlerValueResolver.class);
         interceptors = new LinkedMultiValueMap<>();
         exceptionResolver = mock(ExceptionResolver.class);
+        handlerMethodAdapter = new HandlerMethodAdapter<>(context, handlerMethod);
     }
 
     public HandlerMapping mapping() {
@@ -108,19 +111,27 @@ public class MockHandlerData {
         return handlerValueResolver;
     }
 
-    private HandlerResolverFactory mockResolverFactory(HandlerMethod handlerMethod) {
+    public HandlerMethodAdapter handlerMethodAdapter() {
+        return handlerMethodAdapter;
+    }
+
+    private HandlerResolverFactory mockResolverFactory(HandlerMethod handlerMethod) throws Exception {
         final HandlerResolverFactory resolverFactory = mock(HandlerResolverFactory.class);
         ContextResolver p1Resolver = mock(ContextResolver.class);
         when(resolverFactory.getContextResolver(handlerMethod.parameters()[0]))
                 .thenReturn(p1Resolver);
+        when(p1Resolver.resolve(any(), any())).thenReturn(null);
 
         ParamResolver p2Resolver = mock(ParamResolver.class);
         when(resolverFactory.getParamResolver(handlerMethod.parameters()[1]))
                 .thenReturn(p2Resolver);
+        when(p2Resolver.resolve(any(), any())).thenReturn(null);
 
         List<RequestEntityResolver> p3Resolver = mock(List.class);
         when(resolverFactory.getRequestEntityResolvers(handlerMethod.parameters()[2]))
                 .thenReturn(p3Resolver);
+//        when(p3Resolver.(any(), any())).thenReturn(null);
+
         return resolverFactory;
     }
 
