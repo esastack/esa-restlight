@@ -3,7 +3,7 @@ name: github pages
 on:
   push:
     branches:
-      - 1.0  # Set a branch to deploy
+    - 1.0  # Set a branch to deploy
 jobs:
   deploy:
     runs-on: ubuntu-18.04
@@ -39,10 +39,10 @@ jobs:
       env:
         HUGO_ENV: production
 
-      - name: Deploy
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_branch: gh-pages
-          publish_dir: site/public
-          cname: restlight.esastack.io
+    - name: Deploy
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_branch: gh-pages
+        publish_dir: site/public
+        cname: restlight.esastack.io
