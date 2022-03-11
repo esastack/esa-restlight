@@ -1,0 +1,107 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>ESA Restlight – JAX-RS 支持</title>
+    <link>/docs-v0.1.1/jaxrs_support/</link>
+    <description>Recent content in JAX-RS 支持 on ESA Restlight</description>
+    <generator>Hugo -- gohugo.io</generator>
+    
+	  <atom:link href="/docs-v0.1.1/jaxrs_support/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+      
+        
+      
+    
+    
+    <item>
+      <title>Docs-V0.1.1: JAX-RS 注解支持</title>
+      <link>/docs-v0.1.1/jaxrs_support/annotations_support/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/docs-v0.1.1/jaxrs_support/annotations_support/</guid>
+      <description>
+        
+        
+        &lt;h2 id=&#34;支持的注解&#34;&gt;支持的注解&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;@Path&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;@GET&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;@POST&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;@PUT&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;@DELETE&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;@HEAD&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;@PATCH&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;@OPTIONS&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;@Consumes&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;@Produces&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;@QueryParam&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;@PathParam&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;@HeaderParam&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;@MatrixParam&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;@CookieParam&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;@FormParam&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;@BeanParam&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;@DefaultValue&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+
+&lt;div class=&#34;alert alert-primary&#34; role=&#34;alert&#34;&gt;
+&lt;h4 class=&#34;alert-heading&#34;&gt;Note&lt;/h4&gt;
+
+    现阶段&lt;code&gt;Restlight&lt;/code&gt;仅实现了&lt;code&gt;JAX-RS&lt;/code&gt;的注解， 其余功能暂未实现（&lt;code&gt;Provider&lt;/code&gt;, &lt;code&gt;Request&lt;/code&gt;, &lt;code&gt;Response&lt;/code&gt;）等暂不支持
+
+&lt;/div&gt;
+
+&lt;h2 id=&#34;注解使用&#34;&gt;注解使用&lt;/h2&gt;
+&lt;p&gt;&lt;code&gt;@QueryParam&lt;/code&gt;, &lt;code&gt;@PathParam&lt;/code&gt;,&lt;code&gt;@HeaderParam&lt;/code&gt;,&lt;code&gt;@MatrixParam&lt;/code&gt;, &lt;code&gt;@MatrixVariable&lt;/code&gt;,&lt;code&gt;@FormParam&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;参数绑不支持&lt;code&gt;javax.ws.rs.ext.ParamConverterProvier&lt;/code&gt;扩展&lt;/p&gt;
+&lt;h2 id=&#34;个别注解说明&#34;&gt;个别注解说明&lt;/h2&gt;
+&lt;h3 id=&#34;queryparam&#34;&gt;&lt;code&gt;@QueryParam&lt;/code&gt;&lt;/h3&gt;
+&lt;p&gt;除普通用法外， 当未指定&lt;code&gt;value()&lt;/code&gt;或者&lt;code&gt;name&lt;/code&gt;且参数对象为&lt;code&gt;Map&amp;lt;String, List&amp;lt;String&amp;gt;&lt;/code&gt;类型时， 将整个ParameterMap（即AsyncRequest.getParameterMap）作为参数的值。&lt;/p&gt;
+&lt;p&gt;eg.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#000&#34;&gt;foo&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color:#5c35cc;font-weight:bold&#34;&gt;@QueryParam&lt;/span&gt; &lt;span style=&#34;color:#000&#34;&gt;Map&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span style=&#34;color:#000&#34;&gt;String&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;,&lt;/span&gt; &lt;span style=&#34;color:#000&#34;&gt;List&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span style=&#34;color:#000&#34;&gt;String&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;&amp;gt;&lt;/span&gt; &lt;span style=&#34;color:#000&#34;&gt;params&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;{&lt;/span&gt;
+    &lt;span style=&#34;color:#8f5902;font-style:italic&#34;&gt;//...
+&lt;/span&gt;&lt;span style=&#34;color:#8f5902;font-style:italic&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;div class=&#34;alert alert-primary&#34; role=&#34;alert&#34;&gt;
+&lt;h4 class=&#34;alert-heading&#34;&gt;Note&lt;/h4&gt;
+
+    除url中的参数之外同时支持Post中Content-Type为application/x-www-form-urlencoded的form表单参数
+
+&lt;/div&gt;
+
+&lt;h3 id=&#34;cookieparam&#34;&gt;&lt;code&gt;@CookieParam&lt;/code&gt;&lt;/h3&gt;
+&lt;p&gt;普通&lt;code&gt;String&lt;/code&gt;类型&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#000&#34;&gt;foo&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color:#5c35cc;font-weight:bold&#34;&gt;@CookieParam&lt;/span&gt; &lt;span style=&#34;color:#000&#34;&gt;String&lt;/span&gt; &lt;span style=&#34;color:#000&#34;&gt;c&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;{&lt;/span&gt;
+    &lt;span style=&#34;color:#8f5902;font-style:italic&#34;&gt;//...
+&lt;/span&gt;&lt;span style=&#34;color:#8f5902;font-style:italic&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;code&gt;Cookie&lt;/code&gt;对象(io.netty.handler.codec.http.cookie.Cookie)&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#000&#34;&gt;foo&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color:#5c35cc;font-weight:bold&#34;&gt;@CookieParam&lt;/span&gt; &lt;span style=&#34;color:#000&#34;&gt;Cookie&lt;/span&gt; &lt;span style=&#34;color:#000&#34;&gt;c&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;{&lt;/span&gt;
+    &lt;span style=&#34;color:#8f5902;font-style:italic&#34;&gt;//...
+&lt;/span&gt;&lt;span style=&#34;color:#8f5902;font-style:italic&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;获取所有的&lt;code&gt;Cookie&lt;/code&gt;&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#000&#34;&gt;foo&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color:#5c35cc;font-weight:bold&#34;&gt;@CookieParam&lt;/span&gt; &lt;span style=&#34;color:#000&#34;&gt;Set&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span style=&#34;color:#000&#34;&gt;Cookie&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;&amp;gt;&lt;/span&gt; &lt;span style=&#34;color:#000&#34;&gt;cookies&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;{&lt;/span&gt;
+    &lt;span style=&#34;color:#8f5902;font-style:italic&#34;&gt;//...
+&lt;/span&gt;&lt;span style=&#34;color:#8f5902;font-style:italic&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;div class=&#34;alert alert-primary&#34; role=&#34;alert&#34;&gt;
+&lt;h4 class=&#34;alert-heading&#34;&gt;Note&lt;/h4&gt;
+
+    不支持&lt;code&gt;JAX-RS&lt;/code&gt;中的&lt;code&gt;jax.ws.rs.core.Cookie&lt;/code&gt;， 仅支持&lt;code&gt;io.netty.handler.codec.http.cookie.Cookie&lt;/code&gt;
+
+&lt;/div&gt;
+
+&lt;h3 id=&#34;headerparam&#34;&gt;&lt;code&gt;@HeaderParam&lt;/code&gt;&lt;/h3&gt;
+&lt;p&gt;除获取单个header之外， 可以如果参数类型为&lt;code&gt;io.netty.handler.codec.http.HttpHeaders&lt;/code&gt;则以所有的Header作为参数的值&lt;/p&gt;
+&lt;p&gt;eg:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#000&#34;&gt;foo&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color:#5c35cc;font-weight:bold&#34;&gt;@HeaderParam&lt;/span&gt; &lt;span style=&#34;color:#000&#34;&gt;HttpHeaders&lt;/span&gt; &lt;span style=&#34;color:#000&#34;&gt;headers&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;{&lt;/span&gt;
+    &lt;span style=&#34;color:#8f5902;font-style:italic&#34;&gt;//...
+&lt;/span&gt;&lt;span style=&#34;color:#8f5902;font-style:italic&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+      </description>
+    </item>
+    
+  </channel>
+</rss>

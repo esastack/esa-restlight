@@ -1,0 +1,1186 @@
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="generator" content="Hugo 0.92.2" />
+<link rel="canonical" type="text/html" href="/docs/restlight_ext/">
+<link rel="alternate" type="application/rss&#43;xml" href="/docs/restlight_ext/index.xml">
+<meta name="robots" content="noindex, nofollow">
+
+
+<link rel="shortcut icon" href="/favicons/favicon.ico" >
+<link rel="apple-touch-icon" href="/favicons/apple-touch-icon-180x180.png" sizes="180x180">
+<link rel="icon" type="image/png" href="/favicons/favicon-16x16.png" sizes="16x16">
+<link rel="icon" type="image/png" href="/favicons/favicon-32x32.png" sizes="32x32">
+<link rel="icon" type="image/png" href="/favicons/android-36x36.png" sizes="36x36">
+<link rel="icon" type="image/png" href="/favicons/android-48x48.png" sizes="48x48">
+<link rel="icon" type="image/png" href="/favicons/android-72x72.png" sizes="72x72">
+<link rel="icon" type="image/png" href="/favicons/android-96x96.png" sizes="96x96">
+<link rel="icon" type="image/png" href="/favicons/android-144x144.png" sizes="144x144">
+<link rel="icon" type="image/png" href="/favicons/android-192x192.png" sizes="192x192">
+
+<title>扩展能力 | ESA Restlight</title>
+<meta name="description" content="`Restlight`内置了常用的Filter（IP白名单、新建连接数限制、CPU过载保护）、Interceptor(访问日志、参数签名验证)和表单参数解析器
+">
+<meta property="og:title" content="扩展能力" />
+<meta property="og:description" content="`Restlight`内置了常用的Filter（IP白名单、新建连接数限制、CPU过载保护）、Interceptor(访问日志、参数签名验证)和表单参数解析器
+" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="/docs/restlight_ext/" /><meta property="og:site_name" content="ESA Restlight" />
+
+<meta itemprop="name" content="扩展能力">
+<meta itemprop="description" content="`Restlight`内置了常用的Filter（IP白名单、新建连接数限制、CPU过载保护）、Interceptor(访问日志、参数签名验证)和表单参数解析器
+"><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="扩展能力"/>
+<meta name="twitter:description" content="`Restlight`内置了常用的Filter（IP白名单、新建连接数限制、CPU过载保护）、Interceptor(访问日志、参数签名验证)和表单参数解析器
+"/>
+
+
+
+
+<link rel="preload" href="/scss/main.min.d6e0d5abc6f6a3c1d53dbb7d3961f4afa416f54a6cd0393408d9a241c4e351fa.css" as="style">
+<link href="/scss/main.min.d6e0d5abc6f6a3c1d53dbb7d3961f4afa416f54a6cd0393408d9a241c4e351fa.css" rel="stylesheet" integrity="">
+
+<script
+  src="https://code.jquery.com/jquery-3.6.0.min.js"
+  integrity="sha384-vtXRMe3mGCbOeY7l30aIg8H9p3GdeSe4IFlP6G8JMa7o7lXvnz3GFKzPxzJdPfGK"
+  crossorigin="anonymous"></script>
+
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-00000000-0', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+  </head>
+  <body class="td-section">
+    <header>
+      
+<nav class="js-navbar-scroll navbar navbar-expand navbar-dark flex-column flex-md-row td-navbar">
+        <a class="navbar-brand" href="/">
+		<span class="navbar-logo"><svg id="layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 180 180" style="enable-background:new 0 0 180 180"><style>.st0{fill-rule:evenodd;clip-rule:evenodd;fill:#fff}.st1{opacity:.6;fill-rule:evenodd;clip-rule:evenodd;fill:#fff;enable-background:new}.st2{opacity:.3;fill-rule:evenodd;clip-rule:evenodd;fill:#fff;enable-background:new}</style><g><path class="st0" d="M127.6 95.9c-11-2.2-23.9-3.5-37.7-3.5-13.9.0-26.8 1.2-37.7 3.5 11 2.2 23.9 3.5 37.7 3.5S116.7 98 127.6 95.9zM135.8 97.8c-12.7 3.2-28.6 5.2-45.9 5.2s-33.3-2-45.9-5.2c-2.1.5-4.1 1.1-5.9 1.7-6.5 2.2-11.6 4.7-14.9 7.3-3.3 2.6-4.4 4.9-4.4 6.8s1.1 4.2 4.4 6.8 8.4 5.2 14.9 7.3c13.1 4.3 31.5 7 51.8 7s38.7-2.7 51.8-7c6.5-2.2 11.6-4.7 14.9-7.3s4.4-4.9 4.4-6.8-1.1-4.2-4.4-6.8-8.4-5.2-14.9-7.3C139.9 98.9 137.9 98.3 135.8 97.8z"/><path class="st1" d="M120.9 59.2C111.5 57.7 101 57 89.8 57c-11.1.0-21.7.9-31.1 2.2 9.4 1.5 19.9 2.2 31.1 2.2C101 61.5 111.5 60.7 120.9 59.2zm10 1.8c-11.8 2.6-25.9 4.1-41 4.1-15.2.0-29.2-1.5-41-4.1-3.9.9-7.5 1.9-10.9 3-6.5 2.2-11.6 4.7-14.9 7.3-3.3 2.6-4.4 4.9-4.4 6.8s1.1 4.2 4.4 6.8c3.3 2.6 8.4 5.2 14.9 7.3 13.1 4.3 31.5 7 51.8 7s38.7-2.7 51.8-7c6.5-2.2 11.6-4.7 14.9-7.3s4.4-4.9 4.4-6.8-1.1-4.2-4.4-6.8-8.4-5.2-14.9-7.3C138.4 63 134.8 62 130.9 61z"/><path class="st2" d="M161.1 40.3c0 1.9-1.1 4.2-4.4 6.8-3.3 2.6-8.4 5.2-14.9 7.3-13.1 4.3-31.5 7-51.8 7s-38.7-2.7-51.8-7c-6.5-2.2-11.6-4.7-14.9-7.3s-4.4-4.9-4.4-6.8 1.1-4.2 4.4-6.8 8.4-5.2 14.9-7.3c13.1-4.3 31.5-7 51.8-7s38.7 2.7 51.8 7c6.5 2.2 11.6 4.7 14.9 7.3S161.1 38.5 161.1 40.3z"/></g></svg></span><span class="font-weight-bold">ESA Restlight</span>
+	</a>
+	<div class="td-navbar-nav-scroll ml-md-auto" id="main_navbar">
+		<ul class="navbar-nav mt-2 mt-lg-0">
+			
+			
+			<li class="nav-item mr-4 mb-2 mb-lg-0">
+				
+				
+				
+				
+				
+				
+				<a class="nav-link" href="/docs/" ><i class='fas fa-book pr-2'></i><span>Docs</span></a>
+			</li>
+			
+			<li class="nav-item mr-4 mb-2 mb-lg-0">
+				
+				
+				
+				
+				
+				
+				<a class="nav-link" href="/blog/" ><i class='fas fa-rss pr-2'></i><span>Blog</span></a>
+			</li>
+			
+			<li class="nav-item mr-4 mb-2 mb-lg-0">
+				
+				
+				
+				
+				
+				
+				<a class="nav-link" href="https://github.com/esastack/esa-restlight" target="_blank" ><i class='fab fa-github pr-2'></i><span>Github</span></a>
+			</li>
+			
+			<li class="nav-item mr-4 mb-2 mb-lg-0">
+				
+				
+				
+				
+				
+				
+				<a class="nav-link" href="https://www.esastack.io" target="_blank" ><span>ESA Stack</span></a>
+			</li>
+			
+
+
+
+
+
+			
+		</ul>
+	</div>
+	<div class="navbar-nav d-none d-lg-block"><input type="search" class="form-control td-search-input" placeholder="&#xf002; Search this site…" aria-label="Search this site…" autocomplete="off">
+</div>
+</nav>
+
+    </header>
+    <div class="container-fluid td-outer">
+      <div class="td-main">
+        <div class="row flex-xl-nowrap">
+          <main class="col-12 col-md-9 col-xl-8 pl-md-5" role="main">
+            
+
+
+
+
+<div class="td-content">
+<div class="pageinfo pageinfo-primary d-print-none">
+<p>
+This is the multi-page printable view of this section.
+<a href="#" onclick="print();return false;">Click here to print</a>.
+</p><p>
+<a href="/docs/restlight_ext/">Return to the regular view of this page</a>.
+</p>
+</div>
+
+
+
+<h1 class="title">扩展能力</h1>
+<div class="lead"><code>Restlight</code>内置了常用的Filter（IP白名单、新建连接数限制、CPU过载保护）、Interceptor(访问日志、参数签名验证)和表单参数解析器</div>
+
+
+
+
+    <ul>
+    
+  
+  
+  
+  
+
+  
+    
+    
+	
+<li>1: <a href="#pg-565e90f031add052259807c8bd2afe76">新建连接数限制</a></li>
+
+
+    
+  
+    
+    
+	
+<li>2: <a href="#pg-2c62ed94d1fc1376101e882daea64604">CPU Load保护</a></li>
+
+
+    
+  
+    
+    
+	
+<li>3: <a href="#pg-7d39489b3769120a91d18d02e839cd61">Access Log</a></li>
+
+
+    
+  
+    
+    
+	
+<li>4: <a href="#pg-263ce0837051e5d3ff7c6fa617a3b818">跨域</a></li>
+
+
+    
+  
+    
+    
+	
+<li>5: <a href="#pg-7e5633cdbac5b3f1ddc6d0ffd2b54aef">文件及表单参数解析</a></li>
+
+
+    
+  
+    
+    
+	
+<li>6: <a href="#pg-30b8e819f78dc39f2d491e31f4e40af8">签名认证</a></li>
+
+
+    
+  
+    
+    
+	
+<li>7: <a href="#pg-d942ecd2ec2d2eb4b01636561f9861b7">XSS过滤</a></li>
+
+
+    
+  
+    
+    
+	
+<li>8: <a href="#pg-5244fafd526f119d0232178cd1dbc931">IP白名单</a></li>
+
+
+    
+  
+    
+    
+	
+<li>9: <a href="#pg-ef42401d76c218bc23a80a78d7b6f80a">数据校验</a></li>
+
+
+    
+  
+
+    </ul>
+
+
+<div class="content">
+      <p>可以一次引入所有扩展能力</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml">
+<span style="color:#204a87;font-weight:bold">&lt;dependency&gt;</span>
+	<span style="color:#204a87;font-weight:bold">&lt;groupId&gt;</span>io.esastack<span style="color:#204a87;font-weight:bold">&lt;/groupId&gt;</span>
+	<span style="color:#204a87;font-weight:bold">&lt;artifactId&gt;</span>restlight-ext-starter<span style="color:#204a87;font-weight:bold">&lt;/artifactId&gt;</span>
+	<span style="color:#204a87;font-weight:bold">&lt;version&gt;</span>${restlight.version}<span style="color:#204a87;font-weight:bold">&lt;/version&gt;</span>
+<span style="color:#204a87;font-weight:bold">&lt;/dependency&gt;</span>
+</code></pre></div>
+</div>
+</div>
+
+
+  
+  
+  
+  
+
+  
+  
+
+  
+    
+    
+	
+    
+
+<div class="td-content" style="">
+    
+	<h1 id="pg-565e90f031add052259807c8bd2afe76">1 - 新建连接数限制</h1>
+    
+	<p>使用新建连接数限制时请先确保引入了依赖：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#204a87;font-weight:bold">&lt;dependency&gt;</span>
+	<span style="color:#204a87;font-weight:bold">&lt;groupId&gt;</span>io.esastack<span style="color:#204a87;font-weight:bold">&lt;/groupId&gt;</span>
+	<span style="color:#204a87;font-weight:bold">&lt;artifactId&gt;</span>restlight-ext-filter-starter<span style="color:#204a87;font-weight:bold">&lt;/artifactId&gt;</span>
+	<span style="color:#204a87;font-weight:bold">&lt;version&gt;</span>${restlight.version}<span style="color:#204a87;font-weight:bold">&lt;/version&gt;</span>
+<span style="color:#204a87;font-weight:bold">&lt;/dependency&gt;</span>
+</code></pre></div><p>当前服务的新建连接数进行QPS限制。超过连接数限制的请求将被拒绝。</p>
+<p>使用方式：</p>
+<pre tabindex="0"><code class="language-properties" data-lang="properties">#开启新建连接数限制
+restlight.server.ext.connection-creation-limit.enable=true
+#设置每秒限制4000个新建连接,默认为20000
+restlight.server.ext.connection-creation-limit.max-per-second=40000
+</code></pre>
+</div>
+
+
+
+    
+	
+  
+    
+    
+	
+    
+
+<div class="td-content" style="page-break-before: always">
+    
+	<h1 id="pg-2c62ed94d1fc1376101e882daea64604">2 - CPU Load保护</h1>
+    <div class="lead">当服务宿主机Cpu负载达到一定阈值之后开始随机丢弃连接（新建连接， 已经建立的连接不受影响）</div>
+	<p>使用新建连接数限制时请先确保引入了依赖：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#204a87;font-weight:bold">&lt;dependency&gt;</span>
+	<span style="color:#204a87;font-weight:bold">&lt;groupId&gt;</span>io.esastack<span style="color:#204a87;font-weight:bold">&lt;/groupId&gt;</span>
+	<span style="color:#204a87;font-weight:bold">&lt;artifactId&gt;</span>restlight-ext-filter-starter<span style="color:#204a87;font-weight:bold">&lt;/artifactId&gt;</span>
+	<span style="color:#204a87;font-weight:bold">&lt;version&gt;</span>${restlight.version}<span style="color:#204a87;font-weight:bold">&lt;/version&gt;</span>
+<span style="color:#204a87;font-weight:bold">&lt;/dependency&gt;</span>
+</code></pre></div><pre tabindex="0"><code class="language-properties" data-lang="properties">#开启Cpu Load自我保护
+restlight.server.ext.cpu-load-protection.enable=true
+#cpu负载阈值，默认为80.0D cpu超过此负载之后将开始随机丢弃连接
+restlight.server.ext.cpu-load-protection.threshold=80.0D
+#初始连接丢弃率,默认为10.0D（0代表0%， 100代表100%， 可以传小数）
+restlight.server.ext.cpu-load-protection.initial-discard-rate=10.0D
+#最大连接丢弃率,默认为80.0D（0代表0%， 100代表100%， 可以传小数）
+restlight.server.ext.cpu-load-protection.max-discard-rate=80.0D
+</code></pre><p>上面的配置将会在cpu负载到达75%时开始随机丢弃20%的新建连接， 随着cpu负载的升高达到100%则将会丢弃80%的连接。</p>
+<p>说明：</p>
+<p>当cpu负载到达或者超过<code>cpu-load-threshold</code>的值时开始丢弃连接，初始连接丢弃概率为<code>initial-discard-rate</code>,  随着cpu负载升高， 丢弃率将随着cpu负载的升高而成正比的升高， 当cpu负载达到100%时丢弃率将达到<code>max-discard-rate</code>.
+
+
+<div class="alert alert-primary" role="alert">
+<h4 class="alert-heading">Tip</h4>
+
+    平滑的连接丢弃比率计算有助于根据cpu使用率的变化来调节连接的丢弃比率。
+
+</div>
+</p>
+
+</div>
+
+
+
+    
+	
+  
+    
+    
+	
+    
+
+<div class="td-content" style="page-break-before: always">
+    
+	<h1 id="pg-7d39489b3769120a91d18d02e839cd61">3 - Access Log</h1>
+    
+	<p>使用Restlight访问日志拦截器时请确保已经引入了依赖：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#204a87;font-weight:bold">&lt;dependency&gt;</span>
+	<span style="color:#204a87;font-weight:bold">&lt;groupId&gt;</span>io.esastack<span style="color:#204a87;font-weight:bold">&lt;/groupId&gt;</span>
+	<span style="color:#204a87;font-weight:bold">&lt;artifactId&gt;</span>restlight-ext-filter-starter<span style="color:#204a87;font-weight:bold">&lt;/artifactId&gt;</span>
+	<span style="color:#204a87;font-weight:bold">&lt;version&gt;</span>${restlight.version}<span style="color:#204a87;font-weight:bold">&lt;/version&gt;</span>
+<span style="color:#204a87;font-weight:bold">&lt;/dependency&gt;</span>
+</code></pre></div><h2 id="quick-start">Quick Start</h2>
+<p>AccessLog拦截器在每个请求结束后记录访问日志，内容包含：客户端地址、请求协议、请求url（不包含路径参数）、请求方法、请求耗时、响应状态码、响应body大小以及访问时间。使用时需要做如下配置：</p>
+<pre tabindex="0"><code class="language-properties" data-lang="properties">#开启AccessLog
+restlight.server.ext.accesslog.enable=true
+</code></pre>
+
+<div class="alert alert-primary" role="alert">
+<h4 class="alert-heading">Note</h4>
+
+    访问日志默认会打印日志到logs/access.log文件中
+
+</div>
+
+<h2 id="配置">配置</h2>
+
+
+<div class="alert alert-primary" role="alert">
+<h4 class="alert-heading">Note</h4>
+
+    所有配置均以<code>restlight.server.ext.accesslog</code> 开头
+
+</div>
+
+<table>
+<thead>
+<tr>
+<th>配置项</th>
+<th>默认</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>enable</td>
+<td>false</td>
+<td>是否启用</td>
+</tr>
+<tr>
+<td>directory</td>
+<td>logs</td>
+<td>日志文件路径</td>
+</tr>
+<tr>
+<td>fileName</td>
+<td>access.log</td>
+<td>日志文件名</td>
+</tr>
+<tr>
+<td>charset</td>
+<td></td>
+<td>日志编码</td>
+</tr>
+<tr>
+<td>rolling</td>
+<td>true</td>
+<td>是否按照时间滚动生成文件</td>
+</tr>
+<tr>
+<td>date-pattern</td>
+<td>yyyy-MM-dd</td>
+<td>日期滚动格式，yyyy-MM-dd表示按天为单位滚动，生成的文件名为access.yyyy-MM-dd.log， 仅支持按天和小时为单位滚动，因此可选值：yyyy-MM-dd或者yyyy-MM-dd_HH（注意不要使用yyyy-MM-dd HH， 生成的文件名可能不符合操作系统文件命名规范）</td>
+</tr>
+<tr>
+<td>max-history</td>
+<td>10</td>
+<td>最大历史文件个数</td>
+</tr>
+<tr>
+<td>full-uri</td>
+<td>false</td>
+<td>是否打印uri中所有的内容（包含url参数）</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+
+
+
+    
+	
+  
+    
+    
+	
+    
+
+<div class="td-content" style="page-break-before: always">
+    
+	<h1 id="pg-263ce0837051e5d3ff7c6fa617a3b818">4 - 跨域</h1>
+    
+	<p>引入依赖</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#204a87;font-weight:bold">&lt;dependency&gt;</span>
+	<span style="color:#204a87;font-weight:bold">&lt;groupId&gt;</span>io.esastack<span style="color:#204a87;font-weight:bold">&lt;/groupId&gt;</span>
+	<span style="color:#204a87;font-weight:bold">&lt;artifactId&gt;</span>restlight-ext-filter-starter<span style="color:#204a87;font-weight:bold">&lt;/artifactId&gt;</span>
+	<span style="color:#204a87;font-weight:bold">&lt;version&gt;</span>${restlight.version}<span style="color:#204a87;font-weight:bold">&lt;/version&gt;</span>
+<span style="color:#204a87;font-weight:bold">&lt;/dependency&gt;</span>
+</code></pre></div><p>开启跨域功能</p>
+<pre tabindex="0"><code class="language-properties" data-lang="properties">restlight.server.ext.cors.enable=true
+</code></pre><p>更多跨域相关配置</p>
+<pre tabindex="0"><code class="language-properties" data-lang="properties">restlight.server.ext.cors.rules[0].anyOrigin=false
+restlight.server.ext.cors.rules[0].origins=www.example.com,www.demo.com
+restlight.server.ext.cors.rules[0].expose-headers=foo,bar
+restlight.server.ext.cors.rules[0].allow-credentials=false
+restlight.server.ext.cors.rules[0].allow-methods=GET,POST
+restlight.server.ext.cors.rules[0].allow-headers=foo,bar
+restlight.server.ext.cors.rules[0].max-age=3600
+</code></pre>
+
+<div class="alert alert-primary" role="alert">
+<h4 class="alert-heading">Note</h4>
+
+    不配置则应用默认配置
+
+</div>
+
+
+</div>
+
+
+
+    
+	
+  
+    
+    
+	
+    
+
+<div class="td-content" style="page-break-before: always">
+    
+	<h1 id="pg-7e5633cdbac5b3f1ddc6d0ffd2b54aef">5 - 文件及表单参数解析</h1>
+    
+	<p><code>Restlight</code>提供了表单参数解析的功能，使用时需要单独引入相应的包：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#204a87;font-weight:bold">&lt;dependency&gt;</span>
+   <span style="color:#204a87;font-weight:bold">&lt;groupId&gt;</span>io.esastack<span style="color:#204a87;font-weight:bold">&lt;/groupId&gt;</span>
+   <span style="color:#204a87;font-weight:bold">&lt;artifactId&gt;</span>restlight-ext-multipart-starter<span style="color:#204a87;font-weight:bold">&lt;/artifactId&gt;</span>
+   <span style="color:#204a87;font-weight:bold">&lt;version&gt;</span>${restlight.version}<span style="color:#204a87;font-weight:bold">&lt;/version&gt;</span>
+<span style="color:#204a87;font-weight:bold">&lt;/dependency&gt;</span>
+</code></pre></div><h2 id="文件参数">文件参数</h2>
+<p>使用示例如下：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#5c35cc;font-weight:bold">@Controller</span>
+<span style="color:#5c35cc;font-weight:bold">@RequestMapping</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#4e9a06">&#34;/restlight/file/&#34;</span><span style="color:#ce5c00;font-weight:bold">)</span>
+<span style="color:#204a87;font-weight:bold">public</span> <span style="color:#204a87;font-weight:bold">class</span> <span style="color:#000">FileSupportController</span>
+    <span style="color:#8f5902;font-style:italic">// 上传单个文件
+</span><span style="color:#8f5902;font-style:italic"></span>    <span style="color:#5c35cc;font-weight:bold">@RequestMapping</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#4e9a06">&#34;/upload&#34;</span><span style="color:#ce5c00;font-weight:bold">)</span>
+    <span style="color:#204a87;font-weight:bold">public</span> <span style="color:#000">String</span> <span style="color:#000">fileUpload</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#5c35cc;font-weight:bold">@UploadFile</span> <span style="color:#000">MultipartFile</span> <span style="color:#000">multipartFile</span><span style="color:#ce5c00;font-weight:bold">)</span> <span style="color:#204a87;font-weight:bold">throws</span> <span style="color:#000">IOException</span> <span style="color:#ce5c00;font-weight:bold">{</span>
+        <span style="color:#000">File</span> <span style="color:#000">temp</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#204a87;font-weight:bold">new</span> <span style="color:#000">File</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#4e9a06">&#34;D:\\&#34;</span> <span style="color:#ce5c00;font-weight:bold">+</span> <span style="color:#000">multipartFile</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#c4a000">originalFilename</span><span style="color:#ce5c00;font-weight:bold">());</span>
+        <span style="color:#000">multipartFile</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#c4a000">transferTo</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#000">temp</span><span style="color:#ce5c00;font-weight:bold">);</span>
+        <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#4e9a06">&#34;SUCCESS&#34;</span><span style="color:#ce5c00;font-weight:bold">;</span>
+    <span style="color:#ce5c00;font-weight:bold">}</span>
+	
+    <span style="color:#8f5902;font-style:italic">// 上传一组文件
+</span><span style="color:#8f5902;font-style:italic"></span>    <span style="color:#5c35cc;font-weight:bold">@RequestMapping</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#4e9a06">&#34;/uploads&#34;</span><span style="color:#ce5c00;font-weight:bold">)</span>
+    <span style="color:#204a87;font-weight:bold">public</span> <span style="color:#000">String</span> <span style="color:#000">fileUploads</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#5c35cc;font-weight:bold">@UploadFile</span> <span style="color:#000">List</span><span style="color:#ce5c00;font-weight:bold">&lt;</span><span style="color:#000">MultipartFile</span><span style="color:#ce5c00;font-weight:bold">&gt;</span> <span style="color:#000">files</span><span style="color:#ce5c00;font-weight:bold">)</span> <span style="color:#204a87;font-weight:bold">throws</span> <span style="color:#000">IOException</span> <span style="color:#ce5c00;font-weight:bold">{</span>
+        <span style="color:#204a87;font-weight:bold">for</span> <span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#000">MultipartFile</span> <span style="color:#000">file</span> <span style="color:#ce5c00;font-weight:bold">:</span> <span style="color:#000">files</span><span style="color:#ce5c00;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">{</span>
+            <span style="color:#000">File</span> <span style="color:#000">temp</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#204a87;font-weight:bold">new</span> <span style="color:#000">File</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#4e9a06">&#34;D:\\&#34;</span> <span style="color:#ce5c00;font-weight:bold">+</span> <span style="color:#000">file</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#c4a000">originalFilename</span><span style="color:#ce5c00;font-weight:bold">());</span>
+            <span style="color:#000">file</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#c4a000">transferTo</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#000">temp</span><span style="color:#ce5c00;font-weight:bold">);</span>
+        <span style="color:#ce5c00;font-weight:bold">}</span>
+        <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#4e9a06">&#34;SUCCESS&#34;</span><span style="color:#ce5c00;font-weight:bold">;</span>
+    <span style="color:#ce5c00;font-weight:bold">}</span>
+<span style="color:#ce5c00;font-weight:bold">}</span>
+</code></pre></div>
+
+<div class="alert alert-warning" role="alert">
+<h4 class="alert-heading">Warning</h4>
+
+    对于超大文件的上传可能会导致OOM，因为Restlight底层基于Netty实现，会将整个请求body转换成byte[]数组存放在内存中，再将对应的数据转成文件格式。
+
+</div>
+
+<p><code>Restlight</code>默认请求body大小为4MB，当上传文件时需要根据需要调整该值的大小；默认的编码格式为：UTF-8。使用时，也可以通过配置文件改变上述参数值：</p>
+<pre tabindex="0"><code class="language-properties" data-lang="properties">#设置请求body大小 4MB = 4 * 1024 * 1024 = 4194304
+restlight.server.max-content-length=4194304
+
+#编码方式
+restlight.server.ext.multipart.charset=utf-8
+
+#单个文件大小限制，默认-1（没有限制） 4KB = 4 * 1024 = 4096
+restlight.server.ext.multipart.max-size=4096
+
+#是否使用临时文件，为true时任何大小的文件都使用临时文件，默认为false
+restlight.server.ext.multipart.use-disk=true
+
+#临时文件目录
+restlight.server.ext.multipart.temp-dir=D:\\temp
+
+#当multipart-use-disk为false且单个文件大小超过该值时使用临时文件，默认2MB
+restlight.server.ext.multipart.memory-threshold=2097152
+</code></pre><h3 id="非文件参数">非文件参数</h3>
+<p>在需要接收的方法参数上加上<code>@FormParam</code>注解，如下：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#5c35cc;font-weight:bold">@RequestMapping</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#4e9a06">&#34;/upload&#34;</span><span style="color:#ce5c00;font-weight:bold">)</span>
+<span style="color:#204a87;font-weight:bold">public</span> <span style="color:#000">String</span> <span style="color:#000">uploadFormParams</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#5c35cc;font-weight:bold">@FormParam</span> <span style="color:#000">String</span> <span style="color:#000">formParam0</span><span style="color:#ce5c00;font-weight:bold">,</span> <span style="color:#5c35cc;font-weight:bold">@FormParam</span> <span style="color:#000">String</span> <span style="color:#000">formParam1</span><span style="color:#ce5c00;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">{</span>
+    <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">formParam0</span> <span style="color:#ce5c00;font-weight:bold">+</span> <span style="color:#4e9a06">&#34;; &#34;</span> <span style="color:#ce5c00;font-weight:bold">+</span> <span style="color:#000">formParam1</span><span style="color:#ce5c00;font-weight:bold">;</span>
+<span style="color:#ce5c00;font-weight:bold">}</span>
+</code></pre></div>
+</div>
+
+
+
+    
+	
+  
+    
+    
+	
+    
+
+<div class="td-content" style="page-break-before: always">
+    
+	<h1 id="pg-30b8e819f78dc39f2d491e31f4e40af8">6 - 签名认证</h1>
+    
+	<p>使用Restlight参数签名验证拦截器时请先引入依赖：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#204a87;font-weight:bold">&lt;dependency&gt;</span>
+	<span style="color:#204a87;font-weight:bold">&lt;groupId&gt;</span>io.esastack<span style="color:#204a87;font-weight:bold">&lt;/groupId&gt;</span>
+	<span style="color:#204a87;font-weight:bold">&lt;artifactId&gt;</span>restlight-ext-interceptor-starter<span style="color:#204a87;font-weight:bold">&lt;/artifactId&gt;</span>
+	<span style="color:#204a87;font-weight:bold">&lt;version&gt;</span>${restlight.version}<span style="color:#204a87;font-weight:bold">&lt;/version&gt;</span>
+<span style="color:#204a87;font-weight:bold">&lt;/dependency&gt;</span>
+</code></pre></div><p>参数签名验证拦截器可以验证请求参数的签名，防止请求参数被篡改。使用时请做如下配置：</p>
+<pre tabindex="0"><code class="language-properties" data-lang="properties">#开启参数签名验证功能的必需配置
+restlight.server.ext.sign.enable=true
+
+#调用方ID参数名,默认为appId
+restlight.server.ext.sign.app-id-name=appId
+
+#签名秘钥版本参数名,默认为sv
+restlight.server.ext.sign.secret-version-name=sv
+
+#请求时间戳参数名,默认为ts
+restlight.server.ext.sign.timestamp-name=ts
+
+#请求时间戳有效期：单位秒（默认为0）
+restlight.server.ext.sign.expire-seconds=0
+
+#签名参数名称,默认为sign
+restlight.server.ext.sign.signature-name=sign
+
+#是否对所有接口进行签名验证（默认为false）
+restlight.server.ext.sign.verify-all=true
+</code></pre>
+
+<div class="alert alert-primary" role="alert">
+<h4 class="alert-heading">Note</h4>
+
+    配置完成后，需要自定义esa.restlight.ext.interceptor.signature.SecretProvider的实现类并注入Spring容器。该接口定义了通过appId、secretVersion、timestamp获取秘钥的方法。
+
+</div>
+
+<h2 id="服务端验签详细过程">服务端验签详细过程</h2>
+<ul>
+<li>第一步：从请求中获取签名值signature并去掉前后空格（先从url参数中获取，如果没有再从请求头中获取）；</li>
+<li>第二步：从请求中获取时间戳timestamp并去掉前后空格（方式同上），如果配置了请求时间戳有效期，则判断是否在有效期内。</li>
+<li>第三步：从请求中获取appId、secretVersion并去掉前后空格（方式同上）。</li>
+<li>第四步：根据上述的appId、secretVersion、timestamp从自定义的SecretProvider获取secret。</li>
+<li>第五步：根据请求参数构建签名data[]，具体步骤为：1.构建请求参数对应的paramData[]：获取所有的url参数（排除sign），按照参数名字典序升序排列，若一个参数对应多个值，则这多个值也按字典序升序排列（<strong>注意：所有参数名和参数值均会去掉前后空格</strong>）。如：http://api.xxx.com/getUserInfo?appId=your_appId&amp;sv=1&amp;ts=1555933697000&amp;user_id=u001&amp;sign=xxx&amp;names=LiMing&amp;names=ZhangSan对应的paramData[]=(&ldquo;api_key=your_appId&amp;names=LiMing&amp;names=ZhangSan&amp;sv=1&amp;t=1555933697000&amp;user_id=u001&rdquo;).getBytes(&ldquo;UTF-8&rdquo;)；2.构建请求body对应的bodyData[]：对于类型为POST且Content-Type不包含x-www-form-urlencoded的请求，直接通过request.getBody()获取bodyData[]。<strong>重要说明：</strong> 对于Content-Type包含x-www-form-urlencoded的POST请求，验证签名时会将body中参数合并到url的参数中一起处理，客户端加密时需要注意此种情况；3.合并paramData[]和bodyData[]作为签名data[]。</li>
+<li>第六步：使用HmacSha1算法生成data[]与secret的签名（详见esa-commons项目下SecurityUtils的getHmacSHA1方法）。</li>
+<li>第七步：验证signature与第六步生成的签名是否相等。</li>
+</ul>
+
+
+<div class="alert alert-primary" role="alert">
+<h4 class="alert-heading">Note</h4>
+
+    参数签名验证失败会抛出SignatureValidationException，该异常的message中保存了验签失败的详细原因，使用时可根据需要自定义该异常的处理方法
+Restlight已在内部开源，签名验证的代码实现参见：restlight-support模块下AbstractSignatureInterceptor。
+
+</div>
+
+<h2 id="指定或排除需要进行签名验证的接口">指定或排除需要进行签名验证的接口</h2>
+<p>Restlight提供了两种不同的方式来自定义需要进行签名验证的接口：1. 在全局接口都进行签名验证的情况下，使用@IgnoreSignValidation注解忽略指定接口的签名验证功能；2. 在全局接口都不进行签名验证的前提下，使用@SignValidation注解指定对需要进行签名验证的接口。默认使用方式2。
+方式1使用示例：</p>
+<pre tabindex="0"><code class="language-properties" data-lang="properties">restlight.server.ext.sign.verify-all=true
+</code></pre><div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#5c35cc;font-weight:bold">@RequestMapping</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#4e9a06">&#34;/index&#34;</span><span style="color:#ce5c00;font-weight:bold">)</span>
+<span style="color:#5c35cc;font-weight:bold">@IgnoreSignValidation</span>
+<span style="color:#204a87;font-weight:bold">public</span> <span style="color:#204a87;font-weight:bold">void</span> <span style="color:#000">index</span><span style="color:#ce5c00;font-weight:bold">()</span> <span style="color:#ce5c00;font-weight:bold">{</span>
+    <span style="color:#000">TestService</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#c4a000">list</span><span style="color:#ce5c00;font-weight:bold">();</span>
+<span style="color:#ce5c00;font-weight:bold">}</span>
+</code></pre></div><p>如上配置表示：对index()方法之外的其他接口均开启签名验证功能。</p>
+<p>方式2使用示例：</p>
+<pre tabindex="0"><code>restlight.server.ext.sign.verify-all=false
+</code></pre><div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#5c35cc;font-weight:bold">@RequestMapping</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#4e9a06">&#34;/index&#34;</span><span style="color:#ce5c00;font-weight:bold">)</span>
+<span style="color:#5c35cc;font-weight:bold">@SignValidation</span>
+<span style="color:#204a87;font-weight:bold">public</span> <span style="color:#204a87;font-weight:bold">void</span> <span style="color:#000">index</span><span style="color:#ce5c00;font-weight:bold">()</span> <span style="color:#ce5c00;font-weight:bold">{</span>
+    <span style="color:#000">TestService</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#c4a000">list</span><span style="color:#ce5c00;font-weight:bold">();</span>
+<span style="color:#ce5c00;font-weight:bold">}</span>
+</code></pre></div><p>如上配置表示：只对index()方法对应的接口开启签名验证功能。</p>
+<h3 id="自定义参数签名验证拦截器">自定义参数签名验证拦截器</h3>
+<p><code>Restlight</code>默认使用<strong>HmacSHA1</strong>作为验签时原始请求的签名生成方法，当用户使用其它算法可以注入自定义的参数签名验证拦截器，使用示例如下：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#5c35cc;font-weight:bold">@Component</span>
+<span style="color:#204a87;font-weight:bold">public</span> <span style="color:#204a87;font-weight:bold">class</span> <span style="color:#000">CustomizeSignatureValidationFactory</span> <span style="color:#204a87;font-weight:bold">extends</span> <span style="color:#000">SignValidationInterceptorFactory</span> <span style="color:#ce5c00;font-weight:bold">{</span>
+
+    <span style="color:#204a87;font-weight:bold">public</span> <span style="color:#000">CustomizeSignatureValidationFactory</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#000">SecretProvider</span> <span style="color:#000">provider</span><span style="color:#ce5c00;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">{</span>
+        <span style="color:#204a87;font-weight:bold">super</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#000">provider</span><span style="color:#ce5c00;font-weight:bold">);</span>
+    <span style="color:#ce5c00;font-weight:bold">}</span>
+
+    <span style="color:#5c35cc;font-weight:bold">@Override</span>
+    <span style="color:#204a87;font-weight:bold">protected</span> <span style="color:#000">AbstractSignatureRouteInterceptor</span> <span style="color:#000">doCreate</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#000">SignatureOptions</span> <span style="color:#000">options</span><span style="color:#ce5c00;font-weight:bold">,</span>
+                                                         <span style="color:#000">SecretProvider</span> <span style="color:#000">distributor</span><span style="color:#ce5c00;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">{</span>
+        <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#204a87;font-weight:bold">new</span> <span style="color:#000">AbstractSignatureRouteInterceptor</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#000">options</span><span style="color:#ce5c00;font-weight:bold">,</span> <span style="color:#000">distributor</span><span style="color:#ce5c00;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">{</span>
+            <span style="color:#5c35cc;font-weight:bold">@Override</span>
+            <span style="color:#204a87;font-weight:bold">protected</span> <span style="color:#204a87;font-weight:bold">boolean</span> <span style="color:#000">validate</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#204a87;font-weight:bold">byte</span><span style="color:#ce5c00;font-weight:bold">[]</span> <span style="color:#000">data</span><span style="color:#ce5c00;font-weight:bold">,</span> <span style="color:#000">String</span> <span style="color:#000">signature</span><span style="color:#ce5c00;font-weight:bold">,</span> <span style="color:#000">String</span> <span style="color:#000">sk</span><span style="color:#ce5c00;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">{</span>
+                <span style="color:#8f5902;font-style:italic">// customize validation
+</span><span style="color:#8f5902;font-style:italic"></span>            <span style="color:#ce5c00;font-weight:bold">}</span>
+        <span style="color:#ce5c00;font-weight:bold">};</span>
+    <span style="color:#ce5c00;font-weight:bold">}</span>
+<span style="color:#ce5c00;font-weight:bold">}</span>
+</code></pre></div>
+</div>
+
+
+
+    
+	
+  
+    
+    
+	
+    
+
+<div class="td-content" style="page-break-before: always">
+    
+	<h1 id="pg-d942ecd2ec2d2eb4b01636561f9861b7">7 - XSS过滤</h1>
+    
+	<p>引入依赖：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#204a87;font-weight:bold">&lt;dependency&gt;</span>
+	<span style="color:#204a87;font-weight:bold">&lt;groupId&gt;</span>io.esastack<span style="color:#204a87;font-weight:bold">&lt;/groupId&gt;</span>
+	<span style="color:#204a87;font-weight:bold">&lt;artifactId&gt;</span>restlight-ext-filter-starter<span style="color:#204a87;font-weight:bold">&lt;/artifactId&gt;</span>
+	<span style="color:#204a87;font-weight:bold">&lt;version&gt;</span>${restlight.version}<span style="color:#204a87;font-weight:bold">&lt;/version&gt;</span>
+<span style="color:#204a87;font-weight:bold">&lt;/dependency&gt;</span>
+</code></pre></div><p>使用方式：</p>
+<pre tabindex="0"><code class="language-properties" data-lang="properties">#开启Xss过滤
+restlight.server.ext.xss.enable=true
+#Xss过滤模式，默认escape（转义模式），filter为过滤模式
+restlight.server.ext.xss.mode=escape
+</code></pre><p>配置好后自动对所有请求进行转义或者过滤。</p>
+<h2 id="xss过滤范围">XSS过滤范围</h2>
+<p>支持<code>URL</code>参数过滤及<strong>不完整</strong>的<code>Header</code>过滤</p>
+
+
+<div class="alert alert-primary" role="alert">
+<h4 class="alert-heading">Note</h4>
+
+    Header相关参数仅支持<code>AsyncRequest.getHeader(CharSequence name)</code>以及<code>AsyncRequest.getHeader(String name)</code>方法。
+
+</div>
+
+<h2 id="escape--filter模式"><code>Escape</code> &amp; <code>Filter</code>模式</h2>
+<h3 id="escape-模式"><code>Escape</code> 模式</h3>
+<p>该模式会对用户请求的 <code>URL</code>参数 和 <code>Header </code>进行转义，转义的字符集如下：</p>
+<table>
+<thead>
+<tr>
+<th>转义前</th>
+<th>转义后</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>&gt;</td>
+<td>&amp;gt;</td>
+</tr>
+<tr>
+<td>&lt;</td>
+<td>&amp;lt;</td>
+</tr>
+<tr>
+<td>&quot;</td>
+<td>&amp;quot;</td>
+</tr>
+<tr>
+<td>&amp;</td>
+<td>&amp;amp;</td>
+</tr>
+</tbody>
+</table>
+<h3 id="filter-模式"><code>Filter</code> 模式</h3>
+<p>该模式会对用户请求的 <code>URL</code>参数 和 <code>Header </code>进行过滤，删除容易引起 Xss 的标签或者表达式，以空串代替，比如 <code>name=&lt;script&gt;...&lt;/script&gt;</code> ，过滤以后会直接将 <code>&lt;script&gt;...&lt;/script&gt;</code> 以空串替换，即 <code>name=&quot;&quot;</code>，需要以空串替换的标签和表达式如下：</p>
+<table>
+<thead>
+<tr>
+<th>标签或表达式</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>&lt;script&gt;&hellip;&lt;/script&gt;</td>
+</tr>
+<tr>
+<td>&lt;/script&gt;</td>
+</tr>
+<tr>
+<td>&lt;script &hellip;&gt;</td>
+</tr>
+<tr>
+<td>src='&hellip;'</td>
+</tr>
+<tr>
+<td>src=&quot;&hellip;&quot;</td>
+</tr>
+<tr>
+<td>eval(&hellip;)</td>
+</tr>
+<tr>
+<td>e­xpression(&hellip;)</td>
+</tr>
+<tr>
+<td>javascript:</td>
+</tr>
+<tr>
+<td>alert</td>
+</tr>
+<tr>
+<td>onload=</td>
+</tr>
+<tr>
+<td>vbscript:</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+
+
+
+    
+	
+  
+    
+    
+	
+    
+
+<div class="td-content" style="page-break-before: always">
+    
+	<h1 id="pg-5244fafd526f119d0232178cd1dbc931">8 - IP白名单</h1>
+    
+	<h1 id="ip白名单">IP白名单</h1>
+<p>使用Restlight内置的IP白名单时请先确保引入了依赖：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#204a87;font-weight:bold">&lt;dependency&gt;</span>
+	<span style="color:#204a87;font-weight:bold">&lt;groupId&gt;</span>io.esastack<span style="color:#204a87;font-weight:bold">&lt;/groupId&gt;</span>
+	<span style="color:#204a87;font-weight:bold">&lt;artifactId&gt;</span>restlight-ext-filter-starter<span style="color:#204a87;font-weight:bold">&lt;/artifactId&gt;</span>
+	<span style="color:#204a87;font-weight:bold">&lt;version&gt;</span>${restlight.version}<span style="color:#204a87;font-weight:bold">&lt;/version&gt;</span>
+<span style="color:#204a87;font-weight:bold">&lt;/dependency&gt;</span>
+</code></pre></div><p>IP白名单拦截器可以过滤非法IP的访问。同时支持IP地址和正则表达式两种匹配方式，需要配置的内容如下：</p>
+<pre tabindex="0"><code class="language-properties" data-lang="properties">#开启IP白名单拦截器的必需配置
+restlight.server.ext.whitelist.enable=true
+
+#IP白名单列表（多值请用逗号分隔,正则表达式regex:开头）
+restlight.server.ext.whitelist.ips=10.10.1.1,regex:10.12.*
+
+#缓存最近访问的IP地址（默认1024个）
+restlight.server.ext.whitelist.cache-size=1024
+
+#缓存的失效时间（单位：ms，默认为60s）
+restlight.server.ext.whitelist.expire=60000
+</code></pre>
+</div>
+
+
+
+    
+	
+  
+    
+    
+	
+    
+
+<div class="td-content" style="page-break-before: always">
+    
+	<h1 id="pg-ef42401d76c218bc23a80a78d7b6f80a">9 - 数据校验</h1>
+    <div class="lead">Restlight集成了Hibernate Validator，提供了开箱即用的数据校验功能，通过注解完成对JavaBean、Controller方法参数和返回值的校验， 并支持异常消息国际化。</div>
+	<p>使用Restlight内置的数据校验请先确保引入了依赖：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#204a87;font-weight:bold">&lt;dependency&gt;</span>
+	<span style="color:#204a87;font-weight:bold">&lt;groupId&gt;</span>io.esastack<span style="color:#204a87;font-weight:bold">&lt;/groupId&gt;</span>
+	<span style="color:#204a87;font-weight:bold">&lt;artifactId&gt;</span>restlight-ext-validator-starter<span style="color:#204a87;font-weight:bold">&lt;/artifactId&gt;</span>
+	<span style="color:#204a87;font-weight:bold">&lt;version&gt;</span>${restlight.version}<span style="color:#204a87;font-weight:bold">&lt;/version&gt;</span>
+<span style="color:#204a87;font-weight:bold">&lt;/dependency&gt;</span>
+</code></pre></div>
+
+<div class="alert alert-primary" role="alert">
+<h4 class="alert-heading">Note</h4>
+
+    当前版本的restlight-starter中默认引入了该依赖，使用时无需重复引入
+
+</div>
+
+<h2 id="普通javabean的校验">普通JavaBean的校验</h2>
+<p>使用注解声明对属性的约束</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#204a87;font-weight:bold">private</span> <span style="color:#204a87;font-weight:bold">class</span> <span style="color:#000">Employee</span> <span style="color:#ce5c00;font-weight:bold">{</span>
+	<span style="color:#5c35cc;font-weight:bold">@NotEmpty</span>
+	<span style="color:#204a87;font-weight:bold">private</span> <span style="color:#000">String</span> <span style="color:#000">name</span><span style="color:#ce5c00;font-weight:bold">;</span>
+	
+	<span style="color:#5c35cc;font-weight:bold">@Min</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#000">18</span><span style="color:#ce5c00;font-weight:bold">)</span>
+	<span style="color:#5c35cc;font-weight:bold">@Max</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#000">60</span><span style="color:#ce5c00;font-weight:bold">)</span>
+	<span style="color:#204a87;font-weight:bold">private</span> <span style="color:#204a87;font-weight:bold">int</span> <span style="color:#000">age</span><span style="color:#ce5c00;font-weight:bold">;</span>
+	
+	<span style="color:#5c35cc;font-weight:bold">@Email</span>
+	<span style="color:#204a87;font-weight:bold">private</span> <span style="color:#000">String</span> <span style="color:#000">email</span><span style="color:#ce5c00;font-weight:bold">;</span>
+	
+	<span style="color:#5c35cc;font-weight:bold">@Length</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#000">min</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">10</span><span style="color:#ce5c00;font-weight:bold">,</span> <span style="color:#000">max</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">20</span><span style="color:#ce5c00;font-weight:bold">)</span>
+	<span style="color:#204a87;font-weight:bold">private</span> <span style="color:#000">String</span> <span style="color:#000">address</span><span style="color:#ce5c00;font-weight:bold">;</span>
+
+        <span style="color:#8f5902;font-style:italic">// 级联校验
+</span><span style="color:#8f5902;font-style:italic"></span>	<span style="color:#5c35cc;font-weight:bold">@Valid</span>
+	<span style="color:#204a87;font-weight:bold">private</span> <span style="color:#000">Object</span> <span style="color:#000">cascadingObject</span><span style="color:#ce5c00;font-weight:bold">;</span>
+<span style="color:#ce5c00;font-weight:bold">}</span>
+</code></pre></div><p>作为方法参数校验, 需要使用<code>@Valid</code>注解标记被校验的参数</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#5c35cc;font-weight:bold">@PostMapping</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#4e9a06">&#34;/add&#34;</span><span style="color:#ce5c00;font-weight:bold">)</span>
+<span style="color:#204a87;font-weight:bold">public</span> <span style="color:#000">String</span> <span style="color:#000">add</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#5c35cc;font-weight:bold">@Valid</span> <span style="color:#5c35cc;font-weight:bold">@RequestBody</span> <span style="color:#000">Employee</span> <span style="color:#000">employee</span><span style="color:#ce5c00;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">{</span>
+    <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">SUCCESS</span><span style="color:#ce5c00;font-weight:bold">;</span>
+<span style="color:#ce5c00;font-weight:bold">}</span>
+</code></pre></div><p>作为返回值， 需要使用<code>@Valid</code>注解标记方法或者参数</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#5c35cc;font-weight:bold">@Valid</span>
+<span style="color:#5c35cc;font-weight:bold">@ResponseBody</span>
+<span style="color:#5c35cc;font-weight:bold">@RequestMapping</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#4e9a06">&#34;/list&#34;</span><span style="color:#ce5c00;font-weight:bold">)</span>
+<span style="color:#204a87;font-weight:bold">public</span> <span style="color:#000">Employee</span> <span style="color:#000">list1</span><span style="color:#ce5c00;font-weight:bold">()</span> <span style="color:#ce5c00;font-weight:bold">{</span>
+    <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#204a87;font-weight:bold">new</span> <span style="color:#000">Employee</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#4e9a06">&#34;&#34;</span><span style="color:#ce5c00;font-weight:bold">,</span> <span style="color:#000">16</span><span style="color:#ce5c00;font-weight:bold">,</span> <span style="color:#4e9a06">&#34;&#34;</span><span style="color:#ce5c00;font-weight:bold">,</span> <span style="color:#4e9a06">&#34;&#34;</span><span style="color:#ce5c00;font-weight:bold">);</span>
+<span style="color:#ce5c00;font-weight:bold">}</span>
+</code></pre></div><p>或者</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#5c35cc;font-weight:bold">@ResponseBody</span>
+<span style="color:#5c35cc;font-weight:bold">@RequestMapping</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#4e9a06">&#34;/list&#34;</span><span style="color:#ce5c00;font-weight:bold">)</span>
+<span style="color:#204a87;font-weight:bold">public</span> <span style="color:#5c35cc;font-weight:bold">@Valid</span> <span style="color:#000">Employee</span> <span style="color:#000">list2</span><span style="color:#ce5c00;font-weight:bold">()</span> <span style="color:#ce5c00;font-weight:bold">{</span>
+   <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#204a87;font-weight:bold">new</span> <span style="color:#000">Employee</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#4e9a06">&#34;&#34;</span><span style="color:#ce5c00;font-weight:bold">,</span> <span style="color:#000">16</span><span style="color:#ce5c00;font-weight:bold">,</span> <span style="color:#4e9a06">&#34;&#34;</span><span style="color:#ce5c00;font-weight:bold">,</span> <span style="color:#4e9a06">&#34;&#34;</span><span style="color:#ce5c00;font-weight:bold">);</span>
+<span style="color:#ce5c00;font-weight:bold">}</span>
+</code></pre></div>
+
+<div class="alert alert-primary" role="alert">
+<h4 class="alert-heading">Note</h4>
+
+    当需要校验的参数为JavaBean对象时用<code>@Valid</code>来显示声明需要对该参数进行校验。
+
+</div>
+
+<h2 id="普通方法参数校验">普通方法参数校验</h2>
+<p>直接使用注解</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#5c35cc;font-weight:bold">@RequestMapping</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#4e9a06">&#34;/update&#34;</span><span style="color:#ce5c00;font-weight:bold">)</span>
+<span style="color:#204a87;font-weight:bold">public</span> <span style="color:#000">String</span> <span style="color:#000">update</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#5c35cc;font-weight:bold">@RequestParam</span> <span style="color:#5c35cc;font-weight:bold">@NotEmpty</span> <span style="color:#000">String</span> <span style="color:#000">name</span><span style="color:#ce5c00;font-weight:bold">,</span> <span style="color:#5c35cc;font-weight:bold">@RequestParam</span> <span style="color:#5c35cc;font-weight:bold">@Length</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#000">min</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">10</span><span style="color:#ce5c00;font-weight:bold">,</span> <span style="color:#000">max</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">20</span><span style="color:#ce5c00;font-weight:bold">)</span> <span style="color:#000">String</span> <span style="color:#000">newAddress</span><span style="color:#ce5c00;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">{</span>
+    <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">SUCCESS</span><span style="color:#ce5c00;font-weight:bold">;</span>
+<span style="color:#ce5c00;font-weight:bold">}</span>
+</code></pre></div><h2 id="分组校验">分组校验</h2>
+<p>使用<code>@ValidGroup</code>指定校验方法的参数、返回值校验时的分组。该注解只能标注在方法上并且value值只能为接口类(默认为<code>Default.class</code>)。</p>
+<p>Example:</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#5c35cc;font-weight:bold">@ValidGroup</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#000">Interface</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#c4a000">class</span><span style="color:#ce5c00;font-weight:bold">)</span>
+<span style="color:#5c35cc;font-weight:bold">@RequestMapping</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#4e9a06">&#34;/addGroup&#34;</span><span style="color:#ce5c00;font-weight:bold">)</span>
+<span style="color:#204a87;font-weight:bold">public</span> <span style="color:#000">String</span> <span style="color:#000">addGroup</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#5c35cc;font-weight:bold">@Valid</span> <span style="color:#5c35cc;font-weight:bold">@RequestBody</span> <span style="color:#000">Employee</span> <span style="color:#000">employee</span><span style="color:#ce5c00;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">{</span>
+    <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">SUCCESS</span><span style="color:#ce5c00;font-weight:bold">;</span>
+<span style="color:#ce5c00;font-weight:bold">}</span>
+</code></pre></div><h2 id="自定义约束注解">自定义约束注解</h2>
+<p>当内置的约束注解不能满足业务需求时，可以使用<code>@Constraint</code>自定义约束注解，具体实现使用hibernate-validation，使用方式与Spring MVC无差异，示例如下：</p>
+<p>自定义约束注解:</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#5c35cc;font-weight:bold">@Retention</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#000">RetentionPolicy</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#c4a000">RUNTIME</span><span style="color:#ce5c00;font-weight:bold">)</span>
+<span style="color:#5c35cc;font-weight:bold">@Constraint</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#000">validatedBy</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">LogInSuccess</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#c4a000">LogInSuccessValidator</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#c4a000">class</span><span style="color:#ce5c00;font-weight:bold">)</span>
+<span style="color:#5c35cc;font-weight:bold">@Target</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#000">value</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#ce5c00;font-weight:bold">{</span><span style="color:#000">ElementType</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#c4a000">FIELD</span><span style="color:#ce5c00;font-weight:bold">,</span> <span style="color:#000">ElementType</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#c4a000">METHOD</span><span style="color:#ce5c00;font-weight:bold">,</span> <span style="color:#000">ElementType</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#c4a000">PARAMETER</span><span style="color:#ce5c00;font-weight:bold">})</span>
+<span style="color:#5c35cc;font-weight:bold">@Documented</span>
+<span style="color:#204a87;font-weight:bold">public</span> <span style="color:#5c35cc;font-weight:bold">@interface</span> <span style="color:#000">LogInSuccess</span> <span style="color:#ce5c00;font-weight:bold">{</span>
+
+    <span style="color:#000">String</span> <span style="color:#000">message</span><span style="color:#ce5c00;font-weight:bold">()</span> <span style="color:#204a87;font-weight:bold">default</span> <span style="color:#4e9a06">&#34;登录校验未通过&#34;</span><span style="color:#ce5c00;font-weight:bold">;</span>
+
+    <span style="color:#000">Class</span><span style="color:#ce5c00;font-weight:bold">&lt;?&gt;[]</span> <span style="color:#000">groups</span><span style="color:#ce5c00;font-weight:bold">()</span> <span style="color:#204a87;font-weight:bold">default</span> <span style="color:#ce5c00;font-weight:bold">{};</span>
+
+    <span style="color:#000">Class</span><span style="color:#ce5c00;font-weight:bold">&lt;?</span> <span style="color:#204a87;font-weight:bold">extends</span> <span style="color:#000">Payload</span><span style="color:#ce5c00;font-weight:bold">&gt;[]</span> <span style="color:#000">payload</span><span style="color:#ce5c00;font-weight:bold">()</span> <span style="color:#204a87;font-weight:bold">default</span> <span style="color:#ce5c00;font-weight:bold">{};</span>
+
+    <span style="color:#204a87;font-weight:bold">class</span> <span style="color:#000">LogInSuccessValidator</span> <span style="color:#204a87;font-weight:bold">implements</span> <span style="color:#000">ConstraintValidator</span><span style="color:#ce5c00;font-weight:bold">&lt;</span><span style="color:#000">LogInSuccess</span><span style="color:#ce5c00;font-weight:bold">,</span> <span style="color:#000">String</span><span style="color:#ce5c00;font-weight:bold">&gt;</span> <span style="color:#ce5c00;font-weight:bold">{</span>
+
+        <span style="color:#5c35cc;font-weight:bold">@Override</span>
+        <span style="color:#204a87;font-weight:bold">public</span> <span style="color:#204a87;font-weight:bold">void</span> <span style="color:#000">initialize</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#000">LogInSuccess</span> <span style="color:#000">constraintAnnotation</span><span style="color:#ce5c00;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">{</span>
+            <span style="color:#8f5902;font-style:italic">// Do nothing
+</span><span style="color:#8f5902;font-style:italic"></span>        <span style="color:#ce5c00;font-weight:bold">}</span>
+
+        <span style="color:#5c35cc;font-weight:bold">@Override</span>
+        <span style="color:#204a87;font-weight:bold">public</span> <span style="color:#204a87;font-weight:bold">boolean</span> <span style="color:#000">isValid</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#000">String</span> <span style="color:#000">value</span><span style="color:#ce5c00;font-weight:bold">,</span> <span style="color:#000">ConstraintValidatorContext</span> <span style="color:#000">context</span><span style="color:#ce5c00;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">{</span>
+            <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#204a87;font-weight:bold">false</span><span style="color:#ce5c00;font-weight:bold">;</span>
+        <span style="color:#ce5c00;font-weight:bold">}</span>
+    <span style="color:#ce5c00;font-weight:bold">}</span>
+<span style="color:#ce5c00;font-weight:bold">}</span>
+</code></pre></div><p>使用自定义约束注解：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#5c35cc;font-weight:bold">@RequestMapping</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#4e9a06">&#34;/getId&#34;</span><span style="color:#ce5c00;font-weight:bold">)</span>
+<span style="color:#204a87;font-weight:bold">public</span> <span style="color:#000">String</span> <span style="color:#000">getId</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#5c35cc;font-weight:bold">@RequestParam</span> <span style="color:#5c35cc;font-weight:bold">@LogInSuccess</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#000">message</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#4e9a06">&#34;请先登录&#34;</span><span style="color:#ce5c00;font-weight:bold">)</span> <span style="color:#000">String</span> <span style="color:#000">userName</span><span style="color:#ce5c00;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">{</span>
+    <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#4e9a06">&#34;SUCCESS&#34;</span><span style="color:#ce5c00;font-weight:bold">;</span>
+<span style="color:#ce5c00;font-weight:bold">}</span>
+</code></pre></div><h2 id="国际化">国际化</h2>
+<p>数据校验的异常消息允许自定义并且支持国际化，自定义异常处理消息的步骤如下：</p>
+<p>自定义异常消息文件，在classpath路径下加入配置文件，如validation-message.properties</p>
+<pre tabindex="0"><code class="language-properties" data-lang="properties">key1=value1
+key2=value2
+...
+</code></pre><p>配置异常消息文件名，在application中配置异常消息文件名，如：</p>
+<pre tabindex="0"><code class="language-properties" data-lang="properties">#该文件名称对应上面定义的validation-message.properties文件
+restlight.server.ext.validation.message-file=validation-message
+</code></pre><p>修改约束注解的message属性值，如：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#5c35cc;font-weight:bold">@NotEmpty</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#000">message</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">&#34;{key1}&#34;</span><span style="color:#ce5c00;font-weight:bold">)</span>
+<span style="color:#204a87;font-weight:bold">public</span> <span style="color:#000">String</span> <span style="color:#000">name</span><span style="color:#ce5c00;font-weight:bold">;</span>
+
+<span style="color:#5c35cc;font-weight:bold">@Min</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#000">value</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">18</span><span style="color:#ce5c00;font-weight:bold">,</span> <span style="color:#000">message</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">&#34;{key2}&#34;</span><span style="color:#ce5c00;font-weight:bold">)</span>
+<span style="color:#204a87;font-weight:bold">public</span> <span style="color:#204a87;font-weight:bold">int</span> <span style="color:#000">age</span><span style="color:#ce5c00;font-weight:bold">;</span>
+</code></pre></div><p>针对不同语言定义不同的异常消息文件，如：</p>
+<ul>
+<li>validation-message_zh_CN.properties</li>
+<li>validation-message_en.properties</li>
+<li>validation-message_cs.properties</li>
+<li>validation-message_en.properties</li>
+<li>&hellip;&hellip;</li>
+</ul>
+
+
+<div class="alert alert-primary" role="alert">
+<h4 class="alert-heading">Tip</h4>
+
+    更多不同语言的文件后缀可以参考jar包：hibernate-validator:5.4.1.Final下ValidationMessage中国际化文件的后缀。
+
+</div>
+
+<h2 id="数据校验注解一览">数据校验注解一览</h2>
+<table>
+<thead>
+<tr>
+<th>注解</th>
+<th>功能</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>@AssertFalse</td>
+<td>被注解元素必须为false</td>
+<td></td>
+</tr>
+<tr>
+<td>@AssertTrue</td>
+<td>被注解的元素必须为true</td>
+<td></td>
+</tr>
+<tr>
+<td>@DecimalMax(value)</td>
+<td>被注解的元素必须为一个数字，其值必须小于等于指定的最小值</td>
+<td></td>
+</tr>
+<tr>
+<td>@DecimalMin(Value)</td>
+<td>被注解的元素必须为一个数字，其值必须大于等于指定的最小值</td>
+<td></td>
+</tr>
+<tr>
+<td>@Digits(integer=, fraction=)</td>
+<td>被注解的元素必须为一个数字，其值必须在可接受的范围内</td>
+<td></td>
+</tr>
+<tr>
+<td>@Future</td>
+<td>被注解的元素必须是未来的日期</td>
+<td></td>
+</tr>
+<tr>
+<td>@Max(value)</td>
+<td>被注解的元素必须为一个数字，其值必须小于等于指定的最大值</td>
+<td></td>
+</tr>
+<tr>
+<td>@Min(value)</td>
+<td>被注解的元素必须为一个数字，其值必须大于等于指定的最小值</td>
+<td></td>
+</tr>
+<tr>
+<td>@NotNull</td>
+<td>被注解的元素必须不为null</td>
+<td></td>
+</tr>
+<tr>
+<td>@Null</td>
+<td>被注解的元素必须为null</td>
+<td></td>
+</tr>
+<tr>
+<td>@Past</td>
+<td>被注解的元素必须过去的日期</td>
+<td></td>
+</tr>
+<tr>
+<td>@Pattern</td>
+<td>被注解的元素必须符合正则表达式</td>
+<td></td>
+</tr>
+<tr>
+<td>@Size(min=, max=)</td>
+<td>被注解的元素必须在指定的范围(数据类型:String, Collection, Map and arrays)</td>
+<td></td>
+</tr>
+<tr>
+<td>@Email</td>
+<td>被注解的元素被注释的元素必须是电子邮箱地址</td>
+<td></td>
+</tr>
+<tr>
+<td>@NotBlank</td>
+<td>被注解的对象必须为字符串，不能为空，检查时会忽略空格</td>
+<td></td>
+</tr>
+<tr>
+<td>@NotEmpty</td>
+<td>被注释的对象长度不能为0(数据:String,Collection,Map,arrays)</td>
+<td></td>
+</tr>
+<tr>
+<td>@Length(min=, max=)</td>
+<td>被注解的对象必须是字符串并且长度必须在指定的范围内</td>
+<td>Hibernate扩展注解</td>
+</tr>
+<tr>
+<td>@Range(min=, max=)</td>
+<td>被注释的元素必须在合适的范围内 (数据：BigDecimal, BigInteger, String, byte, short, int, long and 原始类型的包装类 )</td>
+<td>Hibernate扩展注解</td>
+</tr>
+<tr>
+<td>@URL(protocol=, host=, port=, regexp=, flags=)</td>
+<td>被注解的对象必须是一个有效的URL，如果提供了protocol，host等，则该URL还需满足提供的条件</td>
+<td>Hibernate扩展注解</td>
+</tr>
+</tbody>
+</table>
+
+
+<div class="alert alert-primary" role="alert">
+<h4 class="alert-heading">Tip</h4>
+
+    Hibernate扩展注解与javax可能存在注解名重复的情况， 请使用<code>org.hibernate.xxx</code>的注解。
+
+</div>
+
+
+</div>
+
+
+
+    
+	
+  
+
+
+
+          </main>
+        </div>
+      </div>
+      
+<footer class="bg-dark py-5 row d-print-none">
+  <div class="container-fluid mx-sm-5">
+    <div class="row">
+      <div class="col-6 col-sm-4 text-xs-center order-sm-2">
+        
+        
+        
+<ul class="list-inline mb-0">
+  
+  <li class="list-inline-item mx-2 h3" data-toggle="tooltip" data-placement="top" title="User mailing list" aria-label="User mailing list">
+    <a class="text-white" target="_blank" rel="noopener" href="mailto:esa.stack@oppo.com" aria-label="User mailing list">
+      <i class="fa fa-envelope"></i>
+    </a>
+  </li>
+  
+</ul>
+
+        
+        
+      </div>
+      <div class="col-6 col-sm-4 text-right text-xs-center order-sm-3">
+        
+        
+        
+<ul class="list-inline mb-0">
+  
+  <li class="list-inline-item mx-2 h3" data-toggle="tooltip" data-placement="top" title="GitHub" aria-label="GitHub">
+    <a class="text-white" target="_blank" rel="noopener" href="https://github.com/esastack/esa-restlight" aria-label="GitHub">
+      <i class="fab fa-github"></i>
+    </a>
+  </li>
+  
+  <li class="list-inline-item mx-2 h3" data-toggle="tooltip" data-placement="top" title="Developer mailing list" aria-label="Developer mailing list">
+    <a class="text-white" target="_blank" rel="noopener" href="mailto:esa.stack@oppo.com" aria-label="Developer mailing list">
+      <i class="fa fa-envelope"></i>
+    </a>
+  </li>
+  
+</ul>
+
+        
+        
+      </div>
+      <div class="col-12 col-sm-4 text-center py-2 order-sm-2">
+        <small class="text-white">&copy; 2022 OPPO ESA Stack Project All Rights Reserved</small>
+        
+	
+		
+	
+      </div>
+    </div>
+  </div>
+</footer>
+
+
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
+    integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
+    crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.min.js"
+    integrity="sha512-UR25UO94eTnCVwjbXozyeVd6ZqpaAE9naiEUBK/A+QDbfSTQFhPGj5lOR6d8tsgbBk84Ggb5A3EkjsOgPRPcKA=="
+    crossorigin="anonymous"></script>
+
+
+
+
+
+<script src='/js/tabpane-persist.js'></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script src="/js/main.min.7380160122c24d59789a168af05fcec445fe4e5f2069dd9f3a0c991f10269ae0.js" integrity="sha256-c4AWASLCTVl4mhaK8F/OxEX&#43;Tl8gad2fOgyZHxAmmuA=" crossorigin="anonymous"></script>
+
+
+
+
+
+
+  </body>
+</html>

@@ -1,0 +1,54 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>ESA Restlight – Blog</title>
+    <link>/blog/</link>
+    <description>Recent content in Blog on ESA Restlight</description>
+    <generator>Hugo -- gohugo.io</generator>
+    
+	  <atom:link href="/blog/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+      
+        
+      
+    
+    
+    <item>
+      <title>Blog: Release v0.1.1</title>
+      <link>/blog/2021/06/27/release-v0.1.1/</link>
+      <pubDate>Sun, 27 Jun 2021 00:00:00 +0000</pubDate>
+      
+      <guid>/blog/2021/06/27/release-v0.1.1/</guid>
+      <description>
+        
+        
+        &lt;p&gt;The most important changes are:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Support Fail Fast&lt;/li&gt;
+&lt;li&gt;Make bean validation pluggable&lt;/li&gt;
+&lt;li&gt;Improve the performance of &lt;code&gt;PathMatcher&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Fix the &lt;code&gt;HandlerInterceptor&lt;/code&gt; doesn&amp;rsquo;t properly intercept all configured restful interfaces&lt;/li&gt;
+&lt;li&gt;Graceful shutdown with spring&lt;/li&gt;
+&lt;li&gt;Fix 400 when annotating argument with &lt;code&gt;@RequestParam(default value = &amp;quot;&amp;quot;)&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Optimize the configuration of bizThreads&lt;/li&gt;
+&lt;li&gt;Fix failed to start the server when there are ext-filter-starter and starter-actuator at the same time&lt;/li&gt;
+&lt;/ul&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Blog: Release v0.1.0</title>
+      <link>/blog/2020/12/24/release-v0.1.0/</link>
+      <pubDate>Thu, 24 Dec 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/blog/2020/12/24/release-v0.1.0/</guid>
+      <description>
+        
+        
+        
+      </description>
+    </item>
+    
+  </channel>
+</rss>

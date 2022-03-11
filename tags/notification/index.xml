@@ -1,0 +1,77 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>ESA Restlight – notification</title>
+    <link>/tags/notification/</link>
+    <description>Recent content in notification on ESA Restlight</description>
+    <generator>Hugo -- gohugo.io</generator>
+    
+	  <atom:link href="/tags/notification/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+      
+        
+      
+    
+    
+    <item>
+      <title>Docs: 新版说明</title>
+      <link>/docs/latest_introduction/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/docs/latest_introduction/</guid>
+      <description>
+        
+        
+        &lt;h2 id=&#34;notification&#34;&gt;Notification&lt;/h2&gt;
+&lt;p&gt;&lt;code&gt;Restlight&lt;/code&gt;1.0.0为不兼容的版本升级，如果你从其他版本升级到该版本可能会需要修改一定量的业务代码，具体包括：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;包名修改：之前&lt;code&gt;esa.restlight&lt;/code&gt;开头的包将统一以&lt;code&gt;io.esastack.restlight&lt;/code&gt;开头&lt;/li&gt;
+&lt;li&gt;修改自定义&lt;code&gt;ArgumentResolver&lt;/code&gt;相关的实现，包括：&lt;code&gt;ArgumentResolver&lt;/code&gt;、&lt;code&gt;ArgumentResolverAdapter&lt;/code&gt;、&lt;code&gt;ArgumentResolverFactory&lt;/code&gt;
+、&lt;code&gt;ArgumentResolverAdvice&lt;/code&gt;、&lt;code&gt;ArgumentResolverAdviceAdapter&lt;/code&gt;、&lt;code&gt;ArgumentResolverAdviceFactory&lt;/code&gt;等，最新用法请参考&lt;a href=&#34;../restlight_starter/param_resolver&#34;&gt;参数解析&lt;/a&gt;和&lt;a href=&#34;../restlight_starter/param_resolver_advice&#34;&gt;ParamResolverAdvice&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;修改自定义&lt;code&gt;ReturnValueResolver&lt;/code&gt;相关的实现，包括：&lt;code&gt;ReturnValueResolver&lt;/code&gt;、&lt;code&gt;ReturnValueResolverAdapter&lt;/code&gt;、&lt;code&gt;ReturnValueResolverFactory&lt;/code&gt;、&lt;code&gt;ReturnValueResolverAdvice&lt;/code&gt;、&lt;code&gt;ReturnValueResolverAdviceAdapter&lt;/code&gt;、&lt;code&gt;ReturnValueResolverAdviceFactory&lt;/code&gt;等，最新用法请参考&lt;a href=&#34;../restlight_starter/responseentity_resolver&#34;&gt;返回值解析&lt;/a&gt;和&lt;a href=&#34;../restlight_starter/responseentity_resolver_advice&#34;&gt;ResponseEntityResolverAdvice&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;修改自定义拦截器，包括：&lt;code&gt;HandlerInterceptor&lt;/code&gt;、&lt;code&gt;Interceptor&lt;/code&gt;、&lt;code&gt;InterceptorFactory&lt;/code&gt;、&lt;code&gt;MappingInterceptor&lt;/code&gt;、&lt;code&gt;RouteInterceptor&lt;/code&gt;等， 最新用法请参考&lt;a href=&#34;../restlight_starter/interceptor&#34;&gt;拦截器&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;修改自定义&lt;code&gt;Filter&lt;/code&gt;，最新用法请参考：&lt;a href=&#34;../restlight_starter/filter&#34;&gt;Filter&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;其它使用&lt;code&gt;AsyncRequest&lt;/code&gt;、&lt;code&gt;AsyncResponse&lt;/code&gt;的地方，具体请参考&lt;a href=&#34;../restlight_core/terminology&#34;&gt;术语&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;qa&#34;&gt;Q&amp;amp;A&lt;/h3&gt;
+&lt;h5 id=&#34;q为何不能兼容之前的版本&#34;&gt;Q：为何不能兼容之前的版本？&lt;/h5&gt;
+&lt;ul&gt;
+&lt;li&gt;全面支持JAX-RS3.0的需要：&lt;code&gt;Restlight&lt;/code&gt;原有的请求处理流程和API设计无法满足JAX-RS3.0标准的需要，因此必须在框架核心逻辑上进行重新的设计和考量，而这势必导致接口无法完全向下兼容。&lt;/li&gt;
+&lt;li&gt;之前的设计已阻碍框架的进一步演进，比如：用户需要在自定义的异常处理器或过滤器中返回指定的entity这一功能就无法实现，因为响应entity的序列化时机和接口API设计上都存在局限性，以至于在不进行重新设计的情况下永远无法实现该功能。&lt;/li&gt;
+&lt;li&gt;接口易用性和可理解性的需要。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h5 id=&#34;q升级成本高可以不升级吗&#34;&gt;Q：升级成本高，可以不升级吗？&lt;/h5&gt;
+&lt;ul&gt;
+&lt;li&gt;当然可以，之前版本已经比较稳定，如果出现重大bug我们会在原有版本上及时修复，保证0.x版本在生产环境稳定运行。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;feature&#34;&gt;Feature&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/esastack/esa-restlight/projects/2&#34;&gt;全面支持JAX-RS3.0&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/esastack/esa-restlight/projects/1&#34;&gt;支持将Restlight打包成Native Image&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/esastack/esa-restlight/issues/36&#34;&gt;支持接口上的注解&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;新增&lt;code&gt;RouteFilter&lt;/code&gt;，在路由匹配完成之后执行&lt;/li&gt;
+&lt;li&gt;新增&lt;code&gt;StringConverter&lt;/code&gt;相关接口，支持在参数解析阶段将&lt;code&gt;String&lt;/code&gt;转成自定义&lt;code&gt;POJO&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;支持动态添加/卸载路由&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;HttpRequest&lt;/code&gt;、&lt;code&gt;HttpResponse&lt;/code&gt;、参数解析、返回值处理等接口提供了更多方法，详见具体章节&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;fix&#34;&gt;Fix&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/esastack/esa-restlight/issues/75&#34;&gt;修复http2特殊场景下内存泄露的bug&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/esastack/esa-restlight/issues/85&#34;&gt;修复&lt;code&gt;MockMVC&lt;/code&gt;场景下&lt;code&gt;Filter&lt;/code&gt;不生效的bug&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/esastack/esa-restlight/issues/87&#34;&gt;修复当开启&lt;code&gt;AccessLog&lt;/code&gt;时&lt;code&gt;MockMVC&lt;/code&gt;无法正常启动的bug&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;optimization&#34;&gt;Optimization&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/esastack/esa-restlight/issues/12&#34;&gt;屏蔽对外暴露netty接口&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/esastack/esa-restlight/issues/32&#34;&gt;将&lt;code&gt;AsyncRequest&lt;/code&gt;和&lt;code&gt;AsyncResponse&lt;/code&gt;整合成RequestContext&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/esastack/esa-restlight/issues/33&#34;&gt;&lt;code&gt;HttpBodySerializer&lt;/code&gt;接口优化&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/esastack/esa-restlight/issues/34&#34;&gt;&lt;code&gt;Serializer&lt;/code&gt;命名优化&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/esastack/esa-restlight/issues/83&#34;&gt;当异常被成功处理时不打印异常栈&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;使用&lt;code&gt;CompletionStage&lt;/code&gt;替换接口定义中的&lt;code&gt;CompletableFuture&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+      </description>
+    </item>
+    
+  </channel>
+</rss>

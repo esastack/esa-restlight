@@ -1,0 +1,750 @@
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="generator" content="Hugo 0.92.2" />
+<link rel="alternate" type="text/html" href="/docs/threading_model/_print/">
+<link rel="alternate" type="application/rss&#43;xml" href="/docs/threading_model/index.xml">
+<meta name="robots" content="index, follow">
+
+
+<link rel="shortcut icon" href="/favicons/favicon.ico" >
+<link rel="apple-touch-icon" href="/favicons/apple-touch-icon-180x180.png" sizes="180x180">
+<link rel="icon" type="image/png" href="/favicons/favicon-16x16.png" sizes="16x16">
+<link rel="icon" type="image/png" href="/favicons/favicon-32x32.png" sizes="32x32">
+<link rel="icon" type="image/png" href="/favicons/android-36x36.png" sizes="36x36">
+<link rel="icon" type="image/png" href="/favicons/android-48x48.png" sizes="48x48">
+<link rel="icon" type="image/png" href="/favicons/android-72x72.png" sizes="72x72">
+<link rel="icon" type="image/png" href="/favicons/android-96x96.png" sizes="96x96">
+<link rel="icon" type="image/png" href="/favicons/android-144x144.png" sizes="144x144">
+<link rel="icon" type="image/png" href="/favicons/android-192x192.png" sizes="192x192">
+
+<title>线程模型 | ESA Restlight</title>
+<meta name="description" content="
+Restlight由于是使用Netty作为底层HttpServer的实现，因此图中沿用了部分EventLoop的概念，线程模型由了Acceptor，IO EventLoopGroup（IO线程池）以及Biz ThreadPool（业务线程池）组成。
+
+Acceptor： 由1个线程组成的线程池，  …">
+<meta property="og:title" content="线程模型" />
+<meta property="og:description" content="A lightweight and rest-oriented web framework" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="/docs/threading_model/" /><meta property="og:site_name" content="ESA Restlight" />
+
+<meta itemprop="name" content="线程模型">
+<meta itemprop="description" content="A lightweight and rest-oriented web framework"><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="线程模型"/>
+<meta name="twitter:description" content="A lightweight and rest-oriented web framework"/>
+
+
+
+
+<link rel="preload" href="/scss/main.min.d6e0d5abc6f6a3c1d53dbb7d3961f4afa416f54a6cd0393408d9a241c4e351fa.css" as="style">
+<link href="/scss/main.min.d6e0d5abc6f6a3c1d53dbb7d3961f4afa416f54a6cd0393408d9a241c4e351fa.css" rel="stylesheet" integrity="">
+
+<script
+  src="https://code.jquery.com/jquery-3.6.0.min.js"
+  integrity="sha384-vtXRMe3mGCbOeY7l30aIg8H9p3GdeSe4IFlP6G8JMa7o7lXvnz3GFKzPxzJdPfGK"
+  crossorigin="anonymous"></script>
+
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-00000000-0', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+  </head>
+  <body class="td-section">
+    <header>
+      
+<nav class="js-navbar-scroll navbar navbar-expand navbar-dark flex-column flex-md-row td-navbar">
+        <a class="navbar-brand" href="/">
+		<span class="navbar-logo"><svg id="layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 180 180" style="enable-background:new 0 0 180 180"><style>.st0{fill-rule:evenodd;clip-rule:evenodd;fill:#fff}.st1{opacity:.6;fill-rule:evenodd;clip-rule:evenodd;fill:#fff;enable-background:new}.st2{opacity:.3;fill-rule:evenodd;clip-rule:evenodd;fill:#fff;enable-background:new}</style><g><path class="st0" d="M127.6 95.9c-11-2.2-23.9-3.5-37.7-3.5-13.9.0-26.8 1.2-37.7 3.5 11 2.2 23.9 3.5 37.7 3.5S116.7 98 127.6 95.9zM135.8 97.8c-12.7 3.2-28.6 5.2-45.9 5.2s-33.3-2-45.9-5.2c-2.1.5-4.1 1.1-5.9 1.7-6.5 2.2-11.6 4.7-14.9 7.3-3.3 2.6-4.4 4.9-4.4 6.8s1.1 4.2 4.4 6.8 8.4 5.2 14.9 7.3c13.1 4.3 31.5 7 51.8 7s38.7-2.7 51.8-7c6.5-2.2 11.6-4.7 14.9-7.3s4.4-4.9 4.4-6.8-1.1-4.2-4.4-6.8-8.4-5.2-14.9-7.3C139.9 98.9 137.9 98.3 135.8 97.8z"/><path class="st1" d="M120.9 59.2C111.5 57.7 101 57 89.8 57c-11.1.0-21.7.9-31.1 2.2 9.4 1.5 19.9 2.2 31.1 2.2C101 61.5 111.5 60.7 120.9 59.2zm10 1.8c-11.8 2.6-25.9 4.1-41 4.1-15.2.0-29.2-1.5-41-4.1-3.9.9-7.5 1.9-10.9 3-6.5 2.2-11.6 4.7-14.9 7.3-3.3 2.6-4.4 4.9-4.4 6.8s1.1 4.2 4.4 6.8c3.3 2.6 8.4 5.2 14.9 7.3 13.1 4.3 31.5 7 51.8 7s38.7-2.7 51.8-7c6.5-2.2 11.6-4.7 14.9-7.3s4.4-4.9 4.4-6.8-1.1-4.2-4.4-6.8-8.4-5.2-14.9-7.3C138.4 63 134.8 62 130.9 61z"/><path class="st2" d="M161.1 40.3c0 1.9-1.1 4.2-4.4 6.8-3.3 2.6-8.4 5.2-14.9 7.3-13.1 4.3-31.5 7-51.8 7s-38.7-2.7-51.8-7c-6.5-2.2-11.6-4.7-14.9-7.3s-4.4-4.9-4.4-6.8 1.1-4.2 4.4-6.8 8.4-5.2 14.9-7.3c13.1-4.3 31.5-7 51.8-7s38.7 2.7 51.8 7c6.5 2.2 11.6 4.7 14.9 7.3S161.1 38.5 161.1 40.3z"/></g></svg></span><span class="font-weight-bold">ESA Restlight</span>
+	</a>
+	<div class="td-navbar-nav-scroll ml-md-auto" id="main_navbar">
+		<ul class="navbar-nav mt-2 mt-lg-0">
+			
+			
+			<li class="nav-item mr-4 mb-2 mb-lg-0">
+				
+				
+				
+				
+				
+				
+				<a class="nav-link" href="/docs/" ><i class='fas fa-book pr-2'></i><span>Docs</span></a>
+			</li>
+			
+			<li class="nav-item mr-4 mb-2 mb-lg-0">
+				
+				
+				
+				
+				
+				
+				<a class="nav-link" href="/blog/" ><i class='fas fa-rss pr-2'></i><span>Blog</span></a>
+			</li>
+			
+			<li class="nav-item mr-4 mb-2 mb-lg-0">
+				
+				
+				
+				
+				
+				
+				<a class="nav-link" href="https://github.com/esastack/esa-restlight" target="_blank" ><i class='fab fa-github pr-2'></i><span>Github</span></a>
+			</li>
+			
+			<li class="nav-item mr-4 mb-2 mb-lg-0">
+				
+				
+				
+				
+				
+				
+				<a class="nav-link" href="https://www.esastack.io" target="_blank" ><span>ESA Stack</span></a>
+			</li>
+			
+			
+			<li class="nav-item dropdown mr-4 d-none d-lg-block">
+				<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+	Versions
+</a>
+<div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+	
+	<a class="dropdown-item" href="/docs">1.0.0-SNAPSHOT(Newest)</a>
+	
+	<a class="dropdown-item" href="/docs-v0.1.1">v0.1.1</a>
+	
+	<a class="dropdown-item" href="/docs-v0.1.0">v0.1.0</a>
+	
+</div>
+
+			</li>
+			
+			
+		</ul>
+	</div>
+	<div class="navbar-nav d-none d-lg-block"><input type="search" class="form-control td-search-input" placeholder="&#xf002; Search this site…" aria-label="Search this site…" autocomplete="off">
+</div>
+</nav>
+
+    </header>
+    <div class="container-fluid td-outer">
+      <div class="td-main">
+        <div class="row flex-xl-nowrap">
+          <aside class="col-12 col-md-3 col-xl-2 td-sidebar d-print-none">
+            
+<div id="td-sidebar-menu" class="td-sidebar__inner">
+  <form class="td-sidebar__search d-flex align-items-center">
+    <input type="search" class="form-control td-search-input" placeholder="&#xf002; Search this site…" aria-label="Search this site…" autocomplete="off">
+
+    <button class="btn btn-link td-sidebar__toggle d-md-none p-0 ml-3 fas fa-bars" type="button" data-toggle="collapse" data-target="#td-section-nav" aria-controls="td-docs-nav" aria-expanded="false" aria-label="Toggle section navigation">
+    </button>
+  </form>
+  <nav class="collapse td-sidebar-nav foldable-nav" id="td-section-nav">
+    <ul class="td-sidebar-nav__section pr-md-3 ul-0">
+      <li class="td-sidebar-nav__section-title td-sidebar-nav__section with-child active-path" id="m-docs-li">
+  <a href="/docs/" class="align-left pl-0 td-sidebar-link td-sidebar-link__section tree-root" id="m-docs"><span class="">ESA Restlight</span></a>
+  <ul class="ul-1">
+    <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docslatest_introduction-li">
+  <input type="checkbox" id="m-docslatest_introduction-check"/>
+  <label for="m-docslatest_introduction-check"><a href="/docs/latest_introduction/" class="align-left pl-0  td-sidebar-link td-sidebar-link__section" id="m-docslatest_introduction"><span class="">新版说明</span></a></label>
+  
+</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsgetting_started-li">
+  <input type="checkbox" id="m-docsgetting_started-check"/>
+  <label for="m-docsgetting_started-check"><a href="/docs/getting_started/" class="align-left pl-0  td-sidebar-link td-sidebar-link__section" id="m-docsgetting_started"><span class="">Getting Started</span></a></label>
+  
+</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsarchitecture-li">
+  <input type="checkbox" id="m-docsarchitecture-check"/>
+  <label for="m-docsarchitecture-check"><a href="/docs/architecture/" title="Architecture" class="align-left pl-0  td-sidebar-link td-sidebar-link__section" id="m-docsarchitecture"><span class="">架构</span></a></label>
+  
+</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child active-path" id="m-docsthreading_model-li">
+  <input type="checkbox" id="m-docsthreading_model-check" checked/>
+  <label for="m-docsthreading_model-check"><a href="/docs/threading_model/" class="align-left pl-0  active td-sidebar-link td-sidebar-link__section" id="m-docsthreading_model"><span class="td-sidebar-nav-active-item">线程模型</span></a></label>
+  
+</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section with-child" id="m-docsrestlight_starter-li">
+  <input type="checkbox" id="m-docsrestlight_starter-check"/>
+  <label for="m-docsrestlight_starter-check"><a href="/docs/restlight_starter/" class="align-left pl-0  td-sidebar-link td-sidebar-link__section" id="m-docsrestlight_starter"><span class="">Restlight Starter</span></a></label>
+  
+  <ul class="ul-2 foldable">
+    <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsrestlight_starterthread_scheduling-li">
+  <input type="checkbox" id="m-docsrestlight_starterthread_scheduling-check"/>
+  <label for="m-docsrestlight_starterthread_scheduling-check"><a href="/docs/restlight_starter/thread_scheduling/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsrestlight_starterthread_scheduling"><span class="">Thread-Scheduling</span></a></label>
+  
+</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsrestlight_starterfilter-li">
+  <input type="checkbox" id="m-docsrestlight_starterfilter-check"/>
+  <label for="m-docsrestlight_starterfilter-check"><a href="/docs/restlight_starter/filter/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsrestlight_starterfilter"><span class="">Filter</span></a></label>
+  
+</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsrestlight_starterroute_filter-li">
+  <input type="checkbox" id="m-docsrestlight_starterroute_filter-check"/>
+  <label for="m-docsrestlight_starterroute_filter-check"><a href="/docs/restlight_starter/route_filter/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsrestlight_starterroute_filter"><span class="">RouteFilter</span></a></label>
+  
+</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsrestlight_starterinterceptor-li">
+  <input type="checkbox" id="m-docsrestlight_starterinterceptor-check"/>
+  <label for="m-docsrestlight_starterinterceptor-check"><a href="/docs/restlight_starter/interceptor/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsrestlight_starterinterceptor"><span class="">拦截器</span></a></label>
+  
+</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsrestlight_starterexception_resolver-li">
+  <input type="checkbox" id="m-docsrestlight_starterexception_resolver-check"/>
+  <label for="m-docsrestlight_starterexception_resolver-check"><a href="/docs/restlight_starter/exception_resolver/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsrestlight_starterexception_resolver"><span class="">异常处理</span></a></label>
+  
+</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsrestlight_starterparam_resolver-li">
+  <input type="checkbox" id="m-docsrestlight_starterparam_resolver-check"/>
+  <label for="m-docsrestlight_starterparam_resolver-check"><a href="/docs/restlight_starter/param_resolver/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsrestlight_starterparam_resolver"><span class="">参数解析</span></a></label>
+  
+</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsrestlight_starterparam_resolver_advice-li">
+  <input type="checkbox" id="m-docsrestlight_starterparam_resolver_advice-check"/>
+  <label for="m-docsrestlight_starterparam_resolver_advice-check"><a href="/docs/restlight_starter/param_resolver_advice/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsrestlight_starterparam_resolver_advice"><span class="">ParamResolverAdvice</span></a></label>
+  
+</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsrestlight_starterrequestentity_resolver-li">
+  <input type="checkbox" id="m-docsrestlight_starterrequestentity_resolver-check"/>
+  <label for="m-docsrestlight_starterrequestentity_resolver-check"><a href="/docs/restlight_starter/requestentity_resolver/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsrestlight_starterrequestentity_resolver"><span class="">请求实体数据解析</span></a></label>
+  
+</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsrestlight_starterrequestentity_resolver_advice-li">
+  <input type="checkbox" id="m-docsrestlight_starterrequestentity_resolver_advice-check"/>
+  <label for="m-docsrestlight_starterrequestentity_resolver_advice-check"><a href="/docs/restlight_starter/requestentity_resolver_advice/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsrestlight_starterrequestentity_resolver_advice"><span class="">RequestResolverAdvice</span></a></label>
+  
+</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsrestlight_starterresponseentity_resolver-li">
+  <input type="checkbox" id="m-docsrestlight_starterresponseentity_resolver-check"/>
+  <label for="m-docsrestlight_starterresponseentity_resolver-check"><a href="/docs/restlight_starter/responseentity_resolver/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsrestlight_starterresponseentity_resolver"><span class="">返回值解析</span></a></label>
+  
+</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsrestlight_starterresponseentity_resolver_advice-li">
+  <input type="checkbox" id="m-docsrestlight_starterresponseentity_resolver_advice-check"/>
+  <label for="m-docsrestlight_starterresponseentity_resolver_advice-check"><a href="/docs/restlight_starter/responseentity_resolver_advice/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsrestlight_starterresponseentity_resolver_advice"><span class="">ResponseResolverAdvice</span></a></label>
+  
+</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsrestlight_starterserialization-li">
+  <input type="checkbox" id="m-docsrestlight_starterserialization-check"/>
+  <label for="m-docsrestlight_starterserialization-check"><a href="/docs/restlight_starter/serialization/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsrestlight_starterserialization"><span class="">序列化</span></a></label>
+  
+</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsrestlight_starterrequest_bean-li">
+  <input type="checkbox" id="m-docsrestlight_starterrequest_bean-check"/>
+  <label for="m-docsrestlight_starterrequest_bean-check"><a href="/docs/restlight_starter/request_bean/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsrestlight_starterrequest_bean"><span class="">请求参数聚合</span></a></label>
+  
+</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsrestlight_starterquery_bean-li">
+  <input type="checkbox" id="m-docsrestlight_starterquery_bean-check"/>
+  <label for="m-docsrestlight_starterquery_bean-check"><a href="/docs/restlight_starter/query_bean/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsrestlight_starterquery_bean"><span class="">URL参数聚合</span></a></label>
+  
+</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsrestlight_startercontext_path-li">
+  <input type="checkbox" id="m-docsrestlight_startercontext_path-check"/>
+  <label for="m-docsrestlight_startercontext_path-check"><a href="/docs/restlight_starter/context_path/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsrestlight_startercontext_path"><span class="">Context Path</span></a></label>
+  
+</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsrestlight_starteraware_ext-li">
+  <input type="checkbox" id="m-docsrestlight_starteraware_ext-check"/>
+  <label for="m-docsrestlight_starteraware_ext-check"><a href="/docs/restlight_starter/aware_ext/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsrestlight_starteraware_ext"><span class="">Aware扩展</span></a></label>
+  
+</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsrestlight_starterrouting_cache-li">
+  <input type="checkbox" id="m-docsrestlight_starterrouting_cache-check"/>
+  <label for="m-docsrestlight_starterrouting_cache-check"><a href="/docs/restlight_starter/routing_cache/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsrestlight_starterrouting_cache"><span class="">路由缓存</span></a></label>
+  
+</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsrestlight_starterfail_fast-li">
+  <input type="checkbox" id="m-docsrestlight_starterfail_fast-check"/>
+  <label for="m-docsrestlight_starterfail_fast-check"><a href="/docs/restlight_starter/fail_fast/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsrestlight_starterfail_fast"><span class="">快速失败</span></a></label>
+  
+</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsrestlight_startermock_mvc-li">
+  <input type="checkbox" id="m-docsrestlight_startermock_mvc-check"/>
+  <label for="m-docsrestlight_startermock_mvc-check"><a href="/docs/restlight_starter/mock_mvc/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsrestlight_startermock_mvc"><span class="">Mock测试</span></a></label>
+  
+</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsrestlight_starterconfig_support-li">
+  <input type="checkbox" id="m-docsrestlight_starterconfig_support-check"/>
+  <label for="m-docsrestlight_starterconfig_support-check"><a href="/docs/restlight_starter/config_support/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsrestlight_starterconfig_support"><span class="">辅助配置</span></a></label>
+  
+</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsrestlight_starterconfig_overview-li">
+  <input type="checkbox" id="m-docsrestlight_starterconfig_overview-check"/>
+  <label for="m-docsrestlight_starterconfig_overview-check"><a href="/docs/restlight_starter/config_overview/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsrestlight_starterconfig_overview"><span class="">配置一览</span></a></label>
+  
+</li>
+  </ul>
+</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section with-child" id="m-docsrestlight_ext-li">
+  <input type="checkbox" id="m-docsrestlight_ext-check"/>
+  <label for="m-docsrestlight_ext-check"><a href="/docs/restlight_ext/" class="align-left pl-0  td-sidebar-link td-sidebar-link__section" id="m-docsrestlight_ext"><span class="">扩展能力</span></a></label>
+  
+  <ul class="ul-2 foldable">
+    <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsrestlight_extconnection_creation_limit-li">
+  <input type="checkbox" id="m-docsrestlight_extconnection_creation_limit-check"/>
+  <label for="m-docsrestlight_extconnection_creation_limit-check"><a href="/docs/restlight_ext/connection_creation_limit/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsrestlight_extconnection_creation_limit"><span class="">新建连接数限制</span></a></label>
+  
+</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsrestlight_extcpu_load_pretection-li">
+  <input type="checkbox" id="m-docsrestlight_extcpu_load_pretection-check"/>
+  <label for="m-docsrestlight_extcpu_load_pretection-check"><a href="/docs/restlight_ext/cpu_load_pretection/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsrestlight_extcpu_load_pretection"><span class="">CPU Load保护</span></a></label>
+  
+</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsrestlight_extaccesslog-li">
+  <input type="checkbox" id="m-docsrestlight_extaccesslog-check"/>
+  <label for="m-docsrestlight_extaccesslog-check"><a href="/docs/restlight_ext/accesslog/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsrestlight_extaccesslog"><span class="">Access Log</span></a></label>
+  
+</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsrestlight_extcors_origin-li">
+  <input type="checkbox" id="m-docsrestlight_extcors_origin-check"/>
+  <label for="m-docsrestlight_extcors_origin-check"><a href="/docs/restlight_ext/cors_origin/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsrestlight_extcors_origin"><span class="">跨域</span></a></label>
+  
+</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsrestlight_extmultipart_support-li">
+  <input type="checkbox" id="m-docsrestlight_extmultipart_support-check"/>
+  <label for="m-docsrestlight_extmultipart_support-check"><a href="/docs/restlight_ext/multipart_support/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsrestlight_extmultipart_support"><span class="">文件及表单参数解析</span></a></label>
+  
+</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsrestlight_extsignature_validation-li">
+  <input type="checkbox" id="m-docsrestlight_extsignature_validation-check"/>
+  <label for="m-docsrestlight_extsignature_validation-check"><a href="/docs/restlight_ext/signature_validation/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsrestlight_extsignature_validation"><span class="">签名认证</span></a></label>
+  
+</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsrestlight_extxss_support-li">
+  <input type="checkbox" id="m-docsrestlight_extxss_support-check"/>
+  <label for="m-docsrestlight_extxss_support-check"><a href="/docs/restlight_ext/xss_support/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsrestlight_extxss_support"><span class="">XSS过滤</span></a></label>
+  
+</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsrestlight_extip_white_list-li">
+  <input type="checkbox" id="m-docsrestlight_extip_white_list-check"/>
+  <label for="m-docsrestlight_extip_white_list-check"><a href="/docs/restlight_ext/ip_white_list/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsrestlight_extip_white_list"><span class="">IP白名单</span></a></label>
+  
+</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsrestlight_extdata_validate-li">
+  <input type="checkbox" id="m-docsrestlight_extdata_validate-check"/>
+  <label for="m-docsrestlight_extdata_validate-check"><a href="/docs/restlight_ext/data_validate/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsrestlight_extdata_validate"><span class="">数据校验</span></a></label>
+  
+</li>
+  </ul>
+</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section with-child" id="m-docsactuator_support-li">
+  <input type="checkbox" id="m-docsactuator_support-check"/>
+  <label for="m-docsactuator_support-check"><a href="/docs/actuator_support/" class="align-left pl-0  td-sidebar-link td-sidebar-link__section" id="m-docsactuator_support"><span class="">Spring Boot Actuator支持</span></a></label>
+  
+  <ul class="ul-2 foldable">
+    <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsactuator_supportrestlight_endpoints-li">
+  <input type="checkbox" id="m-docsactuator_supportrestlight_endpoints-check"/>
+  <label for="m-docsactuator_supportrestlight_endpoints-check"><a href="/docs/actuator_support/restlight_endpoints/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsactuator_supportrestlight_endpoints"><span class="">Restlight Endpoint扩展</span></a></label>
+  
+</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsactuator_supportcustom_actuator_endpoint-li">
+  <input type="checkbox" id="m-docsactuator_supportcustom_actuator_endpoint-check"/>
+  <label for="m-docsactuator_supportcustom_actuator_endpoint-check"><a href="/docs/actuator_support/custom_actuator_endpoint/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsactuator_supportcustom_actuator_endpoint"><span class="">自定义Endpoint</span></a></label>
+  
+</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsactuator_supportindivided_actuator_port-li">
+  <input type="checkbox" id="m-docsactuator_supportindivided_actuator_port-check"/>
+  <label for="m-docsactuator_supportindivided_actuator_port-check"><a href="/docs/actuator_support/individed_actuator_port/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsactuator_supportindivided_actuator_port"><span class="">使用独立端口</span></a></label>
+  
+</li>
+  </ul>
+</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section with-child" id="m-docsspringmvc_support-li">
+  <input type="checkbox" id="m-docsspringmvc_support-check"/>
+  <label for="m-docsspringmvc_support-check"><a href="/docs/springmvc_support/" class="align-left pl-0  td-sidebar-link td-sidebar-link__section" id="m-docsspringmvc_support"><span class="">Spring MVC 支持</span></a></label>
+  
+  <ul class="ul-2 foldable">
+    <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsspringmvc_supportannotations_support-li">
+  <input type="checkbox" id="m-docsspringmvc_supportannotations_support-check"/>
+  <label for="m-docsspringmvc_supportannotations_support-check"><a href="/docs/springmvc_support/annotations_support/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsspringmvc_supportannotations_support"><span class="">Spring MVC 注解支持</span></a></label>
+  
+</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsspringmvc_supportexception_handler-li">
+  <input type="checkbox" id="m-docsspringmvc_supportexception_handler-check"/>
+  <label for="m-docsspringmvc_supportexception_handler-check"><a href="/docs/springmvc_support/exception_handler/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsspringmvc_supportexception_handler"><span class="">ExceptionHandler支持</span></a></label>
+  
+</li>
+  </ul>
+</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section with-child" id="m-docsjaxrs_support-li">
+  <input type="checkbox" id="m-docsjaxrs_support-check"/>
+  <label for="m-docsjaxrs_support-check"><a href="/docs/jaxrs_support/" class="align-left pl-0  td-sidebar-link td-sidebar-link__section" id="m-docsjaxrs_support"><span class="">JAX-RS3.0 支持</span></a></label>
+  
+  <ul class="ul-2 foldable">
+    <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsjaxrs_supportannotations_support-li">
+  <input type="checkbox" id="m-docsjaxrs_supportannotations_support-check"/>
+  <label for="m-docsjaxrs_supportannotations_support-check"><a href="/docs/jaxrs_support/annotations_support/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsjaxrs_supportannotations_support"><span class="">JAX-RS 注解支持</span></a></label>
+  
+</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsjaxrs_supportinterface_support-li">
+  <input type="checkbox" id="m-docsjaxrs_supportinterface_support-check"/>
+  <label for="m-docsjaxrs_supportinterface_support-check"><a href="/docs/jaxrs_support/interface_support/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsjaxrs_supportinterface_support"><span class="">JAX-RS 接口支持</span></a></label>
+  
+</li>
+  </ul>
+</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section with-child" id="m-docsrestlight_core-li">
+  <input type="checkbox" id="m-docsrestlight_core-check"/>
+  <label for="m-docsrestlight_core-check"><a href="/docs/restlight_core/" class="align-left pl-0  td-sidebar-link td-sidebar-link__section" id="m-docsrestlight_core"><span class="">Restlight Core</span></a></label>
+  
+  <ul class="ul-2 foldable">
+    <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsrestlight_coreterminology-li">
+  <input type="checkbox" id="m-docsrestlight_coreterminology-check"/>
+  <label for="m-docsrestlight_coreterminology-check"><a href="/docs/restlight_core/terminology/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsrestlight_coreterminology"><span class="">术语</span></a></label>
+  
+</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsrestlight_corehandle_request-li">
+  <input type="checkbox" id="m-docsrestlight_corehandle_request-check"/>
+  <label for="m-docsrestlight_corehandle_request-check"><a href="/docs/restlight_core/handle_request/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsrestlight_corehandle_request"><span class="">请求处理</span></a></label>
+  
+</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsrestlight_coreuse_jaxrs-li">
+  <input type="checkbox" id="m-docsrestlight_coreuse_jaxrs-check"/>
+  <label for="m-docsrestlight_coreuse_jaxrs-check"><a href="/docs/restlight_core/use_jaxrs/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsrestlight_coreuse_jaxrs"><span class="">配合 JAX-RS标准</span></a></label>
+  
+</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsrestlight_coreuse_springmvc-li">
+  <input type="checkbox" id="m-docsrestlight_coreuse_springmvc-check"/>
+  <label for="m-docsrestlight_coreuse_springmvc-check"><a href="/docs/restlight_core/use_springmvc/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsrestlight_coreuse_springmvc"><span class="">配合 SpringMVC标准</span></a></label>
+  
+</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsrestlight_coreregister_deregister_handler-li">
+  <input type="checkbox" id="m-docsrestlight_coreregister_deregister_handler-check"/>
+  <label for="m-docsrestlight_coreregister_deregister_handler-check"><a href="/docs/restlight_core/register_deregister_handler/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsrestlight_coreregister_deregister_handler"><span class="">动态添加/卸载路由</span></a></label>
+  
+</li>
+  </ul>
+</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section with-child" id="m-docsrestlight_for_spring-li">
+  <input type="checkbox" id="m-docsrestlight_for_spring-check"/>
+  <label for="m-docsrestlight_for_spring-check"><a href="/docs/restlight_for_spring/" class="align-left pl-0  td-sidebar-link td-sidebar-link__section" id="m-docsrestlight_for_spring"><span class="">Restlight for Spring</span></a></label>
+  
+  <ul class="ul-2 foldable">
+    <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsrestlight_for_springquick_start-li">
+  <input type="checkbox" id="m-docsrestlight_for_springquick_start-check"/>
+  <label for="m-docsrestlight_for_springquick_start-check"><a href="/docs/restlight_for_spring/quick_start/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsrestlight_for_springquick_start"><span class="">Quick Start</span></a></label>
+  
+</li>
+  </ul>
+</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section with-child" id="m-docsasync_support-li">
+  <input type="checkbox" id="m-docsasync_support-check"/>
+  <label for="m-docsasync_support-check"><a href="/docs/async_support/" class="align-left pl-0  td-sidebar-link td-sidebar-link__section" id="m-docsasync_support"><span class="">全链路异步</span></a></label>
+  
+  <ul class="ul-2 foldable">
+    <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsasync_supportasync_rules-li">
+  <input type="checkbox" id="m-docsasync_supportasync_rules-check"/>
+  <label for="m-docsasync_supportasync_rules-check"><a href="/docs/async_support/async_rules/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsasync_supportasync_rules"><span class="">Restlight 异步保证</span></a></label>
+  
+</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsasync_supporttips_of_completablefuture-li">
+  <input type="checkbox" id="m-docsasync_supporttips_of_completablefuture-check"/>
+  <label for="m-docsasync_supporttips_of_completablefuture-check"><a href="/docs/async_support/tips_of_completablefuture/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsasync_supporttips_of_completablefuture"><span class="">CompletionStage使用注意</span></a></label>
+  
+</li>
+  </ul>
+</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section with-child" id="m-docstips-li">
+  <input type="checkbox" id="m-docstips-check"/>
+  <label for="m-docstips-check"><a href="/docs/tips/" class="align-left pl-0  td-sidebar-link td-sidebar-link__section" id="m-docstips"><span class="">使用注意</span></a></label>
+  
+  <ul class="ul-2 foldable">
+    <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docstipscontroller_semantics-li">
+  <input type="checkbox" id="m-docstipscontroller_semantics-check"/>
+  <label for="m-docstipscontroller_semantics-check"><a href="/docs/tips/controller_semantics/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docstipscontroller_semantics"><span class="">Controller 语义不能重复</span></a></label>
+  
+</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docstipsbig_file_upload-li">
+  <input type="checkbox" id="m-docstipsbig_file_upload-check"/>
+  <label for="m-docstipsbig_file_upload-check"><a href="/docs/tips/big_file_upload/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docstipsbig_file_upload"><span class="">大文件上传</span></a></label>
+  
+</li>
+  </ul>
+</li>
+  </ul>
+</li>
+    </ul>
+  </nav>
+</div>
+
+          </aside>
+          <aside class="d-none d-xl-block col-xl-2 td-sidebar-toc d-print-none">
+            
+<div class="td-page-meta ml-2 pb-1 pt-2 mb-0">
+<a href="https://github.com/esastack/esa-restlight/tree/main/site/content/en/docs/threading_model/_index.md" class="td-page-meta--view" target="_blank" rel="noopener"><i class="fa fa-file-alt fa-fw"></i> View page source</a>
+  <a href="https://github.com/esastack/esa-restlight/edit/main/site/content/en/docs/threading_model/_index.md" class="td-page-meta--edit" target="_blank" rel="noopener"><i class="fa fa-edit fa-fw"></i> Edit this page</a>
+  <a href="https://github.com/esastack/esa-restlight/new/main/site/content/en/docs/threading_model/_index.md?filename=change-me.md&amp;value=---%0Atitle%3A&#43;%22Long&#43;Page&#43;Title%22%0AlinkTitle%3A&#43;%22Short&#43;Nav&#43;Title%22%0Aweight%3A&#43;100%0Adescription%3A&#43;%3E-%0A&#43;&#43;&#43;&#43;&#43;Page&#43;description&#43;for&#43;heading&#43;and&#43;indexes.%0A---%0A%0A%23%23&#43;Heading%0A%0AEdit&#43;this&#43;template&#43;to&#43;create&#43;your&#43;new&#43;page.%0A%0A%2A&#43;Give&#43;it&#43;a&#43;good&#43;name%2C&#43;ending&#43;in&#43;%60.md%60&#43;-&#43;e.g.&#43;%60getting-started.md%60%0A%2A&#43;Edit&#43;the&#43;%22front&#43;matter%22&#43;section&#43;at&#43;the&#43;top&#43;of&#43;the&#43;page&#43;%28weight&#43;controls&#43;how&#43;its&#43;ordered&#43;amongst&#43;other&#43;pages&#43;in&#43;the&#43;same&#43;directory%3B&#43;lowest&#43;number&#43;first%29.%0A%2A&#43;Add&#43;a&#43;good&#43;commit&#43;message&#43;at&#43;the&#43;bottom&#43;of&#43;the&#43;page&#43;%28%3C80&#43;characters%3B&#43;use&#43;the&#43;extended&#43;description&#43;field&#43;for&#43;more&#43;detail%29.%0A%2A&#43;Create&#43;a&#43;new&#43;branch&#43;so&#43;you&#43;can&#43;preview&#43;your&#43;new&#43;file&#43;and&#43;request&#43;a&#43;review&#43;via&#43;Pull&#43;Request.%0A" class="td-page-meta--child" target="_blank" rel="noopener"><i class="fa fa-edit fa-fw"></i> Create child page</a>
+  <a href="https://github.com/esastack/esa-restlight/issues/new?title=%e7%ba%bf%e7%a8%8b%e6%a8%a1%e5%9e%8b" class="td-page-meta--issue" target="_blank" rel="noopener"><i class="fab fa-github fa-fw"></i> Create documentation issue</a>
+  <a href="https://github.com/esastack/esa-restlight/issues/new" class="td-page-meta--project-issue" target="_blank" rel="noopener"><i class="fas fa-tasks fa-fw"></i> Create project issue</a>
+  <a id="print" href="/docs/threading_model/_print/"><i class="fa fa-print fa-fw"></i> Print entire section</a>
+
+</div>
+
+            
+
+
+
+
+            
+
+	
+		
+			
+		
+		
+
+
+
+  
+  
+    <div class="taxonomy taxonomy-terms-cloud taxo-tags">
+      
+        <h5 class="taxonomy-title">Tag Cloud</h5>
+      
+      <ul class="taxonomy-terms">
+        
+          <li><a class="taxonomy-term" href="/tags/actuator/" data-taxonomy-term="actuator"><span class="taxonomy-label">Actuator</span><span class="taxonomy-count">12</span></a></li>
+        
+          <li><a class="taxonomy-term" href="/tags/architecture/" data-taxonomy-term="architecture"><span class="taxonomy-label">architecture</span><span class="taxonomy-count">6</span></a></li>
+        
+          <li><a class="taxonomy-term" href="/tags/asynchronous/" data-taxonomy-term="asynchronous"><span class="taxonomy-label">asynchronous</span><span class="taxonomy-count">9</span></a></li>
+        
+          <li><a class="taxonomy-term" href="/tags/core/" data-taxonomy-term="core"><span class="taxonomy-label">Core</span><span class="taxonomy-count">5</span></a></li>
+        
+          <li><a class="taxonomy-term" href="/tags/example/" data-taxonomy-term="example"><span class="taxonomy-label">example</span><span class="taxonomy-count">3</span></a></li>
+        
+          <li><a class="taxonomy-term" href="/tags/extension/" data-taxonomy-term="extension"><span class="taxonomy-label">extension</span><span class="taxonomy-count">30</span></a></li>
+        
+          <li><a class="taxonomy-term" href="/tags/feature/" data-taxonomy-term="feature"><span class="taxonomy-label">feature</span><span class="taxonomy-count">60</span></a></li>
+        
+          <li><a class="taxonomy-term" href="/tags/jax-rs/" data-taxonomy-term="jax-rs"><span class="taxonomy-label">JAX-RS</span><span class="taxonomy-count">10</span></a></li>
+        
+          <li><a class="taxonomy-term" href="/tags/notification/" data-taxonomy-term="notification"><span class="taxonomy-label">notification</span><span class="taxonomy-count">1</span></a></li>
+        
+          <li><a class="taxonomy-term" href="/tags/server/" data-taxonomy-term="server"><span class="taxonomy-label">Server</span><span class="taxonomy-count">9</span></a></li>
+        
+          <li><a class="taxonomy-term" href="/tags/spring/" data-taxonomy-term="spring"><span class="taxonomy-label">Spring</span><span class="taxonomy-count">6</span></a></li>
+        
+          <li><a class="taxonomy-term" href="/tags/springmvc/" data-taxonomy-term="springmvc"><span class="taxonomy-label">SpringMVC</span><span class="taxonomy-count">12</span></a></li>
+        
+          <li><a class="taxonomy-term" href="/tags/tips/" data-taxonomy-term="tips"><span class="taxonomy-label">tips</span><span class="taxonomy-count">9</span></a></li>
+        
+      </ul>
+    </div>
+  
+
+	
+		
+			
+		
+		
+
+
+
+  
+  
+
+	
+
+          </aside>
+          <main class="col-12 col-md-9 col-xl-8 pl-md-5" role="main">
+            
+  
+
+            <nav aria-label="breadcrumb" class="td-breadcrumbs">
+  <ol class="breadcrumb">
+  <li class="breadcrumb-item">
+    <a href="/docs/">ESA Restlight</a>
+  </li>
+  <li class="breadcrumb-item active" aria-current="page">
+    <a href="/docs/threading_model/">线程模型</a>
+  </li>
+  </ol>
+</nav>
+            
+<div class="td-content">
+	<h1>线程模型</h1>
+  
+	<header class="article-meta">
+		
+
+  
+    
+
+
+<div class="taxonomy taxonomy-terms-article taxo-tags">
+  <h5 class="taxonomy-title">Tags:</h5>
+  <ul class="taxonomy-terms">
+    
+      <li><a class="taxonomy-term" href="/tags/architecture/" data-taxonomy-term="architecture"><span class="taxonomy-label">architecture</span></a></li>
+    
+  </ul>
+</div>
+
+  
+    
+
+
+  
+
+		
+	</header>
+	<p><img src="../../img/threading_model.png" alt="ThreadingModel"></p>
+<p><code>Restlight</code>由于是使用<code>Netty</code>作为底层HttpServer的实现，因此图中沿用了部分<code>EventLoop</code>的概念，线程模型由了<code>Acceptor</code>，<code>IO EventLoopGroup</code>（IO线程池）以及<code>Biz ThreadPool</code>（业务线程池）组成。</p>
+<ul>
+<li><code>Acceptor</code>： 由1个线程组成的线程池， 负责监听本地端口并分发IO 事件。</li>
+<li><code>IO EventLoopGroup</code>： 由多个线程组成，负责读写IO数据(对应图中的<code>read()</code>和<code>write()</code>)以及HTTP协议的编解码和分发到业务线程池的工作。</li>
+<li><code>Biz Scheduler</code>：负责执行真正的业务逻辑（大多为Controller中的业务处理，拦截器等）。</li>
+<li><code>Custom Scheduler</code>: 自定义线程池</li>
+</ul>
+
+
+<div class="alert alert-primary" role="alert">
+<h4 class="alert-heading">Tip</h4>
+
+    通过第三个线程池<code>Biz Scheduler</code>的加入完成IO操作与实际业务操作的异步（同时可通过Restlight的线程调度功能随意调度）
+
+</div>
+
+
+        <div class="section-index">
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</div>
+
+	
+		<style>
+  .feedback--answer {
+    display: inline-block;
+  }
+  .feedback--answer-no {
+    margin-left: 1em;
+  }
+  .feedback--response {
+    display: none;
+    margin-top: 1em;
+  }
+  .feedback--response__visible {
+    display: block;
+  }
+</style>
+<div class="d-print-none">
+<h2 class="feedback--title">Feedback</h2>
+<p class="feedback--question">Was this page helpful?</p>
+<button class="btn btn-primary mb-4 feedback--answer feedback--answer-yes">Yes</button>
+<button class="btn btn-primary mb-4 feedback--answer feedback--answer-no">No</button>
+<p class="feedback--response feedback--response-yes">
+  Glad to hear it! Please <a href="https://github.com/esastack/esa-restlight/issues/new">tell us how we can improve</a>.
+</p>
+<p class="feedback--response feedback--response-no">
+  Sorry to hear that. Please <a href="https://github.com/esastack/esa-restlight/issues/new">tell us how we can improve</a>.
+</p>
+</div>
+<script>
+  const yesButton = document.querySelector('.feedback--answer-yes');
+  const noButton = document.querySelector('.feedback--answer-no');
+  const yesResponse = document.querySelector('.feedback--response-yes');
+  const noResponse = document.querySelector('.feedback--response-no');
+  const disableButtons = () => {
+    yesButton.disabled = true;
+    noButton.disabled = true;
+  };
+  const sendFeedback = (value) => {
+    if (typeof ga !== 'function') return;
+    const args = {
+      command: 'send',
+      hitType: 'event',
+      category: 'Helpful',
+      action: 'click',
+      label: window.location.pathname,
+      value: value
+    };
+    ga(args.command, args.hitType, args.category, args.action, args.label, args.value);
+  };
+  yesButton.addEventListener('click', () => {
+    yesResponse.classList.add('feedback--response__visible');
+    disableButtons();
+    sendFeedback(1);
+  });
+  noButton.addEventListener('click', () => {
+    noResponse.classList.add('feedback--response__visible');
+    disableButtons();
+    sendFeedback(0);
+  });
+</script>
+
+		<br />
+	
+	
+	<div class="text-muted mt-5 pt-3 border-top">
+  Last modified March 10, 2022: <a href="https://github.com/esastack/esa-restlight/commit/79630ff3ff95737a7f6c0018265dc505ff3e3528">introduce docsy as the website framework and add docs-v1.0.0 (#120) (79630ff)</a>
+</div>
+
+</div>
+
+          </main>
+        </div>
+      </div>
+      
+<footer class="bg-dark py-5 row d-print-none">
+  <div class="container-fluid mx-sm-5">
+    <div class="row">
+      <div class="col-6 col-sm-4 text-xs-center order-sm-2">
+        
+        
+        
+<ul class="list-inline mb-0">
+  
+  <li class="list-inline-item mx-2 h3" data-toggle="tooltip" data-placement="top" title="User mailing list" aria-label="User mailing list">
+    <a class="text-white" target="_blank" rel="noopener" href="mailto:esa.stack@oppo.com" aria-label="User mailing list">
+      <i class="fa fa-envelope"></i>
+    </a>
+  </li>
+  
+</ul>
+
+        
+        
+      </div>
+      <div class="col-6 col-sm-4 text-right text-xs-center order-sm-3">
+        
+        
+        
+<ul class="list-inline mb-0">
+  
+  <li class="list-inline-item mx-2 h3" data-toggle="tooltip" data-placement="top" title="GitHub" aria-label="GitHub">
+    <a class="text-white" target="_blank" rel="noopener" href="https://github.com/esastack/esa-restlight" aria-label="GitHub">
+      <i class="fab fa-github"></i>
+    </a>
+  </li>
+  
+  <li class="list-inline-item mx-2 h3" data-toggle="tooltip" data-placement="top" title="Developer mailing list" aria-label="Developer mailing list">
+    <a class="text-white" target="_blank" rel="noopener" href="mailto:esa.stack@oppo.com" aria-label="Developer mailing list">
+      <i class="fa fa-envelope"></i>
+    </a>
+  </li>
+  
+</ul>
+
+        
+        
+      </div>
+      <div class="col-12 col-sm-4 text-center py-2 order-sm-2">
+        <small class="text-white">&copy; 2022 OPPO ESA Stack Project All Rights Reserved</small>
+        
+	
+		
+	
+      </div>
+    </div>
+  </div>
+</footer>
+
+
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
+    integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
+    crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.min.js"
+    integrity="sha512-UR25UO94eTnCVwjbXozyeVd6ZqpaAE9naiEUBK/A+QDbfSTQFhPGj5lOR6d8tsgbBk84Ggb5A3EkjsOgPRPcKA=="
+    crossorigin="anonymous"></script>
+
+
+
+
+
+<script src='/js/tabpane-persist.js'></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script src="/js/main.min.7380160122c24d59789a168af05fcec445fe4e5f2069dd9f3a0c991f10269ae0.js" integrity="sha256-c4AWASLCTVl4mhaK8F/OxEX&#43;Tl8gad2fOgyZHxAmmuA=" crossorigin="anonymous"></script>
+
+
+
+
+
+
+  </body>
+</html>

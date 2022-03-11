@@ -1,0 +1,439 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>ESA Restlight – architecture</title>
+    <link>/tags/architecture/</link>
+    <description>Recent content in architecture on ESA Restlight</description>
+    <generator>Hugo -- gohugo.io</generator>
+    
+	  <atom:link href="/tags/architecture/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+      
+        
+      
+    
+    
+    <item>
+      <title>Docs-V0.1.0: Architecture</title>
+      <link>/docs-v0.1.0/architecture/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/docs-v0.1.0/architecture/</guid>
+      <description>
+        
+        
+        &lt;h2 id=&#34;设计原则&#34;&gt;设计原则&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;高兼容性&lt;/li&gt;
+&lt;li&gt;极致性能&lt;/li&gt;
+&lt;li&gt;全链路异步&lt;/li&gt;
+&lt;li&gt;易用&lt;/li&gt;
+&lt;li&gt;可扩展&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;功能架构&#34;&gt;功能架构&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;分层架构设计&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;../../img/architecture.png&#34; alt=&#34;Architecture&#34;&gt;&lt;/p&gt;
+&lt;p&gt;架构图中&lt;code&gt;ESA HttpServer&lt;/code&gt;, &lt;code&gt;Restlight Server&lt;/code&gt;, &lt;code&gt;Restlight Core&lt;/code&gt;, &lt;code&gt;Restlight for Spring&lt;/code&gt;, &lt;code&gt;Restlight Starter&lt;/code&gt;几个模块均可作为一个独立的模块使用， 满足不同场景下的需求。&lt;/p&gt;
+&lt;h3 id=&#34;esa-httpserver&#34;&gt;ESA HttpServer&lt;/h3&gt;
+&lt;p&gt;基于&lt;code&gt;Netty&lt;/code&gt; 实现的一个简易的&lt;a href=&#34;https://github.com/esastack/esa-httpserver&#34;&gt;HttpServer&lt;/a&gt;， 支持Http1.1/Http2以及Https等&lt;/p&gt;
+&lt;h3 id=&#34;restlight-server&#34;&gt;Restlight Server&lt;/h3&gt;
+&lt;p&gt;在&lt;code&gt;ESA HttpServer&lt;/code&gt;基础之上封装了&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;引入业务线程池&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Filter&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;请求路由（根据url, method, header等条件将请求路由到对应的Handler）&lt;/li&gt;
+&lt;li&gt;基于&lt;code&gt;CompletableFuture&lt;/code&gt;的响应式编程支持&lt;/li&gt;
+&lt;li&gt;线程调度&lt;/li&gt;
+&lt;li&gt;&amp;hellip;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;对应启动入口类esarestlightserverrestlite&#34;&gt;对应启动入口类&lt;code&gt;esa.restlight.server.Restlite&lt;/code&gt;&lt;/h4&gt;
+
+
+&lt;div class=&#34;alert alert-primary&#34; role=&#34;alert&#34;&gt;
+&lt;h4 class=&#34;alert-heading&#34;&gt;Tip&lt;/h4&gt;
+
+    适合各类框架，中间件等基础组建中启动或期望使用代码显示启动HttpServer的场景
+
+&lt;/div&gt;
+
+&lt;h3 id=&#34;restlight-core&#34;&gt;Restlight Core&lt;/h3&gt;
+&lt;p&gt;在&lt;code&gt;Restlight Server&lt;/code&gt;之上， 扩展支持了&lt;code&gt;Controller&lt;/code&gt;方式（在&lt;code&gt;Controller&lt;/code&gt;类中通过诸如&lt;code&gt;@RequestMappng&lt;/code&gt;等注解的方式构造请求处理逻辑）完成业务逻辑以及诸多常用功能&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;HandlerInterceptor&lt;/code&gt;: 拦截器&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;ExceptionHandler&lt;/code&gt;: 全局异常处理器&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;BeanValidation&lt;/code&gt;: 参数校验&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;ArgumentResolver&lt;/code&gt;: 参数解析扩展&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;ReturnValueResolver&lt;/code&gt;: 返回值解析扩展&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;RequestSerializer&lt;/code&gt;: 请求序列化器（通常负责反序列化Body内容）&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;ResposneSerializer&lt;/code&gt;: 响应序列化器（通常负责序列化响应对象到Body）&lt;/li&gt;
+&lt;li&gt;内置&lt;code&gt;Jackson&lt;/code&gt;, &lt;code&gt;Fastjson&lt;/code&gt;, &lt;code&gt;Gson&lt;/code&gt;, &lt;code&gt;ProtoBuf&lt;/code&gt;序列化支持&lt;/li&gt;
+&lt;li&gt;&amp;hellip;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;对应启动入口类esarestlightcorerestlight&#34;&gt;对应启动入口类&lt;code&gt;esa.restlight.core.Restlight&lt;/code&gt;&lt;/h4&gt;
+
+
+&lt;div class=&#34;alert alert-primary&#34; role=&#34;alert&#34;&gt;
+&lt;h4 class=&#34;alert-heading&#34;&gt;Tip&lt;/h4&gt;
+
+    适合各类框架，中间件等基础组建中启动或期望使用代码显示启动HttpServer的场景
+
+&lt;/div&gt;
+
+&lt;h3 id=&#34;restlight-springmvc--restlight-jax-rs&#34;&gt;Restlight SpringMVC &amp;amp; Restlight JAX-RS&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;Restlight SpringMVC&lt;/code&gt;对&lt;code&gt;SpringMVC&lt;/code&gt;中的注解使用习惯的&lt;code&gt;Restlight Core&lt;/code&gt;的扩展实现（&lt;code&gt;@RequestMapping&lt;/code&gt;, &lt;code&gt;@RequestParam&lt;/code&gt;等）。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;Restlight JAX-RS&lt;/code&gt;对&lt;code&gt;JAX-RS&lt;/code&gt;中的注解使用习惯的&lt;code&gt;Restlight Core&lt;/code&gt;的扩展实现（&lt;code&gt;@Path&lt;/code&gt;, &lt;code&gt;@GET&lt;/code&gt;, &lt;code&gt;@QueryParam&lt;/code&gt;等）。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;restlight-for-spring&#34;&gt;Restlight for Spring&lt;/h3&gt;
+&lt;p&gt;在&lt;code&gt;Restlight Core&lt;/code&gt;基础上支持在&lt;code&gt;Spring&lt;/code&gt;场景下通过&lt;code&gt;ApplicationContext&lt;/code&gt;容器自动配置各种内容（&lt;code&gt;RestlightOptions&lt;/code&gt;, 从容器中自动配置&lt;code&gt;Filter&lt;/code&gt;, &lt;code&gt;Controller&lt;/code&gt;, &lt;code&gt;ControllerAdvice&lt;/code&gt;等）&lt;/p&gt;
+
+
+&lt;div class=&#34;alert alert-primary&#34; role=&#34;alert&#34;&gt;
+&lt;h4 class=&#34;alert-heading&#34;&gt;Tip&lt;/h4&gt;
+
+    适合&lt;code&gt;Spring Boot&lt;/code&gt;场景
+
+&lt;/div&gt;
+
+&lt;h3 id=&#34;restlight-starter&#34;&gt;Restlight Starter&lt;/h3&gt;
+&lt;p&gt;在&lt;code&gt;Restlight for Spring&lt;/code&gt;基础上支持在&lt;code&gt;Spring Boot&lt;/code&gt;场景的自动配置&lt;/p&gt;
+
+
+&lt;div class=&#34;alert alert-primary&#34; role=&#34;alert&#34;&gt;
+&lt;h4 class=&#34;alert-heading&#34;&gt;Tip&lt;/h4&gt;
+
+    适合&lt;code&gt;Spring Boot&lt;/code&gt;场景
+
+&lt;/div&gt;
+
+&lt;h3 id=&#34;restlight-actuator&#34;&gt;Restlight Actuator&lt;/h3&gt;
+&lt;p&gt;在&lt;code&gt;Restlight Starter&lt;/code&gt;基础上支持在&lt;code&gt;Spring Boot Actuator&lt;/code&gt;原生各种&lt;code&gt;Endpoint&lt;/code&gt;s支持以及&lt;code&gt;Restlight&lt;/code&gt;独有的&lt;code&gt;Endpoint&lt;/code&gt;s。&lt;/p&gt;
+
+
+&lt;div class=&#34;alert alert-primary&#34; role=&#34;alert&#34;&gt;
+&lt;h4 class=&#34;alert-heading&#34;&gt;Tip&lt;/h4&gt;
+
+    适合&lt;code&gt;Spring Boot Actuator&lt;/code&gt;场景
+
+&lt;/div&gt;
+
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Docs-V0.1.1: Architecture</title>
+      <link>/docs-v0.1.1/architecture/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/docs-v0.1.1/architecture/</guid>
+      <description>
+        
+        
+        &lt;h2 id=&#34;设计原则&#34;&gt;设计原则&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;高兼容性&lt;/li&gt;
+&lt;li&gt;极致性能&lt;/li&gt;
+&lt;li&gt;全链路异步&lt;/li&gt;
+&lt;li&gt;易用&lt;/li&gt;
+&lt;li&gt;可扩展&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;功能架构&#34;&gt;功能架构&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;分层架构设计&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;../../img/architecture.png&#34; alt=&#34;Architecture&#34;&gt;&lt;/p&gt;
+&lt;p&gt;架构图中&lt;code&gt;ESA HttpServer&lt;/code&gt;, &lt;code&gt;Restlight Server&lt;/code&gt;, &lt;code&gt;Restlight Core&lt;/code&gt;, &lt;code&gt;Restlight for Spring&lt;/code&gt;, &lt;code&gt;Restlight Starter&lt;/code&gt;几个模块均可作为一个独立的模块使用， 满足不同场景下的需求。&lt;/p&gt;
+&lt;h3 id=&#34;esa-httpserver&#34;&gt;ESA HttpServer&lt;/h3&gt;
+&lt;p&gt;基于&lt;code&gt;Netty&lt;/code&gt; 实现的一个简易的&lt;a href=&#34;https://github.com/esastack/esa-httpserver&#34;&gt;HttpServer&lt;/a&gt;， 支持Http1.1/Http2以及Https等&lt;/p&gt;
+&lt;h3 id=&#34;restlight-server&#34;&gt;Restlight Server&lt;/h3&gt;
+&lt;p&gt;在&lt;code&gt;ESA HttpServer&lt;/code&gt;基础之上封装了&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;引入业务线程池&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Filter&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;请求路由（根据url, method, header等条件将请求路由到对应的Handler）&lt;/li&gt;
+&lt;li&gt;基于&lt;code&gt;CompletableFuture&lt;/code&gt;的响应式编程支持&lt;/li&gt;
+&lt;li&gt;线程调度&lt;/li&gt;
+&lt;li&gt;&amp;hellip;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;对应启动入口类esarestlightserverrestlite&#34;&gt;对应启动入口类&lt;code&gt;esa.restlight.server.Restlite&lt;/code&gt;&lt;/h4&gt;
+
+
+&lt;div class=&#34;alert alert-primary&#34; role=&#34;alert&#34;&gt;
+&lt;h4 class=&#34;alert-heading&#34;&gt;Tip&lt;/h4&gt;
+
+    适合各类框架，中间件等基础组建中启动或期望使用代码显示启动HttpServer的场景
+
+&lt;/div&gt;
+
+&lt;h3 id=&#34;restlight-core&#34;&gt;Restlight Core&lt;/h3&gt;
+&lt;p&gt;在&lt;code&gt;Restlight Server&lt;/code&gt;之上， 扩展支持了&lt;code&gt;Controller&lt;/code&gt;方式（在&lt;code&gt;Controller&lt;/code&gt;类中通过诸如&lt;code&gt;@RequestMappng&lt;/code&gt;等注解的方式构造请求处理逻辑）完成业务逻辑以及诸多常用功能&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;HandlerInterceptor&lt;/code&gt;: 拦截器&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;ExceptionHandler&lt;/code&gt;: 全局异常处理器&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;BeanValidation&lt;/code&gt;: 参数校验&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;ArgumentResolver&lt;/code&gt;: 参数解析扩展&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;ReturnValueResolver&lt;/code&gt;: 返回值解析扩展&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;RequestSerializer&lt;/code&gt;: 请求序列化器（通常负责反序列化Body内容）&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;ResposneSerializer&lt;/code&gt;: 响应序列化器（通常负责序列化响应对象到Body）&lt;/li&gt;
+&lt;li&gt;内置&lt;code&gt;Jackson&lt;/code&gt;, &lt;code&gt;Fastjson&lt;/code&gt;, &lt;code&gt;Gson&lt;/code&gt;, &lt;code&gt;ProtoBuf&lt;/code&gt;序列化支持&lt;/li&gt;
+&lt;li&gt;&amp;hellip;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;对应启动入口类esarestlightcorerestlight&#34;&gt;对应启动入口类&lt;code&gt;esa.restlight.core.Restlight&lt;/code&gt;&lt;/h4&gt;
+
+
+&lt;div class=&#34;alert alert-primary&#34; role=&#34;alert&#34;&gt;
+&lt;h4 class=&#34;alert-heading&#34;&gt;Tip&lt;/h4&gt;
+
+    适合各类框架，中间件等基础组建中启动或期望使用代码显示启动HttpServer的场景
+
+&lt;/div&gt;
+
+&lt;h3 id=&#34;restlight-springmvc--restlight-jax-rs&#34;&gt;Restlight SpringMVC &amp;amp; Restlight JAX-RS&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;Restlight SpringMVC&lt;/code&gt;对&lt;code&gt;SpringMVC&lt;/code&gt;中的注解使用习惯的&lt;code&gt;Restlight Core&lt;/code&gt;的扩展实现（&lt;code&gt;@RequestMapping&lt;/code&gt;, &lt;code&gt;@RequestParam&lt;/code&gt;等）。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;Restlight JAX-RS&lt;/code&gt;对&lt;code&gt;JAX-RS&lt;/code&gt;中的注解使用习惯的&lt;code&gt;Restlight Core&lt;/code&gt;的扩展实现（&lt;code&gt;@Path&lt;/code&gt;, &lt;code&gt;@GET&lt;/code&gt;, &lt;code&gt;@QueryParam&lt;/code&gt;等）。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;restlight-for-spring&#34;&gt;Restlight for Spring&lt;/h3&gt;
+&lt;p&gt;在&lt;code&gt;Restlight Core&lt;/code&gt;基础上支持在&lt;code&gt;Spring&lt;/code&gt;场景下通过&lt;code&gt;ApplicationContext&lt;/code&gt;容器自动配置各种内容（&lt;code&gt;RestlightOptions&lt;/code&gt;, 从容器中自动配置&lt;code&gt;Filter&lt;/code&gt;, &lt;code&gt;Controller&lt;/code&gt;, &lt;code&gt;ControllerAdvice&lt;/code&gt;等）&lt;/p&gt;
+
+
+&lt;div class=&#34;alert alert-primary&#34; role=&#34;alert&#34;&gt;
+&lt;h4 class=&#34;alert-heading&#34;&gt;Tip&lt;/h4&gt;
+
+    适合&lt;code&gt;Spring Boot&lt;/code&gt;场景
+
+&lt;/div&gt;
+
+&lt;h3 id=&#34;restlight-starter&#34;&gt;Restlight Starter&lt;/h3&gt;
+&lt;p&gt;在&lt;code&gt;Restlight for Spring&lt;/code&gt;基础上支持在&lt;code&gt;Spring Boot&lt;/code&gt;场景的自动配置&lt;/p&gt;
+
+
+&lt;div class=&#34;alert alert-primary&#34; role=&#34;alert&#34;&gt;
+&lt;h4 class=&#34;alert-heading&#34;&gt;Tip&lt;/h4&gt;
+
+    适合&lt;code&gt;Spring Boot&lt;/code&gt;场景
+
+&lt;/div&gt;
+
+&lt;h3 id=&#34;restlight-actuator&#34;&gt;Restlight Actuator&lt;/h3&gt;
+&lt;p&gt;在&lt;code&gt;Restlight Starter&lt;/code&gt;基础上支持在&lt;code&gt;Spring Boot Actuator&lt;/code&gt;原生各种&lt;code&gt;Endpoint&lt;/code&gt;s支持以及&lt;code&gt;Restlight&lt;/code&gt;独有的&lt;code&gt;Endpoint&lt;/code&gt;s。&lt;/p&gt;
+
+
+&lt;div class=&#34;alert alert-primary&#34; role=&#34;alert&#34;&gt;
+&lt;h4 class=&#34;alert-heading&#34;&gt;Tip&lt;/h4&gt;
+
+    适合&lt;code&gt;Spring Boot Actuator&lt;/code&gt;场景
+
+&lt;/div&gt;
+
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Docs: Architecture</title>
+      <link>/docs/architecture/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/docs/architecture/</guid>
+      <description>
+        
+        
+        &lt;h2 id=&#34;设计原则&#34;&gt;设计原则&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;高兼容性&lt;/li&gt;
+&lt;li&gt;极致性能&lt;/li&gt;
+&lt;li&gt;全链路异步&lt;/li&gt;
+&lt;li&gt;易用&lt;/li&gt;
+&lt;li&gt;可扩展&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;功能架构&#34;&gt;功能架构&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;分层架构设计&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;../../img/architecture.png&#34; alt=&#34;Architecture&#34;&gt;&lt;/p&gt;
+&lt;p&gt;架构图中&lt;code&gt;ESA HttpServer&lt;/code&gt;, &lt;code&gt;Restlight Server&lt;/code&gt;, &lt;code&gt;Restlight Core&lt;/code&gt;, &lt;code&gt;Restlight for Spring&lt;/code&gt;, &lt;code&gt;Restlight Starter&lt;/code&gt;几个模块均可作为一个独立的模块使用， 满足不同场景下的需求。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;请求处理时序图&lt;/strong&gt;
+&lt;img src=&#34;../../img/time_sequence.jpg&#34; alt=&#34;TimeSequence&#34;&gt;&lt;/p&gt;
+&lt;h3 id=&#34;esa-httpserver&#34;&gt;ESA HttpServer&lt;/h3&gt;
+&lt;p&gt;基于&lt;code&gt;Netty&lt;/code&gt; 实现的一个简易的&lt;a href=&#34;https://github.com/esastack/esa-httpserver&#34;&gt;HttpServer&lt;/a&gt;， 支持Http1.1/Http2以及Https等&lt;/p&gt;
+
+
+&lt;div class=&#34;alert alert-primary&#34; role=&#34;alert&#34;&gt;
+&lt;h4 class=&#34;alert-heading&#34;&gt;Tip&lt;/h4&gt;
+
+    适合各类框架，中间件等基础组建中启动或期望使用代码显示启动HttpServer的场景
+
+&lt;/div&gt;
+
+&lt;h3 id=&#34;restlight-core&#34;&gt;Restlight Core&lt;/h3&gt;
+&lt;p&gt;在&lt;code&gt;ESA HttpServer&lt;/code&gt;之上， 引入了业务线程池、&lt;code&gt;Filter&lt;/code&gt;、路由等并支持了以&lt;code&gt;Controller&lt;/code&gt;方式（在&lt;code&gt;Controller&lt;/code&gt;类中通过诸如&lt;code&gt;@RequestMappng&lt;/code&gt;等注解的方式构造请求处理逻辑）完成业务逻辑以及诸多常用功能&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;引入业务线程池&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Filter&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;请求路由（根据url, method, header等条件将请求路由到对应的Handler）&lt;/li&gt;
+&lt;li&gt;基于&lt;code&gt;CompletionStage&lt;/code&gt;的响应式编程支持&lt;/li&gt;
+&lt;li&gt;线程调度&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;HandlerInterceptor&lt;/code&gt;: 拦截器&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;ExceptionHandler&lt;/code&gt;: 全局异常处理器&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;BeanValidation&lt;/code&gt;: 参数校验&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;ArgumentResolver&lt;/code&gt;: 参数解析扩展&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;ReturnValueResolver&lt;/code&gt;: 返回值解析扩展&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;RequestSerializer&lt;/code&gt;: 请求序列化器（通常负责反序列化Body内容）&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;ResposneSerializer&lt;/code&gt;: 响应序列化器（通常负责序列化响应对象到Body）&lt;/li&gt;
+&lt;li&gt;内置&lt;code&gt;Jackson&lt;/code&gt;, &lt;code&gt;Fastjson&lt;/code&gt;, &lt;code&gt;Gson&lt;/code&gt;, &lt;code&gt;ProtoBuf&lt;/code&gt;序列化支持&lt;/li&gt;
+&lt;li&gt;&amp;hellip;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;对应启动入口类ioesastackrestlightcorerestlight&#34;&gt;对应启动入口类&lt;code&gt;io.esastack.restlight.core.Restlight&lt;/code&gt;&lt;/h4&gt;
+
+
+&lt;div class=&#34;alert alert-primary&#34; role=&#34;alert&#34;&gt;
+&lt;h4 class=&#34;alert-heading&#34;&gt;Tip&lt;/h4&gt;
+
+    适合各类框架，中间件等基础组建中启动或期望使用代码显示启动HttpServer的场景
+
+&lt;/div&gt;
+
+&lt;h3 id=&#34;restlight-springmvc--restlight-jax-rs&#34;&gt;Restlight SpringMVC &amp;amp; Restlight JAX-RS&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;Restlight SpringMVC&lt;/code&gt;对&lt;code&gt;SpringMVC&lt;/code&gt;中的注解使用习惯的&lt;code&gt;Restlight Core&lt;/code&gt;的扩展实现（&lt;code&gt;@RequestMapping&lt;/code&gt;, &lt;code&gt;@RequestParam&lt;/code&gt;等）。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;Restlight JAX-RS&lt;/code&gt;对&lt;code&gt;JAX-RS&lt;/code&gt;中的注解使用习惯的&lt;code&gt;Restlight Core&lt;/code&gt;的扩展实现（&lt;code&gt;@Path&lt;/code&gt;, &lt;code&gt;@GET&lt;/code&gt;, &lt;code&gt;@QueryParam&lt;/code&gt;等）。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;restlight-for-spring&#34;&gt;Restlight for Spring&lt;/h3&gt;
+&lt;p&gt;在&lt;code&gt;Restlight Core&lt;/code&gt;基础上支持在&lt;code&gt;Spring&lt;/code&gt;场景下通过&lt;code&gt;ApplicationContext&lt;/code&gt;容器自动配置各种内容（&lt;code&gt;RestlightOptions&lt;/code&gt;, 从容器中自动配置&lt;code&gt;Filter&lt;/code&gt;, &lt;code&gt;Controller&lt;/code&gt;, &lt;code&gt;ControllerAdvice&lt;/code&gt;等）&lt;/p&gt;
+
+
+&lt;div class=&#34;alert alert-primary&#34; role=&#34;alert&#34;&gt;
+&lt;h4 class=&#34;alert-heading&#34;&gt;Tip&lt;/h4&gt;
+
+    适合&lt;code&gt;Spring Boot&lt;/code&gt;场景
+
+&lt;/div&gt;
+
+&lt;h3 id=&#34;restlight-starter&#34;&gt;Restlight Starter&lt;/h3&gt;
+&lt;p&gt;在&lt;code&gt;Restlight for Spring&lt;/code&gt;基础上支持在&lt;code&gt;Spring Boot&lt;/code&gt;场景的自动配置&lt;/p&gt;
+
+
+&lt;div class=&#34;alert alert-primary&#34; role=&#34;alert&#34;&gt;
+&lt;h4 class=&#34;alert-heading&#34;&gt;Tip&lt;/h4&gt;
+
+    适合&lt;code&gt;Spring Boot&lt;/code&gt;场景
+
+&lt;/div&gt;
+
+&lt;h3 id=&#34;restlight-actuator&#34;&gt;Restlight Actuator&lt;/h3&gt;
+&lt;p&gt;在&lt;code&gt;Restlight Starter&lt;/code&gt;基础上支持在&lt;code&gt;Spring Boot Actuator&lt;/code&gt;原生各种&lt;code&gt;Endpoint&lt;/code&gt;s支持以及&lt;code&gt;Restlight&lt;/code&gt;独有的&lt;code&gt;Endpoint&lt;/code&gt;s。&lt;/p&gt;
+
+
+&lt;div class=&#34;alert alert-primary&#34; role=&#34;alert&#34;&gt;
+&lt;h4 class=&#34;alert-heading&#34;&gt;Tip&lt;/h4&gt;
+
+    适合&lt;code&gt;Spring Boot Actuator&lt;/code&gt;场景
+
+&lt;/div&gt;
+
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Docs-V0.1.0: 线程模型</title>
+      <link>/docs-v0.1.0/threading_model/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/docs-v0.1.0/threading_model/</guid>
+      <description>
+        
+        
+        &lt;p&gt;&lt;img src=&#34;../../img/threading_model.png&#34; alt=&#34;ThreadingModel&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;Restlight&lt;/code&gt;由于是使用&lt;code&gt;Netty&lt;/code&gt;作为底层HttpServer的实现，因此图中沿用了部分&lt;code&gt;EventLoop&lt;/code&gt;的概念，线程模型由了&lt;code&gt;Acceptor&lt;/code&gt;，&lt;code&gt;IO EventLoopGroup&lt;/code&gt;（IO线程池）以及&lt;code&gt;Biz ThreadPool&lt;/code&gt;（业务线程池）组成。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;Acceptor&lt;/code&gt;： 由1个线程组成的线程池， 负责监听本地端口并分发IO 事件。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;IO EventLoopGroup&lt;/code&gt;： 由多个线程组成，负责读写IO数据(对应图中的&lt;code&gt;read()&lt;/code&gt;和&lt;code&gt;write()&lt;/code&gt;)以及HTTP协议的编解码和分发到业务线程池的工作。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Biz Scheduler&lt;/code&gt;：负责执行真正的业务逻辑（大多为Controller中的业务处理，拦截器等）。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Custom Scheduler&lt;/code&gt;: 自定义线程池&lt;/li&gt;
+&lt;/ul&gt;
+
+
+&lt;div class=&#34;alert alert-primary&#34; role=&#34;alert&#34;&gt;
+&lt;h4 class=&#34;alert-heading&#34;&gt;Tip&lt;/h4&gt;
+
+    通过第三个线程池&lt;code&gt;Biz Scheduler&lt;/code&gt;的加入完成IO操作与实际业务操作的异步（同时可通过Restlight的线程调度功能随意调度）
+
+&lt;/div&gt;
+
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Docs-V0.1.1: 线程模型</title>
+      <link>/docs-v0.1.1/threading_model/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/docs-v0.1.1/threading_model/</guid>
+      <description>
+        
+        
+        &lt;p&gt;&lt;img src=&#34;../../img/threading_model.png&#34; alt=&#34;ThreadingModel&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;Restlight&lt;/code&gt;由于是使用&lt;code&gt;Netty&lt;/code&gt;作为底层HttpServer的实现，因此图中沿用了部分&lt;code&gt;EventLoop&lt;/code&gt;的概念，线程模型由了&lt;code&gt;Acceptor&lt;/code&gt;，&lt;code&gt;IO EventLoopGroup&lt;/code&gt;（IO线程池）以及&lt;code&gt;Biz ThreadPool&lt;/code&gt;（业务线程池）组成。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;Acceptor&lt;/code&gt;： 由1个线程组成的线程池， 负责监听本地端口并分发IO 事件。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;IO EventLoopGroup&lt;/code&gt;： 由多个线程组成，负责读写IO数据(对应图中的&lt;code&gt;read()&lt;/code&gt;和&lt;code&gt;write()&lt;/code&gt;)以及HTTP协议的编解码和分发到业务线程池的工作。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Biz Scheduler&lt;/code&gt;：负责执行真正的业务逻辑（大多为Controller中的业务处理，拦截器等）。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Custom Scheduler&lt;/code&gt;: 自定义线程池&lt;/li&gt;
+&lt;/ul&gt;
+
+
+&lt;div class=&#34;alert alert-primary&#34; role=&#34;alert&#34;&gt;
+&lt;h4 class=&#34;alert-heading&#34;&gt;Tip&lt;/h4&gt;
+
+    通过第三个线程池&lt;code&gt;Biz Scheduler&lt;/code&gt;的加入完成IO操作与实际业务操作的异步（同时可通过Restlight的线程调度功能随意调度）
+
+&lt;/div&gt;
+
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Docs: 线程模型</title>
+      <link>/docs/threading_model/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/docs/threading_model/</guid>
+      <description>
+        
+        
+        &lt;p&gt;&lt;img src=&#34;../../img/threading_model.png&#34; alt=&#34;ThreadingModel&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;Restlight&lt;/code&gt;由于是使用&lt;code&gt;Netty&lt;/code&gt;作为底层HttpServer的实现，因此图中沿用了部分&lt;code&gt;EventLoop&lt;/code&gt;的概念，线程模型由了&lt;code&gt;Acceptor&lt;/code&gt;，&lt;code&gt;IO EventLoopGroup&lt;/code&gt;（IO线程池）以及&lt;code&gt;Biz ThreadPool&lt;/code&gt;（业务线程池）组成。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;Acceptor&lt;/code&gt;： 由1个线程组成的线程池， 负责监听本地端口并分发IO 事件。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;IO EventLoopGroup&lt;/code&gt;： 由多个线程组成，负责读写IO数据(对应图中的&lt;code&gt;read()&lt;/code&gt;和&lt;code&gt;write()&lt;/code&gt;)以及HTTP协议的编解码和分发到业务线程池的工作。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Biz Scheduler&lt;/code&gt;：负责执行真正的业务逻辑（大多为Controller中的业务处理，拦截器等）。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Custom Scheduler&lt;/code&gt;: 自定义线程池&lt;/li&gt;
+&lt;/ul&gt;
+
+
+&lt;div class=&#34;alert alert-primary&#34; role=&#34;alert&#34;&gt;
+&lt;h4 class=&#34;alert-heading&#34;&gt;Tip&lt;/h4&gt;
+
+    通过第三个线程池&lt;code&gt;Biz Scheduler&lt;/code&gt;的加入完成IO操作与实际业务操作的异步（同时可通过Restlight的线程调度功能随意调度）
+
+&lt;/div&gt;
+
+
+      </description>
+    </item>
+    
+  </channel>
+</rss>

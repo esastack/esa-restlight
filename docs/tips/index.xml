@@ -1,0 +1,108 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>ESA Restlight – 使用注意</title>
+    <link>/docs/tips/</link>
+    <description>Recent content in 使用注意 on ESA Restlight</description>
+    <generator>Hugo -- gohugo.io</generator>
+    
+	  <atom:link href="/docs/tips/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+      
+        
+      
+    
+    
+    <item>
+      <title>Docs: Controller 语义不能重复</title>
+      <link>/docs/tips/controller_semantics/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/docs/tips/controller_semantics/</guid>
+      <description>
+        
+        
+        &lt;p&gt;出于性能考虑，Restlight中的所有&lt;code&gt;RequestMapping&lt;/code&gt;的path属性不允许有语义上的重复（除非业务能容忍这个问题）， 如果存在语义上的重复Restlight既不会在启动时报错提示，也不保证真正调用时的&lt;code&gt;稳定性&lt;/code&gt;。&lt;/p&gt;
+
+
+&lt;div class=&#34;alert alert-primary&#34; role=&#34;alert&#34;&gt;
+&lt;h4 class=&#34;alert-heading&#34;&gt;Note&lt;/h4&gt;
+
+    这里的&lt;code&gt;稳定性&lt;/code&gt;指的是不保证任何的优先级，比如Controller A和Controller B重复，Restlight不保证真正调用的时候会调用Controller A或者Controller B。
+
+&lt;/div&gt;
+
+&lt;ul&gt;
+&lt;li&gt;错误示例1：&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;@RequestMapping(&amp;quot;/foo&amp;quot;)
+public void foo() {
+    // ...
+}
+
+@PostMapping(&amp;quot;/foo&amp;quot;)
+public void foo1() {
+    // ...
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;div class=&#34;alert alert-warning&#34; role=&#34;alert&#34;&gt;
+&lt;h4 class=&#34;alert-heading&#34;&gt;Warning&lt;/h4&gt;
+
+    Controller中的path重复
+
+&lt;/div&gt;
+
+&lt;ul&gt;
+&lt;li&gt;错误示例2：&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;@RequestMapping(&amp;quot;/foo/{bar}&amp;quot;)
+public void foo(@PathVariable String bar) {
+    // ...
+}
+
+@PostMapping(&amp;quot;/foo/bar&amp;quot;)
+public void foo1() {
+    // ...
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;div class=&#34;alert alert-warning&#34; role=&#34;alert&#34;&gt;
+&lt;h4 class=&#34;alert-heading&#34;&gt;Warning&lt;/h4&gt;
+
+    Controller中的&lt;code&gt;@PathVariable&lt;/code&gt;与第二个Congroller的path重复
+
+&lt;/div&gt;
+
+
+
+&lt;div class=&#34;alert alert-primary&#34; role=&#34;alert&#34;&gt;
+&lt;h4 class=&#34;alert-heading&#34;&gt;Note&lt;/h4&gt;
+
+    &lt;ul&gt;
+&lt;li&gt;同样的道理，如果Controller语义存在相交的语义（可能存在使用复杂的正则等方式定义的Controller接口，因此可能存在相交的情况）也适用。&lt;/li&gt;
+&lt;li&gt;Restlight检测到歧义时会打印WARNING日志&lt;/li&gt;
+&lt;/ul&gt;
+
+
+&lt;/div&gt;
+
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Docs: 大文件上传</title>
+      <link>/docs/tips/big_file_upload/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/docs/tips/big_file_upload/</guid>
+      <description>
+        
+        
+        
+      </description>
+    </item>
+    
+  </channel>
+</rss>
