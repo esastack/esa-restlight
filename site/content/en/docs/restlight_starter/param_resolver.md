@@ -94,7 +94,7 @@ public interface ParamResolverAdapter extends ParamPredicate, ParamResolver, Ord
 public interface ParamResolverFactory extends ParamPredicate, Ordered {
 
     ParamResolver createResolver(Param param,
-                                 Function3<Class<?>, Type, Param, StringConverter> converterFunc,
+                                 StringConverterProvider converters,
                                  List<? extends HttpRequestSerializer> serializers);
 
     @Override
@@ -109,10 +109,10 @@ public interface ParamResolverFactory extends ParamPredicate, Ordered {
 初始化逻辑：
 
 1. 按照`getOrder()`方法的返回将所有的`ParamResolverFactory`进行排序
-2. 按照排序后的顺序依次调用`supports(Param param)`方法，返回`true`则将其作为该参数的`ParamResolverFactory`，同时调用`createResolver(Param param, Function3<Class<?>, Type, Param, StringConverter> converterFunc, List<? extends HttpRequestSerializer> serializers)`方法创建出对应的`ParamResolver`
+2. 按照排序后的顺序依次调用`supports(Param param)`方法，返回`true`则将其作为该参数的`ParamResolverFactory`，同时调用`createResolver(Param param, StringConverterProvider converters, List<? extends HttpRequestSerializer> serializers)`方法创建出对应的`ParamResolver`
 3. 未找到则启动报错。
 
-由于初始化时通过`createResolver(Param param, Function3<Class<?>, Type, Param, StringConverter> converterFunc, List<? extends HttpRequestSerializer> serializers)`方法传入了`Param`以及序列化器，因此能满足上面的要求。
+由于初始化时通过`createResolver(Param param, StringConverterProvider converters, List<? extends HttpRequestSerializer> serializers)`方法传入了`Param`以及序列化器，因此能满足上面的要求。
 
 **两种模式的定位**
 
@@ -190,7 +190,7 @@ public ParamResolverFactory resolver() {
     return new ParamResolverFactory() {
         @Override
         public ParamResolver createResolver(Param param,
-                                            Function3<Class<?>, Type, Param, StringConverter> converterFunc,
+                                            StringConverterProvider converters,
                                             List<? extends HttpRequestSerializer> serializers) {
             return new Resolver(param);
         }

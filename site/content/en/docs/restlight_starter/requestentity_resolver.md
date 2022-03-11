@@ -100,6 +100,7 @@ public interface RequestEntityResolverAdapter extends RequestEntityResolver, Par
 public interface RequestEntityResolverFactory extends ParamPredicate, Ordered {
 
     RequestEntityResolver createResolver(Param param,
+                                         StringConverterProvider converters,
                                          List<? extends HttpRequestSerializer> serializers);
 
     @Override
@@ -196,6 +197,7 @@ public RequestEntityResolverFactory resolver() {
     return new RequestEntityResolverFactory() {
         @Override
         public RequestEntityResolver createResolver(Param param,
+                                                    StringConverterProvider converters,
                                                     List<? extends HttpRequestSerializer> serializers) {
             return new Resolver(param);
         }
