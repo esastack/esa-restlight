@@ -80,7 +80,7 @@ public abstract class AbstractMultipartResolverTest {
     }
 
     static StringConverterProvider defaultConverters(Param param) {
-        return key -> defaultResolver.createConverter(StringConverterFactory.ConvertedKey
+        return key -> defaultResolver.createConverter(StringConverterFactory.Key
                 .of(key.genericType(), key.type(), param)).orElse(null);
     }
 }

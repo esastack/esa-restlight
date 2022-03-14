@@ -37,7 +37,7 @@ public class StringConverterProviderAdapter implements StringConverterFactory {
     }
 
     @Override
-    public Optional<StringConverter> createConverter(ConvertedKey key) {
+    public Optional<StringConverter> createConverter(Key key) {
         ParamConverter<?> converter = underlying.getConverter(key.type(), key.genericType(),
                 key.param().annotations());
         if (converter == null) {

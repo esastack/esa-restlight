@@ -63,7 +63,7 @@ public class ResolverUtils {
     }
 
     public static StringConverterProvider defaultConverters(Param param) {
-        return key -> defaultResolver.createConverter(StringConverterFactory.ConvertedKey
+        return key -> defaultResolver.createConverter(StringConverterFactory.Key
                 .of(key.genericType(), key.type(), param)).orElse(null);
     }
 

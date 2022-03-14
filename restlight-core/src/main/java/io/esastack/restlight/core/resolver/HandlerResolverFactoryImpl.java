@@ -337,7 +337,7 @@ public class HandlerResolverFactoryImpl implements HandlerResolverFactory {
         return key -> {
             Optional<StringConverter> converter;
             for (StringConverterFactory factory : stringConverters) {
-                if ((converter = factory.createConverter(StringConverterFactory.ConvertedKey
+                if ((converter = factory.createConverter(StringConverterFactory.Key
                         .of(key.genericType(), key.type(), param))).isPresent()) {
                     return converter.get();
                 }

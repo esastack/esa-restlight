@@ -29,7 +29,7 @@ public interface StringConverterFactory extends Ordered {
     /**
      * Converts given {@link StringConverterAdapter} to {@link StringConverterFactory} which
      * always use the given {@link StringConverterAdapter} as the result of
-     * {@link #createConverter(ConvertedKey)}
+     * {@link #createConverter(Key)}
      *
      * @param converter converter
      * @return of factory bean
@@ -39,12 +39,12 @@ public interface StringConverterFactory extends Ordered {
     }
 
     /**
-     * Creates an instance of {@link StringConverter} for given {@link Param}.
+     * Creates an instance of {@link StringConverter} for given {@link Key}.
      *
      * @param key which is used to create resolver.
      * @return StringConverter
      */
-    Optional<StringConverter> createConverter(ConvertedKey key);
+    Optional<StringConverter> createConverter(Key key);
 
     /**
      * Default to use the 0.
@@ -57,31 +57,31 @@ public interface StringConverterFactory extends Ordered {
     }
 
     /**
-     * This {@link ConvertedKey} is designed as a key when {@link #createConverter(ConvertedKey)}ing.
+     * This {@link Key} is designed as a key when {@link #createConverter(Key)}ing.
      * <p>
-     * !NOTE: The {@link ConvertedKey#genericType} and {@link ConvertedKey#type} are not always same with
+     * !NOTE: The {@link Key#genericType} and {@link Key#type} are not always same with
      * {@link Param#genericType()} or {@link Param#type()}. eg, the {@link Param} is defined as
      * {@link Integer} of {@link java.util.List}, and you just only want to create a {@link StringConverter}
      * to convert the item {@link Integer} from string.
      */
-    final class ConvertedKey {
+    final class Key {
 
         private final Type genericType;
         private final Class<?> type;
         private final Param param;
 
-        private ConvertedKey(Type genericType, Class<?> type, Param param) {
+        private Key(Type genericType, Class<?> type, Param param) {
             this.genericType = genericType;
             this.type = type;
             this.param = param;
         }
 
-        public static ConvertedKey from(Param param) {
-            return new ConvertedKey(param.genericType(), param.type(), param);
+        public static Key from(Param param) {
+            return new Key(param.genericType(), param.type(), param);
         }
 
-        public static ConvertedKey of(Type genericType, Class<?> type, Param param) {
-            return new ConvertedKey(genericType, type, param);
+        public static Key of(Type genericType, Class<?> type, Param param) {
+            return new Key(genericType, type, param);
         }
 
         public Type genericType() {
@@ -107,7 +107,7 @@ public interface StringConverterFactory extends Ordered {
         }
 
         @Override
-        public Optional<StringConverter> createConverter(ConvertedKey param) {
+        public Optional<StringConverter> createConverter(Key param) {
             return Optional.of(converter);
         }
 

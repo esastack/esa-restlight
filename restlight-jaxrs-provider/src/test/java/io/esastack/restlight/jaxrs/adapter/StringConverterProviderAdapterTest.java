@@ -42,11 +42,11 @@ class StringConverterProviderAdapterTest {
         final StringConverterProviderAdapter adapter = new StringConverterProviderAdapter(provider, 100);
         assertEquals(100, adapter.getOrder());
 
-        assertFalse(adapter.createConverter(StringConverterFactory.ConvertedKey.of(null, null,
+        assertFalse(adapter.createConverter(StringConverterFactory.Key.of(null, null,
                 mock(Param.class))).isPresent());
 
         doReturn(new ParamConverterImpl()).when(provider).getConverter(any(), any(), any());
-        Optional<StringConverter> converter = adapter.createConverter(StringConverterFactory.ConvertedKey
+        Optional<StringConverter> converter = adapter.createConverter(StringConverterFactory.Key
                 .of(null, null, mock(Param.class)));
         assertTrue(converter.isPresent());
         assertEquals("ABC", converter.get().fromString(null));

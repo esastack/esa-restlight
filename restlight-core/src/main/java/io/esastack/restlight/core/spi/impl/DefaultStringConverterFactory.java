@@ -25,7 +25,7 @@ import java.util.function.Function;
 public class DefaultStringConverterFactory implements StringConverterFactory {
 
     @Override
-    public Optional<StringConverter> createConverter(ConvertedKey key) {
+    public Optional<StringConverter> createConverter(Key key) {
         if (key.type() == null && key.genericType() == null) {
             return Optional.empty();
         }
