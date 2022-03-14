@@ -16,17 +16,15 @@
 package io.esastack.restlight.springmvc.resolver.param;
 
 import esa.commons.collection.AttributeKey;
-import esa.commons.function.Function3;
 import io.esastack.restlight.core.method.Param;
 import io.esastack.restlight.core.resolver.ParamResolverFactory;
 import io.esastack.restlight.core.resolver.StringConverter;
+import io.esastack.restlight.core.resolver.StringConverterProvider;
 import io.esastack.restlight.core.resolver.nav.NameAndValue;
 import io.esastack.restlight.core.resolver.nav.NameAndValueResolver;
 import io.esastack.restlight.core.resolver.nav.NameAndValueResolverFactory;
 import io.esastack.restlight.server.context.RequestContext;
 import io.esastack.restlight.springmvc.annotation.shaded.RequestAttribute0;
-
-import java.lang.reflect.Type;
 
 /**
  * Implementation of {@link ParamResolverFactory} for resolving argument that annotated by the RequestAttribute.
@@ -40,8 +38,8 @@ public class RequestAttributeParamResolver extends NameAndValueResolverFactory {
 
     @Override
     protected NameAndValueResolver createResolver(Param param,
-                                                  Function3<Class<?>, Type, Param, StringConverter> converterFunc) {
-        final StringConverter converter = converterFunc.apply(param.type(), param.genericType(), param);
+                                                  StringConverterProvider converters) {
+        final StringConverter converter = converters.get(StringConverterProvider.Key.from(param));
         return new NameAndValueResolver() {
             @Override
             public Object resolve(String name, RequestContext ctx) {

@@ -16,9 +16,8 @@
 package io.esastack.restlight.ext.multipart.spi;
 
 import esa.commons.StringUtils;
-import esa.commons.function.Function3;
 import io.esastack.restlight.core.method.Param;
-import io.esastack.restlight.core.resolver.StringConverter;
+import io.esastack.restlight.core.resolver.StringConverterProvider;
 import io.esastack.restlight.core.resolver.nav.NameAndValue;
 import io.esastack.restlight.core.resolver.nav.NameAndValueResolver;
 import io.esastack.restlight.ext.multipart.annotation.UploadFile;
@@ -26,7 +25,6 @@ import io.esastack.restlight.ext.multipart.core.MultipartFile;
 import io.esastack.restlight.server.context.RequestContext;
 import io.netty.handler.codec.http.multipart.HttpDataFactory;
 
-import java.lang.reflect.Type;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -54,8 +52,7 @@ public class MultipartFileParamResolverProvider extends AbstractMultipartParamRe
 
         @Override
         protected NameAndValueResolver doCreateResolver(Param param,
-                                                        Function3<Class<?>, Type, Param, StringConverter>
-                                                                converterFunc) {
+                                                        StringConverterProvider converters) {
             if (MultipartFile.class.isAssignableFrom(param.type())) {
                 return new SingleFileResolver();
             }

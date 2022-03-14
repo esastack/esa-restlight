@@ -85,7 +85,6 @@ import io.esastack.restlight.core.spi.RequestEntityResolverProvider;
 import io.esastack.restlight.core.spi.ResponseEntityResolverAdviceProvider;
 import io.esastack.restlight.core.spi.ResponseEntityResolverProvider;
 import io.esastack.restlight.core.spi.RouteFilterFactory;
-import io.esastack.restlight.core.spi.StringConverterProvider;
 import io.esastack.restlight.core.util.Constants;
 import io.esastack.restlight.core.util.OrderedComparator;
 import io.esastack.restlight.core.util.RouteUtils;
@@ -1243,13 +1242,6 @@ public abstract class Deployments {
                 .forEach(this::addStringConverter);
         addStringConverters(SpiLoader.cached(StringConverterFactory.class)
                 .getByGroup(restlight.name(), true));
-        addStringConverters(SpiLoader.cached(StringConverterProvider.class)
-                .getByGroup(restlight.name(), true)
-                .stream()
-                .map(provider -> provider.factoryBean(ctx()))
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .collect(Collectors.toList()));
 
         // load ParamResolver from spi
         SpiLoader.cached(ParamResolverAdapter.class)

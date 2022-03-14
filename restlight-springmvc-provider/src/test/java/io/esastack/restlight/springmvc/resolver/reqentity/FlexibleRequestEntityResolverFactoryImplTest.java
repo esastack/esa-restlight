@@ -150,7 +150,7 @@ class FlexibleRequestEntityResolverFactoryImplTest {
         }, new JacksonHttpBodySerializer());
         RequestEntityResolver resolver =
                 new FlexibleRequestEntityResolverFactoryImpl(false, null)
-                .createResolver(param, ResolverUtils.defaultConverterFunc(), serializers);
+                .createResolver(param, ResolverUtils.defaultConverters(param), serializers);
 
         final Pojo origin = new Pojo(1024, "hello restlight");
         final HttpRequest request = MockHttpRequest
@@ -178,7 +178,7 @@ class FlexibleRequestEntityResolverFactoryImplTest {
         final MethodParam param = handlerMethods.get(method).parameters()[0];
         assertTrue(resolverFactory.supports(param));
         final RequestEntityResolver resolver = resolverFactory.createResolver(param,
-                ResolverUtils.defaultConverterFunc(),
+                ResolverUtils.defaultConverters(param),
                 Collections.singletonList(new JacksonHttpBodySerializer()));
 
         final RequestContext context = new RequestContextImpl(request,

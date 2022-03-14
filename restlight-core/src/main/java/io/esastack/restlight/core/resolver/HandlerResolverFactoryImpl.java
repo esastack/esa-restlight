@@ -29,7 +29,6 @@ import io.esastack.restlight.core.spi.RouteFilterFactory;
 import io.esastack.restlight.core.util.OrderedComparator;
 
 import java.lang.reflect.Method;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -244,23 +243,11 @@ public class HandlerResolverFactoryImpl implements HandlerResolverFactory {
     }
 
     @Override
-    public StringConverter getStringConverter(Class<?> type, Type genericType, Param param) {
-        //resolve the fixed parameter resolver
-        Optional<StringConverter> converter;
-        for (StringConverterFactory factory : stringConverters) {
-            if ((converter = factory.createConverter(type, genericType, param)).isPresent()) {
-                return converter.get();
-            }
-        }
-        return null;
-    }
-
-    @Override
     public ParamResolver getParamResolver(Param param) {
         //resolve the fixed parameter resolver
         return paramResolvers.stream().filter(r -> r.supports(param))
                 .findFirst()
-                .map(factory -> Checks.checkNotNull(factory.createResolver(param, this::getStringConverter,
+                .map(factory -> Checks.checkNotNull(factory.createResolver(param, getStringConverters(param),
                         rxSerializers),
                         "Failed to create ParamResolver for parameter: " + param))
                 .orElse(null);
@@ -298,7 +285,7 @@ public class HandlerResolverFactoryImpl implements HandlerResolverFactory {
         List<RequestEntityResolver> resolvers = new ArrayList<>();
         requestEntityResolvers.forEach(factory -> {
             if (factory.supports(param)) {
-                resolvers.add(factory.createResolver(param, this::getStringConverter, rxSerializers));
+                resolvers.add(factory.createResolver(param, getStringConverters(param), rxSerializers));
             }
         });
         return Collections.unmodifiableList(resolvers);
@@ -344,6 +331,19 @@ public class HandlerResolverFactoryImpl implements HandlerResolverFactory {
     @Override
     public List<FutureTransferFactory> futureTransfers() {
         return Collections.unmodifiableList(futureTransfers);
+    }
+
+    private StringConverterProvider getStringConverters(Param param) {
+        return key -> {
+            Optional<StringConverter> converter;
+            for (StringConverterFactory factory : stringConverters) {
+                if ((converter = factory.createConverter(StringConverterFactory.Key
+                        .of(key.genericType(), key.type(), param))).isPresent()) {
+                    return converter.get();
+                }
+            }
+            return null;
+        };
     }
 
     public static HandlerConfiguration buildConfiguration(HandlerResolverFactory resolverFactory,
