@@ -33,7 +33,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-class RouteHandlerMethodAdapterTest {
+public class RouteHandlerMethodAdapterTest {
 
     protected RouteHandlerMethodAdapter build(HandlerMapping mapping,
                                               HandlerContext context,
@@ -50,9 +50,9 @@ class RouteHandlerMethodAdapterTest {
 
     @Test
     void testConstruct() throws Exception {
-        MockHandlerData mockData = new MockHandlerData();
+        final MockHandlerData mockData = new MockHandlerData();
 
-        RouteHandlerMethodAdapter routeHandlerMethodAdapter = build(mockData.mapping(),
+        final RouteHandlerMethodAdapter routeHandlerMethodAdapter = build(mockData.mapping(),
                 mockData.context(),
                 mockData.handlerValueResolver(),
                 mockData.interceptors(),

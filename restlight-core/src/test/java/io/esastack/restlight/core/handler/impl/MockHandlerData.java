@@ -17,11 +17,10 @@ package io.esastack.restlight.core.handler.impl;
 
 import esa.commons.collection.LinkedMultiValueMap;
 import esa.commons.collection.MultiValueMap;
+import io.esastack.restlight.core.DeployContext;
 import io.esastack.restlight.core.annotation.Intercepted;
-import io.esastack.restlight.core.handler.HandlerMapping;
-import io.esastack.restlight.core.handler.HandlerValueResolver;
-import io.esastack.restlight.core.handler.RouteFilter;
-import io.esastack.restlight.core.handler.RouteMethodInfo;
+import io.esastack.restlight.core.configure.Handlers;
+import io.esastack.restlight.core.handler.*;
 import io.esastack.restlight.core.interceptor.Interceptor;
 import io.esastack.restlight.core.interceptor.InterceptorPredicate;
 import io.esastack.restlight.core.method.DefaultResolvableParamPredicate;
@@ -41,32 +40,52 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class MockHandlerData {
-    private final HandlerMapping mapping;
-    private final RouteMethodInfo methodInfo;
+    private HandlerMapping mapping;
+    private RouteMethodInfo methodInfo;
+    private DeployContext deployContext;
     private final Method method;
     private final RouteHandlerMethod handlerMethod;
-    private final HandlerContext context;
-    private final HandlerResolverFactory resolverFactory;
-    private final ExceptionResolver<Throwable> exceptionResolver;
-    private final MultiValueMap<InterceptorPredicate, Interceptor> interceptors;
-    private final HandlerValueResolver handlerValueResolver;
-    private final HandlerMethodAdapter handlerMethodAdapter;
+    private HandlerContext context;
+    private HandlerResolverFactory resolverFactory;
+    private ExceptionResolver<Throwable> exceptionResolver;
+    private MultiValueMap<InterceptorPredicate, Interceptor> interceptors;
+    private HandlerValueResolver handlerValueResolver;
+    private HandlerMethodAdapter handlerMethodAdapter;
 
     public MockHandlerData() throws Exception {
-        mapping = mock(HandlerMapping.class);
-        methodInfo = mock(RouteMethodInfo.class);
         method = Subject.class
                 .getDeclaredMethod("params", String.class, int.class, List.class);
         handlerMethod = RouteHandlerMethodImpl.of(Subject.class,
                 method,
                 true,
                 null);
+        init();
+    }
+
+    public MockHandlerData(Class<?> clazz, Method method0) throws Exception {
+        method = method0;
+        handlerMethod = RouteHandlerMethodImpl.of(clazz,
+                method,
+                true,
+                null);
+        init();
+    }
+
+    private void init() throws Exception {
+        mapping = mock(HandlerMapping.class);
+        methodInfo = mock(RouteMethodInfo.class);
         when(mapping.methodInfo()).thenReturn(methodInfo);
         when(methodInfo.handlerMethod()).thenReturn(handlerMethod);
         context = mock(HandlerContext.class);
         resolverFactory = mockResolverFactory(handlerMethod);
         when(context.resolverFactory()).thenReturn(Optional.of(resolverFactory));
         when(context.paramPredicate()).thenReturn(Optional.of(new DefaultResolvableParamPredicate()));
+        when(context.handlerAdvicesFactory()).thenReturn(Optional.of(mock(HandlerAdvicesFactory.class)));
+        deployContext = mock(DeployContext.class);
+        when(deployContext.handlerContexts()).thenReturn(Optional.of(method -> context));
+        HandlerFactory handlerFactory = new HandlerFactoryImpl(deployContext,
+                mock(Handlers.class));
+        when(context.handlerFactory()).thenReturn(Optional.of(handlerFactory));
         List<RouteFilter> filters = new ArrayList<>();
         when(resolverFactory.getRouteFilters(handlerMethod)).thenReturn(filters);
         handlerValueResolver = mock(HandlerValueResolver.class);
@@ -118,20 +137,22 @@ public class MockHandlerData {
     private HandlerResolverFactory mockResolverFactory(HandlerMethod handlerMethod) throws Exception {
         final HandlerResolverFactory resolverFactory = mock(HandlerResolverFactory.class);
         ContextResolver p1Resolver = mock(ContextResolver.class);
-        when(resolverFactory.getContextResolver(handlerMethod.parameters()[0]))
-                .thenReturn(p1Resolver);
-        when(p1Resolver.resolve(any(), any())).thenReturn(null);
 
-        ParamResolver p2Resolver = mock(ParamResolver.class);
-        when(resolverFactory.getParamResolver(handlerMethod.parameters()[1]))
-                .thenReturn(p2Resolver);
-        when(p2Resolver.resolve(any(), any())).thenReturn(null);
+        if (handlerMethod.beanType() == Subject.class) {
+            when(resolverFactory.getContextResolver(handlerMethod.parameters()[0]))
+                    .thenReturn(p1Resolver);
+            when(p1Resolver.resolve(any(), any())).thenReturn(null);
 
-        List<RequestEntityResolver> p3Resolver = mock(List.class);
-        when(resolverFactory.getRequestEntityResolvers(handlerMethod.parameters()[2]))
-                .thenReturn(p3Resolver);
+            ParamResolver p2Resolver = mock(ParamResolver.class);
+            when(resolverFactory.getParamResolver(handlerMethod.parameters()[1]))
+                    .thenReturn(p2Resolver);
+            when(p2Resolver.resolve(any(), any())).thenReturn(null);
+
+            List<RequestEntityResolver> p3Resolver = mock(List.class);
+            when(resolverFactory.getRequestEntityResolvers(handlerMethod.parameters()[2]))
+                    .thenReturn(p3Resolver);
 //        when(p3Resolver.(any(), any())).thenReturn(null);
-
+        }
         return resolverFactory;
     }
 
