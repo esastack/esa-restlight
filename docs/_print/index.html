@@ -884,7 +884,7 @@ This is the multi-page printable view of this section.
 <h5 id="q为何不能兼容之前的版本">Q：为何不能兼容之前的版本？</h5>
 <ul>
 <li>全面支持JAX-RS3.0的需要：<code>Restlight</code>原有的请求处理流程和API设计无法满足JAX-RS3.0标准的需要，因此必须在框架核心逻辑上进行重新的设计和考量，而这势必导致接口无法完全向下兼容。</li>
-<li>之前的设计已阻碍框架的进一步演进，比如：用户需要在自定义的异常处理器或过滤器中返回指定的entity这一功能就无法实现，因为响应entity的序列化时机和接口API设计上都存在局限性，以至于在不进行重新设计的情况下永远无法实现该功能。</li>
+<li>之前的设计已阻碍框架的进一步演进，比如：用户需要在自定义的异常处理器或过滤器中返回指定的entity、快速失败后返回自定义entity等功能就无法实现，因为响应entity的序列化时机和接口API设计上都存在局限性，以至于在不进行重新设计的情况下永远无法实现该功能。</li>
 <li>接口易用性和可理解性的需要。</li>
 </ul>
 <h5 id="q升级成本高可以不升级吗">Q：升级成本高，可以不升级吗？</h5>
@@ -1925,7 +1925,7 @@ This is the multi-page printable view of this section.
 <div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#204a87;font-weight:bold">public</span> <span style="color:#204a87;font-weight:bold">interface</span> <span style="color:#000">ParamResolverFactory</span> <span style="color:#204a87;font-weight:bold">extends</span> <span style="color:#000">ParamPredicate</span><span style="color:#ce5c00;font-weight:bold">,</span> <span style="color:#000">Ordered</span> <span style="color:#ce5c00;font-weight:bold">{</span>
 
     <span style="color:#000">ParamResolver</span> <span style="color:#000">createResolver</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#000">Param</span> <span style="color:#000">param</span><span style="color:#ce5c00;font-weight:bold">,</span>
-                                 <span style="color:#000">Function3</span><span style="color:#ce5c00;font-weight:bold">&lt;</span><span style="color:#000">Class</span><span style="color:#ce5c00;font-weight:bold">&lt;?&gt;,</span> <span style="color:#000">Type</span><span style="color:#ce5c00;font-weight:bold">,</span> <span style="color:#000">Param</span><span style="color:#ce5c00;font-weight:bold">,</span> <span style="color:#000">StringConverter</span><span style="color:#ce5c00;font-weight:bold">&gt;</span> <span style="color:#000">converterFunc</span><span style="color:#ce5c00;font-weight:bold">,</span>
+                                 <span style="color:#000">StringConverterProvider</span> <span style="color:#000">converters</span><span style="color:#ce5c00;font-weight:bold">,</span>
                                  <span style="color:#000">List</span><span style="color:#ce5c00;font-weight:bold">&lt;?</span> <span style="color:#204a87;font-weight:bold">extends</span> <span style="color:#000">HttpRequestSerializer</span><span style="color:#ce5c00;font-weight:bold">&gt;</span> <span style="color:#000">serializers</span><span style="color:#ce5c00;font-weight:bold">);</span>
 
     <span style="color:#5c35cc;font-weight:bold">@Override</span>
@@ -1937,10 +1937,10 @@ This is the multi-page printable view of this section.
 <p>初始化逻辑：</p>
 <ol>
 <li>按照<code>getOrder()</code>方法的返回将所有的<code>ParamResolverFactory</code>进行排序</li>
-<li>按照排序后的顺序依次调用<code>supports(Param param)</code>方法，返回<code>true</code>则将其作为该参数的<code>ParamResolverFactory</code>，同时调用<code>createResolver(Param param, Function3&lt;Class&lt;?&gt;, Type, Param, StringConverter&gt; converterFunc, List&lt;? extends HttpRequestSerializer&gt; serializers)</code>方法创建出对应的<code>ParamResolver</code></li>
+<li>按照排序后的顺序依次调用<code>supports(Param param)</code>方法，返回<code>true</code>则将其作为该参数的<code>ParamResolverFactory</code>，同时调用<code>createResolver(Param param, StringConverterProvider converters, List&lt;? extends HttpRequestSerializer&gt; serializers)</code>方法创建出对应的<code>ParamResolver</code></li>
 <li>未找到则启动报错。</li>
 </ol>
-<p>由于初始化时通过<code>createResolver(Param param, Function3&lt;Class&lt;?&gt;, Type, Param, StringConverter&gt; converterFunc, List&lt;? extends HttpRequestSerializer&gt; serializers)</code>方法传入了<code>Param</code>以及序列化器，因此能满足上面的要求。</p>
+<p>由于初始化时通过<code>createResolver(Param param, StringConverterProvider converters, List&lt;? extends HttpRequestSerializer&gt; serializers)</code>方法传入了<code>Param</code>以及序列化器，因此能满足上面的要求。</p>
 <p><strong>两种模式的定位</strong></p>
 <ul>
 <li><code>ParamResolver</code>： 适用于参数解析器不依赖方法元数据信息以及序列化的场景。例如： 如果参数上使用了@XXX注解则返回某个固定的值。</li>
@@ -2007,7 +2007,7 @@ This is the multi-page printable view of this section.
     <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#204a87;font-weight:bold">new</span> <span style="color:#000">ParamResolverFactory</span><span style="color:#ce5c00;font-weight:bold">()</span> <span style="color:#ce5c00;font-weight:bold">{</span>
         <span style="color:#5c35cc;font-weight:bold">@Override</span>
         <span style="color:#204a87;font-weight:bold">public</span> <span style="color:#000">ParamResolver</span> <span style="color:#000">createResolver</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#000">Param</span> <span style="color:#000">param</span><span style="color:#ce5c00;font-weight:bold">,</span>
-                                            <span style="color:#000">Function3</span><span style="color:#ce5c00;font-weight:bold">&lt;</span><span style="color:#000">Class</span><span style="color:#ce5c00;font-weight:bold">&lt;?&gt;,</span> <span style="color:#000">Type</span><span style="color:#ce5c00;font-weight:bold">,</span> <span style="color:#000">Param</span><span style="color:#ce5c00;font-weight:bold">,</span> <span style="color:#000">StringConverter</span><span style="color:#ce5c00;font-weight:bold">&gt;</span> <span style="color:#000">converterFunc</span><span style="color:#ce5c00;font-weight:bold">,</span>
+                                            <span style="color:#000">StringConverterProvider</span> <span style="color:#000">converters</span><span style="color:#ce5c00;font-weight:bold">,</span>
                                             <span style="color:#000">List</span><span style="color:#ce5c00;font-weight:bold">&lt;?</span> <span style="color:#204a87;font-weight:bold">extends</span> <span style="color:#000">HttpRequestSerializer</span><span style="color:#ce5c00;font-weight:bold">&gt;</span> <span style="color:#000">serializers</span><span style="color:#ce5c00;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">{</span>
             <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#204a87;font-weight:bold">new</span> <span style="color:#000">Resolver</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#000">param</span><span style="color:#ce5c00;font-weight:bold">);</span>
         <span style="color:#ce5c00;font-weight:bold">}</span>
@@ -2236,6 +2236,7 @@ This is the multi-page printable view of this section.
 <div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#204a87;font-weight:bold">public</span> <span style="color:#204a87;font-weight:bold">interface</span> <span style="color:#000">RequestEntityResolverFactory</span> <span style="color:#204a87;font-weight:bold">extends</span> <span style="color:#000">ParamPredicate</span><span style="color:#ce5c00;font-weight:bold">,</span> <span style="color:#000">Ordered</span> <span style="color:#ce5c00;font-weight:bold">{</span>
 
     <span style="color:#000">RequestEntityResolver</span> <span style="color:#000">createResolver</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#000">Param</span> <span style="color:#000">param</span><span style="color:#ce5c00;font-weight:bold">,</span>
+                                         <span style="color:#000">StringConverterProvider</span> <span style="color:#000">converters</span><span style="color:#ce5c00;font-weight:bold">,</span>
                                          <span style="color:#000">List</span><span style="color:#ce5c00;font-weight:bold">&lt;?</span> <span style="color:#204a87;font-weight:bold">extends</span> <span style="color:#000">HttpRequestSerializer</span><span style="color:#ce5c00;font-weight:bold">&gt;</span> <span style="color:#000">serializers</span><span style="color:#ce5c00;font-weight:bold">);</span>
 
     <span style="color:#5c35cc;font-weight:bold">@Override</span>
@@ -2318,6 +2319,7 @@ This is the multi-page printable view of this section.
     <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#204a87;font-weight:bold">new</span> <span style="color:#000">RequestEntityResolverFactory</span><span style="color:#ce5c00;font-weight:bold">()</span> <span style="color:#ce5c00;font-weight:bold">{</span>
         <span style="color:#5c35cc;font-weight:bold">@Override</span>
         <span style="color:#204a87;font-weight:bold">public</span> <span style="color:#000">RequestEntityResolver</span> <span style="color:#000">createResolver</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#000">Param</span> <span style="color:#000">param</span><span style="color:#ce5c00;font-weight:bold">,</span>
+                                                    <span style="color:#000">StringConverterProvider</span> <span style="color:#000">converters</span><span style="color:#ce5c00;font-weight:bold">,</span>
                                                     <span style="color:#000">List</span><span style="color:#ce5c00;font-weight:bold">&lt;?</span> <span style="color:#204a87;font-weight:bold">extends</span> <span style="color:#000">HttpRequestSerializer</span><span style="color:#ce5c00;font-weight:bold">&gt;</span> <span style="color:#000">serializers</span><span style="color:#ce5c00;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">{</span>
             <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#204a87;font-weight:bold">new</span> <span style="color:#000">Resolver</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#000">param</span><span style="color:#ce5c00;font-weight:bold">);</span>
         <span style="color:#ce5c00;font-weight:bold">}</span>
