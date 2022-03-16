@@ -45,7 +45,8 @@ class HandlerMethodImplTest {
     @Test
     void testParameters() throws NoSuchMethodException {
         final HandlerMethod handlerMethod
-                = buildHandlerMethod(Subject.class, Subject.class.getDeclaredMethod("params", String.class, int.class, List.class));
+                = buildHandlerMethod(Subject.class,
+                Subject.class.getDeclaredMethod("params", String.class, int.class, List.class));
         assertNotNull(handlerMethod.parameters());
         assertEquals(3, handlerMethod.parameters().length);
 

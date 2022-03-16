@@ -67,10 +67,10 @@ class FilteredHandlerTest {
         final FilteredHandler filteredHandler = new FilteredHandler(handler, filters);
         final FilteringRequest request = mock(FilteringRequest.class);
         final HttpResponse response = mock(HttpResponse.class);
-        final FilterContext context = new FilterContextImpl(new AttributeMap(),request, response);
+        final FilterContext context = new FilterContextImpl(new AttributeMap(), request, response);
         filteredHandler.process(context);
-        assertEquals("1",context.attrs().attr(AttributeKey.stringKey("1")).get());
-        assertEquals("2",context.attrs().attr(AttributeKey.stringKey("2")).get());
-        assertEquals("3",context.attrs().attr(AttributeKey.stringKey("3")).get());
+        assertEquals("1", context.attrs().attr(AttributeKey.stringKey("1")).get());
+        assertEquals("2", context.attrs().attr(AttributeKey.stringKey("2")).get());
+        assertEquals("3", context.attrs().attr(AttributeKey.stringKey("3")).get());
     }
 }

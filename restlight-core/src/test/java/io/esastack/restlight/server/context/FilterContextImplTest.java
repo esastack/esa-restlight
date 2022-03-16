@@ -31,7 +31,7 @@ class FilterContextImplTest {
     void testAll() {
         final FilteringRequest request = mock(FilteringRequest.class);
         final HttpResponse response = mock(HttpResponse.class);
-        final FilterContext context = new FilterContextImpl(new AttributeMap(),request, response);
+        final FilterContext context = new FilterContextImpl(new AttributeMap(), request, response);
         assertEquals(context.request(), request);
         assertEquals(context.response(), response);
         final String key = "key";

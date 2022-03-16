@@ -24,12 +24,8 @@ import io.esastack.restlight.core.handler.RouteFilterChain;
 import io.esastack.restlight.core.handler.impl.HandlerAdvicesFactoryImpl;
 import io.esastack.restlight.core.interceptor.HandlerInterceptor;
 import io.esastack.restlight.core.method.HandlerMethod;
-import io.esastack.restlight.core.method.Param;
-import io.esastack.restlight.core.resolver.*;
-import io.esastack.restlight.core.serialize.HttpRequestSerializer;
 import io.esastack.restlight.core.spi.RouteFilterFactory;
 import io.esastack.restlight.server.bootstrap.RestlightServer;
-import io.esastack.restlight.server.context.RequestContext;
 import io.esastack.restlight.server.context.RouteContext;
 import io.esastack.restlight.server.handler.RestlightHandler;
 import org.junit.jupiter.api.Test;
@@ -37,7 +33,6 @@ import org.junit.jupiter.api.Test;
 import java.net.SocketAddress;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.Executor;
@@ -47,7 +42,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class DeploymentsTest {
 
     @Test
-    void testDeployContext() throws Throwable {
+    void testDeployContext() {
         final RestlightOptions ops = RestlightOptionsConfigure.defaultOpts();
         final Restlight restlight = Restlight0.forServer(ops);
         DeployContext ctx = restlight.deployments().deployContext();
@@ -63,60 +58,9 @@ class DeploymentsTest {
         assertFalse(ctx.singletonControllers().isPresent());
         assertFalse(ctx.interceptors().isPresent());
 
-        final MockBean pojo = new MockBean();
-
         restlight.deployments()
-//                .addHandlerMapping(RouteUtils.extractHandlerMapping(
-//                        new HandlerContext(ctx),
-//                        pojo,
-//                        MockBean.class,
-//                        MockBean.class.getMethod("index")
-//                ).get())
-//                .addHandlerMapping(RouteUtils.extractHandlerMapping(
-//                        new HandlerContext(ctx),
-//                        pojo,
-//                        MockBean.class,
-//                        MockBean.class.getMethod("list")
-//                ).get())
-//                .addHandlerMappings(
-//                        Collections.singletonList(RouteUtils.extractHandlerMapping(
-//                                new HandlerContext(ctx),
-//                                pojo,
-//                                MockBean.class,
-//                                MockBean.class.getMethod("hello")
-//                        ).get()))
-//                .addHandlerMappings(null)
-//                .addHandlerMappings(Collections.emptyList())
-//                .addHandlerMappingProvider(ctx0 -> {
-//                    try {
-//                        return Collections.singletonList(RouteUtils.extractHandlerMapping(
-//                                new HandlerContext(ctx0),
-//                                pojo,
-//                                MockBean.class,
-//                                MockBean.class.getMethod("index0")
-//                        ).get());
-//                    } catch (Throwable th) {
-//                        return Collections.emptyList();
-//                    }
-//                })
-//                .addHandlerMappingProviders(Collections.singletonList(ctx0 -> {
-//                    try {
-//                        return Collections.singleton(RouteUtils.extractHandlerMapping(
-//                                new HandlerContext(ctx0),
-//                                pojo,
-//                                MockBean.class,
-//                                MockBean.class.getMethod("list0")
-//                        ).get());
-//                    } catch (Throwable th) {
-//                        return Collections.emptyList();
-//                    }
-//                }))
                 .addHandlerMappingProviders(null)
                 .addHandlerMappingProviders(Collections.emptyList())
-//                .addParamResolverAdvice(new ArgAdvice())
-//                .addArgumentResolverAdvice(new ArgAdviceFactory())
-//                .addReturnValueResolverAdvice(new RetAdvice())
-//                .addReturnValueResolverAdvice(new RetAdviceFactory())
                 .addController(new A())
                 .addFilter((context, chain) -> chain.doFilter(context))
                 .addFilter(ctx0 -> Optional.of((context, chain) -> chain.doFilter(context)))
@@ -128,7 +72,8 @@ class DeploymentsTest {
                     }
 
                     @Override
-                    public CompletionStage<Void> routed(HandlerMapping mapping, RouteContext context, RouteFilterChain next) {
+                    public CompletionStage<Void> routed(HandlerMapping mapping, RouteContext context,
+                                                        RouteFilterChain next) {
                         return next.doNext(mapping, context);
                     }
                 })
@@ -185,61 +130,21 @@ class DeploymentsTest {
                         (ctx12, route) -> Optional.of(() -> request -> true)))
                 .addInterceptorFactories(null)
                 .addInterceptorFactories(Collections.emptyList())
-//                .addExceptionResolver(RuntimeException.class, (request, response, e) -> Futures.completedFuture())
-//                .addArgumentResolver(new Arg())
-//                .addArgumentResolver(new ArgFactory())
-//                .addArgumentResolvers(Arrays.asList(new ArgFactory(), new ArgFactory()))
-//                .addArgumentResolverAdvices(null)
-//                .addArgumentResolverAdvices(Collections.emptyList())
-//                .addArgumentResolvers(null)
-//                .addArgumentResolvers(Collections.emptyList())
-//                .addReturnValueResolver(new Ret())
-//                .addReturnValueResolver(new RetFactory())
-//                .addReturnValueResolvers(Arrays.asList(new RetFactory(), new RetFactory()))
-//                .addReturnValueResolvers(null)
-//                .addReturnValueResolvers(Collections.emptyList())
-//                .addReturnValueResolverAdvices(null)
-//                .addReturnValueResolverAdvices(Collections.emptyList())
-//                .addRequestSerializer(new Rx())
-//                .addRequestSerializers(Arrays.asList(new Rx(), new Rx()))
-//                .addRequestSerializers(null)
-//                .addRequestSerializers(Collections.emptyList())
-//                .addResponseSerializer(new Tx())
-//                .addResponseSerializers(Arrays.asList(new Tx(), new Tx()))
-//                .addResponseSerializers(null)
-//                .addResponseSerializers(Collections.emptyList())
-//                .addSerializer(new RxBody())
-//                .addSerializers(Collections.singleton(new TxBody()))
                 .server()
                 .start();
         ctx = restlight.deployments().deployContext();
         assertEquals(ops, ctx.options());
-//        assertTrue(ctx.resolverFactory().isPresent());
-//        assertEquals(8, ctx.resolverFactory().get().argumentResolvers().size());
-//        assertEquals(5, ctx.resolverFactory().get().returnValueResolvers().size());
-//        assertEquals(5, ctx.resolverFactory().get().rxSerializers().size());
-//        assertEquals(5, ctx.resolverFactory().get().txSerializers().size());
 
-
-//        assertFalse(ctx.routeHandlerLocator().isPresent());
-//        assertTrue(ctx.exceptionResolverFactory().isPresent());
-//        assertTrue(ctx.exceptionMappers().isPresent());
-//        assertEquals(1, ctx.exceptionMappers().get().size());
-//        assertFalse(ctx.mappingLocator().isPresent());
         assertTrue(ctx.handlerAdvicesFactory().isPresent());
         assertTrue(ctx.handlerAdvicesFactory().get() instanceof HandlerAdvicesFactoryImpl);
         assertTrue(ctx.advices().isPresent());
         assertEquals(3, ctx.advices().get().size());
         assertEquals(3, restlight.deployments().filters().size());
 
-//        assertTrue(ctx.prototypeControllers().isPresent());
-//        assertEquals(3, ctx.prototypeControllers().get().size());
         assertTrue(ctx.interceptors().isPresent());
         assertEquals(15, ctx.interceptors().get().size());
 
         assertTrue(ctx.routeRegistry().isPresent());
-//        final RouteRegistry registry = ctx.routeRegistry().get();
-//        assertEquals(5, registry.routes().size());
     }
 
     private static class A {
@@ -251,230 +156,10 @@ class DeploymentsTest {
     private static class C {
     }
 
-    private static class MockBean {
-
-        String hello() {
-            return "";
-        }
-
-        String index() {
-            return "";
-        }
-
-        String list() {
-            return "";
-        }
-
-        String index0() {
-            return "";
-        }
-
-        String list0() {
-            return "";
-        }
-    }
-
-    private static class ParamResolverAdapterImpl implements ParamResolverAdapter {
-
-        @Override
-        public boolean supports(Param param) {
-            return false;
-        }
-
-        @Override
-        public Object resolve(RequestContext context) throws Exception {
-            return null;
-        }
-    }
-
-    private static class ParamResolverAdviceImpl implements ParamResolverAdvice {
-
-        @Override
-        public Object aroundResolve(ParamResolverContext context) throws Exception {
-            return context.proceed();
-        }
-    }
-
-    private static class ParamResolverFactoryImpl implements ParamResolverFactory {
-
-        @Override
-        public boolean supports(Param param) {
-            return false;
-        }
-
-        @Override
-        public ParamResolver createResolver(Param param, StringConverterProvider converters, List<? extends HttpRequestSerializer> serializers) {
-            return null;
-        }
-    }
-
-    private static class ParamResolverAdviceFactoryImpl implements ParamResolverAdviceFactory {
-
-        @Override
-        public boolean supports(Param param) {
-            return false;
-        }
-
-        @Override
-        public ParamResolverAdvice createResolverAdvice(Param param, ParamResolver resolver) {
-            return null;
-        }
-    }
-
-//    private static class Ret implements ReturnValueResolverAdapter {
-//
-//        @Override
-//        byte[] resolve(Object returnValue, HttpRequest request, HttpResponse response) throws Exception {
-//            return new byte[0];
-//        }
-//
-//        @Override
-//        boolean supports(InvocableMethod invocableMethod) {
-//            return false;
-//        }
-//    }
-//
-//    private static class RetAdvice implements ReturnValueResolverAdviceAdapter {
-//        @Override
-//        boolean supports(InvocableMethod invocableMethod) {
-//            return false;
-//        }
-//    }
-//
-//    private static class RetFactory implements ReturnValueResolverFactory {
-//
-//        @Override
-//        ReturnValueResolver createResolver(InvocableMethod method,
-//                                                  List<? extends HttpResponseSerializer> serializers) {
-//            return null;
-//        }
-//
-//        @Override
-//        boolean supports(InvocableMethod invocableMethod) {
-//            return false;
-//        }
-//    }
-//
-//    private static class RetAdviceFactory implements ReturnValueResolverAdviceFactory {
-//        @Override
-//        ReturnValueResolverAdvice createResolverAdvice(InvocableMethod method, ReturnValueResolver resolver) {
-//            return null;
-//        }
-//
-//        @Override
-//        boolean supports(InvocableMethod invocableMethod) {
-//            return false;
-//        }
-//    }
-//
-//    private static class Rx implements HttpRequestSerializer {
-//
-//        @Override
-//        boolean supportsRead(MediaType mediaType, Type type) {
-//            return false;
-//        }
-//
-//        @Override
-//        <T> T deSerialize(byte[] data, Type type) throws Exception {
-//            return null;
-//        }
-//
-//        @Override
-//        <T> T deSerialize(HttpInputStream inputStream, Type type) throws Exception {
-//            return null;
-//        }
-//    }
-//
-//    private static class Tx implements HttpResponseSerializer {
-//
-//        @Override
-//        boolean supportsWrite(MediaType mediaType, Type type) {
-//            return false;
-//        }
-//
-//        @Override
-//        Object customResponse(HttpRequest request, HttpResponse response, Object returnValue) {
-//            return null;
-//        }
-//
-//        @Override
-//        byte[] serialize(Object target) throws Exception {
-//            return new byte[0];
-//        }
-//
-//        @Override
-//        void serialize(Object target, HttpOutputStream outputStream) throws Exception {
-//
-//        }
-//    }
-//
-//    private static class RxBody implements HttpBodySerializer {
-//        @Override
-//        Object customResponse(HttpRequest request, HttpResponse response, Object returnValue) {
-//            return null;
-//        }
-//
-//        @Override
-//        <T> T deSerialize(byte[] data, Type type) throws Exception {
-//            return null;
-//        }
-//
-//        @Override
-//        <T> T deSerialize(HttpInputStream inputStream, Type type) throws Exception {
-//            return null;
-//        }
-//
-//        @Override
-//        byte[] serialize(Object target) throws Exception {
-//            return new byte[0];
-//        }
-//
-//        @Override
-//        void serialize(Object target, HttpOutputStream outputStream) throws Exception {
-//
-//        }
-//    }
-//
-//    private static class TxBody implements HttpBodySerializer {
-//        @Override
-//        Object customResponse(HttpRequest request, HttpResponse response, Object returnValue) {
-//            return null;
-//        }
-//
-//        @Override
-//        <T> T deSerialize(byte[] data, Type type) throws Exception {
-//            return null;
-//        }
-//
-//        @Override
-//        <T> T deSerialize(HttpInputStream inputStream, Type type) throws Exception {
-//            return null;
-//        }
-//
-//        @Override
-//        byte[] serialize(Object target) throws Exception {
-//            return new byte[0];
-//        }
-//
-//        @Override
-//        void serialize(Object target, HttpOutputStream outputStream) throws Exception {
-//
-//        }
-//    }
-
     private static class Restlight0 extends Restlight {
 
         Restlight0(RestlightOptions options) {
             super(options);
-        }
-
-        /**
-         * Creates a HTTP server of Restlight by default options.
-         *
-         * @return Restlight
-         */
-        public static Restlight forServer() {
-            return forServer(RestlightOptionsConfigure.defaultOpts());
         }
 
         /**

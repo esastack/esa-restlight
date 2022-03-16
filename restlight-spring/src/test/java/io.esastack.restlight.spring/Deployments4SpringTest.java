@@ -96,15 +96,6 @@ class Deployments4SpringTest {
         // advice
         verify(mock, never()).addControllerAdvice(any());
 
-//        // resolvers
-//        verify(mock, never()).addArgumentResolver(any(ArgumentResolverFactory.class));
-//        verify(mock, never()).addArgumentResolver(any(ArgumentResolverAdapter.class));
-//        verify(mock, never()).addArgumentResolvers(anyCollection());
-//
-//        verify(mock, never()).addReturnValueResolver(any(ReturnValueResolverFactory.class));
-//        verify(mock, never()).addReturnValueResolver(any(ReturnValueResolverAdapter.class));
-//        verify(mock, never()).addReturnValueResolvers(anyCollection());
-
         // serializers
         verify(mock, never()).addRequestSerializer(any());
         verify(mock, never()).addRequestSerializers(any());
@@ -178,36 +169,6 @@ class Deployments4SpringTest {
         final Object advice = new Object();
         AdviceLocator0.toReturn = Collections.singleton(advice);
 
-//        // argument resolver
-//        final ArgumentResolverAdapter argumentResolverAdapter = mock(ArgumentResolverAdapter.class);
-//        when(context.getBeansOfType(eq(ArgumentResolverAdapter.class)))
-//                .thenReturn(Collections.singletonMap("useless", argumentResolverAdapter));
-//
-//        final ArgumentResolverFactory argumentResolverFactory = mock(ArgumentResolverFactory.class);
-//        when(context.getBeansOfType(eq(ArgumentResolverFactory.class)))
-//                .thenReturn(Collections.singletonMap("useless", argumentResolverFactory));
-//
-//        final ArgumentResolverProvider argumentResolverProvider = mock(ArgumentResolverProvider.class);
-//        final ArgumentResolverFactory providedArgumentResolver = mock(ArgumentResolverFactory.class);
-//        when(argumentResolverProvider.factoryBean(any())).thenReturn(Optional.of(providedArgumentResolver));
-//        when(context.getBeansOfType(eq(ArgumentResolverProvider.class)))
-//                .thenReturn(Collections.singletonMap("useless", argumentResolverProvider));
-//
-//        // return value resolver
-//        final ReturnValueResolverAdapter returnValueResolverAdapter = mock(ReturnValueResolverAdapter.class);
-//        when(context.getBeansOfType(eq(ReturnValueResolverAdapter.class)))
-//                .thenReturn(Collections.singletonMap("useless", returnValueResolverAdapter));
-//
-//        final ReturnValueResolverFactory returnValueResolverFactory = mock(ReturnValueResolverFactory.class);
-//        when(context.getBeansOfType(eq(ReturnValueResolverFactory.class)))
-//                .thenReturn(Collections.singletonMap("useless", returnValueResolverFactory));
-//
-//        final ReturnValueResolverProvider returnValueResolverProvider = mock(ReturnValueResolverProvider.class);
-//        final ReturnValueResolverFactory providedReturnValueResolver = mock(ReturnValueResolverFactory.class);
-//        when(returnValueResolverProvider.factoryBean(any())).thenReturn(Optional.of(providedReturnValueResolver));
-//        when(context.getBeansOfType(eq(ReturnValueResolverProvider.class)))
-//                .thenReturn(Collections.singletonMap("useless", returnValueResolverProvider));
-
         // serializer
         final HttpRequestSerializer requestSerializer = mock(HttpRequestSerializer.class);
         when(context.getBeansOfType(eq(HttpRequestSerializer.class)))
@@ -256,46 +217,6 @@ class Deployments4SpringTest {
         // request task hook
         verify(mock).addRequestTaskHook(same(requestTaskHook1));
         verify(mock).addRequestTaskHooks(argThat(c -> c != null && c.contains(requestTaskAdvice2)));
-
-        // routes
-//        verify(mock).addRoutes(argThat(c -> c != null && c.contains(route)));
-//
-//        // mappings
-//        verify(mock).addHandlerMappingProviders(argThat(c -> c != null && c.contains(handlerMappingProvider)));
-//        verify(mock).addHandlerMappings(argThat(c -> c != null && c.contains(handlerMapping)));
-
-        // controllers
-//        verify(mock).addControllers(argThat(c -> c != null && c.contains(controller)));
-
-        // advice
-//        verify(mock).addControllerAdvices(argThat(c -> c != null && c.contains(advice)));
-
-//        // resolvers
-//        verify(mock)
-//                .addArgumentResolver(
-//                        argThat((ArgumentMatcher<ArgumentResolverFactory>)
-//                                arg -> arg == argumentResolverFactory));
-//        verify(mock)
-//                .addArgumentResolver(
-//                        argThat((ArgumentMatcher<ArgumentResolverAdapter>)
-//                                arg -> arg == argumentResolverAdapter));
-//        verify(mock)
-//                .addArgumentResolver(
-//                        argThat((ArgumentMatcher<ArgumentResolverFactory>)
-//                                arg -> arg == providedArgumentResolver));
-//
-//        verify(mock)
-//                .addReturnValueResolver(
-//                        argThat((ArgumentMatcher<ReturnValueResolverFactory>)
-//                                arg -> arg == returnValueResolverFactory));
-//        verify(mock)
-//                .addReturnValueResolver(
-//                        argThat((ArgumentMatcher<ReturnValueResolverAdapter>)
-//                                arg -> arg == returnValueResolverAdapter));
-//        verify(mock)
-//                .addReturnValueResolver(
-//                        argThat((ArgumentMatcher<ReturnValueResolverFactory>)
-//                                arg -> arg == providedReturnValueResolver));
 
         // serializers
         verify(mock).addRequestSerializer(same(requestSerializer));

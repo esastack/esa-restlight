@@ -151,7 +151,6 @@ public class MockHandlerData {
             List<RequestEntityResolver> p3Resolver = mock(List.class);
             when(resolverFactory.getRequestEntityResolvers(handlerMethod.parameters()[2]))
                     .thenReturn(p3Resolver);
-//        when(p3Resolver.(any(), any())).thenReturn(null);
         }
         return resolverFactory;
     }

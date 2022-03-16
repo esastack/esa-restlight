@@ -31,9 +31,9 @@ class FakeServer implements RestlightServer {
 
     FakeServer(RestlightHandler handler) {
         Checks.checkNotNull(handler, "handler");
-        if(handler instanceof AbstractRestlightHandler) {
-            this.handler = (AbstractRestlightHandler)handler;
-        }else {
+        if (handler instanceof AbstractRestlightHandler) {
+            this.handler = (AbstractRestlightHandler) handler;
+        } else {
             throw new IllegalArgumentException("The type of handler should be AbstractRestlightHandler.");
         }
     }

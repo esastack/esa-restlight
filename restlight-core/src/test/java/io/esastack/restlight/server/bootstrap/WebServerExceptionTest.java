@@ -83,7 +83,7 @@ class WebServerExceptionTest {
         WebServerException ex = WebServerException.badRequest("bad");
 
         assertEquals(HttpStatus.BAD_REQUEST, ex.status());
-        assertEquals("bad",ex.getMessage());
+        assertEquals("bad", ex.getMessage());
         assertNull(ex.getCause());
 
         ex = WebServerException.badRequest("foo");
