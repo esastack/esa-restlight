@@ -17,20 +17,29 @@ package io.esastack.restlight.core.util;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import io.esastack.restlight.core.annotation.Scheduled;
+import io.esastack.restlight.core.handler.HandlerFactory;
 import io.esastack.restlight.core.handler.HandlerMapping;
+import io.esastack.restlight.core.handler.HandlerValueResolver;
 import io.esastack.restlight.core.handler.RouteMethodInfo;
 import io.esastack.restlight.core.handler.impl.HandlerContext;
+import io.esastack.restlight.core.handler.impl.MockHandlerData;
+import io.esastack.restlight.core.handler.locate.HandlerValueResolverLocator;
 import io.esastack.restlight.core.handler.locate.MappingLocator;
 import io.esastack.restlight.core.handler.locate.RouteMethodLocator;
 import io.esastack.restlight.core.method.HandlerMethod;
 import io.esastack.restlight.core.method.HandlerMethodImpl;
+import io.esastack.restlight.core.resolver.ExceptionResolver;
+import io.esastack.restlight.core.resolver.HandlerResolverFactory;
+import io.esastack.restlight.core.resolver.exception.ExceptionResolverFactory;
 import io.esastack.restlight.server.route.Mapping;
+import io.esastack.restlight.server.route.Route;
 import io.esastack.restlight.server.schedule.Schedulers;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.Promise;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Method;
+import java.util.Collections;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
@@ -126,149 +135,46 @@ class RouteUtilsTest {
                 RouteUtils.scheduling(method8, Schedulers.BIZ));
     }
 
-//    @Test
-//    void testExtractRouteByMappingAndHandlerContext() throws NoSuchMethodException {
-//        final HandlerContext ctx = mock(HandlerContext.class);
-//        final Mapping mapping = Mapping.get();
-//
-//        when(ctx.handlerResolverLocator()).thenReturn(Optional.empty());
-//        assertFalse(RouteUtils.extractRoute(ctx, null).isPresent());
-//
-//        final HandlerResolverFactory resolverFactory = mock(HandlerResolverFactory.class);
-//        final ExceptionResolverFactory exceptionResolverFactory = mock(ExceptionResolverFactory.class);
-//        final ExceptionResolver<Throwable> exceptionResolver =
-//                (ctx0, throwable) -> Futures.completedFuture();
-//        when(exceptionResolverFactory.createResolver(any()))
-//                .thenReturn(exceptionResolver);
-//
-//        when(ctx.exceptionResolverFactory()).thenReturn(Optional.of(exceptionResolverFactory));
-//
-//        when(ctx.resolverFactory()).thenReturn(Optional.empty());
-//        assertFalse(RouteUtils.extractRoute(ctx, mapping).isPresent());
-//
-//        when(ctx.resolverFactory()).thenReturn(Optional.of(resolverFactory));
-//        when(ctx.exceptionResolverFactory()).thenReturn(Optional.empty());
-//        assertFalse(RouteUtils.extractRoute(ctx, mapping).isPresent());
-//
-//        when(ctx.exceptionResolverFactory()).thenReturn(Optional.of(exceptionResolverFactory));
-//
-//        final RouteHandler routeHandler = mockRouteHandler();
-//
-//        assertThrows(NullPointerException.class, () -> RouteUtils.extractRoute(ctx, mapping, routeHandler));
-//
-//        when(ctx.schedulers()).thenReturn(Collections.singletonMap("foo", Schedulers.biz()));
-//        Optional<Route> ret = RouteUtils.extractRoute(ctx, mapping, routeHandler);
-//        assertTrue(ret.isPresent());
-//        assertTrue(ret.get().handler().isPresent());
-//        assertEquals(routeHandler.handler(), ret.get().handler().get());
-//        assertSame(Schedulers.biz(), ret.get().scheduler());
-//        assertSame(mapping, ret.get().mapping());
-//    }
-//
-//    @Test
-//    void testExtractRouteByMappingAndMethod() throws NoSuchMethodException {
-//        final DeployContext<RestlightOptions> ctx = mock(DeployContext.class);
-//        final Mapping mapping = Mapping.get();
-//        assertFalse(RouteUtils.extractRoute(ctx,
-//                RouteUtilsTest.class,
-//                RouteUtilsTest.class.getDeclaredMethod("normal", String.class),
-//                new RouteUtilsTest(),
-//                null).isPresent());
-//
-//        final HandlerResolverFactory resolverFactory = mock(HandlerResolverFactory.class);
-//        final ExceptionResolverFactory exceptionResolverFactory = mock(ExceptionResolverFactory.class);
-//        final ExceptionResolver<Throwable> exceptionResolver =
-//                (request, response, throwable) -> Futures.completedFuture();
-//        when(exceptionResolverFactory.createResolver(any()))
-//                .thenReturn(exceptionResolver);
-//
-//        when(ctx.resolverFactory()).thenReturn(Optional.of(resolverFactory));
-//        when(ctx.exceptionResolverFactory()).thenReturn(Optional.of(exceptionResolverFactory));
-//
-//        when(ctx.routeHandlerLocator()).thenReturn(Optional.empty());
-//        assertFalse(RouteUtils.extractRoute(ctx,
-//                RouteUtilsTest.class,
-//                RouteUtilsTest.class.getDeclaredMethod("normal", String.class),
-//                new RouteUtilsTest(),
-//                mapping).isPresent());
-//
-//        final RouteHandler handler = mockRouteHandler();
-//        final RouteHandlerLocator locator = (userType, method, bean) -> Optional.of(handler);
-//        when(ctx.routeHandlerLocator()).thenReturn(Optional.of(locator));
-//        when(ctx.schedulers()).thenReturn(Collections.singletonMap("foo", Schedulers.biz()));
-//
-//        final Optional<Route> ret = RouteUtils.extractRoute(ctx,
-//                RouteUtilsTest.class,
-//                RouteUtilsTest.class.getDeclaredMethod("normal", String.class),
-//                new RouteUtilsTest(),
-//                mapping);
-//
-//
-//        assertTrue(ret.isPresent());
-//        assertTrue(ret.get().handler().isPresent());
-//        assertEquals(handler.handler(), ret.get().handler().get());
-//        assertSame(Schedulers.biz(), ret.get().scheduler());
-//        assertSame(mapping, ret.get().mapping());
-//    }
-//
-//    @Test
-//    void testExtractRouteByMethod() throws NoSuchMethodException {
-//        final DeployContext<RestlightOptions> ctx = mock(DeployContext.class);
-//        assertFalse(RouteUtils.extractRoute(ctx,
-//                RouteUtilsTest.class,
-//                RouteUtilsTest.class.getDeclaredMethod("normal", String.class),
-//                new RouteUtilsTest()).isPresent());
-//
-//
-//        when(ctx.mappingLocator()).thenReturn(Optional.of(((userType, method) -> Optional.empty())));
-//        assertFalse(RouteUtils.extractRoute(ctx,
-//                RouteUtilsTest.class,
-//                RouteUtilsTest.class.getDeclaredMethod("normal", String.class),
-//                new RouteUtilsTest()).isPresent());
-//
-//        final Mapping mapping = Mapping.get();
-//        when(ctx.mappingLocator()).thenReturn(Optional.of(((userType, method) -> Optional.of(mapping))));
-//
-//
-//        final HandlerResolverFactory resolverFactory = mock(HandlerResolverFactory.class);
-//        final ExceptionResolverFactory exceptionResolverFactory = mock(ExceptionResolverFactory.class);
-//        final ExceptionResolver<Throwable> exceptionResolver =
-//                (request, response, throwable) -> Futures.completedFuture();
-//        when(exceptionResolverFactory.createResolver(any()))
-//                .thenReturn(exceptionResolver);
-//
-//        when(ctx.resolverFactory()).thenReturn(Optional.of(resolverFactory));
-//        when(ctx.exceptionResolverFactory()).thenReturn(Optional.of(exceptionResolverFactory));
-//        final RouteHandler handler = mockRouteHandler();
-//        final RouteHandlerLocator locator = (userType, method, bean) -> Optional.of(handler);
-//        when(ctx.routeHandlerLocator()).thenReturn(Optional.of(locator));
-//        when(ctx.schedulers()).thenReturn(Collections.singletonMap("foo", Schedulers.biz()));
-//
-//        final Optional<Route> ret = RouteUtils.extractRoute(ctx,
-//                RouteUtilsTest.class,
-//                RouteUtilsTest.class.getDeclaredMethod("normal", String.class),
-//                new RouteUtilsTest());
-//
-//
-//        assertTrue(ret.isPresent());
-//        assertTrue(ret.get().handler().isPresent());
-//        assertEquals(handler.handler(), ret.get().handler().get());
-//        assertSame(Schedulers.biz(), ret.get().scheduler());
-//        assertSame(mapping, ret.get().mapping());
-//    }
-//
-//    private RouteHandler mockRouteHandler() throws NoSuchMethodException {
-//        final RouteHandler routeHandler = mock(RouteHandler.class);
-//        when(routeHandler.intercepted()).thenReturn(true);
-//        when(routeHandler.scheduler()).thenReturn("foo");
-//        when(routeHandler.handler())
-//                .thenReturn(HandlerMethodImpl.of(RouteUtilsTest.class.getDeclaredMethod("normal", String.class),
-//                        new RouteUtilsTest()));
-//        return routeHandler;
-//    }
+    @Test
+    void testExtractRoute() throws Exception {
+        final MockHandlerData mockData = new MockHandlerData();
+        final HandlerContext ctx = mockData.context();
+        final HandlerMapping mapping = mockData.mapping();
+        when(mapping.mapping()).thenReturn(Mapping.mapping());
 
-    private String normal(String foo) {
-        return foo;
+        when(ctx.handlerResolverLocator()).thenReturn(Optional.empty());
+        assertFalse(RouteUtils.extractRoute(ctx, null).isPresent());
+
+        final HandlerValueResolverLocator resolverLocator = mock(HandlerValueResolverLocator.class);
+        final HandlerValueResolver valueResolver = mockData.handlerValueResolver();
+        final HandlerFactory handlerFactory = mock(HandlerFactory.class);
+        final HandlerResolverFactory resolverFactory = mockData.resolverFactory();
+        final ExceptionResolverFactory exceptionResolverFactory = mock(ExceptionResolverFactory.class);
+        final ExceptionResolver<Throwable> exceptionResolver =
+                mockData.exceptionResolver();
+        when(exceptionResolverFactory.createResolver(any()))
+                .thenReturn(exceptionResolver);
+
+        when(ctx.handlerResolverLocator()).thenReturn(Optional.of(resolverLocator));
+        when(ctx.exceptionResolverFactory()).thenReturn(Optional.of(exceptionResolverFactory));
+        when(resolverLocator.getHandlerValueResolver(any())).thenReturn(Optional.of(valueResolver));
+
+        when(ctx.resolverFactory()).thenReturn(Optional.empty());
+        assertFalse(RouteUtils.extractRoute(ctx, mapping).isPresent());
+
+        when(ctx.resolverFactory()).thenReturn(Optional.of(resolverFactory));
+        when(ctx.exceptionResolverFactory()).thenReturn(Optional.empty());
+        assertFalse(RouteUtils.extractRoute(ctx, mapping).isPresent());
+
+        when(ctx.exceptionResolverFactory()).thenReturn(Optional.of(exceptionResolverFactory));
+        when(ctx.handlerFactory()).thenReturn(Optional.of(handlerFactory));
+
+        when(ctx.schedulers()).thenReturn(Collections.singletonMap("BIZ", Schedulers.biz()));
+        Optional<Route> ret = RouteUtils.extractRoute(ctx, mapping);
+        assertTrue(ret.isPresent());
+        assertTrue(ret.get().handler().isPresent());
+        assertSame(Schedulers.biz(), ret.get().scheduler());
+        assertSame(mapping.mapping(), ret.get().mapping());
     }
 
     private static class Subject {
