@@ -26,12 +26,7 @@ import io.esastack.restlight.core.resolver.exception.DefaultExceptionResolverFac
 import io.esastack.restlight.core.spi.ResponseEntityChannelFactory;
 import io.esastack.restlight.core.util.Constants;
 import io.esastack.restlight.core.util.OrderedComparator;
-import io.esastack.restlight.server.bootstrap.AbstractDelegatedRestlightServer;
-import io.esastack.restlight.server.bootstrap.ExceptionHandlerChain;
-import io.esastack.restlight.server.bootstrap.IExceptionHandler;
-import io.esastack.restlight.server.bootstrap.LinkedExceptionHandlerChain;
-import io.esastack.restlight.server.bootstrap.RestlightServer;
-import io.esastack.restlight.server.bootstrap.RestlightServerBootstrap;
+import io.esastack.restlight.server.bootstrap.*;
 import io.esastack.restlight.server.handler.Filter;
 import io.esastack.restlight.server.handler.FilteredHandler;
 import io.esastack.restlight.server.handler.RestlightHandler;
@@ -44,13 +39,7 @@ import io.netty.util.internal.SocketUtils;
 
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -236,7 +225,7 @@ public abstract class AbstractRestlight extends AbstractDelegatedRestlightServer
         return doBuildServer(buildHandler(handler, deployments().exceptionHandlers));
     }
 
-    protected RestlightServer doBuildServer(AbstractRestlightHandler handler) {
+    protected RestlightServer doBuildServer(RestlightHandler handler) {
         return RestlightServerBootstrap.from(options, handler)
                 .withAddress(address)
                 .withOptions(channelOptions)

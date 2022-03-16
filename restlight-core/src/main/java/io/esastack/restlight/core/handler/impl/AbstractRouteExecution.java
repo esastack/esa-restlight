@@ -15,10 +15,9 @@
  */
 package io.esastack.restlight.core.handler.impl;
 
-import io.esastack.restlight.core.handler.LinkedRouteFilterChain;
-import io.esastack.restlight.core.handler.RouteFilter;
-import io.esastack.restlight.core.handler.RouteHandler;
+import io.esastack.restlight.core.handler.*;
 import io.esastack.restlight.core.interceptor.InternalInterceptor;
+import io.esastack.restlight.core.method.HandlerMethod;
 import io.esastack.restlight.server.context.RequestContext;
 import io.esastack.restlight.server.context.impl.RouteContextImpl;
 import io.esastack.restlight.server.core.impl.RoutedRequestImpl;
@@ -48,6 +47,18 @@ abstract class AbstractRouteExecution extends AbstractExecution<RouteHandlerMeth
         this.interceptors = interceptors;
         this.interceptorAbsent = interceptors == null || interceptors.isEmpty();
         this.completionHandler = (this::triggerAfterCompletion);
+    }
+
+    static HandlerInvoker buildInvoker(HandlerMethod method, Object instance,
+                                       HandlerAdvicesFactory handlerAdvicesFactory) {
+        Handler handler = new HandlerImpl(method, instance);
+        if (handlerAdvicesFactory != null) {
+            HandlerAdvice[] handlerAdvices = handlerAdvicesFactory.getHandlerAdvices(handler);
+            if (handlerAdvices != null && handlerAdvices.length > 0) {
+                return LinkedHandlerInvoker.immutable(handlerAdvices, handler);
+            }
+        }
+        return handler;
     }
 
     @Override
@@ -106,7 +117,7 @@ abstract class AbstractRouteExecution extends AbstractExecution<RouteHandlerMeth
         return handlerMethod().exceptionResolver();
     }
 
-    private CompletionStage<Boolean> applyPreHandle(RequestContext context, Object bean) {
+    CompletionStage<Boolean> applyPreHandle(RequestContext context, Object bean) {
         if (interceptorAbsent) {
             return Futures.completedFuture(Boolean.TRUE);
         }
@@ -140,7 +151,7 @@ abstract class AbstractRouteExecution extends AbstractExecution<RouteHandlerMeth
                 });
     }
 
-    private CompletionStage<Void> applyPostHandle(RequestContext context, Object bean) {
+    CompletionStage<Void> applyPostHandle(RequestContext context, Object bean) {
         if (interceptorAbsent) {
             return Futures.completedFuture();
         }
@@ -158,7 +169,7 @@ abstract class AbstractRouteExecution extends AbstractExecution<RouteHandlerMeth
         return future;
     }
 
-    private CompletionStage<Void> triggerAfterCompletion(RequestContext context, Throwable t) {
+    CompletionStage<Void> triggerAfterCompletion(RequestContext context, Throwable t) {
         if (this.interceptorAbsent) {
             return Futures.completedFuture();
         }

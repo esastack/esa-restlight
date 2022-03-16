@@ -42,12 +42,15 @@ public class AbstractRouteRegistry implements RouteRegistry, Router {
             return;
         }
         RouteWrap routeWrap = new RouteWrap(route);
-        router.mappingLookups.forEach(registered -> {
-            if (registered.predicate.mayAmbiguousWith(routeWrap.predicate)) {
-                logger.warn("Found ambiguous route:\n{}\n{}", routeWrap.route, registered);
-            }
-        });
-        router.add(routeWrap);
+        //Add synchronized to avoid same routeWraps add to router without log
+        synchronized (this) {
+            router.mappingLookups.forEach(registered -> {
+                if (registered.predicate.mayAmbiguousWith(routeWrap.predicate)) {
+                    logger.warn("Found ambiguous route:\n{}\n{}", routeWrap.route, registered);
+                }
+            });
+            router.add(routeWrap);
+        }
         logger.debug("Registering route: {}", route);
     }
 

@@ -17,13 +17,9 @@ package io.esastack.restlight.core.handler.impl;
 
 import esa.commons.Checks;
 import esa.commons.collection.MultiValueMap;
-import io.esastack.restlight.core.handler.Handler;
-import io.esastack.restlight.core.handler.HandlerAdvice;
-import io.esastack.restlight.core.handler.HandlerAdvicesFactory;
 import io.esastack.restlight.core.handler.HandlerInvoker;
 import io.esastack.restlight.core.handler.HandlerMapping;
 import io.esastack.restlight.core.handler.HandlerValueResolver;
-import io.esastack.restlight.core.handler.LinkedHandlerInvoker;
 import io.esastack.restlight.core.interceptor.Interceptor;
 import io.esastack.restlight.core.interceptor.InterceptorPredicate;
 import io.esastack.restlight.core.interceptor.InternalInterceptor;
@@ -50,18 +46,6 @@ public class SingletonRouteMethod extends RouteHandlerMethodAdapter {
     @Override
     public RouteExecution toExecution(RequestContext context) {
         return new SingletonRouteExecution(this, getMatchingInterceptors(context), singleton);
-    }
-
-    static HandlerInvoker buildInvoker(HandlerMethod method, Object instance,
-                                       HandlerAdvicesFactory handlerAdvicesFactory) {
-        Handler handler = new HandlerImpl(method, instance);
-        if (handlerAdvicesFactory != null) {
-            HandlerAdvice[] handlerAdvices = handlerAdvicesFactory.getHandlerAdvices(handler);
-            if (handlerAdvices != null && handlerAdvices.length > 0) {
-                return LinkedHandlerInvoker.immutable(handlerAdvices, handler);
-            }
-        }
-        return handler;
     }
 
     private static class SingletonRouteExecution extends AbstractRouteExecution {
