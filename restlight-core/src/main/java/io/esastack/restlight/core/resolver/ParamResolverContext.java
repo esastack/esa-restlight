@@ -32,14 +32,7 @@ public interface ParamResolverContext {
     RequestContext context();
 
     /**
-     * Obtains the {@link Param} to resolve.
-     *
-     * @return param
-     */
-    Param param();
-
-    /**
-     * Resolves the {@link #param()} by given {@link #context()}.
+     * Resolves the specified {@link Param} by given {@link #context()}.
      *
      * @return context
      * @throws Exception exception

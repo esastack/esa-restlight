@@ -16,17 +16,15 @@
 package io.esastack.restlight.core.resolver.param;
 
 import esa.commons.ClassUtils;
-import esa.commons.function.Function3;
 import io.esastack.commons.net.http.Cookie;
 import io.esastack.restlight.core.method.Param;
-import io.esastack.restlight.core.resolver.StringConverter;
+import io.esastack.restlight.core.resolver.StringConverterProvider;
 import io.esastack.restlight.core.resolver.nav.NameAndStringValueResolver;
 import io.esastack.restlight.core.resolver.nav.NameAndValue;
 import io.esastack.restlight.core.resolver.nav.NameAndValueResolver;
 import io.esastack.restlight.core.resolver.nav.NameAndValueResolverFactory;
 import io.esastack.restlight.server.context.RequestContext;
 
-import java.lang.reflect.Type;
 import java.util.Set;
 
 /**
@@ -37,7 +35,7 @@ public abstract class AbstractCookieValueResolver extends NameAndValueResolverFa
 
     @Override
     protected NameAndValueResolver createResolver(Param param,
-                                                  Function3<Class<?>, Type, Param, StringConverter> converterFunc) {
+                                                  StringConverterProvider converters) {
         if (Cookie.class.equals(param.type())) {
             return new CookieResolver();
         }
@@ -50,7 +48,7 @@ public abstract class AbstractCookieValueResolver extends NameAndValueResolverFa
         }
 
         return new NameAndStringValueResolver(param,
-                converterFunc,
+                converters,
                 this::extractCookieValue,
                 createNameAndValue(param)
         );

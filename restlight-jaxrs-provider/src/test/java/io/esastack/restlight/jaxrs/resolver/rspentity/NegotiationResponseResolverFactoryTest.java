@@ -42,6 +42,7 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class NegotiationResponseResolverFactoryTest {
 
@@ -53,6 +54,12 @@ class NegotiationResponseResolverFactoryTest {
     @BeforeAll
     static void setUp() {
         handlerMethods = ResolverUtils.extractHandlerMethods(SUBJECT);
+    }
+
+    @Test
+    void testSupport() {
+        assertTrue(resolverFactory.supports(null));
+        assertTrue(resolverFactory.alsoApplyWhenMissingHandler());
     }
 
     @Test
@@ -151,7 +158,7 @@ class NegotiationResponseResolverFactoryTest {
                                                    HttpResponse response,
                                                    String method) throws Exception {
         final HandlerMethod handlerMethod = handlerMethods.get(method);
-        final ResponseEntityResolver resolver = resolverFactory.createResolver(
+        final ResponseEntityResolver resolver = resolverFactory.createResolver(null,
                 Collections.singletonList(new FastJsonHttpBodySerializer()));
 
         return ResolverUtils.writtenContent(request, response, returnValue, handlerMethod, resolver);
@@ -162,7 +169,7 @@ class NegotiationResponseResolverFactoryTest {
                                                         HttpResponse response,
                                                         String method) throws Exception {
         final HandlerMethod handlerMethod = handlerMethods.get(method);
-        final ResponseEntityResolver resolver = resolverFactory.createResolver(
+        final ResponseEntityResolver resolver = resolverFactory.createResolver(null,
                 Arrays.asList(new JacksonHttpBodySerializer() {
                     @Override
                     public int getOrder() {

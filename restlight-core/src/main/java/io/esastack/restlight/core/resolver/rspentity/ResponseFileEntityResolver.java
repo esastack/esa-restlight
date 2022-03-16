@@ -15,26 +15,42 @@
  */
 package io.esastack.restlight.core.resolver.rspentity;
 
+import io.esastack.restlight.core.method.HandlerMethod;
 import io.esastack.restlight.core.resolver.HandledValue;
 import io.esastack.restlight.core.resolver.ResponseEntity;
 import io.esastack.restlight.core.resolver.ResponseEntityChannel;
-import io.esastack.restlight.core.resolver.ResponseEntityResolver;
+import io.esastack.restlight.core.resolver.ResponseEntityResolverAdapter;
 import io.esastack.restlight.core.util.ResponseEntityUtils;
 import io.esastack.restlight.server.context.RequestContext;
 
 import java.io.File;
 
-public class ResponseFileEntityResolver implements ResponseEntityResolver {
+public class ResponseFileEntityResolver implements ResponseEntityResolverAdapter {
 
     @Override
     public HandledValue<Void> writeTo(ResponseEntity entity,
                                       ResponseEntityChannel channel,
                                       RequestContext context) throws Exception {
-        if (ResponseEntityUtils.isAssignableFrom(entity, File.class)) {
+        if (!ResponseEntityUtils.isAssignableFrom(entity, File.class)) {
             return HandledValue.failed();
         }
         channel.writeThenEnd((File) entity.response().entity());
         return HandledValue.succeed(null);
+    }
+
+    @Override
+    public boolean alsoApplyWhenMissingHandler() {
+        return true;
+    }
+
+    @Override
+    public boolean supports(HandlerMethod method) {
+        return true;
+    }
+
+    @Override
+    public int getOrder() {
+        return 500;
     }
 
 }

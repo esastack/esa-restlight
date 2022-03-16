@@ -15,16 +15,20 @@
  */
 package io.esastack.restlight.test.bootstrap;
 
+import io.esastack.commons.net.http.MediaType;
 import io.esastack.restlight.core.interceptor.HandlerInterceptor;
+import io.esastack.restlight.core.method.HandlerMethod;
 import io.esastack.restlight.core.method.Param;
 import io.esastack.restlight.core.resolver.HandledValue;
 import io.esastack.restlight.core.resolver.ParamResolverAdapter;
 import io.esastack.restlight.core.resolver.ParamResolverAdviceAdapter;
+import io.esastack.restlight.core.resolver.ParamResolverContext;
 import io.esastack.restlight.core.resolver.RequestEntity;
 import io.esastack.restlight.core.resolver.ResponseEntity;
-import io.esastack.restlight.core.resolver.ResponseEntityChannel;
 import io.esastack.restlight.core.resolver.ResponseEntityResolverAdapter;
 import io.esastack.restlight.core.resolver.ResponseEntityResolverAdviceAdapter;
+import io.esastack.restlight.core.resolver.ResponseEntityResolverContext;
+import io.esastack.restlight.core.resolver.rspentity.AbstractResponseEntityResolver;
 import io.esastack.restlight.core.serialize.HttpBodySerializer;
 import io.esastack.restlight.server.context.RequestContext;
 import io.esastack.restlight.server.mock.MockHttpRequest;
@@ -34,6 +38,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 
 import java.util.Collections;
+import java.util.List;
 
 class MinorityMockMvcBuilderTest {
 
@@ -87,7 +92,7 @@ class MinorityMockMvcBuilderTest {
         }
 
         @Override
-        public Object resolve(Param param, RequestContext context) {
+        public Object resolve(RequestContext context) {
             return null;
         }
 
@@ -103,26 +108,32 @@ class MinorityMockMvcBuilderTest {
         }
 
         @Override
+        public Object aroundResolve(ParamResolverContext context) throws Exception {
+            return context.proceed();
+        }
+
+        @Override
         public boolean supports(Param param) {
             return false;
         }
     }
 
-    private static class ResponseEntityResolverImpl implements ResponseEntityResolverAdapter {
+    private static class ResponseEntityResolverImpl extends AbstractResponseEntityResolver
+            implements ResponseEntityResolverAdapter {
 
         private ResponseEntityResolverImpl() {
         }
 
         @Override
-        public HandledValue<Void> writeTo(ResponseEntity entity,
-                                          ResponseEntityChannel channel,
-                                          RequestContext context) {
-            return HandledValue.succeed(null);
+        protected byte[] serialize(ResponseEntity entity,
+                                   List<MediaType> mediaTypes,
+                                   RequestContext context) {
+            return new byte[0];
         }
 
         @Override
-        public int getOrder() {
-            return 10000;
+        public boolean supports(HandlerMethod method) {
+            return true;
         }
     }
 
@@ -132,8 +143,13 @@ class MinorityMockMvcBuilderTest {
         }
 
         @Override
-        public boolean supports(ResponseEntity entity) {
-            return false;
+        public void aroundWrite(ResponseEntityResolverContext context) throws Exception {
+            context.proceed();
+        }
+
+        @Override
+        public boolean supports(HandlerMethod method) {
+            return true;
         }
     }
 

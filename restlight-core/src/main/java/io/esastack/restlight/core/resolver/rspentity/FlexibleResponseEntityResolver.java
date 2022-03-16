@@ -30,11 +30,11 @@ import java.util.List;
 /**
  * Implementation of {@link ParamResolverFactory} for resolving argument that annotated by the ResponseBody.
  */
-public abstract class FlexibleResponseEntityResolver extends AbstractResponseEntityResolver {
+public class FlexibleResponseEntityResolver extends AbstractResponseEntityResolver {
 
     private final List<? extends HttpResponseSerializer> serializers;
 
-    protected FlexibleResponseEntityResolver(List<? extends HttpResponseSerializer> serializers) {
+    public FlexibleResponseEntityResolver(List<? extends HttpResponseSerializer> serializers) {
         super(true);
         this.serializers = serializers;
     }
@@ -48,21 +48,21 @@ public abstract class FlexibleResponseEntityResolver extends AbstractResponseEnt
                     "), acceptMediaTypes: " + mediaTypes);
         }
 
-        HandledValue<byte[]> value;
+        HandledValue<byte[]> handled;
         if (mediaTypes.isEmpty()) {
             for (HttpResponseSerializer ser : serializers) {
-                value = Serializers.serializeBySerializer(ser, entity);
-                if (value.isSuccess()) {
-                    return value.value();
+                handled = Serializers.serializeBySerializer(ser, entity);
+                if (handled.isSuccess()) {
+                    return handled.value();
                 }
             }
         } else {
             for (MediaType mediaType : mediaTypes) {
                 for (HttpResponseSerializer ser : serializers) {
                     entity.mediaType(mediaType);
-                    value = Serializers.serializeBySerializer(ser, entity);
-                    if (value.isSuccess()) {
-                        return value.value();
+                    handled = Serializers.serializeBySerializer(ser, entity);
+                    if (handled.isSuccess()) {
+                        return handled.value();
                     }
                 }
             }
@@ -86,5 +86,4 @@ public abstract class FlexibleResponseEntityResolver extends AbstractResponseEnt
                 || Object.class.equals(FutureUtils.retrieveFirstGenericTypeOfFutureReturnType(entityType,
                 entity.genericType()));
     }
-
 }

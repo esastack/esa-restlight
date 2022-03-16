@@ -15,19 +15,33 @@
  */
 package io.esastack.restlight.springmvc.resolver.rspentity;
 
-import io.esastack.restlight.core.resolver.ResponseEntity;
+import esa.commons.reflect.AnnotationUtils;
+import io.esastack.restlight.core.method.HandlerMethod;
 import io.esastack.restlight.core.resolver.ResponseEntityResolver;
 import io.esastack.restlight.core.resolver.ResponseEntityResolverFactory;
 import io.esastack.restlight.core.resolver.rspentity.FlexibleResponseEntityResolver;
 import io.esastack.restlight.core.serialize.HttpResponseSerializer;
+import io.esastack.restlight.springmvc.annotation.shaded.ResponseBody0;
 
 import java.util.List;
 
 public class FlexibleResponseEntityResolverFactory implements ResponseEntityResolverFactory {
 
     @Override
-    public ResponseEntityResolver createResolver(List<? extends HttpResponseSerializer> serializers) {
-        return new FlexibleResponseEntityResolver0(serializers);
+    public ResponseEntityResolver createResolver(HandlerMethod method,
+                                                 List<? extends HttpResponseSerializer> serializers) {
+        return new FlexibleResponseEntityResolver(serializers);
+    }
+
+    @Override
+    public boolean supports(HandlerMethod method) {
+        return AnnotationUtils.hasAnnotation(method.beanType(), ResponseBody0.shadedClass())
+                || method.hasMethodAnnotation(ResponseBody0.shadedClass(), true);
+    }
+
+    @Override
+    public boolean alsoApplyWhenMissingHandler() {
+        return true;
     }
 
     @Override
@@ -35,17 +49,5 @@ public class FlexibleResponseEntityResolverFactory implements ResponseEntityReso
         return 300;
     }
 
-    private static class FlexibleResponseEntityResolver0 extends FlexibleResponseEntityResolver {
-
-        private FlexibleResponseEntityResolver0(List<? extends HttpResponseSerializer> serializers) {
-            super(serializers);
-        }
-
-        @Override
-        protected boolean supports(ResponseEntity entity) {
-            return true;
-        }
-
-    }
 }
 

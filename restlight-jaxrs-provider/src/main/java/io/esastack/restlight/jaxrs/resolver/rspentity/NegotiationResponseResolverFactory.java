@@ -15,7 +15,7 @@
  */
 package io.esastack.restlight.jaxrs.resolver.rspentity;
 
-import io.esastack.restlight.core.resolver.ResponseEntity;
+import io.esastack.restlight.core.method.HandlerMethod;
 import io.esastack.restlight.core.resolver.ResponseEntityResolver;
 import io.esastack.restlight.core.resolver.ResponseEntityResolverFactory;
 import io.esastack.restlight.core.resolver.rspentity.NegotiationResponseResolver;
@@ -32,26 +32,24 @@ public class NegotiationResponseResolverFactory implements ResponseEntityResolve
     }
 
     @Override
-    public ResponseEntityResolver createResolver(List<? extends HttpResponseSerializer> serializers) {
-        return new NegotiationResponseResolver0(paramName, serializers);
+    public ResponseEntityResolver createResolver(HandlerMethod method,
+                                                 List<? extends HttpResponseSerializer> serializers) {
+        return new NegotiationResponseResolver(paramName, serializers);
+    }
+
+    @Override
+    public boolean supports(HandlerMethod method) {
+        return true;
+    }
+
+    @Override
+    public boolean alsoApplyWhenMissingHandler() {
+        return true;
     }
 
     @Override
     public int getOrder() {
         return 310;
-    }
-
-    private static class NegotiationResponseResolver0 extends NegotiationResponseResolver {
-
-        private NegotiationResponseResolver0(String paramName,
-                                             List<? extends HttpResponseSerializer> serializers) {
-            super(paramName, serializers);
-        }
-
-        @Override
-        protected boolean supports(ResponseEntity entity) {
-            return true;
-        }
     }
 
 }

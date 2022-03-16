@@ -16,12 +16,10 @@
 package io.esastack.restlight.springmvc.resolver.rspentity;
 
 import io.esastack.restlight.core.method.HandlerMethod;
-import io.esastack.restlight.core.resolver.ResponseEntity;
 import io.esastack.restlight.core.resolver.ResponseEntityResolver;
 import io.esastack.restlight.core.resolver.ResponseEntityResolverFactory;
 import io.esastack.restlight.core.resolver.rspentity.NegotiationResponseResolver;
 import io.esastack.restlight.core.serialize.HttpResponseSerializer;
-import io.esastack.restlight.springmvc.annotation.shaded.ResponseBody0;
 
 import java.util.List;
 
@@ -34,31 +32,24 @@ public class NegotiationResponseResolverFactory implements ResponseEntityResolve
     }
 
     @Override
-    public ResponseEntityResolver createResolver(List<? extends HttpResponseSerializer> serializers) {
-        return new NegotiationResponseResolver0(paramName, serializers);
+    public ResponseEntityResolver createResolver(HandlerMethod method,
+                                                 List<? extends HttpResponseSerializer> serializers) {
+        return new NegotiationResponseResolver(paramName, serializers);
+    }
+
+    @Override
+    public boolean supports(HandlerMethod method) {
+        return true;
+    }
+
+    @Override
+    public boolean alsoApplyWhenMissingHandler() {
+        return true;
     }
 
     @Override
     public int getOrder() {
         return 300;
-    }
-
-    private static class NegotiationResponseResolver0 extends NegotiationResponseResolver {
-
-        private NegotiationResponseResolver0(String paramName,
-                                             List<? extends HttpResponseSerializer> serializers) {
-            super(paramName, serializers);
-        }
-
-        @Override
-        protected boolean supports(ResponseEntity entity) {
-            HandlerMethod handlerMethod = entity.handler().orElse(null);
-            if (handlerMethod == null) {
-                return false;
-            }
-            return handlerMethod.hasClassAnnotation(ResponseBody0.shadedClass(), true)
-                    || handlerMethod.hasMethodAnnotation(ResponseBody0.shadedClass(), true);
-        }
     }
 
 }

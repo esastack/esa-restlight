@@ -54,14 +54,14 @@ class SecurityContextParamResolverTest {
                 SecurityContext.class), 0)));
 
         final Param param = new FieldParamImpl(Subject.class.getDeclaredField("securityContext"));
-        ParamResolver resolver = factory.createResolver(param, ResolverUtils.defaultConverterFunc(), null);
+        ParamResolver resolver = factory.createResolver(param, ResolverUtils.defaultConverters(param), null);
         final HttpRequest request = MockHttpRequest.aMockRequest().build();
         final HttpResponse response = MockHttpResponse.aMockResponse().build();
         final RequestContext ctx = new RequestContextImpl(request, response);
 
         final SecurityContext securityContext = mock(SecurityContext.class);
         JaxrsContextUtils.setSecurityContext(ctx, securityContext);
-        assertSame(securityContext, resolver.resolve(param, ctx));
+        assertSame(securityContext, resolver.resolve(ctx));
     }
 
     private static class Subject {

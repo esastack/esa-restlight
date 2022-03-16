@@ -20,12 +20,7 @@ import io.esastack.restlight.core.util.Ordered;
 
 @SPI
 public interface ResponseEntityResolverAdviceAdapter
-        extends ResponseEntityPredicate, ResponseEntityResolverAdvice, Ordered {
-
-    @Override
-    default void aroundWrite(ResponseEntityResolverContext context) throws Exception {
-        context.proceed();
-    }
+        extends ResponseEntityResolverPredicate, ResponseEntityResolverAdvice, Ordered {
 
     @Override
     default int getOrder() {

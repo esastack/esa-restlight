@@ -15,29 +15,27 @@
  */
 package io.esastack.restlight.jaxrs.resolver.param;
 
-import esa.commons.function.Function3;
 import io.esastack.restlight.core.method.Param;
 import io.esastack.restlight.core.resolver.ParamResolver;
 import io.esastack.restlight.core.resolver.ParamResolverFactory;
-import io.esastack.restlight.core.resolver.StringConverter;
+import io.esastack.restlight.core.resolver.StringConverterProvider;
 import io.esastack.restlight.core.serialize.HttpRequestSerializer;
 import io.esastack.restlight.core.util.ConverterUtils;
 import io.esastack.restlight.jaxrs.util.JaxrsUtils;
 import jakarta.ws.rs.DefaultValue;
 
-import java.lang.reflect.Type;
 import java.util.List;
 
 public class DefaultValueParamResolver implements ParamResolverFactory {
 
     @Override
     public ParamResolver createResolver(Param param,
-                                        Function3<Class<?>, Type, Param, StringConverter> converterFunc,
+                                        StringConverterProvider converters,
                                         List<? extends HttpRequestSerializer> serializers) {
         DefaultValue ann = JaxrsUtils.getAnnotation(param, DefaultValue.class);
         final Object defaultValue =
                 ConverterUtils.forceConvertStringValue(ann.value(), param.genericType());
-        return (request, response) -> defaultValue;
+        return (ctx) -> defaultValue;
     }
 
     @Override

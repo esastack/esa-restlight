@@ -16,7 +16,6 @@
 package io.esastack.restlight.core.resolver.reqentity;
 
 import esa.commons.StringUtils;
-import esa.commons.function.Function3;
 import io.esastack.commons.net.http.MediaType;
 import io.esastack.restlight.core.method.Param;
 import io.esastack.restlight.core.resolver.HandledValue;
@@ -24,6 +23,7 @@ import io.esastack.restlight.core.resolver.RequestEntity;
 import io.esastack.restlight.core.resolver.RequestEntityResolver;
 import io.esastack.restlight.core.resolver.RequestEntityResolverFactory;
 import io.esastack.restlight.core.resolver.StringConverter;
+import io.esastack.restlight.core.resolver.StringConverterProvider;
 import io.esastack.restlight.core.resolver.nav.NameAndValue;
 import io.esastack.restlight.core.serialize.HttpRequestSerializer;
 import io.esastack.restlight.core.serialize.ProtoBufHttpBodySerializer;
@@ -31,7 +31,6 @@ import io.esastack.restlight.core.util.Constants;
 import io.esastack.restlight.server.bootstrap.WebServerException;
 import io.esastack.restlight.server.context.RequestContext;
 
-import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.function.Supplier;
@@ -55,9 +54,9 @@ public abstract class FlexibleRequestEntityResolverFactory implements RequestEnt
 
     @Override
     public RequestEntityResolver createResolver(Param param,
-                                                Function3<Class<?>, Type, Param, StringConverter> converterFunc,
+                                                StringConverterProvider converters,
                                                 List<? extends HttpRequestSerializer> serializers) {
-        StringConverter converter = converterFunc.apply(param.type(), param.genericType(), param);
+        StringConverter converter = converters.get(StringConverterProvider.Key.from(param));
         if (converter == null) {
             converter = value -> value;
         }
@@ -109,7 +108,7 @@ public abstract class FlexibleRequestEntityResolverFactory implements RequestEnt
         }
 
         @Override
-        public HandledValue<Object> readFrom(Param param, RequestEntity entity, RequestContext context)
+        public HandledValue<Object> readFrom(RequestEntity entity, RequestContext context)
                 throws Exception {
             MediaType contentType = getMediaType(entity);
             //convert argument if content-type is text/plain or missing.

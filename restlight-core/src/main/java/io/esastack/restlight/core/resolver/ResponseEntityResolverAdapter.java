@@ -19,7 +19,8 @@ import esa.commons.spi.SPI;
 import io.esastack.restlight.core.util.Ordered;
 
 @SPI
-public interface ResponseEntityResolverAdapter extends ResponseEntityResolver, Ordered {
+public interface ResponseEntityResolverAdapter extends ResponseEntityResolver, ResponseEntityResolverPredicate,
+        Ordered {
 
     @Override
     default int getOrder() {

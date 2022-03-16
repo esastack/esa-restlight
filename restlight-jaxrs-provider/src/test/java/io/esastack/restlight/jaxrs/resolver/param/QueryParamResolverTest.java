@@ -150,9 +150,8 @@ class QueryParamResolverTest {
         final MethodParam param = handlerMethods.get(method).parameters()[0];
         assertTrue(resolverFactory.supports(param));
         final ParamResolver resolver = resolverFactory.createResolver(param,
-                ResolverUtils.defaultConverterFunc(), null);
-        return resolver.resolve(param, new RequestContextImpl(request,
-                MockHttpResponse.aMockResponse().build()));
+                ResolverUtils.defaultConverters(param), null);
+        return resolver.resolve(new RequestContextImpl(request, MockHttpResponse.aMockResponse().build()));
     }
 
     private static class Subject {

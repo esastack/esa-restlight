@@ -23,7 +23,6 @@ import io.esastack.restlight.core.serialize.HttpRequestSerializer;
 import io.esastack.restlight.core.serialize.HttpResponseSerializer;
 import io.esastack.restlight.core.spi.FutureTransferFactory;
 
-import java.lang.reflect.Type;
 import java.util.List;
 
 public interface HandlerResolverFactory {
@@ -43,16 +42,6 @@ public interface HandlerResolverFactory {
      * @return filters
      */
     List<RouteFilter> getRouteFilters(HandlerMethod method);
-
-    /**
-     * Obtains the {@link ParamResolver} for given {@code param} which is used to convert a {@link String} to object.
-     *
-     * @param type        type
-     * @param genericType genericType
-     * @param param       related Param, which may be {@code null}.
-     * @return StringConverter
-     */
-    StringConverter getStringConverter(Class<?> type, Type genericType, Param param);
 
     /**
      * Get the {@link ParamResolver} for given parameter.
@@ -87,27 +76,28 @@ public interface HandlerResolverFactory {
     List<RequestEntityResolver> getRequestEntityResolvers(Param param);
 
     /**
-     * Obtains the {@link RequestEntityResolverAdvice}s for given {@link HandlerMethod}.
+     * Obtains the {@link RequestEntityResolverAdvice}s for given {@link Param}.
      *
-     * @param handlerMethod handlerMethod
+     * @param param     param
      * @return advices
      */
-    List<RequestEntityResolverAdvice> getRequestEntityResolverAdvices(HandlerMethod handlerMethod);
+    List<RequestEntityResolverAdvice> getRequestEntityResolverAdvices(Param param);
 
     /**
      * Get response entity resolvers, must not be {@code null}.
      *
+     * @param handlerMethod     handler method
      * @return resolvers
      */
-    List<ResponseEntityResolver> getResponseEntityResolvers();
+    List<ResponseEntityResolver> getResponseEntityResolvers(HandlerMethod handlerMethod);
 
     /**
-     * Obtains the {@link ResponseEntityResolverAdvice}s for given {@link ResponseEntity}.
+     * Obtains the {@link ResponseEntityResolverAdvice}s for given {@link HandlerMethod}.
      *
-     * @param entity response entity
+     * @param handlerMethod     handler method
      * @return advices
      */
-    List<ResponseEntityResolverAdvice> getResponseEntityResolverAdvices(ResponseEntity entity);
+    List<ResponseEntityResolverAdvice> getResponseEntityResolverAdvices(HandlerMethod handlerMethod);
 
     /**
      * Returns all the {@link HttpRequestSerializer}s in this factory.

@@ -93,11 +93,11 @@ class FixedRequestEntityResolverFactoryImplTest {
         final MethodParam param = handlerMethods.get(method).parameters()[0];
         assertTrue(resolverFactory.supports(param));
         final RequestEntityResolver resolver = resolverFactory.createResolver(param,
-                ResolverUtils.defaultConverterFunc(),
+                ResolverUtils.defaultConverters(param),
                 Collections.singletonList(new JacksonHttpBodySerializer()));
         final RequestContext context = new RequestContextImpl(request, MockHttpResponse.aMockResponse().build());
-        final RequestEntity entity = new RequestEntityImpl(handlerMethods.get(method), param, context);
-        return resolver.readFrom(param, entity, context).value();
+        final RequestEntity entity = new RequestEntityImpl(param, context);
+        return resolver.readFrom(entity, context).value();
     }
 
     private static class Subject {

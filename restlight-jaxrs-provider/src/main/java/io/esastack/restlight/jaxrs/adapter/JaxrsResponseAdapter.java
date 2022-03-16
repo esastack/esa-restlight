@@ -16,17 +16,20 @@
 package io.esastack.restlight.jaxrs.adapter;
 
 import esa.commons.ClassUtils;
-import io.esastack.restlight.core.resolver.ResponseEntityResolverAdvice;
+import io.esastack.restlight.core.method.HandlerMethod;
+import io.esastack.restlight.core.resolver.ResponseEntityResolverAdviceAdapter;
 import io.esastack.restlight.core.resolver.ResponseEntityResolverContext;
+import io.esastack.restlight.core.util.Ordered;
 import jakarta.ws.rs.core.GenericEntity;
 import jakarta.ws.rs.core.Response;
 
-public class JaxrsResponseAdapter implements ResponseEntityResolverAdvice {
+public class JaxrsResponseAdapter implements ResponseEntityResolverAdviceAdapter {
 
     @Override
     public void aroundWrite(ResponseEntityResolverContext context) throws Exception {
         Object entity = context.context().response().entity();
         if (entity == null) {
+            context.proceed();
             return;
         }
         if (entity instanceof GenericEntity) {
@@ -46,6 +49,21 @@ public class JaxrsResponseAdapter implements ResponseEntityResolverAdvice {
             adaptResponse(response, context);
         }
         context.proceed();
+    }
+
+    @Override
+    public boolean supports(HandlerMethod method) {
+        return true;
+    }
+
+    @Override
+    public boolean alsoApplyWhenMissingHandler() {
+        return true;
+    }
+
+    @Override
+    public int getOrder() {
+        return Ordered.HIGHEST_PRECEDENCE;
     }
 
     private void adaptResponse(Response from, ResponseEntityResolverContext target) {

@@ -39,7 +39,7 @@ public class MessageBodyReaderAdapter<T> implements RequestEntityResolverAdapter
 
     @SuppressWarnings("unchecked")
     @Override
-    public HandledValue<Object> readFrom(Param param, RequestEntity entity, RequestContext context) throws Exception {
+    public HandledValue<Object> readFrom(RequestEntity entity, RequestContext context) throws Exception {
         Class<?> type;
         if ((type = entity.type()) == null) {
             return HandledValue.failed();

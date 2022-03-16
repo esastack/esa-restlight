@@ -17,18 +17,19 @@ package io.esastack.restlight.core.resolver;
 
 import esa.commons.Checks;
 import esa.commons.spi.SPI;
+import io.esastack.restlight.core.method.HandlerMethod;
 import io.esastack.restlight.core.serialize.HttpResponseSerializer;
 import io.esastack.restlight.core.util.Ordered;
 
 import java.util.List;
 
 @SPI
-public interface ResponseEntityResolverFactory extends Ordered {
+public interface ResponseEntityResolverFactory extends ResponseEntityResolverPredicate, Ordered {
 
     /**
      * Converts given {@link ResponseEntityResolverAdapter} to {@link ResponseEntityResolverFactory} which
      * always use the given {@link ResponseEntityResolverAdapter} as the result of
-     * {@link #createResolver(List)}
+     * {@link #createResolver(HandlerMethod, List)}
      *
      * @param resolver resolver
      * @return of factory bean
@@ -40,10 +41,12 @@ public interface ResponseEntityResolverFactory extends Ordered {
     /**
      * Creates an instance of {@link ResponseEntityResolverAdvice} for given handler method.
      *
+     * @param method      handler method
      * @param serializers all the {@link HttpResponseSerializer}s in the context
      * @return resolver
      */
-    ResponseEntityResolver createResolver(List<? extends HttpResponseSerializer> serializers);
+    ResponseEntityResolver createResolver(HandlerMethod method,
+                                          List<? extends HttpResponseSerializer> serializers);
 
     @Override
     default int getOrder() {
@@ -60,8 +63,19 @@ public interface ResponseEntityResolverFactory extends Ordered {
         }
 
         @Override
-        public ResponseEntityResolver createResolver(List<? extends HttpResponseSerializer> serializers) {
+        public ResponseEntityResolver createResolver(HandlerMethod method,
+                                                     List<? extends HttpResponseSerializer> serializers) {
             return resolver;
+        }
+
+        @Override
+        public boolean supports(HandlerMethod method) {
+            return resolver.supports(method);
+        }
+
+        @Override
+        public boolean alsoApplyWhenMissingHandler() {
+            return resolver.alsoApplyWhenMissingHandler();
         }
 
         @Override

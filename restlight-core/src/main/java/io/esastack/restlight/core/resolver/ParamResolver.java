@@ -26,11 +26,11 @@ public interface ParamResolver extends Resolver {
     /**
      * Resolves method parameter into an argument value.
      *
-     * @param param   param
      * @param context context
      * @return value resolved
      * @throws Exception ex
      */
-    Object resolve(Param param, RequestContext context) throws Exception;
+    Object resolve(RequestContext context) throws Exception;
+
 }
 

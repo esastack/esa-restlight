@@ -15,19 +15,13 @@
  */
 package io.esastack.restlight.springmvc.resolver.rspentity;
 
-import io.esastack.commons.net.buffer.BufferAllocator;
 import io.esastack.restlight.core.method.HandlerMethod;
-import io.esastack.restlight.core.resolver.ResponseEntityChannelImpl;
-import io.esastack.restlight.core.resolver.ResponseEntityImpl;
 import io.esastack.restlight.core.resolver.ResponseEntityResolver;
 import io.esastack.restlight.core.serialize.FastJsonHttpBodySerializer;
-import io.esastack.restlight.server.context.RequestContext;
-import io.esastack.restlight.server.context.impl.RequestContextImpl;
 import io.esastack.restlight.server.core.HttpRequest;
 import io.esastack.restlight.server.core.HttpResponse;
 import io.esastack.restlight.server.mock.MockHttpRequest;
 import io.esastack.restlight.server.mock.MockHttpResponse;
-import io.esastack.restlight.server.mock.MockResponseContent;
 import io.esastack.restlight.springmvc.annotation.shaded.ResponseStatus0;
 import io.esastack.restlight.springmvc.resolver.Pojo;
 import io.esastack.restlight.springmvc.resolver.ResolverUtils;
@@ -60,34 +54,20 @@ class ResponseStatusEntityResolverFactoryTest {
     }
 
     @Test
-    void testSupport() throws Throwable {
-        ResponseEntityResolver resolver = resolverFactory.createResolver(Collections.emptyList());
+    void testSupport() {
         final HandlerMethod absent = handlerMethods.get("none");
-        assertFalse(resolver.writeTo(new ResponseEntityImpl(absent,
-                        MockHttpResponse.aMockResponse().build(), null),
-                null, null).isSuccess());
+        assertFalse(resolverFactory.supports(absent));
 
         final HandlerMethod absent1 = handlerMethods.get("responseBody");
-        assertFalse(resolver.writeTo(new ResponseEntityImpl(absent1,
-                        MockHttpResponse.aMockResponse().build(), null),
-                null, null).isSuccess());
+        assertFalse(resolverFactory.supports(absent1));
 
-        final HandlerMethod illegal = handlerMethods.get("defaultResponseStatus");
-        assertFalse(resolver.writeTo(new ResponseEntityImpl(illegal,
-                        MockHttpResponse.aMockResponse().build(), null),
-                null, null).isSuccess());
+        final HandlerMethod noneResponseReason = handlerMethods.get("defaultResponseStatus");
+        assertFalse(resolverFactory.supports(noneResponseReason));
 
         final HandlerMethod support = handlerMethods.get("responseWithReason");
+        assertTrue(resolverFactory.supports(support));
 
-        final HttpRequest request = MockHttpRequest.aMockRequest().build();
-        final HttpResponse response = MockHttpResponse.aMockResponse().build();
-        final RequestContext context = new RequestContextImpl(request, response);
-        context.attrs().attr(RequestContextImpl.RESPONSE_CONTENT).set(
-                new MockResponseContent(BufferAllocator.getDefault().buffer()));
-
-        assertTrue(resolver.writeTo(new ResponseEntityImpl(support,
-                        MockHttpResponse.aMockResponse().build(), null),
-                new ResponseEntityChannelImpl(context), context).isSuccess());
+        assertFalse(resolverFactory.alsoApplyWhenMissingHandler());
     }
 
     @Test
@@ -128,7 +108,7 @@ class ResponseStatusEntityResolverFactoryTest {
                                                    String method,
                                                    Map<String, HandlerMethod> handlerMethods) throws Exception {
         final HandlerMethod handlerMethod = handlerMethods.get(method);
-        final ResponseEntityResolver resolver = resolverFactory.createResolver(
+        final ResponseEntityResolver resolver = resolverFactory.createResolver(handlerMethod,
                 Collections.singletonList(new FastJsonHttpBodySerializer()));
         return ResolverUtils.writtenContent(request, response, returnValue, handlerMethod, resolver);
     }

@@ -53,12 +53,12 @@ class UriInfoParamResolverTest {
                 UriInfo.class), 0)));
 
         final Param param = new FieldParamImpl(Subject.class.getDeclaredField("uriInfo"));
-        ParamResolver resolver = factory.createResolver(param, ResolverUtils.defaultConverterFunc(), null);
+        ParamResolver resolver = factory.createResolver(param, ResolverUtils.defaultConverters(param), null);
         final HttpRequest request = MockHttpRequest.aMockRequest().build();
         final HttpResponse response = MockHttpResponse.aMockResponse().build();
         final RequestContext ctx = new RequestContextImpl(request, response);
-        final UriInfo uriInfo1 = (UriInfo) resolver.resolve(param, ctx);
-        final UriInfo uriInfo2 = (UriInfo) resolver.resolve(param, ctx);
+        final UriInfo uriInfo1 = (UriInfo) resolver.resolve(ctx);
+        final UriInfo uriInfo2 = (UriInfo) resolver.resolve(ctx);
         assertNotNull(uriInfo1);
         assertSame(uriInfo1, uriInfo2);
     }

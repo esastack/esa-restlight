@@ -16,7 +16,6 @@
 package io.esastack.restlight.core.resolver;
 
 import esa.commons.Checks;
-import io.esastack.restlight.core.method.Param;
 import io.esastack.restlight.server.context.RequestContext;
 
 import java.util.List;
@@ -24,20 +23,16 @@ import java.util.List;
 public class ParamResolverContextImpl implements ParamResolverContext {
 
     private final RequestContext context;
-    private final Param param;
     private final ParamResolver resolver;
     private final ParamResolverAdvice[] advices;
     private int index;
 
     public ParamResolverContextImpl(RequestContext context,
-                                    Param param,
                                     ParamResolver resolver,
                                     List<ParamResolverAdvice> advices) {
         Checks.checkNotNull(context, "context");
-        Checks.checkNotNull(param, "param");
         Checks.checkNotNull(resolver, "resolver");
         this.context = context;
-        this.param = param;
         this.resolver = resolver;
         this.advices = (advices == null ? null : advices.toArray(new ParamResolverAdvice[0]));
     }
@@ -48,14 +43,9 @@ public class ParamResolverContextImpl implements ParamResolverContext {
     }
 
     @Override
-    public Param param() {
-        return param;
-    }
-
-    @Override
     public Object proceed() throws Exception {
         if (advices == null || index >= advices.length) {
-            return resolver.resolve(param, context);
+            return resolver.resolve(context);
         }
 
         return advices[index++].aroundResolve(this);

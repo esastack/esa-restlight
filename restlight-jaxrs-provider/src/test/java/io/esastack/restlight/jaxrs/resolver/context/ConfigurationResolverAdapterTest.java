@@ -39,7 +39,7 @@ class ConfigurationResolverAdapterTest {
         final ConfigurationResolverAdapter adapter = new ConfigurationResolverAdapter(configuration);
         assertEquals(1000, adapter.getOrder());
 
-        assertSame(configuration, adapter.resolve(null, null));
+        assertSame(configuration, adapter.resolve(null));
         assertTrue(adapter.supports(new ConstructorParamImpl(A.class.getConstructor(ConfigurationImpl.class), 0)));
         assertTrue(adapter.supports(new FieldParamImpl(A.class.getDeclaredField("configuration"))));
         assertTrue(adapter.supports(new MethodParamImpl(A.class.getDeclaredMethod("setConfiguration",

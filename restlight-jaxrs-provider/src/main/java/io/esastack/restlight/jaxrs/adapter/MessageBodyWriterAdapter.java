@@ -17,6 +17,7 @@ package io.esastack.restlight.jaxrs.adapter;
 
 import esa.commons.Checks;
 import esa.commons.ClassUtils;
+import io.esastack.restlight.core.method.HandlerMethod;
 import io.esastack.restlight.core.resolver.HandledValue;
 import io.esastack.restlight.core.resolver.ResponseEntity;
 import io.esastack.restlight.core.resolver.ResponseEntityChannel;
@@ -72,6 +73,16 @@ public class MessageBodyWriterAdapter<T> implements ResponseEntityResolverAdapte
             }
         }
         return HandledValue.failed();
+    }
+
+    @Override
+    public boolean supports(HandlerMethod method) {
+        return true;
+    }
+
+    @Override
+    public boolean alsoApplyWhenMissingHandler() {
+        return true;
     }
 
     @Override

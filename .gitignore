@@ -37,3 +37,9 @@ Thumbs.db
 logs/
 tmp/
 dependency-reduced-pom.xml
+
+# site resources
+site/public/
+site/resources/
+site/node_modules/
+.hugo_build.lock

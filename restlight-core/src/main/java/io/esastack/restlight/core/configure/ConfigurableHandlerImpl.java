@@ -19,6 +19,7 @@ import esa.commons.Checks;
 import esa.commons.collection.Attributes;
 import io.esastack.restlight.core.handler.RouteFilter;
 import io.esastack.restlight.core.method.HandlerMethod;
+import io.esastack.restlight.core.method.Param;
 import io.esastack.restlight.core.resolver.ContextResolverAdapter;
 import io.esastack.restlight.core.resolver.ContextResolverFactory;
 import io.esastack.restlight.core.resolver.ParamResolverAdapter;
@@ -27,19 +28,18 @@ import io.esastack.restlight.core.resolver.ParamResolverAdviceFactory;
 import io.esastack.restlight.core.resolver.ParamResolverFactory;
 import io.esastack.restlight.core.resolver.RequestEntityResolverAdapter;
 import io.esastack.restlight.core.resolver.RequestEntityResolverAdvice;
+import io.esastack.restlight.core.resolver.RequestEntityResolverAdviceAdapter;
 import io.esastack.restlight.core.resolver.RequestEntityResolverAdviceFactory;
 import io.esastack.restlight.core.resolver.RequestEntityResolverFactory;
-import io.esastack.restlight.core.resolver.ResponseEntity;
-import io.esastack.restlight.core.resolver.ResponseEntityResolver;
+import io.esastack.restlight.core.resolver.ResponseEntityResolverAdapter;
 import io.esastack.restlight.core.resolver.ResponseEntityResolverAdvice;
+import io.esastack.restlight.core.resolver.ResponseEntityResolverAdviceAdapter;
 import io.esastack.restlight.core.resolver.ResponseEntityResolverAdviceFactory;
 import io.esastack.restlight.core.resolver.ResponseEntityResolverFactory;
 import io.esastack.restlight.core.spi.RouteFilterFactory;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 public class ConfigurableHandlerImpl implements ConfigurableHandler {
 
@@ -59,22 +59,22 @@ public class ConfigurableHandlerImpl implements ConfigurableHandler {
     }
 
     @Override
-    public ConfigurableHandler addRouteFilters(Collection<? extends RouteFilter> filters) {
-        if (filters == null || filters.isEmpty()) {
+    public ConfigurableHandler addRouteFilter(RouteFilter filter) {
+        if (filter == null) {
             return this;
         }
 
-        configuration.addRouteFilters(filters.stream().map(f -> new RouteFilterFactory() {
+        configuration.addRouteFilters(Collections.singleton(new RouteFilterFactory() {
             @Override
             public Optional<RouteFilter> create(HandlerMethod method) {
-                return Optional.of(f);
+                return Optional.of(filter);
             }
 
             @Override
             public boolean supports(HandlerMethod method) {
                 return ConfigurableHandlerImpl.this.method.method().equals(method.method());
             }
-        }).collect(Collectors.toList()));
+        }));
 
         return this;
     }
@@ -117,67 +117,70 @@ public class ConfigurableHandlerImpl implements ConfigurableHandler {
     }
 
     @Override
-    public ConfigurableHandler addRequestEntityResolverAdvices(Collection<? extends RequestEntityResolverAdvice>
-                                                                       advices) {
-        if (advices == null || advices.isEmpty()) {
+    public ConfigurableHandler addRequestEntityResolverAdvice(RequestEntityResolverAdviceAdapter advice) {
+        if (advice == null) {
             return this;
         }
 
-        configuration.addRequestEntityResolverAdvices(advices.stream().map(advice ->
-                new RequestEntityResolverAdviceFactory() {
-                    @Override
-                    public boolean supports(HandlerMethod method) {
-                        return ConfigurableHandlerImpl.this.method.method().equals(method.method());
-                    }
+        configuration.addRequestEntityResolverAdvices(Collections.singleton(new RequestEntityResolverAdviceFactory() {
+            @Override
+            public boolean supports(Param param) {
+                if (param.isMethodParam()) {
+                    return ConfigurableHandlerImpl.this.method.method().equals(param.methodParam().method());
+                }
+                return false;
+            }
 
-                    @Override
-                    public RequestEntityResolverAdvice createResolverAdvice(HandlerMethod method) {
-                        return advice;
-                    }
-                }).collect(Collectors.toList()));
+            @Override
+            public RequestEntityResolverAdvice createResolverAdvice(Param param) {
+                return advice;
+            }
+        }));
 
         return this;
     }
 
     @Override
-    public ConfigurableHandler addResponseEntityResolvers(Collection<? extends ResponseEntityResolver> resolvers) {
-        if (resolvers == null || resolvers.isEmpty()) {
+    public ConfigurableHandler addResponseEntityResolver(ResponseEntityResolverAdapter resolver) {
+        if (resolver == null) {
             return this;
         }
 
-        configuration.addResponseEntityResolvers(resolvers.stream().map(resolver ->
-                (ResponseEntityResolverFactory) serializers -> resolver)
-                .collect(Collectors.toList()));
+        configuration.addResponseEntityResolvers(
+                Collections.singletonList(ResponseEntityResolverFactory.singleton(resolver)));
         return this;
     }
 
     @Override
-    public ConfigurableHandler addResponseEntityResolverAdvices(Collection<? extends ResponseEntityResolverAdvice>
-                                                                        advices) {
-        if (advices == null || advices.isEmpty()) {
+    public ConfigurableHandler addResponseEntityResolverAdvice(ResponseEntityResolverAdviceAdapter advice) {
+        if (advice == null) {
             return this;
         }
 
-        configuration.addResponseEntityResolverAdvices(advices.stream().map(advice ->
-                new ResponseEntityResolverAdviceFactory() {
-                    @Override
-                    public boolean supports(ResponseEntity entity) {
-                        HandlerMethod method;
-                        if ((method = entity.handler().orElse(null)) != null) {
-                            return ConfigurableHandlerImpl.this.method.method().equals(method.method());
-                        } else {
-                            return false;
-                        }
-                    }
+        configuration.addResponseEntityResolverAdvices(Collections.singleton(new ResponseEntityResolverAdviceFactory() {
 
-                    @Override
-                    public ResponseEntityResolverAdvice createResolverAdvice(ResponseEntity entity) {
-                        return advice;
-                    }
-                }).collect(Collectors.toList()));
+            @Override
+            public boolean supports(HandlerMethod method) {
+                return advice.supports(method)
+                        && ConfigurableHandlerImpl.this.method.method().equals(method.method());
+            }
 
+            @Override
+            public boolean alsoApplyWhenMissingHandler() {
+                return advice.alsoApplyWhenMissingHandler();
+            }
+
+            @Override
+            public ResponseEntityResolverAdvice createResolverAdvice(HandlerMethod method) {
+                return advice;
+            }
+
+            @Override
+            public int getOrder() {
+                return advice.getOrder();
+            }
+        }));
         return this;
     }
-
 }
 

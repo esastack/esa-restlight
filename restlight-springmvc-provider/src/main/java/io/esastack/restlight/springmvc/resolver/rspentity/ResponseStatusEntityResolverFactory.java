@@ -30,7 +30,6 @@ import io.netty.handler.codec.http.HttpHeaderNames;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * Implementation of {@link ParamResolverFactory} for resolving argument that annotated by the ResponseStatus which
@@ -39,8 +38,16 @@ import java.util.Objects;
 public class ResponseStatusEntityResolverFactory implements ResponseEntityResolverFactory {
 
     @Override
-    public ResponseEntityResolver createResolver(List<? extends HttpResponseSerializer> serializers) {
-        return new Resolver();
+    public ResponseEntityResolver createResolver(HandlerMethod method,
+                                                 List<? extends HttpResponseSerializer> serializers) {
+        ResponseStatus0 anno = getResponseStatus(method);
+        return new Resolver(anno);
+    }
+
+    @Override
+    public boolean supports(HandlerMethod method) {
+        ResponseStatus0 anno = getResponseStatus(method);
+        return anno != null && !StringUtils.isEmpty(anno.reason());
     }
 
     @Override
@@ -61,18 +68,11 @@ public class ResponseStatusEntityResolverFactory implements ResponseEntityResolv
 
     private static class Resolver extends AbstractResponseEntityResolver {
 
-        private Resolver() {
-            super(false);
-        }
+        private final ResponseStatus0 anno;
 
-        @Override
-        protected boolean supports(ResponseEntity entity) {
-            HandlerMethod handlerMethod = entity.handler().orElse(null);
-            if (handlerMethod == null) {
-                return false;
-            }
-            ResponseStatus0 anno = getResponseStatus(handlerMethod);
-            return anno != null && !StringUtils.isEmpty(anno.reason());
+        private Resolver(ResponseStatus0 anno) {
+            super(false);
+            this.anno = anno;
         }
 
         @Override
@@ -80,8 +80,7 @@ public class ResponseStatusEntityResolverFactory implements ResponseEntityResolv
                                    List<MediaType> mediaTypes,
                                    RequestContext context) throws Exception {
             entity.response().headers().set(HttpHeaderNames.CONTENT_TYPE, MediaType.TEXT_PLAIN.value());
-            return getResponseStatus(Objects.requireNonNull(entity.handler().orElse(null))).reason()
-                    .getBytes(StandardCharsets.UTF_8);
+            return anno.reason().getBytes(StandardCharsets.UTF_8);
         }
     }
 

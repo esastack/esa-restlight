@@ -52,14 +52,14 @@ class HttpHeadersParamResolverTest {
 
         final Param param = new FieldParamImpl(
                 Subject.class.getDeclaredField("headers"));
-        ParamResolver resolver = factory.createResolver(param, ResolverUtils.defaultConverterFunc(), null);
+        ParamResolver resolver = factory.createResolver(param, ResolverUtils.defaultConverters(param), null);
         final HttpRequest request = MockHttpRequest.aMockRequest().build();
         final HttpResponse response = MockHttpResponse.aMockResponse().build();
         final RequestContext context = new RequestContextImpl(request, response);
         request.headers().add("name0", "value0");
         request.headers().add("name1", "value1");
 
-        final HttpHeaders resolved = (HttpHeaders) resolver.resolve(param, context);
+        final HttpHeaders resolved = (HttpHeaders) resolver.resolve(context);
         assertEquals(2, resolved.getRequestHeaders().size());
         assertEquals("value0", resolved.getHeaderString("name0"));
         assertEquals("value1", resolved.getHeaderString("name1"));

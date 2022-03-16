@@ -16,8 +16,6 @@
 package io.esastack.restlight.core.resolver;
 
 import io.esastack.commons.net.buffer.Buffer;
-import io.esastack.restlight.core.method.MethodParam;
-import io.esastack.restlight.core.method.Param;
 import io.esastack.restlight.server.core.HttpInputStream;
 import io.esastack.restlight.server.core.HttpRequest;
 
@@ -52,13 +50,6 @@ public interface RequestEntity extends HttpEntity {
      * @param ins ins
      */
     void inputStream(InputStream ins);
-
-    /**
-     * Obtains the {@link MethodParam} correspond with current entity.
-     *
-     * @return method param.
-     */
-    Param param();
 
     /**
      * Obtains the {@link HttpRequest}.

@@ -16,11 +16,9 @@
 package io.esastack.restlight.core.resolver;
 
 import io.esastack.commons.net.http.MediaType;
-import io.esastack.restlight.core.method.HandlerMethod;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
-import java.util.Optional;
 
 /**
  * This {@link HttpEntityImpl} is designed as not thread-safe and we excepted this should be used in the same thread.
@@ -31,12 +29,10 @@ public class HttpEntityImpl implements HttpEntity {
     Type genericType;
     Annotation[] annotations;
 
-    private final HandlerMethod handler;
     private MediaType mediaType;
 
-    public HttpEntityImpl(HandlerMethod handler, MediaType mediaType) {
+    public HttpEntityImpl(MediaType mediaType) {
         this.mediaType = (mediaType != null ? mediaType : MediaType.ALL);
-        this.handler = handler;
     }
 
     @Override
@@ -65,11 +61,6 @@ public class HttpEntityImpl implements HttpEntity {
     }
 
     @Override
-    public Optional<HandlerMethod> handler() {
-        return Optional.ofNullable(handler);
-    }
-
-    @Override
     public void genericType(Type genericType) {
         this.genericType = genericType;
     }
@@ -90,9 +81,6 @@ public class HttpEntityImpl implements HttpEntity {
         sb.append("type=").append(type);
         sb.append(", genericType=").append(genericType);
         sb.append(", mediaType=").append(mediaType);
-        if (handler != null) {
-            sb.append(", handler=").append(handler);
-        }
         sb.append('}');
         return sb.toString();
     }

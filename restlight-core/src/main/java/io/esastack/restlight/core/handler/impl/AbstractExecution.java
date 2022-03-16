@@ -100,7 +100,7 @@ abstract class AbstractExecution<H extends HandlerMethodAdapter> implements Exec
                 if (resolvable.resolver() != null) {
                     //it may return a null value
                     try {
-                        args[i] = resolvable.resolver().resolve(handlerMethod.context(), param, context);
+                        args[i] = resolvable.resolver().resolve(handlerMethod.context(), context);
                     } catch (Exception e) {
                         //wrap exception
                         throw WebServerException.wrap(e);

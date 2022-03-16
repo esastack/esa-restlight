@@ -17,17 +17,16 @@ package io.esastack.restlight.core.resolver;
 
 import esa.commons.Checks;
 import esa.commons.spi.SPI;
-import io.esastack.restlight.core.handler.HandlerPredicate;
-import io.esastack.restlight.core.method.HandlerMethod;
+import io.esastack.restlight.core.method.Param;
 import io.esastack.restlight.core.util.Ordered;
 
 @SPI
-public interface RequestEntityResolverAdviceFactory extends HandlerPredicate, Ordered {
+public interface RequestEntityResolverAdviceFactory extends ParamPredicate, Ordered {
 
     /**
      * Converts given {@link RequestEntityResolverAdviceAdapter} to {@link RequestEntityResolverAdviceFactory} which
      * always use the given {@link RequestEntityResolverAdviceAdapter} as the result of
-     * {@link #createResolverAdvice(HandlerMethod)}
+     * {@link #createResolverAdvice(Param)}
      *
      * @param resolver resolver
      * @return of factory bean
@@ -39,10 +38,10 @@ public interface RequestEntityResolverAdviceFactory extends HandlerPredicate, Or
     /**
      * Creates an instance of {@link RequestEntityResolverAdvice} for given handler method.
      *
-     * @param method method
+     * @param param param
      * @return advice
      */
-    RequestEntityResolverAdvice createResolverAdvice(HandlerMethod method);
+    RequestEntityResolverAdvice createResolverAdvice(Param param);
 
     @Override
     default int getOrder() {
@@ -59,13 +58,13 @@ public interface RequestEntityResolverAdviceFactory extends HandlerPredicate, Or
         }
 
         @Override
-        public RequestEntityResolverAdvice createResolverAdvice(HandlerMethod method) {
+        public RequestEntityResolverAdvice createResolverAdvice(Param param) {
             return this.resolver;
         }
 
         @Override
-        public boolean supports(HandlerMethod method) {
-            return resolver.supports(method);
+        public boolean supports(Param param) {
+            return resolver.supports(param);
         }
 
         @Override
