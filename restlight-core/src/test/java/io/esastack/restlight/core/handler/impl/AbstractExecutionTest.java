@@ -119,7 +119,7 @@ class AbstractExecutionTest {
 
         final MethodParam param = mock(MethodParam.class);
         final ResolverWrap argResolver = mock(ResolverWrap.class);
-        when(argResolver.resolve(any(), any(), any())).thenReturn("foo");
+        when(argResolver.resolve(any(), any())).thenReturn("foo");
         final ResolvableParam[] params = new ResolvableParam[1];
         params[0] = new ResolvableParam(param, argResolver);
         when(mock.paramResolvers())
@@ -179,7 +179,7 @@ class AbstractExecutionTest {
 
         final MethodParam param = mock(MethodParam.class);
         final ResolverWrap argResolver = mock(ResolverWrap.class);
-        when(argResolver.resolve(any(), any(), any())).thenThrow(new IllegalStateException());
+        when(argResolver.resolve(any(), any())).thenThrow(new IllegalStateException());
         //noinspection unchecked
         when(param.type()).thenReturn((Class) Object.class);
         final ResolvableParam[] params = new ResolvableParam[1];

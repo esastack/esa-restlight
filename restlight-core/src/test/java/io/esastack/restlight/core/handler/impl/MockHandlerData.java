@@ -141,12 +141,12 @@ public class MockHandlerData {
         if (handlerMethod.beanType() == Subject.class) {
             when(resolverFactory.getContextResolver(handlerMethod.parameters()[0]))
                     .thenReturn(p1Resolver);
-            when(p1Resolver.resolve(any(), any())).thenReturn(null);
+            when(p1Resolver.resolve(any())).thenReturn(null);
 
             ParamResolver p2Resolver = mock(ParamResolver.class);
             when(resolverFactory.getParamResolver(handlerMethod.parameters()[1]))
                     .thenReturn(p2Resolver);
-            when(p2Resolver.resolve(any(), any())).thenReturn(null);
+            when(p2Resolver.resolve(any())).thenReturn(null);
 
             List<RequestEntityResolver> p3Resolver = mock(List.class);
             when(resolverFactory.getRequestEntityResolvers(handlerMethod.parameters()[2]))
