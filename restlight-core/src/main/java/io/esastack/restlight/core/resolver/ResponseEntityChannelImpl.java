@@ -45,8 +45,12 @@ public class ResponseEntityChannelImpl implements ResponseEntityChannel {
 
     @Override
     public void writeThenEnd(byte[] data) {
-        content.write(data);
-        content.end();
+        if (data == null) {
+            end();
+            return;
+        }
+
+        content.writeThenEnd(data);
     }
 
     @Override
@@ -55,8 +59,7 @@ public class ResponseEntityChannelImpl implements ResponseEntityChannel {
             end();
             return;
         }
-        write(buffer);
-        end();
+        content.writeThenEnd(buffer);
     }
 
     @Override

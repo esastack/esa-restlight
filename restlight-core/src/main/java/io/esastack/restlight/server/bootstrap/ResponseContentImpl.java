@@ -39,6 +39,11 @@ public class ResponseContentImpl implements ResponseContent {
     }
 
     @Override
+    public void writeThenEnd(byte[] data) {
+        response.end(data);
+    }
+
+    @Override
     public void write(Buffer buffer) {
         if (buffer == null) {
             return;
@@ -51,6 +56,21 @@ public class ResponseContentImpl implements ResponseContent {
         byte[] data = new byte[buffer.readableBytes()];
         buffer.readBytes(data);
         write(data);
+    }
+
+    @Override
+    public void writeThenEnd(Buffer buffer) {
+        if (buffer == null) {
+            return;
+        }
+        Object unwrap = BufferUtil.unwrap(buffer);
+        if (unwrap instanceof ByteBuf) {
+            response.end((ByteBuf) unwrap);
+            return;
+        }
+        byte[] data = new byte[buffer.readableBytes()];
+        buffer.readBytes(data);
+        writeThenEnd(data);
     }
 
     @Override
