@@ -15,10 +15,9 @@
  */
 package io.esastack.restlight.core.resolver.nav;
 
-import esa.commons.Checks;
 import esa.commons.annotation.Internal;
+import io.esastack.restlight.core.util.LazyValue;
 
-import java.util.Optional;
 import java.util.function.Supplier;
 
 @Internal
@@ -50,7 +49,7 @@ public class NameAndValue<T> {
         }
 
         if (isLazy) {
-            this.defaultValue = new LazyDefaultValue<>(defaultValue);
+            this.defaultValue = new LazyValue<>(defaultValue);
         } else {
             T loaded = defaultValue.get();
             this.defaultValue = () -> loaded;
@@ -71,43 +70,6 @@ public class NameAndValue<T> {
 
     public boolean isLazy() {
         return isLazy;
-    }
-
-    private static class LazyDefaultValue<T> implements Supplier<T> {
-
-        private final Supplier<T> supplier;
-        /**
-         * Because the value loaded by supplier may be null,so there use {@link Optional} to declare whether
-         * the value had been loaded
-         */
-        @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
-        private volatile Optional<T> loaded;
-
-        private LazyDefaultValue(Supplier<T> supplier) {
-            this.supplier = Checks.checkNotNull(supplier, "supplier");
-        }
-
-        @Override
-        public T get() {
-            if (loaded != null) {
-                return getLoaded();
-            }
-            synchronized (this) {
-                if (loaded != null) {
-                    return getLoaded();
-                }
-                loaded = Optional.ofNullable(supplier.get());
-                return getLoaded();
-            }
-        }
-
-        private T getLoaded() {
-            if (loaded == Optional.empty()) {
-                return null;
-            } else {
-                return loaded.orElse(null);
-            }
-        }
     }
 
 }

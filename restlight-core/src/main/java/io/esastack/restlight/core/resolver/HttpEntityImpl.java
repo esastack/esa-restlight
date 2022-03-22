@@ -16,6 +16,7 @@
 package io.esastack.restlight.core.resolver;
 
 import io.esastack.commons.net.http.MediaType;
+import io.esastack.restlight.core.util.LazyValue;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
@@ -25,9 +26,9 @@ import java.lang.reflect.Type;
  */
 public class HttpEntityImpl implements HttpEntity {
 
-    Class<?> type;
-    Type genericType;
-    Annotation[] annotations;
+    LazyValue<Class<?>> type;
+    LazyValue<Type> genericType;
+    LazyValue<Annotation[]> annotations;
 
     private MediaType mediaType;
 
@@ -37,17 +38,17 @@ public class HttpEntityImpl implements HttpEntity {
 
     @Override
     public Class<?> type() {
-        return type;
+        return type == null ? null : type.get();
     }
 
     @Override
     public Type genericType() {
-        return genericType;
+        return genericType == null ? null : genericType.get();
     }
 
     @Override
     public Annotation[] annotations() {
-        return annotations;
+        return annotations == null ? null : annotations.get();
     }
 
     @Override
@@ -57,17 +58,17 @@ public class HttpEntityImpl implements HttpEntity {
 
     @Override
     public void type(Class<?> type) {
-        this.type = type;
+        this.type = new LazyValue<>(() -> type);
     }
 
     @Override
     public void genericType(Type genericType) {
-        this.genericType = genericType;
+        this.genericType = new LazyValue<>(() -> genericType);
     }
 
     @Override
     public void annotations(Annotation[] annotations) {
-        this.annotations = annotations;
+        this.annotations = new LazyValue<>(() -> annotations);
     }
 
     @Override
@@ -78,8 +79,8 @@ public class HttpEntityImpl implements HttpEntity {
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("HttpEntityImpl{");
-        sb.append("type=").append(type);
-        sb.append(", genericType=").append(genericType);
+        sb.append("type=").append(type());
+        sb.append(", genericType=").append(genericType());
         sb.append(", mediaType=").append(mediaType);
         sb.append('}');
         return sb.toString();
