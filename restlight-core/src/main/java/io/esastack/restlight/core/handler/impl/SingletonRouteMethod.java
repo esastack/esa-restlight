@@ -33,6 +33,7 @@ import java.util.List;
 public class SingletonRouteMethod extends RouteHandlerMethodAdapter {
 
     private final Object singleton;
+    private final HandlerInvoker invoker;
 
     public SingletonRouteMethod(HandlerMapping mapping,
                                 HandlerContext context,
@@ -41,11 +42,19 @@ public class SingletonRouteMethod extends RouteHandlerMethodAdapter {
                                 ExceptionResolver<Throwable> exceptionResolver) {
         super(mapping, context, handlerResolver, interceptors, exceptionResolver);
         this.singleton = mapping.bean().orElseThrow(() -> new IllegalStateException("bean is null"));
+
+        Checks.checkState(this.context().handlerAdvicesFactory().isPresent(),
+                "handlerAdvicesFactory is null");
+        this.invoker = AbstractRouteExecution.buildInvoker(this, singleton,
+                this.context().handlerAdvicesFactory().get());
     }
 
     @Override
     public RouteExecution toExecution(RequestContext context) {
-        return new SingletonRouteExecution(this, getMatchingInterceptors(context), singleton);
+        return new SingletonRouteExecution(this,
+                getMatchingInterceptors(context),
+                singleton,
+                invoker);
     }
 
     private static class SingletonRouteExecution extends AbstractRouteExecution {
@@ -55,13 +64,11 @@ public class SingletonRouteMethod extends RouteHandlerMethodAdapter {
 
         private SingletonRouteExecution(RouteHandlerMethodAdapter handlerMethod,
                                         List<InternalInterceptor> interceptors,
-                                        Object singleton) {
+                                        Object singleton,
+                                        HandlerInvoker invoker) {
             super(handlerMethod, interceptors);
-            Checks.checkState(handlerMethod.context().handlerAdvicesFactory().isPresent(),
-                    "handlerAdvicesFactory is null");
             this.singleton = singleton;
-            this.invoker = buildInvoker(handlerMethod, singleton,
-                    handlerMethod.context().handlerAdvicesFactory().get());
+            this.invoker = invoker;
         }
 
         @Override

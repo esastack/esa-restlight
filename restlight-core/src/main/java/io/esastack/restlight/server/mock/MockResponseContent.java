@@ -60,6 +60,12 @@ public class MockResponseContent implements ResponseContent {
     }
 
     @Override
+    public void writeThenEnd(byte[] data) {
+        write(data);
+        ensureEndExclusively(true);
+    }
+
+    @Override
     public void write(Buffer buffer) {
         if (buffer == null) {
             return;
@@ -75,6 +81,12 @@ public class MockResponseContent implements ResponseContent {
             // write is kept in order which needs some means to ensure the memory visibility.
             COMMITTED_UPDATER.lazySet(this, IDLE);
         }
+    }
+
+    @Override
+    public void writeThenEnd(Buffer buffer) {
+        write(buffer);
+        ensureEndExclusively(true);
     }
 
     @Override

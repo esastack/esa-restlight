@@ -19,6 +19,7 @@ import esa.commons.Checks;
 import esa.commons.ClassUtils;
 import io.esastack.commons.net.http.MediaType;
 import io.esastack.restlight.core.method.HandlerMethod;
+import io.esastack.restlight.core.util.LazyValue;
 import io.esastack.restlight.server.core.HttpResponse;
 
 public class ResponseEntityImpl extends HttpEntityImpl implements ResponseEntity {
@@ -29,9 +30,14 @@ public class ResponseEntityImpl extends HttpEntityImpl implements ResponseEntity
         super(mediaType);
         Checks.checkNotNull(response, "response");
         this.response = response;
-        this.type = handler == null ? ClassUtils.getUserType(response.entity()) : handler.method().getReturnType();
-        this.genericType = handler == null ? null : handler.method().getGenericReturnType();
-        this.annotations = handler == null ? null : handler.method().getAnnotations();
+        this.type = handler == null ? new LazyValue<>(() -> ClassUtils.getUserType(response.entity())) :
+                new LazyValue<>(() -> handler.method().getReturnType());
+
+        this.genericType = handler == null ? null :
+                new LazyValue<>(() -> handler.method().getGenericReturnType());
+
+        this.annotations = handler == null ? null :
+                new LazyValue<>(() -> handler.method().getAnnotations());
     }
 
     @Override

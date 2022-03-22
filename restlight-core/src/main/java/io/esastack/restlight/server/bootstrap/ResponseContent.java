@@ -31,11 +31,25 @@ public interface ResponseContent {
     void write(byte[] data);
 
     /**
+     * Sends the {@code data} to remote endpoint and end current request.
+     *
+     * @param data data
+     */
+    void writeThenEnd(byte[] data);
+
+    /**
      * Send the given {@code buffer} to remote endpoint.
      *
      * @param buffer buffer
      */
     void write(Buffer buffer);
+
+    /**
+     * Sends the {@code buffer} to remote endpoint and end current request.
+     *
+     * @param buffer data
+     */
+    void writeThenEnd(Buffer buffer);
 
     /**
      * Sends the {@code file} to remote endpoint and end current request.
