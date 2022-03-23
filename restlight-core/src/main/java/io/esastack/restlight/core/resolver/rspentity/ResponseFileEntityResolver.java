@@ -34,7 +34,7 @@ public class ResponseFileEntityResolver implements ResponseEntityResolverAdapter
         if (!ResponseEntityUtils.isAssignableFrom(entity, File.class)) {
             return HandledValue.failed();
         }
-        channel.writeThenEnd((File) entity.response().entity());
+        channel.end((File) entity.response().entity());
         return HandledValue.succeed(null);
     }
 

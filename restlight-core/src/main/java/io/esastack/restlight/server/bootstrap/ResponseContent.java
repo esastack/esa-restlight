@@ -35,7 +35,7 @@ public interface ResponseContent {
      *
      * @param data data
      */
-    void writeThenEnd(byte[] data);
+    void end(byte[] data);
 
     /**
      * Send the given {@code buffer} to remote endpoint.
@@ -49,14 +49,14 @@ public interface ResponseContent {
      *
      * @param buffer data
      */
-    void writeThenEnd(Buffer buffer);
+    void end(Buffer buffer);
 
     /**
      * Sends the {@code file} to remote endpoint and end current request.
      *
      * @param file file
      */
-    void writeThenEnd(File file);
+    void end(File file);
 
     /**
      * Just ends current response.

@@ -16,7 +16,7 @@
 package io.esastack.restlight.core.resolver.nav;
 
 import esa.commons.annotation.Internal;
-import io.esastack.restlight.core.util.LazyValue;
+import io.esastack.restlight.core.util.ThreadSafeLazyValue;
 
 import java.util.function.Supplier;
 
@@ -49,7 +49,7 @@ public class NameAndValue<T> {
         }
 
         if (isLazy) {
-            this.defaultValue = new LazyValue<>(defaultValue);
+            this.defaultValue = new ThreadSafeLazyValue<>(defaultValue);
         } else {
             T loaded = defaultValue.get();
             this.defaultValue = () -> loaded;

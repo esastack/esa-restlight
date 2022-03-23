@@ -44,27 +44,27 @@ public class ResponseEntityChannelImpl implements ResponseEntityChannel {
     }
 
     @Override
-    public void writeThenEnd(byte[] data) {
+    public void end(byte[] data) {
         if (data == null) {
             end();
             return;
         }
 
-        content.writeThenEnd(data);
+        content.end(data);
     }
 
     @Override
-    public void writeThenEnd(Buffer buffer) {
+    public void end(Buffer buffer) {
         if (buffer == null) {
             end();
             return;
         }
-        content.writeThenEnd(buffer);
+        content.end(buffer);
     }
 
     @Override
-    public void writeThenEnd(File file) {
-        content.writeThenEnd(file);
+    public void end(File file) {
+        content.end(file);
     }
 
     @Override

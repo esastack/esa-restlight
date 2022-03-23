@@ -48,21 +48,21 @@ public interface ResponseEntityChannel {
      *
      * @param data data
      */
-    void writeThenEnd(byte[] data);
+    void end(byte[] data);
 
     /**
      * Sends the {@code buffer} to remote endpoint and end current request.
      *
      * @param buffer buffer
      */
-    void writeThenEnd(Buffer buffer);
+    void end(Buffer buffer);
 
     /**
      * Sends the {@code file} to remote endpoint and end current request.
      *
      * @param file file
      */
-    void writeThenEnd(File file);
+    void end(File file);
 
     /**
      * Just ends current response.

@@ -71,7 +71,7 @@ class ResponseContentImplTest {
 
         when(response.sendFile(file)).thenReturn(future);
         when(response.end()).thenReturn(future);
-        content.writeThenEnd(file);
+        content.end(file);
         verify(response, Mockito.times(1)).sendFile(file);
         verify(response, Mockito.times(1)).end();
     }
