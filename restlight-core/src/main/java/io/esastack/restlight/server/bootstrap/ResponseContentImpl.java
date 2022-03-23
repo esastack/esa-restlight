@@ -39,7 +39,7 @@ public class ResponseContentImpl implements ResponseContent {
     }
 
     @Override
-    public void writeThenEnd(byte[] data) {
+    public void end(byte[] data) {
         response.end(data);
     }
 
@@ -59,7 +59,7 @@ public class ResponseContentImpl implements ResponseContent {
     }
 
     @Override
-    public void writeThenEnd(Buffer buffer) {
+    public void end(Buffer buffer) {
         if (buffer == null) {
             return;
         }
@@ -70,11 +70,11 @@ public class ResponseContentImpl implements ResponseContent {
         }
         byte[] data = new byte[buffer.readableBytes()];
         buffer.readBytes(data);
-        writeThenEnd(data);
+        end(data);
     }
 
     @Override
-    public void writeThenEnd(File file) {
+    public void end(File file) {
         response.sendFile(file);
         response.end();
     }

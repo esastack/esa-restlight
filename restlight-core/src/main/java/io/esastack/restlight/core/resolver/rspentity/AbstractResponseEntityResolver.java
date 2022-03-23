@@ -77,7 +77,7 @@ public abstract class AbstractResponseEntityResolver implements ResponseEntityRe
             serialized = serialize(entity, mediaTypes, context);
         }
 
-        channel.writeThenEnd(serialized);
+        channel.end(serialized);
         return HandledValue.succeed(null);
     }
 

@@ -60,7 +60,7 @@ public class MockResponseContent implements ResponseContent {
     }
 
     @Override
-    public void writeThenEnd(byte[] data) {
+    public void end(byte[] data) {
         write(data);
         ensureEndExclusively(true);
     }
@@ -84,13 +84,13 @@ public class MockResponseContent implements ResponseContent {
     }
 
     @Override
-    public void writeThenEnd(Buffer buffer) {
+    public void end(Buffer buffer) {
         write(buffer);
         ensureEndExclusively(true);
     }
 
     @Override
-    public void writeThenEnd(File file) {
+    public void end(File file) {
         try {
             write(IOUtils.toByteArray(file));
             ensureEndExclusively(false);
