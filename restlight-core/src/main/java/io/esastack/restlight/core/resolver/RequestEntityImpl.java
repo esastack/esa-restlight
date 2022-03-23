@@ -20,7 +20,6 @@ import esa.commons.io.IOUtils;
 import io.esastack.commons.net.buffer.Buffer;
 import io.esastack.commons.net.buffer.BufferUtil;
 import io.esastack.restlight.core.method.Param;
-import io.esastack.restlight.core.util.LazyValue;
 import io.esastack.restlight.server.context.RequestContext;
 import io.esastack.restlight.server.core.HttpInputStream;
 import io.esastack.restlight.server.core.HttpRequest;
@@ -42,9 +41,9 @@ public class RequestEntityImpl extends HttpEntityImpl implements RequestEntity {
         Checks.checkNotNull(param, "param");
         Checks.checkNotNull(context, "context");
         this.request = context.request();
-        this.type = new LazyValue<>(param::type);
-        this.genericType = new LazyValue<>(param::genericType);
-        this.annotations = new LazyValue<>(param::annotations);
+        type(param.type());
+        genericType(param.genericType());
+        annotations(param.annotations());
         context.response().onEnd(rsp -> this.safeRelease());
     }
 

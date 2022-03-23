@@ -17,42 +17,35 @@ package io.esastack.restlight.core.util;
 
 import esa.commons.Checks;
 
-import java.util.Optional;
 import java.util.function.Supplier;
 
-public class LazyValue<T> implements Supplier<T> {
+public class ThreadSafeLazyValue<T> implements Supplier<T> {
+
+    private static final Object INIT = new Object();
 
     private final Supplier<T> supplier;
-    /**
-     * Because the value loaded by supplier may be null,so there use {@link Optional} to declare whether
-     * the value had been loaded
-     */
-    @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
-    private volatile Optional<T> loaded;
+    private volatile Object loaded = INIT;
 
-    public LazyValue(Supplier<T> supplier) {
+    public ThreadSafeLazyValue(Supplier<T> supplier) {
         this.supplier = Checks.checkNotNull(supplier, "supplier");
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public T get() {
-        if (loaded != null) {
-            return getLoaded();
+        if (isLoaded()) {
+            return (T) loaded;
         }
         synchronized (this) {
-            if (loaded != null) {
-                return getLoaded();
+            if (isLoaded()) {
+                return (T) loaded;
             }
-            loaded = Optional.ofNullable(supplier.get());
-            return getLoaded();
+            loaded = supplier.get();
+            return (T) loaded;
         }
     }
 
-    private T getLoaded() {
-        if (loaded == Optional.empty()) {
-            return null;
-        } else {
-            return loaded.orElse(null);
-        }
+    private boolean isLoaded() {
+        return loaded != INIT;
     }
 }

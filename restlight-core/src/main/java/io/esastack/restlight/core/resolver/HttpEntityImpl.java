@@ -15,20 +15,22 @@
  */
 package io.esastack.restlight.core.resolver;
 
+import esa.commons.Checks;
 import io.esastack.commons.net.http.MediaType;
-import io.esastack.restlight.core.util.LazyValue;
+import io.esastack.restlight.core.util.EmptySupplier;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
+import java.util.function.Supplier;
 
 /**
  * This {@link HttpEntityImpl} is designed as not thread-safe and we excepted this should be used in the same thread.
  */
 public class HttpEntityImpl implements HttpEntity {
 
-    LazyValue<Class<?>> type;
-    LazyValue<Type> genericType;
-    LazyValue<Annotation[]> annotations;
+    private Supplier<Class<?>> type = EmptySupplier.get();
+    private Supplier<Type> genericType = EmptySupplier.get();
+    private Supplier<Annotation[]> annotations = EmptySupplier.get();
 
     private MediaType mediaType;
 
@@ -38,17 +40,17 @@ public class HttpEntityImpl implements HttpEntity {
 
     @Override
     public Class<?> type() {
-        return type == null ? null : type.get();
+        return type.get();
     }
 
     @Override
     public Type genericType() {
-        return genericType == null ? null : genericType.get();
+        return genericType.get();
     }
 
     @Override
     public Annotation[] annotations() {
-        return annotations == null ? null : annotations.get();
+        return annotations.get();
     }
 
     @Override
@@ -58,17 +60,41 @@ public class HttpEntityImpl implements HttpEntity {
 
     @Override
     public void type(Class<?> type) {
-        this.type = new LazyValue<>(() -> type);
+        if (type == null) {
+            this.type = EmptySupplier.get();
+            return;
+        }
+        this.type = () -> type;
+    }
+
+    protected void type(Supplier<Class<?>> type) {
+        this.type = Checks.checkNotNull(type, "type");
     }
 
     @Override
     public void genericType(Type genericType) {
-        this.genericType = new LazyValue<>(() -> genericType);
+        if (genericType == null) {
+            this.genericType = EmptySupplier.get();
+            return;
+        }
+        this.genericType = () -> genericType;
+    }
+
+    protected void genericType(Supplier<Type> genericType) {
+        this.genericType = Checks.checkNotNull(genericType, "genericType");
     }
 
     @Override
     public void annotations(Annotation[] annotations) {
-        this.annotations = new LazyValue<>(() -> annotations);
+        if (annotations == null) {
+            this.annotations = EmptySupplier.get();
+            return;
+        }
+        this.annotations = () -> annotations;
+    }
+
+    protected void annotations(Supplier<Annotation[]> annotations) {
+        this.annotations = Checks.checkNotNull(annotations, "annotations");
     }
 
     @Override
