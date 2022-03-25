@@ -15,6 +15,7 @@
  */
 package io.esastack.restlight.jaxrs.spi;
 
+import esa.commons.annotation.Internal;
 import esa.commons.spi.Feature;
 import io.esastack.restlight.core.resolver.ResponseEntityChannel;
 import io.esastack.restlight.core.spi.ResponseEntityChannelFactory;
@@ -22,6 +23,7 @@ import io.esastack.restlight.core.util.Constants;
 import io.esastack.restlight.jaxrs.resolver.ResponseEntityStreamChannelImpl;
 import io.esastack.restlight.server.context.RequestContext;
 
+@Internal
 @Feature(tags = Constants.INTERNAL)
 public class ResponseEntityStreamChannelImplFactory implements ResponseEntityChannelFactory {
 
