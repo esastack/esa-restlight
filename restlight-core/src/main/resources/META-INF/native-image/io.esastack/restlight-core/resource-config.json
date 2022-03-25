@@ -23,7 +23,7 @@
         "pattern": ".*/io.esastack.restlight.core.resolver.ParamResolverFactory$"
       },
       {
-        "pattern": ".*/io.esastack.restlight.core.resolver.ResponseEntityResolverFactory$"
+        "pattern": ".*/io.esastack.restlight.core.resolver.ResponseEntityResolverAdapter$"
       },
       {
         "pattern": ".*/io.esastack.restlight.core.resolver.StringConverterFactory$"
