@@ -17,7 +17,6 @@ package io.esastack.restlight.core.resolver;
 
 import esa.commons.Checks;
 import io.esastack.commons.net.http.MediaType;
-import io.esastack.restlight.core.util.EmptySupplier;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
@@ -28,9 +27,9 @@ import java.util.function.Supplier;
  */
 public class HttpEntityImpl implements HttpEntity {
 
-    private Supplier<Class<?>> type = EmptySupplier.get();
-    private Supplier<Type> genericType = EmptySupplier.get();
-    private Supplier<Annotation[]> annotations = EmptySupplier.get();
+    private Supplier<Class<?>> type = () -> null;
+    private Supplier<Type> genericType = () -> null;
+    private Supplier<Annotation[]> annotations = () -> null;
 
     private MediaType mediaType;
 
@@ -61,7 +60,7 @@ public class HttpEntityImpl implements HttpEntity {
     @Override
     public void type(Class<?> type) {
         if (type == null) {
-            this.type = EmptySupplier.get();
+            this.type = () -> null;
             return;
         }
         this.type = () -> type;
@@ -74,7 +73,7 @@ public class HttpEntityImpl implements HttpEntity {
     @Override
     public void genericType(Type genericType) {
         if (genericType == null) {
-            this.genericType = EmptySupplier.get();
+            this.genericType = () -> null;
             return;
         }
         this.genericType = () -> genericType;
@@ -87,7 +86,7 @@ public class HttpEntityImpl implements HttpEntity {
     @Override
     public void annotations(Annotation[] annotations) {
         if (annotations == null) {
-            this.annotations = EmptySupplier.get();
+            this.annotations = () -> null;
             return;
         }
         this.annotations = () -> annotations;

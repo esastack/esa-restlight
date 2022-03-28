@@ -33,19 +33,18 @@ public class ThreadSafeLazyValue<T> implements Supplier<T> {
     @SuppressWarnings("unchecked")
     @Override
     public T get() {
-        if (isLoaded()) {
-            return (T) loaded;
+        Object load = this.loaded;
+        if (load != INIT) {
+            return (T) load;
         }
         synchronized (this) {
-            if (isLoaded()) {
-                return (T) loaded;
+            load = this.loaded;
+            if (load != INIT) {
+                return (T) load;
             }
-            loaded = supplier.get();
-            return (T) loaded;
+
+            return (T) (this.loaded = supplier.get());
         }
     }
 
-    private boolean isLoaded() {
-        return loaded != INIT;
-    }
 }
