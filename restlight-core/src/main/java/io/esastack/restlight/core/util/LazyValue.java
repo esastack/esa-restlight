@@ -15,14 +15,28 @@
  */
 package io.esastack.restlight.core.util;
 
+import esa.commons.Checks;
+
 import java.util.function.Supplier;
 
-public class EmptySupplier {
-    @SuppressWarnings("rawtypes")
-    private static final Supplier EMPTY = () -> null;
+public class LazyValue<T> implements Supplier<T> {
+    private static final Object INIT = new Object();
+
+    private final Supplier<T> supplier;
+    private Object loaded = INIT;
+
+    public LazyValue(Supplier<T> supplier) {
+        this.supplier = Checks.checkNotNull(supplier, "supplier");
+    }
 
     @SuppressWarnings("unchecked")
-    public static <T> Supplier<T> get() {
-        return EMPTY;
+    @Override
+    public T get() {
+        Object load = this.loaded;
+        if (load != INIT) {
+            return (T) load;
+        }
+
+        return (T) (this.loaded = supplier.get());
     }
 }
