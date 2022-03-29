@@ -30,33 +30,18 @@ abstract class AbstractInterceptorWrap<I extends InternalInterceptor> implements
     }
 
     @Override
-    public CompletionStage<Boolean> preHandle0(RequestContext context, Object handler) {
-        return interceptor.preHandle0(context, handler);
-    }
-
-    @Override
-    public boolean preHandle(RequestContext context, Object handler) throws Exception {
+    public CompletionStage<Boolean> preHandle(RequestContext context, Object handler) {
         return interceptor.preHandle(context, handler);
     }
 
     @Override
-    public CompletionStage<Void> postHandle0(RequestContext context, Object handler) {
-        return interceptor.postHandle0(context, handler);
+    public CompletionStage<Void> postHandle(RequestContext context, Object handler) {
+        return interceptor.postHandle(context, handler);
     }
 
     @Override
-    public void postHandle(RequestContext context, Object handler) throws Exception {
-        interceptor.postHandle(context, handler);
-    }
-
-    @Override
-    public CompletionStage<Void> afterCompletion0(RequestContext context, Object handler, Exception ex) {
-        return interceptor.afterCompletion0(context, handler, ex);
-    }
-
-    @Override
-    public void afterCompletion(RequestContext context, Object handler, Exception ex) {
-        interceptor.afterCompletion(context, handler, ex);
+    public CompletionStage<Void> afterCompletion(RequestContext context, Object handler, Exception ex) {
+        return interceptor.afterCompletion(context, handler, ex);
     }
 
     @Override

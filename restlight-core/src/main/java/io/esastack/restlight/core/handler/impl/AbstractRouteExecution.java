@@ -15,7 +15,14 @@
  */
 package io.esastack.restlight.core.handler.impl;
 
-import io.esastack.restlight.core.handler.*;
+import io.esastack.restlight.core.handler.Handler;
+import io.esastack.restlight.core.handler.HandlerAdvice;
+import io.esastack.restlight.core.handler.HandlerAdvicesFactory;
+import io.esastack.restlight.core.handler.HandlerInvoker;
+import io.esastack.restlight.core.handler.LinkedHandlerInvoker;
+import io.esastack.restlight.core.handler.LinkedRouteFilterChain;
+import io.esastack.restlight.core.handler.RouteFilter;
+import io.esastack.restlight.core.handler.RouteHandler;
 import io.esastack.restlight.core.interceptor.InternalInterceptor;
 import io.esastack.restlight.core.method.HandlerMethod;
 import io.esastack.restlight.server.context.RequestContext;
@@ -142,7 +149,7 @@ abstract class AbstractRouteExecution extends AbstractExecution<RouteHandlerMeth
 
     private CompletionStage<Boolean> invokeInterceptor(RequestContext context, Object bean, int index) {
         return interceptors.get(index)
-                .preHandle0(context, bean)
+                .preHandle(context, bean)
                 .thenApply(allowed -> {
                     if (allowed) {
                         interceptorIndex = index;
@@ -161,9 +168,9 @@ abstract class AbstractRouteExecution extends AbstractExecution<RouteHandlerMeth
         do {
             final InternalInterceptor interceptor = interceptors.get(i);
             if (future == null) {
-                future = interceptor.postHandle0(context, bean);
+                future = interceptor.postHandle(context, bean);
             } else {
-                future = future.thenCompose(v -> interceptor.postHandle0(context, bean));
+                future = future.thenCompose(v -> interceptor.postHandle(context, bean));
             }
         } while (++i < interceptors.size());
         return future;
@@ -193,9 +200,9 @@ abstract class AbstractRouteExecution extends AbstractExecution<RouteHandlerMeth
             final InternalInterceptor interceptor = interceptors.get(i);
             if (future == null) {
                 future = interceptor
-                        .afterCompletion0(context, handler, ex);
+                        .afterCompletion(context, handler, ex);
             } else {
-                future = future.thenCompose(v -> interceptor.afterCompletion0(context, handler, ex));
+                future = future.thenCompose(v -> interceptor.afterCompletion(context, handler, ex));
             }
         } while (i-- > 0);
 

@@ -27,6 +27,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.nio.charset.StandardCharsets;
+import java.util.concurrent.CompletionException;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -65,7 +66,9 @@ class HmacSha1SignatureHandlerInterceptorTest extends AbstractSignatureIntercept
     void testParamsIsEmpty() {
         final HttpResponse response = MockHttpResponse.aMockResponse().build();
         final HttpRequest request = MockHttpRequest.aMockRequest().withBody(new byte[0]).build();
-        assertTrue(signInterceptor.preHandle(new RequestContextImpl(request, response), null));
+        assertTrue(signInterceptor.preHandle(new RequestContextImpl(request, response), null)
+                .toCompletableFuture()
+                .join());
     }
 
     @Test
@@ -94,7 +97,8 @@ class HmacSha1SignatureHandlerInterceptorTest extends AbstractSignatureIntercept
         builder.withParameter("cdfas", "qewrqwr");
         final MockHttpRequest request = builder.build();
 
-        assertTrue(signInterceptor.preHandle(new RequestContextImpl(request, response), null));
+        assertTrue(signInterceptor.preHandle(new RequestContextImpl(request, response), null)
+                .toCompletableFuture().join());
     }
 
     @Test
@@ -119,13 +123,15 @@ class HmacSha1SignatureHandlerInterceptorTest extends AbstractSignatureIntercept
         builder.withParameter("cdfas", "qewrqwr");
         builder.withParameter("parms", "dfasfaga");
 
-        Exception exception = null;
+        Throwable exception = null;
         // If Content-Type not equals "x-www-form-urlencoded";
         try {
             HttpRequest request0 = builder.build();
-            signInterceptor.preHandle(new RequestContextImpl(request0, response), null);
-        } catch (WebServerException ex) {
-            exception = ex;
+            signInterceptor.preHandle(new RequestContextImpl(request0, response), null)
+                    .toCompletableFuture()
+                    .join();
+        } catch (CompletionException ex) {
+            exception = ex.getCause();
         }
         assertNotNull(exception);
 
@@ -133,7 +139,9 @@ class HmacSha1SignatureHandlerInterceptorTest extends AbstractSignatureIntercept
         builder.withHeader("Content-Type", "application/x-www-form-urlencoded");
         final MockHttpRequest request = builder.build();
 
-        assertTrue(signInterceptor.preHandle(new RequestContextImpl(request, response), null));
+        assertTrue(signInterceptor.preHandle(new RequestContextImpl(request, response), null)
+                .toCompletableFuture()
+                .join());
     }
 
     @Test
@@ -161,8 +169,14 @@ class HmacSha1SignatureHandlerInterceptorTest extends AbstractSignatureIntercept
         builder.withParameter(TIMESTAMP_PARAM_NAME, timestamp);
         final MockHttpRequest request = builder.build();
 
-        assertThrows(WebServerException.class, () -> signInterceptor.preHandle(new RequestContextImpl(request,
-                response), null));
+        assertThrows(WebServerException.class, () -> {
+            try {
+                signInterceptor.preHandle(new RequestContextImpl(request,
+                        response), null).toCompletableFuture().join();
+            } catch (CompletionException e) {
+                throw e.getCause();
+            }
+        });
     }
 
     private byte[] buildData(byte[] data, byte[] body) {

@@ -25,6 +25,7 @@ import io.esastack.restlight.ext.interceptor.config.SignatureOptions;
 import io.esastack.restlight.server.bootstrap.WebServerException;
 import io.esastack.restlight.server.context.RequestContext;
 import io.esastack.restlight.server.core.HttpRequest;
+import io.esastack.restlight.server.util.Futures;
 import io.netty.util.internal.InternalThreadLocalMap;
 
 import java.nio.charset.StandardCharsets;
@@ -32,6 +33,9 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletionStage;
+
+import static io.esastack.restlight.server.bootstrap.WebServerException.badRequest;
 
 abstract class AbstractSignatureInterceptor implements InternalInterceptor {
 
@@ -55,39 +59,39 @@ abstract class AbstractSignatureInterceptor implements InternalInterceptor {
     }
 
     @Override
-    public boolean preHandle(RequestContext context, Object handler) {
+    public CompletionStage<Boolean> preHandle(RequestContext context, Object handler) {
         final HttpRequest request = context.request();
         boolean emptyParams = request.paramsMap() == null || request.paramsMap().isEmpty();
         if (emptyParams && request.contentLength() == 0L) {
-            return true;
+            return Futures.completedFuture(Boolean.TRUE);
         }
         final String signature = StringUtils.trim(getSignature(request));
 
         // Send error if we can not get the signature from the request
         if (StringUtils.isEmpty(signature)) {
-            throw WebServerException.badRequest("Missing required value: " + signatureName());
+            return Futures.completedExceptionally(badRequest("Missing required value: " + signatureName()));
         }
 
         // Validate timestamp
         final String timestamp = StringUtils.trim(getTimestamp(request));
         if (options.getExpireSeconds() > 0 && (System.currentTimeMillis() - Long.parseLong(timestamp)
                 > (long) options.getExpireSeconds() * MILLISECOND)) {
-            throw WebServerException.badRequest("Signature has expired");
+            return Futures.completedExceptionally(badRequest("Signature has expired"));
         }
 
         final String secret = StringUtils.trim(distributor.get(StringUtils.trim(getAppId(request)),
                 StringUtils.trim(getSecretVersion(request)), timestamp));
         if (StringUtils.isEmpty(secret)) {
-            throw WebServerException.badRequest("Missing required value: " + secretVersionName());
+            return Futures.completedExceptionally(badRequest("Missing required value: " + secretVersionName()));
         }
 
         final byte[] data = buildData(request);
 
         // Validate signature
         if (data == null || data.length == 0 || validate(data, signature, secret)) {
-            return true;
+            return Futures.completedFuture(Boolean.TRUE);
         }
-        throw new WebServerException(HttpStatus.UNAUTHORIZED, "Unmatched secret");
+        return Futures.completedExceptionally(new WebServerException(HttpStatus.UNAUTHORIZED, "Unmatched secret"));
     }
 
     protected byte[] buildData(HttpRequest request) {
