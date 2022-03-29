@@ -21,7 +21,6 @@ import io.esastack.restlight.server.handler.Filter;
 import io.esastack.restlight.server.route.Route;
 import io.esastack.restlight.server.util.Futures;
 
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
 /**
@@ -33,101 +32,40 @@ import java.util.concurrent.CompletionStage;
 public interface InternalInterceptor extends Ordered {
 
     /**
-     * Asynchronous implementation of {@link #preHandle(RequestContext, Object)}, which will be called in
-     * the lifecycle of the request(if matched) actually instead of {@link #preHandle(RequestContext, Object)}.
+     * Will be called before HandlerExecution invokes the handler in the lifecycle of the request(if matched).
      *
      * @param context request context
      * @param handler handler
      * @return future result
      */
-    default CompletionStage<Boolean> preHandle0(RequestContext context, Object handler) {
-        CompletableFuture<Boolean> future;
-        try {
-            future = Futures.completedFuture(preHandle(context, handler));
-        } catch (Throwable t) {
-            future = Futures.completedExceptionally(t);
-        }
-        return future;
+    default CompletionStage<Boolean> preHandle(RequestContext context, Object handler) {
+        return Futures.completedFuture(Boolean.TRUE);
     }
 
     /**
-     * Called before HandlerExecution invokes the handler.
-     *
-     * @param context current HTTP request context
-     * @param handler handler
-     * @return if the execution chain should proceed with the next interceptor or the handler itself. Else,
-     * OldDispatcherHandler assumes that this interceptor has already dealt with the response itself.
-     * @throws Exception in case of errors
-     */
-    default boolean preHandle(RequestContext context, Object handler) throws Exception {
-        return true;
-    }
-
-    /**
-     * Asynchronous implementation of {@link #postHandle(RequestContext, Object)}, which will be called in
-     * the lifecycle of the request(if matched). actually instead of {@link #preHandle(RequestContext, Object)}
+     * Will be called after HandlerExecution invokes the handler in the lifecycle of the request(if matched).
      *
      * @param context request context
      * @param handler handler
      * @return future result
      */
-    default CompletionStage<Void> postHandle0(RequestContext context, Object handler) {
-        CompletableFuture<Void> future;
-        try {
-            postHandle(context, handler);
-            future = Futures.completedFuture();
-        } catch (Throwable t) {
-            future = Futures.completedExceptionally(t);
-        }
-        return future;
+    default CompletionStage<Void> postHandle(RequestContext context, Object handler) {
+        return Futures.completedFuture();
     }
 
     /**
-     * Called after HandlerExecution actually invoked the handler
-     *
-     * @param context current HTTP request context
-     * @param handler handler
-     * @throws Exception in case of errors
-     */
-    default void postHandle(RequestContext context, Object handler) throws Exception {
-
-    }
-
-    /**
-     * Asynchronous implementation of {@link #afterCompletion(RequestContext, Object, Exception)}, which
-     * will be called in the lifecycle of the request(if matched) actually instead of {@link #preHandle(RequestContext,
-     * Object)}
+     * Callback after completion of request processing in the lifecycle of the request(if matched).
+     * <p>
+     * Note: Will only be called if this interceptor's preHandle method has successfully completed and returned true!
      *
      * @param context request context
      * @param handler handler
      * @param ex      error
      * @return future result
      */
-    default CompletionStage<Void> afterCompletion0(RequestContext context,
-                                                   Object handler,
-                                                   Exception ex) {
-        CompletableFuture<Void> future;
-        try {
-            afterCompletion(context, handler, ex);
-            future = Futures.completedFuture();
-        } catch (Throwable t) {
-            future = Futures.completedExceptionally(t);
-        }
-        return future;
-    }
-
-    /**
-     * Callback after completion of request processing
-     * <p>
-     * Note: Will only be called if this interceptor's preHandle method has successfully completed and returned true!
-     *
-     * @param context current HTTP request context
-     * @param handler handler
-     * @param ex      exception occurred
-     */
-    default void afterCompletion(RequestContext context,
-                                 Object handler,
-                                 Exception ex) {
-
+    default CompletionStage<Void> afterCompletion(RequestContext context,
+                                                  Object handler,
+                                                  Exception ex) {
+        return Futures.completedFuture();
     }
 }

@@ -39,8 +39,16 @@ import java.util.concurrent.CompletionStage;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 class AbstractRouteExecutionTest {
 
@@ -105,21 +113,21 @@ class AbstractRouteExecutionTest {
         final List<Integer> reached = new ArrayList<>();
         final List<InternalInterceptor> interceptors = Arrays.asList(new InternalInterceptor() {
             @Override
-            public boolean preHandle(RequestContext ctx, Object handler) {
+            public CompletionStage<Boolean> preHandle(RequestContext ctx, Object handler) {
                 reached.add(0);
-                return true;
+                return Futures.completedFuture(Boolean.TRUE);
             }
         }, new InternalInterceptor() {
             @Override
-            public boolean preHandle(RequestContext ctx, Object handler) {
+            public CompletionStage<Boolean> preHandle(RequestContext ctx, Object handler) {
                 reached.add(1);
-                return false;
+                return Futures.completedFuture(Boolean.FALSE);
             }
         }, new InternalInterceptor() {
             @Override
-            public boolean preHandle(RequestContext ctx, Object handler) {
+            public CompletionStage<Boolean> preHandle(RequestContext ctx, Object handler) {
                 reached.add(2);
-                return true;
+                return Futures.completedFuture(Boolean.TRUE);
             }
         });
 
@@ -153,7 +161,7 @@ class AbstractRouteExecutionTest {
         final List<Integer> reached = new ArrayList<>();
         final List<InternalInterceptor> interceptors = Arrays.asList(new InternalInterceptor() {
             @Override
-            public CompletableFuture<Boolean> preHandle0(RequestContext ctx, Object handler) {
+            public CompletableFuture<Boolean> preHandle(RequestContext ctx, Object handler) {
 
                 return CompletableFuture.supplyAsync(() -> {
                     try {
@@ -167,7 +175,7 @@ class AbstractRouteExecutionTest {
             }
         }, new InternalInterceptor() {
             @Override
-            public CompletableFuture<Boolean> preHandle0(RequestContext ctx, Object handler) {
+            public CompletableFuture<Boolean> preHandle(RequestContext ctx, Object handler) {
 
                 return CompletableFuture.supplyAsync(() -> {
                     try {
@@ -181,7 +189,7 @@ class AbstractRouteExecutionTest {
             }
         }, new InternalInterceptor() {
             @Override
-            public CompletableFuture<Boolean> preHandle0(RequestContext ctx, Object handler) {
+            public CompletableFuture<Boolean> preHandle(RequestContext ctx, Object handler) {
 
                 return CompletableFuture.supplyAsync(() -> {
                     reached.add(2);
@@ -219,13 +227,15 @@ class AbstractRouteExecutionTest {
         final List<Integer> reached = new ArrayList<>();
         final List<InternalInterceptor> interceptors = Arrays.asList(new InternalInterceptor() {
             @Override
-            public void postHandle(RequestContext ctx, Object handler) {
+            public CompletionStage<Void> postHandle(RequestContext ctx, Object handler) {
                 reached.add(0);
+                return Futures.completedFuture();
             }
         }, new InternalInterceptor() {
             @Override
-            public void postHandle(RequestContext ctx, Object handler) {
+            public CompletionStage<Void> postHandle(RequestContext ctx, Object handler) {
                 reached.add(1);
+                return Futures.completedFuture();
             }
         });
         final RouteHandlerMethodAdapter mock = mock(RouteHandlerMethodAdapter.class);
@@ -258,7 +268,7 @@ class AbstractRouteExecutionTest {
         final List<Integer> reached = new ArrayList<>();
         final List<InternalInterceptor> interceptors = Arrays.asList(new InternalInterceptor() {
             @Override
-            public CompletableFuture<Void> postHandle0(RequestContext ctx, Object handler) {
+            public CompletableFuture<Void> postHandle(RequestContext ctx, Object handler) {
                 return CompletableFuture.runAsync(() -> {
                     try {
                         Thread.sleep(50);
@@ -270,7 +280,7 @@ class AbstractRouteExecutionTest {
             }
         }, new InternalInterceptor() {
             @Override
-            public CompletableFuture<Void> postHandle0(RequestContext ctx, Object handler) {
+            public CompletableFuture<Void> postHandle(RequestContext ctx, Object handler) {
                 return CompletableFuture.runAsync(() -> reached.add(1));
             }
         });
@@ -303,8 +313,9 @@ class AbstractRouteExecutionTest {
         final AtomicBoolean reached = new AtomicBoolean(false);
         final List<InternalInterceptor> interceptors = Collections.singletonList(new InternalInterceptor() {
             @Override
-            public void afterCompletion(RequestContext ctx, Object handler, Exception t) {
+            public CompletionStage<Void> afterCompletion(RequestContext ctx, Object handler, Exception t) {
                 reached.set(true);
+                return Futures.completedFuture();
             }
         });
         final RouteHandlerMethodAdapter mock = mock(RouteHandlerMethodAdapter.class);
@@ -335,13 +346,15 @@ class AbstractRouteExecutionTest {
         final List<Integer> reached = new ArrayList<>();
         final List<InternalInterceptor> interceptors = Arrays.asList(new InternalInterceptor() {
             @Override
-            public void afterCompletion(RequestContext ctx, Object handler, Exception t) {
+            public CompletionStage<Void> afterCompletion(RequestContext ctx, Object handler, Exception t) {
                 reached.add(0);
+                return Futures.completedFuture();
             }
         }, new InternalInterceptor() {
             @Override
-            public void afterCompletion(RequestContext ctx, Object handler, Exception t) {
+            public CompletionStage<Void> afterCompletion(RequestContext ctx, Object handler, Exception t) {
                 reached.add(1);
+                return Futures.completedFuture();
             }
         });
         final RouteHandlerMethodAdapter mock = mock(RouteHandlerMethodAdapter.class);
@@ -378,19 +391,21 @@ class AbstractRouteExecutionTest {
         final List<InternalInterceptor> interceptors = Arrays.asList(new InternalInterceptor() {
 
             @Override
-            public void afterCompletion(RequestContext ctx, Object handler, Exception t) {
+            public CompletionStage<Void> afterCompletion(RequestContext ctx, Object handler, Exception t) {
                 reached.add(0);
+                return Futures.completedFuture();
             }
         }, new InternalInterceptor() {
 
             @Override
-            public boolean preHandle(RequestContext ctx, Object handler) {
-                return false;
+            public CompletionStage<Boolean> preHandle(RequestContext ctx, Object handler) {
+                return Futures.completedFuture(Boolean.FALSE);
             }
 
             @Override
-            public void afterCompletion(RequestContext ctx, Object handler, Exception t) {
+            public CompletionStage<Void> afterCompletion(RequestContext ctx, Object handler, Exception t) {
                 reached.add(1);
+                return Futures.completedFuture();
             }
         });
         final RouteHandlerMethodAdapter mock = mock(RouteHandlerMethodAdapter.class);
@@ -426,16 +441,16 @@ class AbstractRouteExecutionTest {
         final List<Integer> reached = new ArrayList<>();
         final List<InternalInterceptor> interceptors = Arrays.asList(new InternalInterceptor() {
             @Override
-            public CompletableFuture<Void> afterCompletion0(RequestContext context,
-                                                            Object handler,
-                                                            Exception ex) {
+            public CompletableFuture<Void> afterCompletion(RequestContext context,
+                                                           Object handler,
+                                                           Exception ex) {
                 return CompletableFuture.runAsync(() -> reached.add(0));
             }
         }, new InternalInterceptor() {
             @Override
-            public CompletableFuture<Void> afterCompletion0(RequestContext context,
-                                                            Object handler,
-                                                            Exception ex) {
+            public CompletableFuture<Void> afterCompletion(RequestContext context,
+                                                           Object handler,
+                                                           Exception ex) {
                 return CompletableFuture.runAsync(() -> {
                     try {
                         Thread.sleep(50);
@@ -566,8 +581,8 @@ class AbstractRouteExecutionTest {
                 new AbstractRouteExecution(mock, Collections.singletonList(new InternalInterceptor() {
 
                     @Override
-                    public boolean preHandle(RequestContext ctx, Object handler) {
-                        return false;
+                    public CompletionStage<Boolean> preHandle(RequestContext ctx, Object handler) {
+                        return Futures.completedFuture(Boolean.FALSE);
                     }
                 })) {
                     @Override
