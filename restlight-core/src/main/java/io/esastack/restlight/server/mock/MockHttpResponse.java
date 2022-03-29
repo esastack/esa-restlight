@@ -90,11 +90,6 @@ public class MockHttpResponse implements HttpResponse {
     }
 
     @Override
-    public void reset() {
-        reset0();
-    }
-
-    @Override
     public void onEnd(Consumer<HttpResponse> listener) {
         endListeners.add(listener);
     }
