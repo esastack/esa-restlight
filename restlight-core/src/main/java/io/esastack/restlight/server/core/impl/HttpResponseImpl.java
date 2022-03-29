@@ -72,13 +72,6 @@ public class HttpResponseImpl implements HttpResponse {
     }
 
     @Override
-    public void reset() {
-        res.setStatus(200);
-        res.headers().clear();
-        res.trailers().clear();
-    }
-
-    @Override
     public void addCookie(Cookie cookie) {
         res.addCookie(cookie);
     }

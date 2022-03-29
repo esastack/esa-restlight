@@ -109,12 +109,6 @@ public interface HttpResponse {
     HttpHeaders trailers();
 
     /**
-     * Reset this response to origin status, which means the values you have changed will be reset such headers, status
-     * and so on.
-     */
-    void reset();
-
-    /**
      * Add a listener to this response, this listener will be called after current response has been write.
      *
      * @param listener listener

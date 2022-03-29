@@ -69,22 +69,6 @@ class HttpResponseImplTest {
     }
 
     @Test
-    void testReset() {
-        final Response mock = mock(Response.class);
-        final HttpResponseImpl response = new HttpResponseImpl(mock);
-
-        final HttpHeaders headers = new Http1HeadersImpl().set("a", "1");
-        when(mock.headers()).thenReturn(headers);
-        final HttpHeaders trailers = new Http1HeadersImpl().set("b", "2");
-        when(mock.trailers()).thenReturn(trailers);
-
-        response.reset();
-
-        assertTrue(headers.isEmpty());
-        assertTrue(trailers.isEmpty());
-    }
-
-    @Test
     void testSendRedirect() {
         final HttpHeaders headers = new Http1HeadersImpl();
         final Response mock = mock(Response.class);
