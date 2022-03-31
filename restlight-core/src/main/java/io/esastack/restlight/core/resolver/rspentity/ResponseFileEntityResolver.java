@@ -15,8 +15,8 @@
  */
 package io.esastack.restlight.core.resolver.rspentity;
 
+import esa.commons.Result;
 import io.esastack.restlight.core.method.HandlerMethod;
-import io.esastack.restlight.core.resolver.HandledValue;
 import io.esastack.restlight.core.resolver.ResponseEntity;
 import io.esastack.restlight.core.resolver.ResponseEntityChannel;
 import io.esastack.restlight.core.resolver.ResponseEntityResolverAdapter;
@@ -28,14 +28,14 @@ import java.io.File;
 public class ResponseFileEntityResolver implements ResponseEntityResolverAdapter {
 
     @Override
-    public HandledValue<Void> writeTo(ResponseEntity entity,
+    public Result<Void, Void> writeTo(ResponseEntity entity,
                                       ResponseEntityChannel channel,
                                       RequestContext context) throws Exception {
         if (!ResponseEntityUtils.isAssignableFrom(entity, File.class)) {
-            return HandledValue.failed();
+            return Result.err();
         }
         channel.end((File) entity.response().entity());
-        return HandledValue.succeed(null);
+        return Result.ok();
     }
 
     @Override

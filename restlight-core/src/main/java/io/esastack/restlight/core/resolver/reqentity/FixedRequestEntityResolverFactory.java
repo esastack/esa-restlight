@@ -15,11 +15,11 @@
  */
 package io.esastack.restlight.core.resolver.reqentity;
 
+import esa.commons.Result;
 import esa.commons.reflect.AnnotationUtils;
 import io.esastack.restlight.core.annotation.RequestSerializer;
 import io.esastack.restlight.core.annotation.Serializer;
 import io.esastack.restlight.core.method.Param;
-import io.esastack.restlight.core.resolver.HandledValue;
 import io.esastack.restlight.core.resolver.RequestEntity;
 import io.esastack.restlight.core.resolver.RequestEntityResolver;
 import io.esastack.restlight.core.resolver.RequestEntityResolverFactory;
@@ -139,7 +139,7 @@ public abstract class FixedRequestEntityResolverFactory implements RequestEntity
         }
 
         @Override
-        public HandledValue<Object> readFrom(RequestEntity entity, RequestContext context) throws Exception {
+        public Result<?, Void> readFrom(RequestEntity entity, RequestContext context) throws Exception {
             return checkRequired(nav, converter, serializer.deserialize(entity));
         }
     }

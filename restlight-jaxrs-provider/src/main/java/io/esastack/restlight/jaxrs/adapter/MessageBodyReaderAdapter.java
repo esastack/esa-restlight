@@ -16,8 +16,8 @@
 package io.esastack.restlight.jaxrs.adapter;
 
 import esa.commons.Checks;
+import esa.commons.Result;
 import io.esastack.restlight.core.method.Param;
-import io.esastack.restlight.core.resolver.HandledValue;
 import io.esastack.restlight.core.resolver.RequestEntity;
 import io.esastack.restlight.core.resolver.RequestEntityResolverAdapter;
 import io.esastack.restlight.core.util.Ordered;
@@ -39,10 +39,10 @@ public class MessageBodyReaderAdapter<T> implements RequestEntityResolverAdapter
 
     @SuppressWarnings("unchecked")
     @Override
-    public HandledValue<Object> readFrom(RequestEntity entity, RequestContext context) throws Exception {
+    public Result<?, Void> readFrom(RequestEntity entity, RequestContext context) throws Exception {
         Class<?> type;
         if ((type = entity.type()) == null) {
-            return HandledValue.failed();
+            return Result.err();
         }
         MediaType mediaType = MediaTypeUtils.convert(entity.mediaType());
         MessageBodyReader<T> reader = (MessageBodyReader<T>) providers.getMessageBodyReader(type,
@@ -50,11 +50,11 @@ public class MessageBodyReaderAdapter<T> implements RequestEntityResolverAdapter
                 entity.annotations(),
                 mediaType);
         if (reader == null) {
-            return HandledValue.failed();
+            return Result.err();
         }
         Object value = reader.readFrom((Class<T>) type, entity.genericType(), entity.annotations(),
                 mediaType, new ModifiableMultivaluedMap(context.request().headers()), entity.inputStream());
-        return HandledValue.succeed(value);
+        return Result.ok(value);
     }
 
     @Override

@@ -15,8 +15,8 @@
  */
 package io.esastack.restlight.core.resolver.rspentity;
 
+import esa.commons.Result;
 import io.esastack.commons.net.http.MediaType;
-import io.esastack.restlight.core.resolver.HandledValue;
 import io.esastack.restlight.core.resolver.ParamResolverFactory;
 import io.esastack.restlight.core.resolver.ResponseEntity;
 import io.esastack.restlight.core.serialize.HttpResponseSerializer;
@@ -48,12 +48,12 @@ public class FlexibleResponseEntityResolver extends AbstractResponseEntityResolv
                     "), acceptMediaTypes: " + mediaTypes);
         }
 
-        HandledValue<byte[]> handled;
+        Result<byte[], Void> handled;
         if (mediaTypes.isEmpty()) {
             for (HttpResponseSerializer ser : serializers) {
                 handled = Serializers.serializeBySerializer(ser, entity);
-                if (handled.isSuccess()) {
-                    return handled.value();
+                if (handled.isOk()) {
+                    return handled.get();
                 }
             }
         } else {
@@ -61,8 +61,8 @@ public class FlexibleResponseEntityResolver extends AbstractResponseEntityResolv
                 for (HttpResponseSerializer ser : serializers) {
                     entity.mediaType(mediaType);
                     handled = Serializers.serializeBySerializer(ser, entity);
-                    if (handled.isSuccess()) {
-                        return handled.value();
+                    if (handled.isOk()) {
+                        return handled.get();
                     }
                 }
             }
