@@ -22,6 +22,7 @@ import io.esastack.restlight.core.handler.HandlerMapping;
 import io.esastack.restlight.core.handler.RouteFilter;
 import io.esastack.restlight.core.handler.RouteFilterChain;
 import io.esastack.restlight.core.method.HandlerMethod;
+import io.esastack.restlight.core.util.Ordered;
 import io.esastack.restlight.server.context.RequestContext;
 import io.esastack.restlight.server.context.RouteContext;
 
@@ -52,6 +53,10 @@ public class RouteTracking implements RouteFilter {
         }
         mappings.add(mapping);
         return next.doNext(mapping, context);
+    }
+
+    public int getOrder() {
+        return Ordered.MIDDLE_PRECEDENCE;
     }
 
     public static List<HandlerMapping> tracking(RequestContext context) {

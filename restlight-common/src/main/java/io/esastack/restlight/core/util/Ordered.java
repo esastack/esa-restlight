@@ -32,6 +32,11 @@ public interface Ordered {
     int LOWEST_PRECEDENCE = Integer.MAX_VALUE;
 
     /**
+     * Useful constant for the middle precedence value.
+     */
+    int MIDDLE_PRECEDENCE = 0;
+
+    /**
      * Default to use the {@link #LOWEST_PRECEDENCE}.
      *
      * @return order

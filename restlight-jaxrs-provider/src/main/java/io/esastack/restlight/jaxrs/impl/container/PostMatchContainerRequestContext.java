@@ -15,6 +15,8 @@
  */
 package io.esastack.restlight.jaxrs.impl.container;
 
+import io.esastack.restlight.core.method.HandlerMethod;
+import io.esastack.restlight.core.spi.impl.RouteTracking;
 import io.esastack.restlight.server.context.RequestContext;
 
 import java.io.InputStream;
@@ -24,9 +26,11 @@ public class PostMatchContainerRequestContext extends AbstractContainerRequestCo
 
     private static final IllegalStateException ILLEGAL_STATE_AFTER_MATCHING = new IllegalStateException(
             "This operation is not allowed after matching request, maybe @PreMatching is missed?");
+    private final HandlerMethod method;
 
     public PostMatchContainerRequestContext(RequestContext context) {
         super(context);
+        this.method = RouteTracking.matchedMethod(context);
     }
 
     @Override
@@ -47,6 +51,10 @@ public class PostMatchContainerRequestContext extends AbstractContainerRequestCo
     @Override
     public void setEntityStream(InputStream input) {
         throw ILLEGAL_STATE_AFTER_MATCHING;
+    }
+
+    public HandlerMethod method() {
+        return method;
     }
 }
 
