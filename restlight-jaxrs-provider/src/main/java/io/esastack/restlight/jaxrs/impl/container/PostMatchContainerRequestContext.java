@@ -26,11 +26,11 @@ public class PostMatchContainerRequestContext extends AbstractContainerRequestCo
 
     private static final IllegalStateException ILLEGAL_STATE_AFTER_MATCHING = new IllegalStateException(
             "This operation is not allowed after matching request, maybe @PreMatching is missed?");
-    private final HandlerMethod method;
+    private final HandlerMethod handler;
 
     public PostMatchContainerRequestContext(RequestContext context) {
         super(context);
-        this.method = RouteTracking.matchedMethod(context);
+        this.handler = RouteTracking.matchedMethod(context);
     }
 
     @Override
@@ -53,8 +53,8 @@ public class PostMatchContainerRequestContext extends AbstractContainerRequestCo
         throw ILLEGAL_STATE_AFTER_MATCHING;
     }
 
-    public HandlerMethod method() {
-        return method;
+    public HandlerMethod handler() {
+        return handler;
     }
 }
 
