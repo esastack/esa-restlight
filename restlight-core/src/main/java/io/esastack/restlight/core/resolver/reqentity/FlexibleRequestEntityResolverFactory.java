@@ -78,9 +78,9 @@ public abstract class FlexibleRequestEntityResolverFactory implements RequestEnt
         return 100;
     }
 
-    protected static HandledValue<Object> checkRequired(NameAndValue<String> nav,
+    protected static HandledValue<?> checkRequired(NameAndValue<String> nav,
                                                         StringConverter converter,
-                                                        HandledValue<Object> handled) {
+                                                        HandledValue<?> handled) {
         if (handled.value() != null) {
             return handled;
         }
@@ -122,7 +122,7 @@ public abstract class FlexibleRequestEntityResolverFactory implements RequestEnt
             }
 
             //search serializer to resolve argument
-            HandledValue<Object> handled;
+            HandledValue<?> handled;
             for (HttpRequestSerializer serializer : serializers) {
                 if ((handled = serializer.deserialize(entity)).isSuccess()) {
                     return checkRequired(nav, converter, handled);
