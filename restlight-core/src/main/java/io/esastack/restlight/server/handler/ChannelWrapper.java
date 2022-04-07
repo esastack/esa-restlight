@@ -1,5 +1,6 @@
 /*
- * Copyright 2021 OPPO ESA Stack Project
+ *
+ * Copyright 2022 OPPO ESA Stack Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,20 +14,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package io.esastack.restlight.server.handler;
 
-import io.esastack.restlight.core.util.Ordered;
+import esa.commons.Checks;
 import io.netty.channel.Channel;
 
-@FunctionalInterface
-public interface DisConnectionHandler extends Ordered {
+/**
+ * the ChannelWrapper mainly shield the detail use of {@link io.netty.channel.Channel}.
+ *
+ * @author chenglu
+ */
+public final class ChannelWrapper {
 
-    /**
-     * This callback notification method is invoked in case the existed {@link Channel} has disconnected.
-     *
-     * @param channel channel
-     */
-    void onDisconnect(ChannelWrapper channel);
+    private final Channel channel;
 
+    public ChannelWrapper(Channel channel) {
+        Checks.checkNotNull(channel, "channel");
+        this.channel = channel;
+    }
+
+    public void close() {
+        channel.close();
+    }
+
+    @Override
+    public String toString() {
+        return channel.toString();
+    }
 }
-

@@ -26,7 +26,7 @@ public interface ConnectionHandler extends Ordered {
      *
      * @param channel channel
      */
-    void onConnect(Channel channel);
+    void onConnect(ChannelWrapper channel);
 
 }
 

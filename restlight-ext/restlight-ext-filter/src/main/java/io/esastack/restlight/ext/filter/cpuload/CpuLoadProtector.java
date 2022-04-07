@@ -16,6 +16,7 @@
 package io.esastack.restlight.ext.filter.cpuload;
 
 import esa.commons.concurrent.ThreadFactories;
+import io.esastack.restlight.server.handler.ChannelWrapper;
 import io.esastack.restlight.server.handler.ConnectionHandler;
 import io.esastack.restlight.server.util.LoggerUtils;
 import io.netty.channel.Channel;
@@ -104,7 +105,7 @@ public class CpuLoadProtector implements ConnectionHandler {
     }
 
     @Override
-    public void onConnect(Channel channel) {
+    public void onConnect(ChannelWrapper channel) {
         double current = currentCpuLoad;
         if (current > cpuLoadThreshold
                 && InternalThreadLocalMap.get().random().nextDouble(MAX_CPU_LOAD_VALUE) < getDiscardRate(current)) {

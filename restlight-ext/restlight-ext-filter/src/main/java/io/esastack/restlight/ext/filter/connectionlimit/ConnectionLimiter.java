@@ -17,6 +17,7 @@ package io.esastack.restlight.ext.filter.connectionlimit;
 
 import com.google.common.util.concurrent.RateLimiter;
 import esa.commons.Checks;
+import io.esastack.restlight.server.handler.ChannelWrapper;
 import io.esastack.restlight.server.handler.ConnectionHandler;
 import io.esastack.restlight.server.util.LoggerUtils;
 import io.netty.channel.Channel;
@@ -46,7 +47,7 @@ public class ConnectionLimiter implements ConnectionHandler {
     }
 
     @Override
-    public void onConnect(Channel channel) {
+    public void onConnect(ChannelWrapper channel) {
         if (connects.tryAcquire(1)) {
             return;
         }

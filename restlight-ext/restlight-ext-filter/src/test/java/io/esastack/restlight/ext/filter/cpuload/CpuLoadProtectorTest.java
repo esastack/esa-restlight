@@ -15,6 +15,7 @@
  */
 package io.esastack.restlight.ext.filter.cpuload;
 
+import io.esastack.restlight.server.handler.ChannelWrapper;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.embedded.EmbeddedChannel;
 import org.junit.jupiter.api.Test;
@@ -44,7 +45,7 @@ class CpuLoadProtectorTest {
         final ChannelHandlerContext ctx = mock(ChannelHandlerContext.class);
         final EmbeddedChannel channel = new EmbeddedChannel();
         when(ctx.channel()).thenReturn(channel);
-        protector.onConnect(channel);
+        protector.onConnect(new ChannelWrapper(channel));
         assertTrue(ctx.channel().isActive());
         assertTrue(ctx.channel().isOpen());
         assertTrue(ctx.channel().isWritable());
@@ -55,7 +56,7 @@ class CpuLoadProtectorTest {
         final EmbeddedChannel channel = new EmbeddedChannel();
         when(ctx.channel()).thenReturn(channel);
         protector.currentCpuLoad = 10;
-        protector.onConnect(channel);
+        protector.onConnect(new ChannelWrapper(channel));
         assertFalse(ctx.channel().isActive());
         assertFalse(ctx.channel().isOpen());
         assertFalse(ctx.channel().isWritable());

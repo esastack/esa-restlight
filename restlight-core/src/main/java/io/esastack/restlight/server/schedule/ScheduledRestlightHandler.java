@@ -20,6 +20,7 @@ import io.esastack.restlight.core.util.OrderedComparator;
 import io.esastack.restlight.server.bootstrap.DispatcherHandler;
 import io.esastack.restlight.server.config.ServerOptions;
 import io.esastack.restlight.server.context.RequestContext;
+import io.esastack.restlight.server.handler.ChannelWrapper;
 import io.esastack.restlight.server.handler.ConnectionHandler;
 import io.esastack.restlight.server.handler.DisConnectionHandler;
 import io.esastack.restlight.server.handler.RestlightHandler;
@@ -27,18 +28,10 @@ import io.esastack.restlight.server.route.Route;
 import io.esastack.restlight.server.util.LoggerUtils;
 import io.esastack.restlight.server.util.PromiseUtils;
 import io.netty.channel.Channel;
+import org.checkerframework.checker.units.qual.C;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.Executor;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+import java.util.*;
+import java.util.concurrent.*;
 import java.util.stream.Collectors;
 
 public class ScheduledRestlightHandler implements RestlightHandler {
@@ -114,9 +107,10 @@ public class ScheduledRestlightHandler implements RestlightHandler {
             return;
         }
 
+        ChannelWrapper channelWrapper = new ChannelWrapper(channel);
         for (ConnectionHandler h : connections) {
             try {
-                h.onConnect(channel);
+                h.onConnect(channelWrapper);
             } catch (Throwable th) {
                 LoggerUtils.logger().error("Error occurred when executing ConnectionHandler#onConnect()", th);
             }
@@ -129,9 +123,10 @@ public class ScheduledRestlightHandler implements RestlightHandler {
             return;
         }
 
+        ChannelWrapper channelWrapper = new ChannelWrapper(channel);
         for (DisConnectionHandler h : disConnections) {
             try {
-                h.onDisconnect(channel);
+                h.onDisconnect(channelWrapper);
             } catch (Throwable th) {
                 LoggerUtils.logger().error("Error occurred when executing DisConnectionHandler#onDisconnect()",
                         th);
