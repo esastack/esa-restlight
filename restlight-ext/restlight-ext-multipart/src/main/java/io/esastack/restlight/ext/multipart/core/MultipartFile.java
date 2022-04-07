@@ -48,12 +48,6 @@ public interface MultipartFile {
     String contentType();
 
     /**
-     * Return whether the uploaded file is empty, that is, either no file has been chosen in the multipart form or the
-     * chosen file has no content.
-     */
-    boolean isEmpty();
-
-    /**
      * Return the size of the file in bytes.
      *
      * @return the size of the file, or 0 if empty
