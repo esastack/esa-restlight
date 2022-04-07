@@ -29,10 +29,10 @@ public interface ParamResolverContext {
      *
      * @return request context
      */
-    RequestContext context();
+    RequestContext getContext();
 
     /**
-     * Resolves the specified {@link Param} by given {@link #context()}.
+     * Resolves the specified {@link Param} by given {@link #getContext()}.
      *
      * @return context
      * @throws Exception exception
