@@ -30,6 +30,7 @@ import io.esastack.restlight.core.serialize.ProtoBufHttpBodySerializer;
 import io.esastack.restlight.core.util.Constants;
 import io.esastack.restlight.server.bootstrap.WebServerException;
 import io.esastack.restlight.server.context.RequestContext;
+import io.esastack.restlight.server.core.HttpRequest;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -110,7 +111,7 @@ public abstract class FlexibleRequestEntityResolverFactory implements RequestEnt
         @Override
         public HandledValue<?> readFrom(RequestEntity entity, RequestContext context)
                 throws Exception {
-            MediaType contentType = getMediaType(entity);
+            MediaType contentType = getMediaType(entity, context.request());
             //convert argument if content-type is text/plain or missing.
             if (contentType == null || MediaType.TEXT_PLAIN.isCompatibleWith(contentType)) {
                 //ignore empty body.
@@ -131,7 +132,7 @@ public abstract class FlexibleRequestEntityResolverFactory implements RequestEnt
             return checkRequired(nav, converter, HandledValue.failed());
         }
 
-        protected MediaType getMediaType(RequestEntity entity) {
+        protected MediaType getMediaType(RequestEntity entity, HttpRequest request) {
             return entity.mediaType();
         }
     }
@@ -149,15 +150,15 @@ public abstract class FlexibleRequestEntityResolverFactory implements RequestEnt
         }
 
         @Override
-        protected MediaType getMediaType(RequestEntity entity) {
+        protected MediaType getMediaType(RequestEntity entity, HttpRequest request) {
             // judge by param
-            final String format = entity.request().getParam(paramName);
+            final String format = request.getParam(paramName);
             if (Constants.NEGOTIATION_JSON_FORMAT.equals(format)) {
                 entity.mediaType(MediaType.APPLICATION_JSON);
             } else if (Constants.NEGOTIATION_PROTO_BUF_FORMAT.equals(format)) {
                 entity.mediaType(ProtoBufHttpBodySerializer.PROTOBUF);
             }
-            return super.getMediaType(entity);
+            return super.getMediaType(entity, request);
         }
     }
 }

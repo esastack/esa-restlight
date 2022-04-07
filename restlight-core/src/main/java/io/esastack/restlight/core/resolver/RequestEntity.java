@@ -50,12 +50,5 @@ public interface RequestEntity extends HttpEntity {
      * @param ins ins
      */
     void inputStream(InputStream ins);
-
-    /**
-     * Obtains the {@link HttpRequest}.
-     *
-     * @return request
-     */
-    HttpRequest request();
 }
 

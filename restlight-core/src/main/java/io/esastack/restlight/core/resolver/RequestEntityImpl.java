@@ -24,7 +24,6 @@ import io.esastack.restlight.server.context.RequestContext;
 import io.esastack.restlight.server.core.HttpInputStream;
 import io.esastack.restlight.server.core.HttpRequest;
 import io.esastack.restlight.server.core.impl.HttpInputStreamImpl;
-import io.esastack.restlight.server.core.impl.HttpRequestProxy;
 import io.netty.buffer.ByteBuf;
 import io.netty.util.ReferenceCountUtil;
 
@@ -74,19 +73,6 @@ public class RequestEntityImpl extends HttpEntityImpl implements RequestEntity {
     public void inputStream(InputStream ins) {
         IOUtils.closeQuietly(this.ins);
         this.ins = ins;
-    }
-
-    @Override
-    public HttpRequest request() {
-        if (ins != null) {
-            return new HttpRequestProxy(request) {
-                @Override
-                public HttpInputStream inputStream() {
-                    return new HttpInputStreamImpl(ins);
-                }
-            };
-        }
-        return request;
     }
 
     private void safeRelease() {
