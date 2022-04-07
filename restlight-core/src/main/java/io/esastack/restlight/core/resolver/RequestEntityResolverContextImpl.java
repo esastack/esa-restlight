@@ -60,7 +60,7 @@ public class RequestEntityResolverContextImpl implements RequestEntityResolverCo
     @Override
     public Object proceed() throws Exception {
         if (advices == null || index >= advicesSize) {
-            HandledValue<Object> handled;
+            HandledValue<?> handled;
             for (RequestEntityResolver resolver : resolvers) {
                 handled = resolver.readFrom(entity, context);
                 if (handled.isSuccess()) {
