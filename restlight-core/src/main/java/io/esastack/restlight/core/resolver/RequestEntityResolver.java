@@ -30,7 +30,7 @@ public interface RequestEntityResolver extends Resolver {
      * @return resolved value, which must not be null.
      * @throws Exception any exception
      */
-    HandledValue<Object> readFrom(RequestEntity entity, RequestContext context) throws Exception;
+    HandledValue<?> readFrom(RequestEntity entity, RequestContext context) throws Exception;
 
 }
 

@@ -108,7 +108,7 @@ public abstract class FlexibleRequestEntityResolverFactory implements RequestEnt
         }
 
         @Override
-        public HandledValue<Object> readFrom(RequestEntity entity, RequestContext context)
+        public HandledValue<?> readFrom(RequestEntity entity, RequestContext context)
                 throws Exception {
             MediaType contentType = getMediaType(entity);
             //convert argument if content-type is text/plain or missing.

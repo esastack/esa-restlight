@@ -139,7 +139,7 @@ public abstract class FixedRequestEntityResolverFactory implements RequestEntity
         }
 
         @Override
-        public HandledValue<Object> readFrom(RequestEntity entity, RequestContext context) throws Exception {
+        public HandledValue<?> readFrom(RequestEntity entity, RequestContext context) throws Exception {
             return checkRequired(nav, converter, serializer.deserialize(entity));
         }
     }

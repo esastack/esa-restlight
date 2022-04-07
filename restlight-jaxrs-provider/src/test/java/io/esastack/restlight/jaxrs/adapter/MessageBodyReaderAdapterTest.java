@@ -83,7 +83,7 @@ class MessageBodyReaderAdapterTest {
                 return "DEF";
             }
         });
-        HandledValue<Object> handled = adapter.readFrom(entity, context);
+        HandledValue<?> handled = adapter.readFrom(entity, context);
         assertTrue(handled.isSuccess());
         assertEquals("DEF", handled.value());
     }
