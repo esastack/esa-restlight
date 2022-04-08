@@ -16,9 +16,9 @@
 package io.esastack.restlight.core.resolver.rspentity;
 
 import esa.commons.Checks;
+import esa.commons.Result;
 import io.esastack.commons.net.http.MediaType;
 import io.esastack.restlight.core.method.HandlerMethod;
-import io.esastack.restlight.core.resolver.HandledValue;
 import io.esastack.restlight.core.resolver.ResponseEntity;
 import io.esastack.restlight.core.serialize.HttpResponseSerializer;
 import io.esastack.restlight.core.serialize.Serializers;
@@ -46,9 +46,9 @@ public class FixedResponseEntityResolver extends AbstractResponseEntityResolver 
     protected byte[] serialize(ResponseEntity entity,
                                List<MediaType> mediaTypes,
                                RequestContext context) throws Exception {
-        HandledValue<byte[]> handled = Serializers.serializeBySerializer(serializer, entity);
-        if (handled.isSuccess()) {
-            return handled.value();
+        Result<byte[], Void> handled = Serializers.serializeBySerializer(serializer, entity);
+        if (handled.isOk()) {
+            return handled.get();
         } else {
             throw new IllegalStateException("Could not resolve the return value(type=" + entity.type().getName()
                     + ") by specified HttpResponseSerializer: " + serializer.getClass().getName());

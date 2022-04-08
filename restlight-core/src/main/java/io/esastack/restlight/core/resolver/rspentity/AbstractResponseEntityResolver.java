@@ -16,10 +16,10 @@
 package io.esastack.restlight.core.resolver.rspentity;
 
 import esa.commons.Primitives;
+import esa.commons.Result;
 import io.esastack.commons.net.http.MediaType;
 import io.esastack.restlight.core.handler.HandlerPredicate;
 import io.esastack.restlight.core.method.HandlerMethod;
-import io.esastack.restlight.core.resolver.HandledValue;
 import io.esastack.restlight.core.resolver.ResponseEntity;
 import io.esastack.restlight.core.resolver.ResponseEntityChannel;
 import io.esastack.restlight.core.resolver.ResponseEntityResolver;
@@ -53,11 +53,11 @@ public abstract class AbstractResponseEntityResolver implements ResponseEntityRe
     }
 
     @Override
-    public HandledValue<Void> writeTo(ResponseEntity entity,
-                                      ResponseEntityChannel channel,
-                                      RequestContext context) throws Exception {
+    public Result<Void, Void> writeTo(ResponseEntity entity,
+                                ResponseEntityChannel channel,
+                                RequestContext context) throws Exception {
         if (!supports(entity)) {
-            return HandledValue.failed();
+            return Result.err();
         }
         final Object entityValue = context.response().entity();
         final HttpResponse response = context.response();
@@ -78,7 +78,7 @@ public abstract class AbstractResponseEntityResolver implements ResponseEntityRe
         }
 
         channel.end(serialized);
-        return HandledValue.succeed(null);
+        return Result.ok();
     }
 
     /**

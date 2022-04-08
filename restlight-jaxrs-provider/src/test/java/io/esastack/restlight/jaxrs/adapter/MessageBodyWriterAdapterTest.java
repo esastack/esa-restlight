@@ -15,13 +15,13 @@
  */
 package io.esastack.restlight.jaxrs.adapter;
 
+import esa.commons.Result;
 import esa.commons.collection.AttributeKey;
 import esa.commons.collection.AttributeMap;
 import esa.commons.collection.Attributes;
 import io.esastack.commons.net.http.HttpHeaders;
 import io.esastack.commons.net.http.MediaType;
 import io.esastack.commons.net.netty.http.Http1HeadersImpl;
-import io.esastack.restlight.core.resolver.HandledValue;
 import io.esastack.restlight.core.resolver.ResponseEntity;
 import io.esastack.restlight.core.util.Ordered;
 import io.esastack.restlight.server.bootstrap.ResponseContent;
@@ -72,7 +72,7 @@ class MessageBodyWriterAdapterTest {
         final Attributes attrs = new AttributeMap();
         when(entity.response()).thenReturn(response);
         final RequestContext context = new RequestContextImpl(attrs, mock(HttpRequest.class), response);
-        assertFalse(adapter.writeTo(entity, null, context).isSuccess());
+        assertFalse(adapter.writeTo(entity, null, context).isOk());
 
         // MessageBodyWriter is null.
         final HttpOutputStream os = mock(HttpOutputStream.class);
@@ -80,7 +80,7 @@ class MessageBodyWriterAdapterTest {
         attrs.attr(ProducesPredicate.COMPATIBLE_MEDIA_TYPES).set(Collections.singletonList(MediaType.ALL));
         when(response.entity()).thenReturn("DEF");
         when(providers.getMessageBodyWriter(any(), any(), any(), any())).thenReturn(null);
-        assertFalse(adapter.writeTo(entity, null, context).isSuccess());
+        assertFalse(adapter.writeTo(entity, null, context).isOk());
         verify(os, never()).close();
 
         // MessageBodyWriter is not null.
@@ -111,8 +111,8 @@ class MessageBodyWriterAdapterTest {
         final ResponseContent content = mock(ResponseContent.class);
         context.attrs().attr(RequestContextImpl.RESPONSE_CONTENT).set(content);
         when(content.alloc()).thenReturn(ByteBufAllocator.DEFAULT);
-        final HandledValue<Void> handled = adapter.writeTo(entity, null, context);
-        assertTrue(handled.isSuccess());
+        final Result<Void, Void> handled = adapter.writeTo(entity, null, context);
+        assertTrue(handled.isOk());
         verify(os).close();
         assertEquals(1, writableHeaders.size());
         assertEquals("value0", writableHeaders.getFirst("name0"));

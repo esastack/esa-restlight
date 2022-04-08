@@ -46,7 +46,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * Abstract implementation for a Restlight server bootstrap. This class allows to set some server-level configurations
  * and the biz-level configurations(in {@link Deployments}) to bootstrap a {@link RestlightServer} which could
  * be {@link #start()} for service.
- * <p>
  */
 public abstract class AbstractRestlight extends AbstractDelegatedRestlightServer
         implements RestlightServer {
