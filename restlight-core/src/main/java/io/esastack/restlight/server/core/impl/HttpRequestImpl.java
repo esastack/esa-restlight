@@ -250,11 +250,6 @@ public class HttpRequestImpl implements HttpRequest {
     }
 
     @Override
-    public ByteBufAllocator alloc() {
-        return req.alloc();
-    }
-
-    @Override
     public String toString() {
         return req.toString();
     }

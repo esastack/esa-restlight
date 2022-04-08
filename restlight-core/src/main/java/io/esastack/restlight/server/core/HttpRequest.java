@@ -239,13 +239,4 @@ public interface HttpRequest {
      * @return port
      */
     int localPort();
-
-    /**
-     * Get current allocator, if the {@link Buffer} is wrapped by {@link ByteBuf}, the {@link ByteBufAllocator}
-     * to allocate {@link ByteBuf} will be returned, otherwise the {@code null} will be returned.
-     *
-     * @return allocator if the {@link Buffer} is wrapped by {@link ByteBuf}, otherwise {@code null}.
-     */
-    @Beta
-    Object alloc();
 }
