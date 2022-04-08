@@ -80,7 +80,7 @@ public interface HttpResponse {
      *
      * @param newUri target uri
      */
-    default void sendRedirect(String newUri) {
+    default void redirect(String newUri) {
         Checks.checkNotEmptyArg(newUri);
         headers().set(HttpHeaderNames.LOCATION, newUri);
         status(HttpStatus.FOUND.code());
