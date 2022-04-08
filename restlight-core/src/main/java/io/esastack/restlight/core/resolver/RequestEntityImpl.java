@@ -65,14 +65,16 @@ public class RequestEntityImpl extends HttpEntityImpl implements RequestEntity {
     }
 
     @Override
-    public void body(Buffer data) {
+    public RequestEntity body(Buffer data) {
         this.body = data;
+        return this;
     }
 
     @Override
-    public void inputStream(InputStream ins) {
+    public RequestEntity inputStream(InputStream ins) {
         IOUtils.closeQuietly(this.ins);
         this.ins = ins;
+        return this;
     }
 
     private void safeRelease() {

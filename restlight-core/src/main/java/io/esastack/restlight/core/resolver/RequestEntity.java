@@ -35,7 +35,7 @@ public interface RequestEntity extends HttpEntity {
      *
      * @param data data
      */
-    void body(Buffer data);
+    RequestEntity body(Buffer data);
 
     /**
      * Obtains the {@link HttpInputStream}.
@@ -49,6 +49,6 @@ public interface RequestEntity extends HttpEntity {
      *
      * @param ins ins
      */
-    void inputStream(InputStream ins);
+    RequestEntity inputStream(InputStream ins);
 }
 
