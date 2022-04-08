@@ -23,6 +23,9 @@ import io.esastack.restlight.server.bootstrap.ResponseContent;
 import io.esastack.restlight.server.context.RequestContext;
 import io.esastack.restlight.server.core.HttpRequest;
 import io.esastack.restlight.server.core.HttpResponse;
+import io.esastack.restlight.server.core.impl.HttpResponseImpl;
+
+import java.util.function.Consumer;
 
 public class RequestContextImpl implements RequestContext {
 
@@ -58,6 +61,14 @@ public class RequestContextImpl implements RequestContext {
     @Override
     public Attributes attrs() {
         return attributes;
+    }
+
+    @Override
+    public void onEnd(Consumer<RequestContext> listener) {
+        if (response instanceof HttpResponseImpl) {
+            HttpResponseImpl httpResponse = (HttpResponseImpl) response;
+            httpResponse.onEnd(listener, this);
+        }
     }
 }
 

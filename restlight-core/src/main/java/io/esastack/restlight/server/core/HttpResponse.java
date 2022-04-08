@@ -107,12 +107,4 @@ public interface HttpResponse {
      * @return trailers.
      */
     HttpHeaders trailers();
-
-    /**
-     * Add a listener to this response, this listener will be called after current response has been write.
-     *
-     * @param listener listener
-     */
-    void onEnd(Consumer<HttpResponse> listener);
-
 }

@@ -19,6 +19,8 @@ import esa.commons.collection.Attributes;
 import io.esastack.restlight.server.core.HttpRequest;
 import io.esastack.restlight.server.core.HttpResponse;
 
+import java.util.function.Consumer;
+
 public interface RequestContext {
 
     /**
@@ -42,5 +44,11 @@ public interface RequestContext {
      */
     Attributes attrs();
 
+    /**
+     * Add a listener to this requestContext, this listener will be called after current response has been write.
+     *
+     * @param listener listener
+     */
+    void onEnd(Consumer<RequestContext> listener);
 }
 

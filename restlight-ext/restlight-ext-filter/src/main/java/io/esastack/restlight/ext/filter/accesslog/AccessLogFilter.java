@@ -23,7 +23,6 @@ import esa.commons.logging.Logger;
 import esa.commons.logging.LoggerFactory;
 import io.esastack.restlight.server.context.FilterContext;
 import io.esastack.restlight.server.core.HttpRequest;
-import io.esastack.restlight.server.core.HttpResponse;
 import io.esastack.restlight.server.handler.Filter;
 import io.esastack.restlight.server.handler.FilterChain;
 import io.esastack.restlight.server.util.DateUtils;
@@ -69,7 +68,6 @@ public class AccessLogFilter implements Filter {
     @Override
     public CompletionStage<Void> doFilter(FilterContext context, FilterChain chain) {
         final HttpRequest request = context.request();
-        final HttpResponse response = context.response();
 
         final io.esastack.commons.net.http.HttpMethod method = request.method();
         final String path = fullUri ? request.uri() : request.path();
@@ -78,7 +76,7 @@ public class AccessLogFilter implements Filter {
         final String remoteAddr = request.remoteAddr();
         final int remotePort = request.remotePort();
         final long start = System.nanoTime();
-        response.onEnd(r -> {
+        context.onEnd(ctx -> {
             final String log = StringUtils.concat(
                     DateUtils.now(),
                     " [", method.name(),
@@ -87,7 +85,7 @@ public class AccessLogFilter implements Filter {
                     "] contentLength=", String.valueOf(contentLength),
                     ", remoteAddr=", remoteAddr,
                     ", remotePort=", String.valueOf(remotePort),
-                    ", code=", String.valueOf(r.status()),
+                    ", code=", String.valueOf(ctx.response().status()),
                     ", duration=",
                     String.valueOf(TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - start)), " mills");
 

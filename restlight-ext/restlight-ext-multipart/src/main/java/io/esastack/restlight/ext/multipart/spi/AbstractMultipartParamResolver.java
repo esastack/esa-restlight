@@ -150,7 +150,7 @@ abstract class AbstractMultipartParamResolver extends NameAndValueResolverFactor
         final HttpPostMultipartRequestDecoder decoder = ctx.attrs().attr(MULTIPART_DECODER).getAndRemove();
         if (ctx.attrs().attr(CLEANER_LISTENER).get() == null && files != null && decoder != null) {
             ctx.attrs().attr(CLEANER_LISTENER).set("");
-            ctx.response().onEnd((r) -> {
+            ctx.onEnd(context -> {
                 for (MultipartFile file : files) {
                     try {
                         file.delete();

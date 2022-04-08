@@ -20,13 +20,10 @@ import io.netty.handler.codec.http.HttpHeaderNames;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collection;
-import java.util.Collections;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class MockHttpResponseTest {
 
@@ -62,19 +59,5 @@ class MockHttpResponseTest {
 
         final Collection<String> cookies = response.headers().getAll(HttpHeaderNames.SET_COOKIE);
         assertEquals(2, cookies.size());
-    }
-
-    @Test
-    void testCallEndListener() {
-        final AtomicBoolean end0 = new AtomicBoolean();
-        final AtomicBoolean end1 = new AtomicBoolean();
-
-        final MockHttpResponse response = MockHttpResponse.aMockResponse()
-                .withEndListener(rsp -> end0.set(true))
-                .withEndListeners(Collections.singletonList(rsp -> end1.set(true)))
-                .build();
-        response.callEndListener();
-        assertTrue(end0.get());
-        assertTrue(end1.get());
     }
 }

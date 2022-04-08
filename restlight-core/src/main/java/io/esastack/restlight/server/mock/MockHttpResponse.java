@@ -33,8 +33,6 @@ import java.util.function.Consumer;
 public class MockHttpResponse implements HttpResponse {
 
     private static final Logger logger = LoggerFactory.getLogger(MockHttpResponse.class);
-
-    private final List<Consumer<HttpResponse>> endListeners = new ArrayList<>(1);
     private final HttpHeaders headers = new Http1HeadersImpl();
     private final HttpHeaders trailingHeaders = new Http1HeadersImpl();
     private final Buffer content;
@@ -90,11 +88,6 @@ public class MockHttpResponse implements HttpResponse {
     }
 
     @Override
-    public void onEnd(Consumer<HttpResponse> listener) {
-        endListeners.add(listener);
-    }
-
-    @Override
     public HttpHeaders headers() {
         return this.headers;
     }
@@ -108,50 +101,22 @@ public class MockHttpResponse implements HttpResponse {
         return content;
     }
 
-    public void callEndListener() {
-        for (Consumer<HttpResponse> endListener : endListeners) {
-            try {
-                endListener.accept(this);
-            } catch (Throwable e) {
-                logger.error("Error while calling end listener: " + endListener, e);
-            }
-        }
-    }
-
     private void reset0() {
         status = 200;
         headers.clear();
         trailingHeaders.clear();
-        endListeners.clear();
     }
 
     public static final class Builder {
 
-        private final List<Consumer<HttpResponse>> endListeners = new ArrayList<>();
         private final Buffer content;
 
         private Builder(Buffer content) {
             this.content = content;
         }
 
-        public Builder withEndListeners(List<Consumer<HttpResponse>> endListeners) {
-            Checks.checkNotNull(endListeners, "endListeners");
-            for (Consumer<HttpResponse> listener : endListeners) {
-                withEndListener(listener);
-            }
-            return this;
-        }
-
-        public Builder withEndListener(Consumer<HttpResponse> endListener) {
-            Checks.checkNotNull(endListener, "endListener");
-            this.endListeners.add(endListener);
-            return this;
-        }
-
         public MockHttpResponse build() {
-            MockHttpResponse mockHttpResponse = new MockHttpResponse(content);
-            endListeners.forEach(mockHttpResponse::onEnd);
-            return mockHttpResponse;
+            return new MockHttpResponse(content);
         }
     }
 
