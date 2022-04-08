@@ -38,6 +38,22 @@ public final class ChannelWrapper {
         channel.close();
     }
 
+    public boolean isRegistered() {
+        return channel.isRegistered();
+    }
+
+    public boolean isOpen() {
+        return channel.isOpen();
+    }
+
+    public boolean isActive() {
+        return channel.isActive();
+    }
+
+    public boolean isWritable() {
+        return channel.isWritable();
+    }
+
     @Override
     public String toString() {
         return channel.toString();
