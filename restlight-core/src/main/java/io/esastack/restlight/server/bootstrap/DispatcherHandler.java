@@ -22,6 +22,7 @@ import io.esastack.restlight.server.schedule.RequestTask;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 
 /**
  * DispatcherHandler
@@ -59,7 +60,7 @@ public interface DispatcherHandler {
      * @param route   routes
      */
     void service(RequestContext context,
-                 CompletableFuture<Void> promise,
+                 CompletionStage<Void> promise,
                  Route route);
 
     /**

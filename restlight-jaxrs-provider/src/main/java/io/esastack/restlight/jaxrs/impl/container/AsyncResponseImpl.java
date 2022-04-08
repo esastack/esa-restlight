@@ -28,6 +28,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
 import java.util.concurrent.atomic.AtomicReference;
@@ -48,9 +49,9 @@ public class AsyncResponseImpl implements AsyncResponse {
 
     private volatile int state = AsyncState.SUSPENDED.code;
 
-    public AsyncResponseImpl(CompletableFuture<Object> asyncResponse) {
+    public AsyncResponseImpl(CompletionStage<Object> asyncResponse) {
         Checks.checkNotNull(asyncResponse, "asyncResponse");
-        this.asyncResponse = asyncResponse;
+        this.asyncResponse = asyncResponse.toCompletableFuture();
     }
 
     @Override

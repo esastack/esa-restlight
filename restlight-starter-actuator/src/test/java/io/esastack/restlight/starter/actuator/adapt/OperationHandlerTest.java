@@ -35,6 +35,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 import java.util.function.Function;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -50,9 +51,9 @@ class OperationHandlerTest {
         final OperationHandler handler = new OperationHandler(op);
         final HttpRequest request = MockHttpRequest.aMockRequest().build();
         final HttpResponse response = MockHttpResponse.aMockResponse().build();
-        final CompletableFuture<Object> ret = handler.handle(new RequestContextImpl(request, response), null);
+        final CompletionStage<Object> ret = handler.handle(new RequestContextImpl(request, response), null);
         assertNotNull(ret);
-        assertNull(ret.join());
+        assertNull(ret.toCompletableFuture().join());
     }
 
     @Test
@@ -66,20 +67,20 @@ class OperationHandlerTest {
         Map<String, String> body = new HashMap<>(16);
         body.put("foo", "1");
         body.put("bar", "2");
-        final CompletableFuture<Object> ret = handler.handle(new RequestContextImpl(request1, response), body);
+        final CompletionStage<Object> ret = handler.handle(new RequestContextImpl(request1, response), body);
         assertNotNull(ret);
-        assertNotNull(ret.join());
-        final Map<String, Object> args = (Map<String, Object>) ret.join();
+        assertNotNull(ret.toCompletableFuture().join());
+        final Map<String, Object> args = (Map<String, Object>) ret.toCompletableFuture().join();
         assertEquals(0, args.size());
 
         final HttpRequest request2 = MockHttpRequest.aMockRequest()
                 .withMethod("POST")
                 .build();
         final HttpResponse response1 = MockHttpResponse.aMockResponse().build();
-        final CompletableFuture<Object> ret1 = handler.handle(new RequestContextImpl(request2, response1), body);
+        final CompletionStage<Object> ret1 = handler.handle(new RequestContextImpl(request2, response1), body);
         assertNotNull(ret1);
-        assertNotNull(ret1.join());
-        final Map<String, Object> args1 = (Map<String, Object>) ret1.join();
+        assertNotNull(ret1.toCompletableFuture().join());
+        final Map<String, Object> args1 = (Map<String, Object>) ret1.toCompletableFuture().join();
         assertEquals(body, args1);
     }
 
@@ -95,7 +96,7 @@ class OperationHandlerTest {
         PatternsPredicate p = new PatternsPredicate(new String[]{"/{foo}/{bar}"});
         RequestContext context = new RequestContextImpl(get, MockHttpResponse.aMockResponse().build());
         p.test(context);
-        final CompletableFuture<Object> ret1 = handler.handle(context, null);
+        final CompletableFuture<Object> ret1 = handler.handle(context, null).toCompletableFuture();
         assertNotNull(ret1);
         assertNotNull(ret1.join());
         final Map<String, Object> args = (Map<String, Object>) ret1.join();
@@ -116,10 +117,10 @@ class OperationHandlerTest {
                 .withParameter("bar", "b")
                 .build();
         final HttpResponse response = MockHttpResponse.aMockResponse().build();
-        final CompletableFuture<Object> ret1 = handler.handle(new RequestContextImpl(get, response), null);
+        final CompletionStage<Object> ret1 = handler.handle(new RequestContextImpl(get, response), null);
         assertNotNull(ret1);
-        assertNotNull(ret1.join());
-        final Map<String, Object> args = (Map<String, Object>) ret1.join();
+        assertNotNull(ret1.toCompletableFuture().join());
+        final Map<String, Object> args = (Map<String, Object>) ret1.toCompletableFuture().join();
         assertEquals(2, args.size());
         assertTrue(args.containsKey("foo"));
         assertTrue(args.containsKey("bar"));
@@ -133,9 +134,9 @@ class OperationHandlerTest {
         final OperationHandler handler = new OperationHandler(op);
         final HttpRequest request = MockHttpRequest.aMockRequest().build();
         final HttpResponse response = MockHttpResponse.aMockResponse().build();
-        final CompletableFuture<Object> ret1 = handler.handle(new RequestContextImpl(request, response), null);
+        final CompletionStage<Object> ret1 = handler.handle(new RequestContextImpl(request, response), null);
         assertNotNull(ret1);
-        assertNull(ret1.join());
+        assertNull(ret1.toCompletableFuture().join());
     }
 
     @Test
@@ -144,10 +145,10 @@ class OperationHandlerTest {
         final OperationHandler handler = new OperationHandler(op);
         final HttpRequest request = MockHttpRequest.aMockRequest().build();
         final HttpResponse response = MockHttpResponse.aMockResponse().build();
-        final CompletableFuture<Object> ret1 = handler.handle(new RequestContextImpl(request, response), null);
+        final CompletionStage<Object> ret1 = handler.handle(new RequestContextImpl(request, response), null);
         assertNotNull(ret1);
-        assertNotNull(ret1.join());
-        assertEquals("foo", ret1.join());
+        assertNotNull(ret1.toCompletableFuture().join());
+        assertEquals("foo", ret1.toCompletableFuture().join());
         assertEquals(404, response.status());
     }
 
@@ -158,10 +159,10 @@ class OperationHandlerTest {
         final OperationHandler handler = new OperationHandler(op);
         final HttpRequest request = MockHttpRequest.aMockRequest().build();
         final HttpResponse response = MockHttpResponse.aMockResponse().build();
-        final CompletableFuture<Object> ret1 = handler.handle(new RequestContextImpl(request, response), null);
+        final CompletionStage<Object> ret1 = handler.handle(new RequestContextImpl(request, response), null);
         assertNotNull(ret1);
         assertEquals(cf, ret1);
-        assertNull(ret1.join());
+        assertNull(ret1.toCompletableFuture().join());
     }
 
     @Test
@@ -171,9 +172,9 @@ class OperationHandlerTest {
         final OperationHandler handler = new OperationHandler(op);
         final HttpRequest request = MockHttpRequest.aMockRequest().build();
         final HttpResponse response = MockHttpResponse.aMockResponse().build();
-        final CompletableFuture<Object> ret1 = handler.handle(new RequestContextImpl(request, response), null);
+        final CompletionStage<Object> ret1 = handler.handle(new RequestContextImpl(request, response), null);
         assertNotNull(ret1);
-        assertEquals(obj, ret1.join());
+        assertEquals(obj, ret1.toCompletableFuture().join());
     }
 
     private static WebOperation webOperation(Function<InvocationContext, Object> exe) {

@@ -18,6 +18,7 @@ package io.esastack.restlight.server.schedule;
 import io.esastack.restlight.server.context.RequestContext;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 
 class RequestTaskImpl implements RequestTask {
 
@@ -50,7 +51,7 @@ class RequestTaskImpl implements RequestTask {
     }
 
     @Override
-    public CompletableFuture<Void> promise() {
+    public CompletionStage<Void> promise() {
         return promise;
     }
 

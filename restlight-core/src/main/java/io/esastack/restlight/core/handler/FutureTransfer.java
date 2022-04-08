@@ -18,18 +18,17 @@ package io.esastack.restlight.core.handler;
 import esa.commons.annotation.Internal;
 import io.esastack.restlight.server.context.RequestContext;
 
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
 /**
- * The {@link FutureTransfer} is designed to transfer the given value to {@link CompletableFuture} format.
+ * The {@link FutureTransfer} is designed to transfer the given value to {@link CompletionStage} format.
  */
 @Internal
 @FunctionalInterface
 public interface FutureTransfer {
 
     /**
-     * Transfer the given {@code value} to {@link CompletableFuture}.
+     * Transfer the given {@code value} to {@link CompletionStage}.
      *
      * @param context current context
      * @param value   value

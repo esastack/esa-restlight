@@ -23,7 +23,7 @@ import io.esastack.restlight.server.context.RequestContext;
 import io.esastack.restlight.server.core.HttpResponse;
 import io.esastack.restlight.server.util.Futures;
 
-import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 
 public class HandlerMethodResolver implements HandlerValueResolver {
 
@@ -35,7 +35,7 @@ public class HandlerMethodResolver implements HandlerValueResolver {
     }
 
     @Override
-    public CompletableFuture<Void> handle(Object value, RequestContext context) {
+    public CompletionStage<Void> handle(Object value, RequestContext context) {
         final HttpResponse response = context.response();
         HttpStatus status = methodInfo.customStatus();
         if (status != null) {

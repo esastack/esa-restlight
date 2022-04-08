@@ -24,7 +24,6 @@ import io.esastack.restlight.core.util.Constants;
 import io.esastack.restlight.server.context.RequestContext;
 
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
 @Internal
@@ -54,8 +53,8 @@ public class CompletionStageTransferFactory implements FutureTransferFactory {
 
         @SuppressWarnings("unchecked")
         @Override
-        public CompletableFuture<Object> transferTo(RequestContext context, Object value) {
-            return (CompletableFuture<Object>) value;
+        public CompletionStage<Object> transferTo(RequestContext context, Object value) {
+            return (CompletionStage<Object>) value;
         }
     }
 

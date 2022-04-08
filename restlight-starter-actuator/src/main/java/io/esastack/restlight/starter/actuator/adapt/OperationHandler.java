@@ -32,11 +32,12 @@ import org.springframework.boot.actuate.endpoint.web.WebOperation;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 
 /**
  * This handler is a fake handler for Restlight. {@link #handle(RequestContext, Map)} method will be
  * regarded as a controller interface to be registered into the {@link RouteRegistry}, and it is designed as a
- * asynchronously controller which always returns a {@link CompletableFuture} result.
+ * asynchronously controller which always returns a {@link CompletionStage} result.
  */
 class OperationHandler {
 
@@ -48,7 +49,7 @@ class OperationHandler {
     }
 
     @SuppressWarnings("unused")
-    CompletableFuture<Object> handle(RequestContext context, Map<String, String> body) {
+    CompletionStage<Object> handle(RequestContext context, Map<String, String> body) {
         return handleResult(doInvoke(context, body), context.response());
     }
 
@@ -76,7 +77,7 @@ class OperationHandler {
         return arguments;
     }
 
-    private CompletableFuture<Object> handleResult(Object result, HttpResponse res) {
+    private CompletionStage<Object> handleResult(Object result, HttpResponse res) {
         Object r;
         if (result instanceof WebEndpointResponse) {
             WebEndpointResponse<?> response = (WebEndpointResponse<?>) result;
@@ -89,7 +90,7 @@ class OperationHandler {
     }
 
     @SuppressWarnings("unchecked")
-    private CompletableFuture<Object> wrap(Object obj) {
+    private CompletionStage<Object> wrap(Object obj) {
         if (obj instanceof CompletableFuture) {
             return (CompletableFuture<Object>) obj;
         }

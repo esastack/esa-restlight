@@ -263,7 +263,7 @@ public class ScheduledRestlightHandler implements RestlightHandler {
             LoggerUtils.logger()
                     .debug("{} rejected by RequestTaskHook, but response haven't been committed", task);
         }
-        if (!task.promise().isDone()) {
+        if (!task.promise().toCompletableFuture().isDone()) {
             PromiseUtils.setSuccess(task.promise());
         }
     }

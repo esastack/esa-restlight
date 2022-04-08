@@ -37,7 +37,6 @@ import jakarta.ws.rs.container.ContainerResponseFilter;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.RuntimeDelegate;
 
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
 public class JaxrsResponseFiltersAdapter implements Filter {
@@ -71,7 +70,7 @@ public class JaxrsResponseFiltersAdapter implements Filter {
         }
     }
 
-    static CompletableFuture<Void> applyResponseFilters(RequestContext context, ContainerResponseFilter[] filters) {
+    static CompletionStage<Void> applyResponseFilters(RequestContext context, ContainerResponseFilter[] filters) {
         if (!isSuccess(context) || filters == null || filters.length == 0) {
             return Futures.completedFuture();
         }
