@@ -168,9 +168,5 @@ class XssFilterTest {
         verify(delegate, never()).cookies();
         filter.cookies();
         verify(delegate).cookies();
-
-        verify(delegate, never()).alloc();
-        filter.alloc();
-        verify(delegate).alloc();
     }
 }

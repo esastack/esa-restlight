@@ -31,7 +31,7 @@ import java.util.concurrent.CompletionStage;
  * <p>
  * 1. find {@link Route} by {@link #route(RequestContext)}.
  * 2. process request by {@link Route#executionFactory()},
- * see {@link #service(RequestContext, CompletableFuture, Route)}.
+ * see {@link #service(RequestContext, CompletionStage, Route)}.
  */
 @Internal
 public interface DispatcherHandler {
