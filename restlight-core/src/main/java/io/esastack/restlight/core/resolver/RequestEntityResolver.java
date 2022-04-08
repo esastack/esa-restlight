@@ -15,6 +15,7 @@
  */
 package io.esastack.restlight.core.resolver;
 
+import esa.commons.Result;
 import io.esastack.restlight.server.context.RequestContext;
 
 /**
@@ -30,7 +31,7 @@ public interface RequestEntityResolver extends Resolver {
      * @return resolved value, which must not be null.
      * @throws Exception any exception
      */
-    HandledValue<?> readFrom(RequestEntity entity, RequestContext context) throws Exception;
+    Result<?, Void> readFrom(RequestEntity entity, RequestContext context) throws Exception;
 
 }
 

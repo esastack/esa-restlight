@@ -15,10 +15,10 @@
  */
 package io.esastack.restlight.core.resolver.reqentity;
 
+import esa.commons.Result;
 import esa.commons.StringUtils;
 import io.esastack.commons.net.http.MediaType;
 import io.esastack.restlight.core.method.Param;
-import io.esastack.restlight.core.resolver.HandledValue;
 import io.esastack.restlight.core.resolver.RequestEntity;
 import io.esastack.restlight.core.resolver.RequestEntityResolver;
 import io.esastack.restlight.core.resolver.RequestEntityResolverFactory;
@@ -79,15 +79,15 @@ public abstract class FlexibleRequestEntityResolverFactory implements RequestEnt
         return 100;
     }
 
-    protected static HandledValue<?> checkRequired(NameAndValue<String> nav,
+    protected static Result<?, Void> checkRequired(NameAndValue<String> nav,
                                                         StringConverter converter,
-                                                        HandledValue<?> handled) {
-        if (handled.value() != null) {
+                                                        Result<?, Void> handled) {
+        if (handled.isOk() && handled.get() != null) {
             return handled;
         }
         Supplier<String> defaultValue;
         if ((defaultValue = nav.defaultValue()) != null) {
-            return HandledValue.succeed(converter.fromString(defaultValue.get()));
+            return Result.ok(converter.fromString(defaultValue.get()));
         } else if (nav.required()) {
             throw WebServerException.badRequest("Missing required value: " + nav.name());
         }
@@ -109,27 +109,27 @@ public abstract class FlexibleRequestEntityResolverFactory implements RequestEnt
         }
 
         @Override
-        public HandledValue<?> readFrom(RequestEntity entity, RequestContext context)
+        public Result<?, Void> readFrom(RequestEntity entity, RequestContext context)
                 throws Exception {
             MediaType contentType = getMediaType(entity, context.request());
             //convert argument if content-type is text/plain or missing.
             if (contentType == null || MediaType.TEXT_PLAIN.isCompatibleWith(contentType)) {
                 //ignore empty body.
                 if (entity.inputStream().available() == 0) {
-                    return checkRequired(nav, converter, HandledValue.succeed(null));
+                    return checkRequired(nav, converter, Result.ok());
                 }
-                return checkRequired(nav, converter, HandledValue.succeed(converter
+                return checkRequired(nav, converter, Result.ok(converter
                         .fromString(context.request().body().string(StandardCharsets.UTF_8))));
             }
 
             //search serializer to resolve argument
-            HandledValue<?> handled;
+            Result<?, Void> handled;
             for (HttpRequestSerializer serializer : serializers) {
-                if ((handled = serializer.deserialize(entity)).isSuccess()) {
+                if ((handled = serializer.deserialize(entity)).isOk()) {
                     return checkRequired(nav, converter, handled);
                 }
             }
-            return checkRequired(nav, converter, HandledValue.failed());
+            return checkRequired(nav, converter, Result.err());
         }
 
         protected MediaType getMediaType(RequestEntity entity, HttpRequest request) {

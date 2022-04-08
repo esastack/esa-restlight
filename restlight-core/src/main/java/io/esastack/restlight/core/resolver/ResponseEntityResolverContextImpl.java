@@ -16,6 +16,7 @@
 package io.esastack.restlight.core.resolver;
 
 import esa.commons.Checks;
+import esa.commons.Result;
 import io.esastack.restlight.server.bootstrap.WebServerException;
 import io.esastack.restlight.server.context.RequestContext;
 
@@ -63,10 +64,10 @@ public class ResponseEntityResolverContextImpl implements ResponseEntityResolver
     @Override
     public void proceed() throws Exception {
         if (advices == null || index >= advices.size()) {
-            HandledValue<Void> handled;
+            Result<Void, Void> handled;
             for (ResponseEntityResolver resolver : resolvers) {
                 handled = resolver.writeTo(entity, channel, context);
-                if (handled.isSuccess()) {
+                if (handled.isOk()) {
                     return;
                 }
             }

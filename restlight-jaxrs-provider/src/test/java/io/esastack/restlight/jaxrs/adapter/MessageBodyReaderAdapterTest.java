@@ -15,10 +15,10 @@
  */
 package io.esastack.restlight.jaxrs.adapter;
 
+import esa.commons.Result;
 import io.esastack.commons.net.http.MediaType;
 import io.esastack.commons.net.netty.http.Http1HeadersImpl;
 import io.esastack.restlight.core.method.Param;
-import io.esastack.restlight.core.resolver.HandledValue;
 import io.esastack.restlight.core.resolver.RequestEntity;
 import io.esastack.restlight.core.util.Ordered;
 import io.esastack.restlight.server.context.RequestContext;
@@ -61,12 +61,12 @@ class MessageBodyReaderAdapterTest {
         when(context.request()).thenReturn(request);
         when(request.headers()).thenReturn(new Http1HeadersImpl());
         MessageBodyReaderAdapter<?> adapter = new MessageBodyReaderAdapter<>(providers);
-        assertFalse(adapter.readFrom(entity, context).isSuccess());
+        assertFalse(adapter.readFrom(entity, context).isOk());
 
         doReturn(String.class).when(entity).type();
         when(entity.mediaType()).thenReturn(MediaType.ALL);
         when(providers.getMessageBodyReader(any(), any(), any(), any())).thenReturn(null);
-        assertFalse(adapter.readFrom(entity, context).isSuccess());
+        assertFalse(adapter.readFrom(entity, context).isOk());
 
         when(providers.getMessageBodyReader(any(), any(), any(), any())).thenReturn(new MessageBodyReader<Object>() {
             @Override
@@ -83,9 +83,9 @@ class MessageBodyReaderAdapterTest {
                 return "DEF";
             }
         });
-        HandledValue<?> handled = adapter.readFrom(entity, context);
-        assertTrue(handled.isSuccess());
-        assertEquals("DEF", handled.value());
+        Result<?, Void> handled = adapter.readFrom(entity, context);
+        assertTrue(handled.isOk());
+        assertEquals("DEF", handled.get());
     }
 
 }

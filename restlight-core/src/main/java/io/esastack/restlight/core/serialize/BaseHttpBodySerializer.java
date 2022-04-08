@@ -15,8 +15,8 @@
  */
 package io.esastack.restlight.core.serialize;
 
+import esa.commons.Result;
 import io.esastack.commons.net.http.MediaType;
-import io.esastack.restlight.core.resolver.HandledValue;
 import io.esastack.restlight.core.resolver.RequestEntity;
 import io.esastack.restlight.core.resolver.ResponseEntity;
 import io.netty.handler.codec.http.HttpHeaderNames;
@@ -26,21 +26,21 @@ import java.lang.reflect.Type;
 public abstract class BaseHttpBodySerializer implements HttpBodySerializer {
 
     @Override
-    public <T> HandledValue<T> deserialize(RequestEntity entity) throws Exception {
+    public <T> Result<T, Void> deserialize(RequestEntity entity) throws Exception {
         if (!supportsRead(entity)) {
-            return HandledValue.failed();
+            return Result.err();
         }
 
-        return HandledValue.succeed(doDeserialize(entity.body().getBytes(), entity.type()));
+        return Result.ok(doDeserialize(entity.body().getBytes(), entity.type()));
     }
 
     @Override
-    public HandledValue<byte[]> serialize(ResponseEntity entity) throws Exception {
+    public Result<byte[], Void> serialize(ResponseEntity entity) throws Exception {
         if (!supportsWrite(entity)) {
-            return HandledValue.failed();
+            return Result.err();
         }
         addContentType(entity);
-        return HandledValue.succeed(doSerialize(entity.response().entity()));
+        return Result.ok(doSerialize(entity.response().entity()));
     }
 
     protected byte[] doSerialize(Object target) throws Exception {

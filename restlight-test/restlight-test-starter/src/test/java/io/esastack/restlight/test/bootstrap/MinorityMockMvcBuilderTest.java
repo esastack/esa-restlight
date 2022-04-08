@@ -15,11 +15,11 @@
  */
 package io.esastack.restlight.test.bootstrap;
 
+import esa.commons.Result;
 import io.esastack.commons.net.http.MediaType;
 import io.esastack.restlight.core.interceptor.HandlerInterceptor;
 import io.esastack.restlight.core.method.HandlerMethod;
 import io.esastack.restlight.core.method.Param;
-import io.esastack.restlight.core.resolver.HandledValue;
 import io.esastack.restlight.core.resolver.ParamResolverAdapter;
 import io.esastack.restlight.core.resolver.ParamResolverAdviceAdapter;
 import io.esastack.restlight.core.resolver.ParamResolverContext;
@@ -71,13 +71,13 @@ class MinorityMockMvcBuilderTest {
     private static class HttpBodySerializerImpl implements HttpBodySerializer {
 
         @Override
-        public <T> HandledValue<T> deserialize(RequestEntity entity) {
+        public <T> Result<T, Void> deserialize(RequestEntity entity) {
             return null;
         }
 
         @Override
-        public HandledValue<byte[]> serialize(ResponseEntity entity) {
-            return HandledValue.succeed(new byte[0]);
+        public Result<byte[], Void> serialize(ResponseEntity entity) {
+            return Result.ok(new byte[0]);
         }
 
         @Override

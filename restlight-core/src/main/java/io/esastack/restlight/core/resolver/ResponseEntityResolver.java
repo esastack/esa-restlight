@@ -15,6 +15,7 @@
  */
 package io.esastack.restlight.core.resolver;
 
+import esa.commons.Result;
 import io.esastack.commons.net.buffer.Buffer;
 import io.esastack.restlight.server.context.RequestContext;
 import io.esastack.restlight.server.core.HttpResponse;
@@ -33,9 +34,9 @@ public interface ResponseEntityResolver {
      * @return resolved value, which must not be {@code null}.
      * @throws Exception any exception
      */
-    HandledValue<Void> writeTo(ResponseEntity entity,
-                               ResponseEntityChannel channel,
-                               RequestContext context) throws Exception;
+    Result<Void, Void> writeTo(ResponseEntity entity,
+                         ResponseEntityChannel channel,
+                         RequestContext context) throws Exception;
 
 }
 

@@ -16,6 +16,7 @@
 package io.esastack.restlight.core.resolver;
 
 import esa.commons.Checks;
+import esa.commons.Result;
 import io.esastack.restlight.core.method.Param;
 import io.esastack.restlight.server.bootstrap.WebServerException;
 import io.esastack.restlight.server.context.RequestContext;
@@ -60,11 +61,11 @@ public class RequestEntityResolverContextImpl implements RequestEntityResolverCo
     @Override
     public Object proceed() throws Exception {
         if (advices == null || index >= advicesSize) {
-            HandledValue<?> handled;
+            Result<?, Void> handled;
             for (RequestEntityResolver resolver : resolvers) {
                 handled = resolver.readFrom(entity, context);
-                if (handled.isSuccess()) {
-                    return handled.value();
+                if (handled.isOk()) {
+                    return handled.get();
                 }
             }
             throw WebServerException.notSupported("There is no suitable resolver to resolve param: " + param

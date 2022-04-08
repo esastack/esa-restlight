@@ -15,7 +15,7 @@
  */
 package io.esastack.restlight.core.serialize;
 
-import io.esastack.restlight.core.resolver.HandledValue;
+import esa.commons.Result;
 import io.esastack.restlight.core.resolver.ResponseEntity;
 import io.esastack.restlight.core.util.Ordered;
 
@@ -28,6 +28,6 @@ public interface HttpResponseSerializer extends Ordered {
      * @return handled value
      * @throws Exception any exception
      */
-    HandledValue<byte[]> serialize(ResponseEntity entity) throws Exception;
+    Result<byte[], Void> serialize(ResponseEntity entity) throws Exception;
 
 }
