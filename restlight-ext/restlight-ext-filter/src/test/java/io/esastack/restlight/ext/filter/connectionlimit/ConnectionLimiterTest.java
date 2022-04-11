@@ -16,7 +16,7 @@
 package io.esastack.restlight.ext.filter.connectionlimit;
 
 import com.google.common.util.concurrent.RateLimiter;
-import io.esastack.restlight.server.handler.ChannelWrapper;
+import io.esastack.restlight.server.handler.ChannelConnection;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.embedded.EmbeddedChannel;
 import org.junit.jupiter.api.Test;
@@ -38,16 +38,16 @@ class ConnectionLimiterTest {
         final ConnectionLimiter limiter = new ConnectionLimiter(ops, limiter0);
         final ChannelHandlerContext ctx = mock(ChannelHandlerContext.class);
         final EmbeddedChannel channel = new EmbeddedChannel();
-        final ChannelWrapper channelWrapper = new ChannelWrapper(channel);
+        final ChannelConnection connection = new ChannelConnection(channel);
         when(ctx.channel()).thenReturn(channel);
         when(limiter0.tryAcquire(1)).thenReturn(true);
-        limiter.onConnect(channelWrapper);
+        limiter.onConnectionInit(connection);
         assertTrue(ctx.channel().isActive());
         assertTrue(ctx.channel().isOpen());
         assertTrue(ctx.channel().isWritable());
 
         when(limiter0.tryAcquire(1)).thenReturn(false);
-        limiter.onConnect(channelWrapper);
+        limiter.onConnectionInit(connection);
 
         // wait the closure of this channel.
         final CountDownLatch latch = new CountDownLatch(1);

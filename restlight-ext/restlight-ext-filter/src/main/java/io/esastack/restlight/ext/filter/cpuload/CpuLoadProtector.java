@@ -16,10 +16,9 @@
 package io.esastack.restlight.ext.filter.cpuload;
 
 import esa.commons.concurrent.ThreadFactories;
-import io.esastack.restlight.server.handler.ChannelWrapper;
-import io.esastack.restlight.server.handler.ConnectionHandler;
+import io.esastack.restlight.server.handler.Connection;
+import io.esastack.restlight.server.handler.ConnectionInitHandler;
 import io.esastack.restlight.server.util.LoggerUtils;
-import io.netty.channel.Channel;
 import io.netty.util.internal.InternalThreadLocalMap;
 
 import java.lang.management.ManagementFactory;
@@ -28,7 +27,7 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class CpuLoadProtector implements ConnectionHandler {
+public class CpuLoadProtector implements ConnectionInitHandler {
 
     private static final double MAX_CPU_LOAD_VALUE = 100.0D;
     private static final double MIN_CPU_LOAD_VALUE = 0.0D;
@@ -105,12 +104,12 @@ public class CpuLoadProtector implements ConnectionHandler {
     }
 
     @Override
-    public void onConnect(ChannelWrapper channel) {
+    public void onConnectionInit(Connection connection) {
         double current = currentCpuLoad;
         if (current > cpuLoadThreshold
                 && InternalThreadLocalMap.get().random().nextDouble(MAX_CPU_LOAD_VALUE) < getDiscardRate(current)) {
-            final String conn = channel.toString();
-            channel.close();
+            final String conn = connection.toString();
+            connection.close();
             LoggerUtils.logErrorPeriodically(
                     "Connection({}) discarded because cpu load (current: {}) is over than {}",
                     conn, current, cpuLoadThreshold);

@@ -67,12 +67,14 @@ import io.esastack.restlight.core.util.Constants;
 import io.esastack.restlight.core.util.OrderedComparator;
 import io.esastack.restlight.server.bootstrap.IExceptionHandler;
 import io.esastack.restlight.server.handler.ConnectionHandler;
+import io.esastack.restlight.server.handler.ConnectionInitHandler;
 import io.esastack.restlight.server.handler.DisConnectionHandler;
 import io.esastack.restlight.server.handler.Filter;
 import io.esastack.restlight.server.route.Route;
 import io.esastack.restlight.server.schedule.RequestTaskHook;
 import io.esastack.restlight.server.schedule.Scheduler;
 import io.esastack.restlight.server.spi.ConnectionHandlerFactory;
+import io.esastack.restlight.server.spi.ConnectionInitHandlerFactory;
 import io.esastack.restlight.server.spi.DisConnectionHandlerFactory;
 import io.esastack.restlight.server.spi.ExceptionHandlerFactory;
 import io.esastack.restlight.server.spi.FilterFactory;
@@ -115,6 +117,7 @@ public class Deployments4Spring extends Deployments {
         configureContextConfigures(context);
         configureRoutes(context);
         configureSchedulers(context);
+        configureConnectionInitHandler(context);
         configureConnectionHandler(context);
         configureDisConnectionHandler(context);
         configureFilters(context);
@@ -153,6 +156,19 @@ public class Deployments4Spring extends Deployments {
         if (!schedulers.isEmpty()) {
             this.addSchedulers(schedulers.values());
         }
+    }
+
+    private void configureConnectionInitHandler(ApplicationContext context) {
+        List<ConnectionInitHandlerFactory> factories = new LinkedList<>();
+        Map<String, ConnectionInitHandler> handlers = beansOfType(context, ConnectionInitHandler.class);
+        if (!handlers.isEmpty()) {
+            factories.addAll(handlers.values()
+                    .stream()
+                    .map(handler -> (ConnectionInitHandlerFactory) ctx -> Optional.of(handler))
+                    .collect(Collectors.toList()));
+        }
+        factories.addAll(beansOfType(context, ConnectionInitHandlerFactory.class).values());
+        this.addConnectionInitHandlers(factories);
     }
 
     private void configureConnectionHandler(ApplicationContext context) {

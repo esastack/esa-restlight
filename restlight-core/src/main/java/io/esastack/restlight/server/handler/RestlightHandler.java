@@ -33,6 +33,15 @@ public interface RestlightHandler {
     CompletionStage<Void> process(RequestContext context);
 
     /**
+     * tcp connection init event
+     *
+     * @param channel channel
+     */
+    default void onConnectionInit(Channel channel) {
+
+    }
+
+    /**
      * tcp connect event
      *
      * @param channel channel
@@ -65,5 +74,4 @@ public interface RestlightHandler {
     }
 
     List<Scheduler> schedulers();
-
 }

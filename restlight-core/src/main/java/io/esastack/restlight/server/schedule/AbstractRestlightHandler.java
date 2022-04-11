@@ -56,6 +56,11 @@ public abstract class AbstractRestlightHandler implements RestlightHandler {
     }
 
     @Override
+    public void onConnectionInit(Channel channel) {
+        underlying.onConnectionInit(channel);
+    }
+
+    @Override
     public void onConnected(Channel channel) {
         underlying.onConnected(channel);
     }

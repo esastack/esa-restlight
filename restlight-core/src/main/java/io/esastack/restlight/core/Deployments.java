@@ -95,6 +95,7 @@ import io.esastack.restlight.server.bootstrap.RestlightThreadFactory;
 import io.esastack.restlight.server.config.BizThreadsOptions;
 import io.esastack.restlight.server.config.TimeoutOptions;
 import io.esastack.restlight.server.handler.ConnectionHandler;
+import io.esastack.restlight.server.handler.ConnectionInitHandler;
 import io.esastack.restlight.server.handler.DisConnectionHandler;
 import io.esastack.restlight.server.handler.Filter;
 import io.esastack.restlight.server.handler.RestlightHandler;
@@ -111,6 +112,7 @@ import io.esastack.restlight.server.schedule.ScheduledRestlightHandler;
 import io.esastack.restlight.server.schedule.Scheduler;
 import io.esastack.restlight.server.schedule.Schedulers;
 import io.esastack.restlight.server.spi.ConnectionHandlerFactory;
+import io.esastack.restlight.server.spi.ConnectionInitHandlerFactory;
 import io.esastack.restlight.server.spi.DisConnectionHandlerFactory;
 import io.esastack.restlight.server.spi.ExceptionHandlerFactory;
 import io.esastack.restlight.server.spi.FilterFactory;
@@ -151,6 +153,7 @@ public abstract class Deployments {
     private final List<Route> routes = new LinkedList<>();
     private final List<FilterFactory> filters = new LinkedList<>();
     private final List<ExceptionHandlerFactory> exceptionHandlerFactories = new LinkedList<>();
+    private final List<ConnectionInitHandlerFactory> connectionInitHandlers = new LinkedList<>();
     private final List<ConnectionHandlerFactory> connectionHandlers = new LinkedList<>();
     private final List<DisConnectionHandlerFactory> disConnectionHandlers = new LinkedList<>();
     private final List<RequestTaskHookFactory> requestTaskHooks = new LinkedList<>();
@@ -1396,6 +1399,28 @@ public abstract class Deployments {
         return self();
     }
 
+    public Deployments addConnectionInitHandler(ConnectionInitHandler handler) {
+        checkImmutable();
+        Checks.checkNotNull(handler, "handler");
+        return addConnectionInitHandler(ctx -> {
+            return Optional.of(handler);
+        });
+    }
+
+    public Deployments addConnectionInitHandler(ConnectionInitHandlerFactory handler) {
+        checkImmutable();
+        Checks.checkNotNull(handler, "handler");
+        return addConnectionInitHandlers(Collections.singletonList(handler));
+    }
+
+    public Deployments addConnectionInitHandlers(Collection<? extends ConnectionInitHandlerFactory> handlers) {
+        checkImmutable();
+        if (handlers != null && !handlers.isEmpty()) {
+            this.connectionInitHandlers.addAll(handlers);
+        }
+        return self();
+    }
+
     public Deployments addConnectionHandler(ConnectionHandler handler) {
         checkImmutable();
         Checks.checkNotNull(handler, "handler");
@@ -1620,6 +1645,11 @@ public abstract class Deployments {
                 .getByGroup(restlight.name(), true)
                 .forEach(this::addRequestTaskHook);
 
+        // load and add ConnectionInitHandlerFactory by spi
+        SpiLoader.cached(ConnectionInitHandlerFactory.class)
+                .getByGroup(restlight.name(), true)
+                .forEach(factory -> factory.handler(ctx()).ifPresent(this::addConnectionInitHandler));
+
         // load and add ConnectionHandlerFactory by spi
         SpiLoader.cached(ConnectionHandlerFactory.class)
                 .getByGroup(restlight.name(), true)
@@ -1634,6 +1664,11 @@ public abstract class Deployments {
                 dispatcher,
                 requestTaskHooks.stream()
                         .map(f -> f.hook(ctx()))
+                        .filter(Optional::isPresent)
+                        .map(Optional::get)
+                        .collect(Collectors.toList()),
+                connectionInitHandlers.stream()
+                        .map(factory -> factory.handler(deployContext))
                         .filter(Optional::isPresent)
                         .map(Optional::get)
                         .collect(Collectors.toList()),

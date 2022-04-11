@@ -24,6 +24,7 @@ import io.esastack.restlight.server.context.RequestContext;
 import io.esastack.restlight.server.core.HttpRequest;
 import io.esastack.restlight.server.core.HttpResponse;
 import io.esastack.restlight.server.core.impl.HttpResponseImpl;
+import io.esastack.restlight.server.mock.MockHttpResponse;
 
 import java.util.function.Consumer;
 
@@ -68,7 +69,13 @@ public class RequestContextImpl implements RequestContext {
         if (response instanceof HttpResponseImpl) {
             HttpResponseImpl httpResponse = (HttpResponseImpl) response;
             httpResponse.onEnd(listener, this);
+            return;
         }
+        if (response instanceof MockHttpResponse) {
+            // ignore the MockHttpResponse
+            return;
+        }
+        throw new UnsupportedOperationException("Customized HttpResponse type is not supported");
     }
 }
 

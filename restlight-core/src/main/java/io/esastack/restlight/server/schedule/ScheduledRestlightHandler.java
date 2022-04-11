@@ -20,18 +20,28 @@ import io.esastack.restlight.core.util.OrderedComparator;
 import io.esastack.restlight.server.bootstrap.DispatcherHandler;
 import io.esastack.restlight.server.config.ServerOptions;
 import io.esastack.restlight.server.context.RequestContext;
-import io.esastack.restlight.server.handler.ChannelWrapper;
+import io.esastack.restlight.server.handler.ChannelConnection;
+import io.esastack.restlight.server.handler.Connection;
 import io.esastack.restlight.server.handler.ConnectionHandler;
+import io.esastack.restlight.server.handler.ConnectionInitHandler;
 import io.esastack.restlight.server.handler.DisConnectionHandler;
 import io.esastack.restlight.server.handler.RestlightHandler;
 import io.esastack.restlight.server.route.Route;
 import io.esastack.restlight.server.util.LoggerUtils;
 import io.esastack.restlight.server.util.PromiseUtils;
 import io.netty.channel.Channel;
-import org.checkerframework.checker.units.qual.C;
 
-import java.util.*;
-import java.util.concurrent.*;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 public class ScheduledRestlightHandler implements RestlightHandler {
@@ -40,6 +50,7 @@ public class ScheduledRestlightHandler implements RestlightHandler {
     private ScheduledHandler handler;
     private final List<Scheduler> schedulers = new LinkedList<>();
     private final RequestTaskHook hook;
+    private final List<ConnectionInitHandler> initialConnections;
     private final List<ConnectionHandler> connections;
     private final List<DisConnectionHandler> disConnections;
 
@@ -48,12 +59,13 @@ public class ScheduledRestlightHandler implements RestlightHandler {
     public ScheduledRestlightHandler(ServerOptions options,
                                      DispatcherHandler dispatcher) {
         this(options, dispatcher, Collections.emptyList(),
-                Collections.emptyList(), Collections.emptyList());
+                Collections.emptyList(), Collections.emptyList(), Collections.emptyList());
     }
 
     public ScheduledRestlightHandler(ServerOptions options,
                                      DispatcherHandler dispatcher,
                                      List<RequestTaskHook> hooks,
+                                     List<ConnectionInitHandler> initialConnections,
                                      List<ConnectionHandler> connections,
                                      List<DisConnectionHandler> disConnections) {
         Checks.checkNotNull(options, "options");
@@ -72,6 +84,12 @@ public class ScheduledRestlightHandler implements RestlightHandler {
             this.disConnections = Collections.unmodifiableList(disConnections);
         } else {
             this.disConnections = null;
+        }
+        if (initialConnections != null) {
+            OrderedComparator.sort(initialConnections);
+            this.initialConnections = Collections.unmodifiableList(initialConnections);
+        } else {
+            this.initialConnections = null;
         }
     }
 
@@ -102,15 +120,31 @@ public class ScheduledRestlightHandler implements RestlightHandler {
     }
 
     @Override
+    public void onConnectionInit(Channel channel) {
+        if (initialConnections == null) {
+            return;
+        }
+
+        Connection connection = new ChannelConnection(channel);
+        for (ConnectionInitHandler h : initialConnections) {
+            try {
+                h.onConnectionInit(connection);
+            } catch (Throwable th) {
+                LoggerUtils.logger().error("Error occurred when executing ConnectionInitHandler#onConnectionInit", th);
+            }
+        }
+    }
+
+    @Override
     public void onConnected(Channel channel) {
         if (connections == null) {
             return;
         }
 
-        ChannelWrapper channelWrapper = new ChannelWrapper(channel);
+        Connection connection = new ChannelConnection(channel);
         for (ConnectionHandler h : connections) {
             try {
-                h.onConnect(channelWrapper);
+                h.onConnect(connection);
             } catch (Throwable th) {
                 LoggerUtils.logger().error("Error occurred when executing ConnectionHandler#onConnect()", th);
             }
@@ -123,10 +157,10 @@ public class ScheduledRestlightHandler implements RestlightHandler {
             return;
         }
 
-        ChannelWrapper channelWrapper = new ChannelWrapper(channel);
+        Connection connection = new ChannelConnection(channel);
         for (DisConnectionHandler h : disConnections) {
             try {
-                h.onDisconnect(channelWrapper);
+                h.onDisconnect(connection);
             } catch (Throwable th) {
                 LoggerUtils.logger().error("Error occurred when executing DisConnectionHandler#onDisconnect()",
                         th);

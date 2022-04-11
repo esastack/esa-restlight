@@ -232,6 +232,7 @@ public class NettyRestlightServer implements RestlightServer {
         }
 
         return HttpServer.create(configure.configured())
+                .onConnectionInit(handler::onConnectionInit)
                 .onConnected(handler::onConnected)
                 .onClose(handler::shutdown)
                 .onDisconnected(handler::onDisconnected)

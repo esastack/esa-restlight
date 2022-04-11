@@ -54,6 +54,11 @@ public class FilteredHandler implements RestlightHandler {
     }
 
     @Override
+    public void onConnectionInit(Channel channel) {
+        delegate.onConnectionInit(channel);
+    }
+
+    @Override
     public void onConnected(Channel channel) {
         delegate.onConnected(channel);
     }
