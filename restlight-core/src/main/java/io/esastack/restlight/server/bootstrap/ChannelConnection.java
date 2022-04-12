@@ -11,9 +11,10 @@
  * limitations under the License.
  */
 
-package io.esastack.restlight.server.handler;
+package io.esastack.restlight.server.bootstrap;
 
 import esa.commons.Checks;
+import io.esastack.restlight.server.handler.Connection;
 import io.esastack.restlight.server.util.Futures;
 import io.netty.channel.Channel;
 
@@ -23,13 +24,18 @@ import java.util.concurrent.CompletionStage;
 /**
  * ChannelConnection is default implement of {@link Connection} which wraps {@link io.netty.channel.Channel}.
  */
-public class ChannelConnection implements Connection {
+final class ChannelConnection implements Connection {
 
     private final Channel channel;
 
     public ChannelConnection(Channel channel) {
         Checks.checkNotNull(channel, "channel");
         this.channel = channel;
+    }
+
+    @Override
+    public String id() {
+        return channel.id().asLongText();
     }
 
     @Override

@@ -30,6 +30,7 @@ import io.esastack.restlight.server.context.impl.RequestContextImpl;
 import io.esastack.restlight.server.core.HttpResponse;
 import io.esastack.restlight.server.core.impl.HttpRequestImpl;
 import io.esastack.restlight.server.core.impl.HttpResponseImpl;
+import io.esastack.restlight.server.handler.Connection;
 import io.esastack.restlight.server.handler.RestlightHandler;
 import io.esastack.restlight.server.schedule.ExecutorScheduler;
 import io.esastack.restlight.server.schedule.Schedulers;
@@ -232,10 +233,19 @@ public class NettyRestlightServer implements RestlightServer {
         }
 
         return HttpServer.create(configure.configured())
-                .onConnectionInit(handler::onConnectionInit)
-                .onConnected(handler::onConnected)
+                .onConnectionInit(channel -> {
+                    Connection connection = new ChannelConnection(channel);
+                    handler.onConnectionInit(connection);
+                })
+                .onConnected(channel -> {
+                    Connection connection = new ChannelConnection(channel);
+                    handler.onConnected(connection);
+                })
                 .onClose(handler::shutdown)
-                .onDisconnected(handler::onDisconnected)
+                .onDisconnected(channel -> {
+                    Connection connection = new ChannelConnection(channel);
+                    handler.onDisconnected(connection);
+                })
                 .handle(req -> req.aggregate(true)
                         .onEnd(promise -> {
                             HttpResponse response = new HttpResponseImpl(req.response());

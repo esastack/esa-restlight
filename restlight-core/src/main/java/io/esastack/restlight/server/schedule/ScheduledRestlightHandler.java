@@ -20,7 +20,6 @@ import io.esastack.restlight.core.util.OrderedComparator;
 import io.esastack.restlight.server.bootstrap.DispatcherHandler;
 import io.esastack.restlight.server.config.ServerOptions;
 import io.esastack.restlight.server.context.RequestContext;
-import io.esastack.restlight.server.handler.ChannelConnection;
 import io.esastack.restlight.server.handler.Connection;
 import io.esastack.restlight.server.handler.ConnectionHandler;
 import io.esastack.restlight.server.handler.ConnectionInitHandler;
@@ -29,7 +28,6 @@ import io.esastack.restlight.server.handler.RestlightHandler;
 import io.esastack.restlight.server.route.Route;
 import io.esastack.restlight.server.util.LoggerUtils;
 import io.esastack.restlight.server.util.PromiseUtils;
-import io.netty.channel.Channel;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -120,12 +118,11 @@ public class ScheduledRestlightHandler implements RestlightHandler {
     }
 
     @Override
-    public void onConnectionInit(Channel channel) {
+    public void onConnectionInit(Connection connection) {
         if (initialConnections == null) {
             return;
         }
 
-        Connection connection = new ChannelConnection(channel);
         for (ConnectionInitHandler h : initialConnections) {
             try {
                 h.onConnectionInit(connection);
@@ -136,12 +133,12 @@ public class ScheduledRestlightHandler implements RestlightHandler {
     }
 
     @Override
-    public void onConnected(Channel channel) {
+    public void onConnected(Connection connection) {
+        System.out.println(connection.id());
         if (connections == null) {
             return;
         }
 
-        Connection connection = new ChannelConnection(channel);
         for (ConnectionHandler h : connections) {
             try {
                 h.onConnect(connection);
@@ -152,12 +149,11 @@ public class ScheduledRestlightHandler implements RestlightHandler {
     }
 
     @Override
-    public void onDisconnected(Channel channel) {
+    public void onDisconnected(Connection connection) {
         if (disConnections == null) {
             return;
         }
 
-        Connection connection = new ChannelConnection(channel);
         for (DisConnectionHandler h : disConnections) {
             try {
                 h.onDisconnect(connection);

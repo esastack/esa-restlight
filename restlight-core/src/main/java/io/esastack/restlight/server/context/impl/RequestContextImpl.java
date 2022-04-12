@@ -23,6 +23,8 @@ import io.esastack.restlight.server.bootstrap.ResponseContent;
 import io.esastack.restlight.server.context.RequestContext;
 import io.esastack.restlight.server.core.HttpRequest;
 import io.esastack.restlight.server.core.HttpResponse;
+import io.esastack.restlight.server.core.impl.HttpResponseImpl;
+import io.esastack.restlight.server.mock.MockHttpResponse;
 
 import java.util.function.Consumer;
 
@@ -64,7 +66,17 @@ public class RequestContextImpl implements RequestContext {
 
     @Override
     public RequestContext onEnd(Consumer<RequestContext> listener) {
-        response.onEnd(listener, this);
+        if (response instanceof HttpResponseImpl) {
+            HttpResponseImpl httpResponse = (HttpResponseImpl) response;
+            httpResponse.onEnd(listener, this);
+            return this;
+        }
+
+        if (response instanceof MockHttpResponse) {
+            MockHttpResponse httpResponse = (MockHttpResponse) response;
+            httpResponse.onEnd(listener, this);
+            return this;
+        }
         return this;
     }
 }

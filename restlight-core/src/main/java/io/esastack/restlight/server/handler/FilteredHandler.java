@@ -20,7 +20,6 @@ import io.esastack.restlight.server.context.RequestContext;
 import io.esastack.restlight.server.context.impl.FilterContextImpl;
 import io.esastack.restlight.server.core.impl.FilteringRequestImpl;
 import io.esastack.restlight.server.schedule.Scheduler;
-import io.netty.channel.Channel;
 
 import java.util.List;
 import java.util.concurrent.CompletionStage;
@@ -54,18 +53,18 @@ public class FilteredHandler implements RestlightHandler {
     }
 
     @Override
-    public void onConnectionInit(Channel channel) {
-        delegate.onConnectionInit(channel);
+    public void onConnectionInit(Connection connection) {
+        delegate.onConnectionInit(connection);
     }
 
     @Override
-    public void onConnected(Channel channel) {
-        delegate.onConnected(channel);
+    public void onConnected(Connection connection) {
+        delegate.onConnected(connection);
     }
 
     @Override
-    public void onDisconnected(Channel channel) {
-        delegate.onDisconnected(channel);
+    public void onDisconnected(Connection connection) {
+        delegate.onDisconnected(connection);
     }
 
     @Override

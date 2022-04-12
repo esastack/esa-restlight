@@ -22,6 +22,10 @@ import java.util.concurrent.CompletionStage;
  */
 public interface Connection {
 
+    /**
+     * Returns the id of {@link Connection}
+     */
+    String id();
 
     /**
      * Returns {@code true} if the {@link Connection} is open and may get active later

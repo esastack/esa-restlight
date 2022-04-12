@@ -100,7 +100,12 @@ public class MockHttpResponse implements HttpResponse {
         return this.trailingHeaders;
     }
 
-    @Override
+    /**
+     * Add a listener to this response, this listener will be called after current response has been write.
+     *
+     * @param listener listener
+     * @param t accept object
+     */
     public <T> void onEnd(Consumer<T> listener, T t) {
         endListeners.put(listener, t);
     }

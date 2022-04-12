@@ -131,7 +131,7 @@ public abstract class FlexibleRequestEntityResolverFactory implements RequestEnt
             return checkRequired(nav, converter, Result.err());
         }
 
-        protected MediaType getMediaType(RequestEntity entity, RequestContext requestContext) {
+        protected MediaType getMediaType(RequestEntity entity, RequestContext ctx) {
             return entity.mediaType();
         }
     }
@@ -149,15 +149,15 @@ public abstract class FlexibleRequestEntityResolverFactory implements RequestEnt
         }
 
         @Override
-        protected MediaType getMediaType(RequestEntity entity, RequestContext requestContext) {
+        protected MediaType getMediaType(RequestEntity entity, RequestContext ctx) {
             // judge by param
-            final String format = requestContext.request().getParam(paramName);
+            final String format = ctx.request().getParam(paramName);
             if (Constants.NEGOTIATION_JSON_FORMAT.equals(format)) {
                 entity.mediaType(MediaType.APPLICATION_JSON);
             } else if (Constants.NEGOTIATION_PROTO_BUF_FORMAT.equals(format)) {
                 entity.mediaType(ProtoBufHttpBodySerializer.PROTOBUF);
             }
-            return super.getMediaType(entity, requestContext);
+            return super.getMediaType(entity, ctx);
         }
     }
 }
