@@ -134,7 +134,6 @@ public class ScheduledRestlightHandler implements RestlightHandler {
 
     @Override
     public void onConnected(Connection connection) {
-        System.out.println(connection.id());
         if (connections == null) {
             return;
         }
