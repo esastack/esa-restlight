@@ -15,6 +15,7 @@ package io.esastack.restlight.server.handler;
 
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
+import java.util.concurrent.CompletionStage;
 
 /**
  * connection.
@@ -56,5 +57,5 @@ public interface Connection {
     /**
      * Close the connection.
      */
-    void close();
+    CompletionStage<Void> close();
 }

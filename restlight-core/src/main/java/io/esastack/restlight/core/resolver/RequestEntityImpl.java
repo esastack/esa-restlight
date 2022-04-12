@@ -43,7 +43,7 @@ public class RequestEntityImpl extends HttpEntityImpl implements RequestEntity {
         type(param.type());
         genericType(param.genericType());
         annotations(param.annotations());
-        context.onEnd(rsp -> this.safeRelease());
+        context.onEnd(ctx -> this.safeRelease());
     }
 
     @Override

@@ -14,9 +14,11 @@
 package io.esastack.restlight.server.handler;
 
 import esa.commons.Checks;
+import io.esastack.restlight.server.util.Futures;
 import io.netty.channel.Channel;
 
 import java.net.SocketAddress;
+import java.util.concurrent.CompletionStage;
 
 /**
  * ChannelConnection is default implement of {@link Connection} which wraps {@link io.netty.channel.Channel}.
@@ -56,8 +58,9 @@ public class ChannelConnection implements Connection {
     }
 
     @Override
-    public void close() {
+    public CompletionStage<Void> close() {
         channel.close();
+        return Futures.completedFuture();
     }
 
     @Override

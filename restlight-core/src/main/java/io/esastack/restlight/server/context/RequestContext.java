@@ -49,6 +49,6 @@ public interface RequestContext {
      *
      * @param listener listener
      */
-    void onEnd(Consumer<RequestContext> listener);
+    RequestContext onEnd(Consumer<RequestContext> listener);
 }
 
