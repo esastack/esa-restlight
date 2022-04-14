@@ -15,10 +15,10 @@ package io.esastack.restlight.server.bootstrap;
 
 import esa.commons.Checks;
 import io.esastack.restlight.server.handler.Connection;
-import io.esastack.restlight.server.util.Futures;
 import io.netty.channel.Channel;
 
 import java.net.SocketAddress;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
 /**
@@ -65,8 +65,19 @@ final class ChannelConnection implements Connection {
 
     @Override
     public CompletionStage<Void> close() {
-        channel.close();
-        return Futures.completedFuture();
+        CompletableFuture<Void> future = new CompletableFuture<>();
+        channel.close().addListener(f -> {
+            if (f.isCancelled()) {
+                future.cancel(true);
+                return;
+            }
+            if (f.isSuccess()) {
+                future.complete(null);
+            } else {
+                future.completeExceptionally(f.cause());
+            }
+        });
+        return future;
     }
 
     @Override
