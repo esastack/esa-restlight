@@ -46,7 +46,6 @@ import io.esastack.restlight.server.schedule.AbstractRestlightHandler;
 import io.esastack.restlight.server.util.Futures;
 
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
 public class RestlightHandlerImpl extends AbstractRestlightHandler {
@@ -127,7 +126,7 @@ public class RestlightHandlerImpl extends AbstractRestlightHandler {
      * The exception occurred before routing should be handled by the {@link ExceptionHandlerChain} which uses
      * custom {@link ExceptionHandler}s as the last of the chain, such as the exception thrown by {@link Filter}
      * should be handled. When the route has matched, all exception should be handled
-     * at {@link DispatcherHandlerImpl#service(RequestContext, CompletableFuture, Route)} and there is no necessary
+     * at {@link DispatcherHandlerImpl#service(RequestContext, CompletionStage, Route)} and there is no necessary
      * to be handled here again.
      *
      * @param context context

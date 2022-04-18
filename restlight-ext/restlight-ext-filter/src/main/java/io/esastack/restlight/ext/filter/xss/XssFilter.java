@@ -224,11 +224,6 @@ public class XssFilter implements Filter {
         }
 
         @Override
-        public Object alloc() {
-            return delegate.alloc();
-        }
-
-        @Override
         public String uri() {
             return delegate.uri();
         }

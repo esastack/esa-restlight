@@ -81,9 +81,14 @@ public class HttpResponseImpl implements HttpResponse {
         res.addCookie(name, value);
     }
 
-    @Override
-    public void onEnd(Consumer<HttpResponse> listener) {
-        res.onEndFuture().addListener(f -> listener.accept(this));
+    /**
+     * Add a listener to this response, this listener will be called after current response has been write.
+     *
+     * @param listener listener
+     * @param t accept object
+     */
+    public <T> void onEnd(Consumer<T> listener, T t) {
+        res.onEndFuture().addListener(f -> listener.accept(t));
     }
 
     @Override

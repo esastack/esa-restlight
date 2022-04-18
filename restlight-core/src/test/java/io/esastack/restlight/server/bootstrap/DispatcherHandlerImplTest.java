@@ -109,9 +109,9 @@ class DispatcherHandlerImplTest {
         when(task2.promise()).thenReturn(new CompletableFuture<>());
 
         dispatcher.handleUnfinishedWorks(Arrays.asList(task1, task2));
-        assertTrue(task1.promise().isDone());
+        assertTrue(task1.promise().toCompletableFuture().isDone());
         assertEquals(HttpResponseStatus.SERVICE_UNAVAILABLE.code(), task1.response().status());
-        assertTrue(task2.promise().isDone());
+        assertTrue(task2.promise().toCompletableFuture().isDone());
         assertEquals(HttpResponseStatus.SERVICE_UNAVAILABLE.code(), task2.response().status());
     }
 

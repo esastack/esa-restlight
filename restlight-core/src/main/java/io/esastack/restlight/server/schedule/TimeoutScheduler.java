@@ -26,7 +26,7 @@ import io.esastack.restlight.server.util.LoggerUtils;
 import io.esastack.restlight.server.util.PromiseUtils;
 
 import java.util.Objects;
-import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 
 class TimeoutScheduler implements Scheduler {
 
@@ -120,7 +120,7 @@ class TimeoutScheduler implements Scheduler {
         }
 
         @Override
-        public CompletableFuture<Void> promise() {
+        public CompletionStage<Void> promise() {
             return delegate.promise();
         }
 

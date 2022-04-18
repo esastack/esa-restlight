@@ -38,7 +38,7 @@ import io.esastack.restlight.server.util.PromiseUtils;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 import java.util.concurrent.atomic.LongAdder;
 
 import static io.esastack.restlight.server.util.ErrorDetail.getMessage;
@@ -75,7 +75,7 @@ public class DispatcherHandlerImpl implements DispatcherHandler {
 
     @Override
     public void service(RequestContext context,
-                        CompletableFuture<Void> promise,
+                        CompletionStage<Void> promise,
                         Route route) {
         final RouteExecution execution = route.executionFactory().create(context);
         try {
@@ -121,8 +121,8 @@ public class DispatcherHandlerImpl implements DispatcherHandler {
 
         LoggerUtils.logger().error("RequestTask(url={}, method={}) rejected, {}", task.request().path(),
                 task.request().method(), reason);
-        final CompletableFuture<Void> p = task.promise();
-        if (!p.isDone()) {
+        final CompletionStage<Void> p = task.promise();
+        if (!p.toCompletableFuture().isDone()) {
             PromiseUtils.setSuccess(task.promise(), true);
         }
         rejectCount.increment();
@@ -136,8 +136,8 @@ public class DispatcherHandlerImpl implements DispatcherHandler {
             response.status(HttpStatus.SERVICE_UNAVAILABLE.code());
             response.entity(new ErrorDetail<>(task.request().path(),
                     "The request was not processed correctly before the server was shutdown"));
-            final CompletableFuture<Void> p = task.promise();
-            if (!p.isDone()) {
+            final CompletionStage<Void> p = task.promise();
+            if (!p.toCompletableFuture().isDone()) {
                 PromiseUtils.setSuccess(task.promise(), true);
             }
         }
@@ -161,7 +161,7 @@ public class DispatcherHandlerImpl implements DispatcherHandler {
 
     private void completeRequest(RequestContext context,
                                  CompletionHandler completionHandler,
-                                 CompletableFuture<Void> promise,
+                                 CompletionStage<Void> promise,
                                  Throwable dispatchException) {
         final HttpRequest request = context.request();
         if (dispatchException != null) {
@@ -190,7 +190,7 @@ public class DispatcherHandlerImpl implements DispatcherHandler {
         }
     }
 
-    private void completeRequest0(RequestContext context, CompletableFuture<Void> promise, Throwable th) {
+    private void completeRequest0(RequestContext context, CompletionStage<Void> promise, Throwable th) {
         if (th != null) {
             handleException(context, th);
         }

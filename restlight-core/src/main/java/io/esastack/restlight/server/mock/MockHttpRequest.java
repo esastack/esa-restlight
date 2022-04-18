@@ -142,11 +142,6 @@ public class MockHttpRequest implements HttpRequest {
     }
 
     @Override
-    public Object alloc() {
-        return BufferAllocator.getDefault();
-    }
-
-    @Override
     public HttpHeaders headers() {
         return this.headers;
     }

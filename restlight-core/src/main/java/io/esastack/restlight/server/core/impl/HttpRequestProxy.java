@@ -132,10 +132,5 @@ public class HttpRequestProxy implements HttpRequest {
     public Set<Cookie> cookies() {
         return underlying.cookies();
     }
-
-    @Override
-    public Object alloc() {
-        return underlying.alloc();
-    }
 }
 

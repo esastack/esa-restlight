@@ -20,6 +20,7 @@ import io.esastack.restlight.server.core.HttpRequest;
 import io.esastack.restlight.server.core.HttpResponse;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 
 public interface RequestTask extends Runnable {
 
@@ -53,5 +54,5 @@ public interface RequestTask extends Runnable {
      *
      * @return promise
      */
-    CompletableFuture<Void> promise();
+    CompletionStage<Void> promise();
 }

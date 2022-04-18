@@ -26,20 +26,21 @@ import io.esastack.commons.net.netty.http.CookieImpl;
 import io.esastack.commons.net.netty.http.Http1HeadersImpl;
 import io.esastack.restlight.server.core.HttpResponse;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Consumer;
 
 public class MockHttpResponse implements HttpResponse {
 
     private static final Logger logger = LoggerFactory.getLogger(MockHttpResponse.class);
 
-    private final List<Consumer<HttpResponse>> endListeners = new ArrayList<>(1);
+    private final Map<Consumer, Object> endListeners = new HashMap<>(8);
     private final HttpHeaders headers = new Http1HeadersImpl();
     private final HttpHeaders trailingHeaders = new Http1HeadersImpl();
     private final Buffer content;
     private int status = 200;
     private Object entity;
+
 
     private MockHttpResponse(Buffer content) {
         this.content = content;
@@ -90,11 +91,6 @@ public class MockHttpResponse implements HttpResponse {
     }
 
     @Override
-    public void onEnd(Consumer<HttpResponse> listener) {
-        endListeners.add(listener);
-    }
-
-    @Override
     public HttpHeaders headers() {
         return this.headers;
     }
@@ -104,16 +100,30 @@ public class MockHttpResponse implements HttpResponse {
         return this.trailingHeaders;
     }
 
+    /**
+     * Add a listener to this response, this listener will be called after current response has been write.
+     *
+     * @param listener listener
+     * @param t accept object
+     */
+    public <T> void onEnd(Consumer<T> listener, T t) {
+        endListeners.put(listener, t);
+    }
+
     public Buffer content() {
         return content;
     }
 
+    /**
+     * provide the manual way to call listeners.
+     */
+    @SuppressWarnings("unchecked")
     public void callEndListener() {
-        for (Consumer<HttpResponse> endListener : endListeners) {
+        for (Map.Entry<Consumer, Object> entry : endListeners.entrySet()) {
             try {
-                endListener.accept(this);
+                entry.getKey().accept(entry.getValue());
             } catch (Throwable e) {
-                logger.error("Error while calling end listener: " + endListener, e);
+                logger.error("Error while calling end listener: " + entry.getKey(), e);
             }
         }
     }
@@ -127,24 +137,21 @@ public class MockHttpResponse implements HttpResponse {
 
     public static final class Builder {
 
-        private final List<Consumer<HttpResponse>> endListeners = new ArrayList<>();
+        private final Map<Consumer, Object> endListeners = new HashMap<>(8);
         private final Buffer content;
 
         private Builder(Buffer content) {
             this.content = content;
         }
 
-        public Builder withEndListeners(List<Consumer<HttpResponse>> endListeners) {
-            Checks.checkNotNull(endListeners, "endListeners");
-            for (Consumer<HttpResponse> listener : endListeners) {
-                withEndListener(listener);
-            }
+        public Builder withEndListeners(Map<Consumer<?>, Object> endListeners) {
+            Checks.checkNotNull(endListeners, "endListener");
+            this.endListeners.putAll(endListeners);
             return this;
         }
 
-        public Builder withEndListener(Consumer<HttpResponse> endListener) {
-            Checks.checkNotNull(endListener, "endListener");
-            this.endListeners.add(endListener);
+        public <T> Builder withListener(Consumer<T> listener, T t) {
+            this.endListeners.put(listener, t);
             return this;
         }
 

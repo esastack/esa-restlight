@@ -17,7 +17,7 @@ package io.esastack.restlight.server.util;
 
 import io.netty.util.concurrent.Promise;
 
-import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 
 public final class PromiseUtils {
 
@@ -47,24 +47,24 @@ public final class PromiseUtils {
         }
     }
 
-    public static void setSuccess(CompletableFuture<?> promise) {
+    public static void setSuccess(CompletionStage<?> promise) {
         setSuccess(promise, false);
     }
 
-    public static void setSuccess(CompletableFuture<?> promise, boolean whatever) {
+    public static void setSuccess(CompletionStage<?> promise, boolean whatever) {
         if (promise == null) {
             return;
         }
-        if (!promise.complete(null) && !whatever) {
+        if (!promise.toCompletableFuture().complete(null) && !whatever) {
             LoggerUtils.logger().warn("Unexpected error, failed to set promise to success.");
         }
     }
 
-    public static void setFailure(CompletableFuture<?> promise, Throwable throwable) {
+    public static void setFailure(CompletionStage<?> promise, Throwable throwable) {
         if (promise == null) {
             return;
         }
-        if (!promise.completeExceptionally(throwable)) {
+        if (!promise.toCompletableFuture().completeExceptionally(throwable)) {
             LoggerUtils.logger().warn("Unexpected error, failed to set promise to failure.", throwable);
         }
     }

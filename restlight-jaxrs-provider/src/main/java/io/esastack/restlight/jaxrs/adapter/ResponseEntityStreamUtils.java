@@ -30,7 +30,7 @@ final class ResponseEntityStreamUtils {
         HttpOutputStream outputStream = ResponseEntityStreamChannelImpl.get(context).outputStream();
         if (!context.attrs().hasAttr(CLOSABLE_STREAM)) {
             context.attrs().attr(CLOSABLE_STREAM).set(outputStream);
-            context.response().onEnd((rsp) -> close(context));
+            context.onEnd(ResponseEntityStreamUtils::close);
         }
         return new HttpOutputStreamImpl(outputStream) {
             @Override

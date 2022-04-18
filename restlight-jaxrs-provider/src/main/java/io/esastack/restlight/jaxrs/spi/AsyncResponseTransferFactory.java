@@ -31,7 +31,7 @@ import jakarta.ws.rs.container.AsyncResponse;
 import jakarta.ws.rs.container.Suspended;
 
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 
 @Internal
 @Feature(tags = Constants.INTERNAL)
@@ -63,8 +63,8 @@ public class AsyncResponseTransferFactory implements FutureTransferFactory {
         }
 
         @Override
-        public CompletableFuture<Object> transferTo(RequestContext context, Object value) {
-            CompletableFuture<Object> asyncResponse = JaxrsContextUtils.getAsyncResponse(context);
+        public CompletionStage<Object> transferTo(RequestContext context, Object value) {
+            CompletionStage<Object> asyncResponse = JaxrsContextUtils.getAsyncResponse(context);
             if (asyncResponse == null) {
                 return Futures.completedFuture(value);
             } else {

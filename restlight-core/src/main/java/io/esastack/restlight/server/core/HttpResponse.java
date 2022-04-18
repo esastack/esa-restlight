@@ -80,7 +80,7 @@ public interface HttpResponse {
      *
      * @param newUri target uri
      */
-    default void sendRedirect(String newUri) {
+    default void redirect(String newUri) {
         Checks.checkNotEmptyArg(newUri);
         headers().set(HttpHeaderNames.LOCATION, newUri);
         status(HttpStatus.FOUND.code());
@@ -107,12 +107,4 @@ public interface HttpResponse {
      * @return trailers.
      */
     HttpHeaders trailers();
-
-    /**
-     * Add a listener to this response, this listener will be called after current response has been write.
-     *
-     * @param listener listener
-     */
-    void onEnd(Consumer<HttpResponse> listener);
-
 }

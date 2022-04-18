@@ -38,7 +38,7 @@ public class ParamResolverContextImpl implements ParamResolverContext {
     }
 
     @Override
-    public RequestContext context() {
+    public RequestContext requestContext() {
         return context;
     }
 

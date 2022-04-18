@@ -17,16 +17,16 @@ package io.esastack.restlight.ext.filter.connectionlimit;
 
 import com.google.common.util.concurrent.RateLimiter;
 import esa.commons.Checks;
-import io.esastack.restlight.server.handler.ConnectionHandler;
+import io.esastack.restlight.server.handler.Connection;
+import io.esastack.restlight.server.handler.ConnectionInitHandler;
 import io.esastack.restlight.server.util.LoggerUtils;
-import io.netty.channel.Channel;
 
 /**
  * ConnectionLimitFilter To limit the qps of the new connections. We will refuse the new connections if current
  * qps is reaching the limitation.
  */
 @SuppressWarnings("UnstableApiUsage")
-public class ConnectionLimiter implements ConnectionHandler {
+public class ConnectionLimiter implements ConnectionInitHandler {
 
     private final RateLimiter connects;
     private final int permitsPerSecond;
@@ -46,12 +46,12 @@ public class ConnectionLimiter implements ConnectionHandler {
     }
 
     @Override
-    public void onConnect(Channel channel) {
+    public void onConnectionInit(Connection connection) {
         if (connects.tryAcquire(1)) {
             return;
         }
-        final String conn = channel.toString();
-        channel.close();
+        final String conn = connection.toString();
+        connection.close();
         LoggerUtils.logErrorPeriodically(
                 "Connection({}) refused because the number of new connection is over than {} per-second",
                 conn, permitsPerSecond);

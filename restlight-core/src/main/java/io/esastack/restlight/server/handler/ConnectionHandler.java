@@ -16,17 +16,16 @@
 package io.esastack.restlight.server.handler;
 
 import io.esastack.restlight.core.util.Ordered;
-import io.netty.channel.Channel;
 
 @FunctionalInterface
 public interface ConnectionHandler extends Ordered {
 
     /**
-     * This callback notification is invoked in case a new {@link Channel} connected successfully.
+     * This callback notification is invoked in case a new {@link Connection} connected successfully.
      *
-     * @param channel channel
+     * @param connection connection
      */
-    void onConnect(Channel channel);
+    void onConnect(Connection connection);
 
 }
 

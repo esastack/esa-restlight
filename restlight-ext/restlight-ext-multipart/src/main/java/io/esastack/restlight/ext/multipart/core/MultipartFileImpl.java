@@ -49,11 +49,6 @@ public class MultipartFileImpl implements MultipartFile {
     }
 
     @Override
-    public boolean isEmpty() {
-        return upload.length() > 0;
-    }
-
-    @Override
     public long size() {
         return upload.length();
     }

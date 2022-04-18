@@ -22,7 +22,7 @@ import io.esastack.restlight.ext.filter.cors.CorsFilter;
 import io.esastack.restlight.ext.filter.cpuload.CpuLoadProtector;
 import io.esastack.restlight.ext.filter.ipwhitelist.IpWhiteListFilter;
 import io.esastack.restlight.ext.filter.xss.XssFilter;
-import io.esastack.restlight.server.handler.ConnectionHandler;
+import io.esastack.restlight.server.handler.ConnectionInitHandler;
 import io.esastack.restlight.starter.ServerStarter;
 import org.springframework.boot.autoconfigure.AutoConfigureOrder;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -57,14 +57,14 @@ public class RestlightExtFilterAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean
     @ConditionalOnProperty(prefix = ConnectionLimitProperties.PREFIX, name = "enable", havingValue = "true")
-    public ConnectionHandler connectionLimitFilter(ConnectionLimitProperties options) {
+    public ConnectionInitHandler connectionLimitFilter(ConnectionLimitProperties options) {
         return new ConnectionLimiter(options);
     }
 
     @Bean
     @ConditionalOnMissingBean
     @ConditionalOnProperty(prefix = CpuLoadProtectionProperties.PREFIX, name = "enable", havingValue = "true")
-    public ConnectionHandler cpuLoadProtectionFilter(CpuLoadProtectionProperties options) {
+    public ConnectionInitHandler cpuLoadProtectionFilter(CpuLoadProtectionProperties options) {
         return CpuLoadProtector.newFilter(options.getThreshold(), options.getInitialDiscardRate(),
                 options.getMaxDiscardRate());
     }

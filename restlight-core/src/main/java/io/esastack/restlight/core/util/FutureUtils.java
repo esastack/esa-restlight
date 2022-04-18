@@ -24,6 +24,7 @@ import io.netty.util.concurrent.Future;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ExecutionException;
 
 import static com.google.common.util.concurrent.Futures.getDone;
@@ -44,7 +45,7 @@ public final class FutureUtils {
         return HAS_GUAVA_FUTURE;
     }
 
-    public static <T> CompletableFuture<T> transferListenableFuture(ListenableFuture<T> future) {
+    public static <T> CompletionStage<T> transferListenableFuture(ListenableFuture<T> future) {
         final CompletableFuture<T> transfer = new CompletableFuture<>();
         future.addListener(() -> {
             try {

@@ -16,15 +16,11 @@
 package io.esastack.restlight.ext.filter.connectionlimit;
 
 import com.google.common.util.concurrent.RateLimiter;
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.embedded.EmbeddedChannel;
+import io.esastack.restlight.server.handler.Connection;
 import org.junit.jupiter.api.Test;
 
-import java.util.concurrent.CountDownLatch;
-
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 class ConnectionLimiterTest {
@@ -35,27 +31,13 @@ class ConnectionLimiterTest {
                 .maxPerSecond(1).configured();
         final RateLimiter limiter0 = mock(RateLimiter.class);
         final ConnectionLimiter limiter = new ConnectionLimiter(ops, limiter0);
-        final ChannelHandlerContext ctx = mock(ChannelHandlerContext.class);
-        final EmbeddedChannel channel = new EmbeddedChannel();
-        when(ctx.channel()).thenReturn(channel);
+        final Connection connection = mock(Connection.class);
         when(limiter0.tryAcquire(1)).thenReturn(true);
-        limiter.onConnect(channel);
-        assertTrue(ctx.channel().isActive());
-        assertTrue(ctx.channel().isOpen());
-        assertTrue(ctx.channel().isWritable());
+        limiter.onConnectionInit(connection);
 
         when(limiter0.tryAcquire(1)).thenReturn(false);
-        limiter.onConnect(channel);
-
-        // wait the closure of this channel.
-        final CountDownLatch latch = new CountDownLatch(1);
-        channel.closeFuture().addListener(future -> {
-            latch.countDown();
-            assertFalse(ctx.channel().isActive());
-            assertFalse(ctx.channel().isOpen());
-            assertFalse(ctx.channel().isWritable());
-        });
-        latch.await();
+        limiter.onConnectionInit(connection);
+        verify(connection).close();
     }
 
 }

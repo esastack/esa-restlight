@@ -59,7 +59,9 @@ class JaxrsExceptionMapperAdapterTest {
         }).when(rsp).entity(any());
 
         final RequestContext context = new RequestContextImpl(new AttributeMap(), req, rsp);
-        final CompletableFuture<Void> future1 = adapter.handleException(context, new RuntimeException());
+        final CompletableFuture<Void> future1 = adapter
+                .handleException(context, new RuntimeException())
+                .toCompletableFuture();
         assertTrue(future1.isDone());
         assertSame(response, entity.get());
 

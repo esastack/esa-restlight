@@ -23,7 +23,7 @@ import io.esastack.restlight.server.util.Futures;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.ExceptionMapper;
 
-import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 
 import static jakarta.ws.rs.core.Response.Status.NO_CONTENT;
 
@@ -37,7 +37,7 @@ public class JaxrsExceptionMapperAdapter<T extends Throwable> implements Excepti
     }
 
     @Override
-    public CompletableFuture<Void> handleException(RequestContext context, T t) {
+    public CompletionStage<Void> handleException(RequestContext context, T t) {
         Response response;
         try {
             response = underlying.proxied().toResponse(t);

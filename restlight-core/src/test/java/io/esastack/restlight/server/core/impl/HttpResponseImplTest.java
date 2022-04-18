@@ -75,7 +75,7 @@ class HttpResponseImplTest {
         when(mock.headers()).thenReturn(headers);
         final HttpResponseImpl response = new HttpResponseImpl(mock);
 
-        response.sendRedirect("foo");
+        response.redirect("foo");
         verify(mock).setStatus(HttpStatus.FOUND.code());
         assertEquals(1, headers.size());
         assertEquals(headers.get(HttpHeaderNames.LOCATION), "foo");

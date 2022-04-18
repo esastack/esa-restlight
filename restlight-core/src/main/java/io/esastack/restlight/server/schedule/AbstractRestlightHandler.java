@@ -18,10 +18,10 @@ package io.esastack.restlight.server.schedule;
 import esa.commons.Checks;
 import io.esastack.restlight.server.bootstrap.ExceptionHandlerChain;
 import io.esastack.restlight.server.context.RequestContext;
+import io.esastack.restlight.server.handler.Connection;
 import io.esastack.restlight.server.handler.RestlightHandler;
 import io.esastack.restlight.server.util.Futures;
 import io.esastack.restlight.server.util.PromiseUtils;
-import io.netty.channel.Channel;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -56,13 +56,18 @@ public abstract class AbstractRestlightHandler implements RestlightHandler {
     }
 
     @Override
-    public void onConnected(Channel channel) {
-        underlying.onConnected(channel);
+    public void onConnectionInit(Connection connection) {
+        underlying.onConnectionInit(connection);
     }
 
     @Override
-    public void onDisconnected(Channel channel) {
-        underlying.onDisconnected(channel);
+    public void onConnected(Connection connection) {
+        underlying.onConnected(connection);
+    }
+
+    @Override
+    public void onDisconnected(Connection connection) {
+        underlying.onDisconnected(connection);
     }
 
     @Override

@@ -110,7 +110,7 @@ public abstract class FlexibleRequestEntityResolverFactory implements RequestEnt
         @Override
         public Result<?, Void> readFrom(RequestEntity entity, RequestContext context)
                 throws Exception {
-            MediaType contentType = getMediaType(entity);
+            MediaType contentType = getMediaType(entity, context);
             //convert argument if content-type is text/plain or missing.
             if (contentType == null || MediaType.TEXT_PLAIN.isCompatibleWith(contentType)) {
                 //ignore empty body.
@@ -131,7 +131,7 @@ public abstract class FlexibleRequestEntityResolverFactory implements RequestEnt
             return checkRequired(nav, converter, Result.err());
         }
 
-        protected MediaType getMediaType(RequestEntity entity) {
+        protected MediaType getMediaType(RequestEntity entity, RequestContext ctx) {
             return entity.mediaType();
         }
     }
@@ -149,15 +149,15 @@ public abstract class FlexibleRequestEntityResolverFactory implements RequestEnt
         }
 
         @Override
-        protected MediaType getMediaType(RequestEntity entity) {
+        protected MediaType getMediaType(RequestEntity entity, RequestContext ctx) {
             // judge by param
-            final String format = entity.request().getParam(paramName);
+            final String format = ctx.request().getParam(paramName);
             if (Constants.NEGOTIATION_JSON_FORMAT.equals(format)) {
                 entity.mediaType(MediaType.APPLICATION_JSON);
             } else if (Constants.NEGOTIATION_PROTO_BUF_FORMAT.equals(format)) {
                 entity.mediaType(ProtoBufHttpBodySerializer.PROTOBUF);
             }
-            return super.getMediaType(entity);
+            return super.getMediaType(entity, ctx);
         }
     }
 }

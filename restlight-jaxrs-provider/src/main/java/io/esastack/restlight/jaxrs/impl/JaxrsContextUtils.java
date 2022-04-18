@@ -31,6 +31,7 @@ import jakarta.ws.rs.core.SecurityContext;
 
 import java.net.URI;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 
 public final class JaxrsContextUtils {
 
@@ -93,11 +94,11 @@ public final class JaxrsContextUtils {
         context.attrs().attr(SECURITY_CONTEXT_KEY).set(sCtx);
     }
 
-    public static void setAsyncResponse(RequestContext context, CompletableFuture<Object> response) {
-        context.attrs().attr(ASYNC_RESPONSE_KEY).set(response);
+    public static void setAsyncResponse(RequestContext context, CompletionStage<Object> response) {
+        context.attrs().attr(ASYNC_RESPONSE_KEY).set(response.toCompletableFuture());
     }
 
-    public static CompletableFuture<Object> getAsyncResponse(RequestContext context) {
+    public static CompletionStage<Object> getAsyncResponse(RequestContext context) {
         return context.attrs().attr(ASYNC_RESPONSE_KEY).get();
     }
 

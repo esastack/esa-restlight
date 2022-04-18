@@ -15,13 +15,14 @@
  */
 package io.esastack.restlight.ext.filter.cpuload;
 
+import io.esastack.restlight.server.handler.Connection;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.embedded.EmbeddedChannel;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 class CpuLoadProtectorTest {
@@ -42,23 +43,20 @@ class CpuLoadProtectorTest {
 
     private void assertNormal(CpuLoadProtector protector) {
         final ChannelHandlerContext ctx = mock(ChannelHandlerContext.class);
+        final Connection connection = mock(Connection.class);
         final EmbeddedChannel channel = new EmbeddedChannel();
         when(ctx.channel()).thenReturn(channel);
-        protector.onConnect(channel);
+        protector.onConnectionInit(connection);
         assertTrue(ctx.channel().isActive());
         assertTrue(ctx.channel().isOpen());
         assertTrue(ctx.channel().isWritable());
     }
 
     private void assertOverhead(CpuLoadProtector protector) {
-        final ChannelHandlerContext ctx = mock(ChannelHandlerContext.class);
-        final EmbeddedChannel channel = new EmbeddedChannel();
-        when(ctx.channel()).thenReturn(channel);
+        final Connection connection = mock(Connection.class);
         protector.currentCpuLoad = 10;
-        protector.onConnect(channel);
-        assertFalse(ctx.channel().isActive());
-        assertFalse(ctx.channel().isOpen());
-        assertFalse(ctx.channel().isWritable());
+        protector.onConnectionInit(connection);
+        verify(connection).close();
     }
 
 }

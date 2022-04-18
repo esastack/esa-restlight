@@ -218,11 +218,6 @@ class MockHttpRequestTest {
     }
 
     @Test
-    void testAlloc() {
-        assertSame(BufferAllocator.getDefault(), MockHttpRequest.aMockRequest().build().alloc());
-    }
-
-    @Test
     void testCookies() {
         final MockHttpRequest request = MockHttpRequest.aMockRequest().build();
         assertTrue(request.cookies().isEmpty());

@@ -17,7 +17,6 @@ package io.esastack.restlight.server.handler;
 
 import io.esastack.restlight.server.context.RequestContext;
 import io.esastack.restlight.server.schedule.Scheduler;
-import io.netty.channel.Channel;
 
 import java.util.List;
 import java.util.concurrent.CompletionStage;
@@ -33,20 +32,29 @@ public interface RestlightHandler {
     CompletionStage<Void> process(RequestContext context);
 
     /**
+     * tcp connection init event
+     *
+     * @param connection connection
+     */
+    default void onConnectionInit(Connection connection) {
+
+    }
+
+    /**
      * tcp connect event
      *
-     * @param channel channel
+     * @param connection connection
      */
-    default void onConnected(Channel channel) {
+    default void onConnected(Connection connection) {
 
     }
 
     /**
      * tcp disconnect event
      *
-     * @param channel channel
+     * @param connection connection
      */
-    default void onDisconnected(Channel channel) {
+    default void onDisconnected(Connection connection) {
 
     }
 
@@ -65,5 +73,4 @@ public interface RestlightHandler {
     }
 
     List<Scheduler> schedulers();
-
 }
