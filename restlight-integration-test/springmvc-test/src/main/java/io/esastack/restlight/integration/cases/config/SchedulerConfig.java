@@ -29,6 +29,7 @@ public class SchedulerConfig {
 
     @Bean
     public Scheduler customScheduler() {
-        return Schedulers.fromExecutor("custom", Executors.newSingleThreadExecutor(ThreadFactories.namedThreadFactory("custom")));
+        return Schedulers.fromExecutor("custom",
+                Executors.newSingleThreadExecutor(ThreadFactories.namedThreadFactory("custom")));
     }
 }

@@ -23,7 +23,7 @@ import org.junit.Test;
 public class SchedulerTest extends BaseIntegrationTest {
 
     @Test
-    public void testBiz() throws Exception{
+    public void testBiz() throws Exception {
         RestResponseBase response = restClient.get(domain + "/scheduler/biz").execute()
                 .toCompletableFuture().get();
         Assert.assertTrue(response.bodyToEntity(String.class).toLowerCase().contains("biz"));
