@@ -26,5 +26,6 @@ jobs:
         with:
           java-version: ${{ matrix.java }}
           architecture: x64
+          distribution: 'temurin'
       - name: Intergation Test
         run: mvn clean package -Pit-test -P!annotation-shade
