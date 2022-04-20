@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>restlight-parent</artifactId>
+        <groupId>io.esastack</groupId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>restlight-integration-test</artifactId>
+    <packaging>pom</packaging>
+    <name>Restlight :: Integration Test</name>
+
+    <modules>
+        <module>springmvc-test</module>
+    </modules>
+
+    <properties>
+        <junit.test.version>4.12</junit.test.version>
+        <restclient.version>1.0.1</restclient.version>
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
+        <maven.deploy.skip>true</maven.deploy.skip>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>${junit.test.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.esastack</groupId>
+                <artifactId>restclient</artifactId>
+                <version>${restclient.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+</project>

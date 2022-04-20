@@ -1,0 +1,30 @@
+name: Integration Test
+
+on:
+  push:
+    branches-ignore:
+      - '**-alpha'
+      - '**-tmp'
+      - '**-temp'
+  pull_request:
+    branches-ignore:
+      - '**-alpha'
+      - '**-tmp'
+      - '**-temp'
+
+jobs:
+  integration-test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        java: [8, 11]
+    steps:
+      - name: Checkout
+        uses: actions/cache@v2
+      - name: Set up JDK ${{ matrix.java }}
+        uses: actions/setup-java@v2
+        with:
+          java-version: ${{ matrix.java }}
+          architecture: x64
+      - name: Intergation Test
+        run: mvn clean package -Pit-test -P!annotation-shade
