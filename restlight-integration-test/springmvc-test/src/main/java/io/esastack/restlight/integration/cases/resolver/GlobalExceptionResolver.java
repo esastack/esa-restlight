@@ -25,9 +25,9 @@ import java.util.concurrent.CompletionStage;
  * @author chenglu
  */
 @Component
-public class GlobalExceptionResolver implements ExceptionResolver<RuntimeException> {
+public class GlobalExceptionResolver implements ExceptionResolver<IllegalArgumentException> {
     @Override
-    public CompletionStage<Void> handleException(RequestContext context, RuntimeException exception) {
+    public CompletionStage<Void> handleException(RequestContext context, IllegalArgumentException exception) {
         context.response().status(HttpStatus.FORBIDDEN.code());
         context.response().entity(exception.getMessage());
         return CompletableFuture.completedFuture(null);

@@ -11,25 +11,24 @@
  * limitations under the License.
  */
 
-package io.esastack.restlight.integration.cases.config;
+package io.esastack.restlight.integration.test;
 
-import io.esastack.restlight.server.handler.Filter;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import io.esastack.restclient.RestResponseBase;
+import io.esastack.restlight.integration.entity.UserData;
+import org.junit.Assert;
+import org.junit.Test;
 
 /**
  * @author chenglu
  */
-@Configuration
-public class FilterConfig {
+public class FilterTest extends BaseIntegrationTest {
 
-    @Bean
-    public Filter headerFilter() {
-        return (context, chain) -> {
-            if (context.request().uri().contains("filter")) {
-                context.request().headers().add("name", context.request().getParam("name"));
-            }
-            return chain.doFilter(context);
-        };
+    @Test
+    public void testFilter() throws Exception {
+        RestResponseBase response = restClient.get(domain + "/filter/get")
+                .addParam("name", "test").execute()
+                .toCompletableFuture().get();
+        UserData user = response.bodyToEntity(UserData.class);
+        Assert.assertEquals("test", user.getName());
     }
 }

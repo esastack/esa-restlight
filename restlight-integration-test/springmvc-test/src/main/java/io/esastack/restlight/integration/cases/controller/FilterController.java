@@ -11,25 +11,24 @@
  * limitations under the License.
  */
 
-package io.esastack.restlight.integration.cases.config;
+package io.esastack.restlight.integration.cases.controller;
 
-import io.esastack.restlight.server.handler.Filter;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import io.esastack.restlight.integration.entity.UserData;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @author chenglu
  */
-@Configuration
-public class FilterConfig {
+@RestController
+@RequestMapping("/filter/")
+public class FilterController {
 
-    @Bean
-    public Filter headerFilter() {
-        return (context, chain) -> {
-            if (context.request().uri().contains("filter")) {
-                context.request().headers().add("name", context.request().getParam("name"));
-            }
-            return chain.doFilter(context);
-        };
+    @GetMapping("get")
+    public UserData filter(@RequestHeader String name) {
+        return UserData.Builder.aRestResult()
+                .name(name).build();
     }
 }

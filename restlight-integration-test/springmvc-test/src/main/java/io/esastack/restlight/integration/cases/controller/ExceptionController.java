@@ -11,25 +11,27 @@
  * limitations under the License.
  */
 
-package io.esastack.restlight.integration.cases.config;
+package io.esastack.restlight.integration.cases.controller;
 
-import io.esastack.restlight.server.handler.Filter;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import io.esastack.restlight.integration.cases.exception.CustomException;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @author chenglu
  */
-@Configuration
-public class FilterConfig {
+@RestController
+@RequestMapping("/exception/")
+public class ExceptionController {
 
-    @Bean
-    public Filter headerFilter() {
-        return (context, chain) -> {
-            if (context.request().uri().contains("filter")) {
-                context.request().headers().add("name", context.request().getParam("name"));
-            }
-            return chain.doFilter(context);
-        };
+    @GetMapping("get")
+    public void exception() {
+        throw new IllegalArgumentException("Forbidden");
+    }
+
+    @GetMapping("get/custom")
+    public void customException() {
+        throw new CustomException("Custom");
     }
 }
