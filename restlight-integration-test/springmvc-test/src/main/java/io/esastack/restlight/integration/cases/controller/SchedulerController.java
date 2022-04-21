@@ -11,7 +11,7 @@
  * limitations under the License.
  */
 
-package io.esastack.restlight.integration.cases;
+package io.esastack.restlight.integration.cases.controller;
 
 import io.esastack.restlight.core.annotation.Scheduled;
 import org.springframework.web.bind.annotation.GetMapping;

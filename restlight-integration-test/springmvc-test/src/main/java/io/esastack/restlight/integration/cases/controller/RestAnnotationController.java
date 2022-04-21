@@ -11,13 +11,14 @@
  * limitations under the License.
  */
 
-package io.esastack.restlight.integration.cases;
+package io.esastack.restlight.integration.cases.controller;
 
 import io.esastack.restlight.core.annotation.QueryBean;
 import io.esastack.restlight.core.annotation.RequestBean;
 import io.esastack.restlight.integration.cases.annotation.CustomRequestBean;
 import io.esastack.restlight.integration.cases.annotation.CustomRequestBody;
 import io.esastack.restlight.integration.cases.annotation.CustomResponseBody;
+import io.esastack.restlight.integration.cases.exception.CustomException;
 import io.esastack.restlight.integration.entity.UserData;
 import org.springframework.http.HttpStatus;
 import org.springframework.util.MultiValueMap;
@@ -115,5 +116,55 @@ public class RestAnnotationController {
     @CustomResponseBody
     public String customResponseBody(@RequestParam String name) {
         return name;
+    }
+
+    @GetMapping("get/filter")
+    public UserData filter(@RequestHeader String name) {
+        return UserData.Builder.aRestResult()
+                .name(name).build();
+    }
+
+    @GetMapping("get/exception")
+    public void exception() {
+        throw new RuntimeException("Forbidden");
+    }
+
+    @GetMapping("get/customexception")
+    public void customException() {
+        throw new CustomException("Custom");
+    }
+
+    @GetMapping("get/paramadvicefactory")
+    public UserData customParamAdviceByFactory(@RequestParam String name) {
+        return UserData.Builder.aRestResult()
+                .name(name).build();
+    }
+
+    @GetMapping("get/paramadviceadaptor")
+    public UserData customParamAdviceByAdaptor(@RequestParam String name) {
+        return UserData.Builder.aRestResult()
+                .name(name).build();
+    }
+
+    @PostMapping("post/entityadvicefactory")
+    public UserData customEntityAdviceByFactory(@RequestBody UserData user) {
+        return user;
+    }
+
+    @PostMapping("post/entityadviceadaptor")
+    public UserData customEntityAdviceByAdaptor(@RequestBody UserData user) {
+        return user;
+    }
+
+    @GetMapping("get/response/entityadvicefactory")
+    public UserData customResponseEntityAdviceByFactory(@RequestParam String name) {
+        return UserData.Builder.aRestResult()
+                .name(name).build();
+    }
+
+    @GetMapping("get/response/entityadviceadaptor")
+    public UserData customResponseEntityAdviceByAdaptor(@RequestParam String name) {
+        return UserData.Builder.aRestResult()
+                .name(name).build();
     }
 }

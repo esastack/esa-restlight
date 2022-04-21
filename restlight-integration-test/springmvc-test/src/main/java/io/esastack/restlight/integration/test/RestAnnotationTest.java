@@ -13,11 +13,11 @@
 
 package io.esastack.restlight.integration.test;
 
+import io.esastack.commons.net.http.HttpStatus;
 import io.esastack.restclient.RestResponseBase;
 import io.esastack.restlight.integration.entity.UserData;
 import org.junit.Assert;
 import org.junit.Test;
-import org.springframework.http.HttpStatus;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -110,7 +110,7 @@ public class RestAnnotationTest extends BaseIntegrationTest {
     public void testResponseStatus() throws Exception {
         RestResponseBase response = restClient.get(domain + "/rest/annotation/get/reponsestatus").execute()
                 .toCompletableFuture().get();
-        Assert.assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.value(), response.status());
+        Assert.assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.code(), response.status());
     }
 
     @Test
@@ -140,5 +140,82 @@ public class RestAnnotationTest extends BaseIntegrationTest {
                 .toCompletableFuture().get();
         UserData user = response.bodyToEntity(UserData.class);
         Assert.assertEquals("test", user.getName());
+    }
+
+    @Test
+    public void testFilter() throws Exception {
+        RestResponseBase response = restClient.get(domain + "/rest/annotation/get/filter")
+                .addParam("name", "test").execute()
+                .toCompletableFuture().get();
+        UserData user = response.bodyToEntity(UserData.class);
+        Assert.assertEquals("test", user.getName());
+    }
+
+    @Test
+    public void testException() throws Exception {
+        RestResponseBase response = restClient.get(domain + "/rest/annotation/get/exception")
+                .execute().toCompletableFuture().get();
+        Assert.assertEquals(HttpStatus.FORBIDDEN.code(), response.status());
+        Assert.assertEquals("Forbidden", response.bodyToEntity(String.class));
+    }
+
+    @Test
+    public void testCustomException() throws Exception {
+        RestResponseBase response = restClient.get(domain + "/rest/annotation/get/customexception")
+                .execute().toCompletableFuture().get();
+        Assert.assertEquals(HttpStatus.UNAUTHORIZED.code(), response.status());
+        Assert.assertEquals("Custom", response.bodyToEntity(String.class));
+    }
+
+    @Test
+    public void testCustomParamAdviceByFactory() throws Exception {
+        RestResponseBase response = restClient.get(domain + "/rest/annotation/get/paramadvicefactory")
+                .addParam("name", "test").execute().toCompletableFuture().get();
+        UserData user = response.bodyToEntity(UserData.class);
+        Assert.assertEquals("test-advice-factory", user.getName());
+    }
+
+    @Test
+    public void testCustomParamAdviceByAdaptor() throws Exception {
+        RestResponseBase response = restClient.get(domain + "/rest/annotation/get/paramadviceadaptor")
+                .addParam("name", "test").execute().toCompletableFuture().get();
+        UserData user = response.bodyToEntity(UserData.class);
+        Assert.assertEquals("test-advice-adaptor", user.getName());
+    }
+
+    @Test
+    public void testCustomEntityAdviceByFactory() throws Exception {
+        UserData user = UserData.Builder.aRestResult()
+                .name("test").build();
+        RestResponseBase response = restClient.post(domain + "/rest/annotation/post/entityadvicefactory")
+                .entity(user).execute().toCompletableFuture().get();
+        UserData userData = response.bodyToEntity(UserData.class);
+        Assert.assertEquals(user.getName() + "-advice-factory", userData.getName());
+    }
+
+    @Test
+    public void testCustomEntityAdviceByAdaptor() throws Exception {
+        UserData user = UserData.Builder.aRestResult()
+                .name("test").build();
+        RestResponseBase response = restClient.post(domain + "/rest/annotation/post/entityadviceadaptor")
+                .entity(user).execute().toCompletableFuture().get();
+        UserData userData = response.bodyToEntity(UserData.class);
+        Assert.assertEquals(user.getName() + "-advice-adaptor", userData.getName());
+    }
+
+    @Test
+    public void testCustomResponseEntityAdviceByFactory() throws Exception {
+        RestResponseBase response = restClient.get(domain + "/rest/annotation/get/response/entityadvicefactory")
+                .addParam("name", "test").execute().toCompletableFuture().get();
+        UserData user = response.bodyToEntity(UserData.class);
+        Assert.assertEquals("test-advice-factory", user.getName());
+    }
+
+    @Test
+    public void testCustomResponseEntityAdviceByAdaptor() throws Exception {
+        RestResponseBase response = restClient.get(domain + "/rest/annotation/get/response/entityadviceadaptor")
+                .addParam("name", "test").execute().toCompletableFuture().get();
+        UserData user = response.bodyToEntity(UserData.class);
+        Assert.assertEquals("test-advice-adaptor", user.getName());
     }
 }
