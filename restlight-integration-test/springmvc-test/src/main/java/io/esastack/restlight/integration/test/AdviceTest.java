@@ -25,18 +25,20 @@ public class AdviceTest extends BaseIntegrationTest {
 
     @Test
     public void testCustomParamAdviceByFactory() throws Exception {
+        String name = "test";
         RestResponseBase response = restClient.get(domain + "/advice/get/param/factory")
-                .addParam("name", "test").execute().toCompletableFuture().get();
+                .addParam("name", name).execute().toCompletableFuture().get();
         UserData user = response.bodyToEntity(UserData.class);
-        Assert.assertEquals("test-advice-factory", user.getName());
+        Assert.assertEquals(name + "-advice-factory", user.getName());
     }
 
     @Test
     public void testCustomParamAdviceByAdaptor() throws Exception {
+        String name = "test";
         RestResponseBase response = restClient.get(domain + "/advice/get/param/adaptor")
-                .addParam("name", "test").execute().toCompletableFuture().get();
+                .addParam("name", name).execute().toCompletableFuture().get();
         UserData user = response.bodyToEntity(UserData.class);
-        Assert.assertEquals("test-advice-adaptor", user.getName());
+        Assert.assertEquals(name + "-advice-adaptor", user.getName());
     }
 
     @Test

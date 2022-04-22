@@ -379,7 +379,7 @@
                                 <sourceDirectory>${project.build.testSourceDirectory}</sourceDirectory>
                             </sourceDirectories>
                             <excludes>
-                                io.esastack/restlight/**/PojoProtobuf*
+                                io/esastack/restlight/**/*Protobuf*
                             </excludes>
                         </configuration>
                         <goals>

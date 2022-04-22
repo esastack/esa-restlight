@@ -15,6 +15,8 @@ package io.esastack.restlight.integration.test;
 
 import esa.commons.NetworkUtils;
 import io.esastack.restclient.RestClient;
+import io.esastack.restlight.core.config.SerializeOptions;
+import io.esastack.restlight.core.config.SerializesOptions;
 import io.esastack.restlight.starter.ServerStarter;
 import io.esastack.restlight.starter.autoconfigure.AutoRestlightServerOptions;
 import org.junit.AfterClass;
@@ -43,6 +45,11 @@ public abstract class BaseIntegrationTest {
         final String contextPath = "/intergration/test";
         final AutoRestlightServerOptions options = new AutoRestlightServerOptions();
         options.setContextPath(contextPath);
+        SerializeOptions serializeOptions = new SerializeOptions();
+        serializeOptions.setNegotiation(true);
+        SerializesOptions serializesOptions = new SerializesOptions();
+        serializesOptions.setRequest(serializeOptions);
+        options.setSerialize(serializesOptions);
         final int port = NetworkUtils.selectRandomPort();
         final String host = "127.0.0.1";
         options.setPort(port);
