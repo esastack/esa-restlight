@@ -42,7 +42,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("/rest/annotation/")
-public class RestAnnotationController {
+public class AnnotationController {
 
     @GetMapping("get")
     public UserData get(@RequestParam String name) {

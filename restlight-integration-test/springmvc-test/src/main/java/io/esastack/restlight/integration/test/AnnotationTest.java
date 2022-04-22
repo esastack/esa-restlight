@@ -25,7 +25,7 @@ import java.util.Date;
 /**
  * @author chenglu
  */
-public class RestAnnotationTest extends BaseIntegrationTest {
+public class AnnotationTest extends BaseIntegrationTest {
 
     @Test
     public void testGet() throws Exception {
