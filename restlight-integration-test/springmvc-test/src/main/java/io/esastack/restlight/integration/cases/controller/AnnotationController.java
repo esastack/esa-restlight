@@ -41,7 +41,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author chenglu
  */
 @RestController
-@RequestMapping("/rest/annotation/")
+@RequestMapping("/annotation/")
 public class AnnotationController {
 
     @GetMapping("get")

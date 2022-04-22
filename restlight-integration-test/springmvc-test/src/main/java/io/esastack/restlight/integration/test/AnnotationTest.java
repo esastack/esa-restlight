@@ -29,7 +29,7 @@ public class AnnotationTest extends BaseIntegrationTest {
 
     @Test
     public void testGet() throws Exception {
-        RestResponseBase response = restClient.get(domain + "/rest/annotation/get").addParam("name", "test").execute()
+        RestResponseBase response = restClient.get(domain + "/annotation/get").addParam("name", "test").execute()
                 .toCompletableFuture().get();
         UserData userData = response.bodyToEntity(UserData.class);
         Assert.assertEquals("test", userData.getName());
@@ -40,7 +40,7 @@ public class AnnotationTest extends BaseIntegrationTest {
         UserData user = UserData.Builder.aRestResult()
                 .name("test").age(10).birthDay(new Date())
                 .weight(BigDecimal.valueOf(123.01)).build();
-        RestResponseBase response = restClient.post(domain + "/rest/annotation/post").entity(user).execute()
+        RestResponseBase response = restClient.post(domain + "/annotation/post").entity(user).execute()
                 .toCompletableFuture().get();
         UserData userResult = response.bodyToEntity(UserData.class);
         Assert.assertEquals(user.getName(), userResult.getName());
@@ -48,7 +48,7 @@ public class AnnotationTest extends BaseIntegrationTest {
 
     @Test
     public void testDelete() throws Exception {
-        RestResponseBase response = restClient.delete(domain + "/rest/annotation/delete/test").execute()
+        RestResponseBase response = restClient.delete(domain + "/annotation/delete/test").execute()
                 .toCompletableFuture().get();
         UserData userResult = response.bodyToEntity(UserData.class);
         Assert.assertEquals("test", userResult.getName());
@@ -56,7 +56,7 @@ public class AnnotationTest extends BaseIntegrationTest {
 
     @Test
     public void testPut() throws Exception {
-        RestResponseBase response = restClient.put(domain + "/rest/annotation/put").addCookie("name", "test").execute()
+        RestResponseBase response = restClient.put(domain + "/annotation/put").addCookie("name", "test").execute()
                 .toCompletableFuture().get();
         UserData userResult = response.bodyToEntity(UserData.class);
         Assert.assertEquals("test", userResult.getName());
@@ -64,7 +64,7 @@ public class AnnotationTest extends BaseIntegrationTest {
 
     @Test
     public void testQueryBean() throws Exception {
-        RestResponseBase response = restClient.get(domain + "/rest/annotation/get/querybean")
+        RestResponseBase response = restClient.get(domain + "/annotation/get/querybean")
                 .addParam("name", "test").execute()
                 .toCompletableFuture().get();
         UserData userData = response.bodyToEntity(UserData.class);
@@ -73,7 +73,7 @@ public class AnnotationTest extends BaseIntegrationTest {
 
     @Test
     public void testRequestBean() throws Exception {
-        RestResponseBase response = restClient.get(domain + "/rest/annotation/get/requestbean")
+        RestResponseBase response = restClient.get(domain + "/annotation/get/requestbean")
                 .addParam("name", "test").execute()
                 .toCompletableFuture().get();
         UserData userData = response.bodyToEntity(UserData.class);
@@ -82,7 +82,7 @@ public class AnnotationTest extends BaseIntegrationTest {
 
     @Test
     public void testHeader() throws Exception {
-        RestResponseBase response = restClient.get(domain + "/rest/annotation/get/header")
+        RestResponseBase response = restClient.get(domain + "/annotation/get/header")
                 .addHeader("name", "test").execute()
                 .toCompletableFuture().get();
         UserData userData = response.bodyToEntity(UserData.class);
@@ -91,7 +91,7 @@ public class AnnotationTest extends BaseIntegrationTest {
 
     @Test
     public void testMatrix() throws Exception {
-        RestResponseBase response = restClient.get(domain + "/rest/annotation/get/matrix")
+        RestResponseBase response = restClient.get(domain + "/annotation/get/matrix")
                 .addParam("name", "test,test2").execute()
                 .toCompletableFuture().get();
         UserData userData = response.bodyToEntity(UserData.class);
@@ -100,7 +100,7 @@ public class AnnotationTest extends BaseIntegrationTest {
 
     @Test
     public void testAttribute() throws Exception {
-        RestResponseBase response = restClient.get(domain + "/rest/annotation/get/attribute").execute()
+        RestResponseBase response = restClient.get(domain + "/annotation/get/attribute").execute()
                 .toCompletableFuture().get();
         UserData userData = response.bodyToEntity(UserData.class);
         Assert.assertEquals("test", userData.getName());
@@ -108,14 +108,14 @@ public class AnnotationTest extends BaseIntegrationTest {
 
     @Test
     public void testResponseStatus() throws Exception {
-        RestResponseBase response = restClient.get(domain + "/rest/annotation/get/responsestatus").execute()
+        RestResponseBase response = restClient.get(domain + "/annotation/get/responsestatus").execute()
                 .toCompletableFuture().get();
         Assert.assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.code(), response.status());
     }
 
     @Test
     public void testCustomBean() throws Exception {
-        RestResponseBase response = restClient.get(domain + "/rest/annotation/get/custom/bean")
+        RestResponseBase response = restClient.get(domain + "/annotation/get/custom/bean")
                 .addParam("name", "test").execute()
                 .toCompletableFuture().get();
         UserData userData = response.bodyToEntity(UserData.class);
@@ -127,7 +127,7 @@ public class AnnotationTest extends BaseIntegrationTest {
         UserData user = UserData.Builder.aRestResult()
                 .name("test").age(10).birthDay(new Date())
                 .weight(BigDecimal.valueOf(123.01)).build();
-        RestResponseBase response = restClient.post(domain + "/rest/annotation/post/custom/body").entity(user).execute()
+        RestResponseBase response = restClient.post(domain + "/annotation/post/custom/body").entity(user).execute()
                 .toCompletableFuture().get();
         UserData userResult = response.bodyToEntity(UserData.class);
         Assert.assertEquals(user.getName(), userResult.getName());
@@ -135,7 +135,7 @@ public class AnnotationTest extends BaseIntegrationTest {
 
     @Test
     public void testCustomResponseBody() throws Exception {
-        RestResponseBase response = restClient.get(domain + "/rest/annotation/get/custom/responsebody")
+        RestResponseBase response = restClient.get(domain + "/annotation/get/custom/responsebody")
                 .addParam("name", "test").execute()
                 .toCompletableFuture().get();
         UserData user = response.bodyToEntity(UserData.class);
