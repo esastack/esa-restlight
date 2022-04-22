@@ -45,7 +45,9 @@ public class SchedulerConfig {
         executor.execute(() -> {
             try {
                 Thread.sleep(3000);
-            } catch (InterruptedException e) {}
+            } catch (InterruptedException e) {
+                // ignore it.
+            }
         });
         TimeoutOptions timeoutOptions = new TimeoutOptions();
         timeoutOptions.setType(TimeoutOptions.Type.QUEUED);

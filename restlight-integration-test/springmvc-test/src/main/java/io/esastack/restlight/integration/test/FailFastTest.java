@@ -33,7 +33,7 @@ public class FailFastTest extends BaseIntegrationTest {
     @Test
     public void testTTFB() throws Exception {
         RestResponseBase response = restClient.post(domain + "/failfast/post/ttfb")
-                .entity(new byte[1024 * 1024])
+                .entity(new byte[1024 * 1024 * 4])
                 .execute().toCompletableFuture().get();
         Assert.assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.code(), response.status());
     }

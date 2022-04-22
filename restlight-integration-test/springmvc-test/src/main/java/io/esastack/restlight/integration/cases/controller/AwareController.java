@@ -30,7 +30,8 @@ import java.util.concurrent.Executor;
  */
 @RestController
 @RequestMapping("/aware/")
-public class AwareController implements RestlightBizExecutorAware, RestlightIoExecutorAware, RestlightServerAware, RestlightDeployContextAware {
+public class AwareController implements RestlightBizExecutorAware, RestlightIoExecutorAware,
+        RestlightServerAware, RestlightDeployContextAware {
 
     private Executor bizExecutor;
 
