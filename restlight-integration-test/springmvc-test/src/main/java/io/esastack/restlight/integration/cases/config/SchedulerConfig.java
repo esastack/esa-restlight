@@ -14,12 +14,17 @@
 package io.esastack.restlight.integration.cases.config;
 
 import esa.commons.concurrent.ThreadFactories;
+import io.esastack.restlight.server.config.TimeoutOptions;
 import io.esastack.restlight.server.schedule.Scheduler;
 import io.esastack.restlight.server.schedule.Schedulers;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author chenglu
@@ -31,5 +36,30 @@ public class SchedulerConfig {
     public Scheduler customScheduler() {
         return Schedulers.fromExecutor("custom",
                 Executors.newSingleThreadExecutor(ThreadFactories.namedThreadFactory("custom")));
+    }
+
+    @Bean
+    public Scheduler failFastQueuedScheduler() {
+        Executor executor = new ThreadPoolExecutor(1, 1, 1, TimeUnit.MINUTES, new ArrayBlockingQueue<>(4),
+                ThreadFactories.namedThreadFactory("fail-fast-queued"));
+        executor.execute(() -> {
+            try {
+                Thread.sleep(3000);
+            } catch (InterruptedException e) {}
+        });
+        TimeoutOptions timeoutOptions = new TimeoutOptions();
+        timeoutOptions.setType(TimeoutOptions.Type.QUEUED);
+        timeoutOptions.setTimeMillis(100);
+        return Schedulers.wrapped(Schedulers.fromExecutor("fail-fast-queued", executor), timeoutOptions);
+    }
+
+    @Bean
+    public Scheduler failFastFFTBScheduler() {
+        Executor executor = new ThreadPoolExecutor(1, 1, 1, TimeUnit.MINUTES, new ArrayBlockingQueue<>(4),
+                ThreadFactories.namedThreadFactory("fail-fast-ttfb"));
+        TimeoutOptions timeoutOptions = new TimeoutOptions();
+        timeoutOptions.setType(TimeoutOptions.Type.TTFB);
+        timeoutOptions.setTimeMillis(20);
+        return Schedulers.wrapped(Schedulers.fromExecutor("fail-fast-ttfb", executor), timeoutOptions);
     }
 }

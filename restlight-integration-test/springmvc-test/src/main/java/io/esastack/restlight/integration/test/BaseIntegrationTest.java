@@ -45,15 +45,21 @@ public abstract class BaseIntegrationTest {
         final String contextPath = "/intergration/test";
         final AutoRestlightServerOptions options = new AutoRestlightServerOptions();
         options.setContextPath(contextPath);
+
+        // set serialize option
         SerializeOptions serializeOptions = new SerializeOptions();
         serializeOptions.setNegotiation(true);
         SerializesOptions serializesOptions = new SerializesOptions();
         serializesOptions.setRequest(serializeOptions);
         options.setSerialize(serializesOptions);
+
+        // set port and host
         final int port = NetworkUtils.selectRandomPort();
         final String host = "127.0.0.1";
         options.setPort(port);
         options.setHost(host);
+
+        // start server
         final ServerStarter starter = new ServerStarter(options);
         starter.setApplicationContext(ctx);
         starter.afterSingletonsInstantiated();
