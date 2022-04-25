@@ -15,7 +15,6 @@
  */
 package io.esastack.restlight.springmvc.resolver.exception;
 
-import esa.commons.Checks;
 import esa.commons.ClassUtils;
 import esa.commons.StringUtils;
 import esa.commons.reflect.AnnotationUtils;
@@ -46,25 +45,22 @@ import java.util.Map;
 
 public class SpringMvcExceptionResolverFactory extends AbstractExceptionResolverFactory {
 
-    private final DeployContext context;
-
     public SpringMvcExceptionResolverFactory(DeployContext context,
                                              List<ExceptionMapper> mappers,
                                              Collection<?> controllerBeans,
                                              Collection<?> adviceBeans,
                                              HandlerMethodLocator locator,
                                              HandlerResolverFactory factory) {
-        super(mappers, controllerBeans, adviceBeans, locator, factory);
-        Checks.checkNotNull(context, "context");
-        this.context = context;
+        super(mappers, controllerBeans, adviceBeans, locator, factory, context);
     }
 
     @Override
     protected List<ExceptionMapper> createMappersFromController(Object bean,
                                                                 HandlerMethodLocator locator,
-                                                                HandlerResolverFactory factory) {
+                                                                HandlerResolverFactory factory,
+                                                                DeployContext context) {
         final Map<Class<? extends Throwable>, ExceptionResolver<Throwable>> mappings =
-                extractMappings(bean, locator);
+                extractMappings(bean, locator, context);
         return mappings.isEmpty() ? null :
                 Collections.singletonList(new HandlerOnlyExceptionMapper(mappings,
                         ClassUtils.getUserType(bean.getClass())));
@@ -74,7 +70,8 @@ public class SpringMvcExceptionResolverFactory extends AbstractExceptionResolver
     protected List<ExceptionMapper> createMappersFromControllerAdvice(Object adviceBean,
                                                                       boolean isController,
                                                                       HandlerMethodLocator locator,
-                                                                      HandlerResolverFactory factory) {
+                                                                      HandlerResolverFactory factory,
+                                                                      DeployContext context) {
         final Class<?> beanType = ClassUtils.getUserType(adviceBean);
         Annotation ann =
                 AnnotationUtils.findAnyAnnotation(beanType, ControllerAdvice0.extendedClasses());
@@ -88,7 +85,7 @@ public class SpringMvcExceptionResolverFactory extends AbstractExceptionResolver
             return Collections.emptyList();
         }
         final Map<Class<? extends Throwable>, ExceptionResolver<Throwable>> mappings =
-                extractMappings(adviceBean, locator);
+                extractMappings(adviceBean, locator, context);
         return mappings.isEmpty() ? null :
                 Collections.singletonList(new ControllerAdviceExceptionMapper(mappings,
                         adviceBean,
@@ -101,12 +98,13 @@ public class SpringMvcExceptionResolverFactory extends AbstractExceptionResolver
 
     private Map<Class<? extends Throwable>, ExceptionResolver<Throwable>> extractMappings(
             Object adviceBean,
-            HandlerMethodLocator locator) {
+            HandlerMethodLocator locator,
+            DeployContext context) {
         final Map<Class<? extends Throwable>, ExceptionResolver<Throwable>> mappings = new LinkedHashMap<>();
         Class<?> beanType = ClassUtils.getUserType(adviceBean.getClass());
         for (Method method : ClassUtils.userDeclaredMethods(beanType,
                 SpringMvcExceptionResolverFactory::isExceptionHandlerMethod)) {
-            extractExceptionHandlers(adviceBean, locator, method, mappings);
+            extractExceptionHandlers(adviceBean, locator, method, mappings, context);
         }
         return mappings;
     }
@@ -114,7 +112,9 @@ public class SpringMvcExceptionResolverFactory extends AbstractExceptionResolver
     private void extractExceptionHandlers(Object bean,
                                           HandlerMethodLocator locator,
                                           Method method,
-                                          Map<Class<? extends Throwable>, ExceptionResolver<Throwable>> mappings) {
+                                          Map<Class<? extends Throwable>,
+                                                  ExceptionResolver<Throwable>> mappings,
+                                          DeployContext context) {
         for (Class<? extends Throwable> exceptionType : detectExceptionMappings(method)) {
             locator.getHandlerMethodInfo(null, ClassUtils.getUserType(bean), method).ifPresent(handler -> {
                 ExceptionResolver<Throwable> resolver =
