@@ -13,20 +13,26 @@
 
 package io.esastack.restlight.integration.cases.config;
 
+import esa.commons.collection.AttributeKey;
 import io.esastack.restlight.core.interceptor.InterceptorFactory;
 import io.esastack.restlight.core.interceptor.InternalInterceptor;
-import io.esastack.restlight.integration.cases.inteceptor.AttributeInterceptor;
+import io.esastack.restlight.server.context.RequestContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-/**
- * @author chenglu
- */
+import java.util.concurrent.CompletionStage;
+
 @Configuration
 public class InterceptorConfig {
 
     @Bean
     public InterceptorFactory initAttributeInterceptor() {
-        return InterceptorFactory.of(new AttributeInterceptor());
+        return InterceptorFactory.of(new InternalInterceptor() {
+            @Override
+            public CompletionStage<Boolean> preHandle(RequestContext context, Object handler) {
+                context.attrs().attr(AttributeKey.stringKey("name")).set("test");
+                return InternalInterceptor.super.preHandle(context, handler);
+            }
+        });
     }
 }

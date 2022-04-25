@@ -20,9 +20,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import static io.esastack.restlight.server.schedule.Schedulers.IO;
 
-/**
- * @author chenglu
- */
 @RestController
 @RequestMapping("/scheduler/")
 public class SchedulerController {

@@ -18,9 +18,6 @@ import io.esastack.restlight.integration.entity.UserData;
 import org.junit.Assert;
 import org.junit.Test;
 
-/**
- * @author chenglu
- */
 public class AdviceTest extends BaseIntegrationTest {
 
     @Test
@@ -43,7 +40,7 @@ public class AdviceTest extends BaseIntegrationTest {
 
     @Test
     public void testCustomEntityAdviceByFactory() throws Exception {
-        UserData user = UserData.Builder.aRestResult()
+        UserData user = UserData.Builder.anUserData()
                 .name("test").build();
         RestResponseBase response = restClient.post(domain + "/advice/post/entity/factory")
                 .entity(user).execute().toCompletableFuture().get();
@@ -53,7 +50,7 @@ public class AdviceTest extends BaseIntegrationTest {
 
     @Test
     public void testCustomEntityAdviceByAdaptor() throws Exception {
-        UserData user = UserData.Builder.aRestResult()
+        UserData user = UserData.Builder.anUserData()
                 .name("test").build();
         RestResponseBase response = restClient.post(domain + "/advice/post/entity/adaptor")
                 .entity(user).execute().toCompletableFuture().get();

@@ -14,16 +14,8 @@
 package io.esastack.restlight.integration.cases.controller;
 
 import io.esastack.restlight.integration.entity.UserData;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-/**
- * @author chenglu
- */
 @RestController
 @RequestMapping("/advice/")
 public class AdviceController {
@@ -31,13 +23,13 @@ public class AdviceController {
 
     @GetMapping("get/param/factory")
     public UserData customParamAdviceByFactory(@RequestParam String name) {
-        return UserData.Builder.aRestResult()
+        return UserData.Builder.anUserData()
                 .name(name).build();
     }
 
     @GetMapping("get/param/adaptor")
     public UserData customParamAdviceByAdaptor(@RequestParam String name) {
-        return UserData.Builder.aRestResult()
+        return UserData.Builder.anUserData()
                 .name(name).build();
     }
 
@@ -53,13 +45,13 @@ public class AdviceController {
 
     @GetMapping("get/response/entity/factory")
     public UserData customResponseEntityAdviceByFactory(@RequestParam String name) {
-        return UserData.Builder.aRestResult()
+        return UserData.Builder.anUserData()
                 .name(name).build();
     }
 
     @GetMapping("get/response/entity/adaptor")
     public UserData customResponseEntityAdviceByAdaptor(@RequestParam String name) {
-        return UserData.Builder.aRestResult()
+        return UserData.Builder.anUserData()
                 .name(name).build();
     }
 }

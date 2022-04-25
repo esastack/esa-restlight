@@ -21,9 +21,6 @@ import io.esastack.restlight.core.util.Ordered;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-/**
- * @author chenglu
- */
 @Configuration
 public class SerializeConfig {
 

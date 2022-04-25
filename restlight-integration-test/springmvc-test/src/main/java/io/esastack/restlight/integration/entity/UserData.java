@@ -13,14 +13,9 @@
 
 package io.esastack.restlight.integration.entity;
 
-import io.esastack.restlight.core.annotation.RequestBean;
-
 import java.math.BigDecimal;
 import java.util.Date;
 
-/**
- * @author chenglu
- */
 public class UserData {
 
     private String name;
@@ -82,7 +77,7 @@ public class UserData {
         private Builder() {
         }
 
-        public static Builder aRestResult() {
+        public static Builder anUserData() {
             return new Builder();
         }
 
@@ -108,10 +103,10 @@ public class UserData {
 
         public UserData build() {
             UserData userData = new UserData();
-            userData.name = this.name;
-            userData.weight = this.weight;
-            userData.birthDay = this.birthDay;
-            userData.age = this.age;
+            userData.setName(name);
+            userData.setAge(age);
+            userData.setWeight(weight);
+            userData.setBirthDay(birthDay);
             return userData;
         }
     }

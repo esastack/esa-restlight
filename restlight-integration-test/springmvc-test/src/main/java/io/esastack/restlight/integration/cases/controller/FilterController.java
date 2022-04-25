@@ -19,16 +19,13 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-/**
- * @author chenglu
- */
 @RestController
 @RequestMapping("/filter/")
 public class FilterController {
 
     @GetMapping("get")
     public UserData filter(@RequestHeader String name) {
-        return UserData.Builder.aRestResult()
+        return UserData.Builder.anUserData()
                 .name(name).build();
     }
 }

@@ -18,9 +18,6 @@ import io.esastack.restlight.integration.entity.UserData;
 import org.junit.Assert;
 import org.junit.Test;
 
-/**
- * @author chenglu
- */
 public class FilterTest extends BaseIntegrationTest {
 
     @Test

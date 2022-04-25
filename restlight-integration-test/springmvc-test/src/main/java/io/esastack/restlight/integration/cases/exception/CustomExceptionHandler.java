@@ -11,17 +11,12 @@
  * limitations under the License.
  */
 
-package io.esastack.restlight.integration.cases.resolver;
+package io.esastack.restlight.integration.cases.exception;
 
 import io.esastack.commons.net.http.HttpStatus;
-import io.esastack.restlight.integration.cases.exception.CustomException;
 import io.esastack.restlight.server.core.HttpResponse;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-/**
- * @author chenglu
- */
 //@ControllerAdvice
 public class CustomExceptionHandler {
 

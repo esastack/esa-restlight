@@ -22,9 +22,6 @@ import org.junit.Test;
 import java.math.BigDecimal;
 import java.util.Date;
 
-/**
- * @author chenglu
- */
 public class AnnotationTest extends BaseIntegrationTest {
 
     @Test
@@ -37,7 +34,7 @@ public class AnnotationTest extends BaseIntegrationTest {
 
     @Test
     public void testPost() throws Exception {
-        UserData user = UserData.Builder.aRestResult()
+        UserData user = UserData.Builder.anUserData()
                 .name("test").age(10).birthDay(new Date())
                 .weight(BigDecimal.valueOf(123.01)).build();
         RestResponseBase response = restClient.post(domain + "/annotation/post").entity(user).execute()
@@ -124,7 +121,7 @@ public class AnnotationTest extends BaseIntegrationTest {
 
     @Test
     public void testCustomBody() throws Exception {
-        UserData user = UserData.Builder.aRestResult()
+        UserData user = UserData.Builder.anUserData()
                 .name("test").age(10).birthDay(new Date())
                 .weight(BigDecimal.valueOf(123.01)).build();
         RestResponseBase response = restClient.post(domain + "/annotation/post/custom/body").entity(user).execute()

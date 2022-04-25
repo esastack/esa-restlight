@@ -18,9 +18,6 @@ import io.esastack.restclient.RestResponseBase;
 import org.junit.Assert;
 import org.junit.Test;
 
-/**
- * @author chenglu
- */
 public class FailFastTest extends BaseIntegrationTest {
 
     @Test

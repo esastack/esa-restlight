@@ -13,9 +13,6 @@
 
 package io.esastack.restlight.integration.cases.exception;
 
-/**
- * @author chenglu
- */
 public class CustomException extends RuntimeException {
 
     public CustomException() {

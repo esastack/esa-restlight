@@ -25,9 +25,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.concurrent.Executor;
 
-/**
- * @author chenglu
- */
 @RestController
 @RequestMapping("/aware/")
 public class AwareController implements RestlightBizExecutorAware, RestlightIoExecutorAware,

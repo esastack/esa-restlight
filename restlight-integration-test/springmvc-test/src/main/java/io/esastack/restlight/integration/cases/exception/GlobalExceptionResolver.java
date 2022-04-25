@@ -11,7 +11,7 @@
  * limitations under the License.
  */
 
-package io.esastack.restlight.integration.cases.resolver;
+package io.esastack.restlight.integration.cases.exception;
 
 import io.esastack.commons.net.http.HttpStatus;
 import io.esastack.restlight.core.resolver.ExceptionResolver;
@@ -21,9 +21,6 @@ import org.springframework.stereotype.Component;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
-/**
- * @author chenglu
- */
 @Component
 public class GlobalExceptionResolver implements ExceptionResolver<IllegalArgumentException> {
     @Override

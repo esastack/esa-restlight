@@ -17,15 +17,7 @@ import esa.commons.Result;
 import io.esastack.commons.net.http.MediaType;
 import io.esastack.restlight.core.method.HandlerMethod;
 import io.esastack.restlight.core.method.Param;
-import io.esastack.restlight.core.resolver.ParamResolver;
-import io.esastack.restlight.core.resolver.ParamResolverFactory;
-import io.esastack.restlight.core.resolver.RequestEntity;
-import io.esastack.restlight.core.resolver.RequestEntityResolver;
-import io.esastack.restlight.core.resolver.RequestEntityResolverFactory;
-import io.esastack.restlight.core.resolver.ResponseEntity;
-import io.esastack.restlight.core.resolver.ResponseEntityResolver;
-import io.esastack.restlight.core.resolver.ResponseEntityResolverFactory;
-import io.esastack.restlight.core.resolver.StringConverterProvider;
+import io.esastack.restlight.core.resolver.*;
 import io.esastack.restlight.core.resolver.rspentity.AbstractResponseEntityResolver;
 import io.esastack.restlight.core.serialize.HttpRequestSerializer;
 import io.esastack.restlight.core.serialize.HttpResponseSerializer;
@@ -41,9 +33,6 @@ import org.springframework.context.annotation.Configuration;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
-/**
- * @author chenglu
- */
 @Configuration
 public class ResolverConfig {
 
@@ -53,7 +42,7 @@ public class ResolverConfig {
             @Override
             public ParamResolver createResolver(Param param, StringConverterProvider converters,
                                                 List<? extends HttpRequestSerializer> serializers) {
-                return context -> UserData.Builder.aRestResult()
+                return context -> UserData.Builder.anUserData()
                         .name(context.request().getParam("name"))
                         .build();
             }

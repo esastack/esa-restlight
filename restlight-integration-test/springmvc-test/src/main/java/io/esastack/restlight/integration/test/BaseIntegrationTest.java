@@ -23,9 +23,6 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-/**
- * @author chenglu
- */
 public abstract class BaseIntegrationTest {
 
     public static RestClient restClient;

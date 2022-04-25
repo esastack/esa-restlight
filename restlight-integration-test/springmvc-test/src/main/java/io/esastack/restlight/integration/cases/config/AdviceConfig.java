@@ -32,9 +32,6 @@ import io.esastack.restlight.integration.entity.UserData;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-/**
- * @author chenglu
- */
 @Configuration
 public class AdviceConfig {
 

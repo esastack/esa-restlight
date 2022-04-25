@@ -20,15 +20,8 @@ import io.esastack.restlight.server.schedule.Schedulers;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
-/**
- * @author chenglu
- */
 @Configuration
 public class SchedulerConfig {
 

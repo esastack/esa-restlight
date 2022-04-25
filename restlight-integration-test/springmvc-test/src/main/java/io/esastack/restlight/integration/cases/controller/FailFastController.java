@@ -14,25 +14,14 @@
 package io.esastack.restlight.integration.cases.controller;
 
 import io.esastack.restlight.core.annotation.Scheduled;
-import io.esastack.restlight.spring.util.RestlightBizExecutorAware;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.concurrent.Executor;
-
-/**
- * @author chenglu
- */
 @RestController
 @RequestMapping("/failfast/")
-public class FailFastController implements RestlightBizExecutorAware {
-
-    @Override
-    public void setRestlightBizExecutor(Executor bizExecutor) {
-
-    }
+public class FailFastController {
 
     @GetMapping("get/queued")
     @Scheduled("fail-fast-queued")

@@ -20,9 +20,6 @@ import org.junit.Test;
 
 import java.util.concurrent.ThreadPoolExecutor;
 
-/**
- * @author chenglu
- */
 public class AwareTest extends BaseIntegrationTest {
 
     @Test

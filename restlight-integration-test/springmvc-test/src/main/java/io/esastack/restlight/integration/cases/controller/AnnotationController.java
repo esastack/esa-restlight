@@ -21,32 +21,15 @@ import io.esastack.restlight.integration.cases.annotation.CustomResponseBody;
 import io.esastack.restlight.integration.entity.UserData;
 import org.springframework.http.HttpStatus;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.bind.annotation.CookieValue;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.MatrixVariable;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestAttribute;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-
-/**
- * @author chenglu
- */
 @RestController
 @RequestMapping("/annotation/")
 public class AnnotationController {
 
     @GetMapping("get")
     public UserData get(@RequestParam String name) {
-        return UserData.Builder.aRestResult()
+        return UserData.Builder.anUserData()
                 .name(name).build();
     }
 
@@ -57,13 +40,13 @@ public class AnnotationController {
 
     @DeleteMapping("delete/{name}")
     public UserData delete(@PathVariable("name") String name) {
-        return UserData.Builder.aRestResult()
+        return UserData.Builder.anUserData()
                 .name(name).build();
     }
 
     @PutMapping("put")
     public UserData put(@CookieValue("name") String name) {
-        return UserData.Builder.aRestResult()
+        return UserData.Builder.anUserData()
                 .name(name).build();
     }
 
@@ -79,26 +62,26 @@ public class AnnotationController {
 
     @GetMapping("get/header")
     public UserData header(@RequestHeader String name) {
-        return UserData.Builder.aRestResult()
+        return UserData.Builder.anUserData()
                 .name(name).build();
     }
 
     @GetMapping("get/matrix")
     public UserData matrix(@MatrixVariable MultiValueMap<String, String> map) {
-        return UserData.Builder.aRestResult()
+        return UserData.Builder.anUserData()
                 .name(map.getFirst("name")).build();
     }
 
     @GetMapping("get/attribute")
     public UserData attribute(@RequestAttribute String name) {
-        return UserData.Builder.aRestResult()
+        return UserData.Builder.anUserData()
                 .name(name).build();
     }
 
     @GetMapping("get/responsestatus")
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public UserData responseStatus() {
-        return UserData.Builder.aRestResult().build();
+        return UserData.Builder.anUserData().build();
     }
 
     @GetMapping("get/custom/bean")

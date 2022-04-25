@@ -17,9 +17,6 @@ import io.esastack.restlight.server.handler.Filter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-/**
- * @author chenglu
- */
 @Configuration
 public class FilterConfig {
 
