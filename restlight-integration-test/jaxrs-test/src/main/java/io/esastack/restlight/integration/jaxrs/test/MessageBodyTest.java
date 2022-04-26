@@ -14,7 +14,7 @@
 package io.esastack.restlight.integration.jaxrs.test;
 
 import io.esastack.restclient.RestResponseBase;
-import io.esastack.restlight.integration.jaxrs.entity.UserData;
+import io.esastack.restlight.integration.jaxrs.entity.MessageBodyData;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -24,15 +24,15 @@ public class MessageBodyTest extends BaseIntegrationTest {
     public void testReader() throws Exception {
         RestResponseBase responseBase = restClient.get(domain + "/message/body/reader")
                 .execute().toCompletableFuture().get();
-        UserData userData = responseBase.bodyToEntity(UserData.class);
-        Assert.assertEquals("test", userData.getName());
+        MessageBodyData messageBodyData = responseBase.bodyToEntity(MessageBodyData.class);
+        Assert.assertEquals("test", messageBodyData.getName());
     }
 
     @Test
     public void testWriter() throws Exception {
         RestResponseBase responseBase = restClient.get(domain + "/message/body/writer")
                 .execute().toCompletableFuture().get();
-        UserData userData = responseBase.bodyToEntity(UserData.class);
-        Assert.assertEquals("test", userData.getName());
+        MessageBodyData messageBodyData = responseBase.bodyToEntity(MessageBodyData.class);
+        Assert.assertEquals("test", messageBodyData.getName());
     }
 }

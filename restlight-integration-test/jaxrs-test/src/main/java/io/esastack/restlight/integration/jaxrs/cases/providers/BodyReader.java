@@ -13,8 +13,7 @@
 
 package io.esastack.restlight.integration.jaxrs.cases.providers;
 
-import io.esastack.restlight.integration.jaxrs.cases.resources.MessageBodyResource;
-import io.esastack.restlight.integration.jaxrs.entity.UserData;
+import io.esastack.restlight.integration.jaxrs.entity.MessageBodyData;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.MultivaluedMap;
@@ -28,20 +27,17 @@ import java.lang.reflect.Type;
 
 @Provider
 @Component
-public class BodyReader implements MessageBodyReader<UserData> {
+public class BodyReader implements MessageBodyReader<MessageBodyData> {
 
     @Override
     public boolean isReadable(Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
-        if (type.equals(MessageBodyResource.class)) {
-            return true;
-        }
-        return false;
+        return true;
     }
 
     @Override
-    public UserData readFrom(Class<UserData> type, Type genericType, Annotation[] annotations,
-                             MediaType mediaType, MultivaluedMap<String, String> httpHeaders,
-                             InputStream entityStream) throws WebApplicationException {
-        return UserData.Builder.anUserData().name("test").build();
+    public MessageBodyData readFrom(Class<MessageBodyData> type, Type genericType, Annotation[] annotations,
+                                    MediaType mediaType, MultivaluedMap<String, String> httpHeaders,
+                                    InputStream entityStream) throws WebApplicationException {
+        return MessageBodyData.Builder.aBodyMessageData().name("test").build();
     }
 }

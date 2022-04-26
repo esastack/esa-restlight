@@ -13,7 +13,7 @@
 
 package io.esastack.restlight.integration.jaxrs.cases.resources;
 
-import io.esastack.restlight.integration.jaxrs.entity.UserData;
+import io.esastack.restlight.integration.jaxrs.entity.MessageBodyData;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import org.springframework.stereotype.Controller;
@@ -24,13 +24,13 @@ public class MessageBodyResource {
 
     @GET
     @Path("reader")
-    public UserData reader(UserData userData) {
-        return userData;
+    public MessageBodyData reader(MessageBodyData messageBodyData) {
+        return messageBodyData;
     }
 
     @GET
     @Path("writer")
-    public UserData writer() {
+    public MessageBodyData writer() {
         return null;
     }
 }
