@@ -17,6 +17,7 @@ package io.esastack.restlight.starter.actuator.adapt;
 
 import io.esastack.restlight.core.method.HandlerMethod;
 import io.esastack.restlight.server.context.RequestContext;
+import io.esastack.restlight.server.schedule.Schedulers;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.actuate.autoconfigure.endpoint.web.WebEndpointProperties;
 import org.springframework.boot.actuate.endpoint.web.WebEndpointsSupplier;
@@ -37,12 +38,12 @@ class JaxrsHandlerMappingProviderTest {
                 new JaxrsHandlerMappingProvider(webEndpointsSupplier, webEndpointProperties);
 
         final WebOperation operation = mock(WebOperation.class);
-        final HandlerMethod handlerMethod = provider.getHandler(operation).handlerMethod();
+        final HandlerMethod handlerMethod = provider.getHandler(operation, Schedulers.BIZ);
         assertEquals(OperationHandler.class, handlerMethod.beanType());
         assertEquals(OperationHandler.class.getDeclaredMethod("handle",
                 RequestContext.class, Map.class), handlerMethod.method());
-        assertEquals("Jaxrs Endpoint Handler Proxy", provider.getHandler(operation)
-                .handlerMethod().toString());
+        assertEquals("Jaxrs Endpoint Handler Proxy",
+                provider.getHandler(operation, Schedulers.BIZ).toString());
     }
 
 }

@@ -15,6 +15,7 @@
  */
 package io.esastack.restlight.starter.actuator.endpoint;
 
+import io.esastack.commons.net.http.MediaType;
 import io.esastack.restlight.spring.util.RestlightIoExecutorAware;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.MultithreadEventLoopGroup;
@@ -40,7 +41,7 @@ public class RestlightIoExecutorEndpoint implements RestlightIoExecutorAware {
 
     private Executor ioExecutor;
 
-    @ReadOperation(produces = "text/plain;charset=utf-8")
+    @ReadOperation(produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public synchronized EventLoopGroupMetrics ioExecutorMetrics() {
         return getMetrics(ioExecutor);
     }

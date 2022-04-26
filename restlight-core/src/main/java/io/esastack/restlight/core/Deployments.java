@@ -1617,6 +1617,12 @@ public abstract class Deployments {
         RoutableRegistry routeRegistry = getOrCreateRegistry();
         // register routes
         registerRoutes(routeRegistry);
+        // init ExceptionHandlerChain
+        final IExceptionHandler[] iExceptionHandlers = getExceptionHandlers();
+        this.exceptionHandlers = iExceptionHandlers;
+
+        // init DispatcherHandler
+        this.dispatcher = new DispatcherHandlerImpl(routeRegistry, iExceptionHandlers);
         ctx().setDispatcherHandler(dispatcher);
 
         // load RouteRegistryAware by spi
@@ -1628,13 +1634,6 @@ public abstract class Deployments {
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .forEach(aware -> aware.setRegistry(routeRegistry));
-
-        // init ExceptionHandlerChain
-        final IExceptionHandler[] iExceptionHandlers = getExceptionHandlers();
-        this.exceptionHandlers = iExceptionHandlers;
-
-        // init DispatcherHandler
-        this.dispatcher = new DispatcherHandlerImpl(routeRegistry, iExceptionHandlers);
 
         // load RequestTaskHookFactory by spi
         SpiLoader.cached(RequestTaskHookFactory.class)

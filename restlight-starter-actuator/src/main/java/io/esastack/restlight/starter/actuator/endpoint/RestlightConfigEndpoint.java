@@ -15,6 +15,7 @@
  */
 package io.esastack.restlight.starter.actuator.endpoint;
 
+import io.esastack.commons.net.http.MediaType;
 import io.esastack.restlight.starter.autoconfigure.AutoRestlightServerOptions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.endpoint.annotation.Endpoint;
@@ -26,7 +27,7 @@ public class RestlightConfigEndpoint {
     @Autowired(required = false)
     private AutoRestlightServerOptions config;
 
-    @ReadOperation
+    @ReadOperation(produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public AutoRestlightServerOptions webServerConfig() {
         return config;
     }
