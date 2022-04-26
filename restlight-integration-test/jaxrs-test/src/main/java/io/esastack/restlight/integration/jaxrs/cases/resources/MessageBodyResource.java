@@ -16,18 +16,22 @@ package io.esastack.restlight.integration.jaxrs.cases.resources;
 import io.esastack.restlight.integration.jaxrs.entity.MessageBodyData;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.MediaType;
 import org.springframework.stereotype.Controller;
 
 @Controller
 @Path("/message/body/")
 public class MessageBodyResource {
 
+    @Produces(MediaType.APPLICATION_JSON)
     @GET
     @Path("reader")
     public MessageBodyData reader(MessageBodyData messageBodyData) {
         return messageBodyData;
     }
 
+    @Produces(MediaType.APPLICATION_JSON)
     @GET
     @Path("writer")
     public MessageBodyData writer() {

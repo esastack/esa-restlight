@@ -13,6 +13,7 @@
 
 package io.esastack.restlight.integration.jaxrs.test;
 
+import io.esastack.commons.net.http.MediaType;
 import io.esastack.restclient.RestResponseBase;
 import io.esastack.restlight.integration.jaxrs.entity.MessageBodyData;
 import org.junit.Assert;
@@ -23,7 +24,7 @@ public class MessageBodyTest extends BaseIntegrationTest {
     @Test
     public void testReader() throws Exception {
         RestResponseBase responseBase = restClient.get(domain + "/message/body/reader")
-                .execute().toCompletableFuture().get();
+                .contentType(MediaType.APPLICATION_JSON).execute().toCompletableFuture().get();
         MessageBodyData messageBodyData = responseBase.bodyToEntity(MessageBodyData.class);
         Assert.assertEquals("test", messageBodyData.getName());
     }
@@ -31,7 +32,7 @@ public class MessageBodyTest extends BaseIntegrationTest {
     @Test
     public void testWriter() throws Exception {
         RestResponseBase responseBase = restClient.get(domain + "/message/body/writer")
-                .execute().toCompletableFuture().get();
+                .contentType(MediaType.APPLICATION_JSON).execute().toCompletableFuture().get();
         MessageBodyData messageBodyData = responseBase.bodyToEntity(MessageBodyData.class);
         Assert.assertEquals("test", messageBodyData.getName());
     }
