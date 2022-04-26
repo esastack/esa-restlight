@@ -17,10 +17,9 @@ package io.esastack.restlight.starter.actuator.adapt;
 
 import esa.commons.Checks;
 import esa.commons.reflect.ReflectionUtils;
-import io.esastack.restlight.core.handler.Handler;
-import io.esastack.restlight.core.handler.impl.HandlerImpl;
 import io.esastack.restlight.core.method.HandlerMethodImpl;
 import io.esastack.restlight.core.method.MethodParam;
+import io.esastack.restlight.core.method.RouteHandlerMethod;
 import io.esastack.restlight.server.context.RequestContext;
 import io.esastack.restlight.springmvc.annotation.shaded.RequestBody0;
 import io.esastack.restlight.springmvc.annotation.shaded.ResponseBody0;
@@ -34,9 +33,11 @@ import java.lang.reflect.Proxy;
 import java.lang.reflect.Type;
 import java.util.Map;
 
-class EndpointHandlerMethod extends HandlerMethodImpl {
+class EndpointHandlerMethod extends HandlerMethodImpl implements RouteHandlerMethod {
 
     private static final Method HANDLE_METHOD;
+    private final Object bean;
+    private final String scheduler;
 
     static {
         try {
@@ -51,21 +52,24 @@ class EndpointHandlerMethod extends HandlerMethodImpl {
 
     private final Annotation responseBody = newResponseBody();
 
-    private EndpointHandlerMethod() {
+    private EndpointHandlerMethod(Object bean, String scheduler) {
         super(OperationHandler.class, HANDLE_METHOD);
+        Checks.checkNotNull(bean, "bean");
+        this.bean = bean;
+        this.scheduler = scheduler;
     }
 
-    static Handler forSpringMvc(WebOperation op) {
-        return new HandlerImpl(new EndpointHandlerMethod(), new OperationHandler(op));
+    static EndpointHandlerMethod forSpringMvc(WebOperation op, String scheduler) {
+        return new EndpointHandlerMethod(new OperationHandler(op), scheduler);
     }
 
-    static Handler forJaxrs(WebOperation op) {
-        return new HandlerImpl(new EndpointHandlerMethod() {
+    static EndpointHandlerMethod forJaxrs(WebOperation op, String scheduler) {
+        return new EndpointHandlerMethod(new OperationHandler(op), scheduler) {
             @Override
             public String toString() {
                 return "Jaxrs Endpoint Handler Proxy";
             }
-        }, new OperationHandler(op));
+        };
     }
 
     @SuppressWarnings("unchecked")
@@ -84,6 +88,20 @@ class EndpointHandlerMethod extends HandlerMethodImpl {
             return new RequestBodyParam(responseBody, p);
         }
         return p;
+    }
+
+    @Override
+    public String scheduler() {
+        return scheduler;
+    }
+
+    @Override
+    public boolean intercepted() {
+        return false;
+    }
+
+    Object bean() {
+        return bean;
     }
 
     @Override

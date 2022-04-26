@@ -15,7 +15,6 @@
  */
 package io.esastack.restlight.starter.actuator.adapt;
 
-import io.esastack.restlight.core.handler.Handler;
 import org.springframework.boot.actuate.autoconfigure.endpoint.web.WebEndpointProperties;
 import org.springframework.boot.actuate.endpoint.web.WebEndpointsSupplier;
 import org.springframework.boot.actuate.endpoint.web.WebOperation;
@@ -28,7 +27,7 @@ public class SpringMvcHandlerMappingProvider extends BaseHandlerMappingProvider 
     }
 
     @Override
-    Handler getHandler(WebOperation op) {
-        return EndpointHandlerMethod.forSpringMvc(op);
+    EndpointHandlerMethod getHandler(WebOperation op, String scheduler) {
+        return EndpointHandlerMethod.forSpringMvc(op, scheduler);
     }
 }

@@ -18,6 +18,7 @@ package io.esastack.restlight.starter.actuator.endpoint;
 import esa.commons.Checks;
 import esa.commons.logging.Logger;
 import esa.commons.logging.LoggerFactory;
+import io.esastack.commons.net.http.MediaType;
 import io.esastack.restlight.core.DeployContext;
 import io.esastack.restlight.spring.util.RestlightBizExecutorAware;
 import io.esastack.restlight.spring.util.RestlightDeployContextAware;
@@ -43,7 +44,7 @@ public class RestlightBizThreadPoolEndpoint implements RestlightBizExecutorAware
     AutoRestlightServerOptions config;
     private Executor bizExecutor;
 
-    @ReadOperation
+    @ReadOperation(produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ThreadPoolMetric threadPoolMetric() {
         if (bizExecutor instanceof ThreadPoolExecutor) {
             ThreadPoolExecutor executor = (ThreadPoolExecutor) bizExecutor;
