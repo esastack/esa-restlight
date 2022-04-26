@@ -11,20 +11,15 @@
  * limitations under the License.
  */
 
-package io.esastack.restlight.integration.jaxrs.cases.resources;
+package io.esastack.restlight.integration.jaxrs.cases.providers;
 
-import io.esastack.restlight.integration.jaxrs.entity.UserData;
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.QueryParam;
+import jakarta.ws.rs.core.Feature;
+import jakarta.ws.rs.core.FeatureContext;
 
-@Path("/manual/inject")
-public class ManualInjectController {
+public class DynamicFeature implements Feature {
 
-    @GET
-    @Path("get")
-    public UserData get(@QueryParam("name") String name) {
-        return UserData.Builder.anUserData()
-                .name(name).build();
+    @Override
+    public boolean configure(FeatureContext context) {
+        return false;
     }
 }
