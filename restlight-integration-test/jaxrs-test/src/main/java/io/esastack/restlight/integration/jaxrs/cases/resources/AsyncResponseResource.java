@@ -46,7 +46,7 @@ public class AsyncResponseResource {
 
     @GET
     @Path("future")
-    public CompletionStage<UserData> future( @QueryParam("name") String name, @QueryParam("timeout") Long timeout) {
+    public CompletionStage<UserData> future(@QueryParam("name") String name, @QueryParam("timeout") Long timeout) {
         CompletableFuture<UserData> promise = new CompletableFuture<>();
         new Thread(() -> {
             try {

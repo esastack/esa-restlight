@@ -17,6 +17,7 @@ import io.esastack.restlight.integration.jaxrs.entity.UserData;
 import jakarta.ws.rs.BeanParam;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
+import jakarta.ws.rs.MatrixParam;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
@@ -59,6 +60,15 @@ public class AnnotationResource {
     public UserData put(@PathParam("name") String name) {
         return UserData.Builder.anUserData()
                 .name(name).build();
+    }
+
+    @GET
+    @Path("get/matrix/{age}")
+    public UserData matrix(@MatrixParam("name") String name, @PathParam("age") Integer age) {
+        UserData userData = UserData.Builder.anUserData()
+                .name(name).build();
+        userData.setAge(age);
+        return userData;
     }
 
     @GET

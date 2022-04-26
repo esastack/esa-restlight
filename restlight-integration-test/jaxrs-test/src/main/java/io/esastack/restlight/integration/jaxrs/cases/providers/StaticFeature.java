@@ -24,6 +24,9 @@ public class StaticFeature implements Feature {
 
     @Override
     public boolean configure(FeatureContext context) {
+        context.register(RequestFilter.class);
+        context.register(ResponseFilter.class);
+        context.register(DynamicFeature.class);
         return false;
     }
 }

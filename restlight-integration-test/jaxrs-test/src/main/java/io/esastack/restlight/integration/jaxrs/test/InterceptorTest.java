@@ -27,4 +27,12 @@ public class InterceptorTest extends BaseIntegrationTest {
         UserData userData = responseBase.bodyToEntity(UserData.class);
         Assert.assertEquals("test", userData.getName());
     }
+
+    @Test
+    public void testWrite() throws Exception {
+        RestResponseBase responseBase = restClient.get(domain + "/interceptor/write")
+                .execute().toCompletableFuture().get();
+        UserData userData = responseBase.bodyToEntity(UserData.class);
+        Assert.assertEquals("test", userData.getName());
+    }
 }

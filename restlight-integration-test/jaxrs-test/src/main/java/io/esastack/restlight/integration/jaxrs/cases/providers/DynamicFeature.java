@@ -13,13 +13,15 @@
 
 package io.esastack.restlight.integration.jaxrs.cases.providers;
 
-import jakarta.ws.rs.core.Feature;
+import jakarta.ws.rs.container.ResourceInfo;
 import jakarta.ws.rs.core.FeatureContext;
 
-public class DynamicFeature implements Feature {
+public class DynamicFeature implements jakarta.ws.rs.container.DynamicFeature {
 
     @Override
-    public boolean configure(FeatureContext context) {
-        return false;
+    public void configure(ResourceInfo resourceInfo, FeatureContext context) {
+        if (resourceInfo.getResourceMethod().getName().equals("dynamicFeature")) {
+            context.property("name", "test");
+        }
     }
 }

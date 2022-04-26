@@ -43,7 +43,8 @@ public class ValidationTest extends BaseIntegrationTest {
 
     @Test
     public void testResponseParam() throws Exception {
-        RestResponseBase responseBase = restClient.get(domain + "/validation/response/param").execute().toCompletableFuture().get();
+        RestResponseBase responseBase = restClient.get(domain + "/validation/response/param")
+                .execute().toCompletableFuture().get();
         Assert.assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.code(), responseBase.status());
     }
 

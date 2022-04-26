@@ -15,6 +15,7 @@
 
     <modules>
         <module>springmvc-test</module>
+        <module>jaxrs-test</module>
     </modules>
 
     <properties>

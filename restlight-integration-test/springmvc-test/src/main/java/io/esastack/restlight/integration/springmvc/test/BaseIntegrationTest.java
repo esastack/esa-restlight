@@ -36,7 +36,7 @@ public abstract class BaseIntegrationTest {
         restClient = RestClient.ofDefault();
 
         ctx =  new AnnotationConfigApplicationContext();
-        ctx.scan("io.esastack.restlight.integration.cases");
+        ctx.scan("io.esastack.restlight.integration.springmvc.cases");
         ctx.refresh();
 
         final String contextPath = "/intergration/test";

@@ -13,7 +13,7 @@
 
 package io.esastack.restlight.integration.jaxrs.cases.applications;
 
-import io.esastack.restlight.integration.jaxrs.cases.resources.ManualInjectController;
+import io.esastack.restlight.integration.jaxrs.cases.resources.ManualInjectResource;
 import jakarta.ws.rs.ApplicationPath;
 import jakarta.ws.rs.core.Application;
 import org.springframework.stereotype.Component;
@@ -28,7 +28,7 @@ public class ApplicationImpl extends Application {
     @Override
     public Set<Class<?>> getClasses() {
         Set<Class<?>> classes = new HashSet<>();
-        classes.add(ManualInjectController.class);
+        classes.add(ManualInjectResource.class);
         return classes;
     }
 }
