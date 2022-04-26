@@ -13,7 +13,6 @@
 
 package io.esastack.restlight.integration.jaxrs.cases.providers;
 
-import io.esastack.restlight.integration.jaxrs.cases.resources.MessageBodyResource;
 import io.esastack.restlight.integration.jaxrs.entity.MessageBodyData;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.MediaType;
@@ -34,10 +33,7 @@ public class BodyWriter implements MessageBodyWriter<MessageBodyData> {
 
     @Override
     public boolean isWriteable(Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
-        if (type.equals(MessageBodyResource.class)) {
-            return true;
-        }
-        return false;
+        return true;
     }
 
     @Override
