@@ -57,6 +57,17 @@
             <groupId>io.esastack</groupId>
             <artifactId>restclient</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>io.esastack</groupId>
+            <artifactId>restlight-jaxrs-provider</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 
 </project>

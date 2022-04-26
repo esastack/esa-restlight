@@ -26,5 +26,18 @@ public class AsyncResponseTest extends BaseIntegrationTest {
                 .addParam("timeout", "100").execute().toCompletableFuture().get();
         UserData userData = responseBase.bodyToEntity(UserData.class);
         Assert.assertEquals("test", userData.getName());
+
+        responseBase = restClient.get(domain + "/async/response/async").addParam("name", "test")
+                .addParam("timeout", "300").execute().toCompletableFuture().get();
+        userData = responseBase.bodyToEntity(UserData.class);
+        Assert.assertEquals("timeout", userData.getName());
+    }
+
+    @Test
+    public void testFuture() throws Exception {
+        RestResponseBase responseBase = restClient.get(domain + "/async/response/future").addParam("name", "test")
+                .addParam("timeout", "100").execute().toCompletableFuture().get();
+        UserData userData = responseBase.bodyToEntity(UserData.class);
+        Assert.assertEquals("test", userData.getName());
     }
 }

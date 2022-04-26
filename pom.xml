@@ -137,6 +137,7 @@
         <module>restlight-bom</module>
         <module>restlight-benchmarks</module>
         <module>restlight-integration-test</module>
+        <module>restlight-integration-test/jaxrs-test</module>
     </modules>
 
     <properties>

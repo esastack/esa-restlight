@@ -13,7 +13,7 @@
 
 package io.esastack.restlight.integration.springmvc.cases.controller;
 
-import io.esastack.restlight.springmvc.cases.exception.CustomException;
+import io.esastack.restlight.integration.springmvc.cases.exception.CustomException;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;

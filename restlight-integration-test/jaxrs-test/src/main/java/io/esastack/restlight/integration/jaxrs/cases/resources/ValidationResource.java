@@ -15,20 +15,43 @@ package io.esastack.restlight.integration.jaxrs.cases.resources;
 
 import io.esastack.restlight.integration.jaxrs.entity.UserData;
 import jakarta.ws.rs.GET;
+import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.QueryParam;
 import org.springframework.stereotype.Controller;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 @Controller
 @Path("/validation/")
 public class ValidationResource {
 
     @GET
-    @Path("param")
-    public UserData param(@NotEmpty @QueryParam("name") String name) {
+    @Path("request/param")
+    public UserData requestParam(@NotEmpty @QueryParam("name") String name) {
         return UserData.Builder.anUserData()
                 .name(name).build();
+    }
+
+    @POST
+    @Path("request/entity")
+    public UserData requestEntity(@Valid UserData userData) {
+        return userData;
+    }
+
+    @GET
+    @Path("response/param")
+    @NotNull
+    public UserData responseParam(@QueryParam("name") String name) {
+        return null;
+    }
+
+    @POST
+    @Path("response/entity")
+    @Valid
+    public UserData responseEntity(UserData userData) {
+        return userData;
     }
 }

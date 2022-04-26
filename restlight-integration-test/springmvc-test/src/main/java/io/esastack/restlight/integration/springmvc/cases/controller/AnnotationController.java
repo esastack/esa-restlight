@@ -18,7 +18,7 @@ import io.esastack.restlight.core.annotation.RequestBean;
 import io.esastack.restlight.integration.springmvc.cases.annotation.CustomRequestBean;
 import io.esastack.restlight.integration.springmvc.cases.annotation.CustomRequestBody;
 import io.esastack.restlight.integration.springmvc.cases.annotation.CustomResponseBody;
-import io.esastack.restlight.springmvc.entity.UserData;
+import io.esastack.restlight.integration.springmvc.entity.UserData;
 import org.springframework.http.HttpStatus;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;

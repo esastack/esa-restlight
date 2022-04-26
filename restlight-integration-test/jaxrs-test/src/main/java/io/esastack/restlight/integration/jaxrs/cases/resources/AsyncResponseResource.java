@@ -22,21 +22,18 @@ import jakarta.ws.rs.container.AsyncResponse;
 import jakarta.ws.rs.container.Suspended;
 import org.springframework.stereotype.Controller;
 
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 import java.util.concurrent.TimeUnit;
 
 @Controller
 @Path("/async/response/")
 public class AsyncResponseResource {
 
-    @QueryParam("name")
-    String name;
-
-    @QueryParam("timeout")
-    Long timeout;
-
     @GET
     @Path("async")
-    public UserData async(@Suspended AsyncResponse asyncResponse) throws InterruptedException {
+    public UserData async(@Suspended AsyncResponse asyncResponse, @QueryParam("name") String name,
+                          @QueryParam("timeout") Long timeout) throws InterruptedException {
         asyncResponse.setTimeoutHandler(rsp ->
                 asyncResponse.resume(UserData.Builder.anUserData().name("timeout").build()));
         asyncResponse.setTimeout(200, TimeUnit.MILLISECONDS);
@@ -44,6 +41,21 @@ public class AsyncResponseResource {
         TimeUnit.MILLISECONDS.sleep(timeout);
         asyncResponse.resume(UserData.Builder.anUserData().name(name).build());
         return UserData.Builder.anUserData()
-                .name(name).build();
+                .name("normal").build();
+    }
+
+    @GET
+    @Path("future")
+    public CompletionStage<UserData> future( @QueryParam("name") String name, @QueryParam("timeout") Long timeout) {
+        CompletableFuture<UserData> promise = new CompletableFuture<>();
+        new Thread(() -> {
+            try {
+                TimeUnit.MILLISECONDS.sleep(timeout);
+            } catch (Exception e) {
+                // ignore it
+            }
+            promise.complete(UserData.Builder.anUserData().name(name).build());
+        }).start();
+        return promise;
     }
 }

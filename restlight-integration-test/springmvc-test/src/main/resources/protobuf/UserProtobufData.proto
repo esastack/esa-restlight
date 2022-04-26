@@ -1,6 +1,6 @@
 syntax="proto3";
 
-option java_package = "io.esastack.restlight.integration.entity";
+option java_package = "io.esastack.restlight.integration.springmvc.entity";
 option java_outer_classname = "UserProtobufData";
 
 message Data {

@@ -36,7 +36,6 @@
             </exclusions>
         </dependency>
 
-
         <dependency>
             <groupId>io.esastack</groupId>
             <artifactId>restclient</artifactId>

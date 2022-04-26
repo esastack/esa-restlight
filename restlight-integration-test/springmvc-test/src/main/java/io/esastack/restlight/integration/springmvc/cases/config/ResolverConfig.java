@@ -33,7 +33,7 @@ import io.esastack.restlight.integration.springmvc.cases.annotation.CustomReques
 import io.esastack.restlight.server.context.RequestContext;
 import io.esastack.restlight.integration.springmvc.cases.annotation.CustomRequestBody;
 import io.esastack.restlight.integration.springmvc.cases.annotation.CustomResponseBody;
-import io.esastack.restlight.springmvc.entity.UserData;
+import io.esastack.restlight.integration.springmvc.entity.UserData;
 import io.netty.handler.codec.http.HttpHeaderNames;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

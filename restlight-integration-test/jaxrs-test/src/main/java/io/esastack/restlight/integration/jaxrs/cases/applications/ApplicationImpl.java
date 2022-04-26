@@ -11,7 +11,24 @@
  * limitations under the License.
  */
 
-package io.esastack.restlight.integration.jaxrs.cases;
+package io.esastack.restlight.integration.jaxrs.cases.applications;
 
+import io.esastack.restlight.integration.jaxrs.cases.resources.ManualInjectController;
+import jakarta.ws.rs.ApplicationPath;
+import jakarta.ws.rs.core.Application;
+import org.springframework.stereotype.Component;
+
+import java.util.HashSet;
+import java.util.Set;
+
+@ApplicationPath("/integration/test")
+@Component
 public class ApplicationImpl extends Application {
+
+    @Override
+    public Set<Class<?>> getClasses() {
+        Set<Class<?>> classes = new HashSet<>();
+        classes.add(ManualInjectController.class);
+        return classes;
+    }
 }

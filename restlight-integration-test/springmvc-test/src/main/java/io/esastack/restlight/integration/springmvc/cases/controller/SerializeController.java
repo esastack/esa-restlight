@@ -15,8 +15,8 @@ package io.esastack.restlight.integration.springmvc.cases.controller;
 
 import io.esastack.restlight.core.annotation.Serializer;
 import io.esastack.restlight.core.serialize.GsonHttpBodySerializer;
-import io.esastack.restlight.springmvc.entity.UserData;
-import io.esastack.restlight.springmvc.entity.UserProtobufData;
+import io.esastack.restlight.integration.springmvc.entity.UserData;
+import io.esastack.restlight.integration.springmvc.entity.UserProtobufData;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
