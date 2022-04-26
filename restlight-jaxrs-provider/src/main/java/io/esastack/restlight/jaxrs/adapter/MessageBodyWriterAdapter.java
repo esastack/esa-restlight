@@ -46,9 +46,6 @@ public class MessageBodyWriterAdapter<T> implements ResponseEntityResolverAdapte
     public Result<Void, Void> writeTo(ResponseEntity entity,
                                       ResponseEntityChannel channel,
                                       RequestContext context) throws Exception {
-        if (entity.response().entity() == null) {
-            return Result.err();
-        }
         Class<?> type = entity.type();
         if (type == null) {
             entity.type(ClassUtils.getUserType(entity.response().entity()));
@@ -87,7 +84,7 @@ public class MessageBodyWriterAdapter<T> implements ResponseEntityResolverAdapte
 
     @Override
     public int getOrder() {
-        return Ordered.LOWEST_PRECEDENCE;
+        return Ordered.HIGHEST_PRECEDENCE;
     }
 
 }
