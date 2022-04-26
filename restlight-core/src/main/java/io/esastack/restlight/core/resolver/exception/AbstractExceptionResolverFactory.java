@@ -16,6 +16,7 @@
 package io.esastack.restlight.core.resolver.exception;
 
 import esa.commons.Checks;
+import io.esastack.restlight.core.DeployContext;
 import io.esastack.restlight.core.handler.locate.HandlerMethodLocator;
 import io.esastack.restlight.core.resolver.HandlerResolverFactory;
 
@@ -26,16 +27,21 @@ import java.util.List;
 public abstract class AbstractExceptionResolverFactory extends DefaultExceptionResolverFactory
         implements ExceptionResolverFactory {
 
+    private final DeployContext context;
+
     public AbstractExceptionResolverFactory(List<ExceptionMapper> mappers,
                                             Collection<?> controllerBeans,
                                             Collection<?> adviceBeans,
                                             HandlerMethodLocator locator,
-                                            HandlerResolverFactory factory) {
+                                            HandlerResolverFactory factory,
+                                            DeployContext context) {
         super((mappers == null || mappers.isEmpty())
                 ? new ArrayList<>(1)
                 : new ArrayList<>(mappers));
         Checks.checkNotNull(locator, "locator");
         Checks.checkNotNull(factory, "factory");
+        Checks.checkNotNull(context, "context");
+        this.context = context;
         init(controllerBeans, adviceBeans, locator, factory);
     }
 
@@ -56,20 +62,24 @@ public abstract class AbstractExceptionResolverFactory extends DefaultExceptionR
         }
 
         //exception handler in Controller
-        initControllerToExceptionHandlerBean(controllerBeans, locator, factory);
+        initControllerToExceptionHandlerBean(controllerBeans, locator, factory, context);
         //exception handler in ControllerAdvice
         initControllerAdviceToExceptionHandlerBean(controllerBeans, advices, locator, factory);
     }
 
     private void initControllerToExceptionHandlerBean(Collection<?> beans,
                                                       HandlerMethodLocator locator,
-                                                      HandlerResolverFactory factory) {
+                                                      HandlerResolverFactory factory,
+                                                      DeployContext context) {
         if (beans == null || beans.isEmpty()) {
             return;
         }
 
         for (Object bean : beans) {
-            List<ExceptionMapper> mappersFromController = this.createMappersFromController(bean, locator, factory);
+            List<ExceptionMapper> mappersFromController = this.createMappersFromController(bean,
+                    locator,
+                    factory,
+                    context);
             if (mappersFromController != null && !mappersFromController.isEmpty()) {
                 mappers.addAll(mappersFromController);
             }
@@ -93,7 +103,8 @@ public abstract class AbstractExceptionResolverFactory extends DefaultExceptionR
             List<ExceptionMapper> mappersFromControllerAdvice = this.createMappersFromControllerAdvice(adviceBean,
                     isController,
                     locator,
-                    factory);
+                    factory,
+                    context);
             if (mappersFromControllerAdvice != null && !mappersFromControllerAdvice.isEmpty()) {
                 mappers.addAll(mappersFromControllerAdvice);
             }
@@ -110,7 +121,8 @@ public abstract class AbstractExceptionResolverFactory extends DefaultExceptionR
      */
     protected abstract List<ExceptionMapper> createMappersFromController(Object bean,
                                                                          HandlerMethodLocator locator,
-                                                                         HandlerResolverFactory factory);
+                                                                         HandlerResolverFactory factory,
+                                                                         DeployContext context);
 
     /**
      * Detect methods which are designed to handle exceptions in target advice bean.
@@ -124,5 +136,6 @@ public abstract class AbstractExceptionResolverFactory extends DefaultExceptionR
     protected abstract List<ExceptionMapper> createMappersFromControllerAdvice(Object adviceBean,
                                                                                boolean isController,
                                                                                HandlerMethodLocator locator,
-                                                                               HandlerResolverFactory factory);
+                                                                               HandlerResolverFactory factory,
+                                                                               DeployContext context);
 }
