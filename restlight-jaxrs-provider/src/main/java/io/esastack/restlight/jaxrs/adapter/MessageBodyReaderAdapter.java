@@ -20,7 +20,6 @@ import esa.commons.Result;
 import io.esastack.restlight.core.method.Param;
 import io.esastack.restlight.core.resolver.RequestEntity;
 import io.esastack.restlight.core.resolver.RequestEntityResolverAdapter;
-import io.esastack.restlight.core.util.Ordered;
 import io.esastack.restlight.jaxrs.impl.core.ModifiableMultivaluedMap;
 import io.esastack.restlight.jaxrs.util.MediaTypeUtils;
 import io.esastack.restlight.server.context.RequestContext;
@@ -63,11 +62,5 @@ public class MessageBodyReaderAdapter<T> implements RequestEntityResolverAdapter
         // bind this to param at the starting time.
         return true;
     }
-
-    @Override
-    public int getOrder() {
-        return Ordered.HIGHEST_PRECEDENCE;
-    }
-
 }
 

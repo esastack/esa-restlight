@@ -22,7 +22,6 @@ import io.esastack.restlight.core.method.HandlerMethod;
 import io.esastack.restlight.core.resolver.ResponseEntity;
 import io.esastack.restlight.core.resolver.ResponseEntityChannel;
 import io.esastack.restlight.core.resolver.ResponseEntityResolverAdapter;
-import io.esastack.restlight.core.util.Ordered;
 import io.esastack.restlight.core.util.ResponseEntityUtils;
 import io.esastack.restlight.jaxrs.util.JaxrsUtils;
 import io.esastack.restlight.jaxrs.util.MediaTypeUtils;
@@ -81,11 +80,5 @@ public class MessageBodyWriterAdapter<T> implements ResponseEntityResolverAdapte
     public boolean alsoApplyWhenMissingHandler() {
         return true;
     }
-
-    @Override
-    public int getOrder() {
-        return Ordered.HIGHEST_PRECEDENCE;
-    }
-
 }
 
