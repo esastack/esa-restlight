@@ -18,10 +18,10 @@ package io.esastack.restlight.ext.validator;
 public class ConstraintDetail {
 
     private final String property;
-    private final String invalidValue;
+    private final Object invalidValue;
     private final String message;
 
-    public ConstraintDetail(String property, String invalidValue, String message) {
+    public ConstraintDetail(String property, Object invalidValue, String message) {
         this.property = property;
         this.invalidValue = invalidValue;
         this.message = message;
@@ -31,7 +31,7 @@ public class ConstraintDetail {
         return property;
     }
 
-    public String getInvalidValue() {
+    public Object getInvalidValue() {
         return invalidValue;
     }
 
@@ -41,12 +41,10 @@ public class ConstraintDetail {
 
     @Override
     public String toString() {
-        final StringBuilder sb = new StringBuilder("ConstraintDetail{");
-        sb.append("property='").append(property).append('\'');
-        sb.append(", invalidValue='").append(invalidValue).append('\'');
-        sb.append(", message='").append(message).append('\'');
-        sb.append('}');
-        return sb.toString();
+        return "ConstraintDetail{" + "property='" + property + '\'' +
+                ", invalidValue='" + invalidValue + '\'' +
+                ", message='" + message + '\'' +
+                '}';
     }
 }
 
