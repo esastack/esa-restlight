@@ -83,5 +83,11 @@ public class MessageBodyWriterAdapter<T> implements ResponseEntityResolverAdapte
     public boolean alsoApplyWhenMissingHandler() {
         return true;
     }
+
+    @Override
+    public int getOrder() {
+        return 90;
+    }
+
 }
 

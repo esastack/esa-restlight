@@ -62,5 +62,11 @@ public class MessageBodyReaderAdapter<T> implements RequestEntityResolverAdapter
         // bind this to param at the starting time.
         return true;
     }
+
+    @Override
+    public int getOrder() {
+        return 90;
+    }
+
 }
 
