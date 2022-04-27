@@ -35,6 +35,6 @@ public class MessageBodyResource {
     @GET
     @Path("writer")
     public MessageBodyData writer() {
-        return null;
+        return MessageBodyData.Builder.aBodyMessageData().build();
     }
 }

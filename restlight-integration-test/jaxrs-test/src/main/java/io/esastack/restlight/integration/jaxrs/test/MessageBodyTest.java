@@ -34,6 +34,6 @@ public class MessageBodyTest extends BaseIntegrationTest {
         RestResponseBase responseBase = restClient.get(domain + "/message/body/writer")
                 .contentType(MediaType.APPLICATION_JSON).execute().toCompletableFuture().get();
         MessageBodyData messageBodyData = responseBase.bodyToEntity(MessageBodyData.class);
-        Assert.assertEquals("test", messageBodyData.getName());
+        Assert.assertEquals("test-byBodyWriter", messageBodyData.getName());
     }
 }

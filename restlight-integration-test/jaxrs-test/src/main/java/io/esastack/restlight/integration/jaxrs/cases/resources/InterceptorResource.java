@@ -27,7 +27,7 @@ public class InterceptorResource {
     @Interceptor
     @GET
     @Path("read")
-    public UserData read(@HeaderParam("interceptorName") String name) {
+    public UserData read(UserData userData, @HeaderParam("interceptorName") String name) {
         return UserData.Builder.anUserData()
                 .name(name).build();
     }
