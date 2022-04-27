@@ -56,6 +56,11 @@ public abstract class FlexibleRequestEntityResolverFactory implements RequestEnt
     public RequestEntityResolver createResolver(Param param,
                                                 StringConverterProvider converters,
                                                 List<? extends HttpRequestSerializer> serializers) {
+        if (param.isMethodParam()
+                && param.methodParam().method().getParameterCount() == 1
+                && byte[].class.isAssignableFrom(param.type())) {
+            return (entity, context) -> Result.ok(context.request().body().getBytes());
+        }
         StringConverter converter = converters.get(StringConverterProvider.Key.from(param));
         if (converter == null) {
             converter = value -> value;
@@ -68,8 +73,8 @@ public abstract class FlexibleRequestEntityResolverFactory implements RequestEnt
     /**
      * Creates {@link NameAndValue} for given {@link Param}.
      *
-     * @param param     param
-     * @return          NameAndValue
+     * @param param param
+     * @return NameAndValue
      */
     protected abstract NameAndValue<String> createNameAndValue(Param param);
 
@@ -79,8 +84,8 @@ public abstract class FlexibleRequestEntityResolverFactory implements RequestEnt
     }
 
     protected static Result<?, Void> checkRequired(NameAndValue<String> nav,
-                                                        StringConverter converter,
-                                                        Result<?, Void> handled) {
+                                                   StringConverter converter,
+                                                   Result<?, Void> handled) {
         if (handled.isOk() && handled.get() != null) {
             return handled;
         }
