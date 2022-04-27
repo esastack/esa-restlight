@@ -36,6 +36,11 @@ public class DefaultStringConverterFactory implements StringConverterFactory {
         } else {
             converter = ConverterUtils.str2ObjectConverter(key.type());
         }
+        if (converter == null) {
+            throw new IllegalArgumentException("There is no suitable StringConverter for class(" + key.type() + "),"
+                    + "It should have a constructor that accepts a single String argument or "
+                    + "have a static method named valueOf() or fromString() that accepts a single String argument.");
+        }
 
         return Optional.of(new StringConverter() {
             @Override
