@@ -46,6 +46,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.TimeZone;
 
+import static io.esastack.restlight.core.serialize.JsonSerializer.DEFAULT_DATE_FORMAT;
+
 @Configuration
 @ConditionalOnClass(ObjectMapper.class)
 @EnableConfigurationProperties(JacksonProperties.class)
@@ -104,6 +106,8 @@ public class JacksonAutoConfiguration {
             } else {
                 objectMapper.setDateFormat((DateFormat) BeanUtils.instantiateClass(dateFormatClass));
             }
+        } else {
+            objectMapper.setDateFormat(new SimpleDateFormat(DEFAULT_DATE_FORMAT));
         }
     }
 
