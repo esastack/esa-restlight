@@ -88,11 +88,11 @@ public class AnnotationTest extends BaseIntegrationTest {
 
     @Test
     public void testMatrix() throws Exception {
-        RestResponseBase response = restClient.get(domain + "/annotation/get/matrix")
-                .addParam("name", "test,test2").execute()
+        RestResponseBase response = restClient.get(domain + "/annotation/get/matrix/10;name=test").execute()
                 .toCompletableFuture().get();
         UserData userData = response.bodyToEntity(UserData.class);
         Assert.assertEquals("test", userData.getName());
+        Assert.assertTrue(10 == userData.getAge());
     }
 
     @Test
