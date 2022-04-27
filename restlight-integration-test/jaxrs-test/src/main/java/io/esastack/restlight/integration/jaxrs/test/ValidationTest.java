@@ -29,7 +29,7 @@ public class ValidationTest extends BaseIntegrationTest {
         Assert.assertEquals("test", userData.getName());
 
         responseBase = restClient.get(domain + "/validation/request/param").execute().toCompletableFuture().get();
-        Assert.assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.code(), responseBase.status());
+        Assert.assertEquals(HttpStatus.BAD_REQUEST.code(), responseBase.status());
     }
 
     @Test
@@ -37,8 +37,7 @@ public class ValidationTest extends BaseIntegrationTest {
         UserData entity = UserData.Builder.anUserData().build();
         RestResponseBase responseBase = restClient.post(domain + "/validation/request/entity").entity(entity)
                 .execute().toCompletableFuture().get();
-        UserData userData = responseBase.bodyToEntity(UserData.class);
-        Assert.assertEquals("test", userData.getName());
+        Assert.assertEquals(HttpStatus.BAD_REQUEST.code(), responseBase.status());
     }
 
     @Test
