@@ -63,14 +63,17 @@ public class ValidationExceptionHandlerFactory implements ExceptionHandlerFactor
                         List<ConstraintDetail> details = InternalThreadLocalMap.get().arrayList(constraints.size());
                         for (ConstraintViolation<?> c : constraints) {
                             details.add(new ConstraintDetail(c.getPropertyPath().toString(),
-                                    c.getInvalidValue().toString(), c.getMessage()));
+                                    c.getInvalidValue(), c.getMessage()));
                         }
-                        context.response().entity(new ErrorDetail<>(context.request().path(), details.toString()));
+                        context.response().entity(new ErrorDetail<>(context.request().path(), details));
                     }
                     handled.complete(null);
                 } else {
                     handled.completeExceptionally(ex);
                 }
+            }).exceptionally(ex -> {
+                handled.completeExceptionally(ex);
+                return null;
             });
             return handled;
         }
