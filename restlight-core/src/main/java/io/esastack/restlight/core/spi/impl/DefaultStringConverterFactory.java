@@ -41,9 +41,10 @@ public class DefaultStringConverterFactory implements StringConverterFactory {
             @Override
             public Object fromString(String value) {
                 if (converter == null) {
-                    throw new IllegalArgumentException("There is no suitable StringConverter for class(" + key.type() + "),"
-                            + "It should have a constructor that accepts a single String argument or "
-                            + "have a static method named valueOf() or fromString() that accepts a single String argument.");
+                    throw new IllegalArgumentException("There is no suitable StringConverter for class(" +
+                            key.type() + "),It should have a constructor that accepts a single String argument" +
+                            " or have a static method named valueOf() or fromString() that accepts a " +
+                            "single String argument.");
                 }
 
                 return converter.apply(value);
