@@ -13,11 +13,14 @@
 
 package io.esastack.restlight.integration.springmvc.entity;
 
+import io.esastack.restlight.integration.springmvc.cases.annotation.CustomFieldParam;
+
 import java.math.BigDecimal;
 import java.util.Date;
 
 public class UserData {
 
+    @CustomFieldParam
     private String name;
 
     private Integer age;

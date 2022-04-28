@@ -14,7 +14,6 @@
 package io.esastack.restlight.integration.springmvc.test;
 
 import io.esastack.restclient.RestResponseBase;
-import io.netty.channel.nio.NioEventLoopGroup;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -33,7 +32,7 @@ public class AwareTest extends BaseIntegrationTest {
     public void testIoAware() throws Exception {
         RestResponseBase response = restClient.get(domain + "/aware/get/io").execute()
                 .toCompletableFuture().get();
-        Assert.assertEquals(NioEventLoopGroup.class.getName(), response.bodyToEntity(String.class));
+        Assert.assertTrue(response.bodyToEntity(String.class).contains("EventLoopGroup"));
     }
 
     @Test

@@ -111,4 +111,9 @@ public class AnnotationController {
     public String customResponseBody(@RequestParam String name) {
         return name;
     }
+
+    @GetMapping("get/param/wrong")
+    public UserData paramWrong(@RequestParam UserData user) {
+        return user;
+    }
 }

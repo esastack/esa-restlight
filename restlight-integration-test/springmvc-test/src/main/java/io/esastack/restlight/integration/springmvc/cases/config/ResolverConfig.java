@@ -29,11 +29,12 @@ import io.esastack.restlight.core.resolver.StringConverterProvider;
 import io.esastack.restlight.core.resolver.rspentity.AbstractResponseEntityResolver;
 import io.esastack.restlight.core.serialize.HttpRequestSerializer;
 import io.esastack.restlight.core.serialize.HttpResponseSerializer;
+import io.esastack.restlight.integration.springmvc.cases.annotation.CustomFieldParam;
 import io.esastack.restlight.integration.springmvc.cases.annotation.CustomRequestBean;
-import io.esastack.restlight.server.context.RequestContext;
 import io.esastack.restlight.integration.springmvc.cases.annotation.CustomRequestBody;
 import io.esastack.restlight.integration.springmvc.cases.annotation.CustomResponseBody;
 import io.esastack.restlight.integration.springmvc.entity.UserData;
+import io.esastack.restlight.server.context.RequestContext;
 import io.netty.handler.codec.http.HttpHeaderNames;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -123,6 +124,22 @@ public class ResolverConfig {
             @Override
             public boolean supports(HandlerMethod method) {
                 return method.hasMethodAnnotation(CustomResponseBody.class, true);
+            }
+        };
+    }
+
+    @Bean
+    public ParamResolverFactory customParamResolverFactory() {
+        return new ParamResolverFactory() {
+            @Override
+            public ParamResolver createResolver(Param param, StringConverterProvider converters,
+                                                List<? extends HttpRequestSerializer> serializers) {
+                return context -> context.request().getParam("name");
+            }
+
+            @Override
+            public boolean supports(Param param) {
+                return param.hasAnnotation(CustomFieldParam.class);
             }
         };
     }
