@@ -65,7 +65,7 @@ class MessageBodyWriterAdapterTest {
 
         final Providers providers = mock(Providers.class);
         final MessageBodyWriterAdapter<?> adapter = new MessageBodyWriterAdapter<>(providers);
-        assertEquals(Ordered.LOWEST_PRECEDENCE, adapter.getOrder());
+        assertEquals(90, adapter.getOrder());
 
         final HttpResponse response = mock(HttpResponse.class);
         final ResponseEntity entity = mock(ResponseEntity.class);

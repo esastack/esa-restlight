@@ -48,7 +48,7 @@ class MessageBodyReaderAdapterTest {
     void testBasic() {
         assertThrows(NullPointerException.class, () -> new MessageBodyWriterAdapter<>(null));
         MessageBodyReaderAdapter<?> adapter = new MessageBodyReaderAdapter<>(mock(Providers.class));
-        assertEquals(Ordered.LOWEST_PRECEDENCE, adapter.getOrder());
+        assertEquals(90, adapter.getOrder());
         assertTrue(adapter.supports(mock(Param.class)));
     }
 
