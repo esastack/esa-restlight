@@ -28,8 +28,13 @@
             <groupId>io.esastack</groupId>
             <artifactId>restlight-starter</artifactId>
             <version>${project.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>io.esastack</groupId>
+                    <artifactId>restlight-jaxrs-provider</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
-
 
         <dependency>
             <groupId>io.esastack</groupId>
