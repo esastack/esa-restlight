@@ -138,4 +138,11 @@ public class AnnotationTest extends BaseIntegrationTest {
         UserData user = response.bodyToEntity(UserData.class);
         Assert.assertEquals("test", user.getName());
     }
+
+    @Test
+    public void testParamWrong() throws Exception {
+        RestResponseBase response = restClient.get(domain + "/annotation/get/param/wrong")
+                .addParam("user", "").execute().toCompletableFuture().get();
+        Assert.assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.code(), response.status());
+    }
 }

@@ -48,7 +48,7 @@ import java.util.stream.Collectors;
  */
 public class RequestBeanParamResolver implements ParamResolverFactory {
 
-    private static final Map<Class<?>, ParamResolver> META_CACHE = new ConcurrentHashMap<>(16);
+    protected final Map<Class<?>, ParamResolver> metaCache = new ConcurrentHashMap<>(16);
     private final DeployContext ctx;
 
     public RequestBeanParamResolver(DeployContext ctx) {
@@ -70,10 +70,10 @@ public class RequestBeanParamResolver implements ParamResolverFactory {
         Class<?> type = param.type();
         // instantiate target object by unsafe
 
-        ParamResolver resolver = META_CACHE.get(type);
+        ParamResolver resolver = metaCache.get(type);
         if (resolver == null) {
             // no need to check the previous value
-            META_CACHE.putIfAbsent(type, resolver = new Resolver(newTypeMeta(type,
+            metaCache.putIfAbsent(type, resolver = new Resolver(newTypeMeta(type,
                     converters,
                     ctx.resolverFactory().orElse(null))));
         }
