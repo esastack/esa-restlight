@@ -27,6 +27,6 @@ public class StaticFeature implements Feature {
         context.register(RequestFilter.class);
         context.register(ResponseFilter.class);
         context.register(DynamicFeature.class);
-        return false;
+        return true;
     }
 }
