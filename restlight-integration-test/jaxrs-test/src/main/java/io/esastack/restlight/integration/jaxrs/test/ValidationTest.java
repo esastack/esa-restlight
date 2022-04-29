@@ -16,8 +16,9 @@ package io.esastack.restlight.integration.jaxrs.test;
 import io.esastack.commons.net.http.HttpStatus;
 import io.esastack.restclient.RestResponseBase;
 import io.esastack.restlight.integration.jaxrs.entity.UserData;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ValidationTest extends BaseIntegrationTest {
 
@@ -26,10 +27,10 @@ public class ValidationTest extends BaseIntegrationTest {
         RestResponseBase responseBase = restClient.get(domain + "/validation/request/param").addParam("name", "test")
                 .execute().toCompletableFuture().get();
         UserData userData = responseBase.bodyToEntity(UserData.class);
-        Assert.assertEquals("test", userData.getName());
+        assertEquals("test", userData.getName());
 
         responseBase = restClient.get(domain + "/validation/request/param").execute().toCompletableFuture().get();
-        Assert.assertEquals(HttpStatus.BAD_REQUEST.code(), responseBase.status());
+        assertEquals(HttpStatus.BAD_REQUEST.code(), responseBase.status());
     }
 
     @Test
@@ -37,14 +38,14 @@ public class ValidationTest extends BaseIntegrationTest {
         UserData entity = UserData.Builder.anUserData().build();
         RestResponseBase responseBase = restClient.post(domain + "/validation/request/entity").entity(entity)
                 .execute().toCompletableFuture().get();
-        Assert.assertEquals(HttpStatus.BAD_REQUEST.code(), responseBase.status());
+        assertEquals(HttpStatus.BAD_REQUEST.code(), responseBase.status());
     }
 
     @Test
     public void testResponseParam() throws Exception {
         RestResponseBase responseBase = restClient.get(domain + "/validation/response/param")
                 .execute().toCompletableFuture().get();
-        Assert.assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.code(), responseBase.status());
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.code(), responseBase.status());
     }
 
     @Test
@@ -52,6 +53,6 @@ public class ValidationTest extends BaseIntegrationTest {
         UserData entity = UserData.Builder.anUserData().build();
         RestResponseBase responseBase = restClient.post(domain + "/validation/response/entity").entity(entity)
                 .execute().toCompletableFuture().get();
-        Assert.assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.code(), responseBase.status());
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.code(), responseBase.status());
     }
 }

@@ -15,8 +15,9 @@ package io.esastack.restlight.integration.springmvc.test;
 
 import io.esastack.commons.net.http.HttpStatus;
 import io.esastack.restclient.RestResponseBase;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ExceptionTest extends BaseIntegrationTest {
 
@@ -24,15 +25,15 @@ public class ExceptionTest extends BaseIntegrationTest {
     public void testException() throws Exception {
         RestResponseBase response = restClient.get(domain + "/exception/get")
                 .execute().toCompletableFuture().get();
-        Assert.assertEquals(HttpStatus.FORBIDDEN.code(), response.status());
-        Assert.assertEquals("Forbidden", response.bodyToEntity(String.class));
+        assertEquals(HttpStatus.FORBIDDEN.code(), response.status());
+        assertEquals("Forbidden", response.bodyToEntity(String.class));
     }
 
     @Test
     public void testCustomException() throws Exception {
         RestResponseBase response = restClient.get(domain + "/exception/get/custom")
                 .execute().toCompletableFuture().get();
-        Assert.assertEquals(HttpStatus.UNAUTHORIZED.code(), response.status());
-        Assert.assertEquals("Custom", response.bodyToEntity(String.class));
+        assertEquals(HttpStatus.UNAUTHORIZED.code(), response.status());
+        assertEquals("Custom", response.bodyToEntity(String.class));
     }
 }

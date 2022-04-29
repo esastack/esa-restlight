@@ -15,8 +15,9 @@ package io.esastack.restlight.integration.jaxrs.test;
 
 import io.esastack.restclient.RestResponseBase;
 import io.esastack.restlight.integration.jaxrs.entity.UserData;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ManualInjectTest extends BaseIntegrationTest {
 
@@ -25,6 +26,6 @@ public class ManualInjectTest extends BaseIntegrationTest {
         RestResponseBase responseBase = restClient.get(domain + "/manual/inject/get").addParam("name", "test")
                 .execute().toCompletableFuture().get();
         UserData userData = responseBase.bodyToEntity(UserData.class);
-        Assert.assertEquals("test", userData.getName());
+        assertEquals("test", userData.getName());
     }
 }

@@ -16,8 +16,9 @@ package io.esastack.restlight.integration.jaxrs.test;
 import io.esastack.commons.net.http.MediaType;
 import io.esastack.restclient.RestResponseBase;
 import io.esastack.restlight.integration.jaxrs.entity.MessageBodyData;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class MessageBodyTest extends BaseIntegrationTest {
 
@@ -26,7 +27,7 @@ public class MessageBodyTest extends BaseIntegrationTest {
         RestResponseBase responseBase = restClient.get(domain + "/message/body/reader")
                 .contentType(MediaType.APPLICATION_JSON).execute().toCompletableFuture().get();
         MessageBodyData messageBodyData = responseBase.bodyToEntity(MessageBodyData.class);
-        Assert.assertEquals("test", messageBodyData.getName());
+        assertEquals("test", messageBodyData.getName());
     }
 
     @Test
@@ -34,6 +35,6 @@ public class MessageBodyTest extends BaseIntegrationTest {
         RestResponseBase responseBase = restClient.get(domain + "/message/body/writer")
                 .contentType(MediaType.APPLICATION_JSON).execute().toCompletableFuture().get();
         MessageBodyData messageBodyData = responseBase.bodyToEntity(MessageBodyData.class);
-        Assert.assertEquals("test-byBodyWriter", messageBodyData.getName());
+        assertEquals("test-byBodyWriter", messageBodyData.getName());
     }
 }

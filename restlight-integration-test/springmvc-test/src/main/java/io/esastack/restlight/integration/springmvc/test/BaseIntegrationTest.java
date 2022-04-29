@@ -19,8 +19,8 @@ import io.esastack.restlight.core.config.SerializeOptions;
 import io.esastack.restlight.core.config.SerializesOptions;
 import io.esastack.restlight.starter.ServerStarter;
 import io.esastack.restlight.starter.autoconfigure.AutoRestlightServerOptions;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 public abstract class BaseIntegrationTest {
@@ -31,7 +31,7 @@ public abstract class BaseIntegrationTest {
 
     private static AnnotationConfigApplicationContext ctx;
 
-    @BeforeClass
+    @BeforeAll
     public static void setUp() {
         restClient = RestClient.ofDefault();
 
@@ -63,7 +63,7 @@ public abstract class BaseIntegrationTest {
         domain = "http://" + host + ":" + port + contextPath;
     }
 
-    @AfterClass
+    @AfterAll
     public static void tearDown() {
         ctx.close();
     }

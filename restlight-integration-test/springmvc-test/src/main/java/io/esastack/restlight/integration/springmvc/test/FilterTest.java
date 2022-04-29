@@ -15,8 +15,9 @@ package io.esastack.restlight.integration.springmvc.test;
 
 import io.esastack.restclient.RestResponseBase;
 import io.esastack.restlight.integration.springmvc.entity.UserData;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class FilterTest extends BaseIntegrationTest {
 
@@ -26,6 +27,6 @@ public class FilterTest extends BaseIntegrationTest {
                 .addParam("name", "test").execute()
                 .toCompletableFuture().get();
         UserData user = response.bodyToEntity(UserData.class);
-        Assert.assertEquals("test", user.getName());
+        assertEquals("test", user.getName());
     }
 }

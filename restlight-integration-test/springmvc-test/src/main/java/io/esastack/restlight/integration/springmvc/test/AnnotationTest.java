@@ -16,11 +16,13 @@ package io.esastack.restlight.integration.springmvc.test;
 import io.esastack.commons.net.http.HttpStatus;
 import io.esastack.restclient.RestResponseBase;
 import io.esastack.restlight.integration.springmvc.entity.UserData;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.util.Date;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class AnnotationTest extends BaseIntegrationTest {
 
@@ -29,7 +31,7 @@ public class AnnotationTest extends BaseIntegrationTest {
         RestResponseBase response = restClient.get(domain + "/annotation/get").addParam("name", "test").execute()
                 .toCompletableFuture().get();
         UserData userData = response.bodyToEntity(UserData.class);
-        Assert.assertEquals("test", userData.getName());
+        assertEquals("test", userData.getName());
     }
 
     @Test
@@ -40,7 +42,7 @@ public class AnnotationTest extends BaseIntegrationTest {
         RestResponseBase response = restClient.post(domain + "/annotation/post").entity(user).execute()
                 .toCompletableFuture().get();
         UserData userResult = response.bodyToEntity(UserData.class);
-        Assert.assertEquals(user.getName(), userResult.getName());
+        assertEquals(user.getName(), userResult.getName());
     }
 
     @Test
@@ -48,7 +50,7 @@ public class AnnotationTest extends BaseIntegrationTest {
         RestResponseBase response = restClient.delete(domain + "/annotation/delete/test").execute()
                 .toCompletableFuture().get();
         UserData userResult = response.bodyToEntity(UserData.class);
-        Assert.assertEquals("test", userResult.getName());
+        assertEquals("test", userResult.getName());
     }
 
     @Test
@@ -56,7 +58,7 @@ public class AnnotationTest extends BaseIntegrationTest {
         RestResponseBase response = restClient.put(domain + "/annotation/put").addCookie("name", "test").execute()
                 .toCompletableFuture().get();
         UserData userResult = response.bodyToEntity(UserData.class);
-        Assert.assertEquals("test", userResult.getName());
+        assertEquals("test", userResult.getName());
     }
 
     @Test
@@ -65,7 +67,7 @@ public class AnnotationTest extends BaseIntegrationTest {
                 .addParam("name", "test").execute()
                 .toCompletableFuture().get();
         UserData userData = response.bodyToEntity(UserData.class);
-        Assert.assertEquals("test", userData.getName());
+        assertEquals("test", userData.getName());
     }
 
     @Test
@@ -74,7 +76,7 @@ public class AnnotationTest extends BaseIntegrationTest {
                 .addParam("name", "test").execute()
                 .toCompletableFuture().get();
         UserData userData = response.bodyToEntity(UserData.class);
-        Assert.assertEquals("test", userData.getName());
+        assertEquals("test", userData.getName());
     }
 
     @Test
@@ -83,7 +85,7 @@ public class AnnotationTest extends BaseIntegrationTest {
                 .addHeader("name", "test").execute()
                 .toCompletableFuture().get();
         UserData userData = response.bodyToEntity(UserData.class);
-        Assert.assertEquals("test", userData.getName());
+        assertEquals("test", userData.getName());
     }
 
     @Test
@@ -91,8 +93,8 @@ public class AnnotationTest extends BaseIntegrationTest {
         RestResponseBase response = restClient.get(domain + "/annotation/get/matrix/10;name=test").execute()
                 .toCompletableFuture().get();
         UserData userData = response.bodyToEntity(UserData.class);
-        Assert.assertEquals("test", userData.getName());
-        Assert.assertTrue(10 == userData.getAge());
+        assertEquals("test", userData.getName());
+        assertTrue(10 == userData.getAge());
     }
 
     @Test
@@ -100,14 +102,14 @@ public class AnnotationTest extends BaseIntegrationTest {
         RestResponseBase response = restClient.get(domain + "/annotation/get/attribute").execute()
                 .toCompletableFuture().get();
         UserData userData = response.bodyToEntity(UserData.class);
-        Assert.assertEquals("test", userData.getName());
+        assertEquals("test", userData.getName());
     }
 
     @Test
     public void testResponseStatus() throws Exception {
         RestResponseBase response = restClient.get(domain + "/annotation/get/responsestatus").execute()
                 .toCompletableFuture().get();
-        Assert.assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.code(), response.status());
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.code(), response.status());
     }
 
     @Test
@@ -116,7 +118,7 @@ public class AnnotationTest extends BaseIntegrationTest {
                 .addParam("name", "test").execute()
                 .toCompletableFuture().get();
         UserData userData = response.bodyToEntity(UserData.class);
-        Assert.assertEquals("test", userData.getName());
+        assertEquals("test", userData.getName());
     }
 
     @Test
@@ -127,7 +129,7 @@ public class AnnotationTest extends BaseIntegrationTest {
         RestResponseBase response = restClient.post(domain + "/annotation/post/custom/body").entity(user).execute()
                 .toCompletableFuture().get();
         UserData userResult = response.bodyToEntity(UserData.class);
-        Assert.assertEquals(user.getName(), userResult.getName());
+        assertEquals(user.getName(), userResult.getName());
     }
 
     @Test
@@ -136,13 +138,13 @@ public class AnnotationTest extends BaseIntegrationTest {
                 .addParam("name", "test").execute()
                 .toCompletableFuture().get();
         UserData user = response.bodyToEntity(UserData.class);
-        Assert.assertEquals("test", user.getName());
+        assertEquals("test", user.getName());
     }
 
     @Test
     public void testParamWrong() throws Exception {
         RestResponseBase response = restClient.get(domain + "/annotation/get/param/wrong")
                 .addParam("user", "").execute().toCompletableFuture().get();
-        Assert.assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.code(), response.status());
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.code(), response.status());
     }
 }
