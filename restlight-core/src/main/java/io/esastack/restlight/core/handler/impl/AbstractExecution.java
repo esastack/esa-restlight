@@ -62,7 +62,7 @@ abstract class AbstractExecution<H extends HandlerMethodAdapter> implements Exec
             final Object object = resolveBean(handlerMethod.handlerMethod(), context);
             final Object[] args = resolveArgs(context);
             return invoke(context, object, args)
-                    .thenCompose(current -> resolveReturnValue(object, context));
+                    .thenCompose(current -> resolveReturnValue(current, context));
         } catch (Throwable th) {
             return Futures.completedExceptionally(th);
         }

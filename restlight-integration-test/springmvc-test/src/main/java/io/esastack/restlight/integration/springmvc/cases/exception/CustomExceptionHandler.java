@@ -15,14 +15,16 @@ package io.esastack.restlight.integration.springmvc.cases.exception;
 
 import io.esastack.commons.net.http.HttpStatus;
 import io.esastack.restlight.server.core.HttpResponse;
+import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-//@ControllerAdvice
+@ControllerAdvice
 public class CustomExceptionHandler {
 
     @ExceptionHandler(CustomException.class)
     public String handleCustomException(CustomException customException, HttpResponse httpResponse) {
         httpResponse.status(HttpStatus.UNAUTHORIZED.code());
+        httpResponse.entity(customException.getMessage());
         return customException.getMessage();
     }
 }

@@ -13,6 +13,7 @@
 
 package io.esastack.restlight.integration.springmvc.entity;
 
+import esa.commons.ClassUtils;
 import io.esastack.restlight.integration.springmvc.cases.annotation.CustomFieldParam;
 
 import java.math.BigDecimal;

@@ -108,6 +108,10 @@ public class HandlerMethodAdapter<H extends HandlerMethod> implements HandlerMet
 
     <P extends Param> ResolvableParam<P, ResolverWrap> getResolverWrap(P param,
                                                                        HandlerResolverFactory factory) {
+        // check if we need a resolver here
+        if (!mustProvideResolver(param, factory)) {
+            return new ResolvableParam<>(param, null);
+        }
         ContextResolver contextResolver = factory.getContextResolver(param);
         if (contextResolver != null) {
             return new ResolvableParam<>(param, new ContextResolverWrap(contextResolver));
@@ -127,6 +131,10 @@ public class HandlerMethodAdapter<H extends HandlerMethod> implements HandlerMet
                 }
             }
         }
+    }
+
+    protected <P extends Param> boolean mustProvideResolver(P param, HandlerResolverFactory factory) {
+        return true;
     }
 
     ResolvableParam<MethodParam, ResolverWrap>[] paramResolvers() {

@@ -15,6 +15,7 @@
  */
 package io.esastack.restlight.springmvc.resolver.exception;
 
+import esa.commons.Checks;
 import esa.commons.ClassUtils;
 import esa.commons.StringUtils;
 import esa.commons.reflect.AnnotationUtils;
@@ -24,6 +25,8 @@ import io.esastack.restlight.core.handler.impl.HandlerImpl;
 import io.esastack.restlight.core.handler.impl.HandlerMethodAdapter;
 import io.esastack.restlight.core.handler.impl.HandlerMethodResolver;
 import io.esastack.restlight.core.handler.locate.HandlerMethodLocator;
+import io.esastack.restlight.core.method.HandlerMethod;
+import io.esastack.restlight.core.method.Param;
 import io.esastack.restlight.core.resolver.ExceptionResolver;
 import io.esastack.restlight.core.resolver.HandlerResolverFactory;
 import io.esastack.restlight.core.resolver.exception.AbstractExceptionResolverFactory;
@@ -118,8 +121,13 @@ public class SpringMvcExceptionResolverFactory extends AbstractExceptionResolver
         for (Class<? extends Throwable> exceptionType : detectExceptionMappings(method)) {
             locator.getHandlerMethodInfo(null, ClassUtils.getUserType(bean), method).ifPresent(handler -> {
                 ExceptionResolver<Throwable> resolver =
-                        new ExecutionExceptionResolver(new HandlerMethodAdapter<>(
-                                new HandlerContext(context), handler.handlerMethod()),
+                        new ExecutionExceptionResolver(new HandlerMethodAdapter(
+                                new HandlerContext(context), handler.handlerMethod()) {
+                            @Override
+                            protected boolean mustProvideResolver(Param param, HandlerResolverFactory factory) {
+                                return !param.type().isAssignableFrom(exceptionType);
+                            }
+                        },
                                 new HandlerMethodResolver(handler),
                                 new HandlerImpl(handler.handlerMethod(), bean));
                 addExceptionMapping(mappings, exceptionType, resolver);
