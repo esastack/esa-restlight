@@ -26,6 +26,7 @@ import io.esastack.restlight.core.resolver.HandlerResolverFactory;
 import io.esastack.restlight.core.resolver.ParamResolver;
 import io.esastack.restlight.core.resolver.RequestEntityResolver;
 import io.esastack.restlight.core.util.RouteUtils;
+import io.esastack.restlight.server.context.RequestContext;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -109,7 +110,7 @@ public class HandlerMethodAdapter<H extends HandlerMethod> implements HandlerMet
     <P extends Param> ResolvableParam<P, ResolverWrap> getResolverWrap(P param,
                                                                        HandlerResolverFactory factory) {
         // check if we need a resolver here
-        if (!mustProvideResolver(param, factory)) {
+        if (isNullResolver(param, factory)) {
             return new ResolvableParam<>(param, null);
         }
         ContextResolver contextResolver = factory.getContextResolver(param);
@@ -133,8 +134,17 @@ public class HandlerMethodAdapter<H extends HandlerMethod> implements HandlerMet
         }
     }
 
-    protected <P extends Param> boolean mustProvideResolver(P param, HandlerResolverFactory factory) {
-        return true;
+    /**
+     * provide null {@link io.esastack.restlight.core.resolver.Resolver} to the target param.
+     * mainly for the scene we have can directly find the fix args in
+     * {@link AbstractExecution#resolveFixedArg(MethodParam, RequestContext)}
+     *
+     * @param param param
+     * @param factory  factory
+     * @return if match the null resolver condition
+     */
+    protected <P extends Param> boolean isNullResolver(P param, HandlerResolverFactory factory) {
+        return false;
     }
 
     ResolvableParam<MethodParam, ResolverWrap>[] paramResolvers() {

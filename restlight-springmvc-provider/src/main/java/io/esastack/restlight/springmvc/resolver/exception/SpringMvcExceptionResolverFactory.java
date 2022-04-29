@@ -15,7 +15,6 @@
  */
 package io.esastack.restlight.springmvc.resolver.exception;
 
-import esa.commons.Checks;
 import esa.commons.ClassUtils;
 import esa.commons.StringUtils;
 import esa.commons.reflect.AnnotationUtils;
@@ -25,7 +24,6 @@ import io.esastack.restlight.core.handler.impl.HandlerImpl;
 import io.esastack.restlight.core.handler.impl.HandlerMethodAdapter;
 import io.esastack.restlight.core.handler.impl.HandlerMethodResolver;
 import io.esastack.restlight.core.handler.locate.HandlerMethodLocator;
-import io.esastack.restlight.core.method.HandlerMethod;
 import io.esastack.restlight.core.method.Param;
 import io.esastack.restlight.core.resolver.ExceptionResolver;
 import io.esastack.restlight.core.resolver.HandlerResolverFactory;
@@ -124,8 +122,8 @@ public class SpringMvcExceptionResolverFactory extends AbstractExceptionResolver
                         new ExecutionExceptionResolver(new HandlerMethodAdapter(
                                 new HandlerContext(context), handler.handlerMethod()) {
                             @Override
-                            protected boolean mustProvideResolver(Param param, HandlerResolverFactory factory) {
-                                return !param.type().isAssignableFrom(exceptionType);
+                            protected boolean isNullResolver(Param param, HandlerResolverFactory factory) {
+                                return param.type().isAssignableFrom(exceptionType);
                             }
                         },
                                 new HandlerMethodResolver(handler),
