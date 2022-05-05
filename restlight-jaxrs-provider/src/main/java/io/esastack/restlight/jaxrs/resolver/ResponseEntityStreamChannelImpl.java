@@ -17,6 +17,7 @@ package io.esastack.restlight.jaxrs.resolver;
 
 import esa.commons.Checks;
 import esa.commons.ExceptionUtils;
+import esa.commons.collection.Attribute;
 import esa.commons.collection.AttributeKey;
 import io.esastack.commons.net.buffer.BufferUtil;
 import io.esastack.restlight.core.resolver.ResponseEntityChannelImpl;
@@ -41,12 +42,13 @@ public class ResponseEntityStreamChannelImpl extends ResponseEntityChannelImpl
     private HttpOutputStream outputStream;
 
     public static ResponseEntityStreamChannel get(RequestContext context) {
-        ResponseEntityStreamChannel channel = context.attrs().attr(RESPONSE_STREAM_ENTITY_CHANNEL).get();
+        Attribute<ResponseEntityStreamChannel> attr = context.attrs().attr(RESPONSE_STREAM_ENTITY_CHANNEL);
+        ResponseEntityStreamChannel channel = attr.get();
         if (channel != null) {
             return channel;
         }
         channel = new ResponseEntityStreamChannelImpl(context);
-        context.attrs().attr(RESPONSE_STREAM_ENTITY_CHANNEL).set(channel);
+        attr.set(channel);
         return channel;
     }
 
