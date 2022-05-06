@@ -21,7 +21,7 @@ import esa.commons.collection.Attribute;
 import esa.commons.collection.AttributeKey;
 import io.esastack.commons.net.buffer.BufferUtil;
 import io.esastack.restlight.core.resolver.ResponseEntityChannelImpl;
-import io.esastack.restlight.server.bootstrap.ResponseContent;
+import io.esastack.restlight.core.resolver.ResponseContent;
 import io.esastack.restlight.server.context.RequestContext;
 import io.esastack.restlight.server.core.HttpOutputStream;
 import io.netty.buffer.ByteBuf;

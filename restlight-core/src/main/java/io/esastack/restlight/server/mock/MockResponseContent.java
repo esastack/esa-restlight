@@ -19,7 +19,7 @@ import esa.commons.Checks;
 import esa.commons.ExceptionUtils;
 import esa.commons.io.IOUtils;
 import io.esastack.commons.net.buffer.Buffer;
-import io.esastack.restlight.server.bootstrap.ResponseContent;
+import io.esastack.restlight.core.resolver.ResponseContent;
 import io.netty.buffer.ByteBufAllocator;
 import io.netty.buffer.UnpooledByteBufAllocator;
 

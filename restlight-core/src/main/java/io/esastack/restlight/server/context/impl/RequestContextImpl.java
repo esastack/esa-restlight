@@ -19,7 +19,7 @@ import esa.commons.Checks;
 import esa.commons.collection.AttributeKey;
 import esa.commons.collection.AttributeMap;
 import esa.commons.collection.Attributes;
-import io.esastack.restlight.server.bootstrap.ResponseContent;
+import io.esastack.restlight.core.resolver.ResponseContent;
 import io.esastack.restlight.server.context.RequestContext;
 import io.esastack.restlight.server.core.HttpRequest;
 import io.esastack.restlight.server.core.HttpResponse;

@@ -22,7 +22,7 @@ import io.esastack.restlight.core.method.HandlerMethod;
 import io.esastack.restlight.core.resolver.ResponseEntity;
 import io.esastack.restlight.core.resolver.ResponseEntityChannel;
 import io.esastack.restlight.core.resolver.ResponseEntityResolverContext;
-import io.esastack.restlight.server.bootstrap.ResponseContent;
+import io.esastack.restlight.core.resolver.ResponseContent;
 import io.esastack.restlight.server.context.RequestContext;
 import io.esastack.restlight.server.context.impl.RequestContextImpl;
 import io.esastack.restlight.server.core.HttpRequest;

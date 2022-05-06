@@ -21,7 +21,7 @@ import esa.commons.collection.Attributes;
 import io.esastack.restlight.core.handler.HandlerMapping;
 import io.esastack.restlight.core.util.Ordered;
 import io.esastack.restlight.jaxrs.resolver.ResponseEntityStreamChannelImpl;
-import io.esastack.restlight.server.bootstrap.ResponseContent;
+import io.esastack.restlight.core.resolver.ResponseContent;
 import io.esastack.restlight.server.context.RequestContext;
 import io.esastack.restlight.server.context.RouteContext;
 import io.esastack.restlight.server.context.impl.FilterContextImpl;

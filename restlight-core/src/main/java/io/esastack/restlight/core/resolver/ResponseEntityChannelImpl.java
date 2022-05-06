@@ -17,7 +17,6 @@ package io.esastack.restlight.core.resolver;
 
 import esa.commons.Checks;
 import io.esastack.commons.net.buffer.Buffer;
-import io.esastack.restlight.server.bootstrap.ResponseContent;
 import io.esastack.restlight.server.context.RequestContext;
 import io.esastack.restlight.server.context.impl.RequestContextImpl;
 

@@ -17,6 +17,8 @@ package io.esastack.restlight.server.bootstrap;
 
 import io.esastack.commons.net.buffer.Buffer;
 import io.esastack.httpserver.core.Response;
+import io.esastack.restlight.core.resolver.ResponseContent;
+import io.esastack.restlight.core.resolver.ResponseContentImpl;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
 import io.netty.util.concurrent.Future;

@@ -16,7 +16,7 @@
 package io.esastack.restlight.jaxrs.resolver;
 
 import io.esastack.httpserver.core.Response;
-import io.esastack.restlight.server.bootstrap.ResponseContentImpl;
+import io.esastack.restlight.core.resolver.ResponseContentImpl;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
 import io.netty.buffer.ByteBufUtil;

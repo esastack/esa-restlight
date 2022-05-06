@@ -21,6 +21,7 @@ import io.esastack.httpserver.H2OptionsConfigure;
 import io.esastack.httpserver.HttpServer;
 import io.esastack.httpserver.ServerOptionsConfigure;
 import io.esastack.httpserver.SslOptionsConfigure;
+import io.esastack.restlight.core.resolver.ResponseContentImpl;
 import io.esastack.restlight.core.util.ResourceUtils;
 import io.esastack.restlight.core.util.RestlightVer;
 import io.esastack.restlight.server.config.ServerOptions;
