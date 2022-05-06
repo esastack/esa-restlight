@@ -111,7 +111,9 @@ class JacksonAutoConfigurationTest {
         assertTrue(objectMapperDateFormat.getDateFormat() instanceof SimpleDateFormat);
         when(properties.getDateFormat()).thenReturn(null);
         ObjectMapper objectMapperDateFormatNull = jacksonAutoConfiguration.objectMapper(properties);
-        assertTrue(objectMapperDateFormatNull.getDateFormat() instanceof StdDateFormat);
+        assertTrue(objectMapperDateFormatNull.getDateFormat() instanceof SimpleDateFormat);
+        assertEquals("yyyy-MM-dd HH:mm:ss", ((SimpleDateFormat)
+                objectMapperDateFormatNull.getDateFormat()).toPattern());
 
 
         when(properties.getLocale()).thenReturn(null);

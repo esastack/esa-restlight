@@ -24,6 +24,8 @@ import io.esastack.restlight.core.handler.impl.HandlerImpl;
 import io.esastack.restlight.core.handler.impl.HandlerMethodAdapter;
 import io.esastack.restlight.core.handler.impl.HandlerMethodResolver;
 import io.esastack.restlight.core.handler.locate.HandlerMethodLocator;
+import io.esastack.restlight.core.method.Param;
+import io.esastack.restlight.core.method.ResolvableParam;
 import io.esastack.restlight.core.resolver.ExceptionResolver;
 import io.esastack.restlight.core.resolver.HandlerResolverFactory;
 import io.esastack.restlight.core.resolver.exception.AbstractExceptionResolverFactory;
@@ -35,13 +37,7 @@ import io.esastack.restlight.springmvc.annotation.shaded.ExceptionHandler0;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class SpringMvcExceptionResolverFactory extends AbstractExceptionResolverFactory {
 
@@ -118,8 +114,17 @@ public class SpringMvcExceptionResolverFactory extends AbstractExceptionResolver
         for (Class<? extends Throwable> exceptionType : detectExceptionMappings(method)) {
             locator.getHandlerMethodInfo(null, ClassUtils.getUserType(bean), method).ifPresent(handler -> {
                 ExceptionResolver<Throwable> resolver =
-                        new ExecutionExceptionResolver(new HandlerMethodAdapter<>(
-                                new HandlerContext(context), handler.handlerMethod()),
+                        new ExecutionExceptionResolver(new HandlerMethodAdapter(
+                                new HandlerContext(context), handler.handlerMethod()) {
+                            @Override
+                            protected ResolvableParam getFixedResolverWrap(Param param,
+                                                                           HandlerResolverFactory factory) {
+                                if (param.type().isAssignableFrom(exceptionType)) {
+                                    return new ResolvableParam(param, null);
+                                }
+                                return super.getFixedResolverWrap(param, factory);
+                            }
+                        },
                                 new HandlerMethodResolver(handler),
                                 new HandlerImpl(handler.handlerMethod(), bean));
                 addExceptionMapping(mappings, exceptionType, resolver);
