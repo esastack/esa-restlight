@@ -16,6 +16,7 @@
 package io.esastack.restlight.ext.validator;
 
 import esa.commons.annotation.Internal;
+import esa.commons.collection.Attribute;
 import esa.commons.collection.AttributeKey;
 import esa.commons.spi.Feature;
 import esa.commons.spi.SpiLoader;
@@ -41,10 +42,11 @@ public class BeanValidationHandlerAdviceFactory implements HandlerAdviceFactory 
 
     @Override
     public Optional<HandlerAdvice> handlerAdvice(DeployContext ctx, Handler handler) {
-        Optional<Validator> validator = ctx.attrs().attr(VALIDATION_VALIDATOR).get();
+        final Attribute<Optional<Validator>> attr = ctx.attrs().attr(VALIDATION_VALIDATOR);
+
+        Optional<Validator> validator = attr.get();
         if (validator == null) {
-            validator = doCreate(ctx);
-            ctx.attrs().attr(VALIDATION_VALIDATOR).set(validator);
+            attr.set(validator = doCreate(ctx));
         }
 
         if (!validator.isPresent()) {

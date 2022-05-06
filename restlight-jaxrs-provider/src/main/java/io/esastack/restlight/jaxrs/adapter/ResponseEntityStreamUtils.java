@@ -15,6 +15,7 @@
  */
 package io.esastack.restlight.jaxrs.adapter;
 
+import esa.commons.collection.Attribute;
 import esa.commons.collection.AttributeKey;
 import esa.commons.io.IOUtils;
 import io.esastack.restlight.jaxrs.resolver.ResponseEntityStreamChannelImpl;
@@ -27,9 +28,10 @@ final class ResponseEntityStreamUtils {
     private static final AttributeKey<HttpOutputStream> CLOSABLE_STREAM = AttributeKey.valueOf("$closable.stream");
 
     static HttpOutputStream getUnClosableOutputStream(RequestContext context) {
-        HttpOutputStream outputStream = ResponseEntityStreamChannelImpl.get(context).outputStream();
-        if (!context.attrs().hasAttr(CLOSABLE_STREAM)) {
-            context.attrs().attr(CLOSABLE_STREAM).set(outputStream);
+        final HttpOutputStream outputStream = ResponseEntityStreamChannelImpl.get(context).outputStream();
+        Attribute<HttpOutputStream> attr = context.attrs().attr(CLOSABLE_STREAM);
+        if (attr.get() == null) {
+            attr.set(outputStream);
             context.onEnd(ResponseEntityStreamUtils::close);
         }
         return new HttpOutputStreamImpl(outputStream) {
