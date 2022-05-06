@@ -177,16 +177,6 @@
             <version>${mockito.version}</version>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>io.esastack</groupId>
-            <artifactId>commons-net-core</artifactId>
-            <version>${esa-commons.net.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>io.esastack</groupId>
-            <artifactId>commons-net-netty</artifactId>
-            <version>${esa-commons.net.version}</version>
-        </dependency>
     </dependencies>
 
     <dependencyManagement>
@@ -227,6 +217,16 @@
                 <groupId>io.esastack</groupId>
                 <artifactId>commons</artifactId>
                 <version>${esa-commons.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.esastack</groupId>
+                <artifactId>commons-net-core</artifactId>
+                <version>${esa-commons.net.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.esastack</groupId>
+                <artifactId>commons-net-netty</artifactId>
+                <version>${esa-commons.net.version}</version>
             </dependency>
             <dependency>
                 <groupId>io.netty</groupId>
