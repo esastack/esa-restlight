@@ -26,7 +26,6 @@ import io.esastack.restlight.core.resolver.HandlerResolverFactory;
 import io.esastack.restlight.core.resolver.ParamResolver;
 import io.esastack.restlight.core.resolver.RequestEntityResolver;
 import io.esastack.restlight.core.util.RouteUtils;
-import io.esastack.restlight.server.context.RequestContext;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -109,10 +108,12 @@ public class HandlerMethodAdapter<H extends HandlerMethod> implements HandlerMet
 
     <P extends Param> ResolvableParam<P, ResolverWrap> getResolverWrap(P param,
                                                                        HandlerResolverFactory factory) {
-        // check if we need a resolver here
-        if (isNullResolver(param, factory)) {
-            return new ResolvableParam<>(param, null);
+        // get fix resolver
+        ResolvableParam<P, ResolverWrap> fixedResolverWrap = getFixedResolverWrap(param, factory);
+        if (fixedResolverWrap != null) {
+            return fixedResolverWrap;
         }
+
         ContextResolver contextResolver = factory.getContextResolver(param);
         if (contextResolver != null) {
             return new ResolvableParam<>(param, new ContextResolverWrap(contextResolver));
@@ -135,16 +136,15 @@ public class HandlerMethodAdapter<H extends HandlerMethod> implements HandlerMet
     }
 
     /**
-     * provide null {@link io.esastack.restlight.core.resolver.Resolver} to the target param.
-     * mainly for the scene we have can directly find the fix args in
-     * {@link AbstractExecution#resolveFixedArg(MethodParam, RequestContext)}
+     * provide the custom fixed {@link ResolvableParam}.
      *
      * @param param param
-     * @param factory  factory
-     * @return if match the null resolver condition
+     * @param factory factory
+     * @return custom {@link ResolvableParam}
      */
-    protected <P extends Param> boolean isNullResolver(P param, HandlerResolverFactory factory) {
-        return false;
+    protected <P extends Param> ResolvableParam<P, ResolverWrap> getFixedResolverWrap(P param,
+                                                                                    HandlerResolverFactory factory) {
+        return null;
     }
 
     ResolvableParam<MethodParam, ResolverWrap>[] paramResolvers() {
