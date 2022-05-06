@@ -19,10 +19,10 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class AdviceTest extends BaseIntegrationTest {
+class AdviceTest extends BaseIntegrationTest {
 
     @Test
-    public void testCustomParamAdviceByFactory() throws Exception {
+    void testCustomParamAdviceByFactory() throws Exception {
         String name = "test";
         RestResponseBase response = restClient.get(domain + "/advice/get/param/factory")
                 .addParam("name", name).execute().toCompletableFuture().get();
@@ -31,7 +31,7 @@ public class AdviceTest extends BaseIntegrationTest {
     }
 
     @Test
-    public void testCustomParamAdviceByAdaptor() throws Exception {
+    void testCustomParamAdviceByAdaptor() throws Exception {
         String name = "test";
         RestResponseBase response = restClient.get(domain + "/advice/get/param/adaptor")
                 .addParam("name", name).execute().toCompletableFuture().get();
@@ -40,7 +40,7 @@ public class AdviceTest extends BaseIntegrationTest {
     }
 
     @Test
-    public void testCustomEntityAdviceByFactory() throws Exception {
+    void testCustomEntityAdviceByFactory() throws Exception {
         UserData user = UserData.Builder.anUserData()
                 .name("test").build();
         RestResponseBase response = restClient.post(domain + "/advice/post/entity/factory")
@@ -50,7 +50,7 @@ public class AdviceTest extends BaseIntegrationTest {
     }
 
     @Test
-    public void testCustomEntityAdviceByAdaptor() throws Exception {
+    void testCustomEntityAdviceByAdaptor() throws Exception {
         UserData user = UserData.Builder.anUserData()
                 .name("test").build();
         RestResponseBase response = restClient.post(domain + "/advice/post/entity/adaptor")
@@ -60,7 +60,7 @@ public class AdviceTest extends BaseIntegrationTest {
     }
 
     @Test
-    public void testCustomResponseEntityAdviceByFactory() throws Exception {
+    void testCustomResponseEntityAdviceByFactory() throws Exception {
         RestResponseBase response = restClient.get(domain + "/advice/get/response/entity/factory")
                 .addParam("name", "test").execute().toCompletableFuture().get();
         UserData user = response.bodyToEntity(UserData.class);
@@ -68,7 +68,7 @@ public class AdviceTest extends BaseIntegrationTest {
     }
 
     @Test
-    public void testCustomResponseEntityAdviceByAdaptor() throws Exception {
+    void testCustomResponseEntityAdviceByAdaptor() throws Exception {
         RestResponseBase response = restClient.get(domain + "/advice/get/response/entity/adaptor")
                 .addParam("name", "test").execute().toCompletableFuture().get();
         UserData user = response.bodyToEntity(UserData.class);

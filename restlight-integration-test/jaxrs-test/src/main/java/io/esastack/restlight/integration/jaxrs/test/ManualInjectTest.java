@@ -19,10 +19,10 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class ManualInjectTest extends BaseIntegrationTest {
+class ManualInjectTest extends BaseIntegrationTest {
 
     @Test
-    public void get() throws Exception {
+    void get() throws Exception {
         RestResponseBase responseBase = restClient.get(domain + "/manual/inject/get").addParam("name", "test")
                 .execute().toCompletableFuture().get();
         UserData userData = responseBase.bodyToEntity(UserData.class);

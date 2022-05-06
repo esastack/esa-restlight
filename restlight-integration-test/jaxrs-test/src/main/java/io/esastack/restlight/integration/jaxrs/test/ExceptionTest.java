@@ -19,10 +19,10 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class ExceptionTest extends BaseIntegrationTest {
+class ExceptionTest extends BaseIntegrationTest {
 
     @Test
-    public void testIllegal() throws Exception {
+    void testIllegal() throws Exception {
         RestResponseBase responseBase = restClient.get(domain + "/exception/illegal")
                 .execute().toCompletableFuture().get();
         UserData userData = responseBase.bodyToEntity(UserData.class);

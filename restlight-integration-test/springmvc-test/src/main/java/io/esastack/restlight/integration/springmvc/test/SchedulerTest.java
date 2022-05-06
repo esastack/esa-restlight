@@ -19,24 +19,24 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
-public class SchedulerTest extends BaseIntegrationTest {
+class SchedulerTest extends BaseIntegrationTest {
 
     @Test
-    public void testBiz() throws Exception {
+    void testBiz() throws Exception {
         RestResponseBase response = restClient.get(domain + "/scheduler/biz").execute()
                 .toCompletableFuture().get();
         assertTrue(response.bodyToEntity(String.class).toLowerCase().contains("biz"));
     }
 
     @Test
-    public void testIo() throws Exception {
+    void testIo() throws Exception {
         RestResponseBase response = restClient.get(domain + "/scheduler/io").execute()
                 .toCompletableFuture().get();
         assertTrue(response.bodyToEntity(String.class).toLowerCase().contains("i/o"));
     }
 
     @Test
-    public void testCustom() throws Exception {
+    void testCustom() throws Exception {
         RestResponseBase response = restClient.get(domain + "/scheduler/custom").execute()
                 .toCompletableFuture().get();
         assertTrue(response.bodyToEntity(String.class).toLowerCase().contains("custom"));

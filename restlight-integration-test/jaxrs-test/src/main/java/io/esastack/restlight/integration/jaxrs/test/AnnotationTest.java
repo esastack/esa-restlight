@@ -25,10 +25,10 @@ import java.math.BigDecimal;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class AnnotationTest extends BaseIntegrationTest {
+class AnnotationTest extends BaseIntegrationTest {
 
     @Test
-    public void testGet() throws Exception {
+    void testGet() throws Exception {
         RestResponseBase responseBase = restClient.get(domain + "/annotation/get").addParam("name", "test")
                 .execute().toCompletableFuture().get();
         UserData userData = responseBase.bodyToEntity(UserData.class);
@@ -36,7 +36,7 @@ public class AnnotationTest extends BaseIntegrationTest {
     }
 
     @Test
-    public void testPost() throws Exception {
+    void testPost() throws Exception {
         UserData entity = UserData.Builder.anUserData()
                 .name("test").build();
         RestResponseBase responseBase = restClient.post(domain + "/annotation/post").entity(entity)
@@ -46,7 +46,7 @@ public class AnnotationTest extends BaseIntegrationTest {
     }
 
     @Test
-    public void testDelete() throws Exception {
+    void testDelete() throws Exception {
         RestResponseBase responseBase = restClient.delete(domain + "/annotation/delete").addParam("name", "test")
                 .addHeader("age", "10").addCookie("weight", "100").execute().toCompletableFuture().get();
         UserData userData = responseBase.bodyToEntity(UserData.class);
@@ -56,7 +56,7 @@ public class AnnotationTest extends BaseIntegrationTest {
     }
 
     @Test
-    public void testPut() throws Exception {
+    void testPut() throws Exception {
         RestResponseBase responseBase = restClient.put(domain + "/annotation/put/test")
                 .execute().toCompletableFuture().get();
         UserData userData = responseBase.bodyToEntity(UserData.class);
@@ -64,7 +64,7 @@ public class AnnotationTest extends BaseIntegrationTest {
     }
 
     @Test
-    public void testMatrix() throws Exception {
+    void testMatrix() throws Exception {
         RestResponseBase responseBase = restClient.get(domain + "/annotation/get/matrix/10;name=test")
                 .execute().toCompletableFuture().get();
         UserData userData = responseBase.bodyToEntity(UserData.class);
@@ -73,7 +73,7 @@ public class AnnotationTest extends BaseIntegrationTest {
     }
 
     @Test
-    public void testContextHeaders() throws Exception {
+    void testContextHeaders() throws Exception {
         RestResponseBase responseBase = restClient.get(domain + "/annotation/get/context/headers")
                 .addHeader("name", "test").execute().toCompletableFuture().get();
         UserData userData = responseBase.bodyToEntity(UserData.class);
@@ -81,35 +81,35 @@ public class AnnotationTest extends BaseIntegrationTest {
     }
 
     @Test
-    public void testContextProviders() throws Exception {
+    void testContextProviders() throws Exception {
         RestResponseBase responseBase = restClient.get(domain + "/annotation/get/context/providers")
                 .execute().toCompletableFuture().get();
         assertEquals(ProvidersImpl.class.getName(), responseBase.bodyToEntity(String.class));
     }
 
     @Test
-    public void testRequest() throws Exception {
+    void testRequest() throws Exception {
         RestResponseBase responseBase = restClient.get(domain + "/annotation/get/context/request")
                 .execute().toCompletableFuture().get();
         assertEquals("GET", responseBase.bodyToEntity(String.class));
     }
 
     @Test
-    public void testResource() throws Exception {
+    void testResource() throws Exception {
         RestResponseBase responseBase = restClient.get(domain + "/annotation/get/context/resource")
                 .execute().toCompletableFuture().get();
         assertEquals(AnnotationResource.class.getName(), responseBase.bodyToEntity(String.class));
     }
 
     @Test
-    public void testUri() throws Exception {
+    void testUri() throws Exception {
         RestResponseBase responseBase = restClient.get(domain + "/annotation/get/context/uri")
                 .execute().toCompletableFuture().get();
         assertEquals("/integration/test/annotation/get/context/uri", responseBase.bodyToEntity(String.class));
     }
 
     @Test
-    public void testConfiguration() throws Exception {
+    void testConfiguration() throws Exception {
         RestResponseBase responseBase = restClient.get(domain + "/annotation/get/context/configuration")
                 .execute().toCompletableFuture().get();
         assertEquals(ConfigurationImpl.class.getName(), responseBase.bodyToEntity(String.class));

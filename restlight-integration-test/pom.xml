@@ -30,12 +30,6 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>org.junit.jupiter</groupId>
-                <artifactId>junit-jupiter</artifactId>
-                <version>${junit.version}</version>
-            </dependency>
-
-            <dependency>
                 <groupId>io.esastack</groupId>
                 <artifactId>restclient</artifactId>
                 <version>${restclient.version}</version>

@@ -19,10 +19,10 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class ExceptionTest extends BaseIntegrationTest {
+class ExceptionTest extends BaseIntegrationTest {
 
     @Test
-    public void testException() throws Exception {
+    void testException() throws Exception {
         RestResponseBase response = restClient.get(domain + "/exception/get")
                 .execute().toCompletableFuture().get();
         assertEquals(HttpStatus.FORBIDDEN.code(), response.status());
@@ -30,7 +30,7 @@ public class ExceptionTest extends BaseIntegrationTest {
     }
 
     @Test
-    public void testCustomException() throws Exception {
+    void testCustomException() throws Exception {
         RestResponseBase response = restClient.get(domain + "/exception/get/custom")
                 .execute().toCompletableFuture().get();
         assertEquals(HttpStatus.UNAUTHORIZED.code(), response.status());

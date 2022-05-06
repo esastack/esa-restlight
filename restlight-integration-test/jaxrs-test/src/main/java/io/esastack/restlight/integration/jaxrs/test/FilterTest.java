@@ -19,10 +19,10 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class FilterTest extends BaseIntegrationTest {
+class FilterTest extends BaseIntegrationTest {
 
     @Test
-    public void testRequestGlobal() throws Exception {
+    void testRequestGlobal() throws Exception {
         RestResponseBase responseBase = restClient.get(domain + "/filter/request/global")
                 .execute().toCompletableFuture().get();
         UserData userData = responseBase.bodyToEntity(UserData.class);
@@ -30,7 +30,7 @@ public class FilterTest extends BaseIntegrationTest {
     }
 
     @Test
-    public void testResponseGlobal() throws Exception {
+    void testResponseGlobal() throws Exception {
         RestResponseBase responseBase = restClient.get(domain + "/filter/response/global")
                 .execute().toCompletableFuture().get();
         UserData userData = responseBase.bodyToEntity(UserData.class);
@@ -38,7 +38,7 @@ public class FilterTest extends BaseIntegrationTest {
     }
 
     @Test
-    public void testRequestBinding() throws Exception {
+    void testRequestBinding() throws Exception {
         RestResponseBase responseBase = restClient.get(domain + "/filter/request/binding")
                 .execute().toCompletableFuture().get();
         UserData userData = responseBase.bodyToEntity(UserData.class);
@@ -46,7 +46,7 @@ public class FilterTest extends BaseIntegrationTest {
     }
 
     @Test
-    public void testResponseBinding() throws Exception {
+    void testResponseBinding() throws Exception {
         RestResponseBase responseBase = restClient.get(domain + "/filter/response/binding")
                 .execute().toCompletableFuture().get();
         UserData userData = responseBase.bodyToEntity(UserData.class);
@@ -54,7 +54,7 @@ public class FilterTest extends BaseIntegrationTest {
     }
 
     @Test
-    public void testDynamicFeature() throws Exception {
+    void testDynamicFeature() throws Exception {
         RestResponseBase responseBase = restClient.get(domain + "/filter/dynamic/feature")
                 .execute().toCompletableFuture().get();
         UserData userData = responseBase.bodyToEntity(UserData.class);

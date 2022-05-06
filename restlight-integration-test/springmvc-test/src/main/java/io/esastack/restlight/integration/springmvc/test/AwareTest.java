@@ -21,31 +21,31 @@ import java.util.concurrent.ThreadPoolExecutor;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class AwareTest extends BaseIntegrationTest {
+class AwareTest extends BaseIntegrationTest {
 
     @Test
-    public void testBizAware() throws Exception {
+    void testBizAware() throws Exception {
         RestResponseBase response = restClient.get(domain + "/aware/get/biz").execute()
                 .toCompletableFuture().get();
         assertEquals(ThreadPoolExecutor.class.getName(), response.bodyToEntity(String.class));
     }
 
     @Test
-    public void testIoAware() throws Exception {
+    void testIoAware() throws Exception {
         RestResponseBase response = restClient.get(domain + "/aware/get/io").execute()
                 .toCompletableFuture().get();
         assertTrue(response.bodyToEntity(String.class).contains("EventLoopGroup"));
     }
 
     @Test
-    public void testServerAware() throws Exception {
+    void testServerAware() throws Exception {
         RestResponseBase response = restClient.get(domain + "/aware/get/server").execute()
                 .toCompletableFuture().get();
         assertTrue(response.bodyToEntity(String.class).toLowerCase().contains("server"));
     }
 
     @Test
-    public void testDeployContextAware() throws Exception {
+    void testDeployContextAware() throws Exception {
         RestResponseBase response = restClient.get(domain + "/aware/get/context").execute()
                 .toCompletableFuture().get();
         assertTrue(response.bodyToEntity(String.class).toLowerCase().contains("context"));

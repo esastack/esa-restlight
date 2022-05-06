@@ -19,10 +19,10 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class LocatorTest extends BaseIntegrationTest {
+class LocatorTest extends BaseIntegrationTest {
 
     @Test
-    public void testLocate() throws Exception {
+    void testLocate() throws Exception {
         RestResponseBase responseBase = restClient.get(domain + "/locator/locate")
                 .addParam("name", "test").execute().toCompletableFuture().get();
         UserData userData = responseBase.bodyToEntity(UserData.class);
@@ -30,7 +30,7 @@ public class LocatorTest extends BaseIntegrationTest {
     }
 
     @Test
-    public void testCascadeLocate() throws Exception {
+    void testCascadeLocate() throws Exception {
         RestResponseBase responseBase = restClient.get(domain + "/locator/locate/cascade")
                 .addParam("name", "test").execute().toCompletableFuture().get();
         UserData userData = responseBase.bodyToEntity(UserData.class);

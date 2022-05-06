@@ -19,10 +19,10 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class AsyncResponseTest extends BaseIntegrationTest {
+class AsyncResponseTest extends BaseIntegrationTest {
 
     @Test
-    public void testAsync() throws Exception {
+    void testAsync() throws Exception {
         RestResponseBase responseBase = restClient.get(domain + "/async/response/async").addParam("name", "test")
                 .addParam("timeout", "100").execute().toCompletableFuture().get();
         UserData userData = responseBase.bodyToEntity(UserData.class);
@@ -35,7 +35,7 @@ public class AsyncResponseTest extends BaseIntegrationTest {
     }
 
     @Test
-    public void testFuture() throws Exception {
+    void testFuture() throws Exception {
         RestResponseBase responseBase = restClient.get(domain + "/async/response/future").addParam("name", "test")
                 .addParam("timeout", "100").execute().toCompletableFuture().get();
         UserData userData = responseBase.bodyToEntity(UserData.class);

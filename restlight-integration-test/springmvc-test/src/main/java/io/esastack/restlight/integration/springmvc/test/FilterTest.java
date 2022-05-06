@@ -19,10 +19,10 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class FilterTest extends BaseIntegrationTest {
+class FilterTest extends BaseIntegrationTest {
 
     @Test
-    public void testFilter() throws Exception {
+    void testFilter() throws Exception {
         RestResponseBase response = restClient.get(domain + "/filter/get")
                 .addParam("name", "test").execute()
                 .toCompletableFuture().get();

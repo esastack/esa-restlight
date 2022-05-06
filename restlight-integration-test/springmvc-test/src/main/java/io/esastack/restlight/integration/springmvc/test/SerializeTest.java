@@ -24,10 +24,10 @@ import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class SerializeTest extends BaseIntegrationTest {
+class SerializeTest extends BaseIntegrationTest {
 
     @Test
-    public void testJson() throws Exception {
+    void testJson() throws Exception {
         UserData user = UserData.Builder.anUserData()
                 .name("test").age(10).birthDay(new Date())
                 .weight(BigDecimal.valueOf(123.01)).build();
@@ -38,7 +38,7 @@ public class SerializeTest extends BaseIntegrationTest {
     }
 
     @Test
-    public void testProtobuf() throws Exception {
+    void testProtobuf() throws Exception {
         UserProtobufData.Data user = UserProtobufData.Data
                 .newBuilder().setName("test").setAge(11).build();
         RestResponseBase response = restClient.post(domain + "/serialize/protobuf").addParam("format", "pb")

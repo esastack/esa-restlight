@@ -20,10 +20,10 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class MessageBodyTest extends BaseIntegrationTest {
+class MessageBodyTest extends BaseIntegrationTest {
 
     @Test
-    public void testReader() throws Exception {
+    void testReader() throws Exception {
         RestResponseBase responseBase = restClient.get(domain + "/message/body/reader")
                 .contentType(MediaType.APPLICATION_JSON).execute().toCompletableFuture().get();
         MessageBodyData messageBodyData = responseBase.bodyToEntity(MessageBodyData.class);
@@ -31,7 +31,7 @@ public class MessageBodyTest extends BaseIntegrationTest {
     }
 
     @Test
-    public void testWriter() throws Exception {
+    void testWriter() throws Exception {
         RestResponseBase responseBase = restClient.get(domain + "/message/body/writer")
                 .contentType(MediaType.APPLICATION_JSON).execute().toCompletableFuture().get();
         MessageBodyData messageBodyData = responseBase.bodyToEntity(MessageBodyData.class);

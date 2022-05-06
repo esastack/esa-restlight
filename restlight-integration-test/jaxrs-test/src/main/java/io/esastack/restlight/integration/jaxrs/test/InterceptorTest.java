@@ -19,10 +19,10 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class InterceptorTest extends BaseIntegrationTest {
+class InterceptorTest extends BaseIntegrationTest {
 
     @Test
-    public void testRead() throws Exception {
+    void testRead() throws Exception {
         RestResponseBase responseBase = restClient.get(domain + "/interceptor/read")
                 .execute().toCompletableFuture().get();
         UserData userData = responseBase.bodyToEntity(UserData.class);
@@ -30,7 +30,7 @@ public class InterceptorTest extends BaseIntegrationTest {
     }
 
     @Test
-    public void testWrite() throws Exception {
+    void testWrite() throws Exception {
         RestResponseBase responseBase = restClient.get(domain + "/interceptor/write")
                 .execute().toCompletableFuture().get();
         UserData userData = responseBase.bodyToEntity(UserData.class);

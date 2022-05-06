@@ -20,10 +20,10 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class ValidationTest extends BaseIntegrationTest {
+class ValidationTest extends BaseIntegrationTest {
 
     @Test
-    public void testRequestParam() throws Exception {
+    void testRequestParam() throws Exception {
         RestResponseBase responseBase = restClient.get(domain + "/validation/request/param").addParam("name", "test")
                 .execute().toCompletableFuture().get();
         UserData userData = responseBase.bodyToEntity(UserData.class);
@@ -34,7 +34,7 @@ public class ValidationTest extends BaseIntegrationTest {
     }
 
     @Test
-    public void testRequestEntity() throws Exception {
+    void testRequestEntity() throws Exception {
         UserData entity = UserData.Builder.anUserData().build();
         RestResponseBase responseBase = restClient.post(domain + "/validation/request/entity").entity(entity)
                 .execute().toCompletableFuture().get();
@@ -42,14 +42,14 @@ public class ValidationTest extends BaseIntegrationTest {
     }
 
     @Test
-    public void testResponseParam() throws Exception {
+    void testResponseParam() throws Exception {
         RestResponseBase responseBase = restClient.get(domain + "/validation/response/param")
                 .execute().toCompletableFuture().get();
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.code(), responseBase.status());
     }
 
     @Test
-    public void testResponseEntity() throws Exception {
+    void testResponseEntity() throws Exception {
         UserData entity = UserData.Builder.anUserData().build();
         RestResponseBase responseBase = restClient.post(domain + "/validation/response/entity").entity(entity)
                 .execute().toCompletableFuture().get();

@@ -23,16 +23,16 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-public abstract class BaseIntegrationTest {
+abstract class BaseIntegrationTest {
 
-    public static RestClient restClient;
+    static RestClient restClient;
 
-    public static String domain;
+    static String domain;
 
     private static AnnotationConfigApplicationContext ctx;
 
     @BeforeAll
-    public static void setUp() {
+    static void setUp() {
         restClient = RestClient.ofDefault();
 
         ctx =  new AnnotationConfigApplicationContext();
@@ -64,7 +64,7 @@ public abstract class BaseIntegrationTest {
     }
 
     @AfterAll
-    public static void tearDown() {
+    static void tearDown() {
         ctx.close();
     }
 }

@@ -19,17 +19,17 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class FailFastTest extends BaseIntegrationTest {
+class FailFastTest extends BaseIntegrationTest {
 
     @Test
-    public void testQueued() throws Exception {
+    void testQueued() throws Exception {
         RestResponseBase response = restClient.get(domain + "/failfast/get/queued").execute()
                 .toCompletableFuture().get();
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.code(), response.status());
     }
 
     @Test
-    public void testTTFB() throws Exception {
+    void testTTFB() throws Exception {
         RestResponseBase response = restClient.post(domain + "/failfast/post/ttfb")
                 .entity(new byte[1024 * 1024 * 4])
                 .execute().toCompletableFuture().get();
