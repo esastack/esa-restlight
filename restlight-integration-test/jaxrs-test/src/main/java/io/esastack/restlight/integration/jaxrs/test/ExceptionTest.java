@@ -15,16 +15,17 @@ package io.esastack.restlight.integration.jaxrs.test;
 
 import io.esastack.restclient.RestResponseBase;
 import io.esastack.restlight.integration.jaxrs.entity.UserData;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class ExceptionTest extends BaseIntegrationTest {
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+class ExceptionTest extends BaseIntegrationTest {
 
     @Test
-    public void testIllegal() throws Exception {
+    void testIllegal() throws Exception {
         RestResponseBase responseBase = restClient.get(domain + "/exception/illegal")
                 .execute().toCompletableFuture().get();
         UserData userData = responseBase.bodyToEntity(UserData.class);
-        Assert.assertEquals("IllegalArgument", userData.getName());
+        assertEquals("IllegalArgument", userData.getName());
     }
 }

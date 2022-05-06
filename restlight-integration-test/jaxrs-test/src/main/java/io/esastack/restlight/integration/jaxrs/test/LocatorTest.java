@@ -15,24 +15,25 @@ package io.esastack.restlight.integration.jaxrs.test;
 
 import io.esastack.restclient.RestResponseBase;
 import io.esastack.restlight.integration.jaxrs.entity.UserData;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class LocatorTest extends BaseIntegrationTest {
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+class LocatorTest extends BaseIntegrationTest {
 
     @Test
-    public void testLocate() throws Exception {
+    void testLocate() throws Exception {
         RestResponseBase responseBase = restClient.get(domain + "/locator/locate")
                 .addParam("name", "test").execute().toCompletableFuture().get();
         UserData userData = responseBase.bodyToEntity(UserData.class);
-        Assert.assertEquals("test", userData.getName());
+        assertEquals("test", userData.getName());
     }
 
     @Test
-    public void testCascadeLocate() throws Exception {
+    void testCascadeLocate() throws Exception {
         RestResponseBase responseBase = restClient.get(domain + "/locator/locate/cascade")
                 .addParam("name", "test").execute().toCompletableFuture().get();
         UserData userData = responseBase.bodyToEntity(UserData.class);
-        Assert.assertEquals("test", userData.getName());
+        assertEquals("test", userData.getName());
     }
 }

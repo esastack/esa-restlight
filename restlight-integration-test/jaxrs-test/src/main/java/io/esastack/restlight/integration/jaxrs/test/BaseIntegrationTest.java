@@ -17,11 +17,11 @@ import esa.commons.NetworkUtils;
 import io.esastack.restclient.RestClient;
 import io.esastack.restlight.starter.ServerStarter;
 import io.esastack.restlight.starter.autoconfigure.AutoRestlightServerOptions;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-public abstract class BaseIntegrationTest {
+abstract class BaseIntegrationTest {
 
     public static RestClient restClient;
 
@@ -29,8 +29,8 @@ public abstract class BaseIntegrationTest {
 
     private static AnnotationConfigApplicationContext ctx;
 
-    @BeforeClass
-    public static void setUp() {
+    @BeforeAll
+    static void setUp() {
         restClient = RestClient.ofDefault();
 
         ctx =  new AnnotationConfigApplicationContext();
@@ -51,8 +51,8 @@ public abstract class BaseIntegrationTest {
         domain = "http://" + host + ":" + port + "/integration/test";
     }
 
-    @AfterClass
-    public static void tearDown() {
+    @AfterAll
+    static void tearDown() {
         ctx.close();
     }
 }

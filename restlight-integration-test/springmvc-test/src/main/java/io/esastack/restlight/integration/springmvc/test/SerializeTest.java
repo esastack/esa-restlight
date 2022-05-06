@@ -17,27 +17,28 @@ import io.esastack.restclient.RestResponseBase;
 import io.esastack.restclient.codec.impl.ProtoBufCodec;
 import io.esastack.restlight.integration.springmvc.entity.UserData;
 import io.esastack.restlight.integration.springmvc.entity.UserProtobufData;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.util.Date;
 
-public class SerializeTest extends BaseIntegrationTest {
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+class SerializeTest extends BaseIntegrationTest {
 
     @Test
-    public void testJson() throws Exception {
+    void testJson() throws Exception {
         UserData user = UserData.Builder.anUserData()
                 .name("test").age(10).birthDay(new Date())
                 .weight(BigDecimal.valueOf(123.01)).build();
         RestResponseBase response = restClient.post(domain + "/serialize/json").entity(user).execute()
                 .toCompletableFuture().get();
         UserData userResult = response.bodyToEntity(UserData.class);
-        Assert.assertEquals(user.getName(), userResult.getName());
+        assertEquals(user.getName(), userResult.getName());
     }
 
     @Test
-    public void testProtobuf() throws Exception {
+    void testProtobuf() throws Exception {
         UserProtobufData.Data user = UserProtobufData.Data
                 .newBuilder().setName("test").setAge(11).build();
         RestResponseBase response = restClient.post(domain + "/serialize/protobuf").addParam("format", "pb")
@@ -45,6 +46,6 @@ public class SerializeTest extends BaseIntegrationTest {
                 .contentType(ProtoBufCodec.PROTO_BUF)
                 .execute().toCompletableFuture().get();
         UserProtobufData.Data userResult = response.bodyToEntity(UserProtobufData.Data.class);
-        Assert.assertEquals(user.getName(), userResult.getName());
+        assertEquals(user.getName(), userResult.getName());
     }
 }

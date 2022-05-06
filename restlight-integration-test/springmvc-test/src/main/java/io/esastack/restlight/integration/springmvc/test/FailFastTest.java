@@ -15,23 +15,24 @@ package io.esastack.restlight.integration.springmvc.test;
 
 import io.esastack.commons.net.http.HttpStatus;
 import io.esastack.restclient.RestResponseBase;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class FailFastTest extends BaseIntegrationTest {
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+class FailFastTest extends BaseIntegrationTest {
 
     @Test
-    public void testQueued() throws Exception {
+    void testQueued() throws Exception {
         RestResponseBase response = restClient.get(domain + "/failfast/get/queued").execute()
                 .toCompletableFuture().get();
-        Assert.assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.code(), response.status());
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.code(), response.status());
     }
 
     @Test
-    public void testTTFB() throws Exception {
+    void testTTFB() throws Exception {
         RestResponseBase response = restClient.post(domain + "/failfast/post/ttfb")
                 .entity(new byte[1024 * 1024 * 4])
                 .execute().toCompletableFuture().get();
-        Assert.assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.code(), response.status());
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.code(), response.status());
     }
 }

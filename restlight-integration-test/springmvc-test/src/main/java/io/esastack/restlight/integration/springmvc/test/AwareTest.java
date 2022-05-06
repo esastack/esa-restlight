@@ -14,38 +14,40 @@
 package io.esastack.restlight.integration.springmvc.test;
 
 import io.esastack.restclient.RestResponseBase;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.concurrent.ThreadPoolExecutor;
 
-public class AwareTest extends BaseIntegrationTest {
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+class AwareTest extends BaseIntegrationTest {
 
     @Test
-    public void testBizAware() throws Exception {
+    void testBizAware() throws Exception {
         RestResponseBase response = restClient.get(domain + "/aware/get/biz").execute()
                 .toCompletableFuture().get();
-        Assert.assertEquals(ThreadPoolExecutor.class.getName(), response.bodyToEntity(String.class));
+        assertEquals(ThreadPoolExecutor.class.getName(), response.bodyToEntity(String.class));
     }
 
     @Test
-    public void testIoAware() throws Exception {
+    void testIoAware() throws Exception {
         RestResponseBase response = restClient.get(domain + "/aware/get/io").execute()
                 .toCompletableFuture().get();
-        Assert.assertTrue(response.bodyToEntity(String.class).contains("EventLoopGroup"));
+        assertTrue(response.bodyToEntity(String.class).contains("EventLoopGroup"));
     }
 
     @Test
-    public void testServerAware() throws Exception {
+    void testServerAware() throws Exception {
         RestResponseBase response = restClient.get(domain + "/aware/get/server").execute()
                 .toCompletableFuture().get();
-        Assert.assertTrue(response.bodyToEntity(String.class).toLowerCase().contains("server"));
+        assertTrue(response.bodyToEntity(String.class).toLowerCase().contains("server"));
     }
 
     @Test
-    public void testDeployContextAware() throws Exception {
+    void testDeployContextAware() throws Exception {
         RestResponseBase response = restClient.get(domain + "/aware/get/context").execute()
                 .toCompletableFuture().get();
-        Assert.assertTrue(response.bodyToEntity(String.class).toLowerCase().contains("context"));
+        assertTrue(response.bodyToEntity(String.class).toLowerCase().contains("context"));
     }
 }

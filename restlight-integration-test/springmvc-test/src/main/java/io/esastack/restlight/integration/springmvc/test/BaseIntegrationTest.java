@@ -19,20 +19,20 @@ import io.esastack.restlight.core.config.SerializeOptions;
 import io.esastack.restlight.core.config.SerializesOptions;
 import io.esastack.restlight.starter.ServerStarter;
 import io.esastack.restlight.starter.autoconfigure.AutoRestlightServerOptions;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-public abstract class BaseIntegrationTest {
+abstract class BaseIntegrationTest {
 
-    public static RestClient restClient;
+    static RestClient restClient;
 
-    public static String domain;
+    static String domain;
 
     private static AnnotationConfigApplicationContext ctx;
 
-    @BeforeClass
-    public static void setUp() {
+    @BeforeAll
+    static void setUp() {
         restClient = RestClient.ofDefault();
 
         ctx =  new AnnotationConfigApplicationContext();
@@ -63,8 +63,8 @@ public abstract class BaseIntegrationTest {
         domain = "http://" + host + ":" + port + contextPath;
     }
 
-    @AfterClass
-    public static void tearDown() {
+    @AfterAll
+    static void tearDown() {
         ctx.close();
     }
 }

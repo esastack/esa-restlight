@@ -15,17 +15,18 @@ package io.esastack.restlight.integration.springmvc.test;
 
 import io.esastack.restclient.RestResponseBase;
 import io.esastack.restlight.integration.springmvc.entity.UserData;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class FilterTest extends BaseIntegrationTest {
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+class FilterTest extends BaseIntegrationTest {
 
     @Test
-    public void testFilter() throws Exception {
+    void testFilter() throws Exception {
         RestResponseBase response = restClient.get(domain + "/filter/get")
                 .addParam("name", "test").execute()
                 .toCompletableFuture().get();
         UserData user = response.bodyToEntity(UserData.class);
-        Assert.assertEquals("test", user.getName());
+        assertEquals("test", user.getName());
     }
 }
