@@ -39,7 +39,7 @@ jobs:
         with:
           token: ${{secrets.CODECOV_TOKEN}}
   package:
-    needs: test
+#    needs: test
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
