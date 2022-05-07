@@ -43,7 +43,7 @@ class MatchedResourceTest {
         final MatchedResource resource = new MatchedResource(methodInfo, null);
         assertSame(methodInfo, resource.method());
         assertFalse(resource.bean().isPresent());
-        assertEquals("MatchedResource{method=HandlerMethodInfo{locator=false," +
+        assertEquals("MatchedResource{method=HandlerMethodInfoImpl{locator=false," +
                 " handlerMethod=RouteHandlerMethod: {java.lang.Object => toString," +
                 " intercepted: false, scheduler: BIZ}, customStatus=null}}",
                 resource.toString());
