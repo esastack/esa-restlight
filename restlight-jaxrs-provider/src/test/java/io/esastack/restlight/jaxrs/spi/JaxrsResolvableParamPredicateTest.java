@@ -15,9 +15,9 @@
  */
 package io.esastack.restlight.jaxrs.spi;
 
-import io.esastack.restlight.core.method.ConstructorParamImpl;
-import io.esastack.restlight.core.method.FieldParamImpl;
-import io.esastack.restlight.core.method.MethodParamImpl;
+import io.esastack.restlight.core.handler.method.ConstructorParamImpl;
+import io.esastack.restlight.core.handler.method.FieldParamImpl;
+import io.esastack.restlight.core.handler.method.MethodParamImpl;
 import jakarta.ws.rs.BeanParam;
 import jakarta.ws.rs.CookieParam;
 import jakarta.ws.rs.FormParam;

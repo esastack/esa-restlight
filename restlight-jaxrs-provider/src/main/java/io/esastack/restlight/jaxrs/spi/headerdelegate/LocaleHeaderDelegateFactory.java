@@ -17,7 +17,7 @@ package io.esastack.restlight.jaxrs.spi.headerdelegate;
 
 import esa.commons.StringUtils;
 import io.esastack.restlight.jaxrs.spi.HeaderDelegateFactory;
-import io.esastack.restlight.server.util.HttpHeaderUtils;
+import io.esastack.restlight.core.util.HttpHeaderUtils;
 import jakarta.ws.rs.ext.RuntimeDelegate;
 
 import java.util.Locale;

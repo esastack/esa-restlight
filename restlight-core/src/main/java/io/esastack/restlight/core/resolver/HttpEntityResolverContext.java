@@ -15,8 +15,9 @@
  */
 package io.esastack.restlight.core.resolver;
 
-import io.esastack.restlight.core.method.Param;
-import io.esastack.restlight.server.context.RequestContext;
+import io.esastack.restlight.core.context.HttpEntity;
+import io.esastack.restlight.core.handler.method.Param;
+import io.esastack.restlight.core.context.RequestContext;
 
 public interface HttpEntityResolverContext {
 

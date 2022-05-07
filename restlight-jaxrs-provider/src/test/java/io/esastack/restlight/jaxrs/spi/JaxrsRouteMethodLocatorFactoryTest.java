@@ -17,8 +17,8 @@ package io.esastack.restlight.jaxrs.spi;
 
 import io.esastack.restlight.core.DeployContext;
 import io.esastack.restlight.core.config.RestlightOptionsConfigure;
-import io.esastack.restlight.core.handler.locate.RouteMethodLocator;
-import io.esastack.restlight.core.method.HandlerMethod;
+import io.esastack.restlight.core.locator.RouteMethodLocator;
+import io.esastack.restlight.core.handler.method.HandlerMethod;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

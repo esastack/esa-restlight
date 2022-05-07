@@ -22,9 +22,9 @@ import io.esastack.restlight.core.handler.HandlerValueResolver;
 import io.esastack.restlight.core.interceptor.Interceptor;
 import io.esastack.restlight.core.interceptor.InterceptorPredicate;
 import io.esastack.restlight.core.interceptor.InternalInterceptor;
-import io.esastack.restlight.core.resolver.ExceptionResolver;
-import io.esastack.restlight.server.context.RequestContext;
-import io.esastack.restlight.server.route.RouteExecution;
+import io.esastack.restlight.core.resolver.exception.ExceptionResolver;
+import io.esastack.restlight.core.context.RequestContext;
+import io.esastack.restlight.core.route.RouteExecution;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;

@@ -15,11 +15,11 @@
  */
 package io.esastack.restlight.core.resolver.nav;
 
-import io.esastack.restlight.core.method.Param;
-import io.esastack.restlight.core.resolver.ParamResolver;
-import io.esastack.restlight.core.resolver.ParamResolverFactory;
-import io.esastack.restlight.core.resolver.StringConverter;
-import io.esastack.restlight.core.resolver.StringConverterProvider;
+import io.esastack.restlight.core.handler.method.Param;
+import io.esastack.restlight.core.resolver.param.ParamResolver;
+import io.esastack.restlight.core.resolver.param.ParamResolverFactory;
+import io.esastack.restlight.core.resolver.converter.StringConverter;
+import io.esastack.restlight.core.resolver.converter.StringConverterProvider;
 import io.esastack.restlight.core.serialize.HttpRequestSerializer;
 
 import java.util.List;

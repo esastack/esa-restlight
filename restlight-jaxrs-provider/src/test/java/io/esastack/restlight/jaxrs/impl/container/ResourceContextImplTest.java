@@ -16,7 +16,7 @@
 package io.esastack.restlight.jaxrs.impl.container;
 
 import io.esastack.restlight.core.handler.HandlerFactory;
-import io.esastack.restlight.server.context.RequestContext;
+import io.esastack.restlight.core.context.RequestContext;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;

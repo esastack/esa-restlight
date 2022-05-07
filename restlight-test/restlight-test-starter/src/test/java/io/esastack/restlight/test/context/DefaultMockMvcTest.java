@@ -15,11 +15,11 @@
  */
 package io.esastack.restlight.test.context;
 
-import io.esastack.restlight.server.context.RequestContext;
-import io.esastack.restlight.server.core.HttpResponse;
-import io.esastack.restlight.server.mock.MockHttpRequest;
-import io.esastack.restlight.server.schedule.AbstractRestlightHandler;
-import io.esastack.restlight.server.util.Futures;
+import io.esastack.restlight.core.context.RequestContext;
+import io.esastack.restlight.core.context.HttpResponse;
+import io.esastack.restlight.core.mock.MockHttpRequest;
+import io.esastack.restlight.core.server.processor.AbstractRestlightHandler;
+import io.esastack.restlight.core.util.Futures;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

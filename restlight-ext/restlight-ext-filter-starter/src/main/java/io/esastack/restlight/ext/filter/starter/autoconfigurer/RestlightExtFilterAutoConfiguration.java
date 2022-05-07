@@ -22,7 +22,7 @@ import io.esastack.restlight.ext.filter.cors.CorsFilter;
 import io.esastack.restlight.ext.filter.cpuload.CpuLoadProtector;
 import io.esastack.restlight.ext.filter.ipwhitelist.IpWhiteListFilter;
 import io.esastack.restlight.ext.filter.xss.XssFilter;
-import io.esastack.restlight.server.handler.ConnectionInitHandler;
+import io.esastack.restlight.core.server.handler.ConnectionInitHandler;
 import io.esastack.restlight.starter.ServerStarter;
 import org.springframework.boot.autoconfigure.AutoConfigureOrder;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;

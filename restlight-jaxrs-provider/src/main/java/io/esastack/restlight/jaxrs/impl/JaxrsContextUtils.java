@@ -22,9 +22,9 @@ import io.esastack.restlight.jaxrs.impl.container.PreMatchContainerRequestContex
 import io.esastack.restlight.jaxrs.impl.core.HttpRequestHeaders;
 import io.esastack.restlight.jaxrs.impl.core.RequestImpl;
 import io.esastack.restlight.jaxrs.impl.core.UriInfoImpl;
-import io.esastack.restlight.server.context.FilterContext;
-import io.esastack.restlight.server.context.RequestContext;
-import io.esastack.restlight.server.core.HttpRequest;
+import io.esastack.restlight.core.filter.FilterContext;
+import io.esastack.restlight.core.context.RequestContext;
+import io.esastack.restlight.core.context.HttpRequest;
 import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.Request;
 import jakarta.ws.rs.core.SecurityContext;

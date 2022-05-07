@@ -18,8 +18,8 @@ package io.esastack.restlight.jaxrs.adapter;
 import esa.commons.Checks;
 import esa.commons.ClassUtils;
 import esa.commons.reflect.AnnotationUtils;
-import io.esastack.restlight.core.resolver.StringConverter;
-import io.esastack.restlight.core.resolver.StringConverterFactory;
+import io.esastack.restlight.core.resolver.converter.StringConverter;
+import io.esastack.restlight.core.resolver.converter.StringConverterFactory;
 import jakarta.ws.rs.ext.ParamConverter;
 import jakarta.ws.rs.ext.ParamConverterProvider;
 

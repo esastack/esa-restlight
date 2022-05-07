@@ -16,15 +16,15 @@
 package io.esastack.restlight.jaxrs.adapter;
 
 import esa.commons.collection.AttributeMap;
-import io.esastack.restlight.core.resolver.ResponseEntity;
-import io.esastack.restlight.core.resolver.ResponseEntityChannel;
-import io.esastack.restlight.core.resolver.ResponseEntityImpl;
-import io.esastack.restlight.core.resolver.ResponseEntityResolverContext;
-import io.esastack.restlight.server.context.RequestContext;
-import io.esastack.restlight.server.context.impl.RequestContextImpl;
-import io.esastack.restlight.server.core.HttpRequest;
-import io.esastack.restlight.server.core.HttpResponse;
-import io.esastack.restlight.server.mock.MockHttpResponse;
+import io.esastack.restlight.core.context.ResponseEntity;
+import io.esastack.restlight.core.context.ResponseEntityChannel;
+import io.esastack.restlight.core.context.ResponseEntityImpl;
+import io.esastack.restlight.core.resolver.rspentity.ResponseEntityResolverContext;
+import io.esastack.restlight.core.context.RequestContext;
+import io.esastack.restlight.core.context.impl.RequestContextImpl;
+import io.esastack.restlight.core.context.HttpRequest;
+import io.esastack.restlight.core.context.HttpResponse;
+import io.esastack.restlight.core.mock.MockHttpResponse;
 import jakarta.ws.rs.core.GenericEntity;
 import jakarta.ws.rs.core.Response;
 import org.junit.jupiter.api.Test;

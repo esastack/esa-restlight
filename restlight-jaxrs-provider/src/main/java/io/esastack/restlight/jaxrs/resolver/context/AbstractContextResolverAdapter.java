@@ -15,8 +15,8 @@
  */
 package io.esastack.restlight.jaxrs.resolver.context;
 
-import io.esastack.restlight.core.method.Param;
-import io.esastack.restlight.core.resolver.ContextResolverAdapter;
+import io.esastack.restlight.core.handler.method.Param;
+import io.esastack.restlight.core.resolver.context.ContextResolverAdapter;
 import io.esastack.restlight.jaxrs.util.JaxrsUtils;
 import jakarta.ws.rs.core.Context;
 

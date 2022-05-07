@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 OPPO ESA Stack Project
+ * Copyright 2022 OPPO ESA Stack Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@ package io.esastack.restlight.core;
 
 import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.core.config.RestlightOptionsConfigure;
-import io.esastack.restlight.server.bootstrap.RestlightServer;
+import io.esastack.restlight.core.server.RestlightServer;
 
 /**
  * Restlight is a entrance for creating a HTTP server of Restlight. You can use this to build a HTTP server by use the

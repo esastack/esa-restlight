@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 OPPO ESA Stack Project
+ * Copyright 2022 OPPO ESA Stack Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,10 +22,10 @@ import io.esastack.restlight.core.handler.HandlerMapping;
 import io.esastack.restlight.core.handler.HandlerValueResolver;
 import io.esastack.restlight.core.handler.RouterRegistries;
 import io.esastack.restlight.core.handler.impl.HandlerLocatorResolver;
-import io.esastack.restlight.core.handler.locate.HandlerValueResolverLocator;
+import io.esastack.restlight.core.locator.HandlerValueResolverLocator;
 import io.esastack.restlight.core.spi.HandlerValueResolverLocatorFactory;
 import io.esastack.restlight.core.util.Constants;
-import io.esastack.restlight.server.route.Router;
+import io.esastack.restlight.core.route.Router;
 
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;

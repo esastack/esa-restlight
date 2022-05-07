@@ -16,10 +16,10 @@
 package io.esastack.restlight.core.handler.impl;
 
 import io.esastack.restlight.core.DeployContext;
-import io.esastack.restlight.core.resolver.ParamResolver;
-import io.esastack.restlight.core.resolver.ParamResolverAdvice;
-import io.esastack.restlight.core.resolver.ParamResolverContextImpl;
-import io.esastack.restlight.server.context.RequestContext;
+import io.esastack.restlight.core.resolver.param.ParamResolver;
+import io.esastack.restlight.core.resolver.param.ParamResolverAdvice;
+import io.esastack.restlight.core.resolver.param.ParamResolverContextImpl;
+import io.esastack.restlight.core.context.RequestContext;
 
 import java.util.List;
 

@@ -15,8 +15,8 @@
  */
 package io.esastack.restlight.test.autoconfig;
 
-import io.esastack.restlight.server.bootstrap.DispatcherHandler;
-import io.esastack.restlight.server.bootstrap.RestlightServer;
+import io.esastack.restlight.core.dispatcher.DispatcherHandler;
+import io.esastack.restlight.core.server.RestlightServer;
 import io.esastack.restlight.test.bootstrap.MockMvcBuilders;
 import io.esastack.restlight.test.condition.ConditionalOnMockMvc;
 import io.esastack.restlight.test.context.MockMvc;

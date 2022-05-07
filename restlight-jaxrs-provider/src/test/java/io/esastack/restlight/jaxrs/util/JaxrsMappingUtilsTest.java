@@ -17,9 +17,9 @@ package io.esastack.restlight.jaxrs.util;
 
 import esa.commons.StringUtils;
 import io.esastack.commons.net.http.HttpMethod;
-import io.esastack.restlight.core.method.HandlerMethod;
-import io.esastack.restlight.core.method.HandlerMethodImpl;
-import io.esastack.restlight.server.route.Mapping;
+import io.esastack.restlight.core.handler.method.HandlerMethod;
+import io.esastack.restlight.core.handler.method.HandlerMethodImpl;
+import io.esastack.restlight.core.route.Mapping;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.DefaultValue;

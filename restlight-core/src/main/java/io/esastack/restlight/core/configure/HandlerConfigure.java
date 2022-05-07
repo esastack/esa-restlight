@@ -17,7 +17,7 @@ package io.esastack.restlight.core.configure;
 
 import esa.commons.annotation.Internal;
 import esa.commons.spi.SPI;
-import io.esastack.restlight.core.method.HandlerMethod;
+import io.esastack.restlight.core.handler.method.HandlerMethod;
 import io.esastack.restlight.core.util.Ordered;
 
 /**

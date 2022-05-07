@@ -16,9 +16,9 @@
 package io.esastack.restlight.test.bootstrap;
 
 import esa.commons.Checks;
-import io.esastack.restlight.server.bootstrap.RestlightServer;
-import io.esastack.restlight.server.handler.RestlightHandler;
-import io.esastack.restlight.server.schedule.AbstractRestlightHandler;
+import io.esastack.restlight.core.server.RestlightServer;
+import io.esastack.restlight.core.server.processor.RestlightHandler;
+import io.esastack.restlight.core.server.processor.AbstractRestlightHandler;
 
 import java.net.SocketAddress;
 import java.util.concurrent.CompletableFuture;

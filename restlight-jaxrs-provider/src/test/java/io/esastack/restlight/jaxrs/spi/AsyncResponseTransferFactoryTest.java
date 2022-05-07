@@ -15,8 +15,8 @@
  */
 package io.esastack.restlight.jaxrs.spi;
 
-import io.esastack.restlight.core.method.HandlerMethod;
-import io.esastack.restlight.core.method.MethodParam;
+import io.esastack.restlight.core.handler.method.HandlerMethod;
+import io.esastack.restlight.core.handler.method.MethodParam;
 import jakarta.ws.rs.container.AsyncResponse;
 import jakarta.ws.rs.container.Suspended;
 import org.junit.jupiter.api.Test;

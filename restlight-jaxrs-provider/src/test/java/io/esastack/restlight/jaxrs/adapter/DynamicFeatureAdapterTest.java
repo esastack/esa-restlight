@@ -17,12 +17,12 @@ package io.esastack.restlight.jaxrs.adapter;
 
 import io.esastack.restlight.core.DeployContext;
 import io.esastack.restlight.core.configure.ConfigurableHandler;
-import io.esastack.restlight.core.handler.RouteFilter;
-import io.esastack.restlight.core.method.HandlerMethod;
-import io.esastack.restlight.core.method.HandlerMethodImpl;
-import io.esastack.restlight.core.resolver.ContextResolverAdapter;
-import io.esastack.restlight.core.resolver.RequestEntityResolverAdvice;
-import io.esastack.restlight.core.resolver.ResponseEntityResolverAdvice;
+import io.esastack.restlight.core.filter.RouteFilter;
+import io.esastack.restlight.core.handler.method.HandlerMethod;
+import io.esastack.restlight.core.handler.method.HandlerMethodImpl;
+import io.esastack.restlight.core.resolver.context.ContextResolverAdapter;
+import io.esastack.restlight.core.resolver.reqentity.RequestEntityResolverAdvice;
+import io.esastack.restlight.core.resolver.rspentity.ResponseEntityResolverAdvice;
 import io.esastack.restlight.jaxrs.configure.ProxyComponent;
 import io.esastack.restlight.jaxrs.impl.core.ConfigurableImpl;
 import io.esastack.restlight.jaxrs.impl.core.ConfigurationImpl;

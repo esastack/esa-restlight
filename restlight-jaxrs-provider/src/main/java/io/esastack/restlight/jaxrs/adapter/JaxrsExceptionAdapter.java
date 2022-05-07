@@ -17,12 +17,12 @@ package io.esastack.restlight.jaxrs.adapter;
 
 import io.esastack.commons.net.http.HttpStatus;
 import io.esastack.restlight.core.util.Ordered;
-import io.esastack.restlight.server.bootstrap.ExceptionHandlerChain;
-import io.esastack.restlight.server.bootstrap.IExceptionHandler;
-import io.esastack.restlight.server.bootstrap.WebServerException;
-import io.esastack.restlight.server.context.RequestContext;
-import io.esastack.restlight.server.route.RouteFailureException;
-import io.esastack.restlight.server.route.predicate.RoutePredicate;
+import io.esastack.restlight.core.dispatcher.ExceptionHandlerChain;
+import io.esastack.restlight.core.dispatcher.IExceptionHandler;
+import io.esastack.restlight.core.exception.WebServerException;
+import io.esastack.restlight.core.context.RequestContext;
+import io.esastack.restlight.core.route.RouteFailureException;
+import io.esastack.restlight.core.route.predicate.RoutePredicate;
 import jakarta.ws.rs.BadRequestException;
 import jakarta.ws.rs.InternalServerErrorException;
 import jakarta.ws.rs.NotAcceptableException;

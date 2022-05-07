@@ -17,8 +17,8 @@ package io.esastack.restlight.jaxrs.spi;
 
 import esa.commons.annotation.Internal;
 import esa.commons.spi.Feature;
-import io.esastack.restlight.core.method.Param;
-import io.esastack.restlight.core.method.ResolvableParamPredicate;
+import io.esastack.restlight.core.handler.method.Param;
+import io.esastack.restlight.core.handler.method.ResolvableParamPredicate;
 import io.esastack.restlight.core.util.Constants;
 import io.esastack.restlight.jaxrs.util.JaxrsUtils;
 import jakarta.ws.rs.BeanParam;

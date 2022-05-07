@@ -15,9 +15,9 @@
  */
 package io.esastack.restlight.jaxrs.impl.container;
 
-import io.esastack.restlight.core.method.HandlerMethod;
+import io.esastack.restlight.core.handler.method.HandlerMethod;
 import io.esastack.restlight.core.spi.impl.RouteTracking;
-import io.esastack.restlight.server.context.RequestContext;
+import io.esastack.restlight.core.context.RequestContext;
 
 import java.io.InputStream;
 import java.net.URI;

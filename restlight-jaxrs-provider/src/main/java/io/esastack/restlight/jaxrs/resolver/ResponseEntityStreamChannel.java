@@ -16,8 +16,8 @@
 package io.esastack.restlight.jaxrs.resolver;
 
 import io.esastack.commons.net.buffer.Buffer;
-import io.esastack.restlight.core.resolver.ResponseEntityChannel;
-import io.esastack.restlight.server.core.HttpOutputStream;
+import io.esastack.restlight.core.context.ResponseEntityChannel;
+import io.esastack.restlight.core.context.HttpOutputStream;
 
 import java.io.File;
 

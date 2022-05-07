@@ -19,8 +19,8 @@ import esa.commons.Primitives;
 import esa.commons.Result;
 import io.esastack.commons.net.buffer.BufferUtil;
 import io.esastack.commons.net.http.MediaType;
-import io.esastack.restlight.core.resolver.ResponseEntity;
-import io.esastack.restlight.server.core.HttpResponse;
+import io.esastack.restlight.core.context.ResponseEntity;
+import io.esastack.restlight.core.context.HttpResponse;
 import io.netty.buffer.ByteBuf;
 import io.netty.handler.codec.http.HttpHeaderNames;
 

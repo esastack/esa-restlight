@@ -17,12 +17,12 @@ package io.esastack.restlight.ext.interceptor.signature;
 
 import io.esastack.restlight.core.DeployContext;
 import io.esastack.restlight.core.interceptor.RouteInterceptor;
-import io.esastack.restlight.core.method.HandlerMethod;
+import io.esastack.restlight.core.handler.method.HandlerMethod;
 import io.esastack.restlight.core.util.RouteUtils;
 import io.esastack.restlight.ext.interceptor.annotation.IgnoreSignValidation;
 import io.esastack.restlight.ext.interceptor.annotation.SignValidation;
 import io.esastack.restlight.ext.interceptor.config.SignatureOptions;
-import io.esastack.restlight.server.route.Routing;
+import io.esastack.restlight.core.route.Routing;
 
 import java.util.Optional;
 

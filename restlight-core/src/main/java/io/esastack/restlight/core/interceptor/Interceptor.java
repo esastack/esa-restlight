@@ -17,9 +17,9 @@ package io.esastack.restlight.core.interceptor;
 
 import esa.commons.spi.SPI;
 import io.esastack.restlight.core.util.Affinity;
-import io.esastack.restlight.server.context.RequestContext;
-import io.esastack.restlight.server.core.HttpRequest;
-import io.esastack.restlight.server.route.Route;
+import io.esastack.restlight.core.context.RequestContext;
+import io.esastack.restlight.core.context.HttpRequest;
+import io.esastack.restlight.core.route.Route;
 
 /**
  * We will determine whether to attach the {@link Interceptor} to the target {@link Route}

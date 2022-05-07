@@ -16,16 +16,16 @@
 package io.esastack.restlight.jaxrs.configure;
 
 import io.esastack.restlight.core.DeployContext;
-import io.esastack.restlight.core.configure.Handlers;
+import io.esastack.restlight.core.handler.Handlers;
 import io.esastack.restlight.core.handler.HandlerFactory;
 import io.esastack.restlight.core.handler.impl.HandlerContext;
-import io.esastack.restlight.core.method.Param;
-import io.esastack.restlight.core.resolver.ContextResolver;
-import io.esastack.restlight.core.resolver.HandlerResolverFactory;
+import io.esastack.restlight.core.handler.method.Param;
+import io.esastack.restlight.core.resolver.context.ContextResolver;
+import io.esastack.restlight.core.resolver.factory.HandlerResolverFactory;
 import io.esastack.restlight.jaxrs.impl.container.ResourceContextImpl;
 import io.esastack.restlight.jaxrs.impl.core.ConfigurationImpl;
 import io.esastack.restlight.jaxrs.impl.ext.ProvidersImpl;
-import io.esastack.restlight.server.context.RequestContext;
+import io.esastack.restlight.core.context.RequestContext;
 import jakarta.ws.rs.container.ResourceContext;
 import jakarta.ws.rs.core.Application;
 import jakarta.ws.rs.core.Configuration;

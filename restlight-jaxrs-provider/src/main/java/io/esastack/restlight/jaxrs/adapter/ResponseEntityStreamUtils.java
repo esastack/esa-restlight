@@ -19,9 +19,9 @@ import esa.commons.collection.Attribute;
 import esa.commons.collection.AttributeKey;
 import esa.commons.io.IOUtils;
 import io.esastack.restlight.jaxrs.resolver.ResponseEntityStreamChannelImpl;
-import io.esastack.restlight.server.context.RequestContext;
-import io.esastack.restlight.server.core.HttpOutputStream;
-import io.esastack.restlight.server.core.impl.HttpOutputStreamImpl;
+import io.esastack.restlight.core.context.RequestContext;
+import io.esastack.restlight.core.context.HttpOutputStream;
+import io.esastack.restlight.core.context.impl.HttpOutputStreamImpl;
 
 final class ResponseEntityStreamUtils {
 

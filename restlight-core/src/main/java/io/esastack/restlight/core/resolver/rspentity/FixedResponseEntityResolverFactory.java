@@ -17,9 +17,7 @@ package io.esastack.restlight.core.resolver.rspentity;
 
 import io.esastack.restlight.core.annotation.ResponseSerializer;
 import io.esastack.restlight.core.annotation.Serializer;
-import io.esastack.restlight.core.method.HandlerMethod;
-import io.esastack.restlight.core.resolver.ResponseEntityResolver;
-import io.esastack.restlight.core.resolver.ResponseEntityResolverFactory;
+import io.esastack.restlight.core.handler.method.HandlerMethod;
 import io.esastack.restlight.core.serialize.HttpResponseSerializer;
 
 import java.lang.reflect.Modifier;

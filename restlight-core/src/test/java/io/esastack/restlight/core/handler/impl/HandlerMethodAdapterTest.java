@@ -16,13 +16,13 @@
 package io.esastack.restlight.core.handler.impl;
 
 import io.esastack.restlight.core.annotation.Intercepted;
-import io.esastack.restlight.core.method.DefaultResolvableParamPredicate;
-import io.esastack.restlight.core.method.HandlerMethod;
-import io.esastack.restlight.core.method.HandlerMethodImpl;
-import io.esastack.restlight.core.resolver.ContextResolver;
-import io.esastack.restlight.core.resolver.HandlerResolverFactory;
-import io.esastack.restlight.core.resolver.ParamResolver;
-import io.esastack.restlight.core.resolver.RequestEntityResolver;
+import io.esastack.restlight.core.handler.method.DefaultResolvableParamPredicate;
+import io.esastack.restlight.core.handler.method.HandlerMethod;
+import io.esastack.restlight.core.handler.method.HandlerMethodImpl;
+import io.esastack.restlight.core.resolver.context.ContextResolver;
+import io.esastack.restlight.core.resolver.factory.HandlerResolverFactory;
+import io.esastack.restlight.core.resolver.param.ParamResolver;
+import io.esastack.restlight.core.resolver.reqentity.RequestEntityResolver;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

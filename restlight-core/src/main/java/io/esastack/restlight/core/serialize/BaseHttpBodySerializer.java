@@ -17,8 +17,8 @@ package io.esastack.restlight.core.serialize;
 
 import esa.commons.Result;
 import io.esastack.commons.net.http.MediaType;
-import io.esastack.restlight.core.resolver.RequestEntity;
-import io.esastack.restlight.core.resolver.ResponseEntity;
+import io.esastack.restlight.core.context.RequestEntity;
+import io.esastack.restlight.core.context.ResponseEntity;
 import io.netty.handler.codec.http.HttpHeaderNames;
 
 import java.lang.reflect.Type;

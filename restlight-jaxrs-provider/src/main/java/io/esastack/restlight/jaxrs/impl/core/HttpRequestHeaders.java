@@ -17,8 +17,8 @@ package io.esastack.restlight.jaxrs.impl.core;
 
 import esa.commons.Checks;
 import io.esastack.restlight.jaxrs.util.MediaTypeUtils;
-import io.esastack.restlight.server.core.HttpRequest;
-import io.esastack.restlight.server.util.HttpHeaderUtils;
+import io.esastack.restlight.core.context.HttpRequest;
+import io.esastack.restlight.core.util.HttpHeaderUtils;
 import jakarta.ws.rs.core.Cookie;
 import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.MediaType;
@@ -101,7 +101,7 @@ public class HttpRequestHeaders implements HttpHeaders {
     @Override
     public Date getDate() {
         String data = headers.getFirst(HttpHeaders.DATE);
-        return io.esastack.restlight.server.util.DateUtils.parseByCache(data);
+        return io.esastack.restlight.core.util.DateUtils.parseByCache(data);
     }
 
     @Override

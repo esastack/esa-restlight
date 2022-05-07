@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 OPPO ESA Stack Project
+ * Copyright 2022 OPPO ESA Stack Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,6 @@ package io.esastack.restlight.core.util;
 import com.google.common.util.concurrent.ListenableFuture;
 import esa.commons.ClassUtils;
 import esa.commons.concurrent.DirectExecutor;
-import io.esastack.restlight.server.util.LoggerUtils;
 import io.netty.util.concurrent.Future;
 
 import java.lang.reflect.Method;

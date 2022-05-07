@@ -17,13 +17,13 @@ package io.esastack.restlight.ext.filter.accesslog;
 
 import esa.commons.collection.AttributeMap;
 import esa.commons.logging.InternalLogger;
-import io.esastack.restlight.server.context.impl.FilterContextImpl;
-import io.esastack.restlight.server.core.HttpRequest;
-import io.esastack.restlight.server.core.impl.FilteringRequestImpl;
-import io.esastack.restlight.server.handler.FilterChain;
-import io.esastack.restlight.server.mock.MockHttpRequest;
-import io.esastack.restlight.server.mock.MockHttpResponse;
-import io.esastack.restlight.server.util.Futures;
+import io.esastack.restlight.core.filter.FilterContextImpl;
+import io.esastack.restlight.core.context.HttpRequest;
+import io.esastack.restlight.core.filter.FilteringRequestImpl;
+import io.esastack.restlight.core.filter.FilterChain;
+import io.esastack.restlight.core.mock.MockHttpRequest;
+import io.esastack.restlight.core.mock.MockHttpResponse;
+import io.esastack.restlight.core.util.Futures;
 import org.junit.jupiter.api.Test;
 
 import java.nio.charset.StandardCharsets;

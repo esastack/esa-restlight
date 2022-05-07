@@ -17,7 +17,7 @@ package io.esastack.restlight.starter.actuator.meter;
 
 import esa.commons.Checks;
 import io.esastack.restlight.core.DeployContext;
-import io.esastack.restlight.server.bootstrap.DispatcherHandler;
+import io.esastack.restlight.core.dispatcher.DispatcherHandler;
 import io.esastack.restlight.spring.util.RestlightBizExecutorAware;
 import io.esastack.restlight.spring.util.RestlightDeployContextAware;
 import io.esastack.restlight.starter.autoconfigure.AutoRestlightServerOptions;

@@ -18,8 +18,8 @@ package io.esastack.restlight.core;
 import esa.commons.collection.AttributeKey;
 import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.core.config.RestlightOptionsConfigure;
-import io.esastack.restlight.server.route.Route;
-import io.esastack.restlight.server.route.RouteRegistry;
+import io.esastack.restlight.core.route.Route;
+import io.esastack.restlight.core.route.RouteRegistry;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;

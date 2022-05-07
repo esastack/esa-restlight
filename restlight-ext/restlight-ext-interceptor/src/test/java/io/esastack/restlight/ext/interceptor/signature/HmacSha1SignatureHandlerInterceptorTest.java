@@ -17,12 +17,12 @@ package io.esastack.restlight.ext.interceptor.signature;
 
 import esa.commons.SecurityUtils;
 import io.esastack.restlight.ext.interceptor.config.SignatureOptionsConfigure;
-import io.esastack.restlight.server.bootstrap.WebServerException;
-import io.esastack.restlight.server.context.impl.RequestContextImpl;
-import io.esastack.restlight.server.core.HttpRequest;
-import io.esastack.restlight.server.core.HttpResponse;
-import io.esastack.restlight.server.mock.MockHttpRequest;
-import io.esastack.restlight.server.mock.MockHttpResponse;
+import io.esastack.restlight.core.exception.WebServerException;
+import io.esastack.restlight.core.context.impl.RequestContextImpl;
+import io.esastack.restlight.core.context.HttpRequest;
+import io.esastack.restlight.core.context.HttpResponse;
+import io.esastack.restlight.core.mock.MockHttpRequest;
+import io.esastack.restlight.core.mock.MockHttpResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

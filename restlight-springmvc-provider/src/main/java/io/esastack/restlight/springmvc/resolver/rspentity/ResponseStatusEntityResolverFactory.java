@@ -17,14 +17,14 @@ package io.esastack.restlight.springmvc.resolver.rspentity;
 
 import esa.commons.StringUtils;
 import io.esastack.commons.net.http.MediaType;
-import io.esastack.restlight.core.method.HandlerMethod;
-import io.esastack.restlight.core.resolver.ParamResolverFactory;
-import io.esastack.restlight.core.resolver.ResponseEntity;
-import io.esastack.restlight.core.resolver.ResponseEntityResolver;
-import io.esastack.restlight.core.resolver.ResponseEntityResolverFactory;
+import io.esastack.restlight.core.handler.method.HandlerMethod;
+import io.esastack.restlight.core.resolver.param.ParamResolverFactory;
+import io.esastack.restlight.core.context.ResponseEntity;
+import io.esastack.restlight.core.resolver.rspentity.ResponseEntityResolver;
+import io.esastack.restlight.core.resolver.rspentity.ResponseEntityResolverFactory;
 import io.esastack.restlight.core.resolver.rspentity.AbstractResponseEntityResolver;
 import io.esastack.restlight.core.serialize.HttpResponseSerializer;
-import io.esastack.restlight.server.context.RequestContext;
+import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.springmvc.annotation.shaded.ResponseStatus0;
 import io.netty.handler.codec.http.HttpHeaderNames;
 

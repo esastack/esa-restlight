@@ -18,8 +18,8 @@ package io.esastack.restlight.core.handler.impl;
 import esa.commons.StringUtils;
 import io.esastack.restlight.core.handler.HandlerInvoker;
 import io.esastack.restlight.core.handler.RouteHandler;
-import io.esastack.restlight.core.method.HandlerMethod;
-import io.esastack.restlight.core.method.RouteHandlerMethod;
+import io.esastack.restlight.core.handler.method.HandlerMethod;
+import io.esastack.restlight.core.handler.method.RouteHandlerMethod;
 
 /**
  * Default implementation of {@link RouteHandler}.

@@ -18,7 +18,7 @@ package io.esastack.restlight.ext.multipart.spi;
 import esa.commons.Checks;
 import esa.commons.StringUtils;
 import io.esastack.restlight.core.DeployContext;
-import io.esastack.restlight.core.resolver.ParamResolverFactory;
+import io.esastack.restlight.core.resolver.param.ParamResolverFactory;
 import io.esastack.restlight.core.spi.ParamResolverProvider;
 import io.esastack.restlight.ext.multipart.core.MultipartConfig;
 import io.netty.handler.codec.http.multipart.DefaultHttpDataFactory;

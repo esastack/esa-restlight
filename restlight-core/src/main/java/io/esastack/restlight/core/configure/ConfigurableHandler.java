@@ -16,15 +16,15 @@
 package io.esastack.restlight.core.configure;
 
 import esa.commons.collection.Attributes;
-import io.esastack.restlight.core.handler.RouteFilter;
-import io.esastack.restlight.core.method.HandlerMethod;
-import io.esastack.restlight.core.resolver.ContextResolverAdapter;
-import io.esastack.restlight.core.resolver.ParamResolverAdapter;
-import io.esastack.restlight.core.resolver.ParamResolverAdviceAdapter;
-import io.esastack.restlight.core.resolver.RequestEntityResolverAdapter;
-import io.esastack.restlight.core.resolver.RequestEntityResolverAdviceAdapter;
-import io.esastack.restlight.core.resolver.ResponseEntityResolverAdapter;
-import io.esastack.restlight.core.resolver.ResponseEntityResolverAdviceAdapter;
+import io.esastack.restlight.core.filter.RouteFilter;
+import io.esastack.restlight.core.handler.method.HandlerMethod;
+import io.esastack.restlight.core.resolver.context.ContextResolverAdapter;
+import io.esastack.restlight.core.resolver.param.ParamResolverAdapter;
+import io.esastack.restlight.core.resolver.param.ParamResolverAdviceAdapter;
+import io.esastack.restlight.core.resolver.reqentity.RequestEntityResolverAdapter;
+import io.esastack.restlight.core.resolver.reqentity.RequestEntityResolverAdviceAdapter;
+import io.esastack.restlight.core.resolver.rspentity.ResponseEntityResolverAdapter;
+import io.esastack.restlight.core.resolver.rspentity.ResponseEntityResolverAdviceAdapter;
 
 public interface ConfigurableHandler {
 

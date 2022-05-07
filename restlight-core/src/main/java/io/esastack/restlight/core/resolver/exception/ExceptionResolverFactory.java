@@ -15,8 +15,7 @@
  */
 package io.esastack.restlight.core.resolver.exception;
 
-import io.esastack.restlight.core.method.HandlerMethod;
-import io.esastack.restlight.core.resolver.ExceptionResolver;
+import io.esastack.restlight.core.handler.method.HandlerMethod;
 
 public interface ExceptionResolverFactory {
 

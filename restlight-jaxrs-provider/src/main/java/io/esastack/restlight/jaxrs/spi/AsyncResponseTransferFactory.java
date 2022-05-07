@@ -20,13 +20,13 @@ import esa.commons.logging.Logger;
 import esa.commons.logging.LoggerFactory;
 import esa.commons.spi.Feature;
 import io.esastack.restlight.core.handler.FutureTransfer;
-import io.esastack.restlight.core.method.HandlerMethod;
-import io.esastack.restlight.core.method.MethodParam;
+import io.esastack.restlight.core.handler.method.HandlerMethod;
+import io.esastack.restlight.core.handler.method.MethodParam;
 import io.esastack.restlight.core.spi.FutureTransferFactory;
 import io.esastack.restlight.core.util.Constants;
 import io.esastack.restlight.jaxrs.impl.JaxrsContextUtils;
-import io.esastack.restlight.server.context.RequestContext;
-import io.esastack.restlight.server.util.Futures;
+import io.esastack.restlight.core.context.RequestContext;
+import io.esastack.restlight.core.util.Futures;
 import jakarta.ws.rs.container.AsyncResponse;
 import jakarta.ws.rs.container.Suspended;
 

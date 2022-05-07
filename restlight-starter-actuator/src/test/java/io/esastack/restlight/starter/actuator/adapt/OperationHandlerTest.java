@@ -15,14 +15,14 @@
  */
 package io.esastack.restlight.starter.actuator.adapt;
 
-import io.esastack.restlight.server.context.RequestContext;
-import io.esastack.restlight.server.context.impl.RequestContextImpl;
-import io.esastack.restlight.server.core.HttpRequest;
-import io.esastack.restlight.server.core.HttpResponse;
-import io.esastack.restlight.server.mock.MockHttpRequest;
-import io.esastack.restlight.server.mock.MockHttpResponse;
-import io.esastack.restlight.server.route.predicate.PatternsPredicate;
-import io.esastack.restlight.server.util.Futures;
+import io.esastack.restlight.core.context.RequestContext;
+import io.esastack.restlight.core.context.impl.RequestContextImpl;
+import io.esastack.restlight.core.context.HttpRequest;
+import io.esastack.restlight.core.context.HttpResponse;
+import io.esastack.restlight.core.mock.MockHttpRequest;
+import io.esastack.restlight.core.mock.MockHttpResponse;
+import io.esastack.restlight.core.route.predicate.PatternsPredicate;
+import io.esastack.restlight.core.util.Futures;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.actuate.endpoint.InvocationContext;
 import org.springframework.boot.actuate.endpoint.OperationType;

@@ -20,8 +20,8 @@ import esa.commons.UrlUtils;
 import esa.commons.reflect.AnnotationUtils;
 import io.esastack.commons.net.http.HttpMethod;
 import io.esastack.restlight.core.util.ConverterUtils;
-import io.esastack.restlight.server.route.Mapping;
-import io.esastack.restlight.server.util.MappingUtils;
+import io.esastack.restlight.core.route.Mapping;
+import io.esastack.restlight.core.util.MappingUtils;
 import io.esastack.restlight.springmvc.annotation.shaded.RequestMapping0;
 import io.esastack.restlight.springmvc.annotation.shaded.ValueConstants0;
 

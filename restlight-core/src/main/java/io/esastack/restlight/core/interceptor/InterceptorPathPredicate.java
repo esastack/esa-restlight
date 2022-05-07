@@ -15,8 +15,8 @@
  */
 package io.esastack.restlight.core.interceptor;
 
-import io.esastack.restlight.server.context.RequestContext;
-import io.esastack.restlight.server.util.PathMatcher;
+import io.esastack.restlight.core.context.RequestContext;
+import io.esastack.restlight.core.util.PathMatcher;
 
 import java.util.Arrays;
 

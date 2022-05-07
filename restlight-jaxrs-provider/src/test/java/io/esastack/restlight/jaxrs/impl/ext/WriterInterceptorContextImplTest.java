@@ -16,13 +16,13 @@
 package io.esastack.restlight.jaxrs.impl.ext;
 
 import esa.commons.collection.AttributeMap;
-import io.esastack.restlight.core.resolver.ResponseEntity;
-import io.esastack.restlight.core.resolver.ResponseEntityChannel;
-import io.esastack.restlight.core.resolver.ResponseEntityResolverContext;
-import io.esastack.restlight.server.context.RequestContext;
-import io.esastack.restlight.server.context.impl.RequestContextImpl;
-import io.esastack.restlight.server.core.HttpRequest;
-import io.esastack.restlight.server.core.HttpResponse;
+import io.esastack.restlight.core.context.ResponseEntity;
+import io.esastack.restlight.core.context.ResponseEntityChannel;
+import io.esastack.restlight.core.resolver.rspentity.ResponseEntityResolverContext;
+import io.esastack.restlight.core.context.RequestContext;
+import io.esastack.restlight.core.context.impl.RequestContextImpl;
+import io.esastack.restlight.core.context.HttpRequest;
+import io.esastack.restlight.core.context.HttpResponse;
 import jakarta.ws.rs.core.MultivaluedHashMap;
 import jakarta.ws.rs.ext.WriterInterceptor;
 import jakarta.ws.rs.ext.WriterInterceptorContext;

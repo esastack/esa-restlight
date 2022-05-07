@@ -15,7 +15,7 @@
  */
 package io.esastack.restlight.jaxrs.resolver.param;
 
-import io.esastack.restlight.core.method.Param;
+import io.esastack.restlight.core.handler.method.Param;
 import io.esastack.restlight.core.resolver.nav.NameAndValue;
 import jakarta.ws.rs.DefaultValue;
 import jakarta.ws.rs.FormParam;

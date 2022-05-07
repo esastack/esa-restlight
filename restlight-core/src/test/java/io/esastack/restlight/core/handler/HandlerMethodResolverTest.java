@@ -17,10 +17,10 @@ package io.esastack.restlight.core.handler;
 
 import io.esastack.commons.net.http.HttpStatus;
 import io.esastack.restlight.core.handler.impl.HandlerMethodResolver;
-import io.esastack.restlight.server.context.RequestContext;
-import io.esastack.restlight.server.context.impl.RequestContextImpl;
-import io.esastack.restlight.server.core.HttpRequest;
-import io.esastack.restlight.server.core.HttpResponse;
+import io.esastack.restlight.core.context.RequestContext;
+import io.esastack.restlight.core.context.impl.RequestContextImpl;
+import io.esastack.restlight.core.context.HttpRequest;
+import io.esastack.restlight.core.context.HttpResponse;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 

@@ -17,7 +17,7 @@ package io.esastack.restlight.core.handler.impl;
 
 import io.esastack.restlight.core.DeployContext;
 import io.esastack.restlight.core.resolver.Resolver;
-import io.esastack.restlight.server.context.RequestContext;
+import io.esastack.restlight.core.context.RequestContext;
 
 interface ResolverWrap extends Resolver {
 

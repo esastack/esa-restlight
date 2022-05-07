@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 OPPO ESA Stack Project
+ * Copyright 2022 OPPO ESA Stack Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@ import esa.commons.annotation.Internal;
 import esa.commons.spi.SPI;
 import io.esastack.restlight.core.DeployContext;
 import io.esastack.restlight.core.handler.RouteHandler;
-import io.esastack.restlight.core.handler.locate.RouteMethodLocator;
+import io.esastack.restlight.core.locator.RouteMethodLocator;
 
 /**
  * Produces an instance of {@link RouteMethodLocator} for locating {@link RouteHandler}s.

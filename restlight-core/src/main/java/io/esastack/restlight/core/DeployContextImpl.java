@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 OPPO ESA Stack Project
+ * Copyright 2022 OPPO ESA Stack Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,21 +20,21 @@ import esa.commons.collection.AttributeMap;
 import esa.commons.collection.Attributes;
 import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.core.configure.HandlerConfigure;
-import io.esastack.restlight.core.configure.Handlers;
+import io.esastack.restlight.core.handler.Handlers;
 import io.esastack.restlight.core.handler.HandlerAdvicesFactory;
 import io.esastack.restlight.core.handler.HandlerContextProvider;
 import io.esastack.restlight.core.handler.HandlerFactory;
-import io.esastack.restlight.core.handler.locate.HandlerValueResolverLocator;
-import io.esastack.restlight.core.handler.locate.MappingLocator;
-import io.esastack.restlight.core.handler.locate.RouteMethodLocator;
+import io.esastack.restlight.core.locator.HandlerValueResolverLocator;
+import io.esastack.restlight.core.locator.MappingLocator;
+import io.esastack.restlight.core.locator.RouteMethodLocator;
 import io.esastack.restlight.core.interceptor.InterceptorFactory;
-import io.esastack.restlight.core.method.ResolvableParamPredicate;
-import io.esastack.restlight.core.resolver.HandlerResolverFactory;
+import io.esastack.restlight.core.handler.method.ResolvableParamPredicate;
+import io.esastack.restlight.core.resolver.factory.HandlerResolverFactory;
 import io.esastack.restlight.core.resolver.exception.ExceptionMapper;
 import io.esastack.restlight.core.resolver.exception.ExceptionResolverFactory;
-import io.esastack.restlight.server.bootstrap.DispatcherHandler;
-import io.esastack.restlight.server.route.RouteRegistry;
-import io.esastack.restlight.server.schedule.Scheduler;
+import io.esastack.restlight.core.dispatcher.DispatcherHandler;
+import io.esastack.restlight.core.route.RouteRegistry;
+import io.esastack.restlight.core.server.processor.schedule.Scheduler;
 
 import java.util.Collections;
 import java.util.HashMap;

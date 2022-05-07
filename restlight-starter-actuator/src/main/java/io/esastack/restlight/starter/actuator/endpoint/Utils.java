@@ -15,8 +15,8 @@
  */
 package io.esastack.restlight.starter.actuator.endpoint;
 
-import io.esastack.restlight.server.bootstrap.AbstractDelegatedRestlightServer;
-import io.esastack.restlight.server.bootstrap.RestlightServer;
+import io.esastack.restlight.core.server.AbstractDelegatedRestlightServer;
+import io.esastack.restlight.core.server.RestlightServer;
 import org.springframework.util.ReflectionUtils;
 
 import java.lang.reflect.Field;

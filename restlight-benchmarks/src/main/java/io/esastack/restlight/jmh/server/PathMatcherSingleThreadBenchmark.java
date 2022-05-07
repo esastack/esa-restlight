@@ -15,7 +15,7 @@
  */
 package io.esastack.restlight.jmh.server;
 
-import io.esastack.restlight.server.util.PathMatcher;
+import io.esastack.restlight.core.util.PathMatcher;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Fork;

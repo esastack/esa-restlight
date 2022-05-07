@@ -16,13 +16,13 @@
 package io.esastack.restlight.jaxrs.impl.core;
 
 import io.esastack.commons.net.http.HttpHeaderNames;
-import io.esastack.restlight.server.context.RequestContext;
-import io.esastack.restlight.server.context.impl.RequestContextImpl;
-import io.esastack.restlight.server.core.HttpRequest;
-import io.esastack.restlight.server.core.HttpResponse;
-import io.esastack.restlight.server.mock.MockHttpRequest;
-import io.esastack.restlight.server.mock.MockHttpResponse;
-import io.esastack.restlight.server.util.DateUtils;
+import io.esastack.restlight.core.context.RequestContext;
+import io.esastack.restlight.core.context.impl.RequestContextImpl;
+import io.esastack.restlight.core.context.HttpRequest;
+import io.esastack.restlight.core.context.HttpResponse;
+import io.esastack.restlight.core.mock.MockHttpRequest;
+import io.esastack.restlight.core.mock.MockHttpResponse;
+import io.esastack.restlight.core.util.DateUtils;
 import jakarta.ws.rs.core.EntityTag;
 import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.MediaType;

@@ -26,14 +26,14 @@ import io.esastack.restlight.core.configure.DelegatingDeployContext;
 import io.esastack.restlight.core.configure.HandlerConfiguration;
 import io.esastack.restlight.core.configure.HandlerConfigure;
 import io.esastack.restlight.core.handler.HandlerContextProvider;
-import io.esastack.restlight.core.method.HandlerMethod;
-import io.esastack.restlight.core.resolver.HandlerResolverFactory;
-import io.esastack.restlight.core.resolver.HandlerResolverFactoryImpl;
+import io.esastack.restlight.core.handler.method.HandlerMethod;
+import io.esastack.restlight.core.resolver.factory.HandlerResolverFactory;
+import io.esastack.restlight.core.resolver.factory.HandlerResolverFactoryImpl;
 import io.esastack.restlight.core.util.OrderedComparator;
 
 import java.util.Optional;
 
-import static io.esastack.restlight.core.resolver.HandlerResolverFactoryImpl.buildConfiguration;
+import static io.esastack.restlight.core.resolver.factory.HandlerResolverFactoryImpl.buildConfiguration;
 
 public class HandlerContext extends DelegatingDeployContext {
 

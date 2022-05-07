@@ -16,7 +16,7 @@
 package io.esastack.restlight.starter.actuator.adapt;
 
 import io.esastack.restlight.core.DeployContext;
-import io.esastack.restlight.core.method.HandlerMethod;
+import io.esastack.restlight.core.handler.method.HandlerMethod;
 import io.esastack.restlight.core.util.RouteUtils;
 import io.esastack.restlight.spring.util.RestlightDeployContextAware;
 import org.springframework.boot.actuate.web.mappings.MappingDescriptionProvider;

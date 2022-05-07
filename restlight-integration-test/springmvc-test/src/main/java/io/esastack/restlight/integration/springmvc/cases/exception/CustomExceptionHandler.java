@@ -14,7 +14,7 @@
 package io.esastack.restlight.integration.springmvc.cases.exception;
 
 import io.esastack.commons.net.http.HttpStatus;
-import io.esastack.restlight.server.core.HttpResponse;
+import io.esastack.restlight.core.context.HttpResponse;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 

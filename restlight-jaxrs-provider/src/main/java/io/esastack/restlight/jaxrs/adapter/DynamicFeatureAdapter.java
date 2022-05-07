@@ -20,7 +20,7 @@ import esa.commons.ClassUtils;
 import io.esastack.restlight.core.DeployContext;
 import io.esastack.restlight.core.configure.ConfigurableHandler;
 import io.esastack.restlight.core.configure.HandlerConfigure;
-import io.esastack.restlight.core.method.HandlerMethod;
+import io.esastack.restlight.core.handler.method.HandlerMethod;
 import io.esastack.restlight.jaxrs.configure.OrderComponent;
 import io.esastack.restlight.jaxrs.configure.ProvidersFactory;
 import io.esastack.restlight.jaxrs.configure.ProvidersFactoryImpl;

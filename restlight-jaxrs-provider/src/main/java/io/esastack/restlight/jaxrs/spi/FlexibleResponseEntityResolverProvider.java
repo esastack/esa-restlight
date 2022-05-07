@@ -17,7 +17,7 @@ package io.esastack.restlight.jaxrs.spi;
 
 import io.esastack.restlight.core.DeployContext;
 import io.esastack.restlight.core.config.SerializeOptions;
-import io.esastack.restlight.core.resolver.ResponseEntityResolverFactory;
+import io.esastack.restlight.core.resolver.rspentity.ResponseEntityResolverFactory;
 import io.esastack.restlight.core.spi.ResponseEntityResolverProvider;
 import io.esastack.restlight.jaxrs.resolver.rspentity.FlexibleResponseEntityResolverFactory;
 import io.esastack.restlight.jaxrs.resolver.rspentity.NegotiationResponseResolverFactory;

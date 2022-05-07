@@ -15,7 +15,7 @@
  */
 package io.esastack.restlight.test.bootstrap;
 
-import io.esastack.restlight.server.schedule.AbstractRestlightHandler;
+import io.esastack.restlight.core.server.processor.AbstractRestlightHandler;
 import org.junit.jupiter.api.Test;
 
 import java.util.concurrent.CompletableFuture;

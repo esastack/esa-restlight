@@ -18,8 +18,8 @@ package io.esastack.restlight.springmvc.resolver.exception;
 import esa.commons.ClassUtils;
 import esa.commons.StringUtils;
 import esa.commons.reflect.AnnotationUtils;
-import io.esastack.restlight.core.method.HandlerMethod;
-import io.esastack.restlight.core.resolver.ExceptionResolver;
+import io.esastack.restlight.core.handler.method.HandlerMethod;
+import io.esastack.restlight.core.resolver.exception.ExceptionResolver;
 import io.esastack.restlight.core.resolver.exception.DefaultExceptionMapper;
 import io.esastack.restlight.core.util.Ordered;
 

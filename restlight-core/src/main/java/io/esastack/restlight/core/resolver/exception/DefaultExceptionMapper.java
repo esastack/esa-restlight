@@ -16,7 +16,6 @@
 package io.esastack.restlight.core.resolver.exception;
 
 import esa.commons.Checks;
-import io.esastack.restlight.core.resolver.ExceptionResolver;
 import io.netty.util.internal.InternalThreadLocalMap;
 
 import java.util.Comparator;

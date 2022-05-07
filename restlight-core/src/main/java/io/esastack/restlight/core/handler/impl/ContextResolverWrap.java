@@ -17,8 +17,8 @@ package io.esastack.restlight.core.handler.impl;
 
 import esa.commons.Checks;
 import io.esastack.restlight.core.DeployContext;
-import io.esastack.restlight.core.resolver.ContextResolver;
-import io.esastack.restlight.server.context.RequestContext;
+import io.esastack.restlight.core.resolver.context.ContextResolver;
+import io.esastack.restlight.core.context.RequestContext;
 
 class ContextResolverWrap implements ResolverWrap {
 

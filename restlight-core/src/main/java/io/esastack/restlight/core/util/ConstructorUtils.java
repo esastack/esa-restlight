@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 OPPO ESA Stack Project
+ * Copyright 2022 OPPO ESA Stack Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,9 +17,9 @@ package io.esastack.restlight.core.util;
 
 import esa.commons.logging.Logger;
 import esa.commons.logging.LoggerFactory;
-import io.esastack.restlight.core.method.ConstructorParam;
-import io.esastack.restlight.core.method.ConstructorParamImpl;
-import io.esastack.restlight.core.method.ResolvableParamPredicate;
+import io.esastack.restlight.core.handler.method.ConstructorParam;
+import io.esastack.restlight.core.handler.method.ConstructorParamImpl;
+import io.esastack.restlight.core.handler.method.ResolvableParamPredicate;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;

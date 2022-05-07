@@ -19,8 +19,8 @@ import esa.commons.Checks;
 import esa.commons.StringUtils;
 import io.esastack.restlight.core.handler.Handler;
 import io.esastack.restlight.core.handler.HandlerInvoker;
-import io.esastack.restlight.core.method.HandlerMethod;
-import io.esastack.restlight.server.context.RequestContext;
+import io.esastack.restlight.core.handler.method.HandlerMethod;
+import io.esastack.restlight.core.context.RequestContext;
 
 /**
  * Default implementation of {@link Handler}.

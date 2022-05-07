@@ -18,11 +18,10 @@ package io.esastack.restlight.core.resolver.param;
 import esa.commons.StringUtils;
 import io.esastack.restlight.core.DeployContext;
 import io.esastack.restlight.core.annotation.QueryBean;
-import io.esastack.restlight.core.method.FieldParam;
-import io.esastack.restlight.core.method.Param;
-import io.esastack.restlight.core.resolver.HandlerResolverFactory;
-import io.esastack.restlight.core.resolver.ParamResolver;
-import io.esastack.restlight.core.resolver.StringConverterProvider;
+import io.esastack.restlight.core.handler.method.FieldParam;
+import io.esastack.restlight.core.handler.method.Param;
+import io.esastack.restlight.core.resolver.factory.HandlerResolverFactory;
+import io.esastack.restlight.core.resolver.converter.StringConverterProvider;
 import io.esastack.restlight.core.resolver.nav.NameAndValue;
 import io.esastack.restlight.core.resolver.nav.NameAndValueResolverAdapter;
 

@@ -25,7 +25,7 @@ import io.esastack.restlight.core.handler.HandlerMappingProvider;
 import io.esastack.restlight.core.handler.RouteMethodInfo;
 import io.esastack.restlight.core.handler.impl.HandlerMappingImpl;
 import io.esastack.restlight.core.util.ConverterUtils;
-import io.esastack.restlight.server.route.Mapping;
+import io.esastack.restlight.core.route.Mapping;
 import org.springframework.boot.actuate.autoconfigure.endpoint.web.WebEndpointProperties;
 import org.springframework.boot.actuate.endpoint.web.EndpointMapping;
 import org.springframework.boot.actuate.endpoint.web.ExposableWebEndpoint;

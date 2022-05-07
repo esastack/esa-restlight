@@ -20,7 +20,7 @@ import io.esastack.commons.net.http.MediaType;
 import io.esastack.restlight.core.serialize.HttpResponseSerializer;
 import io.esastack.restlight.core.serialize.ProtoBufHttpBodySerializer;
 import io.esastack.restlight.core.util.Constants;
-import io.esastack.restlight.server.context.RequestContext;
+import io.esastack.restlight.core.context.RequestContext;
 import io.netty.util.internal.InternalThreadLocalMap;
 
 import java.util.List;

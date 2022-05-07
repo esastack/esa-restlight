@@ -20,7 +20,7 @@ import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.core.config.RestlightOptionsConfigure;
 import io.esastack.restlight.core.handler.Handler;
 import io.esastack.restlight.core.handler.impl.HandlerImpl;
-import io.esastack.restlight.core.method.HandlerMethodImpl;
+import io.esastack.restlight.core.handler.method.HandlerMethodImpl;
 import org.junit.jupiter.api.Test;
 
 import javax.validation.Valid;

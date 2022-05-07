@@ -17,16 +17,16 @@ package io.esastack.restlight.core;
 
 import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.core.config.RestlightOptionsConfigure;
-import io.esastack.restlight.server.bootstrap.RestlightServer;
-import io.esastack.restlight.server.config.RouteOptionsConfigure;
-import io.esastack.restlight.server.config.SchedulingOptionsConfigure;
-import io.esastack.restlight.server.handler.RestlightHandler;
-import io.esastack.restlight.server.route.Route;
-import io.esastack.restlight.server.schedule.ExecutorScheduler;
-import io.esastack.restlight.server.schedule.RequestTaskHook;
-import io.esastack.restlight.server.schedule.Scheduler;
-import io.esastack.restlight.server.schedule.Schedulers;
-import io.esastack.restlight.server.spi.RequestTaskHookFactory;
+import io.esastack.restlight.core.server.RestlightServer;
+import io.esastack.restlight.core.config.RouteOptionsConfigure;
+import io.esastack.restlight.core.config.SchedulingOptionsConfigure;
+import io.esastack.restlight.core.server.processor.RestlightHandler;
+import io.esastack.restlight.core.route.Route;
+import io.esastack.restlight.core.server.processor.schedule.ExecutorScheduler;
+import io.esastack.restlight.core.server.processor.schedule.RequestTaskHook;
+import io.esastack.restlight.core.server.processor.schedule.Scheduler;
+import io.esastack.restlight.core.server.processor.schedule.Schedulers;
+import io.esastack.restlight.core.spi.RequestTaskHookFactory;
 import io.netty.util.concurrent.GlobalEventExecutor;
 import org.junit.jupiter.api.Test;
 
@@ -39,7 +39,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-import static io.esastack.restlight.server.route.Mapping.get;
+import static io.esastack.restlight.core.route.Mapping.get;
 import static org.junit.jupiter.api.Assertions.*;
 
 class RestlightTest {

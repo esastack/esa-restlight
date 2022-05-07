@@ -15,7 +15,7 @@
  */
 package io.esastack.restlight.springmvc.resolver.rspentity;
 
-import io.esastack.restlight.core.method.HandlerMethod;
+import io.esastack.restlight.core.handler.method.HandlerMethod;
 import io.esastack.restlight.springmvc.annotation.shaded.ResponseBody0;
 
 public class FixedResponseEntityResolverFactory extends

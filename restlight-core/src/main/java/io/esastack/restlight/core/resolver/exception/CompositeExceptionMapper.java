@@ -16,8 +16,7 @@
 package io.esastack.restlight.core.resolver.exception;
 
 import esa.commons.Checks;
-import io.esastack.restlight.core.method.HandlerMethod;
-import io.esastack.restlight.core.resolver.ExceptionResolver;
+import io.esastack.restlight.core.handler.method.HandlerMethod;
 import io.esastack.restlight.core.util.OrderedComparator;
 
 import java.util.Arrays;

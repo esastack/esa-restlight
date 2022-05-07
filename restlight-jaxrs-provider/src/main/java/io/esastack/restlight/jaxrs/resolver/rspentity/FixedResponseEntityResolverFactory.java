@@ -15,7 +15,7 @@
  */
 package io.esastack.restlight.jaxrs.resolver.rspentity;
 
-import io.esastack.restlight.core.method.HandlerMethod;
+import io.esastack.restlight.core.handler.method.HandlerMethod;
 
 public class FixedResponseEntityResolverFactory extends
         io.esastack.restlight.core.resolver.rspentity.FixedResponseEntityResolverFactory {

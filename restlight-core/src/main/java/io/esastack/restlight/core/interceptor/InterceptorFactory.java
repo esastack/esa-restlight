@@ -18,8 +18,8 @@ package io.esastack.restlight.core.interceptor;
 import esa.commons.Checks;
 import esa.commons.spi.SPI;
 import io.esastack.restlight.core.DeployContext;
-import io.esastack.restlight.server.route.Route;
-import io.esastack.restlight.server.route.Routing;
+import io.esastack.restlight.core.route.Route;
+import io.esastack.restlight.core.route.Routing;
 
 import java.util.Optional;
 

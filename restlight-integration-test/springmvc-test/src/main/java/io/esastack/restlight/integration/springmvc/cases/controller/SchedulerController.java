@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import static io.esastack.restlight.server.schedule.Schedulers.IO;
+import static io.esastack.restlight.core.server.processor.schedule.Schedulers.IO;
 
 @RestController
 @RequestMapping("/scheduler/")

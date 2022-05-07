@@ -15,7 +15,7 @@
  */
 package io.esastack.restlight.ext.filter.cpuload;
 
-import io.esastack.restlight.server.handler.Connection;
+import io.esastack.restlight.core.server.Connection;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.embedded.EmbeddedChannel;
 import org.junit.jupiter.api.Test;

@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 OPPO ESA Stack Project
+ * Copyright 2022 OPPO ESA Stack Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,11 +18,11 @@ package io.esastack.restlight.core.spi;
 import esa.commons.annotation.Internal;
 import esa.commons.spi.SPI;
 import io.esastack.restlight.core.DeployContext;
-import io.esastack.restlight.core.handler.locate.MappingLocator;
+import io.esastack.restlight.core.locator.MappingLocator;
 
 /**
  * Produces an instance of {@link MappingLocator} which will be use to extract the {@link
- * io.esastack.restlight.server.route.Mapping}s from context.
+ * io.esastack.restlight.core.route.Mapping}s from context.
  */
 @SPI
 @Internal

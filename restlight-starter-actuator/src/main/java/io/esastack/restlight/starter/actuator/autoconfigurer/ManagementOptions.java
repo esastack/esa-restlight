@@ -16,7 +16,7 @@
 package io.esastack.restlight.starter.actuator.autoconfigurer;
 
 import io.esastack.restlight.core.config.RestlightOptions;
-import io.esastack.restlight.server.config.BizThreadsOptionsConfigure;
+import io.esastack.restlight.core.config.BizThreadsOptionsConfigure;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**

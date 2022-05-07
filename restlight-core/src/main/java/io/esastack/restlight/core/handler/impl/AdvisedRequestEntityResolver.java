@@ -17,13 +17,13 @@ package io.esastack.restlight.core.handler.impl;
 
 import esa.commons.Checks;
 import io.esastack.restlight.core.DeployContext;
-import io.esastack.restlight.core.method.Param;
-import io.esastack.restlight.core.resolver.RequestEntity;
-import io.esastack.restlight.core.resolver.RequestEntityImpl;
-import io.esastack.restlight.core.resolver.RequestEntityResolver;
-import io.esastack.restlight.core.resolver.RequestEntityResolverAdvice;
-import io.esastack.restlight.core.resolver.RequestEntityResolverContextImpl;
-import io.esastack.restlight.server.context.RequestContext;
+import io.esastack.restlight.core.handler.method.Param;
+import io.esastack.restlight.core.context.RequestEntity;
+import io.esastack.restlight.core.context.RequestEntityImpl;
+import io.esastack.restlight.core.resolver.reqentity.RequestEntityResolver;
+import io.esastack.restlight.core.resolver.reqentity.RequestEntityResolverAdvice;
+import io.esastack.restlight.core.resolver.reqentity.RequestEntityResolverContextImpl;
+import io.esastack.restlight.core.context.RequestContext;
 
 import java.util.List;
 

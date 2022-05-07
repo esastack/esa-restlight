@@ -16,12 +16,11 @@
 package io.esastack.restlight.core.resolver.rspentity;
 
 import io.esastack.commons.net.http.MediaType;
-import io.esastack.restlight.core.method.HandlerMethod;
-import io.esastack.restlight.core.resolver.ResponseEntity;
-import io.esastack.restlight.core.resolver.ResponseEntityResolverAdapter;
+import io.esastack.restlight.core.handler.method.HandlerMethod;
+import io.esastack.restlight.core.context.ResponseEntity;
 import io.esastack.restlight.core.serialize.Serializers;
 import io.esastack.restlight.core.util.ResponseEntityUtils;
-import io.esastack.restlight.server.context.RequestContext;
+import io.esastack.restlight.core.context.RequestContext;
 import io.netty.buffer.ByteBuf;
 
 import java.util.List;

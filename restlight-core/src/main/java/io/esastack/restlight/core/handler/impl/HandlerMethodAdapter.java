@@ -16,15 +16,15 @@
 package io.esastack.restlight.core.handler.impl;
 
 import esa.commons.Checks;
-import io.esastack.restlight.core.method.HandlerMethod;
-import io.esastack.restlight.core.method.MethodParam;
-import io.esastack.restlight.core.method.Param;
-import io.esastack.restlight.core.method.ResolvableParam;
-import io.esastack.restlight.core.method.ResolvableParamPredicate;
-import io.esastack.restlight.core.resolver.ContextResolver;
-import io.esastack.restlight.core.resolver.HandlerResolverFactory;
-import io.esastack.restlight.core.resolver.ParamResolver;
-import io.esastack.restlight.core.resolver.RequestEntityResolver;
+import io.esastack.restlight.core.handler.method.HandlerMethod;
+import io.esastack.restlight.core.handler.method.MethodParam;
+import io.esastack.restlight.core.handler.method.Param;
+import io.esastack.restlight.core.handler.method.ResolvableParam;
+import io.esastack.restlight.core.handler.method.ResolvableParamPredicate;
+import io.esastack.restlight.core.resolver.context.ContextResolver;
+import io.esastack.restlight.core.resolver.factory.HandlerResolverFactory;
+import io.esastack.restlight.core.resolver.param.ParamResolver;
+import io.esastack.restlight.core.resolver.reqentity.RequestEntityResolver;
 import io.esastack.restlight.core.util.RouteUtils;
 
 import java.lang.annotation.Annotation;

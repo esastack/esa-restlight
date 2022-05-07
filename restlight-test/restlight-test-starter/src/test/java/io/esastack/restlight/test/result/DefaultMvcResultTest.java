@@ -15,8 +15,8 @@
  */
 package io.esastack.restlight.test.result;
 
-import io.esastack.restlight.server.mock.MockHttpRequest;
-import io.esastack.restlight.server.mock.MockHttpResponse;
+import io.esastack.restlight.core.mock.MockHttpRequest;
+import io.esastack.restlight.core.mock.MockHttpResponse;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertSame;

@@ -16,7 +16,7 @@
 package io.esastack.restlight.jaxrs.spi;
 
 import io.esastack.restlight.core.DeployContext;
-import io.esastack.restlight.core.configure.Handlers;
+import io.esastack.restlight.core.handler.Handlers;
 import io.esastack.restlight.core.handler.HandlerContextProvider;
 import io.esastack.restlight.core.handler.HandlerFactory;
 import io.esastack.restlight.jaxrs.configure.JaxrsHandlerFactory;

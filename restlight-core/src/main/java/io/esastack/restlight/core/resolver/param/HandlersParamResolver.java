@@ -17,11 +17,9 @@ package io.esastack.restlight.core.resolver.param;
 
 import esa.commons.Checks;
 import io.esastack.restlight.core.DeployContext;
-import io.esastack.restlight.core.configure.Handlers;
-import io.esastack.restlight.core.method.Param;
-import io.esastack.restlight.core.resolver.ParamResolver;
-import io.esastack.restlight.core.resolver.ParamResolverFactory;
-import io.esastack.restlight.core.resolver.StringConverterProvider;
+import io.esastack.restlight.core.handler.Handlers;
+import io.esastack.restlight.core.handler.method.Param;
+import io.esastack.restlight.core.resolver.converter.StringConverterProvider;
 import io.esastack.restlight.core.serialize.HttpRequestSerializer;
 
 import java.util.List;

@@ -19,12 +19,12 @@ import esa.commons.collection.AttributeKey;
 import esa.commons.collection.AttributeMap;
 import esa.commons.collection.Attributes;
 import io.esastack.commons.net.http.MediaType;
-import io.esastack.restlight.core.resolver.HttpEntity;
+import io.esastack.restlight.core.context.HttpEntity;
 import io.esastack.restlight.core.resolver.HttpEntityResolverContext;
-import io.esastack.restlight.server.context.RequestContext;
-import io.esastack.restlight.server.context.impl.RequestContextImpl;
-import io.esastack.restlight.server.core.HttpRequest;
-import io.esastack.restlight.server.core.HttpResponse;
+import io.esastack.restlight.core.context.RequestContext;
+import io.esastack.restlight.core.context.impl.RequestContextImpl;
+import io.esastack.restlight.core.context.HttpRequest;
+import io.esastack.restlight.core.context.HttpResponse;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
