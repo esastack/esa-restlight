@@ -16,6 +16,7 @@
 package io.esastack.restlight.core.handler;
 
 import io.esastack.commons.net.http.HttpStatus;
+import io.esastack.restlight.core.handler.impl.RouteMethodInfoImpl;
 import io.esastack.restlight.core.method.RouteHandlerMethod;
 import org.junit.jupiter.api.Test;
 
@@ -29,7 +30,7 @@ class RouteMethodInfoTest {
     void testConstruct() {
         final RouteHandlerMethod method = mock(RouteHandlerMethod.class);
         final HttpStatus status = HttpStatus.BAD_REQUEST;
-        final RouteMethodInfo methodInfo = new RouteMethodInfo(method, true, status);
+        final RouteMethodInfo methodInfo = new RouteMethodInfoImpl(method, true, status);
         assertEquals(method, methodInfo.handlerMethod());
         assertEquals(status, methodInfo.customStatus());
         assertTrue(methodInfo.isLocator());

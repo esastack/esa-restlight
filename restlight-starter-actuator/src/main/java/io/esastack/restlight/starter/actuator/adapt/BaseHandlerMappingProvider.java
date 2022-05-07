@@ -22,8 +22,8 @@ import io.esastack.restlight.core.DeployContext;
 import io.esastack.restlight.core.handler.Handler;
 import io.esastack.restlight.core.handler.HandlerMapping;
 import io.esastack.restlight.core.handler.HandlerMappingProvider;
-import io.esastack.restlight.core.handler.RouteMethodInfo;
 import io.esastack.restlight.core.handler.impl.HandlerMappingImpl;
+import io.esastack.restlight.core.handler.impl.RouteMethodInfoImpl;
 import io.esastack.restlight.core.util.ConverterUtils;
 import io.esastack.restlight.server.route.Mapping;
 import org.springframework.boot.actuate.autoconfigure.endpoint.web.WebEndpointProperties;
@@ -81,7 +81,7 @@ public abstract class BaseHandlerMappingProvider implements HandlerMappingProvid
                         .produces(predicate.getProduces().toArray(new String[0]));
 
         final EndpointHandlerMethod handler = getHandler(op, ctx.options().getScheduling().getDefaultScheduler());
-        return new HandlerMappingImpl(mapping, new RouteMethodInfo(handler, false, null),
+        return new HandlerMappingImpl(mapping, new RouteMethodInfoImpl(handler, false, null),
                 handler.bean(), null);
     }
 
