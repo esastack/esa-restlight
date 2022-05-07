@@ -58,7 +58,7 @@ class HandlerMethodInfoTest {
         final HandlerMethod method = mock(HandlerMethod.class);
         final HttpStatus status = HttpStatus.BAD_REQUEST;
         final HandlerMethodInfo methodInfo = new HandlerMethodInfoImpl(method, locator, status);
-        String sb = "HandlerMethodInfo{" + "locator=" + locator +
+        String sb = "HandlerMethodInfoImpl{" + "locator=" + locator +
                 ", handlerMethod=" + method +
                 ", customStatus=" + status +
                 '}';
