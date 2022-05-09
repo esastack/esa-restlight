@@ -20,7 +20,7 @@ import esa.commons.collection.AttributeMap;
 import esa.commons.collection.Attributes;
 import io.esastack.commons.net.http.MediaType;
 import io.esastack.restlight.core.context.HttpEntity;
-import io.esastack.restlight.core.resolver.HttpEntityResolverContext;
+import io.esastack.restlight.core.resolver.entity.HttpEntityResolverContext;
 import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.context.impl.RequestContextImpl;
 import io.esastack.restlight.core.context.HttpRequest;

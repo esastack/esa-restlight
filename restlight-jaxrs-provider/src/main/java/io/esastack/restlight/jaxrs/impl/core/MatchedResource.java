@@ -16,7 +16,7 @@
 package io.esastack.restlight.jaxrs.impl.core;
 
 import esa.commons.Checks;
-import io.esastack.restlight.core.handler.RouteMethodInfo;
+import io.esastack.restlight.core.handler.method.RouteMethodInfo;
 
 import java.util.Optional;
 

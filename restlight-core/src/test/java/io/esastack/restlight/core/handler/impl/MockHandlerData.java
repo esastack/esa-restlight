@@ -24,7 +24,8 @@ import io.esastack.restlight.core.handler.HandlerAdvicesFactory;
 import io.esastack.restlight.core.handler.HandlerFactory;
 import io.esastack.restlight.core.handler.HandlerMapping;
 import io.esastack.restlight.core.handler.HandlerValueResolver;
-import io.esastack.restlight.core.handler.RouteMethodInfo;
+import io.esastack.restlight.core.handler.method.HandlerMethodAdapter;
+import io.esastack.restlight.core.handler.method.RouteMethodInfo;
 import io.esastack.restlight.core.handler.Handlers;
 import io.esastack.restlight.core.interceptor.Interceptor;
 import io.esastack.restlight.core.interceptor.InterceptorPredicate;
@@ -36,7 +37,7 @@ import io.esastack.restlight.core.resolver.context.ContextResolver;
 import io.esastack.restlight.core.resolver.exception.ExceptionResolver;
 import io.esastack.restlight.core.resolver.factory.HandlerResolverFactory;
 import io.esastack.restlight.core.resolver.param.ParamResolver;
-import io.esastack.restlight.core.resolver.reqentity.RequestEntityResolver;
+import io.esastack.restlight.core.resolver.entity.request.RequestEntityResolver;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;

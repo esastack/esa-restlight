@@ -21,7 +21,7 @@ import esa.commons.reflect.AnnotationUtils;
 import io.esastack.restlight.core.DeployContext;
 import io.esastack.restlight.core.handler.impl.HandlerContext;
 import io.esastack.restlight.core.handler.impl.HandlerImpl;
-import io.esastack.restlight.core.handler.impl.HandlerMethodAdapter;
+import io.esastack.restlight.core.handler.method.HandlerMethodAdapter;
 import io.esastack.restlight.core.handler.impl.HandlerMethodResolver;
 import io.esastack.restlight.core.locator.HandlerMethodLocator;
 import io.esastack.restlight.core.handler.method.Param;

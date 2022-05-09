@@ -18,7 +18,7 @@ package io.esastack.restlight.springmvc.resolver.rspentity;
 import io.esastack.commons.net.http.MediaType;
 import io.esastack.restlight.core.annotation.ResponseSerializer;
 import io.esastack.restlight.core.handler.method.HandlerMethod;
-import io.esastack.restlight.core.resolver.rspentity.ResponseEntityResolver;
+import io.esastack.restlight.core.resolver.entity.response.ResponseEntityResolver;
 import io.esastack.restlight.core.serialize.HttpResponseSerializer;
 import io.esastack.restlight.core.serialize.JacksonHttpBodySerializer;
 import io.esastack.restlight.core.serialize.JacksonSerializer;

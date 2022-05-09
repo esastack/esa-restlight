@@ -17,7 +17,7 @@ package io.esastack.restlight.springmvc.resolver.reqentity;
 
 import io.esastack.restlight.core.handler.method.Param;
 import io.esastack.restlight.core.resolver.nav.NameAndValue;
-import io.esastack.restlight.core.resolver.reqentity.FixedRequestEntityResolverFactory;
+import io.esastack.restlight.core.resolver.entity.request.FixedRequestEntityResolverFactory;
 import io.esastack.restlight.springmvc.annotation.shaded.RequestBody0;
 
 public class FixedRequestEntityResolverFactoryImpl extends FixedRequestEntityResolverFactory {

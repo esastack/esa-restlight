@@ -20,7 +20,7 @@ import io.esastack.restlight.core.annotation.Scheduled;
 import io.esastack.restlight.core.handler.HandlerFactory;
 import io.esastack.restlight.core.handler.HandlerMapping;
 import io.esastack.restlight.core.handler.HandlerValueResolver;
-import io.esastack.restlight.core.handler.RouteMethodInfo;
+import io.esastack.restlight.core.handler.method.RouteMethodInfo;
 import io.esastack.restlight.core.handler.impl.HandlerContext;
 import io.esastack.restlight.core.handler.impl.MockHandlerData;
 import io.esastack.restlight.core.locator.HandlerValueResolverLocator;

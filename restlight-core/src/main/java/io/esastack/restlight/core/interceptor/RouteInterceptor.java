@@ -17,7 +17,7 @@ package io.esastack.restlight.core.interceptor;
 
 import esa.commons.spi.SPI;
 import io.esastack.restlight.core.DeployContext;
-import io.esastack.restlight.core.handler.impl.RouteHandlerMethodAdapter;
+import io.esastack.restlight.core.handler.method.RouteHandlerMethodAdapter;
 import io.esastack.restlight.core.Deployments;
 import io.esastack.restlight.core.context.HttpRequest;
 import io.esastack.restlight.core.route.Route;

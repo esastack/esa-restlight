@@ -16,9 +16,10 @@
 package io.esastack.restlight.core.handler;
 
 import io.esastack.commons.net.http.HttpStatus;
-import io.esastack.restlight.core.handler.impl.HandlerMethodInfoImpl;
-import io.esastack.restlight.core.handler.impl.RouteMethodInfoImpl;
+import io.esastack.restlight.core.handler.method.HandlerMethodInfoImpl;
+import io.esastack.restlight.core.handler.method.RouteMethodInfoImpl;
 import io.esastack.restlight.core.handler.method.HandlerMethod;
+import io.esastack.restlight.core.handler.method.HandlerMethodInfo;
 import io.esastack.restlight.core.handler.method.RouteHandlerMethod;
 import org.junit.jupiter.api.Test;
 

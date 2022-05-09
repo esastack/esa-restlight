@@ -17,7 +17,7 @@ package io.esastack.restlight.ext.filter.cpuload;
 
 import esa.commons.concurrent.ThreadFactories;
 import io.esastack.restlight.core.server.Connection;
-import io.esastack.restlight.core.server.handler.ConnectionInitHandler;
+import io.esastack.restlight.core.server.connection.ConnectionInitHandler;
 import io.esastack.restlight.core.util.LoggerUtils;
 import io.netty.util.internal.InternalThreadLocalMap;
 

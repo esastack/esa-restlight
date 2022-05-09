@@ -16,6 +16,7 @@
 package io.esastack.restlight.core.handler;
 
 import io.esastack.restlight.core.handler.impl.HandlerMappingImpl;
+import io.esastack.restlight.core.handler.method.RouteMethodInfo;
 import io.esastack.restlight.core.route.Mapping;
 import org.junit.jupiter.api.Test;
 

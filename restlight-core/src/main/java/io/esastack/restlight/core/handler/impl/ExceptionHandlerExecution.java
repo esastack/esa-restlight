@@ -20,6 +20,7 @@ import io.esastack.restlight.core.handler.Handler;
 import io.esastack.restlight.core.handler.HandlerInvoker;
 import io.esastack.restlight.core.handler.HandlerValueResolver;
 import io.esastack.restlight.core.handler.method.HandlerMethod;
+import io.esastack.restlight.core.handler.method.HandlerMethodAdapter;
 import io.esastack.restlight.core.handler.method.MethodParam;
 import io.esastack.restlight.core.context.RequestContext;
 

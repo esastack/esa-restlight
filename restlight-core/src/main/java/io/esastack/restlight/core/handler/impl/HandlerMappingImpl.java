@@ -17,7 +17,7 @@ package io.esastack.restlight.core.handler.impl;
 
 import esa.commons.Checks;
 import io.esastack.restlight.core.handler.HandlerMapping;
-import io.esastack.restlight.core.handler.RouteMethodInfo;
+import io.esastack.restlight.core.handler.method.RouteMethodInfo;
 import io.esastack.restlight.core.route.Mapping;
 
 import java.util.Objects;

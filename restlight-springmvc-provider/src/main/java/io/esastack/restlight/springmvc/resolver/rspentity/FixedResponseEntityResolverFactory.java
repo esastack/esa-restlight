@@ -19,7 +19,7 @@ import io.esastack.restlight.core.handler.method.HandlerMethod;
 import io.esastack.restlight.springmvc.annotation.shaded.ResponseBody0;
 
 public class FixedResponseEntityResolverFactory extends
-        io.esastack.restlight.core.resolver.rspentity.FixedResponseEntityResolverFactory {
+        io.esastack.restlight.core.resolver.entity.response.FixedResponseEntityResolverFactory {
 
     @Override
     protected boolean supports0(HandlerMethod method) {

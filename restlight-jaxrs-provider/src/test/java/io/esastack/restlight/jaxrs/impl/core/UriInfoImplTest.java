@@ -25,7 +25,7 @@ import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.context.impl.RequestContextImpl;
 import io.esastack.restlight.core.handler.HandlerMapping;
 import io.esastack.restlight.core.handler.impl.HandlerMappingImpl;
-import io.esastack.restlight.core.handler.impl.RouteMethodInfoImpl;
+import io.esastack.restlight.core.handler.method.RouteMethodInfoImpl;
 import io.esastack.restlight.core.handler.method.RouteHandlerMethodImpl;
 import io.esastack.restlight.core.mock.MockHttpRequest;
 import io.esastack.restlight.core.mock.MockHttpResponse;

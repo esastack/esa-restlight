@@ -20,10 +20,10 @@ import esa.commons.collection.Attributes;
 import io.esastack.restlight.core.resolver.context.ContextResolverFactory;
 import io.esastack.restlight.core.resolver.param.ParamResolverAdviceFactory;
 import io.esastack.restlight.core.resolver.param.ParamResolverFactory;
-import io.esastack.restlight.core.resolver.reqentity.RequestEntityResolverAdviceFactory;
-import io.esastack.restlight.core.resolver.reqentity.RequestEntityResolverFactory;
-import io.esastack.restlight.core.resolver.rspentity.ResponseEntityResolverAdviceFactory;
-import io.esastack.restlight.core.resolver.rspentity.ResponseEntityResolverFactory;
+import io.esastack.restlight.core.resolver.entity.request.RequestEntityResolverAdviceFactory;
+import io.esastack.restlight.core.resolver.entity.request.RequestEntityResolverFactory;
+import io.esastack.restlight.core.resolver.entity.response.ResponseEntityResolverAdviceFactory;
+import io.esastack.restlight.core.resolver.entity.response.ResponseEntityResolverFactory;
 import io.esastack.restlight.core.resolver.converter.StringConverterFactory;
 import io.esastack.restlight.core.spi.RouteFilterFactory;
 

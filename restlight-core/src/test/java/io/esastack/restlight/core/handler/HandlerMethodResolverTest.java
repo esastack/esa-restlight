@@ -21,6 +21,7 @@ import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.context.impl.RequestContextImpl;
 import io.esastack.restlight.core.context.HttpRequest;
 import io.esastack.restlight.core.context.HttpResponse;
+import io.esastack.restlight.core.handler.method.HandlerMethodInfo;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 

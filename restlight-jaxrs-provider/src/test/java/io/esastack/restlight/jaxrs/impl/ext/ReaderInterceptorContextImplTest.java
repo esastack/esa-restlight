@@ -18,7 +18,7 @@ package io.esastack.restlight.jaxrs.impl.ext;
 import esa.commons.collection.AttributeMap;
 import io.esastack.commons.net.netty.http.Http1HeadersImpl;
 import io.esastack.restlight.core.context.RequestEntity;
-import io.esastack.restlight.core.resolver.reqentity.RequestEntityResolverContext;
+import io.esastack.restlight.core.resolver.entity.request.RequestEntityResolverContext;
 import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.context.impl.RequestContextImpl;
 import io.esastack.restlight.core.context.HttpRequest;

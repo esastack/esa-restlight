@@ -24,7 +24,7 @@ import io.esastack.restlight.core.handler.method.HandlerMethodImpl;
 import io.esastack.restlight.core.handler.method.Param;
 import io.esastack.restlight.core.context.ResponseEntityChannelImpl;
 import io.esastack.restlight.core.context.ResponseEntityImpl;
-import io.esastack.restlight.core.resolver.rspentity.ResponseEntityResolver;
+import io.esastack.restlight.core.resolver.entity.response.ResponseEntityResolver;
 import io.esastack.restlight.core.resolver.converter.StringConverterFactory;
 import io.esastack.restlight.core.resolver.converter.StringConverterProvider;
 import io.esastack.restlight.core.spi.impl.DefaultStringConverterFactory;

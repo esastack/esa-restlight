@@ -17,8 +17,8 @@ package io.esastack.restlight.jaxrs.adapter;
 
 import esa.commons.ClassUtils;
 import io.esastack.restlight.core.handler.method.HandlerMethod;
-import io.esastack.restlight.core.resolver.rspentity.ResponseEntityResolverAdviceAdapter;
-import io.esastack.restlight.core.resolver.rspentity.ResponseEntityResolverContext;
+import io.esastack.restlight.core.resolver.entity.response.ResponseEntityResolverAdviceAdapter;
+import io.esastack.restlight.core.resolver.entity.response.ResponseEntityResolverContext;
 import io.esastack.restlight.core.util.Ordered;
 import jakarta.ws.rs.core.GenericEntity;
 import jakarta.ws.rs.core.Response;

@@ -19,6 +19,7 @@ import esa.commons.collection.AttributeKey;
 import io.esastack.restlight.core.handler.HandlerInvoker;
 import io.esastack.restlight.core.handler.HandlerValueResolver;
 import io.esastack.restlight.core.filter.RouteFilter;
+import io.esastack.restlight.core.handler.method.RouteHandlerMethodAdapter;
 import io.esastack.restlight.core.interceptor.InternalInterceptor;
 import io.esastack.restlight.core.handler.method.HandlerMethod;
 import io.esastack.restlight.core.handler.method.ResolvableParam;

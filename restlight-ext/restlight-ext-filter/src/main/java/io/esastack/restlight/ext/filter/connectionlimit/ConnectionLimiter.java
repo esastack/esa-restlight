@@ -18,7 +18,7 @@ package io.esastack.restlight.ext.filter.connectionlimit;
 import com.google.common.util.concurrent.RateLimiter;
 import esa.commons.Checks;
 import io.esastack.restlight.core.server.Connection;
-import io.esastack.restlight.core.server.handler.ConnectionInitHandler;
+import io.esastack.restlight.core.server.connection.ConnectionInitHandler;
 import io.esastack.restlight.core.util.LoggerUtils;
 
 /**

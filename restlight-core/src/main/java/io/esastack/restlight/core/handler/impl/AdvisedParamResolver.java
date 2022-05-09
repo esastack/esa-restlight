@@ -16,6 +16,7 @@
 package io.esastack.restlight.core.handler.impl;
 
 import io.esastack.restlight.core.DeployContext;
+import io.esastack.restlight.core.resolver.ResolverWrap;
 import io.esastack.restlight.core.resolver.param.ParamResolver;
 import io.esastack.restlight.core.resolver.param.ParamResolverAdvice;
 import io.esastack.restlight.core.resolver.param.ParamResolverContextImpl;
@@ -23,13 +24,13 @@ import io.esastack.restlight.core.context.RequestContext;
 
 import java.util.List;
 
-class AdvisedParamResolver implements ResolverWrap {
+public class AdvisedParamResolver implements ResolverWrap {
 
     private final ParamResolver resolver;
     private final List<ParamResolverAdvice> advices;
     private final boolean absentAdvices;
 
-    AdvisedParamResolver(ParamResolver resolver, List<ParamResolverAdvice> advices) {
+    public AdvisedParamResolver(ParamResolver resolver, List<ParamResolverAdvice> advices) {
         this.resolver = resolver;
         this.absentAdvices = (advices == null || advices.isEmpty());
         this.advices = advices;

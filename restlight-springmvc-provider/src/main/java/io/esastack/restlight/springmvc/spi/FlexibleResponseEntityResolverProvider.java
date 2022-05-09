@@ -17,7 +17,7 @@ package io.esastack.restlight.springmvc.spi;
 
 import io.esastack.restlight.core.DeployContext;
 import io.esastack.restlight.core.config.SerializeOptions;
-import io.esastack.restlight.core.resolver.rspentity.ResponseEntityResolverFactory;
+import io.esastack.restlight.core.resolver.entity.response.ResponseEntityResolverFactory;
 import io.esastack.restlight.core.spi.ResponseEntityResolverProvider;
 import io.esastack.restlight.springmvc.resolver.rspentity.FlexibleResponseEntityResolverFactory;
 import io.esastack.restlight.springmvc.resolver.rspentity.NegotiationResponseResolverFactory;

@@ -16,7 +16,7 @@
 package io.esastack.restlight.core.locator;
 
 import io.esastack.restlight.core.handler.HandlerMapping;
-import io.esastack.restlight.core.handler.HandlerMethodInfo;
+import io.esastack.restlight.core.handler.method.HandlerMethodInfo;
 import io.esastack.restlight.core.util.Ordered;
 
 import java.lang.reflect.Method;

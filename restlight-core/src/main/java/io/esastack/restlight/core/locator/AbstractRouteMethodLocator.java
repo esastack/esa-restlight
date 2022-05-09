@@ -17,8 +17,8 @@ package io.esastack.restlight.core.locator;
 
 import io.esastack.commons.net.http.HttpStatus;
 import io.esastack.restlight.core.handler.HandlerMapping;
-import io.esastack.restlight.core.handler.RouteMethodInfo;
-import io.esastack.restlight.core.handler.impl.RouteMethodInfoImpl;
+import io.esastack.restlight.core.handler.method.RouteMethodInfo;
+import io.esastack.restlight.core.handler.method.RouteMethodInfoImpl;
 import io.esastack.restlight.core.handler.method.HandlerMethod;
 import io.esastack.restlight.core.handler.method.HandlerMethodImpl;
 import io.esastack.restlight.core.handler.method.RouteHandlerMethodImpl;

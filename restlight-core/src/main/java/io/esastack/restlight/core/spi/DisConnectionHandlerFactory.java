@@ -17,7 +17,7 @@ package io.esastack.restlight.core.spi;
 
 import esa.commons.spi.SPI;
 import io.esastack.restlight.core.DeployContext;
-import io.esastack.restlight.core.server.handler.DisConnectionHandler;
+import io.esastack.restlight.core.server.connection.DisConnectionHandler;
 
 import java.util.Optional;
 

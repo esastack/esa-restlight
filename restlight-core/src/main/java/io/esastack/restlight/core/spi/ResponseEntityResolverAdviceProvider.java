@@ -17,7 +17,7 @@ package io.esastack.restlight.core.spi;
 
 import esa.commons.spi.SPI;
 import io.esastack.restlight.core.DeployContext;
-import io.esastack.restlight.core.resolver.rspentity.ResponseEntityResolverAdviceFactory;
+import io.esastack.restlight.core.resolver.entity.response.ResponseEntityResolverAdviceFactory;
 
 import java.util.Optional;
 

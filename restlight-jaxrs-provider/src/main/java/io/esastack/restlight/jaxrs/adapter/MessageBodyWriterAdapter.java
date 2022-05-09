@@ -21,7 +21,7 @@ import esa.commons.Result;
 import io.esastack.restlight.core.handler.method.HandlerMethod;
 import io.esastack.restlight.core.context.ResponseEntity;
 import io.esastack.restlight.core.context.ResponseEntityChannel;
-import io.esastack.restlight.core.resolver.rspentity.ResponseEntityResolverAdapter;
+import io.esastack.restlight.core.resolver.entity.response.ResponseEntityResolverAdapter;
 import io.esastack.restlight.core.util.ResponseEntityUtils;
 import io.esastack.restlight.jaxrs.util.JaxrsUtils;
 import io.esastack.restlight.jaxrs.util.MediaTypeUtils;

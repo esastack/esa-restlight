@@ -15,8 +15,8 @@
  */
 package io.esastack.restlight.jaxrs.impl.core;
 
-import io.esastack.restlight.core.handler.RouteMethodInfo;
-import io.esastack.restlight.core.handler.impl.RouteMethodInfoImpl;
+import io.esastack.restlight.core.handler.method.RouteMethodInfo;
+import io.esastack.restlight.core.handler.method.RouteMethodInfoImpl;
 import io.esastack.restlight.core.handler.method.RouteHandlerMethodImpl;
 import org.junit.jupiter.api.Test;
 

@@ -20,7 +20,7 @@ import esa.commons.collection.AttributeMap;
 import esa.commons.collection.Attributes;
 import io.esastack.restlight.core.handler.method.HandlerMethod;
 import io.esastack.restlight.core.context.RequestEntity;
-import io.esastack.restlight.core.resolver.reqentity.RequestEntityResolverContext;
+import io.esastack.restlight.core.resolver.entity.request.RequestEntityResolverContext;
 import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.context.impl.RequestContextImpl;
 import io.esastack.restlight.core.context.HttpRequest;

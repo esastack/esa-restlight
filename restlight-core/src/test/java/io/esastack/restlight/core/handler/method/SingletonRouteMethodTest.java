@@ -20,8 +20,6 @@ import io.esastack.restlight.core.handler.HandlerMapping;
 import io.esastack.restlight.core.handler.HandlerValueResolver;
 import io.esastack.restlight.core.handler.impl.HandlerContext;
 import io.esastack.restlight.core.handler.impl.MockHandlerData;
-import io.esastack.restlight.core.handler.impl.RouteHandlerMethodAdapterTest;
-import io.esastack.restlight.core.handler.impl.SingletonRouteMethod;
 import io.esastack.restlight.core.interceptor.Interceptor;
 import io.esastack.restlight.core.interceptor.InterceptorPredicate;
 import io.esastack.restlight.core.resolver.exception.ExceptionResolver;
