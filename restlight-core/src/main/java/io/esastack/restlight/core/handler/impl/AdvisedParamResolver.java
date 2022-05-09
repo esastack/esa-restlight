@@ -23,7 +23,7 @@ import io.esastack.restlight.server.context.RequestContext;
 
 import java.util.List;
 
-class AdvisedParamResolver implements ResolverAdaptor {
+class AdvisedParamResolver implements ResolverWrap {
 
     private final ParamResolver resolver;
     private final List<ParamResolverAdvice> advices;
