@@ -19,7 +19,7 @@ import io.esastack.restlight.core.DeployContext;
 import io.esastack.restlight.core.resolver.Resolver;
 import io.esastack.restlight.server.context.RequestContext;
 
-interface ResolverWrap extends Resolver {
+interface ResolverAdaptor extends Resolver {
 
     /**
      * Resolves the param by given {@link DeployContext} and {@link RequestContext}.

@@ -42,7 +42,7 @@ public class HandlerMethodAdapter<H extends HandlerMethod> implements HandlerMet
 
     private final HandlerContext context;
     private final H handlerMethod;
-    private final ResolvableParam<MethodParam, ResolverWrap>[] paramResolvers;
+    private final ResolvableParam<MethodParam, ResolverAdaptor>[] paramResolvers;
     private final boolean concurrent;
 
     public HandlerMethodAdapter(HandlerContext context, H handlerMethod) {
@@ -92,31 +92,31 @@ public class HandlerMethodAdapter<H extends HandlerMethod> implements HandlerMet
     }
 
     @SuppressWarnings("unchecked")
-    private ResolvableParam<MethodParam, ResolverWrap>[] buildParamResolvers(HandlerMethod handlerMethod,
-                                                                             ResolvableParamPredicate
+    private ResolvableParam<MethodParam, ResolverAdaptor>[] buildParamResolvers(HandlerMethod handlerMethod,
+                                                                                ResolvableParamPredicate
                                                                                         resolvable,
-                                                                             HandlerResolverFactory factory) {
+                                                                                HandlerResolverFactory factory) {
         MethodParam[] params = handlerMethod.parameters();
-        List<ResolvableParam<MethodParam, ResolverWrap>> resolvers = new LinkedList<>();
+        List<ResolvableParam<MethodParam, ResolverAdaptor>> resolvers = new LinkedList<>();
         for (MethodParam param : params) {
             if (resolvable.test(param)) {
-                resolvers.add(getResolverWrap(param, factory));
+                resolvers.add(getResolver(param, factory));
             }
         }
         return resolvers.toArray(new ResolvableParam[0]);
     }
 
-    <P extends Param> ResolvableParam<P, ResolverWrap> getResolverWrap(P param,
-                                                                       HandlerResolverFactory factory) {
+    <P extends Param> ResolvableParam<P, ResolverAdaptor> getResolver(P param,
+                                                                      HandlerResolverFactory factory) {
         // get fix resolver
-        ResolvableParam<P, ResolverWrap> fixedResolverWrap = getFixedResolverWrap(param, factory);
-        if (fixedResolverWrap != null) {
-            return fixedResolverWrap;
+        ResolvableParam<P, ResolverAdaptor> fixedResolver = getFixedResolver(param, factory);
+        if (fixedResolver != null) {
+            return fixedResolver;
         }
 
         ContextResolver contextResolver = factory.getContextResolver(param);
         if (contextResolver != null) {
-            return new ResolvableParam<>(param, new ContextResolverWrap(contextResolver));
+            return new ResolvableParam<>(param, new ContextResolverAdaptor(contextResolver));
         } else {
             ParamResolver paramResolver = factory.getParamResolver(param);
             if (paramResolver != null) {
@@ -138,16 +138,16 @@ public class HandlerMethodAdapter<H extends HandlerMethod> implements HandlerMet
     /**
      * provide the custom fixed {@link ResolvableParam}.
      *
-     * @param param param
+     * @param param   param
      * @param factory factory
      * @return custom {@link ResolvableParam}
      */
-    protected <P extends Param> ResolvableParam<P, ResolverWrap> getFixedResolverWrap(P param,
-                                                                                    HandlerResolverFactory factory) {
+    protected <P extends Param> ResolvableParam<P, ResolverAdaptor> getFixedResolver(P param,
+                                                                                     HandlerResolverFactory factory) {
         return null;
     }
 
-    ResolvableParam<MethodParam, ResolverWrap>[] paramResolvers() {
+    ResolvableParam<MethodParam, ResolverAdaptor>[] paramResolvers() {
         return paramResolvers;
     }
 
