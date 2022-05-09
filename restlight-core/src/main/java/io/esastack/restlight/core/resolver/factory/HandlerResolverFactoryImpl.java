@@ -17,7 +17,7 @@ package io.esastack.restlight.core.resolver.factory;
 
 import esa.commons.Checks;
 import esa.commons.collection.Attributes;
-import io.esastack.restlight.core.configure.HandlerConfiguration;
+import io.esastack.restlight.core.deploy.HandlerConfiguration;
 import io.esastack.restlight.core.handler.FutureTransfer;
 import io.esastack.restlight.core.filter.RouteFilter;
 import io.esastack.restlight.core.handler.method.HandlerMethod;

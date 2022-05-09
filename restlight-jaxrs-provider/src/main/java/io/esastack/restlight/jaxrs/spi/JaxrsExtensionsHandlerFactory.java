@@ -17,8 +17,8 @@ package io.esastack.restlight.jaxrs.spi;
 
 import esa.commons.annotation.Internal;
 import esa.commons.spi.Feature;
-import io.esastack.restlight.core.configure.ExtensionsHandler;
-import io.esastack.restlight.core.configure.MiniConfigurableDeployments;
+import io.esastack.restlight.core.deploy.ExtensionsHandler;
+import io.esastack.restlight.core.deploy.MiniConfigurableDeployments;
 import io.esastack.restlight.core.spi.ExtensionsHandlerFactory;
 import io.esastack.restlight.core.util.Constants;
 import io.esastack.restlight.jaxrs.configure.JaxrsExtensionsHandler;

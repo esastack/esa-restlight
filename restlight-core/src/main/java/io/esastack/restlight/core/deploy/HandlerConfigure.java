@@ -13,28 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.esastack.restlight.core.configure;
+package io.esastack.restlight.core.deploy;
 
 import esa.commons.annotation.Internal;
 import esa.commons.spi.SPI;
-import io.esastack.restlight.core.Deployments;
+import io.esastack.restlight.core.handler.method.HandlerMethod;
+import io.esastack.restlight.core.util.Ordered;
 
 /**
- * DeploymentsConfigure allows user to add the custom components to {@link Deployments} before applying the
- * {@link Deployments}. You can see more information from {@link Deployments} {@code beforeApplyDeployments}.
+ * This interface is used to configure {@link ConfigurableHandler} dynamically when {@link HandlerMethod}
+ * is prepared to be registered.
  */
-@SPI
-@Internal
 @FunctionalInterface
-public interface DeploymentsConfigure {
+@Internal
+@SPI
+public interface HandlerConfigure extends Ordered {
 
     /**
-     * Performs this operation on the given {@link Deployments} and {@link Deployments} which will be used
-     * to configure current deployments.
+     * Configures the {@link ConfigurableHandler} when the given {@code handlerMethod} is prepare to be
+     * registered.
      *
-     * @param deployments current instance of deployments
+     * @param handlerMethod handler method
+     * @param configurable  configurable
      */
-    void accept(ConfigurableDeployments deployments);
+    void configure(HandlerMethod handlerMethod, ConfigurableHandler configurable);
 
 }
 

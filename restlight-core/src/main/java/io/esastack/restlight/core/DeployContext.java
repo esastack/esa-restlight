@@ -17,7 +17,7 @@ package io.esastack.restlight.core;
 
 import esa.commons.collection.Attributes;
 import io.esastack.restlight.core.config.RestlightOptions;
-import io.esastack.restlight.core.configure.HandlerConfigure;
+import io.esastack.restlight.core.deploy.HandlerConfigure;
 import io.esastack.restlight.core.handler.Handlers;
 import io.esastack.restlight.core.handler.HandlerAdvicesFactory;
 import io.esastack.restlight.core.handler.HandlerContextProvider;

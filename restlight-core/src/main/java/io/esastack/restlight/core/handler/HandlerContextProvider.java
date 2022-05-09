@@ -20,7 +20,7 @@ import io.esastack.restlight.core.handler.method.HandlerMethod;
 
 /**
  * You can use this {@link HandlerContextProvider} to get the {@link HandlerContext} which have configured by
- * {@link io.esastack.restlight.core.configure.HandlerConfigure}.
+ * {@link io.esastack.restlight.core.deploy.HandlerConfigure}.
  */
 @FunctionalInterface
 public interface HandlerContextProvider {

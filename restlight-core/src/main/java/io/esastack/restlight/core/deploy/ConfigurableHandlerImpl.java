@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.esastack.restlight.core.configure;
+package io.esastack.restlight.core.deploy;
 
 import esa.commons.Checks;
 import esa.commons.collection.Attributes;

@@ -16,7 +16,7 @@
 package io.esastack.restlight.jaxrs.adapter;
 
 import io.esastack.restlight.core.DeployContext;
-import io.esastack.restlight.core.configure.ConfigurableHandler;
+import io.esastack.restlight.core.deploy.ConfigurableHandler;
 import io.esastack.restlight.core.filter.RouteFilter;
 import io.esastack.restlight.core.handler.method.HandlerMethod;
 import io.esastack.restlight.core.handler.method.HandlerMethodImpl;

@@ -17,8 +17,8 @@ package io.esastack.restlight.jaxrs.configure;
 
 import io.esastack.restlight.core.DeployContext;
 import io.esastack.restlight.core.config.RestlightOptions;
-import io.esastack.restlight.core.configure.HandlerConfigure;
-import io.esastack.restlight.core.configure.MiniConfigurableDeployments;
+import io.esastack.restlight.core.deploy.HandlerConfigure;
+import io.esastack.restlight.core.deploy.MiniConfigurableDeployments;
 import io.esastack.restlight.core.resolver.context.ContextResolverAdapter;
 import io.esastack.restlight.core.resolver.exception.ExceptionResolver;
 import io.esastack.restlight.core.resolver.param.ParamResolverFactory;

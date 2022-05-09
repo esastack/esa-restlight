@@ -17,8 +17,8 @@ package io.esastack.restlight.core.spi;
 
 import esa.commons.annotation.Internal;
 import esa.commons.spi.SPI;
-import io.esastack.restlight.core.configure.ExtensionsHandler;
-import io.esastack.restlight.core.configure.MiniConfigurableDeployments;
+import io.esastack.restlight.core.deploy.ExtensionsHandler;
+import io.esastack.restlight.core.deploy.MiniConfigurableDeployments;
 
 import java.util.Optional;
 

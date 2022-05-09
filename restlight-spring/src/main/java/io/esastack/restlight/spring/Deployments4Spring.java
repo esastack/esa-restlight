@@ -23,7 +23,7 @@ import esa.commons.spi.SpiLoader;
 import io.esastack.restlight.core.AbstractRestlight;
 import io.esastack.restlight.core.Deployments;
 import io.esastack.restlight.core.config.RestlightOptions;
-import io.esastack.restlight.core.configure.HandlerConfigure;
+import io.esastack.restlight.core.deploy.HandlerConfigure;
 import io.esastack.restlight.core.handler.HandlerRegistryAware;
 import io.esastack.restlight.core.handler.HandlerMapping;
 import io.esastack.restlight.core.handler.HandlerMappingProvider;

@@ -18,7 +18,7 @@ package io.esastack.restlight.core.handler.impl;
 import esa.commons.Checks;
 import esa.commons.ClassUtils;
 import io.esastack.restlight.core.DeployContext;
-import io.esastack.restlight.core.configure.DelegatingDeployContext;
+import io.esastack.restlight.core.deploy.DelegatingDeployContext;
 import io.esastack.restlight.core.handler.HandlerMapping;
 import io.esastack.restlight.core.handler.HandlerValueResolver;
 import io.esastack.restlight.core.handler.RouterRegistries;
