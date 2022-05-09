@@ -123,12 +123,12 @@ public class SpringMvcExceptionResolverFactory extends AbstractExceptionResolver
                         new ExecutionExceptionResolver(new HandlerMethodAdapter(
                                 new HandlerContext(context), handler.handlerMethod()) {
                             @Override
-                            protected ResolvableParam getFixedResolver(Param param,
+                            protected ResolvableParam getFixedResolverWrap(Param param,
                                                                            HandlerResolverFactory factory) {
                                 if (param.type().isAssignableFrom(exceptionType)) {
                                     return new ResolvableParam(param, null);
                                 }
-                                return super.getFixedResolver(param, factory);
+                                return super.getFixedResolverWrap(param, factory);
                             }
                         },
                                 new HandlerMethodResolver(handler),

@@ -20,11 +20,11 @@ import io.esastack.restlight.core.DeployContext;
 import io.esastack.restlight.core.resolver.ContextResolver;
 import io.esastack.restlight.server.context.RequestContext;
 
-class ContextResolverAdaptor implements ResolverAdaptor {
+class ContextResolverWrap implements ResolverWrap {
 
     private final ContextResolver underlying;
 
-    ContextResolverAdaptor(ContextResolver underlying) {
+    ContextResolverWrap(ContextResolver underlying) {
         Checks.checkNotNull(underlying, "underlying");
         this.underlying = underlying;
     }
