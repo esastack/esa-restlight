@@ -37,7 +37,13 @@ import io.esastack.restlight.springmvc.annotation.shaded.ExceptionHandler0;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 public class SpringMvcExceptionResolverFactory extends AbstractExceptionResolverFactory {
 
@@ -117,12 +123,12 @@ public class SpringMvcExceptionResolverFactory extends AbstractExceptionResolver
                         new ExecutionExceptionResolver(new HandlerMethodAdapter(
                                 new HandlerContext(context), handler.handlerMethod()) {
                             @Override
-                            protected ResolvableParam getFixedResolverWrap(Param param,
+                            protected ResolvableParam getFixedResolver(Param param,
                                                                            HandlerResolverFactory factory) {
                                 if (param.type().isAssignableFrom(exceptionType)) {
                                     return new ResolvableParam(param, null);
                                 }
-                                return super.getFixedResolverWrap(param, factory);
+                                return super.getFixedResolver(param, factory);
                             }
                         },
                                 new HandlerMethodResolver(handler),

@@ -32,7 +32,10 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ExecutionException;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -118,7 +121,7 @@ class AbstractExecutionTest {
                 };
 
         final MethodParam param = mock(MethodParam.class);
-        final ResolverWrap argResolver = mock(ResolverWrap.class);
+        final ResolverAdaptor argResolver = mock(ResolverAdaptor.class);
         when(argResolver.resolve(any(), any())).thenReturn("foo");
         final ResolvableParam[] params = new ResolvableParam[1];
         params[0] = new ResolvableParam(param, argResolver);
@@ -178,7 +181,7 @@ class AbstractExecutionTest {
                 };
 
         final MethodParam param = mock(MethodParam.class);
-        final ResolverWrap argResolver = mock(ResolverWrap.class);
+        final ResolverAdaptor argResolver = mock(ResolverAdaptor.class);
         when(argResolver.resolve(any(), any())).thenThrow(new IllegalStateException());
         //noinspection unchecked
         when(param.type()).thenReturn((Class) Object.class);

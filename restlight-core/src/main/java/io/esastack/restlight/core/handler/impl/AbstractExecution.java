@@ -88,11 +88,11 @@ abstract class AbstractExecution<H extends HandlerMethodAdapter> implements Exec
 
     @SuppressWarnings("unchecked")
     protected Object[] resolveArgs(RequestContext context) {
-        final ResolvableParam<MethodParam, ResolverWrap>[] params = handlerMethod.paramResolvers();
+        final ResolvableParam<MethodParam, ResolverAdaptor>[] params = handlerMethod.paramResolvers();
         final Object[] args = new Object[params.length];
         //resolve parameters one by one
         for (int i = 0; i < params.length; i++) {
-            ResolvableParam<MethodParam, ResolverWrap> resolvable = params[i];
+            ResolvableParam<MethodParam, ResolverAdaptor> resolvable = params[i];
             final MethodParam param = resolvable.param();
             args[i] = resolveFixedArg(param, context);
             //resolve args with resolver

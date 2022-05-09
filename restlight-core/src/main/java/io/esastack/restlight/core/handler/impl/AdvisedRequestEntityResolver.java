@@ -27,7 +27,7 @@ import io.esastack.restlight.server.context.RequestContext;
 
 import java.util.List;
 
-class AdvisedRequestEntityResolver implements ResolverWrap {
+class AdvisedRequestEntityResolver implements ResolverAdaptor {
 
     private final Param param;
     private final RequestEntityResolver[] resolvers;
