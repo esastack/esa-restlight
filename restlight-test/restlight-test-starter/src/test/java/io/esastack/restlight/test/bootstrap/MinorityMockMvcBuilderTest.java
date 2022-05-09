@@ -35,7 +35,6 @@ import io.esastack.restlight.server.mock.MockHttpRequest;
 import io.esastack.restlight.test.context.MockMvc;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 
 import java.util.Collections;
 import java.util.List;
@@ -58,12 +57,10 @@ class MinorityMockMvcBuilderTest {
                 Assertions.assertEquals(404, result.response().status()));
     }
 
-    @ControllerAdvice
     public static class A {
 
     }
 
-    @ControllerAdvice
     public static class B {
 
     }
