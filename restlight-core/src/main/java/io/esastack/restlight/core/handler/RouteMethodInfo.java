@@ -15,9 +15,7 @@
  */
 package io.esastack.restlight.core.handler;
 
-import io.esastack.commons.net.http.HttpStatus;
 import io.esastack.restlight.core.handler.method.RouteHandlerMethod;
-import io.esastack.restlight.core.method.RouteHandlerMethod;
 
 public interface RouteMethodInfo extends HandlerMethodInfo {
 

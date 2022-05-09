@@ -3,7 +3,7 @@ package io.esastack.restlight.core.handler.impl;
 import esa.commons.Checks;
 import io.esastack.commons.net.http.HttpStatus;
 import io.esastack.restlight.core.handler.HandlerMethodInfo;
-import io.esastack.restlight.core.method.HandlerMethod;
+import io.esastack.restlight.core.handler.method.HandlerMethod;
 
 import java.util.Objects;
 
