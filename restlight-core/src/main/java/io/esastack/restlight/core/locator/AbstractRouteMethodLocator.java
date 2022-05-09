@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 OPPO ESA Stack Project
+ * Copyright 2020 OPPO ESA Stack Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,7 +38,7 @@ public abstract class AbstractRouteMethodLocator implements RouteMethodLocator {
     @Override
     public Optional<RouteMethodInfo> getRouteMethodInfo(HandlerMapping parent, Class<?> userType, Method method) {
         HandlerMethod handlerMethod = HandlerMethodImpl.of(userType, method);
-        return Optional.of(new RouteMethodInfo(RouteHandlerMethodImpl.of(handlerMethod,
+        return Optional.of(new RouteMethodInfoImpl(RouteHandlerMethodImpl.of(handlerMethod,
                 InterceptorUtils.isIntercepted(handlerMethod),
                 RouteUtils.scheduling(handlerMethod, defaultScheduling)),
                 isLocator(handlerMethod), getCustomStatus(handlerMethod)));

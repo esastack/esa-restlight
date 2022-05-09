@@ -17,6 +17,8 @@ package io.esastack.restlight.jaxrs.impl.core;
 
 import io.esastack.restlight.core.handler.RouteMethodInfo;
 import io.esastack.restlight.core.handler.method.RouteHandlerMethodImpl;
+import io.esastack.restlight.core.handler.impl.RouteMethodInfoImpl;
+import io.esastack.restlight.core.method.RouteHandlerMethodImpl;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
@@ -36,13 +38,13 @@ class MatchedResourceTest {
 
     @Test
     void testBasic() throws Throwable {
-        final RouteMethodInfo methodInfo = new RouteMethodInfo(RouteHandlerMethodImpl.of(Object.class,
+        final RouteMethodInfo methodInfo = new RouteMethodInfoImpl(RouteHandlerMethodImpl.of(Object.class,
                 Object.class.getDeclaredMethod("toString"), false, null),
                 false, null);
         final MatchedResource resource = new MatchedResource(methodInfo, null);
         assertSame(methodInfo, resource.method());
         assertFalse(resource.bean().isPresent());
-        assertEquals("MatchedResource{method=HandlerMethodInfo{locator=false," +
+        assertEquals("MatchedResource{method=HandlerMethodInfoImpl{locator=false," +
                 " handlerMethod=RouteHandlerMethod: {java.lang.Object => toString," +
                 " intercepted: false, scheduler: BIZ}, customStatus=null}}",
                 resource.toString());

@@ -20,8 +20,17 @@ import io.esastack.commons.net.http.HttpHeaderNames;
 import io.esastack.commons.net.http.HttpHeaderValues;
 import io.esastack.commons.net.http.HttpMethod;
 import io.esastack.restlight.core.handler.HandlerMapping;
-import io.esastack.restlight.core.handler.RouteMethodInfo;
 import io.esastack.restlight.core.handler.impl.HandlerMappingImpl;
+import io.esastack.restlight.core.handler.impl.RouteMethodInfoImpl;
+import io.esastack.restlight.core.method.RouteHandlerMethodImpl;
+import io.esastack.restlight.server.context.RequestContext;
+import io.esastack.restlight.server.context.impl.RequestContextImpl;
+import io.esastack.restlight.server.core.HttpRequest;
+import io.esastack.restlight.server.core.HttpResponse;
+import io.esastack.restlight.server.mock.MockHttpRequest;
+import io.esastack.restlight.server.mock.MockHttpResponse;
+import io.esastack.restlight.server.route.Mapping;
+import io.esastack.restlight.server.route.predicate.PatternsPredicate;
 import io.esastack.restlight.core.handler.method.RouteHandlerMethodImpl;
 import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.context.impl.RequestContextImpl;
@@ -277,13 +286,13 @@ class UriInfoImplTest {
         final Method method1 = Object.class.getMethod("equals", Object.class);
         final Object obj1 = new Object();
         mappings.add(new HandlerMappingImpl(Mapping.mapping("/abc"),
-                new RouteMethodInfo(RouteHandlerMethodImpl.of(userType,
+                new RouteMethodInfoImpl(RouteHandlerMethodImpl.of(userType,
                         method1, false, null),
                         false, null), obj1, null));
 
         final Method method2 = Object.class.getMethod("toString");
         mappings.add(new HandlerMappingImpl(Mapping.mapping("abc/def"),
-                new RouteMethodInfo(RouteHandlerMethodImpl.of(userType,
+                new RouteMethodInfoImpl(RouteHandlerMethodImpl.of(userType,
                         method2, false, null),
                         false, null), null, null));
 
@@ -315,13 +324,13 @@ class UriInfoImplTest {
         final Method method1 = Object.class.getMethod("equals", Object.class);
         final Object obj1 = new Object();
         mappings.add(new HandlerMappingImpl(Mapping.mapping("/abc"),
-                new RouteMethodInfo(RouteHandlerMethodImpl.of(userType,
+                new RouteMethodInfoImpl(RouteHandlerMethodImpl.of(userType,
                         method1, false, null),
                         false, null), obj1, null));
 
         final Method method2 = Object.class.getMethod("toString");
         mappings.add(new HandlerMappingImpl(Mapping.mapping("abc/def"),
-                new RouteMethodInfo(RouteHandlerMethodImpl.of(userType,
+                new RouteMethodInfoImpl(RouteHandlerMethodImpl.of(userType,
                         method2, false, null),
                         false, null), null, null));
 

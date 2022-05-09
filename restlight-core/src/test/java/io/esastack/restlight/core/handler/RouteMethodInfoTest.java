@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 OPPO ESA Stack Project
+ * Copyright 2021 OPPO ESA Stack Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,8 @@ package io.esastack.restlight.core.handler;
 
 import io.esastack.commons.net.http.HttpStatus;
 import io.esastack.restlight.core.handler.method.RouteHandlerMethod;
+import io.esastack.restlight.core.handler.impl.RouteMethodInfoImpl;
+import io.esastack.restlight.core.method.RouteHandlerMethod;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -29,7 +31,7 @@ class RouteMethodInfoTest {
     void testConstruct() {
         final RouteHandlerMethod method = mock(RouteHandlerMethod.class);
         final HttpStatus status = HttpStatus.BAD_REQUEST;
-        final RouteMethodInfo methodInfo = new RouteMethodInfo(method, true, status);
+        final RouteMethodInfo methodInfo = new RouteMethodInfoImpl(method, true, status);
         assertEquals(method, methodInfo.handlerMethod());
         assertEquals(status, methodInfo.customStatus());
         assertTrue(methodInfo.isLocator());

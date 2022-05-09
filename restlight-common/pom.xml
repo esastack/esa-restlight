@@ -30,6 +30,14 @@
             <groupId>io.esastack</groupId>
             <artifactId>commons</artifactId>
         </dependency>
+        <dependency>
+            <groupId>io.esastack</groupId>
+            <artifactId>commons-net-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.esastack</groupId>
+            <artifactId>commons-net-netty</artifactId>
+        </dependency>
         <!-- need to be shaded -->
         <dependency>
             <groupId>org.ow2.asm</groupId>
