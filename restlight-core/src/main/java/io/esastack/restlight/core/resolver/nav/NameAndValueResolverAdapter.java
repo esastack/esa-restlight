@@ -18,14 +18,14 @@ package io.esastack.restlight.core.resolver.nav;
 import esa.commons.Checks;
 import esa.commons.ObjectUtils;
 import io.esastack.restlight.core.handler.method.Param;
-import io.esastack.restlight.core.resolver.param.ParamResolver;
+import io.esastack.restlight.core.resolver.param.HttpParamResolver;
 import io.esastack.restlight.core.exception.WebServerException;
 import io.esastack.restlight.core.context.RequestContext;
 
 import java.util.Optional;
 import java.util.function.Supplier;
 
-public class NameAndValueResolverAdapter implements ParamResolver {
+public class NameAndValueResolverAdapter implements HttpParamResolver {
 
     private final NameAndValue<?> nav;
     private final NameAndValueResolver resolver;

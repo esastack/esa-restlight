@@ -13,25 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.esastack.restlight.core.resolver.param;
+package io.esastack.restlight.core.resolver.context;
 
-import io.esastack.restlight.core.handler.method.Param;
+import esa.commons.Checks;
+import io.esastack.restlight.core.DeployContext;
 import io.esastack.restlight.core.context.RequestContext;
-import io.esastack.restlight.core.resolver.Resolver;
+import io.esastack.restlight.core.resolver.ParamResolver;
 
-/**
- * Interface for resolving {@link Param} to the real values of the handler method base on the current context.
- */
-public interface ParamResolver extends Resolver {
+public class ContextParamResolver implements ParamResolver {
 
-    /**
-     * Resolves method parameter into an argument value.
-     *
-     * @param context context
-     * @return value resolved
-     * @throws Exception ex
-     */
-    Object resolve(RequestContext context) throws Exception;
+    private final ContextResolver underlying;
 
+    public ContextParamResolver(ContextResolver underlying) {
+        Checks.checkNotNull(underlying, "underlying");
+        this.underlying = underlying;
+    }
+
+    @Override
+    public Object resolve(DeployContext deployContext,
+                          RequestContext context) throws Exception {
+        return underlying.resolve(deployContext);
+    }
 }
 

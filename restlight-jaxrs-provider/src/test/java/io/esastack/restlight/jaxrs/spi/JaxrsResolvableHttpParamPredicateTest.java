@@ -35,7 +35,7 @@ import java.lang.reflect.Constructor;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class JaxrsResolvableParamPredicateTest {
+class JaxrsResolvableHttpParamPredicateTest {
 
     @Test
     void testPredicate() throws Throwable {

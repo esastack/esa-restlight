@@ -18,8 +18,8 @@ package io.esastack.restlight.ext.multipart.spi;
 import esa.commons.Checks;
 import esa.commons.StringUtils;
 import io.esastack.restlight.core.DeployContext;
-import io.esastack.restlight.core.resolver.param.ParamResolverFactory;
-import io.esastack.restlight.core.spi.ParamResolverProvider;
+import io.esastack.restlight.core.resolver.param.HttpParamResolverFactory;
+import io.esastack.restlight.core.spi.HttpParamResolverProvider;
 import io.esastack.restlight.ext.multipart.core.MultipartConfig;
 import io.netty.handler.codec.http.multipart.DefaultHttpDataFactory;
 import io.netty.handler.codec.http.multipart.DiskFileUpload;
@@ -28,7 +28,7 @@ import io.netty.handler.codec.http.multipart.HttpDataFactory;
 import java.nio.charset.Charset;
 import java.util.Optional;
 
-abstract class AbstractMultipartParamResolverProvider implements ParamResolverProvider {
+abstract class AbstractMultipartParamResolverProvider implements HttpParamResolverProvider {
 
     private static final String ENCODING_KEY = "multipart.charset";
     private static final String USE_DISK_KEY = "multipart.use-disk";
@@ -37,7 +37,7 @@ abstract class AbstractMultipartParamResolverProvider implements ParamResolverPr
     private static final String TEMP_DIR_KEY = "multipart.temp-dir";
 
     @Override
-    public Optional<ParamResolverFactory> factoryBean(DeployContext ctx) {
+    public Optional<HttpParamResolverFactory> factoryBean(DeployContext ctx) {
         MultipartConfig config = buildConfig(ctx);
         Checks.checkNotNull(config, "config");
         return Optional.of(createResolver(buildFactory(config)));

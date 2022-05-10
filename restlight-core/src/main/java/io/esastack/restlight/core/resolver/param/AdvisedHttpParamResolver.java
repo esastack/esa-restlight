@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 OPPO ESA Stack Project
+ * Copyright 2022 OPPO ESA Stack Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,24 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.esastack.restlight.core.handler.impl;
+package io.esastack.restlight.core.resolver.param;
 
 import io.esastack.restlight.core.DeployContext;
-import io.esastack.restlight.core.resolver.ResolverWrap;
-import io.esastack.restlight.core.resolver.param.ParamResolver;
-import io.esastack.restlight.core.resolver.param.ParamResolverAdvice;
-import io.esastack.restlight.core.resolver.param.ParamResolverContextImpl;
+import io.esastack.restlight.core.resolver.ParamResolver;
 import io.esastack.restlight.core.context.RequestContext;
 
 import java.util.List;
 
-public class AdvisedParamResolver implements ResolverWrap {
+public class AdvisedHttpParamResolver implements ParamResolver {
 
-    private final ParamResolver resolver;
-    private final List<ParamResolverAdvice> advices;
+    private final HttpParamResolver resolver;
+    private final List<HttpParamResolverAdvice> advices;
     private final boolean absentAdvices;
 
-    public AdvisedParamResolver(ParamResolver resolver, List<ParamResolverAdvice> advices) {
+    public AdvisedHttpParamResolver(HttpParamResolver resolver, List<HttpParamResolverAdvice> advices) {
         this.resolver = resolver;
         this.absentAdvices = (advices == null || advices.isEmpty());
         this.advices = advices;
@@ -41,7 +38,7 @@ public class AdvisedParamResolver implements ResolverWrap {
         if (absentAdvices) {
             return resolver.resolve(context);
         }
-        return new ParamResolverContextImpl(context, resolver, advices).proceed();
+        return new HttpParamResolverContextImpl(context, resolver, advices).proceed();
     }
 }
 

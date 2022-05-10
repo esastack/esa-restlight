@@ -15,11 +15,11 @@ package io.esastack.restlight.integration.springmvc.cases.config;
 
 import io.esastack.restlight.core.handler.method.HandlerMethod;
 import io.esastack.restlight.core.handler.method.Param;
-import io.esastack.restlight.core.resolver.param.ParamResolver;
-import io.esastack.restlight.core.resolver.param.ParamResolverAdvice;
-import io.esastack.restlight.core.resolver.param.ParamResolverAdviceAdapter;
-import io.esastack.restlight.core.resolver.param.ParamResolverAdviceFactory;
-import io.esastack.restlight.core.resolver.param.ParamResolverContext;
+import io.esastack.restlight.core.resolver.param.HttpParamResolver;
+import io.esastack.restlight.core.resolver.param.HttpParamResolverAdvice;
+import io.esastack.restlight.core.resolver.param.HttpParamResolverAdviceAdapter;
+import io.esastack.restlight.core.resolver.param.HttpParamResolverAdviceFactory;
+import io.esastack.restlight.core.resolver.param.HttpParamResolverContext;
 import io.esastack.restlight.core.resolver.entity.request.RequestEntityResolverAdvice;
 import io.esastack.restlight.core.resolver.entity.request.RequestEntityResolverAdviceAdapter;
 import io.esastack.restlight.core.resolver.entity.request.RequestEntityResolverAdviceFactory;
@@ -36,11 +36,11 @@ import org.springframework.context.annotation.Configuration;
 public class AdviceConfig {
 
     @Bean
-    public ParamResolverAdviceFactory paramResolverAdviceFactory() {
-        return new ParamResolverAdviceFactory() {
+    public HttpParamResolverAdviceFactory paramResolverAdviceFactory() {
+        return new HttpParamResolverAdviceFactory() {
 
             @Override
-            public ParamResolverAdvice createResolverAdvice(Param param, ParamResolver resolver) {
+            public HttpParamResolverAdvice createResolverAdvice(Param param, HttpParamResolver resolver) {
                 return context -> context.proceed() + "-advice-factory";
             }
 
@@ -52,15 +52,15 @@ public class AdviceConfig {
     }
 
     @Bean
-    public ParamResolverAdviceAdapter paramResolverAdviceAdapter() {
-        return new ParamResolverAdviceAdapter() {
+    public HttpParamResolverAdviceAdapter paramResolverAdviceAdapter() {
+        return new HttpParamResolverAdviceAdapter() {
             @Override
             public boolean supports(Param param) {
                 return param.methodParam().method().getName().equals("customParamAdviceByAdaptor");
             }
 
             @Override
-            public Object aroundResolve(ParamResolverContext context) throws Exception {
+            public Object aroundResolve(HttpParamResolverContext context) throws Exception {
                 return context.proceed() + "-advice-adaptor";
             }
         };

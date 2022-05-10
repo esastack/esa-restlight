@@ -18,8 +18,8 @@ package io.esastack.restlight.core.deploy;
 import esa.commons.Checks;
 import esa.commons.collection.Attributes;
 import io.esastack.restlight.core.resolver.context.ContextResolverFactory;
-import io.esastack.restlight.core.resolver.param.ParamResolverAdviceFactory;
-import io.esastack.restlight.core.resolver.param.ParamResolverFactory;
+import io.esastack.restlight.core.resolver.param.HttpParamResolverAdviceFactory;
+import io.esastack.restlight.core.resolver.param.HttpParamResolverFactory;
 import io.esastack.restlight.core.resolver.entity.request.RequestEntityResolverAdviceFactory;
 import io.esastack.restlight.core.resolver.entity.request.RequestEntityResolverFactory;
 import io.esastack.restlight.core.resolver.entity.response.ResponseEntityResolverAdviceFactory;
@@ -35,8 +35,8 @@ public class HandlerConfiguration {
     private final Attributes attributes;
     private final List<RouteFilterFactory> routeFilters;
     private final List<StringConverterFactory> stringConverters;
-    private final List<ParamResolverFactory> paramResolvers;
-    private final List<ParamResolverAdviceFactory> paramResolverAdvices;
+    private final List<HttpParamResolverFactory> paramResolvers;
+    private final List<HttpParamResolverAdviceFactory> paramResolverAdvices;
     private final List<ContextResolverFactory> contextResolvers;
     private final List<RequestEntityResolverFactory> requestEntityResolvers;
     private final List<RequestEntityResolverAdviceFactory> requestEntityResolverAdvices;
@@ -46,8 +46,8 @@ public class HandlerConfiguration {
     public HandlerConfiguration(Attributes attributes,
                                 List<RouteFilterFactory> routeFilters,
                                 List<StringConverterFactory> stringConverters,
-                                List<ParamResolverFactory> paramResolvers,
-                                List<ParamResolverAdviceFactory> paramResolverAdvices,
+                                List<HttpParamResolverFactory> paramResolvers,
+                                List<HttpParamResolverAdviceFactory> paramResolverAdvices,
                                 List<ContextResolverFactory> contextResolvers,
                                 List<RequestEntityResolverFactory> requestEntityResolvers,
                                 List<RequestEntityResolverAdviceFactory> requestEntityResolverAdvices,
@@ -74,11 +74,11 @@ public class HandlerConfiguration {
         return stringConverters;
     }
 
-    public List<ParamResolverFactory> getParamResolvers() {
+    public List<HttpParamResolverFactory> getParamResolvers() {
         return paramResolvers;
     }
 
-    public List<ParamResolverAdviceFactory> getParamResolverAdvices() {
+    public List<HttpParamResolverAdviceFactory> getParamResolverAdvices() {
         return paramResolverAdvices;
     }
 
@@ -112,13 +112,13 @@ public class HandlerConfiguration {
         }
     }
 
-    void addParamResolvers(Collection<? extends ParamResolverFactory> resolvers) {
+    void addParamResolvers(Collection<? extends HttpParamResolverFactory> resolvers) {
         if (resolvers != null) {
             this.paramResolvers.addAll(resolvers);
         }
     }
 
-    void addParamResolverAdvices(Collection<? extends ParamResolverAdviceFactory> advices) {
+    void addParamResolverAdvices(Collection<? extends HttpParamResolverAdviceFactory> advices) {
         if (advices != null) {
             this.paramResolverAdvices.addAll(advices);
         }

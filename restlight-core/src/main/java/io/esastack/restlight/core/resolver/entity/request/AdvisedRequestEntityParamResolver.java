@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 OPPO ESA Stack Project
+ * Copyright 2022 OPPO ESA Stack Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,30 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.esastack.restlight.core.handler.impl;
+package io.esastack.restlight.core.resolver.entity.request;
 
 import esa.commons.Checks;
 import io.esastack.restlight.core.DeployContext;
-import io.esastack.restlight.core.handler.method.Param;
+import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.context.RequestEntity;
 import io.esastack.restlight.core.context.RequestEntityImpl;
-import io.esastack.restlight.core.resolver.ResolverWrap;
-import io.esastack.restlight.core.resolver.entity.request.RequestEntityResolver;
-import io.esastack.restlight.core.resolver.entity.request.RequestEntityResolverAdvice;
-import io.esastack.restlight.core.resolver.entity.request.RequestEntityResolverContextImpl;
-import io.esastack.restlight.core.context.RequestContext;
+import io.esastack.restlight.core.handler.method.Param;
+import io.esastack.restlight.core.resolver.ParamResolver;
 
 import java.util.List;
 
-public class AdvisedRequestEntityResolver implements ResolverWrap {
+public class AdvisedRequestEntityParamResolver implements ParamResolver {
 
     private final Param param;
     private final RequestEntityResolver[] resolvers;
     private final RequestEntityResolverAdvice[] advices;
 
-    public AdvisedRequestEntityResolver(Param param,
-                                        List<RequestEntityResolver> resolvers,
-                                        List<RequestEntityResolverAdvice> advices) {
+    public AdvisedRequestEntityParamResolver(Param param,
+                                             List<RequestEntityResolver> resolvers,
+                                             List<RequestEntityResolverAdvice> advices) {
         Checks.checkNotEmptyArg(resolvers, "resolvers");
         this.param = param;
         this.resolvers = resolvers.toArray(new RequestEntityResolver[0]);

@@ -13,22 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.esastack.restlight.core.resolver;
+package io.esastack.restlight.core.resolver.param;
 
-import io.esastack.restlight.core.DeployContext;
 import io.esastack.restlight.core.context.RequestContext;
 
-public interface ResolverWrap extends Resolver {
+/**
+ * Allows customising the {@link RequestContext} before resolving the parameter of controller from
+ * {@link RequestContext} and customizing the argument resoled from {@link RequestContext}.
+ */
+public interface HttpParamResolverAdvice {
 
     /**
-     * Resolves the param by given {@link DeployContext} and {@link RequestContext}.
+     * This method is called around {@link HttpParamResolver#resolve(RequestContext)}.
      *
-     * @param deployContext deploy context
-     * @param context       context
-     * @return resolved value
+     * @param context context
+     * @return resolved arg value
      * @throws Exception exception
      */
-    Object resolve(DeployContext deployContext, RequestContext context) throws Exception;
+    Object aroundResolve(HttpParamResolverContext context) throws Exception;
 
 }
-

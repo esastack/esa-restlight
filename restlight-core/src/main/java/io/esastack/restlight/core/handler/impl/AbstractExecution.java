@@ -28,7 +28,7 @@ import io.esastack.restlight.core.handler.method.HandlerMethod;
 import io.esastack.restlight.core.handler.method.HandlerMethodAdapter;
 import io.esastack.restlight.core.handler.method.MethodParam;
 import io.esastack.restlight.core.handler.method.ResolvableParam;
-import io.esastack.restlight.core.resolver.ResolverWrap;
+import io.esastack.restlight.core.resolver.ParamResolver;
 import io.esastack.restlight.core.route.Execution;
 import io.esastack.restlight.core.util.Futures;
 
@@ -90,11 +90,11 @@ abstract class AbstractExecution<H extends HandlerMethodAdapter> implements Exec
 
     @SuppressWarnings("unchecked")
     protected Object[] resolveArgs(RequestContext context) {
-        final ResolvableParam<MethodParam, ResolverWrap>[] params = handlerMethod.paramResolvers();
+        final ResolvableParam<MethodParam, ParamResolver>[] params = handlerMethod.paramResolvers();
         final Object[] args = new Object[params.length];
         //resolve parameters one by one
         for (int i = 0; i < params.length; i++) {
-            ResolvableParam<MethodParam, ResolverWrap> resolvable = params[i];
+            ResolvableParam<MethodParam, ParamResolver> resolvable = params[i];
             final MethodParam param = resolvable.param();
             args[i] = resolveFixedArg(param, context);
             //resolve args with resolver

@@ -19,11 +19,11 @@ import esa.commons.Checks;
 import esa.commons.spi.SPI;
 import io.esastack.restlight.core.handler.method.Param;
 import io.esastack.restlight.core.util.Ordered;
-import io.esastack.restlight.core.resolver.param.ParamPredicate;
-import io.esastack.restlight.core.resolver.param.ParamResolverAdvice;
+import io.esastack.restlight.core.resolver.param.HttpParamPredicate;
+import io.esastack.restlight.core.resolver.param.HttpParamResolverAdvice;
 
 @SPI
-public interface ContextResolverFactory extends ParamPredicate, Ordered {
+public interface ContextResolverFactory extends HttpParamPredicate, Ordered {
 
     /**
      * Converts given {@link ContextResolverAdapter} to {@link ContextResolverFactory} which
@@ -38,7 +38,7 @@ public interface ContextResolverFactory extends ParamPredicate, Ordered {
     }
 
     /**
-     * Creates an instance of {@link ParamResolverAdvice} for given {@code param}.
+     * Creates an instance of {@link HttpParamResolverAdvice} for given {@code param}.
      *
      * @param param param
      * @return advice

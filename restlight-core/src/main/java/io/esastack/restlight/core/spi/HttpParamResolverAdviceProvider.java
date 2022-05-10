@@ -17,22 +17,22 @@ package io.esastack.restlight.core.spi;
 
 import esa.commons.spi.SPI;
 import io.esastack.restlight.core.DeployContext;
-import io.esastack.restlight.core.resolver.param.ParamResolverAdviceFactory;
+import io.esastack.restlight.core.resolver.param.HttpParamResolverAdviceFactory;
 
 import java.util.Optional;
 
 /**
- * Produces an optional instance of {@link ParamResolverAdviceFactory} which will be added to the Restlight context.
+ * Produces an optional instance of {@link HttpParamResolverAdviceFactory} which will be added to the Restlight context.
  */
 @SPI
-public interface ParamResolverAdviceProvider {
+public interface HttpParamResolverAdviceProvider {
 
     /**
-     * Produces a an optional instance of {@link ParamResolverAdviceFactory}.
+     * Produces a an optional instance of {@link HttpParamResolverAdviceFactory}.
      *
      * @param ctx deploy context
-     * @return Optional value of {@link ParamResolverAdviceFactory}.
+     * @return Optional value of {@link HttpParamResolverAdviceFactory}.
      */
-    Optional<ParamResolverAdviceFactory> factoryBean(DeployContext ctx);
+    Optional<HttpParamResolverAdviceFactory> factoryBean(DeployContext ctx);
 
 }

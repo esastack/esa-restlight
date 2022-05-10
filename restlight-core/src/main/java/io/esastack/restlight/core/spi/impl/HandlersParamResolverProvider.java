@@ -16,16 +16,16 @@
 package io.esastack.restlight.core.spi.impl;
 
 import io.esastack.restlight.core.DeployContext;
-import io.esastack.restlight.core.resolver.param.ParamResolverFactory;
+import io.esastack.restlight.core.resolver.param.HttpParamResolverFactory;
 import io.esastack.restlight.core.resolver.param.HandlersParamResolver;
-import io.esastack.restlight.core.spi.ParamResolverProvider;
+import io.esastack.restlight.core.spi.HttpParamResolverProvider;
 
 import java.util.Optional;
 
-public class HandlersParamResolverProvider implements ParamResolverProvider {
+public class HandlersParamResolverProvider implements HttpParamResolverProvider {
 
     @Override
-    public Optional<ParamResolverFactory> factoryBean(DeployContext ctx) {
+    public Optional<HttpParamResolverFactory> factoryBean(DeployContext ctx) {
         return Optional.of(new HandlersParamResolver(ctx));
     }
 

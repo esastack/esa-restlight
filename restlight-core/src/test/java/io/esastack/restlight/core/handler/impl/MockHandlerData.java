@@ -36,7 +36,7 @@ import io.esastack.restlight.core.handler.method.RouteHandlerMethodImpl;
 import io.esastack.restlight.core.resolver.context.ContextResolver;
 import io.esastack.restlight.core.resolver.exception.ExceptionResolver;
 import io.esastack.restlight.core.resolver.factory.HandlerResolverFactory;
-import io.esastack.restlight.core.resolver.param.ParamResolver;
+import io.esastack.restlight.core.resolver.param.HttpParamResolver;
 import io.esastack.restlight.core.resolver.entity.request.RequestEntityResolver;
 
 import java.lang.reflect.Method;
@@ -153,7 +153,7 @@ public class MockHandlerData {
                     .thenReturn(p1Resolver);
             when(p1Resolver.resolve(any())).thenReturn(null);
 
-            ParamResolver p2Resolver = mock(ParamResolver.class);
+            HttpParamResolver p2Resolver = mock(HttpParamResolver.class);
             when(resolverFactory.getParamResolver(handlerMethod.parameters()[1]))
                     .thenReturn(p2Resolver);
             when(p2Resolver.resolve(any())).thenReturn(null);

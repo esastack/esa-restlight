@@ -18,8 +18,8 @@ package io.esastack.restlight.jaxrs.adapter;
 import esa.commons.Checks;
 import io.esastack.commons.net.http.MediaType;
 import io.esastack.restlight.core.handler.method.Param;
-import io.esastack.restlight.core.resolver.param.ParamResolver;
-import io.esastack.restlight.core.resolver.param.ParamResolverFactory;
+import io.esastack.restlight.core.resolver.param.HttpParamResolver;
+import io.esastack.restlight.core.resolver.param.HttpParamResolverFactory;
 import io.esastack.restlight.core.resolver.converter.StringConverterProvider;
 import io.esastack.restlight.core.serialize.HttpRequestSerializer;
 import io.esastack.restlight.core.util.Ordered;
@@ -32,7 +32,7 @@ import jakarta.ws.rs.ext.Providers;
 
 import java.util.List;
 
-public class JaxrsContextResolverFactory implements ParamResolverFactory {
+public class JaxrsContextResolverFactory implements HttpParamResolverFactory {
 
     private final Providers providers;
 
@@ -42,9 +42,9 @@ public class JaxrsContextResolverFactory implements ParamResolverFactory {
     }
 
     @Override
-    public ParamResolver createResolver(Param param,
-                                        StringConverterProvider converters,
-                                        List<? extends HttpRequestSerializer> serializers) {
+    public HttpParamResolver createResolver(Param param,
+                                            StringConverterProvider converters,
+                                            List<? extends HttpRequestSerializer> serializers) {
         return new JaxrsContextResolver(param, providers);
     }
 
@@ -59,7 +59,7 @@ public class JaxrsContextResolverFactory implements ParamResolverFactory {
         return Ordered.LOWEST_PRECEDENCE;
     }
 
-    private static final class JaxrsContextResolver implements ParamResolver {
+    private static final class JaxrsContextResolver implements HttpParamResolver {
 
         private final Param param;
         private final Providers providers;

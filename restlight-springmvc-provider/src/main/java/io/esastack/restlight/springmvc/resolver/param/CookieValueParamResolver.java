@@ -16,14 +16,14 @@
 package io.esastack.restlight.springmvc.resolver.param;
 
 import io.esastack.restlight.core.handler.method.Param;
-import io.esastack.restlight.core.resolver.param.ParamResolverFactory;
+import io.esastack.restlight.core.resolver.param.HttpParamResolverFactory;
 import io.esastack.restlight.core.resolver.nav.NameAndValue;
 import io.esastack.restlight.core.resolver.param.AbstractCookieValueResolver;
 import io.esastack.restlight.springmvc.annotation.shaded.CookieValue0;
 import io.esastack.restlight.springmvc.util.RequestMappingUtils;
 
 /**
- * Implementation of {@link ParamResolverFactory} for resolving argument that annotated by the CookieValue
+ * Implementation of {@link HttpParamResolverFactory} for resolving argument that annotated by the CookieValue
  */
 public class CookieValueParamResolver extends AbstractCookieValueResolver {
 

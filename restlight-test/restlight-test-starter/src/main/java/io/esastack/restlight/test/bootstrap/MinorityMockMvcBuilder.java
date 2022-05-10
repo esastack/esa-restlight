@@ -20,8 +20,8 @@ import esa.commons.ObjectUtils;
 import io.esastack.restlight.core.AbstractRestlight;
 import io.esastack.restlight.core.config.RestlightOptionsConfigure;
 import io.esastack.restlight.core.interceptor.HandlerInterceptor;
-import io.esastack.restlight.core.resolver.param.ParamResolverAdapter;
-import io.esastack.restlight.core.resolver.param.ParamResolverAdviceAdapter;
+import io.esastack.restlight.core.resolver.param.HttpParamResolverAdapter;
+import io.esastack.restlight.core.resolver.param.HttpParamResolverAdviceAdapter;
 import io.esastack.restlight.core.resolver.entity.response.ResponseEntityResolverAdapter;
 import io.esastack.restlight.core.resolver.entity.response.ResponseEntityResolverAdviceAdapter;
 import io.esastack.restlight.core.serialize.HttpBodySerializer;
@@ -62,7 +62,7 @@ public class MinorityMockMvcBuilder implements MockMvcBuilder {
         return this;
     }
 
-    public MinorityMockMvcBuilder paramResolvers(List<ParamResolverAdapter> paramResolvers) {
+    public MinorityMockMvcBuilder paramResolvers(List<HttpParamResolverAdapter> paramResolvers) {
         if (paramResolvers == null) {
             return this;
         }
@@ -70,7 +70,7 @@ public class MinorityMockMvcBuilder implements MockMvcBuilder {
         return this;
     }
 
-    public MinorityMockMvcBuilder paramResolverAdvices(List<ParamResolverAdviceAdapter> paramResolverAdvices) {
+    public MinorityMockMvcBuilder paramResolverAdvices(List<HttpParamResolverAdviceAdapter> paramResolverAdvices) {
         if (paramResolverAdvices == null) {
             return this;
         }

@@ -16,14 +16,14 @@
 package io.esastack.restlight.springmvc.resolver.param;
 
 import io.esastack.restlight.core.handler.method.Param;
-import io.esastack.restlight.core.resolver.param.ParamResolverFactory;
+import io.esastack.restlight.core.resolver.param.HttpParamResolverFactory;
 import io.esastack.restlight.core.resolver.nav.NameAndValue;
 import io.esastack.restlight.core.resolver.param.AbstractHeaderResolver;
 import io.esastack.restlight.springmvc.annotation.shaded.RequestHeader0;
 import io.esastack.restlight.springmvc.util.RequestMappingUtils;
 
 /**
- * Implementation of {@link ParamResolverFactory} for resolving argument that annotated by the RequestHeader.
+ * Implementation of {@link HttpParamResolverFactory} for resolving argument that annotated by the RequestHeader.
  */
 public class RequestHeaderParamResolver extends AbstractHeaderResolver {
 

@@ -30,10 +30,10 @@ import io.esastack.restlight.core.resolver.context.ContextResolverAdapter;
 import io.esastack.restlight.core.resolver.context.ContextResolverFactory;
 import io.esastack.restlight.core.resolver.exception.ExceptionResolver;
 import io.esastack.restlight.core.resolver.factory.HandlerResolverFactory;
-import io.esastack.restlight.core.resolver.param.ParamResolverAdapter;
-import io.esastack.restlight.core.resolver.param.ParamResolverAdviceAdapter;
-import io.esastack.restlight.core.resolver.param.ParamResolverAdviceFactory;
-import io.esastack.restlight.core.resolver.param.ParamResolverFactory;
+import io.esastack.restlight.core.resolver.param.HttpParamResolverAdapter;
+import io.esastack.restlight.core.resolver.param.HttpParamResolverAdviceAdapter;
+import io.esastack.restlight.core.resolver.param.HttpParamResolverAdviceFactory;
+import io.esastack.restlight.core.resolver.param.HttpParamResolverFactory;
 import io.esastack.restlight.core.resolver.entity.request.RequestEntityResolverAdapter;
 import io.esastack.restlight.core.resolver.entity.request.RequestEntityResolverAdviceAdapter;
 import io.esastack.restlight.core.resolver.entity.request.RequestEntityResolverAdviceFactory;
@@ -385,67 +385,67 @@ public class MiniConfigurableDeployments {
     }
 
     /**
-     * Adds {@link ParamResolverAdapter} which will be registered in the {@link HandlerResolverFactory}
+     * Adds {@link HttpParamResolverAdapter} which will be registered in the {@link HandlerResolverFactory}
      *
      * @param resolver resolver
      * @return this deployments
      */
-    public MiniConfigurableDeployments addParamResolver(ParamResolverAdapter resolver) {
+    public MiniConfigurableDeployments addParamResolver(HttpParamResolverAdapter resolver) {
         deployments.addParamResolver(resolver);
         return self();
     }
 
     /**
-     * Adds {@link ParamResolverFactory} which will be registered in the {@link HandlerResolverFactory}
+     * Adds {@link HttpParamResolverFactory} which will be registered in the {@link HandlerResolverFactory}
      *
      * @param resolver resolver
      * @return this deployments
      */
-    public MiniConfigurableDeployments addParamResolver(ParamResolverFactory resolver) {
+    public MiniConfigurableDeployments addParamResolver(HttpParamResolverFactory resolver) {
         deployments.addParamResolver(resolver);
         return self();
     }
 
     /**
-     * Adds {@link ParamResolverFactory}s which will be registered in the {@link HandlerResolverFactory}
+     * Adds {@link HttpParamResolverFactory}s which will be registered in the {@link HandlerResolverFactory}
      *
      * @param resolvers resolvers
      * @return this deployments
      */
-    public MiniConfigurableDeployments addParamResolvers(Collection<? extends ParamResolverFactory> resolvers) {
+    public MiniConfigurableDeployments addParamResolvers(Collection<? extends HttpParamResolverFactory> resolvers) {
         deployments.addParamResolvers(resolvers);
         return self();
     }
 
     /**
-     * Adds {@link ParamResolverFactory} which will be registered in the {@link HandlerResolverFactory}
+     * Adds {@link HttpParamResolverFactory} which will be registered in the {@link HandlerResolverFactory}
      *
      * @param advice advice
      * @return this deployments
      */
-    public MiniConfigurableDeployments addParamResolverAdvice(ParamResolverAdviceAdapter advice) {
+    public MiniConfigurableDeployments addParamResolverAdvice(HttpParamResolverAdviceAdapter advice) {
         deployments.addParamResolverAdvice(advice);
         return self();
     }
 
     /**
-     * Adds {@link ParamResolverAdviceFactory} which will be registered in the {@link HandlerResolverFactory}
+     * Adds {@link HttpParamResolverAdviceFactory} which will be registered in the {@link HandlerResolverFactory}
      *
      * @param advice advice
      * @return this deployments
      */
-    public MiniConfigurableDeployments addParamResolverAdvice(ParamResolverAdviceFactory advice) {
+    public MiniConfigurableDeployments addParamResolverAdvice(HttpParamResolverAdviceFactory advice) {
         deployments.addParamResolverAdvice(advice);
         return self();
     }
 
     /**
-     * Adds {@link ParamResolverAdviceFactory}s which will be registered in the {@link HandlerResolverFactory}
+     * Adds {@link HttpParamResolverAdviceFactory}s which will be registered in the {@link HandlerResolverFactory}
      *
      * @param advices advices
      * @return this deployments
      */
-    public MiniConfigurableDeployments addParamResolverAdvices(Collection<? extends ParamResolverAdviceFactory>
+    public MiniConfigurableDeployments addParamResolverAdvices(Collection<? extends HttpParamResolverAdviceFactory>
                                                                        advices) {
         deployments.addParamResolverAdvices(advices);
         return self();
@@ -463,7 +463,7 @@ public class MiniConfigurableDeployments {
     }
 
     /**
-     * Adds {@link ParamResolverFactory} which will be registered in the {@link HandlerResolverFactory}
+     * Adds {@link HttpParamResolverFactory} which will be registered in the {@link HandlerResolverFactory}
      *
      * @param resolver resolver
      * @return this deployments
@@ -474,7 +474,7 @@ public class MiniConfigurableDeployments {
     }
 
     /**
-     * Adds {@link ParamResolverFactory}s which will be registered in the {@link HandlerResolverFactory}
+     * Adds {@link HttpParamResolverFactory}s which will be registered in the {@link HandlerResolverFactory}
      *
      * @param resolvers resolvers
      * @return this deployments

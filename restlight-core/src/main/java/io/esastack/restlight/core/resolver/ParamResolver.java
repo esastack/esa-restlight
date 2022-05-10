@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 OPPO ESA Stack Project
+ * Copyright 2022 OPPO ESA Stack Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,11 +15,20 @@
  */
 package io.esastack.restlight.core.resolver;
 
-import io.esastack.restlight.core.handler.method.Param;
+import io.esastack.restlight.core.DeployContext;
+import io.esastack.restlight.core.context.RequestContext;
 
-/**
- * This is a marker interface which is used to identity the implementation can be used to resolve a {@link Param}.
- */
-public interface Resolver {
+public interface ParamResolver {
+
+    /**
+     * Resolves the param by given {@link DeployContext} and {@link RequestContext}.
+     *
+     * @param deployContext deploy context
+     * @param context       context
+     * @return resolved value
+     * @throws Exception exception
+     */
+    Object resolve(DeployContext deployContext, RequestContext context) throws Exception;
+
 }
 

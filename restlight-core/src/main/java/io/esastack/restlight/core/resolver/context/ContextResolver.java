@@ -17,9 +17,8 @@ package io.esastack.restlight.core.resolver.context;
 
 import io.esastack.restlight.core.DeployContext;
 import io.esastack.restlight.core.handler.method.Param;
-import io.esastack.restlight.core.resolver.Resolver;
 
-public interface ContextResolver extends Resolver {
+public interface ContextResolver {
 
     /**
      * Resolves global context {@link Param} into an param value.

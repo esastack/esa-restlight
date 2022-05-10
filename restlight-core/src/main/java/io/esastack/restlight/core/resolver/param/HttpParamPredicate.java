@@ -15,21 +15,20 @@
  */
 package io.esastack.restlight.core.resolver.param;
 
-import io.esastack.restlight.core.context.RequestContext;
+import io.esastack.restlight.core.handler.method.Param;
 
 /**
- * Allows customising the {@link RequestContext} before resolving the parameter of controller from
- * {@link RequestContext} and customizing the argument resoled from {@link RequestContext}.
+ * Interface for predicating whether the implementations can used to handle the {@link Param}.
  */
-public interface ParamResolverAdvice {
+public interface HttpParamPredicate {
 
     /**
-     * This method is called around {@link ParamResolver#resolve(RequestContext)}.
+     * Whether current {@link HttpParamResolver} implementation is support given parameter.
      *
-     * @param context context
-     * @return resolved arg value
-     * @throws Exception exception
+     * @param param param
+     * @return {@code true} if it supports
      */
-    Object aroundResolve(ParamResolverContext context) throws Exception;
+    boolean supports(Param param);
 
 }
+

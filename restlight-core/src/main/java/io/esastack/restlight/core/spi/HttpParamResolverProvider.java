@@ -13,21 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.esastack.restlight.core.resolver.param;
+package io.esastack.restlight.core.spi;
 
 import esa.commons.spi.SPI;
-import io.esastack.restlight.core.util.Ordered;
+import io.esastack.restlight.core.DeployContext;
+import io.esastack.restlight.core.resolver.param.HttpParamResolverFactory;
+
+import java.util.Optional;
 
 /**
- * Interface for resolving method parameters to the real values of the handler method base on the current context.
+ * Produces an optional instance of {@link HttpParamResolverFactory} which will be added to the Restlight context.
  */
 @SPI
-public interface ParamResolverAdapter extends ParamPredicate, ParamResolver, Ordered {
+public interface HttpParamResolverProvider {
 
-    @Override
-    default int getOrder() {
-        return HIGHEST_PRECEDENCE;
-    }
+    /**
+     * Produces a an optional instance of {@link HttpParamResolverFactory}.
+     *
+     * @param ctx deploy context
+     * @return Optional value of {@link HttpParamResolverFactory}.
+     */
+    Optional<HttpParamResolverFactory> factoryBean(DeployContext ctx);
 
 }
-

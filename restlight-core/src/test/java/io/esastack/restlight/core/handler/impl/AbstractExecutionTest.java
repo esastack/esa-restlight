@@ -27,7 +27,7 @@ import io.esastack.restlight.core.context.impl.RequestContextImpl;
 import io.esastack.restlight.core.context.HttpRequest;
 import io.esastack.restlight.core.context.HttpResponse;
 import io.esastack.restlight.core.mock.MockHttpResponse;
-import io.esastack.restlight.core.resolver.ResolverWrap;
+import io.esastack.restlight.core.resolver.ParamResolver;
 import org.junit.jupiter.api.Test;
 
 import java.util.concurrent.CompletableFuture;
@@ -123,7 +123,7 @@ class AbstractExecutionTest {
                 };
 
         final MethodParam param = mock(MethodParam.class);
-        final ResolverWrap argResolver = mock(ResolverWrap.class);
+        final ParamResolver argResolver = mock(ParamResolver.class);
         when(argResolver.resolve(any(), any())).thenReturn("foo");
         final ResolvableParam[] params = new ResolvableParam[1];
         params[0] = new ResolvableParam(param, argResolver);
@@ -183,7 +183,7 @@ class AbstractExecutionTest {
                 };
 
         final MethodParam param = mock(MethodParam.class);
-        final ResolverWrap argResolver = mock(ResolverWrap.class);
+        final ParamResolver argResolver = mock(ParamResolver.class);
         when(argResolver.resolve(any(), any())).thenThrow(new IllegalStateException());
         //noinspection unchecked
         when(param.type()).thenReturn((Class) Object.class);

@@ -18,11 +18,11 @@ package io.esastack.restlight.core.resolver.entity.request;
 import esa.commons.spi.SPI;
 import io.esastack.restlight.core.handler.method.Param;
 import io.esastack.restlight.core.util.Ordered;
-import io.esastack.restlight.core.resolver.param.ParamPredicate;
+import io.esastack.restlight.core.resolver.param.HttpParamPredicate;
 
 @SPI
 public interface RequestEntityResolverAdviceAdapter extends RequestEntityResolverAdvice,
-        ParamPredicate, Ordered {
+        HttpParamPredicate, Ordered {
 
     @Override
     default boolean supports(Param param) {

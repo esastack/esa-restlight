@@ -23,12 +23,12 @@ import io.esastack.restlight.core.context.RequestContext;
 
 import java.util.List;
 
-public class RequestContextResolverFactory implements ParamResolverFactory {
+public class RequestContextResolverFactory implements HttpParamResolverFactory {
 
     @Override
-    public ParamResolver createResolver(Param param,
-                                        StringConverterProvider converters,
-                                        List<? extends HttpRequestSerializer> serializers) {
+    public HttpParamResolver createResolver(Param param,
+                                            StringConverterProvider converters,
+                                            List<? extends HttpRequestSerializer> serializers) {
         return (context) -> context;
     }
 

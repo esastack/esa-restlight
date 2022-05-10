@@ -16,8 +16,8 @@
 package io.esastack.restlight.jaxrs.resolver.param;
 
 import io.esastack.restlight.core.handler.method.Param;
-import io.esastack.restlight.core.resolver.param.ParamResolver;
-import io.esastack.restlight.core.resolver.param.ParamResolverFactory;
+import io.esastack.restlight.core.resolver.param.HttpParamResolver;
+import io.esastack.restlight.core.resolver.param.HttpParamResolverFactory;
 import io.esastack.restlight.core.resolver.converter.StringConverterProvider;
 import io.esastack.restlight.core.serialize.HttpRequestSerializer;
 import io.esastack.restlight.jaxrs.impl.JaxrsContextUtils;
@@ -28,7 +28,7 @@ import jakarta.ws.rs.core.Request;
 
 import java.util.List;
 
-public class RequestParamResolver implements ParamResolverFactory {
+public class RequestParamResolver implements HttpParamResolverFactory {
 
     @Override
     public boolean supports(Param param) {
@@ -36,13 +36,13 @@ public class RequestParamResolver implements ParamResolverFactory {
     }
 
     @Override
-    public ParamResolver createResolver(Param param,
-                                        StringConverterProvider converters,
-                                        List<? extends HttpRequestSerializer> serializers) {
+    public HttpParamResolver createResolver(Param param,
+                                            StringConverterProvider converters,
+                                            List<? extends HttpRequestSerializer> serializers) {
         return new RequestResolver();
     }
 
-    private static class RequestResolver implements ParamResolver {
+    private static class RequestResolver implements HttpParamResolver {
 
         private RequestResolver() {
         }

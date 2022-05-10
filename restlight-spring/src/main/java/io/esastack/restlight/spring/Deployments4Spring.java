@@ -36,10 +36,10 @@ import io.esastack.restlight.core.interceptor.RouteInterceptor;
 import io.esastack.restlight.core.resolver.context.ContextResolverAdapter;
 import io.esastack.restlight.core.resolver.context.ContextResolverFactory;
 import io.esastack.restlight.core.resolver.exception.ExceptionResolver;
-import io.esastack.restlight.core.resolver.param.ParamResolverAdapter;
-import io.esastack.restlight.core.resolver.param.ParamResolverAdviceAdapter;
-import io.esastack.restlight.core.resolver.param.ParamResolverAdviceFactory;
-import io.esastack.restlight.core.resolver.param.ParamResolverFactory;
+import io.esastack.restlight.core.resolver.param.HttpParamResolverAdapter;
+import io.esastack.restlight.core.resolver.param.HttpParamResolverAdviceAdapter;
+import io.esastack.restlight.core.resolver.param.HttpParamResolverAdviceFactory;
+import io.esastack.restlight.core.resolver.param.HttpParamResolverFactory;
 import io.esastack.restlight.core.resolver.entity.request.RequestEntityResolverAdapter;
 import io.esastack.restlight.core.resolver.entity.request.RequestEntityResolverAdviceAdapter;
 import io.esastack.restlight.core.resolver.entity.request.RequestEntityResolverAdviceFactory;
@@ -55,8 +55,8 @@ import io.esastack.restlight.core.serialize.HttpRequestSerializer;
 import io.esastack.restlight.core.serialize.HttpResponseSerializer;
 import io.esastack.restlight.core.spi.ContextResolverProvider;
 import io.esastack.restlight.core.spi.HandlerRegistryAwareFactory;
-import io.esastack.restlight.core.spi.ParamResolverAdviceProvider;
-import io.esastack.restlight.core.spi.ParamResolverProvider;
+import io.esastack.restlight.core.spi.HttpParamResolverAdviceProvider;
+import io.esastack.restlight.core.spi.HttpParamResolverProvider;
 import io.esastack.restlight.core.spi.RequestEntityResolverAdviceProvider;
 import io.esastack.restlight.core.spi.RequestEntityResolverProvider;
 import io.esastack.restlight.core.spi.ResponseEntityResolverAdviceProvider;
@@ -317,12 +317,12 @@ public class Deployments4Spring extends Deployments {
 
     private void configureParamResolversAndAdvices(ApplicationContext context) {
         // auto inject param resolvers
-        beansOfType(context, ParamResolverAdapter.class)
+        beansOfType(context, HttpParamResolverAdapter.class)
                 .values()
                 .forEach(this::addParamResolver);
-        this.addParamResolvers(beansOfType(context, ParamResolverFactory.class)
+        this.addParamResolvers(beansOfType(context, HttpParamResolverFactory.class)
                 .values());
-        beansOfType(context, ParamResolverProvider.class)
+        beansOfType(context, HttpParamResolverProvider.class)
                 .values()
                 .stream()
                 .map(p -> p.factoryBean(ctx()))
@@ -331,11 +331,11 @@ public class Deployments4Spring extends Deployments {
                 .forEach(this::addParamResolver);
 
         // auto inject param resolver advices
-        beansOfType(context, ParamResolverAdviceAdapter.class)
+        beansOfType(context, HttpParamResolverAdviceAdapter.class)
                 .values()
                 .forEach(this::addParamResolverAdvice);
-        this.addParamResolverAdvices(beansOfType(context, ParamResolverAdviceFactory.class).values());
-        beansOfType(context, ParamResolverAdviceProvider.class)
+        this.addParamResolverAdvices(beansOfType(context, HttpParamResolverAdviceFactory.class).values());
+        beansOfType(context, HttpParamResolverAdviceProvider.class)
                 .values()
                 .stream()
                 .map(p -> p.factoryBean(ctx()))

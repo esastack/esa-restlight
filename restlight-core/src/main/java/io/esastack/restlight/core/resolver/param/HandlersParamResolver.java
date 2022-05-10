@@ -24,7 +24,7 @@ import io.esastack.restlight.core.serialize.HttpRequestSerializer;
 
 import java.util.List;
 
-public class HandlersParamResolver implements ParamResolverFactory {
+public class HandlersParamResolver implements HttpParamResolverFactory {
 
     private final DeployContext deployContext;
 
@@ -39,9 +39,9 @@ public class HandlersParamResolver implements ParamResolverFactory {
     }
 
     @Override
-    public ParamResolver createResolver(Param param,
-                                        StringConverterProvider converters,
-                                        List<? extends HttpRequestSerializer> serializers) {
+    public HttpParamResolver createResolver(Param param,
+                                            StringConverterProvider converters,
+                                            List<? extends HttpRequestSerializer> serializers) {
         return (ctx) -> deployContext.handlers().orElse(null);
     }
 

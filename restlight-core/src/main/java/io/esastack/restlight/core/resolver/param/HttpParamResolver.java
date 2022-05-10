@@ -19,25 +19,18 @@ import io.esastack.restlight.core.handler.method.Param;
 import io.esastack.restlight.core.context.RequestContext;
 
 /**
- * This {@link ParamResolverContext} is designed to hold context which is passed among
- * {@link ParamResolverAdvice}s.
+ * Interface for resolving {@link Param} to the real values of the handler method base on the current context.
  */
-public interface ParamResolverContext {
+public interface HttpParamResolver {
 
     /**
-     * Obtains current {@link RequestContext}.
+     * Resolves method parameter into an argument value.
      *
-     * @return request context
+     * @param context context
+     * @return value resolved
+     * @throws Exception ex
      */
-    RequestContext requestContext();
-
-    /**
-     * Resolves the specified {@link Param} by given {@link #requestContext()}.
-     *
-     * @return context
-     * @throws Exception exception
-     */
-    Object proceed() throws Exception;
+    Object resolve(RequestContext context) throws Exception;
 
 }
 

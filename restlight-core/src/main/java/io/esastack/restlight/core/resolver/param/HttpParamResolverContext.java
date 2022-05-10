@@ -13,26 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.esastack.restlight.core.resolver.context;
+package io.esastack.restlight.core.resolver.param;
 
-import esa.commons.Checks;
-import io.esastack.restlight.core.DeployContext;
+import io.esastack.restlight.core.handler.method.Param;
 import io.esastack.restlight.core.context.RequestContext;
-import io.esastack.restlight.core.resolver.ResolverWrap;
 
-public class ContextResolverWrap implements ResolverWrap {
+/**
+ * This {@link HttpParamResolverContext} is designed to hold context which is passed among
+ * {@link HttpParamResolverAdvice}s.
+ */
+public interface HttpParamResolverContext {
 
-    private final ContextResolver underlying;
+    /**
+     * Obtains current {@link RequestContext}.
+     *
+     * @return request context
+     */
+    RequestContext requestContext();
 
-    public ContextResolverWrap(ContextResolver underlying) {
-        Checks.checkNotNull(underlying, "underlying");
-        this.underlying = underlying;
-    }
+    /**
+     * Resolves the specified {@link Param} by given {@link #requestContext()}.
+     *
+     * @return context
+     * @throws Exception exception
+     */
+    Object proceed() throws Exception;
 
-    @Override
-    public Object resolve(DeployContext deployContext,
-                          RequestContext context) throws Exception {
-        return underlying.resolve(deployContext);
-    }
 }
 

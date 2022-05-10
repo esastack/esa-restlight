@@ -26,12 +26,12 @@ import java.util.List;
 /**
  * Binds the {@link HttpRequest} object directly.
  */
-public class HttpRequestParamResolverFactory implements ParamResolverFactory {
+public class HttpRequestParamResolverFactory implements HttpParamResolverFactory {
 
     @Override
-    public ParamResolver createResolver(Param param,
-                                        StringConverterProvider converters,
-                                        List<? extends HttpRequestSerializer> serializers) {
+    public HttpParamResolver createResolver(Param param,
+                                            StringConverterProvider converters,
+                                            List<? extends HttpRequestSerializer> serializers) {
         return RequestContext::request;
     }
 

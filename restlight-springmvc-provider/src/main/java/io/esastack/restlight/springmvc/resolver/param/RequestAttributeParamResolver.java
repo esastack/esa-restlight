@@ -17,7 +17,7 @@ package io.esastack.restlight.springmvc.resolver.param;
 
 import esa.commons.collection.AttributeKey;
 import io.esastack.restlight.core.handler.method.Param;
-import io.esastack.restlight.core.resolver.param.ParamResolverFactory;
+import io.esastack.restlight.core.resolver.param.HttpParamResolverFactory;
 import io.esastack.restlight.core.resolver.converter.StringConverter;
 import io.esastack.restlight.core.resolver.converter.StringConverterProvider;
 import io.esastack.restlight.core.resolver.nav.NameAndValue;
@@ -27,7 +27,7 @@ import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.springmvc.annotation.shaded.RequestAttribute0;
 
 /**
- * Implementation of {@link ParamResolverFactory} for resolving argument that annotated by the RequestAttribute.
+ * Implementation of {@link HttpParamResolverFactory} for resolving argument that annotated by the RequestAttribute.
  */
 public class RequestAttributeParamResolver extends NameAndValueResolverFactory {
 

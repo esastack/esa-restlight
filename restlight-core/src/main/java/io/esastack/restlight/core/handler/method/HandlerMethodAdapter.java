@@ -16,15 +16,15 @@
 package io.esastack.restlight.core.handler.method;
 
 import esa.commons.Checks;
-import io.esastack.restlight.core.handler.impl.AdvisedParamResolver;
-import io.esastack.restlight.core.handler.impl.AdvisedRequestEntityResolver;
+import io.esastack.restlight.core.resolver.param.AdvisedHttpParamResolver;
+import io.esastack.restlight.core.resolver.entity.request.AdvisedRequestEntityParamResolver;
 import io.esastack.restlight.core.handler.impl.HandlerContext;
-import io.esastack.restlight.core.resolver.ResolverWrap;
+import io.esastack.restlight.core.resolver.ParamResolver;
 import io.esastack.restlight.core.resolver.context.ContextResolver;
-import io.esastack.restlight.core.resolver.context.ContextResolverWrap;
+import io.esastack.restlight.core.resolver.context.ContextParamResolver;
 import io.esastack.restlight.core.resolver.entity.request.RequestEntityResolver;
 import io.esastack.restlight.core.resolver.factory.HandlerResolverFactory;
-import io.esastack.restlight.core.resolver.param.ParamResolver;
+import io.esastack.restlight.core.resolver.param.HttpParamResolver;
 import io.esastack.restlight.core.util.RouteUtils;
 
 import java.lang.annotation.Annotation;
@@ -33,7 +33,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * An adapter of {@link HandlerMethod} which holds the {@link ParamResolver}s, {@link ContextResolver}s or
+ * An adapter of {@link HandlerMethod} which holds the {@link HttpParamResolver}s, {@link ContextResolver}s or
  * {@link RequestEntityResolver} to resolve method parameters.
  *
  * @param <H> generic handler method
@@ -42,7 +42,7 @@ public class HandlerMethodAdapter<H extends HandlerMethod> implements HandlerMet
 
     private final HandlerContext context;
     private final H handlerMethod;
-    private final ResolvableParam<MethodParam, ResolverWrap>[] paramResolvers;
+    private final ResolvableParam<MethodParam, ParamResolver>[] paramResolvers;
     private final boolean concurrent;
 
     public HandlerMethodAdapter(HandlerContext context, H handlerMethod) {
@@ -92,12 +92,12 @@ public class HandlerMethodAdapter<H extends HandlerMethod> implements HandlerMet
     }
 
     @SuppressWarnings("unchecked")
-    private ResolvableParam<MethodParam, ResolverWrap>[] buildParamResolvers(HandlerMethod handlerMethod,
-                                                                             ResolvableParamPredicate
+    private ResolvableParam<MethodParam, ParamResolver>[] buildParamResolvers(HandlerMethod handlerMethod,
+                                                                              ResolvableParamPredicate
                                                                                         resolvable,
-                                                                             HandlerResolverFactory factory) {
+                                                                              HandlerResolverFactory factory) {
         MethodParam[] params = handlerMethod.parameters();
-        List<ResolvableParam<MethodParam, ResolverWrap>> resolvers = new LinkedList<>();
+        List<ResolvableParam<MethodParam, ParamResolver>> resolvers = new LinkedList<>();
         for (MethodParam param : params) {
             if (resolvable.test(param)) {
                 resolvers.add(getResolverWrap(param, factory));
@@ -106,29 +106,29 @@ public class HandlerMethodAdapter<H extends HandlerMethod> implements HandlerMet
         return resolvers.toArray(new ResolvableParam[0]);
     }
 
-    <P extends Param> ResolvableParam<P, ResolverWrap> getResolverWrap(P param,
-                                                                       HandlerResolverFactory factory) {
+    <P extends Param> ResolvableParam<P, ParamResolver> getResolverWrap(P param,
+                                                                        HandlerResolverFactory factory) {
         // get fix resolver
-        ResolvableParam<P, ResolverWrap> fixedResolverWrap = getFixedResolverWrap(param, factory);
+        ResolvableParam<P, ParamResolver> fixedResolverWrap = getFixedResolverWrap(param, factory);
         if (fixedResolverWrap != null) {
             return fixedResolverWrap;
         }
 
         ContextResolver contextResolver = factory.getContextResolver(param);
         if (contextResolver != null) {
-            return new ResolvableParam<>(param, new ContextResolverWrap(contextResolver));
+            return new ResolvableParam<>(param, new ContextParamResolver(contextResolver));
         } else {
-            ParamResolver paramResolver = factory.getParamResolver(param);
-            if (paramResolver != null) {
-                return new ResolvableParam<>(param, new AdvisedParamResolver(paramResolver,
-                        factory.getParamResolverAdvices(param, paramResolver)));
+            HttpParamResolver httpParamResolver = factory.getParamResolver(param);
+            if (httpParamResolver != null) {
+                return new ResolvableParam<>(param, new AdvisedHttpParamResolver(httpParamResolver,
+                        factory.getParamResolverAdvices(param, httpParamResolver)));
             } else {
                 List<RequestEntityResolver> requestEntityResolvers = factory.getRequestEntityResolvers(param);
                 if (requestEntityResolvers.isEmpty()) {
                     throw new IllegalArgumentException("There is no suitable resolver to handle param: ["
                             + param.toString() + "]");
                 } else {
-                    return new ResolvableParam<>(param, new AdvisedRequestEntityResolver(param,
+                    return new ResolvableParam<>(param, new AdvisedRequestEntityParamResolver(param,
                             requestEntityResolvers, factory.getRequestEntityResolverAdvices(param)));
                 }
             }
@@ -142,12 +142,12 @@ public class HandlerMethodAdapter<H extends HandlerMethod> implements HandlerMet
      * @param factory factory
      * @return custom {@link ResolvableParam}
      */
-    protected <P extends Param> ResolvableParam<P, ResolverWrap> getFixedResolverWrap(P param,
-                                                                                    HandlerResolverFactory factory) {
+    protected <P extends Param> ResolvableParam<P, ParamResolver> getFixedResolverWrap(P param,
+                                                                                       HandlerResolverFactory factory) {
         return null;
     }
 
-    public ResolvableParam<MethodParam, ResolverWrap>[] paramResolvers() {
+    public ResolvableParam<MethodParam, ParamResolver>[] paramResolvers() {
         return paramResolvers;
     }
 

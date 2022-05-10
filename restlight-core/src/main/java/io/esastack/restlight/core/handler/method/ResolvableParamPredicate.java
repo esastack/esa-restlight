@@ -18,10 +18,10 @@ package io.esastack.restlight.core.handler.method;
 import esa.commons.annotation.Internal;
 import esa.commons.spi.SPI;
 import io.esastack.restlight.core.resolver.context.ContextResolver;
-import io.esastack.restlight.core.resolver.param.ParamResolver;
+import io.esastack.restlight.core.resolver.param.HttpParamResolver;
 
 /**
- * Generally speaking, not all {@link Param}s are expected to resolved by {@link ParamResolver}
+ * Generally speaking, not all {@link Param}s are expected to resolved by {@link HttpParamResolver}
  * or {@link ContextResolver}, such as a field which has the initial value when declaring it. In this case, we
  * shouldn't try to bind a resolver with. And this interface is designed to test whether the given {@link Param}
  * should be resolved by custom resolver.

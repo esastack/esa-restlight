@@ -26,22 +26,22 @@ import io.esastack.restlight.core.util.Ordered;
 import java.util.List;
 
 @SPI
-public interface ParamResolverFactory extends ParamPredicate, Ordered {
+public interface HttpParamResolverFactory extends HttpParamPredicate, Ordered {
 
     /**
-     * Converts given {@link ParamResolverAdapter} to {@link ParamResolverFactory} which
-     * always use the given {@link ParamResolverAdapter} as the result of
+     * Converts given {@link HttpParamResolverAdapter} to {@link HttpParamResolverFactory} which
+     * always use the given {@link HttpParamResolverAdapter} as the result of
      * {@link #createResolver(Param, StringConverterProvider, List)}
      *
      * @param resolver resolver
      * @return of factory bean
      */
-    static ParamResolverFactory singleton(ParamResolverAdapter resolver) {
+    static HttpParamResolverFactory singleton(HttpParamResolverAdapter resolver) {
         return new Singleton(resolver);
     }
 
     /**
-     * Creates a instance of {@link ParamResolver} for given handler method.
+     * Creates a instance of {@link HttpParamResolver} for given handler method.
      *
      * @param param         method
      * @param converters    the provider which is used to get a {@link StringConverter} when resolving
@@ -49,9 +49,9 @@ public interface ParamResolverFactory extends ParamPredicate, Ordered {
      * @param serializers   all the {@link HttpRequestSerializer}s of current context
      * @return resolver
      */
-    ParamResolver createResolver(Param param,
-                                 StringConverterProvider converters,
-                                 List<? extends HttpRequestSerializer> serializers);
+    HttpParamResolver createResolver(Param param,
+                                     StringConverterProvider converters,
+                                     List<? extends HttpRequestSerializer> serializers);
 
     /**
      * Default to HIGHEST_PRECEDENCE.
@@ -63,19 +63,19 @@ public interface ParamResolverFactory extends ParamPredicate, Ordered {
         return HIGHEST_PRECEDENCE;
     }
 
-    class Singleton implements ParamResolverFactory {
+    class Singleton implements HttpParamResolverFactory {
 
-        private final ParamResolverAdapter resolver;
+        private final HttpParamResolverAdapter resolver;
 
-        Singleton(ParamResolverAdapter resolver) {
+        Singleton(HttpParamResolverAdapter resolver) {
             Checks.checkNotNull(resolver, "resolver");
             this.resolver = resolver;
         }
 
         @Override
-        public ParamResolver createResolver(Param param,
-                                            StringConverterProvider converters,
-                                            List<? extends HttpRequestSerializer> serializers) {
+        public HttpParamResolver createResolver(Param param,
+                                                StringConverterProvider converters,
+                                                List<? extends HttpRequestSerializer> serializers) {
             return resolver;
         }
 

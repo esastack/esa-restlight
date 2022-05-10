@@ -19,7 +19,7 @@ import esa.commons.spi.SPI;
 import io.esastack.restlight.core.util.Ordered;
 
 @SPI
-public interface ParamResolverAdviceAdapter extends ParamPredicate, ParamResolverAdvice, Ordered {
+public interface HttpParamResolverAdviceAdapter extends HttpParamPredicate, HttpParamResolverAdvice, Ordered {
 
     @Override
     default int getOrder() {

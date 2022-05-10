@@ -20,9 +20,9 @@ import io.esastack.commons.net.http.MediaType;
 import io.esastack.restlight.core.interceptor.HandlerInterceptor;
 import io.esastack.restlight.core.handler.method.HandlerMethod;
 import io.esastack.restlight.core.handler.method.Param;
-import io.esastack.restlight.core.resolver.param.ParamResolverAdapter;
-import io.esastack.restlight.core.resolver.param.ParamResolverAdviceAdapter;
-import io.esastack.restlight.core.resolver.param.ParamResolverContext;
+import io.esastack.restlight.core.resolver.param.HttpParamResolverAdapter;
+import io.esastack.restlight.core.resolver.param.HttpParamResolverAdviceAdapter;
+import io.esastack.restlight.core.resolver.param.HttpParamResolverContext;
 import io.esastack.restlight.core.context.RequestEntity;
 import io.esastack.restlight.core.context.ResponseEntity;
 import io.esastack.restlight.core.resolver.entity.response.ResponseEntityResolverAdapter;
@@ -46,8 +46,8 @@ class MinorityMockMvcBuilderTest {
         final MinorityMockMvcBuilder builder = new MinorityMockMvcBuilder(new Object());
         builder.controllerAdvices(A.class, new B());
         builder.serializers(Collections.singletonList(new HttpBodySerializerImpl()));
-        builder.paramResolvers(Collections.singletonList(new ParamResolverImpl()));
-        builder.paramResolverAdvices(Collections.singletonList(new ParamResolverAdviceImpl()));
+        builder.paramResolvers(Collections.singletonList(new HttpParamResolverImpl()));
+        builder.paramResolverAdvices(Collections.singletonList(new HttpParamResolverAdviceImpl()));
         builder.responseEntityResolvers(Collections.singletonList(new ResponseEntityResolverImpl()));
         builder.responseEntityResolverAdvices(Collections.singletonList(new ResponseEntityResolverAdviceImpl()));
         builder.interceptors(Collections.singletonList(new InterceptorImpl()));
@@ -83,9 +83,9 @@ class MinorityMockMvcBuilderTest {
         }
     }
 
-    private static class ParamResolverImpl implements ParamResolverAdapter {
+    private static class HttpParamResolverImpl implements HttpParamResolverAdapter {
 
-        private ParamResolverImpl() {
+        private HttpParamResolverImpl() {
         }
 
         @Override
@@ -99,13 +99,13 @@ class MinorityMockMvcBuilderTest {
         }
     }
 
-    private static class ParamResolverAdviceImpl implements ParamResolverAdviceAdapter {
+    private static class HttpParamResolverAdviceImpl implements HttpParamResolverAdviceAdapter {
 
-        private ParamResolverAdviceImpl() {
+        private HttpParamResolverAdviceImpl() {
         }
 
         @Override
-        public Object aroundResolve(ParamResolverContext context) throws Exception {
+        public Object aroundResolve(HttpParamResolverContext context) throws Exception {
             return context.proceed();
         }
 

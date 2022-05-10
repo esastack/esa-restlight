@@ -21,7 +21,7 @@ import io.esastack.restlight.core.deploy.HandlerConfigure;
 import io.esastack.restlight.core.deploy.MiniConfigurableDeployments;
 import io.esastack.restlight.core.resolver.context.ContextResolverAdapter;
 import io.esastack.restlight.core.resolver.exception.ExceptionResolver;
-import io.esastack.restlight.core.resolver.param.ParamResolverFactory;
+import io.esastack.restlight.core.resolver.param.HttpParamResolverFactory;
 import io.esastack.restlight.core.resolver.entity.request.RequestEntityResolverAdapter;
 import io.esastack.restlight.core.resolver.entity.request.RequestEntityResolverAdviceAdapter;
 import io.esastack.restlight.core.resolver.entity.response.ResponseEntityResolverAdapter;
@@ -105,7 +105,7 @@ class JaxrsExtensionsHandlerTest {
     @Test
     void testHandle() {
         final List<ContextResolverAdapter> contextResolvers = new LinkedList<>();
-        final List<ParamResolverFactory> paramResolvers = new LinkedList<>();
+        final List<HttpParamResolverFactory> paramResolvers = new LinkedList<>();
         final MiniConfigurableDeployments deployments = mock(MiniConfigurableDeployments.class);
         final DeployContext deployContext = mock(DeployContext.class);
         when(deployments.deployContext()).thenReturn(deployContext);
@@ -114,7 +114,7 @@ class JaxrsExtensionsHandlerTest {
             contextResolvers.add(invocationOnMock.getArgument(0));
             return null;
         });
-        when(deployments.addParamResolver(any(ParamResolverFactory.class))).thenAnswer(invocationOnMock -> {
+        when(deployments.addParamResolver(any(HttpParamResolverFactory.class))).thenAnswer(invocationOnMock -> {
             paramResolvers.add(invocationOnMock.getArgument(0));
             return null;
         });
@@ -272,7 +272,7 @@ class JaxrsExtensionsHandlerTest {
         final List<ResponseEntityResolverAdapter> responseResolvers = new LinkedList<>();
         final AtomicReference<Class<?>> exceptionClass = new AtomicReference<>();
         final AtomicReference<ExceptionResolver<?>> exceptionResolver = new AtomicReference<>();
-        final List<ParamResolverFactory> paramResolvers = new LinkedList<>();
+        final List<HttpParamResolverFactory> paramResolvers = new LinkedList<>();
         final List<StringConverterFactory> stringConverters = new LinkedList<>();
         final List<HandlerConfigure> configures = new LinkedList<>();
         when(deployments.addRequestEntityResolver(any(RequestEntityResolverAdapter.class)))
@@ -290,9 +290,9 @@ class JaxrsExtensionsHandlerTest {
             exceptionResolver.set((ExceptionResolver<?>) invocationOnMock.getArguments()[1]);
             return null;
         });
-        when(deployments.addParamResolver(any(ParamResolverFactory.class)))
+        when(deployments.addParamResolver(any(HttpParamResolverFactory.class)))
                 .thenAnswer(invocationOnMock -> {
-                    paramResolvers.add((ParamResolverFactory) invocationOnMock.getArguments()[0]);
+                    paramResolvers.add((HttpParamResolverFactory) invocationOnMock.getArguments()[0]);
                     return null;
                 });
         when(deployments.addStringConverter(any(StringConverterFactory.class)))

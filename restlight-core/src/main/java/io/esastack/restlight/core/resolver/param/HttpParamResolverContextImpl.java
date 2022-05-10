@@ -20,21 +20,21 @@ import io.esastack.restlight.core.context.RequestContext;
 
 import java.util.List;
 
-public class ParamResolverContextImpl implements ParamResolverContext {
+public class HttpParamResolverContextImpl implements HttpParamResolverContext {
 
     private final RequestContext context;
-    private final ParamResolver resolver;
-    private final ParamResolverAdvice[] advices;
+    private final HttpParamResolver resolver;
+    private final HttpParamResolverAdvice[] advices;
     private int index;
 
-    public ParamResolverContextImpl(RequestContext context,
-                                    ParamResolver resolver,
-                                    List<ParamResolverAdvice> advices) {
+    public HttpParamResolverContextImpl(RequestContext context,
+                                        HttpParamResolver resolver,
+                                        List<HttpParamResolverAdvice> advices) {
         Checks.checkNotNull(context, "context");
         Checks.checkNotNull(resolver, "resolver");
         this.context = context;
         this.resolver = resolver;
-        this.advices = (advices == null ? null : advices.toArray(new ParamResolverAdvice[0]));
+        this.advices = (advices == null ? null : advices.toArray(new HttpParamResolverAdvice[0]));
     }
 
     @Override

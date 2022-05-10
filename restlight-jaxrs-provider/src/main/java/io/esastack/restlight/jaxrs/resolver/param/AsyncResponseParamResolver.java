@@ -16,8 +16,8 @@
 package io.esastack.restlight.jaxrs.resolver.param;
 
 import io.esastack.restlight.core.handler.method.Param;
-import io.esastack.restlight.core.resolver.param.ParamResolver;
-import io.esastack.restlight.core.resolver.param.ParamResolverFactory;
+import io.esastack.restlight.core.resolver.param.HttpParamResolver;
+import io.esastack.restlight.core.resolver.param.HttpParamResolverFactory;
 import io.esastack.restlight.core.resolver.converter.StringConverterProvider;
 import io.esastack.restlight.core.serialize.HttpRequestSerializer;
 import io.esastack.restlight.jaxrs.impl.JaxrsContextUtils;
@@ -30,7 +30,7 @@ import jakarta.ws.rs.container.Suspended;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-public class AsyncResponseParamResolver implements ParamResolverFactory {
+public class AsyncResponseParamResolver implements HttpParamResolverFactory {
 
     @Override
     public boolean supports(Param param) {
@@ -39,13 +39,13 @@ public class AsyncResponseParamResolver implements ParamResolverFactory {
     }
 
     @Override
-    public ParamResolver createResolver(Param param,
-                                        StringConverterProvider converters,
-                                        List<? extends HttpRequestSerializer> serializers) {
+    public HttpParamResolver createResolver(Param param,
+                                            StringConverterProvider converters,
+                                            List<? extends HttpRequestSerializer> serializers) {
         return new AsyncResponseResolver();
     }
 
-    private static class AsyncResponseResolver implements ParamResolver {
+    private static class AsyncResponseResolver implements HttpParamResolver {
 
         @Override
         public Object resolve(RequestContext context) throws Exception {

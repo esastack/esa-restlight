@@ -19,10 +19,10 @@ import esa.commons.Checks;
 import esa.commons.spi.SPI;
 import io.esastack.restlight.core.handler.method.Param;
 import io.esastack.restlight.core.util.Ordered;
-import io.esastack.restlight.core.resolver.param.ParamPredicate;
+import io.esastack.restlight.core.resolver.param.HttpParamPredicate;
 
 @SPI
-public interface RequestEntityResolverAdviceFactory extends ParamPredicate, Ordered {
+public interface RequestEntityResolverAdviceFactory extends HttpParamPredicate, Ordered {
 
     /**
      * Converts given {@link RequestEntityResolverAdviceAdapter} to {@link RequestEntityResolverAdviceFactory} which
