@@ -16,8 +16,8 @@
 package io.esastack.restlight.test.result;
 
 import esa.commons.Checks;
-import io.esastack.restlight.server.mock.MockHttpRequest;
-import io.esastack.restlight.server.mock.MockHttpResponse;
+import io.esastack.restlight.core.mock.MockHttpRequest;
+import io.esastack.restlight.core.mock.MockHttpResponse;
 
 public class DefaultMvcResult implements MvcResult {
 

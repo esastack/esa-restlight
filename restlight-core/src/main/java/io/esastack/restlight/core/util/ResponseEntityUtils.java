@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 OPPO ESA Stack Project
+ * Copyright 2022 OPPO ESA Stack Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,9 +18,9 @@ package io.esastack.restlight.core.util;
 import esa.commons.ClassUtils;
 import esa.commons.Primitives;
 import io.esastack.commons.net.http.MediaType;
-import io.esastack.restlight.core.resolver.ResponseEntity;
-import io.esastack.restlight.server.context.RequestContext;
-import io.esastack.restlight.server.route.predicate.ProducesPredicate;
+import io.esastack.restlight.core.context.ResponseEntity;
+import io.esastack.restlight.core.context.RequestContext;
+import io.esastack.restlight.core.route.predicate.ProducesPredicate;
 
 import java.util.List;
 

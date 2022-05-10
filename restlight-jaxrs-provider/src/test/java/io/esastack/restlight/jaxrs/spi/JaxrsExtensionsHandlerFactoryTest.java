@@ -16,8 +16,8 @@
 package io.esastack.restlight.jaxrs.spi;
 
 import io.esastack.restlight.core.DeployContext;
-import io.esastack.restlight.core.configure.ExtensionsHandler;
-import io.esastack.restlight.core.configure.MiniConfigurableDeployments;
+import io.esastack.restlight.core.deploy.ExtensionsHandler;
+import io.esastack.restlight.core.deploy.MiniConfigurableDeployments;
 import io.esastack.restlight.jaxrs.configure.JaxrsExtensionsHandler;
 import org.junit.jupiter.api.Test;
 

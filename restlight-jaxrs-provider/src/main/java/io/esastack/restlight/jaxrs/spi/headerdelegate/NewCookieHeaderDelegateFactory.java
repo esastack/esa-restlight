@@ -17,7 +17,7 @@ package io.esastack.restlight.jaxrs.spi.headerdelegate;
 
 import esa.commons.StringUtils;
 import io.esastack.restlight.jaxrs.spi.HeaderDelegateFactory;
-import io.esastack.restlight.server.util.DateUtils;
+import io.esastack.restlight.core.util.DateUtils;
 import jakarta.ws.rs.core.NewCookie;
 import jakarta.ws.rs.ext.RuntimeDelegate;
 

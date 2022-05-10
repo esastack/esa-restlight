@@ -15,9 +15,9 @@
  */
 package io.esastack.restlight.jaxrs.resolver.reqentity;
 
-import io.esastack.restlight.core.method.Param;
+import io.esastack.restlight.core.handler.method.Param;
 import io.esastack.restlight.core.resolver.nav.NameAndValue;
-import io.esastack.restlight.core.resolver.reqentity.FixedRequestEntityResolverFactory;
+import io.esastack.restlight.core.resolver.entity.request.FixedRequestEntityResolverFactory;
 import io.esastack.restlight.jaxrs.util.JaxrsMappingUtils;
 import jakarta.ws.rs.core.Context;
 

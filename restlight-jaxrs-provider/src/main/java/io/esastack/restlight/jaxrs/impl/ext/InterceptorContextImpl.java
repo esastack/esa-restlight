@@ -17,7 +17,7 @@ package io.esastack.restlight.jaxrs.impl.ext;
 
 import esa.commons.Checks;
 import esa.commons.collection.AttributeKey;
-import io.esastack.restlight.core.resolver.HttpEntityResolverContext;
+import io.esastack.restlight.core.resolver.entity.HttpEntityResolverContext;
 import io.esastack.restlight.jaxrs.util.MediaTypeUtils;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.ext.InterceptorContext;

@@ -13,7 +13,7 @@
 
 package io.esastack.restlight.integration.springmvc.cases.config;
 
-import io.esastack.restlight.server.handler.Filter;
+import io.esastack.restlight.core.filter.Filter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 

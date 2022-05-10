@@ -15,7 +15,7 @@
  */
 package io.esastack.restlight.jaxrs.impl.ext;
 
-import io.esastack.restlight.core.resolver.RequestEntityResolverContext;
+import io.esastack.restlight.core.resolver.entity.request.RequestEntityResolverContext;
 import io.esastack.restlight.jaxrs.impl.core.ModifiableMultivaluedMap;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.MultivaluedMap;

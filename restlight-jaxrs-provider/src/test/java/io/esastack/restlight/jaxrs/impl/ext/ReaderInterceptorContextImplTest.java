@@ -17,12 +17,12 @@ package io.esastack.restlight.jaxrs.impl.ext;
 
 import esa.commons.collection.AttributeMap;
 import io.esastack.commons.net.netty.http.Http1HeadersImpl;
-import io.esastack.restlight.core.resolver.RequestEntity;
-import io.esastack.restlight.core.resolver.RequestEntityResolverContext;
-import io.esastack.restlight.server.context.RequestContext;
-import io.esastack.restlight.server.context.impl.RequestContextImpl;
-import io.esastack.restlight.server.core.HttpRequest;
-import io.esastack.restlight.server.core.HttpResponse;
+import io.esastack.restlight.core.context.RequestEntity;
+import io.esastack.restlight.core.resolver.entity.request.RequestEntityResolverContext;
+import io.esastack.restlight.core.context.RequestContext;
+import io.esastack.restlight.core.context.impl.RequestContextImpl;
+import io.esastack.restlight.core.context.HttpRequest;
+import io.esastack.restlight.core.context.HttpResponse;
 import jakarta.ws.rs.ext.ReaderInterceptor;
 import jakarta.ws.rs.ext.ReaderInterceptorContext;
 import org.junit.jupiter.api.Test;

@@ -17,7 +17,7 @@ package io.esastack.restlight.jaxrs.impl.ext;
 
 import esa.commons.Checks;
 import esa.commons.ClassUtils;
-import io.esastack.restlight.core.resolver.ResponseEntityResolverContext;
+import io.esastack.restlight.core.resolver.entity.response.ResponseEntityResolverContext;
 import io.esastack.restlight.jaxrs.util.JaxrsUtils;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.container.ContainerResponseFilter;

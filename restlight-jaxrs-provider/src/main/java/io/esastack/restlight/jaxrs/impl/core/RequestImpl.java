@@ -22,10 +22,10 @@ import io.esastack.commons.net.http.HttpMethod;
 import io.esastack.commons.net.http.MediaType;
 import io.esastack.commons.net.http.MediaTypeUtil;
 import io.esastack.restlight.jaxrs.util.MediaTypeUtils;
-import io.esastack.restlight.server.context.RequestContext;
-import io.esastack.restlight.server.core.HttpRequest;
-import io.esastack.restlight.server.core.HttpResponse;
-import io.esastack.restlight.server.util.HttpHeaderUtils;
+import io.esastack.restlight.core.context.RequestContext;
+import io.esastack.restlight.core.context.HttpRequest;
+import io.esastack.restlight.core.context.HttpResponse;
+import io.esastack.restlight.core.util.HttpHeaderUtils;
 import jakarta.ws.rs.core.EntityTag;
 import jakarta.ws.rs.core.Request;
 import jakarta.ws.rs.core.Response;
@@ -201,7 +201,7 @@ public class RequestImpl implements Request {
     }
 
     private static Response.ResponseBuilder ifUnmodifiedSince(String strDate, Date lastModified) {
-        final Date date = io.esastack.restlight.server.util.DateUtils.parseByCache(strDate);
+        final Date date = io.esastack.restlight.core.util.DateUtils.parseByCache(strDate);
 
         if (!date.before(lastModified)) {
             return null;
@@ -211,7 +211,7 @@ public class RequestImpl implements Request {
     }
 
     private static Response.ResponseBuilder ifModifiedSince(String strDate, Date lastModified) {
-        final Date date = io.esastack.restlight.server.util.DateUtils.parseByCache(strDate);
+        final Date date = io.esastack.restlight.core.util.DateUtils.parseByCache(strDate);
 
         if (!date.before(lastModified)) {
             return Response.notModified();

@@ -17,10 +17,11 @@ package io.esastack.restlight.core.interceptor;
 
 import esa.commons.spi.SPI;
 import io.esastack.restlight.core.DeployContext;
-import io.esastack.restlight.core.handler.impl.RouteHandlerMethodAdapter;
-import io.esastack.restlight.server.core.HttpRequest;
-import io.esastack.restlight.server.route.Route;
-import io.esastack.restlight.server.route.Routing;
+import io.esastack.restlight.core.handler.method.RouteHandlerMethodAdapter;
+import io.esastack.restlight.core.Deployments;
+import io.esastack.restlight.core.context.HttpRequest;
+import io.esastack.restlight.core.route.Route;
+import io.esastack.restlight.core.route.Routing;
 
 /**
  * We will determine whether to attach the {@link Interceptor} to the target {@link Route}
@@ -42,7 +43,7 @@ public interface RouteInterceptor extends InternalInterceptor {
      *
      * @param ctx   context
      * @param route route to match, the {@link Route} that added by
-     *              {@link io.esastack.restlight.core.Deployments#addRoute(Route)}
+     *              {@link Deployments#addRoute(Route)}
      *              will not be passed to this method, and {@link Route} that associates to a {@link
      *              RouteHandlerMethodAdapter} will be passed to this method instead.
      * @return affinity value.

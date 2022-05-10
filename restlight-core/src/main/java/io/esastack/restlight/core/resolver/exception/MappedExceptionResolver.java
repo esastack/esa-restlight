@@ -16,9 +16,8 @@
 package io.esastack.restlight.core.resolver.exception;
 
 import esa.commons.Checks;
-import io.esastack.restlight.core.resolver.ExceptionResolver;
-import io.esastack.restlight.server.context.RequestContext;
-import io.esastack.restlight.server.util.Futures;
+import io.esastack.restlight.core.context.RequestContext;
+import io.esastack.restlight.core.util.Futures;
 
 import java.util.concurrent.CompletionStage;
 

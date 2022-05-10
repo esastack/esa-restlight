@@ -16,9 +16,9 @@
 package io.esastack.restlight.jaxrs.adapter;
 
 import esa.commons.Checks;
-import io.esastack.restlight.core.method.HandlerMethod;
-import io.esastack.restlight.core.resolver.ResponseEntityResolverAdviceAdapter;
-import io.esastack.restlight.core.resolver.ResponseEntityResolverContext;
+import io.esastack.restlight.core.handler.method.HandlerMethod;
+import io.esastack.restlight.core.resolver.entity.response.ResponseEntityResolverAdviceAdapter;
+import io.esastack.restlight.core.resolver.entity.response.ResponseEntityResolverContext;
 import io.esastack.restlight.jaxrs.impl.ext.WriterInterceptorContextImpl;
 import io.esastack.restlight.jaxrs.util.JaxrsUtils;
 import jakarta.ws.rs.core.MultivaluedMap;

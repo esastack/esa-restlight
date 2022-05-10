@@ -15,8 +15,8 @@
  */
 package io.esastack.restlight.jaxrs.resolver.param;
 
-import io.esastack.restlight.core.method.ConstructorParamImpl;
-import io.esastack.restlight.core.method.MethodParamImpl;
+import io.esastack.restlight.core.handler.method.ConstructorParamImpl;
+import io.esastack.restlight.core.handler.method.MethodParamImpl;
 import jakarta.ws.rs.container.AsyncResponse;
 import jakarta.ws.rs.container.Suspended;
 import org.junit.jupiter.api.Test;

@@ -15,9 +15,9 @@
  */
 package io.esastack.restlight.core.annotation;
 
-import io.esastack.restlight.server.schedule.Scheduler;
-import io.esastack.restlight.server.schedule.Schedulers;
-import io.esastack.restlight.server.schedule.Scheduling;
+import io.esastack.restlight.core.server.processor.schedule.Scheduler;
+import io.esastack.restlight.core.server.processor.schedule.Schedulers;
+import io.esastack.restlight.core.server.processor.schedule.Scheduling;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -37,13 +37,13 @@ import java.lang.annotation.Target;
 public @interface Scheduled {
 
     /**
-     * Specifies which {@link io.esastack.restlight.server.schedule.Scheduler} who's name ({@link
-     * io.esastack.restlight.server.schedule.Scheduler#name()}) equals to the value should be use to current
-     * component(s).
+     * Specifies which {@link io.esastack.restlight.core.server.processor.schedule.Scheduler} who's name ({@link
+     * io.esastack.restlight.core.server.processor.schedule.Scheduler#name()}) equals to the value should be use
+     * to current component(s).
      *
      * @return {@code ""} means default.
-     * @see io.esastack.restlight.server.schedule.Schedulers#IO
-     * @see io.esastack.restlight.server.schedule.Schedulers#BIZ
+     * @see io.esastack.restlight.core.server.processor.schedule.Schedulers#IO
+     * @see io.esastack.restlight.core.server.processor.schedule.Schedulers#BIZ
      */
     String value();
 

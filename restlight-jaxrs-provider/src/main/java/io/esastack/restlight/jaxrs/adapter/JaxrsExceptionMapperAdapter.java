@@ -16,10 +16,10 @@
 package io.esastack.restlight.jaxrs.adapter;
 
 import esa.commons.Checks;
-import io.esastack.restlight.core.resolver.ExceptionResolver;
+import io.esastack.restlight.core.resolver.exception.ExceptionResolver;
 import io.esastack.restlight.jaxrs.configure.ProxyComponent;
-import io.esastack.restlight.server.context.RequestContext;
-import io.esastack.restlight.server.util.Futures;
+import io.esastack.restlight.core.context.RequestContext;
+import io.esastack.restlight.core.util.Futures;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.ExceptionMapper;
 

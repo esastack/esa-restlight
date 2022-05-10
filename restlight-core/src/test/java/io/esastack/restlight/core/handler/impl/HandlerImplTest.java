@@ -18,10 +18,10 @@ package io.esastack.restlight.core.handler.impl;
 import io.esastack.restlight.core.handler.HandlerAdvice;
 import io.esastack.restlight.core.handler.HandlerInvoker;
 import io.esastack.restlight.core.handler.LinkedHandlerInvoker;
-import io.esastack.restlight.core.method.HandlerMethod;
-import io.esastack.restlight.core.method.HandlerMethodImpl;
-import io.esastack.restlight.server.bootstrap.WebServerException;
-import io.esastack.restlight.server.context.RequestContext;
+import io.esastack.restlight.core.handler.method.HandlerMethod;
+import io.esastack.restlight.core.handler.method.HandlerMethodImpl;
+import io.esastack.restlight.core.exception.WebServerException;
+import io.esastack.restlight.core.context.RequestContext;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collections;

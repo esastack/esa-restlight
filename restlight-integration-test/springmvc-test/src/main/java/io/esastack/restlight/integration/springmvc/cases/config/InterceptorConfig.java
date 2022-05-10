@@ -16,7 +16,7 @@ package io.esastack.restlight.integration.springmvc.cases.config;
 import esa.commons.collection.AttributeKey;
 import io.esastack.restlight.core.interceptor.InterceptorFactory;
 import io.esastack.restlight.core.interceptor.InternalInterceptor;
-import io.esastack.restlight.server.context.RequestContext;
+import io.esastack.restlight.core.context.RequestContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 

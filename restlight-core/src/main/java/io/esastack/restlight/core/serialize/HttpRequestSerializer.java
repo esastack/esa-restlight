@@ -16,7 +16,7 @@
 package io.esastack.restlight.core.serialize;
 
 import esa.commons.Result;
-import io.esastack.restlight.core.resolver.RequestEntity;
+import io.esastack.restlight.core.context.RequestEntity;
 import io.esastack.restlight.core.util.Ordered;
 
 public interface HttpRequestSerializer extends Ordered {

@@ -14,9 +14,9 @@
 package io.esastack.restlight.integration.springmvc.cases.config;
 
 import esa.commons.concurrent.ThreadFactories;
-import io.esastack.restlight.server.config.TimeoutOptions;
-import io.esastack.restlight.server.schedule.Scheduler;
-import io.esastack.restlight.server.schedule.Schedulers;
+import io.esastack.restlight.core.config.TimeoutOptions;
+import io.esastack.restlight.core.server.processor.schedule.Scheduler;
+import io.esastack.restlight.core.server.processor.schedule.Schedulers;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 

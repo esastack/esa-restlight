@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 OPPO ESA Stack Project
+ * Copyright 2022 OPPO ESA Stack Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,8 +17,8 @@ package io.esastack.restlight.core.spi;
 
 import esa.commons.annotation.Internal;
 import esa.commons.spi.SPI;
-import io.esastack.restlight.core.configure.ExtensionsHandler;
-import io.esastack.restlight.core.configure.MiniConfigurableDeployments;
+import io.esastack.restlight.core.deploy.ExtensionsHandler;
+import io.esastack.restlight.core.deploy.MiniConfigurableDeployments;
 
 import java.util.Optional;
 

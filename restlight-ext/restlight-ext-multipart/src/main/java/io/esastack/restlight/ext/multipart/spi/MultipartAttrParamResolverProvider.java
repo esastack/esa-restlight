@@ -16,8 +16,8 @@
 package io.esastack.restlight.ext.multipart.spi;
 
 import esa.commons.collection.AttributeKey;
-import io.esastack.restlight.core.method.Param;
-import io.esastack.restlight.core.resolver.StringConverterProvider;
+import io.esastack.restlight.core.handler.method.Param;
+import io.esastack.restlight.core.resolver.converter.StringConverterProvider;
 import io.esastack.restlight.core.resolver.nav.NameAndStringValueResolver;
 import io.esastack.restlight.core.resolver.nav.NameAndValue;
 import io.esastack.restlight.core.resolver.nav.NameAndValueResolver;

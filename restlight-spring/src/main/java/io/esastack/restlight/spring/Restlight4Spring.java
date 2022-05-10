@@ -19,8 +19,8 @@ import esa.commons.Checks;
 import io.esastack.restlight.core.DeployContext;
 import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.core.config.RestlightOptionsConfigure;
-import io.esastack.restlight.server.bootstrap.RestlightServer;
-import io.esastack.restlight.server.util.LoggerUtils;
+import io.esastack.restlight.core.server.RestlightServer;
+import io.esastack.restlight.core.util.LoggerUtils;
 import org.springframework.context.ApplicationContext;
 
 import static io.esastack.restlight.spring.util.SpringContextUtils.getBean;

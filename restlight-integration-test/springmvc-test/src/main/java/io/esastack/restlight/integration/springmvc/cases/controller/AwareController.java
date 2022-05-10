@@ -14,7 +14,7 @@
 package io.esastack.restlight.integration.springmvc.cases.controller;
 
 import io.esastack.restlight.core.DeployContext;
-import io.esastack.restlight.server.bootstrap.RestlightServer;
+import io.esastack.restlight.core.server.RestlightServer;
 import io.esastack.restlight.spring.util.RestlightBizExecutorAware;
 import io.esastack.restlight.spring.util.RestlightDeployContextAware;
 import io.esastack.restlight.spring.util.RestlightIoExecutorAware;

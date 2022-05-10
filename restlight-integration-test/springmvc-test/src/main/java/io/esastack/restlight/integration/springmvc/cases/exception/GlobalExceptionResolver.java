@@ -14,8 +14,8 @@
 package io.esastack.restlight.integration.springmvc.cases.exception;
 
 import io.esastack.commons.net.http.HttpStatus;
-import io.esastack.restlight.core.resolver.ExceptionResolver;
-import io.esastack.restlight.server.context.RequestContext;
+import io.esastack.restlight.core.resolver.exception.ExceptionResolver;
+import io.esastack.restlight.core.context.RequestContext;
 import org.springframework.stereotype.Component;
 
 import java.util.concurrent.CompletableFuture;

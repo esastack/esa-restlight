@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 OPPO ESA Stack Project
+ * Copyright 2022 OPPO ESA Stack Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -9,7 +9,7 @@
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OAbstractRestlight CONDITIONS OF ANY KIND, either express or implied.
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
@@ -23,47 +23,47 @@ import esa.commons.annotation.Beta;
 import esa.commons.annotation.Internal;
 import esa.commons.spi.SpiLoader;
 import io.esastack.restlight.core.config.RestlightOptions;
-import io.esastack.restlight.core.configure.ConfigurableDeployments;
-import io.esastack.restlight.core.configure.DefaultHandlerRegistry;
-import io.esastack.restlight.core.configure.DeploymentsConfigure;
-import io.esastack.restlight.core.configure.ExtensionsHandler;
-import io.esastack.restlight.core.configure.HandlerConfigure;
-import io.esastack.restlight.core.configure.HandlerRegistry;
-import io.esastack.restlight.core.configure.HandlerRegistryAware;
-import io.esastack.restlight.core.configure.HandlersImpl;
-import io.esastack.restlight.core.configure.MiniConfigurableDeployments;
+import io.esastack.restlight.core.deploy.ConfigurableDeployments;
+import io.esastack.restlight.core.handler.DefaultHandlerRegistry;
+import io.esastack.restlight.core.deploy.DeploymentsConfigure;
+import io.esastack.restlight.core.deploy.ExtensionsHandler;
+import io.esastack.restlight.core.deploy.HandlerConfigure;
+import io.esastack.restlight.core.handler.HandlerRegistry;
+import io.esastack.restlight.core.handler.HandlerRegistryAware;
+import io.esastack.restlight.core.handler.HandlersImpl;
+import io.esastack.restlight.core.deploy.MiniConfigurableDeployments;
 import io.esastack.restlight.core.handler.HandlerMapping;
 import io.esastack.restlight.core.handler.HandlerMappingProvider;
-import io.esastack.restlight.core.handler.RouteFilterAdapter;
+import io.esastack.restlight.core.filter.RouteFilterAdapter;
 import io.esastack.restlight.core.handler.impl.HandlerAdvicesFactoryImpl;
 import io.esastack.restlight.core.handler.impl.HandlerContexts;
-import io.esastack.restlight.core.handler.locate.HandlerValueResolverLocator;
-import io.esastack.restlight.core.handler.locate.MappingLocator;
-import io.esastack.restlight.core.handler.locate.RouteMethodLocator;
+import io.esastack.restlight.core.locator.HandlerValueResolverLocator;
+import io.esastack.restlight.core.locator.MappingLocator;
+import io.esastack.restlight.core.locator.RouteMethodLocator;
 import io.esastack.restlight.core.interceptor.HandlerInterceptor;
 import io.esastack.restlight.core.interceptor.Interceptor;
 import io.esastack.restlight.core.interceptor.InterceptorFactory;
 import io.esastack.restlight.core.interceptor.MappingInterceptor;
 import io.esastack.restlight.core.interceptor.RouteInterceptor;
-import io.esastack.restlight.core.resolver.ContextResolverAdapter;
-import io.esastack.restlight.core.resolver.ContextResolverFactory;
-import io.esastack.restlight.core.resolver.ExceptionResolver;
-import io.esastack.restlight.core.resolver.HandlerResolverFactory;
-import io.esastack.restlight.core.resolver.HandlerResolverFactoryImpl;
-import io.esastack.restlight.core.resolver.ParamResolverAdapter;
-import io.esastack.restlight.core.resolver.ParamResolverAdviceAdapter;
-import io.esastack.restlight.core.resolver.ParamResolverAdviceFactory;
-import io.esastack.restlight.core.resolver.ParamResolverFactory;
-import io.esastack.restlight.core.resolver.RequestEntityResolverAdapter;
-import io.esastack.restlight.core.resolver.RequestEntityResolverAdviceAdapter;
-import io.esastack.restlight.core.resolver.RequestEntityResolverAdviceFactory;
-import io.esastack.restlight.core.resolver.RequestEntityResolverFactory;
-import io.esastack.restlight.core.resolver.ResponseEntityResolverAdapter;
-import io.esastack.restlight.core.resolver.ResponseEntityResolverAdviceAdapter;
-import io.esastack.restlight.core.resolver.ResponseEntityResolverAdviceFactory;
-import io.esastack.restlight.core.resolver.ResponseEntityResolverFactory;
-import io.esastack.restlight.core.resolver.StringConverterAdapter;
-import io.esastack.restlight.core.resolver.StringConverterFactory;
+import io.esastack.restlight.core.resolver.context.ContextResolverAdapter;
+import io.esastack.restlight.core.resolver.context.ContextResolverFactory;
+import io.esastack.restlight.core.resolver.exception.ExceptionResolver;
+import io.esastack.restlight.core.resolver.factory.HandlerResolverFactory;
+import io.esastack.restlight.core.resolver.factory.HandlerResolverFactoryImpl;
+import io.esastack.restlight.core.resolver.param.ParamResolverAdapter;
+import io.esastack.restlight.core.resolver.param.ParamResolverAdviceAdapter;
+import io.esastack.restlight.core.resolver.param.ParamResolverAdviceFactory;
+import io.esastack.restlight.core.resolver.param.ParamResolverFactory;
+import io.esastack.restlight.core.resolver.entity.request.RequestEntityResolverAdapter;
+import io.esastack.restlight.core.resolver.entity.request.RequestEntityResolverAdviceAdapter;
+import io.esastack.restlight.core.resolver.entity.request.RequestEntityResolverAdviceFactory;
+import io.esastack.restlight.core.resolver.entity.request.RequestEntityResolverFactory;
+import io.esastack.restlight.core.resolver.entity.response.ResponseEntityResolverAdapter;
+import io.esastack.restlight.core.resolver.entity.response.ResponseEntityResolverAdviceAdapter;
+import io.esastack.restlight.core.resolver.entity.response.ResponseEntityResolverAdviceFactory;
+import io.esastack.restlight.core.resolver.entity.response.ResponseEntityResolverFactory;
+import io.esastack.restlight.core.resolver.converter.StringConverterAdapter;
+import io.esastack.restlight.core.resolver.converter.StringConverterFactory;
 import io.esastack.restlight.core.resolver.exception.DefaultExceptionMapper;
 import io.esastack.restlight.core.resolver.exception.DefaultExceptionResolverFactory;
 import io.esastack.restlight.core.resolver.exception.ExceptionResolverFactory;
@@ -88,38 +88,38 @@ import io.esastack.restlight.core.spi.RouteFilterFactory;
 import io.esastack.restlight.core.util.Constants;
 import io.esastack.restlight.core.util.OrderedComparator;
 import io.esastack.restlight.core.util.RouteUtils;
-import io.esastack.restlight.server.bootstrap.DispatcherHandler;
-import io.esastack.restlight.server.bootstrap.DispatcherHandlerImpl;
-import io.esastack.restlight.server.bootstrap.IExceptionHandler;
-import io.esastack.restlight.server.bootstrap.RestlightThreadFactory;
-import io.esastack.restlight.server.config.BizThreadsOptions;
-import io.esastack.restlight.server.config.TimeoutOptions;
-import io.esastack.restlight.server.handler.ConnectionHandler;
-import io.esastack.restlight.server.handler.ConnectionInitHandler;
-import io.esastack.restlight.server.handler.DisConnectionHandler;
-import io.esastack.restlight.server.handler.Filter;
-import io.esastack.restlight.server.handler.RestlightHandler;
-import io.esastack.restlight.server.route.Route;
-import io.esastack.restlight.server.route.RouteRegistry;
-import io.esastack.restlight.server.route.impl.AbstractRouteRegistry;
-import io.esastack.restlight.server.route.impl.CachedRouteRegistry;
-import io.esastack.restlight.server.route.impl.RoutableRegistry;
-import io.esastack.restlight.server.route.impl.SimpleRouteRegistry;
-import io.esastack.restlight.server.schedule.ExecutorScheduler;
-import io.esastack.restlight.server.schedule.RequestTask;
-import io.esastack.restlight.server.schedule.RequestTaskHook;
-import io.esastack.restlight.server.schedule.ScheduledRestlightHandler;
-import io.esastack.restlight.server.schedule.Scheduler;
-import io.esastack.restlight.server.schedule.Schedulers;
-import io.esastack.restlight.server.spi.ConnectionHandlerFactory;
-import io.esastack.restlight.server.spi.ConnectionInitHandlerFactory;
-import io.esastack.restlight.server.spi.DisConnectionHandlerFactory;
-import io.esastack.restlight.server.spi.ExceptionHandlerFactory;
-import io.esastack.restlight.server.spi.FilterFactory;
-import io.esastack.restlight.server.spi.RequestTaskHookFactory;
-import io.esastack.restlight.server.spi.RouteRegistryAware;
-import io.esastack.restlight.server.spi.RouteRegistryAwareFactory;
-import io.esastack.restlight.server.util.LoggerUtils;
+import io.esastack.restlight.core.dispatcher.DispatcherHandler;
+import io.esastack.restlight.core.dispatcher.DispatcherHandlerImpl;
+import io.esastack.restlight.core.dispatcher.IExceptionHandler;
+import io.esastack.restlight.core.server.processor.schedule.RestlightThreadFactory;
+import io.esastack.restlight.core.config.BizThreadsOptions;
+import io.esastack.restlight.core.config.TimeoutOptions;
+import io.esastack.restlight.core.server.connection.ConnectionHandler;
+import io.esastack.restlight.core.server.connection.ConnectionInitHandler;
+import io.esastack.restlight.core.server.connection.DisConnectionHandler;
+import io.esastack.restlight.core.filter.Filter;
+import io.esastack.restlight.core.server.processor.RestlightHandler;
+import io.esastack.restlight.core.route.Route;
+import io.esastack.restlight.core.route.RouteRegistry;
+import io.esastack.restlight.core.route.impl.AbstractRouteRegistry;
+import io.esastack.restlight.core.route.impl.CachedRouteRegistry;
+import io.esastack.restlight.core.route.impl.RoutableRegistry;
+import io.esastack.restlight.core.route.impl.SimpleRouteRegistry;
+import io.esastack.restlight.core.server.processor.schedule.ExecutorScheduler;
+import io.esastack.restlight.core.server.processor.schedule.RequestTask;
+import io.esastack.restlight.core.server.processor.schedule.RequestTaskHook;
+import io.esastack.restlight.core.server.processor.schedule.ScheduledRestlightHandler;
+import io.esastack.restlight.core.server.processor.schedule.Scheduler;
+import io.esastack.restlight.core.server.processor.schedule.Schedulers;
+import io.esastack.restlight.core.spi.ConnectionHandlerFactory;
+import io.esastack.restlight.core.spi.ConnectionInitHandlerFactory;
+import io.esastack.restlight.core.spi.DisConnectionHandlerFactory;
+import io.esastack.restlight.core.spi.ExceptionHandlerFactory;
+import io.esastack.restlight.core.spi.FilterFactory;
+import io.esastack.restlight.core.spi.RequestTaskHookFactory;
+import io.esastack.restlight.core.spi.RouteRegistryAware;
+import io.esastack.restlight.core.spi.RouteRegistryAwareFactory;
+import io.esastack.restlight.core.util.LoggerUtils;
 
 import java.util.Collection;
 import java.util.Collections;

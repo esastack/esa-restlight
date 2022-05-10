@@ -17,7 +17,7 @@ package io.esastack.restlight.jaxrs.impl.container;
 
 import esa.commons.Checks;
 import io.esastack.restlight.core.handler.HandlerFactory;
-import io.esastack.restlight.server.context.RequestContext;
+import io.esastack.restlight.core.context.RequestContext;
 import jakarta.ws.rs.container.ResourceContext;
 
 public class ResourceContextImpl implements ResourceContext {

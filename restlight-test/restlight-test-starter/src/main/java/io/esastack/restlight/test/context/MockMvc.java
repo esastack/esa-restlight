@@ -15,7 +15,7 @@
  */
 package io.esastack.restlight.test.context;
 
-import io.esastack.restlight.server.mock.MockHttpRequest;
+import io.esastack.restlight.core.mock.MockHttpRequest;
 import io.esastack.restlight.test.result.ResultActions;
 
 public interface MockMvc {

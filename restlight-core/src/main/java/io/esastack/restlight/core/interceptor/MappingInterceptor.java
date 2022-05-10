@@ -16,7 +16,7 @@
 package io.esastack.restlight.core.interceptor;
 
 import esa.commons.spi.SPI;
-import io.esastack.restlight.server.core.HttpRequest;
+import io.esastack.restlight.core.context.HttpRequest;
 
 /**
  * We will determine that whether a {@link HttpRequest} should be matched to this interceptor by

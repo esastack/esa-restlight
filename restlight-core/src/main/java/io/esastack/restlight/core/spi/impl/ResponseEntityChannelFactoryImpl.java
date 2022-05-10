@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 OPPO ESA Stack Project
+ * Copyright 2022 OPPO ESA Stack Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,11 +17,11 @@ package io.esastack.restlight.core.spi.impl;
 
 import esa.commons.annotation.Internal;
 import esa.commons.spi.Feature;
-import io.esastack.restlight.core.resolver.ResponseEntityChannel;
-import io.esastack.restlight.core.resolver.ResponseEntityChannelImpl;
+import io.esastack.restlight.core.context.ResponseEntityChannel;
+import io.esastack.restlight.core.context.ResponseEntityChannelImpl;
 import io.esastack.restlight.core.spi.ResponseEntityChannelFactory;
 import io.esastack.restlight.core.util.Constants;
-import io.esastack.restlight.server.context.RequestContext;
+import io.esastack.restlight.core.context.RequestContext;
 
 @Internal
 @Feature(tags = Constants.INTERNAL)

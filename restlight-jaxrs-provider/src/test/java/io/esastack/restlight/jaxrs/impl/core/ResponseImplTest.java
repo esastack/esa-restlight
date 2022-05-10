@@ -16,7 +16,7 @@
 package io.esastack.restlight.jaxrs.impl.core;
 
 import io.esastack.commons.net.http.HttpHeaderNames;
-import io.esastack.restlight.server.util.DateUtils;
+import io.esastack.restlight.core.util.DateUtils;
 import jakarta.ws.rs.core.GenericType;
 import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.Link;

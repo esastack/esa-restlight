@@ -16,10 +16,10 @@
 package io.esastack.restlight.core.resolver.nav;
 
 import esa.commons.Checks;
-import io.esastack.restlight.core.method.Param;
-import io.esastack.restlight.core.resolver.StringConverter;
-import io.esastack.restlight.core.resolver.StringConverterProvider;
-import io.esastack.restlight.server.context.RequestContext;
+import io.esastack.restlight.core.handler.method.Param;
+import io.esastack.restlight.core.resolver.converter.StringConverter;
+import io.esastack.restlight.core.resolver.converter.StringConverterProvider;
+import io.esastack.restlight.core.context.RequestContext;
 
 import java.util.function.BiFunction;
 import java.util.function.Supplier;

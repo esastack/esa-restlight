@@ -19,10 +19,10 @@ import esa.commons.Checks;
 import io.esastack.restlight.core.util.Ordered;
 import io.esastack.restlight.jaxrs.impl.JaxrsContextUtils;
 import io.esastack.restlight.jaxrs.impl.container.AbstractContainerRequestContext;
-import io.esastack.restlight.server.context.FilterContext;
-import io.esastack.restlight.server.handler.Filter;
-import io.esastack.restlight.server.handler.FilterChain;
-import io.esastack.restlight.server.util.Futures;
+import io.esastack.restlight.core.filter.FilterContext;
+import io.esastack.restlight.core.filter.Filter;
+import io.esastack.restlight.core.filter.FilterChain;
+import io.esastack.restlight.core.util.Futures;
 import jakarta.ws.rs.container.ContainerRequestFilter;
 
 import java.util.concurrent.CompletionStage;

@@ -17,12 +17,12 @@ package io.esastack.restlight.jaxrs.adapter;
 
 import esa.commons.Checks;
 import esa.commons.Result;
-import io.esastack.restlight.core.method.Param;
-import io.esastack.restlight.core.resolver.RequestEntity;
-import io.esastack.restlight.core.resolver.RequestEntityResolverAdapter;
+import io.esastack.restlight.core.handler.method.Param;
+import io.esastack.restlight.core.context.RequestEntity;
+import io.esastack.restlight.core.resolver.entity.request.RequestEntityResolverAdapter;
 import io.esastack.restlight.jaxrs.impl.core.ModifiableMultivaluedMap;
 import io.esastack.restlight.jaxrs.util.MediaTypeUtils;
-import io.esastack.restlight.server.context.RequestContext;
+import io.esastack.restlight.core.context.RequestContext;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.ext.MessageBodyReader;
 import jakarta.ws.rs.ext.Providers;

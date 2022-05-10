@@ -24,7 +24,7 @@ import io.esastack.restlight.ext.interceptor.config.SignatureOptionsConfigure;
 import io.esastack.restlight.ext.interceptor.signature.AbstractSignatureRouteInterceptor;
 import io.esastack.restlight.ext.interceptor.signature.HmacSha1SignatureRouteInterceptor;
 import io.esastack.restlight.ext.interceptor.signature.SecretProvider;
-import io.esastack.restlight.server.route.Routing;
+import io.esastack.restlight.core.route.Routing;
 
 import java.util.Optional;
 

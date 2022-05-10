@@ -17,8 +17,8 @@ package io.esastack.restlight.test.bootstrap;
 
 import io.esastack.restlight.core.AbstractRestlight;
 import io.esastack.restlight.core.config.RestlightOptions;
-import io.esastack.restlight.server.bootstrap.RestlightServer;
-import io.esastack.restlight.server.handler.RestlightHandler;
+import io.esastack.restlight.core.server.RestlightServer;
+import io.esastack.restlight.core.server.processor.RestlightHandler;
 
 class Restlight4Test extends AbstractRestlight {
 

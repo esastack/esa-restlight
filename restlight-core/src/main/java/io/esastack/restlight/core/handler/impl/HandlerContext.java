@@ -20,20 +20,20 @@ import esa.commons.collection.AttributeKey;
 import esa.commons.collection.AttributeMap;
 import esa.commons.collection.Attributes;
 import io.esastack.restlight.core.DeployContext;
-import io.esastack.restlight.core.configure.ConfigurableHandler;
-import io.esastack.restlight.core.configure.ConfigurableHandlerImpl;
-import io.esastack.restlight.core.configure.DelegatingDeployContext;
-import io.esastack.restlight.core.configure.HandlerConfiguration;
-import io.esastack.restlight.core.configure.HandlerConfigure;
+import io.esastack.restlight.core.deploy.ConfigurableHandler;
+import io.esastack.restlight.core.deploy.ConfigurableHandlerImpl;
+import io.esastack.restlight.core.deploy.DelegatingDeployContext;
+import io.esastack.restlight.core.deploy.HandlerConfiguration;
+import io.esastack.restlight.core.deploy.HandlerConfigure;
 import io.esastack.restlight.core.handler.HandlerContextProvider;
-import io.esastack.restlight.core.method.HandlerMethod;
-import io.esastack.restlight.core.resolver.HandlerResolverFactory;
-import io.esastack.restlight.core.resolver.HandlerResolverFactoryImpl;
+import io.esastack.restlight.core.handler.method.HandlerMethod;
+import io.esastack.restlight.core.resolver.factory.HandlerResolverFactory;
+import io.esastack.restlight.core.resolver.factory.HandlerResolverFactoryImpl;
 import io.esastack.restlight.core.util.OrderedComparator;
 
 import java.util.Optional;
 
-import static io.esastack.restlight.core.resolver.HandlerResolverFactoryImpl.buildConfiguration;
+import static io.esastack.restlight.core.resolver.factory.HandlerResolverFactoryImpl.buildConfiguration;
 
 public class HandlerContext extends DelegatingDeployContext {
 

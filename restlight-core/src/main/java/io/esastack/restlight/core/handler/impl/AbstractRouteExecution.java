@@ -15,30 +15,32 @@
  */
 package io.esastack.restlight.core.handler.impl;
 
+import io.esastack.restlight.core.context.RequestContext;
+import io.esastack.restlight.core.filter.LinkedRouteFilterChain;
+import io.esastack.restlight.core.filter.RouteContextImpl;
+import io.esastack.restlight.core.filter.RouteFilter;
+import io.esastack.restlight.core.filter.RoutedRequestImpl;
 import io.esastack.restlight.core.handler.Handler;
 import io.esastack.restlight.core.handler.HandlerAdvice;
 import io.esastack.restlight.core.handler.HandlerAdvicesFactory;
 import io.esastack.restlight.core.handler.HandlerInvoker;
 import io.esastack.restlight.core.handler.LinkedHandlerInvoker;
-import io.esastack.restlight.core.handler.LinkedRouteFilterChain;
-import io.esastack.restlight.core.handler.RouteFilter;
 import io.esastack.restlight.core.handler.RouteHandler;
+import io.esastack.restlight.core.handler.method.HandlerMethod;
+import io.esastack.restlight.core.handler.method.RouteHandlerMethodAdapter;
 import io.esastack.restlight.core.interceptor.InternalInterceptor;
-import io.esastack.restlight.core.method.HandlerMethod;
-import io.esastack.restlight.server.context.RequestContext;
-import io.esastack.restlight.server.context.impl.RouteContextImpl;
-import io.esastack.restlight.server.core.impl.RoutedRequestImpl;
-import io.esastack.restlight.server.route.CompletionHandler;
-import io.esastack.restlight.server.route.ExceptionHandler;
-import io.esastack.restlight.server.route.RouteExecution;
-import io.esastack.restlight.server.util.Futures;
+import io.esastack.restlight.core.route.CompletionHandler;
+import io.esastack.restlight.core.route.ExceptionHandler;
+import io.esastack.restlight.core.route.RouteExecution;
+import io.esastack.restlight.core.util.Futures;
 import io.netty.util.Signal;
 
 import java.util.List;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.CompletionStage;
 
-abstract class AbstractRouteExecution extends AbstractExecution<RouteHandlerMethodAdapter> implements RouteExecution {
+public abstract class AbstractRouteExecution extends AbstractExecution<RouteHandlerMethodAdapter>
+        implements RouteExecution {
 
     private static final CompletionException EXECUTION_NOT_ALLOWED
             = new CompletionException(Signal.valueOf("Execution not allowed by Interceptor.preHandle()"));
@@ -49,15 +51,15 @@ abstract class AbstractRouteExecution extends AbstractExecution<RouteHandlerMeth
     private volatile RouteHandler handler;
     private volatile int interceptorIndex = -1;
 
-    AbstractRouteExecution(RouteHandlerMethodAdapter handlerMethod, List<InternalInterceptor> interceptors) {
+    public AbstractRouteExecution(RouteHandlerMethodAdapter handlerMethod, List<InternalInterceptor> interceptors) {
         super(handlerMethod.handlerResolver(), handlerMethod);
         this.interceptors = interceptors;
         this.interceptorAbsent = interceptors == null || interceptors.isEmpty();
         this.completionHandler = (this::triggerAfterCompletion);
     }
 
-    static HandlerInvoker buildInvoker(HandlerMethod method, Object instance,
-                                       HandlerAdvicesFactory handlerAdvicesFactory) {
+    public static HandlerInvoker buildInvoker(HandlerMethod method, Object instance,
+                                              HandlerAdvicesFactory handlerAdvicesFactory) {
         Handler handler = new HandlerImpl(method, instance);
         if (handlerAdvicesFactory != null) {
             HandlerAdvice[] handlerAdvices = handlerAdvicesFactory.getHandlerAdvices(handler);

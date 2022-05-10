@@ -16,7 +16,7 @@
 package io.esastack.restlight.core.handler.impl;
 
 import io.esastack.restlight.core.handler.HandlerContextProvider;
-import io.esastack.restlight.core.method.HandlerMethod;
+import io.esastack.restlight.core.handler.method.HandlerMethod;
 
 import java.lang.reflect.Method;
 import java.util.concurrent.ConcurrentHashMap;

@@ -15,7 +15,7 @@
  */
 package io.esastack.restlight.core.annotation;
 
-import io.esastack.restlight.server.core.HttpRequest;
+import io.esastack.restlight.core.context.HttpRequest;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;

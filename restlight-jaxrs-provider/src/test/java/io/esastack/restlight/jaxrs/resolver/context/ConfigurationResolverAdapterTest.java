@@ -15,9 +15,9 @@
  */
 package io.esastack.restlight.jaxrs.resolver.context;
 
-import io.esastack.restlight.core.method.ConstructorParamImpl;
-import io.esastack.restlight.core.method.FieldParamImpl;
-import io.esastack.restlight.core.method.MethodParamImpl;
+import io.esastack.restlight.core.handler.method.ConstructorParamImpl;
+import io.esastack.restlight.core.handler.method.FieldParamImpl;
+import io.esastack.restlight.core.handler.method.MethodParamImpl;
 import io.esastack.restlight.jaxrs.impl.core.ConfigurationImpl;
 import jakarta.ws.rs.core.Configuration;
 import jakarta.ws.rs.core.Context;

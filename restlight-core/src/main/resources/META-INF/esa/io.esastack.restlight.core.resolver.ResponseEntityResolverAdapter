@@ -1,5 +1,0 @@
-io.esastack.restlight.core.resolver.rspentity.ByteArrayResponseEntityResolver
-io.esastack.restlight.core.resolver.rspentity.ByteBufResponseEntityResolver
-io.esastack.restlight.core.resolver.rspentity.CharSequenceResponseEntityResolver
-io.esastack.restlight.core.resolver.rspentity.PrimitiveResponseEntityResolver
-io.esastack.restlight.core.resolver.rspentity.ResponseFileEntityResolver

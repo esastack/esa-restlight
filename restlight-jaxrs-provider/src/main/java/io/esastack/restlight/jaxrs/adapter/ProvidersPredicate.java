@@ -16,7 +16,7 @@
 package io.esastack.restlight.jaxrs.adapter;
 
 import io.esastack.restlight.core.spi.impl.RouteTracking;
-import io.esastack.restlight.server.route.predicate.RequestPredicate;
+import io.esastack.restlight.core.route.predicate.RequestPredicate;
 
 public interface ProvidersPredicate extends RequestPredicate {
 

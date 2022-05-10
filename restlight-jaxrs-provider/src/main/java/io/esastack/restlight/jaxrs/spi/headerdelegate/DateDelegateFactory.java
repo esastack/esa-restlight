@@ -16,7 +16,7 @@
 package io.esastack.restlight.jaxrs.spi.headerdelegate;
 
 import io.esastack.restlight.jaxrs.spi.HeaderDelegateFactory;
-import io.esastack.restlight.server.util.DateUtils;
+import io.esastack.restlight.core.util.DateUtils;
 import jakarta.ws.rs.ext.RuntimeDelegate;
 
 import java.util.Date;

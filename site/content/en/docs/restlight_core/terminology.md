@@ -36,9 +36,9 @@ public interface RequestContext {
 ```
 
 {{< alert title="Tip" >}}
-- `RequestContext`所属包名为`io.esastack.restlight.server.context`
-- `HttpRequest`所属包名为`io.esastack.restlight.server.core`
-- `HttpResponse`所属包名为`io.esastack.restlight.server.core`
+- `RequestContext`所属包名为`io.esastack.restlight.core.context`
+- `HttpRequest`所属包名为`io.esastack.restlight.core.core`
+- `HttpResponse`所属包名为`io.esastack.restlight.core.core`
 - `Attributes`所属包名为`esa.commons.collection`
 {{< /alert >}}
 

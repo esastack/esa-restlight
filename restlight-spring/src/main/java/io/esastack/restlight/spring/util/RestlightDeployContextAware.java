@@ -16,7 +16,7 @@
 package io.esastack.restlight.spring.util;
 
 import io.esastack.restlight.core.DeployContext;
-import io.esastack.restlight.server.bootstrap.RestlightServer;
+import io.esastack.restlight.core.server.RestlightServer;
 import io.esastack.restlight.spring.Restlight4Spring;
 import org.springframework.beans.factory.Aware;
 

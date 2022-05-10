@@ -17,7 +17,7 @@ package io.esastack.restlight.core.interceptor;
 
 import io.esastack.restlight.core.DeployContext;
 import io.esastack.restlight.core.util.Affinity;
-import io.esastack.restlight.server.route.Routing;
+import io.esastack.restlight.core.route.Routing;
 
 class RouteInterceptorWrap extends AbstractInterceptorWrap<RouteInterceptor> {
 

@@ -22,10 +22,10 @@ import io.esastack.commons.net.http.HttpStatus;
 import io.esastack.commons.net.http.MediaType;
 import io.esastack.restlight.core.interceptor.InternalInterceptor;
 import io.esastack.restlight.ext.interceptor.config.SignatureOptions;
-import io.esastack.restlight.server.bootstrap.WebServerException;
-import io.esastack.restlight.server.context.RequestContext;
-import io.esastack.restlight.server.core.HttpRequest;
-import io.esastack.restlight.server.util.Futures;
+import io.esastack.restlight.core.exception.WebServerException;
+import io.esastack.restlight.core.context.RequestContext;
+import io.esastack.restlight.core.context.HttpRequest;
+import io.esastack.restlight.core.util.Futures;
 import io.netty.util.internal.InternalThreadLocalMap;
 
 import java.nio.charset.StandardCharsets;
@@ -35,7 +35,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletionStage;
 
-import static io.esastack.restlight.server.bootstrap.WebServerException.badRequest;
+import static io.esastack.restlight.core.exception.WebServerException.badRequest;
 
 abstract class AbstractSignatureInterceptor implements InternalInterceptor {
 

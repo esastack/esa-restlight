@@ -15,17 +15,17 @@
  */
 package io.esastack.restlight.jaxrs.resolver.param;
 
-import io.esastack.restlight.core.method.HandlerMethod;
-import io.esastack.restlight.core.method.MethodParam;
-import io.esastack.restlight.core.resolver.ParamResolver;
+import io.esastack.restlight.core.handler.method.HandlerMethod;
+import io.esastack.restlight.core.handler.method.MethodParam;
+import io.esastack.restlight.core.resolver.param.ParamResolver;
 import io.esastack.restlight.jaxrs.resolver.ResolverUtils;
 import io.esastack.restlight.jaxrs.resolver.param.subject.ConstructorSubject;
 import io.esastack.restlight.jaxrs.resolver.param.subject.FromStringSubject;
 import io.esastack.restlight.jaxrs.resolver.param.subject.ValueOfSubject;
-import io.esastack.restlight.server.context.impl.RequestContextImpl;
-import io.esastack.restlight.server.core.HttpRequest;
-import io.esastack.restlight.server.mock.MockHttpRequest;
-import io.esastack.restlight.server.mock.MockHttpResponse;
+import io.esastack.restlight.core.context.impl.RequestContextImpl;
+import io.esastack.restlight.core.context.HttpRequest;
+import io.esastack.restlight.core.mock.MockHttpRequest;
+import io.esastack.restlight.core.mock.MockHttpResponse;
 import jakarta.ws.rs.CookieParam;
 import jakarta.ws.rs.DefaultValue;
 import org.junit.jupiter.api.BeforeAll;

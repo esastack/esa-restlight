@@ -17,10 +17,10 @@ package io.esastack.restlight.core.resolver.nav;
 
 import esa.commons.Checks;
 import esa.commons.ObjectUtils;
-import io.esastack.restlight.core.method.Param;
-import io.esastack.restlight.core.resolver.ParamResolver;
-import io.esastack.restlight.server.bootstrap.WebServerException;
-import io.esastack.restlight.server.context.RequestContext;
+import io.esastack.restlight.core.handler.method.Param;
+import io.esastack.restlight.core.resolver.param.ParamResolver;
+import io.esastack.restlight.core.exception.WebServerException;
+import io.esastack.restlight.core.context.RequestContext;
 
 import java.util.Optional;
 import java.util.function.Supplier;

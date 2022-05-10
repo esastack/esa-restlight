@@ -20,7 +20,7 @@ import esa.commons.ClassUtils;
 import esa.commons.logging.Logger;
 import esa.commons.logging.LoggerFactory;
 import esa.commons.reflect.AnnotationUtils;
-import io.esastack.restlight.core.resolver.ExceptionResolver;
+import io.esastack.restlight.core.resolver.exception.ExceptionResolver;
 import io.esastack.restlight.core.resolver.exception.DefaultExceptionMapper;
 import io.esastack.restlight.core.util.Ordered;
 import io.esastack.restlight.core.util.OrderedComparator;

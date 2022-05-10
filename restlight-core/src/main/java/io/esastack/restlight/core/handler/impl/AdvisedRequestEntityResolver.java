@@ -17,25 +17,26 @@ package io.esastack.restlight.core.handler.impl;
 
 import esa.commons.Checks;
 import io.esastack.restlight.core.DeployContext;
-import io.esastack.restlight.core.method.Param;
-import io.esastack.restlight.core.resolver.RequestEntity;
-import io.esastack.restlight.core.resolver.RequestEntityImpl;
-import io.esastack.restlight.core.resolver.RequestEntityResolver;
-import io.esastack.restlight.core.resolver.RequestEntityResolverAdvice;
-import io.esastack.restlight.core.resolver.RequestEntityResolverContextImpl;
-import io.esastack.restlight.server.context.RequestContext;
+import io.esastack.restlight.core.handler.method.Param;
+import io.esastack.restlight.core.context.RequestEntity;
+import io.esastack.restlight.core.context.RequestEntityImpl;
+import io.esastack.restlight.core.resolver.ResolverWrap;
+import io.esastack.restlight.core.resolver.entity.request.RequestEntityResolver;
+import io.esastack.restlight.core.resolver.entity.request.RequestEntityResolverAdvice;
+import io.esastack.restlight.core.resolver.entity.request.RequestEntityResolverContextImpl;
+import io.esastack.restlight.core.context.RequestContext;
 
 import java.util.List;
 
-class AdvisedRequestEntityResolver implements ResolverWrap {
+public class AdvisedRequestEntityResolver implements ResolverWrap {
 
     private final Param param;
     private final RequestEntityResolver[] resolvers;
     private final RequestEntityResolverAdvice[] advices;
 
-    AdvisedRequestEntityResolver(Param param,
-                                 List<RequestEntityResolver> resolvers,
-                                 List<RequestEntityResolverAdvice> advices) {
+    public AdvisedRequestEntityResolver(Param param,
+                                        List<RequestEntityResolver> resolvers,
+                                        List<RequestEntityResolverAdvice> advices) {
         Checks.checkNotEmptyArg(resolvers, "resolvers");
         this.param = param;
         this.resolvers = resolvers.toArray(new RequestEntityResolver[0]);

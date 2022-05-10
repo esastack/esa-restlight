@@ -17,7 +17,7 @@ package io.esastack.restlight.jaxrs.impl.container;
 
 import esa.commons.Checks;
 import io.esastack.commons.net.http.HttpMethod;
-import io.esastack.restlight.server.context.FilterContext;
+import io.esastack.restlight.core.filter.FilterContext;
 
 import java.io.InputStream;
 import java.net.URI;

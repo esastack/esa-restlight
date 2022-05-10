@@ -13,21 +13,21 @@
 
 package io.esastack.restlight.integration.springmvc.cases.config;
 
-import io.esastack.restlight.core.method.HandlerMethod;
-import io.esastack.restlight.core.method.Param;
-import io.esastack.restlight.core.resolver.ParamResolver;
-import io.esastack.restlight.core.resolver.ParamResolverAdvice;
-import io.esastack.restlight.core.resolver.ParamResolverAdviceAdapter;
-import io.esastack.restlight.core.resolver.ParamResolverAdviceFactory;
-import io.esastack.restlight.core.resolver.ParamResolverContext;
-import io.esastack.restlight.core.resolver.RequestEntityResolverAdvice;
-import io.esastack.restlight.core.resolver.RequestEntityResolverAdviceAdapter;
-import io.esastack.restlight.core.resolver.RequestEntityResolverAdviceFactory;
-import io.esastack.restlight.core.resolver.RequestEntityResolverContext;
-import io.esastack.restlight.core.resolver.ResponseEntityResolverAdvice;
-import io.esastack.restlight.core.resolver.ResponseEntityResolverAdviceAdapter;
-import io.esastack.restlight.core.resolver.ResponseEntityResolverAdviceFactory;
-import io.esastack.restlight.core.resolver.ResponseEntityResolverContext;
+import io.esastack.restlight.core.handler.method.HandlerMethod;
+import io.esastack.restlight.core.handler.method.Param;
+import io.esastack.restlight.core.resolver.param.ParamResolver;
+import io.esastack.restlight.core.resolver.param.ParamResolverAdvice;
+import io.esastack.restlight.core.resolver.param.ParamResolverAdviceAdapter;
+import io.esastack.restlight.core.resolver.param.ParamResolverAdviceFactory;
+import io.esastack.restlight.core.resolver.param.ParamResolverContext;
+import io.esastack.restlight.core.resolver.entity.request.RequestEntityResolverAdvice;
+import io.esastack.restlight.core.resolver.entity.request.RequestEntityResolverAdviceAdapter;
+import io.esastack.restlight.core.resolver.entity.request.RequestEntityResolverAdviceFactory;
+import io.esastack.restlight.core.resolver.entity.request.RequestEntityResolverContext;
+import io.esastack.restlight.core.resolver.entity.response.ResponseEntityResolverAdvice;
+import io.esastack.restlight.core.resolver.entity.response.ResponseEntityResolverAdviceAdapter;
+import io.esastack.restlight.core.resolver.entity.response.ResponseEntityResolverAdviceFactory;
+import io.esastack.restlight.core.resolver.entity.response.ResponseEntityResolverContext;
 import io.esastack.restlight.integration.springmvc.entity.UserData;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

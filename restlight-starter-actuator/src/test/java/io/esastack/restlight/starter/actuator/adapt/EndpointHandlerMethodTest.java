@@ -15,10 +15,10 @@
  */
 package io.esastack.restlight.starter.actuator.adapt;
 
-import io.esastack.restlight.core.method.HandlerMethod;
-import io.esastack.restlight.core.method.MethodParam;
-import io.esastack.restlight.server.context.RequestContext;
-import io.esastack.restlight.server.schedule.Schedulers;
+import io.esastack.restlight.core.handler.method.HandlerMethod;
+import io.esastack.restlight.core.handler.method.MethodParam;
+import io.esastack.restlight.core.context.RequestContext;
+import io.esastack.restlight.core.server.processor.schedule.Schedulers;
 import io.esastack.restlight.springmvc.annotation.shaded.RequestBody0;
 import io.esastack.restlight.springmvc.annotation.shaded.ResponseBody0;
 import org.junit.jupiter.api.Test;

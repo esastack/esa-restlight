@@ -16,7 +16,7 @@
 package io.esastack.restlight.ext.filter.connectionlimit;
 
 import com.google.common.util.concurrent.RateLimiter;
-import io.esastack.restlight.server.handler.Connection;
+import io.esastack.restlight.core.server.Connection;
 import org.junit.jupiter.api.Test;
 
 import static org.mockito.Mockito.mock;

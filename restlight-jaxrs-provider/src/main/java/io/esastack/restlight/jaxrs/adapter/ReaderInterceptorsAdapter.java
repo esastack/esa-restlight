@@ -16,8 +16,8 @@
 package io.esastack.restlight.jaxrs.adapter;
 
 import esa.commons.Checks;
-import io.esastack.restlight.core.resolver.RequestEntityResolverAdviceAdapter;
-import io.esastack.restlight.core.resolver.RequestEntityResolverContext;
+import io.esastack.restlight.core.resolver.entity.request.RequestEntityResolverAdviceAdapter;
+import io.esastack.restlight.core.resolver.entity.request.RequestEntityResolverContext;
 import io.esastack.restlight.jaxrs.impl.ext.ReaderInterceptorContextImpl;
 import jakarta.ws.rs.ext.ReaderInterceptor;
 

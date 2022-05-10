@@ -19,7 +19,7 @@ import esa.commons.Checks;
 import esa.commons.concurrent.DirectExecutor;
 import io.esastack.restlight.core.AbstractRestlight;
 import io.esastack.restlight.core.config.RestlightOptions;
-import io.esastack.restlight.server.bootstrap.RestlightServer;
+import io.esastack.restlight.core.server.RestlightServer;
 import io.esastack.restlight.spring.util.RestlightBizExecutorAware;
 import io.esastack.restlight.spring.util.RestlightDeployContextAware;
 import io.esastack.restlight.spring.util.RestlightIoExecutorAware;

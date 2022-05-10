@@ -16,12 +16,12 @@
 package io.esastack.restlight.test.context;
 
 import io.esastack.commons.net.buffer.Buffer;
-import io.esastack.restlight.server.context.RequestContext;
-import io.esastack.restlight.server.context.impl.RequestContextImpl;
-import io.esastack.restlight.server.mock.MockHttpRequest;
-import io.esastack.restlight.server.mock.MockHttpResponse;
-import io.esastack.restlight.server.mock.MockResponseContent;
-import io.esastack.restlight.server.schedule.AbstractRestlightHandler;
+import io.esastack.restlight.core.context.RequestContext;
+import io.esastack.restlight.core.context.impl.RequestContextImpl;
+import io.esastack.restlight.core.mock.MockHttpRequest;
+import io.esastack.restlight.core.mock.MockHttpResponse;
+import io.esastack.restlight.core.mock.MockResponseContent;
+import io.esastack.restlight.core.server.processor.AbstractRestlightHandler;
 import io.esastack.restlight.test.result.DefaultMvcResult;
 import io.esastack.restlight.test.result.MvcResult;
 import io.esastack.restlight.test.result.ResultActions;

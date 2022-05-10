@@ -15,8 +15,8 @@
  */
 package io.esastack.restlight.springmvc.resolver.param;
 
-import io.esastack.restlight.core.method.Param;
-import io.esastack.restlight.core.resolver.ParamResolverFactory;
+import io.esastack.restlight.core.handler.method.Param;
+import io.esastack.restlight.core.resolver.param.ParamResolverFactory;
 import io.esastack.restlight.core.resolver.nav.NameAndValue;
 import io.esastack.restlight.core.resolver.param.AbstractHeaderResolver;
 import io.esastack.restlight.springmvc.annotation.shaded.RequestHeader0;

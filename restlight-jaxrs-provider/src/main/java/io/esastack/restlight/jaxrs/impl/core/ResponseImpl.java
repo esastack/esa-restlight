@@ -20,8 +20,8 @@ import io.esastack.commons.net.http.HttpHeaderNames;
 import io.esastack.commons.net.http.MediaTypeUtil;
 import io.esastack.restlight.jaxrs.util.JaxrsUtils;
 import io.esastack.restlight.jaxrs.util.MediaTypeUtils;
-import io.esastack.restlight.server.util.HttpHeaderUtils;
-import io.esastack.restlight.server.util.LoggerUtils;
+import io.esastack.restlight.core.util.HttpHeaderUtils;
+import io.esastack.restlight.core.util.LoggerUtils;
 import jakarta.ws.rs.core.EntityTag;
 import jakarta.ws.rs.core.GenericType;
 import jakarta.ws.rs.core.HttpHeaders;
@@ -227,7 +227,7 @@ public class ResponseImpl extends Response {
         if (data == null || data instanceof Date) {
             return (Date) data;
         }
-        return io.esastack.restlight.server.util.DateUtils.parseByCache(data.toString());
+        return io.esastack.restlight.core.util.DateUtils.parseByCache(data.toString());
     }
 
     @Override
@@ -236,7 +236,7 @@ public class ResponseImpl extends Response {
         if (data == null || data instanceof Date) {
             return (Date) data;
         } else {
-            return io.esastack.restlight.server.util.DateUtils.parseByCache(data.toString());
+            return io.esastack.restlight.core.util.DateUtils.parseByCache(data.toString());
         }
     }
 

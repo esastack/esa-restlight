@@ -17,15 +17,17 @@ package io.esastack.restlight.core.handler.impl;
 
 import io.esastack.restlight.core.handler.HandlerInvoker;
 import io.esastack.restlight.core.handler.HandlerValueResolver;
-import io.esastack.restlight.core.method.HandlerMethod;
-import io.esastack.restlight.core.method.MethodParam;
-import io.esastack.restlight.core.method.ResolvableParam;
-import io.esastack.restlight.server.bootstrap.WebServerException;
-import io.esastack.restlight.server.context.RequestContext;
-import io.esastack.restlight.server.context.impl.RequestContextImpl;
-import io.esastack.restlight.server.core.HttpRequest;
-import io.esastack.restlight.server.core.HttpResponse;
-import io.esastack.restlight.server.mock.MockHttpResponse;
+import io.esastack.restlight.core.handler.method.HandlerMethod;
+import io.esastack.restlight.core.handler.method.HandlerMethodAdapter;
+import io.esastack.restlight.core.handler.method.MethodParam;
+import io.esastack.restlight.core.handler.method.ResolvableParam;
+import io.esastack.restlight.core.exception.WebServerException;
+import io.esastack.restlight.core.context.RequestContext;
+import io.esastack.restlight.core.context.impl.RequestContextImpl;
+import io.esastack.restlight.core.context.HttpRequest;
+import io.esastack.restlight.core.context.HttpResponse;
+import io.esastack.restlight.core.mock.MockHttpResponse;
+import io.esastack.restlight.core.resolver.ResolverWrap;
 import org.junit.jupiter.api.Test;
 
 import java.util.concurrent.CompletableFuture;

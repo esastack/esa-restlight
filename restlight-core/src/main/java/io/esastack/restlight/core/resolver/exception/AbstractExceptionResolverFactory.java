@@ -17,8 +17,8 @@ package io.esastack.restlight.core.resolver.exception;
 
 import esa.commons.Checks;
 import io.esastack.restlight.core.DeployContext;
-import io.esastack.restlight.core.handler.locate.HandlerMethodLocator;
-import io.esastack.restlight.core.resolver.HandlerResolverFactory;
+import io.esastack.restlight.core.locator.HandlerMethodLocator;
+import io.esastack.restlight.core.resolver.factory.HandlerResolverFactory;
 
 import java.util.ArrayList;
 import java.util.Collection;
