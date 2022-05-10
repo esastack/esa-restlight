@@ -54,9 +54,9 @@
 &lt;h4 class=&#34;alert-heading&#34;&gt;Tip&lt;/h4&gt;
 
     &lt;ul&gt;
-&lt;li&gt;&lt;code&gt;RequestContext&lt;/code&gt;所属包名为&lt;code&gt;io.esastack.restlight.server.context&lt;/code&gt;&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;HttpRequest&lt;/code&gt;所属包名为&lt;code&gt;io.esastack.restlight.server.core&lt;/code&gt;&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;HttpResponse&lt;/code&gt;所属包名为&lt;code&gt;io.esastack.restlight.server.core&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;RequestContext&lt;/code&gt;所属包名为&lt;code&gt;io.esastack.restlight.core.context&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;HttpRequest&lt;/code&gt;所属包名为&lt;code&gt;io.esastack.restlight.core.core&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;HttpResponse&lt;/code&gt;所属包名为&lt;code&gt;io.esastack.restlight.core.core&lt;/code&gt;&lt;/li&gt;
 &lt;li&gt;&lt;code&gt;Attributes&lt;/code&gt;所属包名为&lt;code&gt;esa.commons.collection&lt;/code&gt;&lt;/li&gt;
 &lt;/ul&gt;
 

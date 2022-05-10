@@ -27,27 +27,27 @@ public interface RequestContext {
      * Obtains current {@code …">
 <meta property="og:title" content="术语" />
 <meta property="og:description" content="RequestContext 表示一个请求处理过程中的上下文信息，包含：HttpRequest、HttpResponse、Attributes等
-public interface RequestContext { /** * Obtains current {@code request}. * * @return request */ HttpRequest request(); /** * Obtains current {@code response}. * * @return response */ HttpResponse response(); /** * Obtains {@link Attributes} corresponding with current {@link RequestContext}. * * @return attributes */ Attributes attrs(); }  Tip  RequestContext所属包名为io.esastack.restlight.server.context HttpRequest所属包名为io.esastack.restlight.server.core HttpResponse所属包名为io.esastack.restlight.server.core Attributes所属包名为esa.commons.collection   Mapping 表示一个请求匹配的条件， 用于确定一个请求是否能够路由到某个目标对对象。
+public interface RequestContext { /** * Obtains current {@code request}. * * @return request */ HttpRequest request(); /** * Obtains current {@code response}. * * @return response */ HttpResponse response(); /** * Obtains {@link Attributes} corresponding with current {@link RequestContext}. * * @return attributes */ Attributes attrs(); }  Tip  RequestContext所属包名为io.esastack.restlight.core.context HttpRequest所属包名为io.esastack.restlight.core.core HttpResponse所属包名为io.esastack.restlight.core.core Attributes所属包名为esa.commons.collection   Mapping 表示一个请求匹配的条件， 用于确定一个请求是否能够路由到某个目标对对象。
 eg.
 curl -X GET http://localhost:8080/hello
 Mapping.get(&#34;/hello&#34;); curl -X POST http://localhost:8080/foo?" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="/docs/restlight_core/terminology/" /><meta property="article:section" content="docs" />
 
-<meta property="article:modified_time" content="2022-03-10T16:20:14+08:00" /><meta property="og:site_name" content="ESA Restlight" />
+<meta property="article:modified_time" content="2022-05-10T14:28:54+08:00" /><meta property="og:site_name" content="ESA Restlight" />
 
 <meta itemprop="name" content="术语">
 <meta itemprop="description" content="RequestContext 表示一个请求处理过程中的上下文信息，包含：HttpRequest、HttpResponse、Attributes等
-public interface RequestContext { /** * Obtains current {@code request}. * * @return request */ HttpRequest request(); /** * Obtains current {@code response}. * * @return response */ HttpResponse response(); /** * Obtains {@link Attributes} corresponding with current {@link RequestContext}. * * @return attributes */ Attributes attrs(); }  Tip  RequestContext所属包名为io.esastack.restlight.server.context HttpRequest所属包名为io.esastack.restlight.server.core HttpResponse所属包名为io.esastack.restlight.server.core Attributes所属包名为esa.commons.collection   Mapping 表示一个请求匹配的条件， 用于确定一个请求是否能够路由到某个目标对对象。
+public interface RequestContext { /** * Obtains current {@code request}. * * @return request */ HttpRequest request(); /** * Obtains current {@code response}. * * @return response */ HttpResponse response(); /** * Obtains {@link Attributes} corresponding with current {@link RequestContext}. * * @return attributes */ Attributes attrs(); }  Tip  RequestContext所属包名为io.esastack.restlight.core.context HttpRequest所属包名为io.esastack.restlight.core.core HttpResponse所属包名为io.esastack.restlight.core.core Attributes所属包名为esa.commons.collection   Mapping 表示一个请求匹配的条件， 用于确定一个请求是否能够路由到某个目标对对象。
 eg.
 curl -X GET http://localhost:8080/hello
 Mapping.get(&#34;/hello&#34;); curl -X POST http://localhost:8080/foo?">
-<meta itemprop="dateModified" content="2022-03-10T16:20:14+08:00" />
+<meta itemprop="dateModified" content="2022-05-10T14:28:54+08:00" />
 <meta itemprop="wordCount" content="134">
 <meta itemprop="keywords" content="Core," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="术语"/>
 <meta name="twitter:description" content="RequestContext 表示一个请求处理过程中的上下文信息，包含：HttpRequest、HttpResponse、Attributes等
-public interface RequestContext { /** * Obtains current {@code request}. * * @return request */ HttpRequest request(); /** * Obtains current {@code response}. * * @return response */ HttpResponse response(); /** * Obtains {@link Attributes} corresponding with current {@link RequestContext}. * * @return attributes */ Attributes attrs(); }  Tip  RequestContext所属包名为io.esastack.restlight.server.context HttpRequest所属包名为io.esastack.restlight.server.core HttpResponse所属包名为io.esastack.restlight.server.core Attributes所属包名为esa.commons.collection   Mapping 表示一个请求匹配的条件， 用于确定一个请求是否能够路由到某个目标对对象。
+public interface RequestContext { /** * Obtains current {@code request}. * * @return request */ HttpRequest request(); /** * Obtains current {@code response}. * * @return response */ HttpResponse response(); /** * Obtains {@link Attributes} corresponding with current {@link RequestContext}. * * @return attributes */ Attributes attrs(); }  Tip  RequestContext所属包名为io.esastack.restlight.core.context HttpRequest所属包名为io.esastack.restlight.core.core HttpResponse所属包名为io.esastack.restlight.core.core Attributes所属包名为esa.commons.collection   Mapping 表示一个请求匹配的条件， 用于确定一个请求是否能够路由到某个目标对对象。
 eg.
 curl -X GET http://localhost:8080/hello
 Mapping.get(&#34;/hello&#34;); curl -X POST http://localhost:8080/foo?"/>
@@ -609,9 +609,9 @@ if (!doNotTrack) {
 <h4 class="alert-heading">Tip</h4>
 
     <ul>
-<li><code>RequestContext</code>所属包名为<code>io.esastack.restlight.server.context</code></li>
-<li><code>HttpRequest</code>所属包名为<code>io.esastack.restlight.server.core</code></li>
-<li><code>HttpResponse</code>所属包名为<code>io.esastack.restlight.server.core</code></li>
+<li><code>RequestContext</code>所属包名为<code>io.esastack.restlight.core.context</code></li>
+<li><code>HttpRequest</code>所属包名为<code>io.esastack.restlight.core.core</code></li>
+<li><code>HttpResponse</code>所属包名为<code>io.esastack.restlight.core.core</code></li>
 <li><code>Attributes</code>所属包名为<code>esa.commons.collection</code></li>
 </ul>
 
@@ -717,7 +717,7 @@ if (!doNotTrack) {
 	
 	
 	<div class="text-muted mt-5 pt-3 border-top">
-  Last modified March 10, 2022: <a href="https://github.com/esastack/esa-restlight/commit/79630ff3ff95737a7f6c0018265dc505ff3e3528">introduce docsy as the website framework and add docs-v1.0.0 (#120) (79630ff)</a>
+  Last modified May 10, 2022: <a href="https://github.com/esastack/esa-restlight/commit/b2138d55761e8452237cb56c0e1fb512c3a03b9b">Perfect the package of restlight. (#189) (b2138d5)</a>
 </div>
 
 </div>
