@@ -16,18 +16,18 @@
 package io.esastack.restlight.jaxrs.resolver.param;
 
 import io.esastack.restlight.core.handler.method.Param;
-import io.esastack.restlight.core.resolver.param.HttpParamResolverFactory;
+import io.esastack.restlight.core.resolver.param.AbstractParamResolver;
+import io.esastack.restlight.core.resolver.param.ParamResolverFactory;
 import io.esastack.restlight.core.resolver.nav.NameAndValue;
-import io.esastack.restlight.core.resolver.param.AbstractHttpParamResolver;
 import io.esastack.restlight.jaxrs.util.JaxrsMappingUtils;
 import io.esastack.restlight.jaxrs.util.JaxrsUtils;
 import jakarta.ws.rs.FormParam;
 
 /**
- * Implementation of {@link HttpParamResolverFactory} for resolving argument that annotated by the {@link
+ * Implementation of {@link ParamResolverFactory} for resolving argument that annotated by the {@link
  * FormParam}.
  */
-public class FormParamResolver extends AbstractHttpParamResolver {
+public class FormParamResolver extends AbstractParamResolver {
 
     @Override
     public boolean supports(Param param) {

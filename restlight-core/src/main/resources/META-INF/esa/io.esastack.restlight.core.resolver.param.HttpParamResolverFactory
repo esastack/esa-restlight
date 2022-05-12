@@ -1,3 +1,0 @@
-io.esastack.restlight.core.resolver.param.HttpRequestParamResolverFactory
-io.esastack.restlight.core.resolver.param.HttpResponseParamResolverFactory
-io.esastack.restlight.core.resolver.param.RequestContextResolverFactory

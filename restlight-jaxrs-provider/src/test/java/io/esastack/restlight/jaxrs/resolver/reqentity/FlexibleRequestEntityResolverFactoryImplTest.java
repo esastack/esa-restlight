@@ -16,27 +16,31 @@
 package io.esastack.restlight.jaxrs.resolver.reqentity;
 
 import io.esastack.commons.net.http.MediaType;
-import io.esastack.restlight.core.handler.method.HandlerMethod;
-import io.esastack.restlight.core.handler.method.MethodParam;
+import io.esastack.restlight.core.DeployContext;
+import io.esastack.restlight.core.context.HttpRequest;
+import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.context.RequestEntity;
 import io.esastack.restlight.core.context.RequestEntityImpl;
-import io.esastack.restlight.core.resolver.entity.request.RequestEntityResolver;
+import io.esastack.restlight.core.context.impl.RequestContextImpl;
+import io.esastack.restlight.core.handler.method.HandlerMethod;
+import io.esastack.restlight.core.handler.method.MethodParam;
+import io.esastack.restlight.core.mock.MockHttpRequest;
+import io.esastack.restlight.core.mock.MockHttpResponse;
 import io.esastack.restlight.core.resolver.entity.request.FlexibleRequestEntityResolverFactory;
+import io.esastack.restlight.core.resolver.entity.request.RequestEntityResolver;
+import io.esastack.restlight.core.resolver.entity.request.RequestEntityResolverContext;
+import io.esastack.restlight.core.resolver.entity.request.RequestEntityResolverContextImpl;
 import io.esastack.restlight.core.serialize.GsonHttpBodySerializer;
 import io.esastack.restlight.core.serialize.HttpRequestSerializer;
 import io.esastack.restlight.core.serialize.JacksonHttpBodySerializer;
 import io.esastack.restlight.core.serialize.JacksonSerializer;
 import io.esastack.restlight.jaxrs.resolver.Pojo;
 import io.esastack.restlight.jaxrs.resolver.ResolverUtils;
-import io.esastack.restlight.core.context.RequestContext;
-import io.esastack.restlight.core.context.impl.RequestContextImpl;
-import io.esastack.restlight.core.context.HttpRequest;
-import io.esastack.restlight.core.mock.MockHttpRequest;
-import io.esastack.restlight.core.mock.MockHttpResponse;
 import io.netty.handler.codec.http.HttpHeaderNames;
 import jakarta.ws.rs.DefaultValue;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -102,7 +106,10 @@ class FlexibleRequestEntityResolverFactoryImplTest {
                 .withBody(JacksonSerializer.getDefaultMapper().writeValueAsBytes(origin))
                 .build();
         final RequestContext context = new RequestContextImpl(request, MockHttpResponse.aMockResponse().build());
-        final Object resolvedWithJson = resolver.readFrom(new RequestEntityImpl(param, context), context).get();
+        final RequestEntityResolverContext resolverContext =
+                new RequestEntityResolverContextImpl(Mockito.mock(DeployContext.class), context,
+                        new RequestEntityImpl(param, context));
+        final Object resolvedWithJson = resolver.resolve(resolverContext).get();
         assertEquals(origin, resolvedWithJson);
 
         final HttpRequest request2 = MockHttpRequest
@@ -111,7 +118,10 @@ class FlexibleRequestEntityResolverFactoryImplTest {
                 .withBody(JacksonSerializer.getDefaultMapper().writeValueAsBytes(origin))
                 .build();
         final RequestContext context2 = new RequestContextImpl(request2, MockHttpResponse.aMockResponse().build());
-        final Object resolvedWithXml = resolver.readFrom(new RequestEntityImpl(param, context2), context2).get();
+        final RequestEntityResolverContext resolverContext2 =
+                new RequestEntityResolverContextImpl(Mockito.mock(DeployContext.class), context2,
+                        new RequestEntityImpl(param, context2));
+        final Object resolvedWithXml = resolver.resolve(resolverContext2).get();
 
         assertEquals(origin, resolvedWithXml);
     }
@@ -125,7 +135,9 @@ class FlexibleRequestEntityResolverFactoryImplTest {
 
         final RequestContext context = new RequestContextImpl(request, MockHttpResponse.aMockResponse().build());
         final RequestEntity entity = new RequestEntityImpl(param, context);
-        return resolver.readFrom(entity, context).get();
+        final RequestEntityResolverContext resolverContext =
+                new RequestEntityResolverContextImpl(Mockito.mock(DeployContext.class), context, entity);
+        return resolver.resolve(resolverContext).get();
     }
 
     private static class Subject {

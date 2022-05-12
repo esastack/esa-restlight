@@ -33,11 +33,13 @@ import io.esastack.restlight.core.handler.method.DefaultResolvableParamPredicate
 import io.esastack.restlight.core.handler.method.HandlerMethod;
 import io.esastack.restlight.core.handler.method.RouteHandlerMethod;
 import io.esastack.restlight.core.handler.method.RouteHandlerMethodImpl;
+import io.esastack.restlight.core.resolver.ResolverContext;
 import io.esastack.restlight.core.resolver.context.ContextResolver;
 import io.esastack.restlight.core.resolver.exception.ExceptionResolver;
 import io.esastack.restlight.core.resolver.factory.HandlerResolverFactory;
-import io.esastack.restlight.core.resolver.param.HttpParamResolver;
+import io.esastack.restlight.core.resolver.param.ParamResolver;
 import io.esastack.restlight.core.resolver.entity.request.RequestEntityResolver;
+import io.esastack.restlight.core.resolver.param.ParamResolverContext;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -153,10 +155,10 @@ public class MockHandlerData {
                     .thenReturn(p1Resolver);
             when(p1Resolver.resolve(any())).thenReturn(null);
 
-            HttpParamResolver p2Resolver = mock(HttpParamResolver.class);
+            ParamResolver p2Resolver = mock(ParamResolver.class);
             when(resolverFactory.getParamResolver(handlerMethod.parameters()[1]))
                     .thenReturn(p2Resolver);
-            when(p2Resolver.resolve(any())).thenReturn(null);
+            when(p2Resolver.resolve(any(ParamResolverContext.class))).thenReturn(null);
 
             List<RequestEntityResolver> p3Resolver = mock(List.class);
             when(resolverFactory.getRequestEntityResolvers(handlerMethod.parameters()[2]))

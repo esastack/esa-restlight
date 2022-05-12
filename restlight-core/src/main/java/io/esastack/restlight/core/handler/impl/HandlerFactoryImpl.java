@@ -20,9 +20,11 @@ import esa.commons.ClassUtils;
 import esa.commons.reflect.BeanUtils;
 import esa.commons.reflect.ReflectionUtils;
 import io.esastack.restlight.core.DeployContext;
-import io.esastack.restlight.core.handler.Handlers;
+import io.esastack.restlight.core.context.RequestContext;
+import io.esastack.restlight.core.exception.WebServerException;
 import io.esastack.restlight.core.handler.HandlerContextProvider;
 import io.esastack.restlight.core.handler.HandlerFactory;
+import io.esastack.restlight.core.handler.Handlers;
 import io.esastack.restlight.core.handler.method.ConstructorParam;
 import io.esastack.restlight.core.handler.method.ConstructorParamImpl;
 import io.esastack.restlight.core.handler.method.FieldParam;
@@ -33,15 +35,15 @@ import io.esastack.restlight.core.handler.method.MethodParamImpl;
 import io.esastack.restlight.core.handler.method.Param;
 import io.esastack.restlight.core.handler.method.ResolvableParam;
 import io.esastack.restlight.core.handler.method.ResolvableParamPredicate;
-import io.esastack.restlight.core.resolver.ParamResolver;
+import io.esastack.restlight.core.resolver.Resolver;
+import io.esastack.restlight.core.resolver.ResolverContext;
+import io.esastack.restlight.core.resolver.ResolverContextImpl;
+import io.esastack.restlight.core.resolver.context.AdvisedContextResolver;
 import io.esastack.restlight.core.resolver.context.ContextResolver;
-import io.esastack.restlight.core.resolver.context.ContextParamResolver;
 import io.esastack.restlight.core.resolver.factory.HandlerResolverFactory;
 import io.esastack.restlight.core.resolver.param.AdvisedHttpParamResolver;
-import io.esastack.restlight.core.resolver.param.HttpParamResolver;
+import io.esastack.restlight.core.resolver.param.ParamResolver;
 import io.esastack.restlight.core.util.ConstructorUtils;
-import io.esastack.restlight.core.exception.WebServerException;
-import io.esastack.restlight.core.context.RequestContext;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -112,19 +114,21 @@ public class HandlerFactoryImpl implements HandlerFactory {
         doInit0(getOrDefaultContext(userType, method), instance, userType, context);
     }
 
+    @SuppressWarnings("unchecked")
     protected Object doInstantiate(HandlerContext handlerContext,
                                    Class<?> clazz, RequestContext context) {
         final ResolvableHandler handler = getResolvableHandler(clazz, handlerContext);
-        final ResolvableParam<ConstructorParam, ParamResolver>[] consParams = handler.consParamResolvers;
+        final ResolvableParam<ConstructorParam, Resolver>[] consParams = handler.consParamResolvers;
         final Object[] args = new Object[consParams.length];
+        ResolverContext resolverContext = new ResolverContextImpl(context, handlerContext);
         for (int i = 0; i < consParams.length; i++) {
-            ResolvableParam<ConstructorParam, ParamResolver> resolvable = consParams[i];
+            ResolvableParam<ConstructorParam, Resolver> resolvable = consParams[i];
             ConstructorParam param = resolvable.param();
             //resolve args with resolver
             if (resolvable.resolver() != null) {
                 //it may return a null value
                 try {
-                    args[i] = resolvable.resolver().resolve(handlerContext, context);
+                    args[i] = resolvable.resolver().resolve(resolverContext);
                 } catch (Exception e) {
                     //wrap exception
                     throw WebServerException.wrap(e);
@@ -141,18 +145,19 @@ public class HandlerFactoryImpl implements HandlerFactory {
         }
     }
 
-    protected void doInit0(HandlerContext handlerContext,
-                           Object instance, Class<?> clazz, RequestContext context) {
+    @SuppressWarnings("unchecked")
+    protected void doInit0(HandlerContext handlerContext, Object instance, Class<?> clazz, RequestContext context) {
         final ResolvableHandler handler = getResolvableHandler(clazz, handlerContext);
 
+        ResolverContext resolverContext = new ResolverContextImpl(context, handlerContext);
         // set fields
-        for (ResolvableParam<FieldParam, ParamResolver> r : handler.fieldParamResolvers) {
+        for (ResolvableParam<FieldParam, Resolver> r : handler.fieldParamResolvers) {
             FieldParam param = r.param();
             //resolve args with resolver
             if (r.resolver() != null) {
                 //it may return a null value
                 try {
-                    BeanUtils.setFieldValue(instance, param.name(), r.resolver().resolve(handlerContext, context));
+                    BeanUtils.setFieldValue(instance, param.name(), r.resolver().resolve(resolverContext));
                 } catch (Exception e) {
                     //wrap exception
                     throw WebServerException.wrap(e);
@@ -161,13 +166,13 @@ public class HandlerFactoryImpl implements HandlerFactory {
         }
 
         // set methods
-        for (ResolvableParam<MethodParam, ParamResolver> r : handler.setterParamResolvers) {
+        for (ResolvableParam<MethodParam, Resolver> r : handler.setterParamResolvers) {
             MethodParam param = r.param();
             //resolve args with resolver
             if (r.resolver() != null) {
                 //it may return a null value
                 try {
-                    Object arg = r.resolver().resolve(handlerContext, context);
+                    Object arg = r.resolver().resolve(resolverContext);
                     ReflectionUtils.invokeMethod(param.method(), instance, arg);
                 } catch (InvocationTargetException ex) {
                     throw new IllegalArgumentException("Error occurred while invoking method: [" +
@@ -199,9 +204,9 @@ public class HandlerFactoryImpl implements HandlerFactory {
     private static class ResolvableHandler {
 
         private final Constructor<?> constructor;
-        private final ResolvableParam<ConstructorParam, ParamResolver>[] consParamResolvers;
-        private final ResolvableParam<MethodParam, ParamResolver>[] setterParamResolvers;
-        private final ResolvableParam<FieldParam, ParamResolver>[] fieldParamResolvers;
+        private final ResolvableParam<ConstructorParam, Resolver>[] consParamResolvers;
+        private final ResolvableParam<MethodParam, Resolver>[] setterParamResolvers;
+        private final ResolvableParam<FieldParam, Resolver>[] fieldParamResolvers;
 
         private ResolvableHandler(Class<?> clazz, HandlerContext context) {
             ResolvableParamPredicate resolvable = context.paramPredicate()
@@ -217,12 +222,9 @@ public class HandlerFactoryImpl implements HandlerFactory {
         }
 
         @SuppressWarnings("unchecked")
-        private ResolvableParam<ConstructorParam, ParamResolver>[] mergeConsParamResolvers(Constructor<?> constructor,
-                                                                                           ResolvableParamPredicate
-                                                                                                  resolvable,
-                                                                                           HandlerResolverFactory
-                                                                                                  factory) {
-            List<ResolvableParam<ConstructorParam, ParamResolver>> resolvers = new LinkedList<>();
+        private ResolvableParam<ConstructorParam, Resolver>[] mergeConsParamResolvers(
+                Constructor<?> constructor, ResolvableParamPredicate resolvable, HandlerResolverFactory factory) {
+            List<ResolvableParam<ConstructorParam, Resolver>> resolvers = new LinkedList<>();
             for (int i = 0; i < constructor.getParameterCount(); i++) {
                 ConstructorParam param = new ConstructorParamImpl(constructor, i);
                 if (!resolvable.test(param)) {
@@ -234,12 +236,9 @@ public class HandlerFactoryImpl implements HandlerFactory {
         }
 
         @SuppressWarnings("unchecked")
-        private ResolvableParam<MethodParam, ParamResolver>[] mergeSetterParamResolvers(Class<?> clazz,
-                                                                                        ResolvableParamPredicate
-                                                                                               resolvable,
-                                                                                        HandlerResolverFactory
-                                                                                               factory) {
-            List<ResolvableParam<MethodParam, ParamResolver>> resolvers = new LinkedList<>();
+        private ResolvableParam<MethodParam, Resolver>[] mergeSetterParamResolvers(
+                Class<?> clazz, ResolvableParamPredicate resolvable, HandlerResolverFactory factory) {
+            List<ResolvableParam<MethodParam, Resolver>> resolvers = new LinkedList<>();
             ReflectionUtils.getAllDeclaredMethods(clazz).stream()
                     .filter(ReflectionUtils::isSetter)
                     .forEach(m -> {
@@ -252,12 +251,9 @@ public class HandlerFactoryImpl implements HandlerFactory {
         }
 
         @SuppressWarnings("unchecked")
-        private ResolvableParam<FieldParam, ParamResolver>[] mergeFieldParamResolvers(Class<?> clazz,
-                                                                                      ResolvableParamPredicate
-                                                                                             resolvable,
-                                                                                      HandlerResolverFactory
-                                                                                             factory) {
-            List<ResolvableParam<FieldParam, ParamResolver>> resolvers = new LinkedList<>();
+        private ResolvableParam<FieldParam, Resolver>[] mergeFieldParamResolvers(
+                Class<?> clazz, ResolvableParamPredicate resolvable, HandlerResolverFactory factory) {
+            List<ResolvableParam<FieldParam, Resolver>> resolvers = new LinkedList<>();
             ReflectionUtils.getAllDeclaredFields(clazz)
                     .forEach(f -> {
                         FieldParam param = new FieldParamImpl(f);
@@ -268,16 +264,16 @@ public class HandlerFactoryImpl implements HandlerFactory {
             return resolvers.toArray(new ResolvableParam[0]);
         }
 
-        private <P extends Param> ResolvableParam<P, ParamResolver> getResolverWrap(P param,
-                                                                                    HandlerResolverFactory factory) {
-            HttpParamResolver httpParamResolver = factory.getParamResolver(param);
-            if (httpParamResolver != null) {
-                return new ResolvableParam<>(param, new AdvisedHttpParamResolver(httpParamResolver,
-                        factory.getParamResolverAdvices(param, httpParamResolver)));
+        private <P extends Param> ResolvableParam<P, Resolver> getResolverWrap(P param,
+                                                                               HandlerResolverFactory factory) {
+            ParamResolver paramResolver = factory.getParamResolver(param);
+            if (paramResolver != null) {
+                return new ResolvableParam<>(param, new AdvisedHttpParamResolver(paramResolver,
+                        factory.getParamResolverAdvices(param, paramResolver)));
             } else {
                 ContextResolver contextResolver = factory.getContextResolver(param);
                 if (contextResolver != null) {
-                    return new ResolvableParam<>(param, new ContextParamResolver(contextResolver));
+                    return new ResolvableParam<>(param, new AdvisedContextResolver(contextResolver));
                 } else {
                     throw new IllegalArgumentException("There is no resolver to handle param: ["
                             + param.toString() + "]");

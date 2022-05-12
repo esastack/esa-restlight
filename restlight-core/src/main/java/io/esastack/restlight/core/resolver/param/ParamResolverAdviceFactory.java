@@ -21,46 +21,46 @@ import io.esastack.restlight.core.handler.method.Param;
 import io.esastack.restlight.core.util.Ordered;
 
 @SPI
-public interface HttpParamResolverAdviceFactory extends HttpParamPredicate, Ordered {
+public interface ParamResolverAdviceFactory extends ParamPredicate, Ordered {
 
     /**
-     * Converts given {@link HttpParamResolverAdviceAdapter} to {@link HttpParamResolverAdviceFactory} which
-     * always use the given {@link HttpParamResolverAdviceAdapter} as the result of
-     * {@link #createResolverAdvice(Param, HttpParamResolver)}
+     * Converts given {@link ParamResolverAdviceAdapter} to {@link ParamResolverAdviceFactory} which
+     * always use the given {@link ParamResolverAdviceAdapter} as the result of
+     * {@link #createResolverAdvice(Param, ParamResolver)}
      *
      * @param resolver resolver
      * @return of factory bean
      */
-    static HttpParamResolverAdviceFactory singleton(HttpParamResolverAdviceAdapter resolver) {
+    static ParamResolverAdviceFactory singleton(ParamResolverAdviceAdapter resolver) {
         return new Singleton(resolver);
     }
 
     /**
-     * Creates an instance of {@link HttpParamResolverAdvice} for given handler method.
+     * Creates an instance of {@link ParamResolverAdvice} for given handler method.
      *
      * @param param    method
      * @param resolver argumentResolver associated with this parameter
      * @return advice
      */
-    HttpParamResolverAdvice createResolverAdvice(Param param, HttpParamResolver resolver);
+    ParamResolverAdvice createResolverAdvice(Param param, ParamResolver resolver);
 
     @Override
     default int getOrder() {
         return HIGHEST_PRECEDENCE;
     }
 
-    class Singleton implements HttpParamResolverAdviceFactory {
+    class Singleton implements ParamResolverAdviceFactory {
 
-        private final HttpParamResolverAdviceAdapter resolver;
+        private final ParamResolverAdviceAdapter resolver;
 
-        Singleton(HttpParamResolverAdviceAdapter resolver) {
+        Singleton(ParamResolverAdviceAdapter resolver) {
             Checks.checkNotNull(resolver, "resolver");
             this.resolver = resolver;
         }
 
         @Override
-        public HttpParamResolverAdvice createResolverAdvice(Param param,
-                                                            HttpParamResolver httpParamResolver) {
+        public ParamResolverAdvice createResolverAdvice(Param param,
+                                                        ParamResolver paramResolver) {
             return resolver;
         }
 

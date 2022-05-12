@@ -13,21 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.esastack.restlight.core.resolver.param;
 
-import esa.commons.spi.SPI;
-import io.esastack.restlight.core.util.Ordered;
+package io.esastack.restlight.core.resolver;
 
-/**
- * Interface for resolving method parameters to the real values of the handler method base on the current context.
- */
-@SPI
-public interface HttpParamResolverAdapter extends HttpParamPredicate, HttpParamResolver, Ordered {
+import esa.commons.annotation.Internal;
 
-    @Override
-    default int getOrder() {
-        return HIGHEST_PRECEDENCE;
-    }
+@Internal
+public interface ResolverExecutor<C extends ResolverContext> {
 
+    C context();
+
+    Object proceed() throws Exception;
 }
-

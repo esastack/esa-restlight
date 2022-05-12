@@ -16,13 +16,15 @@
 package io.esastack.restlight.jaxrs.impl.ext;
 
 import esa.commons.collection.AttributeMap;
-import io.esastack.restlight.core.context.ResponseEntity;
-import io.esastack.restlight.core.context.ResponseEntityChannel;
-import io.esastack.restlight.core.resolver.entity.response.ResponseEntityResolverContext;
-import io.esastack.restlight.core.context.RequestContext;
-import io.esastack.restlight.core.context.impl.RequestContextImpl;
+import io.esastack.restlight.core.DeployContext;
 import io.esastack.restlight.core.context.HttpRequest;
 import io.esastack.restlight.core.context.HttpResponse;
+import io.esastack.restlight.core.context.RequestContext;
+import io.esastack.restlight.core.context.ResponseEntity;
+import io.esastack.restlight.core.context.ResponseEntityChannel;
+import io.esastack.restlight.core.context.impl.RequestContextImpl;
+import io.esastack.restlight.core.resolver.ResolverExecutor;
+import io.esastack.restlight.core.resolver.entity.response.ResponseEntityResolverContext;
 import jakarta.ws.rs.core.MultivaluedHashMap;
 import jakarta.ws.rs.ext.WriterInterceptor;
 import jakarta.ws.rs.ext.WriterInterceptorContext;
@@ -45,6 +47,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 class WriterInterceptorContextImplTest {
 
@@ -53,13 +56,14 @@ class WriterInterceptorContextImplTest {
         assertThrows(NullPointerException.class, () -> new WriterInterceptorContextImpl(null,
                 mock(OutputStream.class), new MultivaluedHashMap<>(), new WriterInterceptor[0]));
         assertThrows(NullPointerException.class, () -> new WriterInterceptorContextImpl(
-                mock(ResponseEntityResolverContext.class), null,
+                mock(ResolverExecutor.class), null,
                 new MultivaluedHashMap<>(), new WriterInterceptor[0]));
         assertThrows(NullPointerException.class, () -> new WriterInterceptorContextImpl(
-                mock(ResponseEntityResolverContext.class), mock(OutputStream.class),
+                mock(ResolverExecutor.class), mock(OutputStream.class),
                 null, new WriterInterceptor[0]));
-        assertDoesNotThrow(() -> new WriterInterceptorContextImpl(
-                mock(ResponseEntityResolverContext.class),
+        ResolverExecutor<ResponseEntityResolverContext> mockExecutor = mock(ResolverExecutor.class);
+        when(mockExecutor.context()).thenReturn(mock(ResponseEntityResolverContext.class));
+        assertDoesNotThrow(() -> new WriterInterceptorContextImpl(mockExecutor,
                 mock(OutputStream.class), new MultivaluedHashMap<>(), null));
 
         final HttpRequest request = mock(HttpRequest.class);
@@ -82,18 +86,31 @@ class WriterInterceptorContextImplTest {
             }
 
             @Override
-            public void proceed() {
-                count.incrementAndGet();
+            public RequestContext requestContext() {
+                return context0;
             }
 
             @Override
-            public RequestContext context() {
-                return context0;
+            public DeployContext deployContext() {
+                return null;
             }
         };
+        final ResolverExecutor<ResponseEntityResolverContext> executor =
+                new ResolverExecutor<ResponseEntityResolverContext>() {
+                    @Override
+                    public ResponseEntityResolverContext context() {
+                        return underlying;
+                    }
+
+                    @Override
+                    public Object proceed() throws Exception {
+                        return count.incrementAndGet();
+                    }
+        };
+
         final WriterInterceptor interceptor1 = mock(WriterInterceptor.class);
         final WriterInterceptor interceptor2 = mock(WriterInterceptor.class);
-        final WriterInterceptorContext context = new WriterInterceptorContextImpl(underlying,
+        final WriterInterceptorContext context = new WriterInterceptorContextImpl(executor,
                 outputStream, headers, new WriterInterceptor[]{interceptor1, interceptor2});
 
         // getEntity
@@ -125,7 +142,7 @@ class WriterInterceptorContextImplTest {
 
         clearInvocations(interceptor1, interceptor2);
         reset(interceptor1, interceptor2);
-        final WriterInterceptorContext context1 = new WriterInterceptorContextImpl(underlying,
+        final WriterInterceptorContext context1 = new WriterInterceptorContextImpl(executor,
                 outputStream, headers, new WriterInterceptor[] {interceptor1, interceptor2});
         doAnswer(invocationOnMock -> {
             context1.proceed();
@@ -141,7 +158,7 @@ class WriterInterceptorContextImplTest {
 
         clearInvocations(interceptor1, interceptor2);
         reset(interceptor1, interceptor2);
-        final WriterInterceptorContext context2 = new WriterInterceptorContextImpl(underlying,
+        final WriterInterceptorContext context2 = new WriterInterceptorContextImpl(executor,
                 outputStream, headers, new WriterInterceptor[] {interceptor1, interceptor2});
         assertEquals(0, count.intValue());
 

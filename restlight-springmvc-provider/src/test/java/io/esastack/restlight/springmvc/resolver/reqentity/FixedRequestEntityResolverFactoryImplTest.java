@@ -16,6 +16,7 @@
 package io.esastack.restlight.springmvc.resolver.reqentity;
 
 import io.esastack.commons.net.http.MediaType;
+import io.esastack.restlight.core.DeployContext;
 import io.esastack.restlight.core.annotation.RequestSerializer;
 import io.esastack.restlight.core.annotation.Serializer;
 import io.esastack.restlight.core.handler.method.HandlerMethod;
@@ -23,6 +24,8 @@ import io.esastack.restlight.core.handler.method.MethodParam;
 import io.esastack.restlight.core.context.RequestEntityImpl;
 import io.esastack.restlight.core.resolver.entity.request.RequestEntityResolver;
 import io.esastack.restlight.core.resolver.entity.request.FixedRequestEntityResolverFactory;
+import io.esastack.restlight.core.resolver.entity.request.RequestEntityResolverContext;
+import io.esastack.restlight.core.resolver.entity.request.RequestEntityResolverContextImpl;
 import io.esastack.restlight.core.serialize.HttpRequestSerializer;
 import io.esastack.restlight.core.serialize.JacksonHttpBodySerializer;
 import io.esastack.restlight.core.serialize.JacksonSerializer;
@@ -37,6 +40,7 @@ import io.esastack.restlight.springmvc.resolver.ResolverUtils;
 import io.netty.handler.codec.http.HttpHeaderNames;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -102,7 +106,10 @@ class FixedRequestEntityResolverFactoryImplTest {
 
         final RequestContext context = new RequestContextImpl(request,
                 MockHttpResponse.aMockResponse().build());
-        return resolver.readFrom(new RequestEntityImpl(param, context), context).get();
+        final DeployContext deployContext = Mockito.mock(DeployContext.class);
+        RequestEntityResolverContext resolverContext = new RequestEntityResolverContextImpl(deployContext, context,
+                new RequestEntityImpl(param, context));
+        return resolver.resolve(resolverContext).get();
     }
 
     private static class Subject {

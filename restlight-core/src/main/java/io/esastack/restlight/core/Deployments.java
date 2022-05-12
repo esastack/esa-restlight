@@ -50,10 +50,10 @@ import io.esastack.restlight.core.resolver.context.ContextResolverFactory;
 import io.esastack.restlight.core.resolver.exception.ExceptionResolver;
 import io.esastack.restlight.core.resolver.factory.HandlerResolverFactory;
 import io.esastack.restlight.core.resolver.factory.HandlerResolverFactoryImpl;
-import io.esastack.restlight.core.resolver.param.HttpParamResolverAdapter;
-import io.esastack.restlight.core.resolver.param.HttpParamResolverAdviceAdapter;
-import io.esastack.restlight.core.resolver.param.HttpParamResolverAdviceFactory;
-import io.esastack.restlight.core.resolver.param.HttpParamResolverFactory;
+import io.esastack.restlight.core.resolver.param.ParamResolverAdapter;
+import io.esastack.restlight.core.resolver.param.ParamResolverAdviceAdapter;
+import io.esastack.restlight.core.resolver.param.ParamResolverAdviceFactory;
+import io.esastack.restlight.core.resolver.param.ParamResolverFactory;
 import io.esastack.restlight.core.resolver.entity.request.RequestEntityResolverAdapter;
 import io.esastack.restlight.core.resolver.entity.request.RequestEntityResolverAdviceAdapter;
 import io.esastack.restlight.core.resolver.entity.request.RequestEntityResolverAdviceFactory;
@@ -78,8 +78,8 @@ import io.esastack.restlight.core.spi.FutureTransferFactory;
 import io.esastack.restlight.core.spi.HandlerAdviceFactory;
 import io.esastack.restlight.core.spi.HandlerFactoryProvider;
 import io.esastack.restlight.core.spi.HandlerRegistryAwareFactory;
-import io.esastack.restlight.core.spi.HttpParamResolverAdviceProvider;
-import io.esastack.restlight.core.spi.HttpParamResolverProvider;
+import io.esastack.restlight.core.spi.ParamResolverAdviceProvider;
+import io.esastack.restlight.core.spi.ParamResolverProvider;
 import io.esastack.restlight.core.spi.RequestEntityResolverAdviceProvider;
 import io.esastack.restlight.core.spi.RequestEntityResolverProvider;
 import io.esastack.restlight.core.spi.ResponseEntityResolverAdviceProvider;
@@ -169,8 +169,8 @@ public abstract class Deployments {
 
     private final List<RouteFilterFactory> routeFilters = new LinkedList<>();
     private final List<StringConverterFactory> stringConverters = new LinkedList<>();
-    private final List<HttpParamResolverFactory> paramResolvers = new LinkedList<>();
-    private final List<HttpParamResolverAdviceFactory> paramResolverAdvices = new LinkedList<>();
+    private final List<ParamResolverFactory> paramResolvers = new LinkedList<>();
+    private final List<ParamResolverAdviceFactory> paramResolverAdvices = new LinkedList<>();
     private final List<ContextResolverFactory> contextResolvers = new LinkedList<>();
     private final List<RequestEntityResolverFactory> requestEntityResolvers = new LinkedList<>();
     private final List<RequestEntityResolverAdviceFactory> requestEntityResolverAdvices = new LinkedList<>();
@@ -572,24 +572,24 @@ public abstract class Deployments {
     }
 
     /**
-     * Adds {@link HttpParamResolverAdapter} which will be registered in the {@link HandlerResolverFactory}
+     * Adds {@link ParamResolverAdapter} which will be registered in the {@link HandlerResolverFactory}
      *
      * @param resolver resolver
      * @return this deployments
      */
-    public Deployments addParamResolver(HttpParamResolverAdapter resolver) {
+    public Deployments addParamResolver(ParamResolverAdapter resolver) {
         checkImmutable();
         Checks.checkNotNull(resolver, "resolver");
-        return addParamResolver(HttpParamResolverFactory.singleton(resolver));
+        return addParamResolver(ParamResolverFactory.singleton(resolver));
     }
 
     /**
-     * Adds {@link HttpParamResolverFactory} which will be registered in the {@link HandlerResolverFactory}
+     * Adds {@link ParamResolverFactory} which will be registered in the {@link HandlerResolverFactory}
      *
      * @param resolver resolver
      * @return this deployments
      */
-    public Deployments addParamResolver(HttpParamResolverFactory resolver) {
+    public Deployments addParamResolver(ParamResolverFactory resolver) {
         checkImmutable();
         Checks.checkNotNull(resolver, "resolver");
         this.paramResolvers.add(resolver);
@@ -597,12 +597,12 @@ public abstract class Deployments {
     }
 
     /**
-     * Adds {@link HttpParamResolverFactory}s which will be registered in the {@link HandlerResolverFactory}
+     * Adds {@link ParamResolverFactory}s which will be registered in the {@link HandlerResolverFactory}
      *
      * @param resolvers resolvers
      * @return this deployments
      */
-    public Deployments addParamResolvers(Collection<? extends HttpParamResolverFactory> resolvers) {
+    public Deployments addParamResolvers(Collection<? extends ParamResolverFactory> resolvers) {
         checkImmutable();
         if (resolvers != null && !resolvers.isEmpty()) {
             this.paramResolvers.addAll(resolvers);
@@ -611,24 +611,24 @@ public abstract class Deployments {
     }
 
     /**
-     * Adds {@link HttpParamResolverFactory} which will be registered in the {@link HandlerResolverFactory}
+     * Adds {@link ParamResolverFactory} which will be registered in the {@link HandlerResolverFactory}
      *
      * @param advice advice
      * @return this deployments
      */
-    public Deployments addParamResolverAdvice(HttpParamResolverAdviceAdapter advice) {
+    public Deployments addParamResolverAdvice(ParamResolverAdviceAdapter advice) {
         checkImmutable();
         Checks.checkNotNull(advice, "advice");
-        return addParamResolverAdvice(HttpParamResolverAdviceFactory.singleton(advice));
+        return addParamResolverAdvice(ParamResolverAdviceFactory.singleton(advice));
     }
 
     /**
-     * Adds {@link HttpParamResolverAdviceFactory} which will be registered in the {@link HandlerResolverFactory}
+     * Adds {@link ParamResolverAdviceFactory} which will be registered in the {@link HandlerResolverFactory}
      *
      * @param advice advice
      * @return this deployments
      */
-    public Deployments addParamResolverAdvice(HttpParamResolverAdviceFactory advice) {
+    public Deployments addParamResolverAdvice(ParamResolverAdviceFactory advice) {
         checkImmutable();
         Checks.checkNotNull(advice, "advice");
         this.paramResolverAdvices.add(advice);
@@ -636,12 +636,12 @@ public abstract class Deployments {
     }
 
     /**
-     * Adds {@link HttpParamResolverAdviceFactory}s which will be registered in the {@link HandlerResolverFactory}
+     * Adds {@link ParamResolverAdviceFactory}s which will be registered in the {@link HandlerResolverFactory}
      *
      * @param advices advices
      * @return this deployments
      */
-    public Deployments addParamResolverAdvices(Collection<? extends HttpParamResolverAdviceFactory> advices) {
+    public Deployments addParamResolverAdvices(Collection<? extends ParamResolverAdviceFactory> advices) {
         checkImmutable();
         if (advices != null && !advices.isEmpty()) {
             this.paramResolverAdvices.addAll(advices);
@@ -662,7 +662,7 @@ public abstract class Deployments {
     }
 
     /**
-     * Adds {@link HttpParamResolverFactory} which will be registered in the {@link HandlerResolverFactory}
+     * Adds {@link ParamResolverFactory} which will be registered in the {@link HandlerResolverFactory}
      *
      * @param resolver resolver
      * @return this deployments
@@ -675,7 +675,7 @@ public abstract class Deployments {
     }
 
     /**
-     * Adds {@link HttpParamResolverFactory}s which will be registered in the {@link HandlerResolverFactory}
+     * Adds {@link ParamResolverFactory}s which will be registered in the {@link HandlerResolverFactory}
      *
      * @param resolvers resolvers
      * @return this deployments
@@ -1247,12 +1247,12 @@ public abstract class Deployments {
                 .getByGroup(restlight.name(), true));
 
         // load ParamResolver from spi
-        SpiLoader.cached(HttpParamResolverAdapter.class)
+        SpiLoader.cached(ParamResolverAdapter.class)
                 .getByGroup(restlight.name(), true)
                 .forEach(this::addParamResolver);
-        addParamResolvers(SpiLoader.cached(HttpParamResolverFactory.class)
+        addParamResolvers(SpiLoader.cached(ParamResolverFactory.class)
                 .getByGroup(restlight.name(), true));
-        addParamResolvers(SpiLoader.cached(HttpParamResolverProvider.class)
+        addParamResolvers(SpiLoader.cached(ParamResolverProvider.class)
                 .getByGroup(restlight.name(), true)
                 .stream()
                 .map(provider -> provider.factoryBean(ctx()))
@@ -1261,12 +1261,12 @@ public abstract class Deployments {
                 .collect(Collectors.toList()));
 
         // load ParamResolverAdvice from spi
-        SpiLoader.cached(HttpParamResolverAdviceAdapter.class)
+        SpiLoader.cached(ParamResolverAdviceAdapter.class)
                 .getByGroup(restlight.name(), true)
                 .forEach(this::addParamResolverAdvice);
-        addParamResolverAdvices(SpiLoader.cached(HttpParamResolverAdviceFactory.class)
+        addParamResolverAdvices(SpiLoader.cached(ParamResolverAdviceFactory.class)
                 .getByGroup(restlight.name(), true));
-        addParamResolverAdvices(SpiLoader.cached(HttpParamResolverAdviceProvider.class)
+        addParamResolverAdvices(SpiLoader.cached(ParamResolverAdviceProvider.class)
                 .getByGroup(restlight.name(), true)
                 .stream()
                 .map(provider -> provider.factoryBean(ctx()))

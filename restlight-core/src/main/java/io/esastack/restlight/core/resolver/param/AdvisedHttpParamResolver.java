@@ -15,30 +15,30 @@
  */
 package io.esastack.restlight.core.resolver.param;
 
-import io.esastack.restlight.core.DeployContext;
-import io.esastack.restlight.core.resolver.ParamResolver;
-import io.esastack.restlight.core.context.RequestContext;
+import io.esastack.restlight.core.resolver.Resolver;
+import io.esastack.restlight.core.resolver.ResolverContext;
 
 import java.util.List;
 
-public class AdvisedHttpParamResolver implements ParamResolver {
+public class AdvisedHttpParamResolver implements Resolver<ResolverContext> {
 
-    private final HttpParamResolver resolver;
-    private final List<HttpParamResolverAdvice> advices;
+    private final ParamResolver resolver;
+    private final List<ParamResolverAdvice> advices;
     private final boolean absentAdvices;
 
-    public AdvisedHttpParamResolver(HttpParamResolver resolver, List<HttpParamResolverAdvice> advices) {
+    public AdvisedHttpParamResolver(ParamResolver resolver, List<ParamResolverAdvice> advices) {
         this.resolver = resolver;
         this.absentAdvices = (advices == null || advices.isEmpty());
         this.advices = advices;
     }
 
     @Override
-    public Object resolve(DeployContext deployContext, RequestContext context) throws Exception {
+    public Object resolve(ResolverContext context) throws Exception {
+        ParamResolverContext resolverContext = new ParamResolverContextImpl(context);
         if (absentAdvices) {
-            return resolver.resolve(context);
+            return resolver.resolve(resolverContext);
         }
-        return new HttpParamResolverContextImpl(context, resolver, advices).proceed();
+        return new ParamResolverExecutor(resolverContext, resolver, advices).proceed();
     }
 }
 

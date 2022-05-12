@@ -19,8 +19,8 @@ import esa.commons.collection.Attributes;
 import io.esastack.restlight.core.filter.RouteFilter;
 import io.esastack.restlight.core.handler.method.HandlerMethod;
 import io.esastack.restlight.core.resolver.context.ContextResolverAdapter;
-import io.esastack.restlight.core.resolver.param.HttpParamResolverAdapter;
-import io.esastack.restlight.core.resolver.param.HttpParamResolverAdviceAdapter;
+import io.esastack.restlight.core.resolver.param.ParamResolverAdapter;
+import io.esastack.restlight.core.resolver.param.ParamResolverAdviceAdapter;
 import io.esastack.restlight.core.resolver.entity.request.RequestEntityResolverAdapter;
 import io.esastack.restlight.core.resolver.entity.request.RequestEntityResolverAdviceAdapter;
 import io.esastack.restlight.core.resolver.entity.response.ResponseEntityResolverAdapter;
@@ -44,20 +44,20 @@ public interface ConfigurableHandler {
     ConfigurableHandler addRouteFilter(RouteFilter filter);
 
     /**
-     * Add {@link HttpParamResolverAdapter}s.
+     * Add {@link ParamResolverAdapter}s.
      *
      * @param resolver resolver corresponding with specified {@link HandlerMethod}.
      * @return this configurable
      */
-    ConfigurableHandler addParamResolver(HttpParamResolverAdapter resolver);
+    ConfigurableHandler addParamResolver(ParamResolverAdapter resolver);
 
     /**
-     * Add {@link HttpParamResolverAdviceAdapter}.
+     * Add {@link ParamResolverAdviceAdapter}.
      *
      * @param advice advice corresponding with specified {@link HandlerMethod}.
      * @return this configurable
      */
-    ConfigurableHandler addParamResolverAdvice(HttpParamResolverAdviceAdapter advice);
+    ConfigurableHandler addParamResolverAdvice(ParamResolverAdviceAdapter advice);
 
     /**
      * Add {@link ContextResolverAdapter}s.

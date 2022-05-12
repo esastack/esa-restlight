@@ -16,6 +16,7 @@
 package io.esastack.restlight.jaxrs.adapter;
 
 import esa.commons.Checks;
+import io.esastack.restlight.core.resolver.ResolverExecutor;
 import io.esastack.restlight.core.resolver.entity.request.RequestEntityResolverAdviceAdapter;
 import io.esastack.restlight.core.resolver.entity.request.RequestEntityResolverContext;
 import io.esastack.restlight.jaxrs.impl.ext.ReaderInterceptorContextImpl;
@@ -34,11 +35,12 @@ public class ReaderInterceptorsAdapter implements RequestEntityResolverAdviceAda
     }
 
     @Override
-    public Object aroundRead(RequestEntityResolverContext context) throws Exception {
-        if (predicate.test(context.context())) {
-            return new ReaderInterceptorContextImpl(context, interceptors).proceed();
+    public Object aroundResolve(ResolverExecutor<RequestEntityResolverContext> executor) throws Exception {
+        RequestEntityResolverContext context = executor.context();
+        if (predicate.test(context.requestContext())) {
+            return new ReaderInterceptorContextImpl(executor, interceptors).proceed();
         } else {
-            return context.proceed();
+            return executor.proceed();
         }
     }
 }

@@ -16,29 +16,29 @@
 package io.esastack.restlight.core.resolver.param;
 
 import esa.commons.Checks;
-import io.esastack.restlight.core.context.RequestContext;
+import io.esastack.restlight.core.resolver.ResolverExecutor;
 
 import java.util.List;
 
-public class HttpParamResolverContextImpl implements HttpParamResolverContext {
+final class ParamResolverExecutor implements ResolverExecutor<ParamResolverContext> {
 
-    private final RequestContext context;
-    private final HttpParamResolver resolver;
-    private final HttpParamResolverAdvice[] advices;
+    private final ParamResolverContext context;
+    private final ParamResolver resolver;
+    private final ParamResolverAdvice[] advices;
     private int index;
 
-    public HttpParamResolverContextImpl(RequestContext context,
-                                        HttpParamResolver resolver,
-                                        List<HttpParamResolverAdvice> advices) {
+    public ParamResolverExecutor(ParamResolverContext context,
+                                 ParamResolver resolver,
+                                 List<ParamResolverAdvice> advices) {
         Checks.checkNotNull(context, "context");
         Checks.checkNotNull(resolver, "resolver");
         this.context = context;
         this.resolver = resolver;
-        this.advices = (advices == null ? null : advices.toArray(new HttpParamResolverAdvice[0]));
+        this.advices = (advices == null ? null : advices.toArray(new ParamResolverAdvice[0]));
     }
 
     @Override
-    public RequestContext requestContext() {
+    public ParamResolverContext context() {
         return context;
     }
 

@@ -20,12 +20,10 @@ import esa.commons.reflect.AnnotationUtils;
 import io.esastack.restlight.core.annotation.RequestSerializer;
 import io.esastack.restlight.core.annotation.Serializer;
 import io.esastack.restlight.core.handler.method.Param;
-import io.esastack.restlight.core.context.RequestEntity;
 import io.esastack.restlight.core.resolver.converter.StringConverter;
 import io.esastack.restlight.core.resolver.converter.StringConverterProvider;
 import io.esastack.restlight.core.resolver.nav.NameAndValue;
 import io.esastack.restlight.core.serialize.HttpRequestSerializer;
-import io.esastack.restlight.core.context.RequestContext;
 
 import java.lang.reflect.Modifier;
 import java.util.List;
@@ -137,8 +135,8 @@ public abstract class FixedRequestEntityResolverFactory implements RequestEntity
         }
 
         @Override
-        public Result<?, Void> readFrom(RequestEntity entity, RequestContext context) throws Exception {
-            return checkRequired(nav, converter, serializer.deserialize(entity));
+        public Result<?, Void> resolve(RequestEntityResolverContext context) throws Exception {
+            return checkRequired(nav, converter, serializer.deserialize(context.httpEntity()));
         }
     }
 }

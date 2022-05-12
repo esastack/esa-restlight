@@ -15,11 +15,11 @@
  */
 package io.esastack.restlight.core.resolver.entity.request;
 
-import io.esastack.restlight.core.handler.method.Param;
-import io.esastack.restlight.core.resolver.entity.HttpEntityResolverContext;
 import io.esastack.restlight.core.context.RequestEntity;
+import io.esastack.restlight.core.handler.method.Param;
+import io.esastack.restlight.core.resolver.entity.EntityResolverContext;
 
-public interface RequestEntityResolverContext extends HttpEntityResolverContext {
+public interface RequestEntityResolverContext extends EntityResolverContext {
 
     /**
      * Obtains the {@link Param} to resolve.
@@ -28,14 +28,5 @@ public interface RequestEntityResolverContext extends HttpEntityResolverContext 
      */
     @Override
     RequestEntity httpEntity();
-
-    /**
-     * Resolves the {@link #httpEntity()} by given {@link #context()}.
-     *
-     * @return object resolved value
-     * @throws Exception exception
-     */
-    Object proceed() throws Exception;
-
 }
 

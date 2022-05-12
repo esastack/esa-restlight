@@ -13,22 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.esastack.restlight.core.resolver;
 
-import io.esastack.restlight.core.DeployContext;
-import io.esastack.restlight.core.context.RequestContext;
+package io.esastack.restlight.core.resolver.entity;
 
-public interface ParamResolver {
+import esa.commons.annotation.Internal;
+import io.esastack.restlight.core.resolver.ResolverAdvice;
+import io.esastack.restlight.core.resolver.ResolverExecutor;
 
-    /**
-     * Resolves the param by given {@link DeployContext} and {@link RequestContext}.
-     *
-     * @param deployContext deploy context
-     * @param context       context
-     * @return resolved value
-     * @throws Exception exception
-     */
-    Object resolve(DeployContext deployContext, RequestContext context) throws Exception;
+@Internal
+public interface EntityResolverAdvice<C extends EntityResolverContext> extends ResolverAdvice<C> {
 
+    @Override
+    Object aroundResolve(ResolverExecutor<C> executor) throws Exception;
 }
-

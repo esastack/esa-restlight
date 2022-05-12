@@ -18,14 +18,13 @@ package io.esastack.restlight.core.resolver.entity.response;
 import esa.commons.Primitives;
 import esa.commons.Result;
 import io.esastack.commons.net.http.MediaType;
+import io.esastack.restlight.core.context.HttpResponse;
+import io.esastack.restlight.core.context.RequestContext;
+import io.esastack.restlight.core.context.ResponseEntity;
 import io.esastack.restlight.core.handler.HandlerPredicate;
 import io.esastack.restlight.core.handler.method.HandlerMethod;
-import io.esastack.restlight.core.context.ResponseEntity;
-import io.esastack.restlight.core.context.ResponseEntityChannel;
 import io.esastack.restlight.core.serialize.Serializers;
 import io.esastack.restlight.core.util.ResponseEntityUtils;
-import io.esastack.restlight.core.context.RequestContext;
-import io.esastack.restlight.core.context.HttpResponse;
 import io.netty.buffer.ByteBuf;
 
 import java.util.List;
@@ -52,15 +51,15 @@ public abstract class AbstractResponseEntityResolver implements ResponseEntityRe
     }
 
     @Override
-    public Result<Void, Void> writeTo(ResponseEntity entity,
-                                ResponseEntityChannel channel,
-                                RequestContext context) throws Exception {
+    public Result<Void, Void> resolve(ResponseEntityResolverContext context) throws Exception {
+        ResponseEntity entity = context.httpEntity();
+        RequestContext requestContext = context.requestContext();
         if (!supports(entity)) {
             return Result.err();
         }
-        final Object entityValue = context.response().entity();
-        final HttpResponse response = context.response();
-        final List<MediaType> mediaTypes = getMediaTypes(context);
+        final Object entityValue = requestContext.response().entity();
+        final HttpResponse response = requestContext.response();
+        final List<MediaType> mediaTypes = getMediaTypes(requestContext);
 
         final byte[] serialized;
         if (maySimpleType && isSimpleType(entity)) {
@@ -68,15 +67,15 @@ public abstract class AbstractResponseEntityResolver implements ResponseEntityRe
             final MediaType mediaType = selectMediaType(mediaTypes);
             byte[] ret = Serializers.serializeIfPossible(entityValue, response, mediaType);
             if (ret == null) {
-                serialized = serialize(entity, mediaTypes, context);
+                serialized = serialize(entity, mediaTypes, requestContext);
             } else {
                 serialized = ret;
             }
         } else {
-            serialized = serialize(entity, mediaTypes, context);
+            serialized = serialize(entity, mediaTypes, requestContext);
         }
 
-        channel.end(serialized);
+        context.channel().end(serialized);
         return Result.ok();
     }
 

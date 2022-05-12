@@ -44,9 +44,9 @@ import java.util.stream.Collectors;
 /**
  * Binds the parameter if it is annotated by {@link RequestBean}.
  */
-public class RequestBeanParamResolver implements HttpParamResolverFactory {
+public class RequestBeanParamResolver implements ParamResolverFactory {
 
-    protected final Map<Class<?>, HttpParamResolver> metaCache = new ConcurrentHashMap<>(16);
+    protected final Map<Class<?>, ParamResolver> metaCache = new ConcurrentHashMap<>(16);
     private final DeployContext ctx;
 
     public RequestBeanParamResolver(DeployContext ctx) {
@@ -62,13 +62,13 @@ public class RequestBeanParamResolver implements HttpParamResolverFactory {
     }
 
     @Override
-    public HttpParamResolver createResolver(Param param,
-                                            StringConverterProvider converters,
-                                            List<? extends HttpRequestSerializer> serializers) {
+    public ParamResolver createResolver(Param param,
+                                        StringConverterProvider converters,
+                                        List<? extends HttpRequestSerializer> serializers) {
         Class<?> type = param.type();
         // instantiate target object by unsafe
 
-        HttpParamResolver resolver = metaCache.get(type);
+        ParamResolver resolver = metaCache.get(type);
         if (resolver == null) {
             // no need to check the previous value
             metaCache.putIfAbsent(type, resolver = new Resolver(newTypeMeta(type,
@@ -89,7 +89,7 @@ public class RequestBeanParamResolver implements HttpParamResolverFactory {
         return 100;
     }
 
-    private static final class Resolver implements HttpParamResolver {
+    private static final class Resolver implements ParamResolver {
 
         final TypeMeta typeMeta;
 
@@ -173,13 +173,13 @@ public class RequestBeanParamResolver implements HttpParamResolverFactory {
                 };
             }
             FieldParam fieldParam = new FieldParamImpl(f);
-            HttpParamResolver resolver = findResolver(fieldParam, converters, resolverFactory);
+            ParamResolver resolver = findResolver(fieldParam, converters, resolverFactory);
             return new FieldAndSetter(setter, resolver);
         }
 
-        protected HttpParamResolver findResolver(FieldParam fieldParam,
-                                                 StringConverterProvider converters,
-                                                 HandlerResolverFactory resolverFactory) {
+        protected ParamResolver findResolver(FieldParam fieldParam,
+                                             StringConverterProvider converters,
+                                             HandlerResolverFactory resolverFactory) {
             return resolverFactory.getParamResolver(fieldParam);
         }
     }
@@ -249,10 +249,10 @@ public class RequestBeanParamResolver implements HttpParamResolverFactory {
     private static class FieldAndSetter {
 
         private final BiConsumer<Object, Object> setter;
-        private final HttpParamResolver resolver;
+        private final ParamResolver resolver;
 
         private FieldAndSetter(BiConsumer<Object, Object> setter,
-                               HttpParamResolver resolver) {
+                               ParamResolver resolver) {
             this.resolver = resolver;
             this.setter = setter;
         }

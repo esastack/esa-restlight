@@ -17,10 +17,10 @@ package io.esastack.restlight.core.resolver.context;
 
 import esa.commons.spi.SPI;
 import io.esastack.restlight.core.util.Ordered;
-import io.esastack.restlight.core.resolver.param.HttpParamPredicate;
+import io.esastack.restlight.core.resolver.param.ParamPredicate;
 
 @SPI
-public interface ContextResolverAdapter extends ContextResolver, HttpParamPredicate, Ordered {
+public interface ContextResolverAdapter extends ContextResolver, ParamPredicate, Ordered {
 
     /**
      * Default to HIGHEST_PRECEDENCE.

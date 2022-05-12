@@ -28,7 +28,9 @@ import io.esastack.restlight.core.handler.method.HandlerMethod;
 import io.esastack.restlight.core.handler.method.HandlerMethodAdapter;
 import io.esastack.restlight.core.handler.method.MethodParam;
 import io.esastack.restlight.core.handler.method.ResolvableParam;
-import io.esastack.restlight.core.resolver.ParamResolver;
+import io.esastack.restlight.core.resolver.Resolver;
+import io.esastack.restlight.core.resolver.ResolverContext;
+import io.esastack.restlight.core.resolver.ResolverContextImpl;
 import io.esastack.restlight.core.route.Execution;
 import io.esastack.restlight.core.util.Futures;
 
@@ -90,11 +92,11 @@ abstract class AbstractExecution<H extends HandlerMethodAdapter> implements Exec
 
     @SuppressWarnings("unchecked")
     protected Object[] resolveArgs(RequestContext context) {
-        final ResolvableParam<MethodParam, ParamResolver>[] params = handlerMethod.paramResolvers();
+        final ResolvableParam<MethodParam, Resolver>[] params = handlerMethod.paramResolvers();
         final Object[] args = new Object[params.length];
         //resolve parameters one by one
         for (int i = 0; i < params.length; i++) {
-            ResolvableParam<MethodParam, ParamResolver> resolvable = params[i];
+            ResolvableParam<MethodParam, Resolver> resolvable = params[i];
             final MethodParam param = resolvable.param();
             args[i] = resolveFixedArg(param, context);
             //resolve args with resolver
@@ -102,7 +104,8 @@ abstract class AbstractExecution<H extends HandlerMethodAdapter> implements Exec
                 if (resolvable.resolver() != null) {
                     //it may return a null value
                     try {
-                        args[i] = resolvable.resolver().resolve(handlerMethod.context(), context);
+                        ResolverContext resolverContext = new ResolverContextImpl(context, handlerMethod.context());
+                        args[i] = resolvable.resolver().resolve(resolverContext);
                     } catch (Exception e) {
                         //wrap exception
                         throw WebServerException.wrap(e);

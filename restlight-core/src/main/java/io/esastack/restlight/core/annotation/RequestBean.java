@@ -15,7 +15,7 @@
  */
 package io.esastack.restlight.core.annotation;
 
-import io.esastack.restlight.core.resolver.param.HttpParamResolver;
+import io.esastack.restlight.core.resolver.param.ParamResolver;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -26,7 +26,7 @@ import java.lang.annotation.Target;
 /**
  * Indicates that all the {@link java.lang.reflect.Field}s of the parameter annotated by this annotation
  * will be resolved one bye one if the {@link java.lang.reflect.Field} which would be transfer to an implementation of
- * {@link io.esastack.restlight.core.handler.method.Param} can be matched to an {@link HttpParamResolver}
+ * {@link io.esastack.restlight.core.handler.method.Param} can be matched to an {@link ParamResolver}
  * just like a simple method argument.
  */
 @Target({ElementType.PARAMETER})

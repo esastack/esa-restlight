@@ -16,11 +16,11 @@
 package io.esastack.restlight.core.resolver.entity.request;
 
 import esa.commons.spi.SPI;
+import io.esastack.restlight.core.resolver.param.ParamPredicate;
 import io.esastack.restlight.core.util.Ordered;
-import io.esastack.restlight.core.resolver.param.HttpParamPredicate;
 
 @SPI
-public interface RequestEntityResolverAdapter extends RequestEntityResolver, HttpParamPredicate, Ordered {
+public interface RequestEntityResolverAdapter extends RequestEntityResolver, ParamPredicate, Ordered {
 
     @Override
     default int getOrder() {

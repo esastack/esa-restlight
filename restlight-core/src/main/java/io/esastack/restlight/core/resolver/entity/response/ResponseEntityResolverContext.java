@@ -15,13 +15,12 @@
  */
 package io.esastack.restlight.core.resolver.entity.response;
 
-import io.esastack.restlight.core.handler.method.Param;
-import io.esastack.restlight.core.context.HttpResponse;
-import io.esastack.restlight.core.resolver.entity.HttpEntityResolverContext;
 import io.esastack.restlight.core.context.ResponseEntity;
 import io.esastack.restlight.core.context.ResponseEntityChannel;
+import io.esastack.restlight.core.handler.method.Param;
+import io.esastack.restlight.core.resolver.entity.EntityResolverContext;
 
-public interface ResponseEntityResolverContext extends HttpEntityResolverContext {
+public interface ResponseEntityResolverContext extends EntityResolverContext {
 
     /**
      * Obtains the {@link Param} to resolve.
@@ -37,13 +36,6 @@ public interface ResponseEntityResolverContext extends HttpEntityResolverContext
      * @return channel
      */
     ResponseEntityChannel channel();
-
-    /**
-     * Resolves the {@link HttpResponse#entity()} by given {@link #context()}.
-     *
-     * @throws Exception exception
-     */
-    void proceed() throws Exception;
 
 }
 

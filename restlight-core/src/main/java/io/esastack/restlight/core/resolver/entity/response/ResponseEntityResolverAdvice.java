@@ -15,22 +15,26 @@
  */
 package io.esastack.restlight.core.resolver.entity.response;
 
-import io.esastack.restlight.core.context.RequestContext;
-import io.esastack.restlight.core.context.ResponseEntity;
-import io.esastack.restlight.core.context.ResponseEntityChannel;
+import io.esastack.restlight.core.resolver.ResolverExecutor;
+import io.esastack.restlight.core.resolver.entity.EntityResolverAdvice;
 
 /**
  * Allows customizing the return value of handler before resolving it to byte array.
  */
-public interface ResponseEntityResolverAdvice {
+public interface ResponseEntityResolverAdvice extends EntityResolverAdvice<ResponseEntityResolverContext> {
 
     /**
      * This method will be called around
-     * {@link ResponseEntityResolver#writeTo(ResponseEntity, ResponseEntityChannel, RequestContext)}.
+     * {@link ResponseEntityResolver#resolve(ResponseEntityResolverContext)} .
      *
-     * @param context context
+     * @param executor executor
      * @throws Exception exception
      */
-    void aroundWrite(ResponseEntityResolverContext context) throws Exception;
+    @Override
+    default Void aroundResolve(ResolverExecutor<ResponseEntityResolverContext> executor) throws Exception {
+        aroundResolve0(executor);
+        return null;
+    }
 
+    void aroundResolve0(ResolverExecutor<ResponseEntityResolverContext> executor) throws Exception;
 }

@@ -16,24 +16,24 @@
 package io.esastack.restlight.core.resolver.entity.request;
 
 import esa.commons.Checks;
-import io.esastack.restlight.core.DeployContext;
-import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.context.RequestEntity;
 import io.esastack.restlight.core.context.RequestEntityImpl;
 import io.esastack.restlight.core.handler.method.Param;
-import io.esastack.restlight.core.resolver.ParamResolver;
+import io.esastack.restlight.core.resolver.Resolver;
+import io.esastack.restlight.core.resolver.ResolverContext;
+import io.esastack.restlight.core.resolver.entity.EntityResolverExecutor;
 
 import java.util.List;
 
-public class AdvisedRequestEntityParamResolver implements ParamResolver {
+public class AdvisedRequestEntityResolver implements Resolver<ResolverContext> {
 
     private final Param param;
     private final RequestEntityResolver[] resolvers;
     private final RequestEntityResolverAdvice[] advices;
 
-    public AdvisedRequestEntityParamResolver(Param param,
-                                             List<RequestEntityResolver> resolvers,
-                                             List<RequestEntityResolverAdvice> advices) {
+    public AdvisedRequestEntityResolver(Param param,
+                                        List<RequestEntityResolver> resolvers,
+                                        List<RequestEntityResolverAdvice> advices) {
         Checks.checkNotEmptyArg(resolvers, "resolvers");
         this.param = param;
         this.resolvers = resolvers.toArray(new RequestEntityResolver[0]);
@@ -41,8 +41,11 @@ public class AdvisedRequestEntityParamResolver implements ParamResolver {
     }
 
     @Override
-    public Object resolve(DeployContext deployContext, RequestContext context) throws Exception {
-        RequestEntity entity = new RequestEntityImpl(param, context);
-        return new RequestEntityResolverContextImpl(this.param, context, entity, resolvers, advices).proceed();
+    public Object resolve(ResolverContext context) throws Exception {
+        RequestEntity entity = new RequestEntityImpl(param, context.requestContext());
+        RequestEntityResolverContext resolverContext = new RequestEntityResolverContextImpl(context, entity);
+        String unSupportMsg = "There is no suitable resolver to resolve param: " + param
+                + ", content-type: " + context.requestContext().request().contentType();
+        return new EntityResolverExecutor(resolverContext, resolvers, advices, unSupportMsg).proceed();
     }
 }

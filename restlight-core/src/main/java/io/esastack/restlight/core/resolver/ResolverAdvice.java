@@ -13,22 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.esastack.restlight.core.resolver.param;
 
-import io.esastack.restlight.core.handler.method.Param;
+package io.esastack.restlight.core.resolver;
 
-/**
- * Interface for predicating whether the implementations can used to handle the {@link Param}.
- */
-public interface HttpParamPredicate {
+import esa.commons.annotation.Internal;
 
-    /**
-     * Whether current {@link HttpParamResolver} implementation is support given parameter.
-     *
-     * @param param param
-     * @return {@code true} if it supports
-     */
-    boolean supports(Param param);
+@Internal
+public interface ResolverAdvice<C extends ResolverContext> {
 
+    Object aroundResolve(ResolverExecutor<C> executor) throws Exception;
 }
-

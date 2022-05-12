@@ -22,10 +22,10 @@ import io.esastack.restlight.core.handler.method.HandlerMethod;
 import io.esastack.restlight.core.handler.method.Param;
 import io.esastack.restlight.core.resolver.context.ContextResolverAdapter;
 import io.esastack.restlight.core.resolver.context.ContextResolverFactory;
-import io.esastack.restlight.core.resolver.param.HttpParamResolverAdapter;
-import io.esastack.restlight.core.resolver.param.HttpParamResolverAdviceAdapter;
-import io.esastack.restlight.core.resolver.param.HttpParamResolverAdviceFactory;
-import io.esastack.restlight.core.resolver.param.HttpParamResolverFactory;
+import io.esastack.restlight.core.resolver.param.ParamResolverAdapter;
+import io.esastack.restlight.core.resolver.param.ParamResolverAdviceAdapter;
+import io.esastack.restlight.core.resolver.param.ParamResolverAdviceFactory;
+import io.esastack.restlight.core.resolver.param.ParamResolverFactory;
 import io.esastack.restlight.core.resolver.entity.request.RequestEntityResolverAdapter;
 import io.esastack.restlight.core.resolver.entity.request.RequestEntityResolverAdvice;
 import io.esastack.restlight.core.resolver.entity.request.RequestEntityResolverAdviceAdapter;
@@ -80,20 +80,20 @@ public class ConfigurableHandlerImpl implements ConfigurableHandler {
     }
 
     @Override
-    public ConfigurableHandler addParamResolver(HttpParamResolverAdapter resolver) {
+    public ConfigurableHandler addParamResolver(ParamResolverAdapter resolver) {
         if (resolver == null) {
             return this;
         }
-        configuration.addParamResolvers(Collections.singleton(HttpParamResolverFactory.singleton(resolver)));
+        configuration.addParamResolvers(Collections.singleton(ParamResolverFactory.singleton(resolver)));
         return this;
     }
 
     @Override
-    public ConfigurableHandler addParamResolverAdvice(HttpParamResolverAdviceAdapter advice) {
+    public ConfigurableHandler addParamResolverAdvice(ParamResolverAdviceAdapter advice) {
         if (advice == null) {
             return this;
         }
-        configuration.addParamResolverAdvices(Collections.singleton(HttpParamResolverAdviceFactory.singleton(advice)));
+        configuration.addParamResolverAdvices(Collections.singleton(ParamResolverAdviceFactory.singleton(advice)));
         return this;
     }
 

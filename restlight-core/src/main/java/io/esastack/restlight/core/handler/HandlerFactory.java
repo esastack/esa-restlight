@@ -18,7 +18,7 @@ package io.esastack.restlight.core.handler;
 import io.esastack.restlight.core.handler.method.Param;
 import io.esastack.restlight.core.handler.method.ResolvableParamPredicate;
 import io.esastack.restlight.core.resolver.context.ContextResolver;
-import io.esastack.restlight.core.resolver.param.HttpParamResolver;
+import io.esastack.restlight.core.resolver.param.ParamResolver;
 import io.esastack.restlight.core.context.RequestContext;
 
 import java.lang.reflect.Method;
@@ -40,7 +40,7 @@ public interface HandlerFactory {
     Object instantiate(Class<?> clazz, RequestContext context);
 
     /**
-     * The {@link HttpParamResolver}s and {@link ContextResolver}s may be different between two {@link Method}s. So the
+     * The {@link ParamResolver}s and {@link ContextResolver}s may be different between two {@link Method}s. So the
      * prototype instances created when invoking different methods of the same {@link Class} may also different from
      * each other, because they have different resolvers.
      *
@@ -63,7 +63,7 @@ public interface HandlerFactory {
     /**
      * Obtains a instance of given {@link Class} and {@link Method}.
      * <p>
-     * The {@link HttpParamResolver}s and {@link ContextResolver}s may be different between two {@link Method}s. So the
+     * The {@link ParamResolver}s and {@link ContextResolver}s may be different between two {@link Method}s. So the
      * prototype instances created when invoking different methods of the same {@link Class} may also different from
      * each other, because they have different resolvers.
      *
@@ -85,7 +85,7 @@ public interface HandlerFactory {
     /**
      * Try to inject the setters or fields which are {@link ResolvableParamPredicate#test(Param)}.
      * <p>
-     * The {@link HttpParamResolver}s and {@link ContextResolver}s may be different between two {@link Method}s. So the
+     * The {@link ParamResolver}s and {@link ContextResolver}s may be different between two {@link Method}s. So the
      * prototype instances created when invoking different methods of the same {@link Class} may also different from
      * each other, because they have different resolvers.
      *

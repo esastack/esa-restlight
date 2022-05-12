@@ -60,15 +60,15 @@ public class QueryBeanParamResolver extends RequestBeanParamResolver {
         }
 
         @Override
-        protected HttpParamResolver findResolver(FieldParam fieldParam,
-                                                 StringConverterProvider converters,
-                                                 HandlerResolverFactory resolverFactory) {
+        protected ParamResolver findResolver(FieldParam fieldParam,
+                                             StringConverterProvider converters,
+                                             HandlerResolverFactory resolverFactory) {
             return new NameAndValueResolverAdapter(
                     fieldParam, AlwaysUseParamArgumentResolver.INSTANCE.createResolver(fieldParam, converters));
         }
     }
 
-    private static class AlwaysUseParamArgumentResolver extends AbstractHttpParamResolver {
+    private static class AlwaysUseParamArgumentResolver extends AbstractParamResolver {
 
         private static final AlwaysUseParamArgumentResolver INSTANCE = new AlwaysUseParamArgumentResolver();
 

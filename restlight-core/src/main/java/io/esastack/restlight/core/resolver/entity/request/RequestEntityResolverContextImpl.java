@@ -16,42 +16,30 @@
 package io.esastack.restlight.core.resolver.entity.request;
 
 import esa.commons.Checks;
-import esa.commons.Result;
-import io.esastack.restlight.core.handler.method.Param;
-import io.esastack.restlight.core.exception.WebServerException;
+import io.esastack.restlight.core.DeployContext;
 import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.context.RequestEntity;
+import io.esastack.restlight.core.resolver.ResolverContext;
 
 public class RequestEntityResolverContextImpl implements RequestEntityResolverContext {
 
-    private final Param param;
-    private final RequestContext context;
+    private final DeployContext deployContext;
+    private final RequestContext requestContext;
     private final RequestEntity entity;
-    private final RequestEntityResolver[] resolvers;
-    private final RequestEntityResolverAdvice[] advices;
-    private final int advicesSize;
-    private int index;
 
-    public RequestEntityResolverContextImpl(Param param,
-                                            RequestContext context,
-                                            RequestEntity entity,
-                                            RequestEntityResolver[] resolvers,
-                                            RequestEntityResolverAdvice[] advices) {
-        Checks.checkNotNull(param, "param");
-        Checks.checkNotNull(context, "context");
-        Checks.checkNotNull(entity, "entity");
-        Checks.checkNotNull(resolvers, "resolvers");
-        this.param = param;
-        this.context = context;
-        this.entity = entity;
-        this.resolvers = resolvers;
-        this.advices = advices;
-        this.advicesSize = (advices == null ? 0 : advices.length);
+    public RequestEntityResolverContextImpl(ResolverContext resolverContext,
+                                            RequestEntity requestEntity) {
+        this(resolverContext.deployContext(), resolverContext.requestContext(), requestEntity);
     }
 
-    @Override
-    public RequestContext context() {
-        return context;
+    public RequestEntityResolverContextImpl(DeployContext deployContext,
+                                            RequestContext requestContext,
+                                            RequestEntity entity) {
+        Checks.checkNotNull(requestContext, "requestContext");
+        Checks.checkNotNull(entity, "entity");
+        this.deployContext = deployContext;
+        this.requestContext = requestContext;
+        this.entity = entity;
     }
 
     @Override
@@ -60,21 +48,13 @@ public class RequestEntityResolverContextImpl implements RequestEntityResolverCo
     }
 
     @Override
-    public Object proceed() throws Exception {
-        if (advices == null || index >= advicesSize) {
-            Result<?, Void> handled;
-            for (RequestEntityResolver resolver : resolvers) {
-                handled = resolver.readFrom(entity, context);
-                if (handled.isOk()) {
-                    return handled.get();
-                }
-            }
-            throw WebServerException.notSupported("There is no suitable resolver to resolve param: " + param
-                    + ", content-type: " + context.request().contentType());
-        }
-
-        return advices[index++].aroundRead(this);
+    public RequestContext requestContext() {
+        return requestContext;
     }
 
+    @Override
+    public DeployContext deployContext() {
+        return deployContext;
+    }
 }
 

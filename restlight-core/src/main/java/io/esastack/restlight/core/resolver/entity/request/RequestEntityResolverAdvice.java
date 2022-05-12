@@ -15,20 +15,12 @@
  */
 package io.esastack.restlight.core.resolver.entity.request;
 
-import io.esastack.restlight.core.context.RequestContext;
-import io.esastack.restlight.core.context.RequestEntity;
+import io.esastack.restlight.core.resolver.ResolverExecutor;
+import io.esastack.restlight.core.resolver.entity.EntityResolverAdvice;
 
-public interface RequestEntityResolverAdvice {
+public interface RequestEntityResolverAdvice extends EntityResolverAdvice<RequestEntityResolverContext> {
 
-    /**
-     * This method will be called around
-     * {@link RequestEntityResolver#readFrom(RequestEntity, RequestContext)}.
-     *
-     * @param context context
-     * @return object   resolved value
-     * @throws Exception exception
-     */
-    Object aroundRead(RequestEntityResolverContext context) throws Exception;
-
+    @Override
+    Object aroundResolve(ResolverExecutor<RequestEntityResolverContext> executor) throws Exception;
 }
 

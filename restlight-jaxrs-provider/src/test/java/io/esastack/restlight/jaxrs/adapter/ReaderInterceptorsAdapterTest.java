@@ -18,8 +18,11 @@ package io.esastack.restlight.jaxrs.adapter;
 import esa.commons.collection.AttributeKey;
 import esa.commons.collection.AttributeMap;
 import esa.commons.collection.Attributes;
+import io.esastack.restlight.core.DeployContext;
 import io.esastack.restlight.core.handler.method.HandlerMethod;
 import io.esastack.restlight.core.context.RequestEntity;
+import io.esastack.restlight.core.resolver.ResolverExecutor;
+import io.esastack.restlight.core.resolver.entity.EntityResolver;
 import io.esastack.restlight.core.resolver.entity.request.RequestEntityResolverContext;
 import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.context.impl.RequestContextImpl;
@@ -57,7 +60,8 @@ class ReaderInterceptorsAdapterTest {
         assertTrue(adapter.supports(null));
 
         final Attributes attrs = new AttributeMap();
-        final RequestContext context = new RequestContextImpl(attrs, mock(HttpRequest.class), mock(HttpResponse.class));
+        final RequestContext context =
+                new RequestContextImpl(attrs, mock(HttpRequest.class), mock(HttpResponse.class));
         final RequestEntityResolverContext context1 = new RequestEntityResolverContext() {
             @Override
             public RequestEntity httpEntity() {
@@ -65,21 +69,34 @@ class ReaderInterceptorsAdapterTest {
             }
 
             @Override
-            public Object proceed() {
-                return "ABC";
+            public RequestContext requestContext() {
+                return context;
             }
 
             @Override
-            public RequestContext context() {
-                return context;
+            public DeployContext deployContext() {
+                return null;
             }
         };
-        assertEquals("ABC", adapter.aroundRead(context1));
+        final ResolverExecutor<RequestEntityResolverContext> executor =
+                new ResolverExecutor<RequestEntityResolverContext>() {
+                    @Override
+                    public RequestEntityResolverContext context() {
+                        return context1;
+                    }
+
+                    @Override
+                    public Object proceed() throws Exception {
+                        return "ABC";
+                    }
+        };
+
+        assertEquals("ABC", adapter.aroundResolve(executor));
         assertEquals(1, count.intValue());
 
         count.set(0);
         attrs.attr(AttributeKey.valueOf("$internal.handled.method")).set(mock(HandlerMethod.class));
-        assertEquals("ABC", adapter.aroundRead(context1));
+        assertEquals("ABC", adapter.aroundResolve(executor));
         assertEquals(0, count.intValue());
     }
 

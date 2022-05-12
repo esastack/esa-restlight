@@ -16,7 +16,7 @@
 package io.esastack.restlight.jaxrs.spi;
 
 import io.esastack.restlight.core.DeployContext;
-import io.esastack.restlight.core.resolver.param.HttpParamResolverFactory;
+import io.esastack.restlight.core.resolver.param.ParamResolverFactory;
 import io.esastack.restlight.jaxrs.resolver.param.BeanParamResolver;
 import org.junit.jupiter.api.Test;
 
@@ -31,7 +31,7 @@ class BeanParamResolverProviderTest {
     @Test
     void testFactoryBean() {
         final BeanParamResolverProvider provider = new BeanParamResolverProvider();
-        final Optional<HttpParamResolverFactory> ret = provider.factoryBean(mock(DeployContext.class));
+        final Optional<ParamResolverFactory> ret = provider.factoryBean(mock(DeployContext.class));
         assertTrue(ret.isPresent());
         assertEquals(BeanParamResolver.class, ret.get().getClass());
     }

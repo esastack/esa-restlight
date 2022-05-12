@@ -16,41 +16,36 @@
 package io.esastack.restlight.core.resolver.entity.response;
 
 import esa.commons.Checks;
-import esa.commons.Result;
-import io.esastack.restlight.core.exception.WebServerException;
+import io.esastack.restlight.core.DeployContext;
 import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.context.ResponseEntity;
 import io.esastack.restlight.core.context.ResponseEntityChannel;
-
-import java.util.List;
 
 public class ResponseEntityResolverContextImpl implements ResponseEntityResolverContext {
 
     private final RequestContext context;
     private final ResponseEntity entity;
     private final ResponseEntityChannel channel;
-    private final List<ResponseEntityResolver> resolvers;
-    private final List<ResponseEntityResolverAdvice> advices;
-    private int index;
 
     public ResponseEntityResolverContextImpl(RequestContext context,
                                              ResponseEntity entity,
-                                             ResponseEntityChannel channel,
-                                             List<ResponseEntityResolver> resolvers,
-                                             List<ResponseEntityResolverAdvice> advices) {
+                                             ResponseEntityChannel channel) {
         Checks.checkNotNull(entity, "entity");
-        Checks.checkNotNull(resolvers, "resolvers");
         Checks.checkNotNull(channel, "channel");
         this.channel = channel;
         this.context = context;
         this.entity = entity;
-        this.resolvers = resolvers;
-        this.advices = advices;
     }
 
     @Override
-    public RequestContext context() {
+    public RequestContext requestContext() {
         return context;
+    }
+
+    @Override
+    public DeployContext deployContext() {
+        throw new UnsupportedOperationException("cannot support get the DeployContext from " +
+                "ResponseEntityResolverContext");
     }
 
     @Override
@@ -61,23 +56,6 @@ public class ResponseEntityResolverContextImpl implements ResponseEntityResolver
     @Override
     public ResponseEntityChannel channel() {
         return channel;
-    }
-
-    @Override
-    public void proceed() throws Exception {
-        if (advices == null || index >= advices.size()) {
-            Result<Void, Void> handled;
-            for (ResponseEntityResolver resolver : resolvers) {
-                handled = resolver.writeTo(entity, channel, context);
-                if (handled.isOk()) {
-                    return;
-                }
-            }
-            throw WebServerException.notAcceptable("There is no suitable resolver to resolve response entity: "
-                    + entity);
-        }
-
-        advices.get(index++).aroundWrite(this);
     }
 }
 

@@ -16,7 +16,7 @@
 package io.esastack.restlight.ext.multipart.spi;
 
 import io.esastack.restlight.core.handler.method.MethodParam;
-import io.esastack.restlight.core.resolver.param.HttpParamResolver;
+import io.esastack.restlight.core.resolver.param.ParamResolver;
 import io.esastack.restlight.core.exception.WebServerException;
 import io.esastack.restlight.core.context.impl.RequestContextImpl;
 import io.esastack.restlight.core.context.HttpRequest;
@@ -37,7 +37,7 @@ class MultipartAttrParamResolverTest extends AbstractMultipartResolverTest {
         AbstractMultipartParamResolver factory = attrResolver.createResolver(attrResolver.buildFactory(config));
         assertTrue(factory.supports(param));
 
-        final HttpParamResolver resolver = factory.createResolver(param, defaultConverters(param), null);
+        final ParamResolver resolver = factory.createResolver(param, defaultConverters(param), null);
         return resolver.resolve(new RequestContextImpl(request, MockHttpResponse.aMockResponse().build()));
     }
 

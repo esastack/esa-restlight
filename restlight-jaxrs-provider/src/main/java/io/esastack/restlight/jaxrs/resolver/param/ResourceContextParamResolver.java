@@ -18,8 +18,8 @@ package io.esastack.restlight.jaxrs.resolver.param;
 import esa.commons.Checks;
 import io.esastack.restlight.core.DeployContext;
 import io.esastack.restlight.core.handler.method.Param;
-import io.esastack.restlight.core.resolver.param.HttpParamResolver;
-import io.esastack.restlight.core.resolver.param.HttpParamResolverFactory;
+import io.esastack.restlight.core.resolver.param.ParamResolver;
+import io.esastack.restlight.core.resolver.param.ParamResolverFactory;
 import io.esastack.restlight.core.resolver.converter.StringConverterProvider;
 import io.esastack.restlight.core.serialize.HttpRequestSerializer;
 import io.esastack.restlight.jaxrs.impl.container.ResourceContextImpl;
@@ -30,7 +30,7 @@ import jakarta.ws.rs.core.Context;
 
 import java.util.List;
 
-public class ResourceContextParamResolver implements HttpParamResolverFactory {
+public class ResourceContextParamResolver implements ParamResolverFactory {
 
     private final DeployContext context;
 
@@ -45,13 +45,13 @@ public class ResourceContextParamResolver implements HttpParamResolverFactory {
     }
 
     @Override
-    public HttpParamResolver createResolver(Param param,
-                                            StringConverterProvider converters,
-                                            List<? extends HttpRequestSerializer> serializers) {
+    public ParamResolver createResolver(Param param,
+                                        StringConverterProvider converters,
+                                        List<? extends HttpRequestSerializer> serializers) {
         return new ResourceContextResolver(context);
     }
 
-    private static class ResourceContextResolver implements HttpParamResolver {
+    private static class ResourceContextResolver implements ParamResolver {
 
         private final DeployContext context;
 

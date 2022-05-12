@@ -17,28 +17,16 @@ package io.esastack.restlight.core.resolver.entity.response;
 
 import esa.commons.Result;
 import io.esastack.commons.net.buffer.Buffer;
-import io.esastack.restlight.core.context.RequestContext;
-import io.esastack.restlight.core.context.HttpResponse;
 import io.esastack.restlight.core.context.ResponseEntity;
-import io.esastack.restlight.core.context.ResponseEntityChannel;
+import io.esastack.restlight.core.resolver.entity.EntityResolver;
+import io.esastack.restlight.core.resolver.entity.EntityResolverContext;
 
 /**
  * This resolver will serialize the {@link ResponseEntity} and write the serialized result to given {@link Buffer}.
  */
-public interface ResponseEntityResolver {
+public interface ResponseEntityResolver extends EntityResolver<ResponseEntityResolverContext> {
 
-    /**
-     * Writes the given {@code value} to {@link HttpResponse}.
-     *
-     * @param entity  entity
-     * @param channel the channel to write resolved {@code entity}
-     * @param context context
-     * @return resolved value, which must not be {@code null}.
-     * @throws Exception any exception
-     */
-    Result<Void, Void> writeTo(ResponseEntity entity,
-                         ResponseEntityChannel channel,
-                         RequestContext context) throws Exception;
-
+    @Override
+    Result<Void, Void> resolve(ResponseEntityResolverContext context) throws Exception;
 }
 

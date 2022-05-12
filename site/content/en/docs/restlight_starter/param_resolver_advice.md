@@ -52,7 +52,7 @@ public interface ParamResolverAdviceFactory extends ParamPredicate, Ordered {
      * Creates an instance of {@link ParamResolverAdvice} for given handler method.
      *
      * @param param    method
-     * @param resolver httpParamResolver associated with this parameter
+     * @param resolver paramResolver associated with this parameter
      * @return advice
      */
     ParamResolverAdvice createResolverAdvice(Param param, ParamResolver resolver);

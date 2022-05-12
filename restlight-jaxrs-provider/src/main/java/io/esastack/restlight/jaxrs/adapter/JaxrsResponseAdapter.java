@@ -17,6 +17,7 @@ package io.esastack.restlight.jaxrs.adapter;
 
 import esa.commons.ClassUtils;
 import io.esastack.restlight.core.handler.method.HandlerMethod;
+import io.esastack.restlight.core.resolver.ResolverExecutor;
 import io.esastack.restlight.core.resolver.entity.response.ResponseEntityResolverAdviceAdapter;
 import io.esastack.restlight.core.resolver.entity.response.ResponseEntityResolverContext;
 import io.esastack.restlight.core.util.Ordered;
@@ -26,16 +27,17 @@ import jakarta.ws.rs.core.Response;
 public class JaxrsResponseAdapter implements ResponseEntityResolverAdviceAdapter {
 
     @Override
-    public void aroundWrite(ResponseEntityResolverContext context) throws Exception {
-        Object entity = context.context().response().entity();
+    public void aroundResolve0(ResolverExecutor<ResponseEntityResolverContext> executor) throws Exception {
+        ResponseEntityResolverContext context = executor.context();
+        Object entity = context.requestContext().response().entity();
         if (entity == null) {
-            context.proceed();
+            executor.proceed();
             return;
         }
         if (entity instanceof GenericEntity) {
             GenericEntity<?> gEntity = (GenericEntity<?>) entity;
             entity = gEntity.getEntity();
-            context.context().response().entity(entity);
+            context.requestContext().response().entity(entity);
             context.httpEntity().type(gEntity.getRawType());
             context.httpEntity().genericType(gEntity.getType());
         }
@@ -48,7 +50,7 @@ public class JaxrsResponseAdapter implements ResponseEntityResolverAdviceAdapter
         if (response != null) {
             adaptResponse(response, context);
         }
-        context.proceed();
+        executor.proceed();
     }
 
     @Override
@@ -69,14 +71,13 @@ public class JaxrsResponseAdapter implements ResponseEntityResolverAdviceAdapter
     private void adaptResponse(Response from, ResponseEntityResolverContext target) {
         Object entity = from.getEntity();
         if (entity != null) {
-            target.context().response().entity(entity);
+            target.requestContext().response().entity(entity);
             Class<?> type = ClassUtils.getUserType(entity);
             Class<?> genericType = ClassUtils.getRawType(type);
             target.httpEntity().type(type);
             target.httpEntity().genericType(genericType);
         }
-        target.context().response().status(from.getStatus());
+        target.requestContext().response().status(from.getStatus());
     }
-
 }
 

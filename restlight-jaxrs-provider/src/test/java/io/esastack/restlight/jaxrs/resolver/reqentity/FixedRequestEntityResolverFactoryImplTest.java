@@ -16,6 +16,7 @@
 package io.esastack.restlight.jaxrs.resolver.reqentity;
 
 import io.esastack.commons.net.http.MediaType;
+import io.esastack.restlight.core.DeployContext;
 import io.esastack.restlight.core.annotation.RequestSerializer;
 import io.esastack.restlight.core.annotation.Serializer;
 import io.esastack.restlight.core.handler.method.HandlerMethod;
@@ -24,6 +25,8 @@ import io.esastack.restlight.core.context.RequestEntity;
 import io.esastack.restlight.core.context.RequestEntityImpl;
 import io.esastack.restlight.core.resolver.entity.request.RequestEntityResolver;
 import io.esastack.restlight.core.resolver.entity.request.FixedRequestEntityResolverFactory;
+import io.esastack.restlight.core.resolver.entity.request.RequestEntityResolverContext;
+import io.esastack.restlight.core.resolver.entity.request.RequestEntityResolverContextImpl;
 import io.esastack.restlight.core.serialize.HttpRequestSerializer;
 import io.esastack.restlight.core.serialize.JacksonHttpBodySerializer;
 import io.esastack.restlight.core.serialize.JacksonSerializer;
@@ -37,6 +40,7 @@ import io.esastack.restlight.core.mock.MockHttpResponse;
 import io.netty.handler.codec.http.HttpHeaderNames;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 import java.util.Collections;
 import java.util.Map;
@@ -97,7 +101,9 @@ class FixedRequestEntityResolverFactoryImplTest {
                 Collections.singletonList(new JacksonHttpBodySerializer()));
         final RequestContext context = new RequestContextImpl(request, MockHttpResponse.aMockResponse().build());
         final RequestEntity entity = new RequestEntityImpl(param, context);
-        return resolver.readFrom(entity, context).get();
+        final RequestEntityResolverContext resolverContext =
+                new RequestEntityResolverContextImpl(Mockito.mock(DeployContext.class), context, entity);
+        return resolver.resolve(resolverContext).get();
     }
 
     private static class Subject {

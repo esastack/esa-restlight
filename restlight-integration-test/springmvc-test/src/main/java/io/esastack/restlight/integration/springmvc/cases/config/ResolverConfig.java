@@ -15,18 +15,19 @@ package io.esastack.restlight.integration.springmvc.cases.config;
 
 import esa.commons.Result;
 import io.esastack.commons.net.http.MediaType;
+import io.esastack.restlight.core.context.RequestContext;
+import io.esastack.restlight.core.context.ResponseEntity;
 import io.esastack.restlight.core.handler.method.HandlerMethod;
 import io.esastack.restlight.core.handler.method.Param;
-import io.esastack.restlight.core.resolver.param.HttpParamResolver;
-import io.esastack.restlight.core.resolver.param.HttpParamResolverFactory;
-import io.esastack.restlight.core.context.RequestEntity;
+import io.esastack.restlight.core.resolver.converter.StringConverterProvider;
 import io.esastack.restlight.core.resolver.entity.request.RequestEntityResolver;
+import io.esastack.restlight.core.resolver.entity.request.RequestEntityResolverContext;
 import io.esastack.restlight.core.resolver.entity.request.RequestEntityResolverFactory;
-import io.esastack.restlight.core.context.ResponseEntity;
+import io.esastack.restlight.core.resolver.entity.response.AbstractResponseEntityResolver;
 import io.esastack.restlight.core.resolver.entity.response.ResponseEntityResolver;
 import io.esastack.restlight.core.resolver.entity.response.ResponseEntityResolverFactory;
-import io.esastack.restlight.core.resolver.converter.StringConverterProvider;
-import io.esastack.restlight.core.resolver.entity.response.AbstractResponseEntityResolver;
+import io.esastack.restlight.core.resolver.param.ParamResolver;
+import io.esastack.restlight.core.resolver.param.ParamResolverFactory;
 import io.esastack.restlight.core.serialize.HttpRequestSerializer;
 import io.esastack.restlight.core.serialize.HttpResponseSerializer;
 import io.esastack.restlight.integration.springmvc.cases.annotation.CustomFieldParam;
@@ -34,7 +35,6 @@ import io.esastack.restlight.integration.springmvc.cases.annotation.CustomReques
 import io.esastack.restlight.integration.springmvc.cases.annotation.CustomRequestBody;
 import io.esastack.restlight.integration.springmvc.cases.annotation.CustomResponseBody;
 import io.esastack.restlight.integration.springmvc.entity.UserData;
-import io.esastack.restlight.core.context.RequestContext;
 import io.netty.handler.codec.http.HttpHeaderNames;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -46,11 +46,11 @@ import java.util.List;
 public class ResolverConfig {
 
     @Bean
-    public HttpParamResolverFactory paramResolverFactory() {
-        return new HttpParamResolverFactory() {
+    public ParamResolverFactory paramResolverFactory() {
+        return new ParamResolverFactory() {
             @Override
-            public HttpParamResolver createResolver(Param param, StringConverterProvider converters,
-                                                    List<? extends HttpRequestSerializer> serializers) {
+            public ParamResolver createResolver(Param param, StringConverterProvider converters,
+                                                List<? extends HttpRequestSerializer> serializers) {
                 return context -> UserData.Builder.anUserData()
                         .name(context.request().getParam("name"))
                         .build();
@@ -91,8 +91,8 @@ public class ResolverConfig {
                 }
 
                 @Override
-                public Result<?, Void> readFrom(RequestEntity entity, RequestContext context) throws Exception {
-                    Result<?, Void> result = serializer.deserialize(entity);
+                public Result<?, Void> resolve(RequestEntityResolverContext context) throws Exception {
+                    Result<?, Void> result = serializer.deserialize(context.httpEntity());
                     if (result.isOk()) {
                         UserData userData = (UserData) result.get();
                         userData.setName("test");
@@ -129,11 +129,11 @@ public class ResolverConfig {
     }
 
     @Bean
-    public HttpParamResolverFactory customParamResolverFactory() {
-        return new HttpParamResolverFactory() {
+    public ParamResolverFactory customParamResolverFactory() {
+        return new ParamResolverFactory() {
             @Override
-            public HttpParamResolver createResolver(Param param, StringConverterProvider converters,
-                                                    List<? extends HttpRequestSerializer> serializers) {
+            public ParamResolver createResolver(Param param, StringConverterProvider converters,
+                                                List<? extends HttpRequestSerializer> serializers) {
                 return context -> context.request().getParam("name");
             }
 

@@ -20,8 +20,8 @@ import io.esastack.restlight.core.filter.RouteFilter;
 import io.esastack.restlight.core.handler.method.HandlerMethod;
 import io.esastack.restlight.core.handler.method.Param;
 import io.esastack.restlight.core.resolver.context.ContextResolver;
-import io.esastack.restlight.core.resolver.param.HttpParamResolver;
-import io.esastack.restlight.core.resolver.param.HttpParamResolverAdvice;
+import io.esastack.restlight.core.resolver.param.ParamResolver;
+import io.esastack.restlight.core.resolver.param.ParamResolverAdvice;
 import io.esastack.restlight.core.resolver.entity.request.RequestEntityResolver;
 import io.esastack.restlight.core.resolver.entity.request.RequestEntityResolverAdvice;
 import io.esastack.restlight.core.resolver.entity.response.ResponseEntityResolver;
@@ -51,12 +51,12 @@ public interface HandlerResolverFactory {
     List<RouteFilter> getRouteFilters(HandlerMethod method);
 
     /**
-     * Get the {@link HttpParamResolver} for given parameter.
+     * Get the {@link ParamResolver} for given parameter.
      *
      * @param param parameter
      * @return resolver
      */
-    HttpParamResolver getParamResolver(Param param);
+    ParamResolver getParamResolver(Param param);
 
     /**
      * Obtains the {@link ContextResolver} for given {@code param}.
@@ -67,12 +67,12 @@ public interface HandlerResolverFactory {
     ContextResolver getContextResolver(Param param);
 
     /**
-     * Obtains the {@link HttpParamResolverAdvice}s for given parameter.
+     * Obtains the {@link ParamResolverAdvice}s for given parameter.
      *
      * @param param param
      * @return advices
      */
-    List<HttpParamResolverAdvice> getParamResolverAdvices(Param param, HttpParamResolver resolver);
+    List<ParamResolverAdvice> getParamResolverAdvices(Param param, ParamResolver resolver);
 
     /**
      * Obtains request entity resolvers, must not be {@code null}.

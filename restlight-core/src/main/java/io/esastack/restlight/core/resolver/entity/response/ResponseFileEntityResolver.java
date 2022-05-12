@@ -16,26 +16,13 @@
 package io.esastack.restlight.core.resolver.entity.response;
 
 import esa.commons.Result;
-import io.esastack.restlight.core.handler.method.HandlerMethod;
 import io.esastack.restlight.core.context.ResponseEntity;
-import io.esastack.restlight.core.context.ResponseEntityChannel;
+import io.esastack.restlight.core.handler.method.HandlerMethod;
 import io.esastack.restlight.core.util.ResponseEntityUtils;
-import io.esastack.restlight.core.context.RequestContext;
 
 import java.io.File;
 
 public class ResponseFileEntityResolver implements ResponseEntityResolverAdapter {
-
-    @Override
-    public Result<Void, Void> writeTo(ResponseEntity entity,
-                                      ResponseEntityChannel channel,
-                                      RequestContext context) throws Exception {
-        if (!ResponseEntityUtils.isAssignableFrom(entity, File.class)) {
-            return Result.err();
-        }
-        channel.end((File) entity.response().entity());
-        return Result.ok();
-    }
 
     @Override
     public boolean alsoApplyWhenMissingHandler() {
@@ -52,5 +39,14 @@ public class ResponseFileEntityResolver implements ResponseEntityResolverAdapter
         return 500;
     }
 
+    @Override
+    public Result<Void, Void> resolve(ResponseEntityResolverContext context) throws Exception {
+        ResponseEntity entity = context.httpEntity();
+        if (!ResponseEntityUtils.isAssignableFrom(entity, File.class)) {
+            return Result.err();
+        }
+        context.channel().end((File) entity.response().entity());
+        return Result.ok();
+    }
 }
 

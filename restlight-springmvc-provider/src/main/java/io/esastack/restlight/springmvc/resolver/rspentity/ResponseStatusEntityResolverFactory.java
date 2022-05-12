@@ -18,7 +18,7 @@ package io.esastack.restlight.springmvc.resolver.rspentity;
 import esa.commons.StringUtils;
 import io.esastack.commons.net.http.MediaType;
 import io.esastack.restlight.core.handler.method.HandlerMethod;
-import io.esastack.restlight.core.resolver.param.HttpParamResolverFactory;
+import io.esastack.restlight.core.resolver.param.ParamResolverFactory;
 import io.esastack.restlight.core.context.ResponseEntity;
 import io.esastack.restlight.core.resolver.entity.response.ResponseEntityResolver;
 import io.esastack.restlight.core.resolver.entity.response.ResponseEntityResolverFactory;
@@ -32,7 +32,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 /**
- * Implementation of {@link HttpParamResolverFactory} for resolving argument that annotated by the ResponseStatus which
+ * Implementation of {@link ParamResolverFactory} for resolving argument that annotated by the ResponseStatus which
  * has a ResponseStatus#reason().
  */
 public class ResponseStatusEntityResolverFactory implements ResponseEntityResolverFactory {

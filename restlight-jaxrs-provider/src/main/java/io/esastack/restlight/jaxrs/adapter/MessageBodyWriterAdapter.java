@@ -18,14 +18,14 @@ package io.esastack.restlight.jaxrs.adapter;
 import esa.commons.Checks;
 import esa.commons.ClassUtils;
 import esa.commons.Result;
-import io.esastack.restlight.core.handler.method.HandlerMethod;
+import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.context.ResponseEntity;
-import io.esastack.restlight.core.context.ResponseEntityChannel;
+import io.esastack.restlight.core.handler.method.HandlerMethod;
 import io.esastack.restlight.core.resolver.entity.response.ResponseEntityResolverAdapter;
+import io.esastack.restlight.core.resolver.entity.response.ResponseEntityResolverContext;
 import io.esastack.restlight.core.util.ResponseEntityUtils;
 import io.esastack.restlight.jaxrs.util.JaxrsUtils;
 import io.esastack.restlight.jaxrs.util.MediaTypeUtils;
-import io.esastack.restlight.core.context.RequestContext;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.MultivaluedMap;
 import jakarta.ws.rs.ext.MessageBodyWriter;
@@ -42,9 +42,9 @@ public class MessageBodyWriterAdapter<T> implements ResponseEntityResolverAdapte
 
     @SuppressWarnings("unchecked")
     @Override
-    public Result<Void, Void> writeTo(ResponseEntity entity,
-                                      ResponseEntityChannel channel,
-                                      RequestContext context) throws Exception {
+    public Result<Void, Void> resolve(ResponseEntityResolverContext context) throws Exception {
+        ResponseEntity entity = context.httpEntity();
+        RequestContext requestContext = context.requestContext();
         if (entity.response().entity() == null) {
             return Result.err();
         }
@@ -53,21 +53,21 @@ public class MessageBodyWriterAdapter<T> implements ResponseEntityResolverAdapte
             entity.type(ClassUtils.getUserType(entity.response().entity()));
         }
 
-        for (io.esastack.commons.net.http.MediaType mediaType : ResponseEntityUtils.getMediaTypes(context)) {
+        for (io.esastack.commons.net.http.MediaType mediaType : ResponseEntityUtils.getMediaTypes(requestContext)) {
             MediaType mediaType0 = MediaTypeUtils.convert(mediaType);
             MessageBodyWriter<T> writer = (MessageBodyWriter<T>) providers.getMessageBodyWriter(entity.type(),
                     entity.genericType(), entity.annotations(), mediaType0);
             if (writer != null) {
                 T value = (T) entity.response().entity();
-                MultivaluedMap<String, Object> headers = JaxrsUtils.convertToMap(context.response().headers());
+                MultivaluedMap<String, Object> headers = JaxrsUtils.convertToMap(requestContext.response().headers());
                 try {
                     writer.writeTo(value, entity.type(), entity.genericType(), entity.annotations(),
-                            mediaType0, headers, ResponseEntityStreamUtils.getUnClosableOutputStream(context));
+                            mediaType0, headers, ResponseEntityStreamUtils.getUnClosableOutputStream(requestContext));
                 } finally {
-                    JaxrsUtils.convertThenAddToHeaders(headers, context.response().headers());
+                    JaxrsUtils.convertThenAddToHeaders(headers, requestContext.response().headers());
                 }
 
-                ResponseEntityStreamUtils.close(context);
+                ResponseEntityStreamUtils.close(requestContext);
                 return Result.ok();
             }
         }

@@ -17,7 +17,7 @@ package io.esastack.restlight.core.resolver.entity.response;
 
 import esa.commons.Result;
 import io.esastack.commons.net.http.MediaType;
-import io.esastack.restlight.core.resolver.param.HttpParamResolverFactory;
+import io.esastack.restlight.core.resolver.param.ParamResolverFactory;
 import io.esastack.restlight.core.context.ResponseEntity;
 import io.esastack.restlight.core.serialize.HttpResponseSerializer;
 import io.esastack.restlight.core.serialize.Serializers;
@@ -28,7 +28,7 @@ import io.esastack.restlight.core.context.RequestContext;
 import java.util.List;
 
 /**
- * Implementation of {@link HttpParamResolverFactory} for resolving argument that annotated by the ResponseBody.
+ * Implementation of {@link ParamResolverFactory} for resolving argument that annotated by the ResponseBody.
  */
 public class FlexibleResponseEntityResolver extends AbstractResponseEntityResolver {
 

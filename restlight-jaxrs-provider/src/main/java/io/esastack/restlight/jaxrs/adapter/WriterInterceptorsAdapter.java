@@ -17,6 +17,8 @@ package io.esastack.restlight.jaxrs.adapter;
 
 import esa.commons.Checks;
 import io.esastack.restlight.core.handler.method.HandlerMethod;
+import io.esastack.restlight.core.resolver.ResolverExecutor;
+import io.esastack.restlight.core.resolver.entity.EntityResolverContext;
 import io.esastack.restlight.core.resolver.entity.response.ResponseEntityResolverAdviceAdapter;
 import io.esastack.restlight.core.resolver.entity.response.ResponseEntityResolverContext;
 import io.esastack.restlight.jaxrs.impl.ext.WriterInterceptorContextImpl;
@@ -37,19 +39,20 @@ public class WriterInterceptorsAdapter implements ResponseEntityResolverAdviceAd
     }
 
     @Override
-    public void aroundWrite(ResponseEntityResolverContext context) throws Exception {
-        if (predicate.test(context.context())) {
-            MultivaluedMap<String, Object> headers = JaxrsUtils.convertToMap(context.context().response().headers());
+    public void aroundResolve0(ResolverExecutor<ResponseEntityResolverContext> executor) throws Exception {
+        EntityResolverContext context = executor.context();
+        if (predicate.test(context.requestContext())) {
+            MultivaluedMap<String, Object> headers =
+                    JaxrsUtils.convertToMap(context.requestContext().response().headers());
             try {
-                new WriterInterceptorContextImpl(context,
-                        ResponseEntityStreamUtils.getUnClosableOutputStream(context.context()),
-                        headers, interceptors).proceed();
+                new WriterInterceptorContextImpl(executor, ResponseEntityStreamUtils
+                        .getUnClosableOutputStream(context.requestContext()), headers, interceptors).proceed();
             } catch (Throwable th) {
-                JaxrsUtils.convertThenAddToHeaders(headers, context.context().response().headers());
+                JaxrsUtils.convertThenAddToHeaders(headers, context.requestContext().response().headers());
                 throw th;
             }
         } else {
-            context.proceed();
+            executor.proceed();
         }
     }
 

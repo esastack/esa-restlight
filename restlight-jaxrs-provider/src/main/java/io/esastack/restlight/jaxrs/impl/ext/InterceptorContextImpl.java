@@ -17,7 +17,7 @@ package io.esastack.restlight.jaxrs.impl.ext;
 
 import esa.commons.Checks;
 import esa.commons.collection.AttributeKey;
-import io.esastack.restlight.core.resolver.entity.HttpEntityResolverContext;
+import io.esastack.restlight.core.resolver.entity.EntityResolverContext;
 import io.esastack.restlight.jaxrs.util.MediaTypeUtils;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.ext.InterceptorContext;
@@ -30,33 +30,33 @@ import java.util.List;
 
 class InterceptorContextImpl implements InterceptorContext {
 
-    private final HttpEntityResolverContext underlying;
+    private final EntityResolverContext underlying;
 
-    InterceptorContextImpl(HttpEntityResolverContext underlying) {
+    InterceptorContextImpl(EntityResolverContext underlying) {
         Checks.checkNotNull(underlying, "underlying");
         this.underlying = underlying;
     }
 
     @Override
     public Object getProperty(String name) {
-        return underlying.context().attrs().attr(AttributeKey.valueOf(name)).get();
+        return underlying.requestContext().attrs().attr(AttributeKey.valueOf(name)).get();
     }
 
     @Override
     public Collection<String> getPropertyNames() {
-        List<String> names = new ArrayList<>(underlying.context().attrs().size());
-        underlying.context().attrs().forEach((name, value) -> names.add(name.name()));
+        List<String> names = new ArrayList<>(underlying.requestContext().attrs().size());
+        underlying.requestContext().attrs().forEach((name, value) -> names.add(name.name()));
         return names;
     }
 
     @Override
     public void setProperty(String name, Object object) {
-        underlying.context().attrs().attr(AttributeKey.valueOf(name)).set(object);
+        underlying.requestContext().attrs().attr(AttributeKey.valueOf(name)).set(object);
     }
 
     @Override
     public void removeProperty(String name) {
-        underlying.context().attrs().attr(AttributeKey.valueOf(name)).remove();
+        underlying.requestContext().attrs().attr(AttributeKey.valueOf(name)).remove();
     }
 
     @Override

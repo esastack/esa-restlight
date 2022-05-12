@@ -13,24 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package io.esastack.restlight.core.resolver.param;
 
-import io.esastack.restlight.core.handler.method.Param;
-import io.esastack.restlight.core.context.RequestContext;
+import io.esastack.restlight.core.resolver.ResolverContext;
 
-/**
- * Interface for resolving {@link Param} to the real values of the handler method base on the current context.
- */
-public interface HttpParamResolver {
-
-    /**
-     * Resolves method parameter into an argument value.
-     *
-     * @param context context
-     * @return value resolved
-     * @throws Exception ex
-     */
-    Object resolve(RequestContext context) throws Exception;
-
+public interface ParamResolverContext extends ResolverContext {
 }
-

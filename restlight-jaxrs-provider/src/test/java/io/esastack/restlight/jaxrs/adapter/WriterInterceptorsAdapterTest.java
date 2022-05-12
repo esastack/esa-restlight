@@ -18,17 +18,19 @@ package io.esastack.restlight.jaxrs.adapter;
 import esa.commons.collection.AttributeKey;
 import esa.commons.collection.AttributeMap;
 import esa.commons.collection.Attributes;
-import io.esastack.restlight.core.handler.method.HandlerMethod;
-import io.esastack.restlight.core.context.ResponseEntity;
-import io.esastack.restlight.core.context.ResponseEntityChannel;
-import io.esastack.restlight.core.resolver.entity.response.ResponseEntityResolverContext;
-import io.esastack.restlight.core.context.ResponseContent;
-import io.esastack.restlight.core.context.RequestContext;
-import io.esastack.restlight.core.context.impl.RequestContextImpl;
+import io.esastack.restlight.core.DeployContext;
 import io.esastack.restlight.core.context.HttpRequest;
 import io.esastack.restlight.core.context.HttpResponse;
+import io.esastack.restlight.core.context.RequestContext;
+import io.esastack.restlight.core.context.ResponseContent;
+import io.esastack.restlight.core.context.ResponseEntity;
+import io.esastack.restlight.core.context.ResponseEntityChannel;
+import io.esastack.restlight.core.context.impl.RequestContextImpl;
+import io.esastack.restlight.core.handler.method.HandlerMethod;
 import io.esastack.restlight.core.mock.MockHttpRequest;
 import io.esastack.restlight.core.mock.MockHttpResponse;
+import io.esastack.restlight.core.resolver.ResolverExecutor;
+import io.esastack.restlight.core.resolver.entity.response.ResponseEntityResolverContext;
 import io.netty.buffer.ByteBufAllocator;
 import jakarta.ws.rs.core.MultivaluedHashMap;
 import jakarta.ws.rs.core.MultivaluedMap;
@@ -93,21 +95,35 @@ class WriterInterceptorsAdapterTest {
             }
 
             @Override
-            public void proceed() {
-                proceeded.set(true);
+            public RequestContext requestContext() {
+                return context;
             }
 
             @Override
-            public RequestContext context() {
-                return context;
+            public DeployContext deployContext() {
+                return null;
             }
         };
+
+        ResolverExecutor<ResponseEntityResolverContext> executor =
+                new ResolverExecutor<ResponseEntityResolverContext>() {
+                    @Override
+                    public ResponseEntityResolverContext context() {
+                        return rspCtx;
+                    }
+
+                    @Override
+                    public Object proceed() throws Exception {
+                        proceeded.set(true);
+                        return null;
+                    }
+                };
 
         response.headers().add("name0", "value0");
 
         // mismatched
         context.attrs().attr(AttributeKey.valueOf("$internal.handled.method")).set(mock(HandlerMethod.class));
-        adapter.aroundWrite(rspCtx);
+        adapter.aroundResolve0(executor);
         assertEquals(0, count.intValue());
         assertTrue(proceeded.get());
         assertEquals(1, response.headers().size());
@@ -119,7 +135,7 @@ class WriterInterceptorsAdapterTest {
         when(content.alloc()).thenReturn(ByteBufAllocator.DEFAULT);
         context.attrs().attr(RequestContextImpl.RESPONSE_CONTENT).set(content);
         context.attrs().attr(AttributeKey.valueOf("$internal.handled.method")).remove();
-        adapter.aroundWrite(rspCtx);
+        adapter.aroundResolve0(executor);
         assertEquals(1, count.intValue());
         assertTrue(proceeded.get());
         assertEquals(1, map.size());
@@ -141,7 +157,7 @@ class WriterInterceptorsAdapterTest {
         response.headers().clear();
         response.headers().add("name0", "value0");
 
-        assertThrows(RuntimeException.class, () -> adapter.aroundWrite(rspCtx));
+        assertThrows(RuntimeException.class, () -> adapter.aroundResolve0(executor));
         assertFalse(proceeded.get());
         assertEquals(1, count.intValue());
         assertEquals(1, map.size());

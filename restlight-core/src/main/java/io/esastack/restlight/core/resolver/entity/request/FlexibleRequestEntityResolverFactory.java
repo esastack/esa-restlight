@@ -18,16 +18,16 @@ package io.esastack.restlight.core.resolver.entity.request;
 import esa.commons.Result;
 import esa.commons.StringUtils;
 import io.esastack.commons.net.http.MediaType;
-import io.esastack.restlight.core.handler.method.Param;
+import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.context.RequestEntity;
+import io.esastack.restlight.core.exception.WebServerException;
+import io.esastack.restlight.core.handler.method.Param;
 import io.esastack.restlight.core.resolver.converter.StringConverter;
 import io.esastack.restlight.core.resolver.converter.StringConverterProvider;
 import io.esastack.restlight.core.resolver.nav.NameAndValue;
 import io.esastack.restlight.core.serialize.HttpRequestSerializer;
 import io.esastack.restlight.core.serialize.ProtoBufHttpBodySerializer;
 import io.esastack.restlight.core.util.Constants;
-import io.esastack.restlight.core.exception.WebServerException;
-import io.esastack.restlight.core.context.RequestContext;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -57,7 +57,7 @@ public abstract class FlexibleRequestEntityResolverFactory implements RequestEnt
         if (param.isMethodParam()
                 && param.methodParam().method().getParameterCount() == 1
                 && byte[].class.isAssignableFrom(param.type())) {
-            return (entity, context) -> Result.ok(context.request().body().getBytes());
+            return context -> Result.ok(context.requestContext().request().body().getBytes());
         }
         StringConverter converter = converters.get(StringConverterProvider.Key.from(param));
         if (converter == null) {
@@ -111,9 +111,10 @@ public abstract class FlexibleRequestEntityResolverFactory implements RequestEnt
         }
 
         @Override
-        public Result<?, Void> readFrom(RequestEntity entity, RequestContext context)
-                throws Exception {
-            MediaType contentType = getMediaType(entity, context);
+        public Result<?, Void> resolve(RequestEntityResolverContext context) throws Exception {
+            RequestEntity entity = context.httpEntity();
+            RequestContext requestContext = context.requestContext();
+            MediaType contentType = getMediaType(entity, requestContext);
             //convert argument if content-type is text/plain or missing.
             if (contentType == null || MediaType.TEXT_PLAIN.isCompatibleWith(contentType)) {
                 //ignore empty body.
@@ -121,7 +122,7 @@ public abstract class FlexibleRequestEntityResolverFactory implements RequestEnt
                     return checkRequired(nav, converter, Result.ok());
                 }
                 return checkRequired(nav, converter, Result.ok(converter
-                        .fromString(context.request().body().string(StandardCharsets.UTF_8))));
+                        .fromString(requestContext.request().body().string(StandardCharsets.UTF_8))));
             }
 
             //search serializer to resolve argument

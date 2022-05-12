@@ -13,27 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package io.esastack.restlight.core.resolver.entity;
 
-import io.esastack.restlight.core.context.HttpEntity;
-import io.esastack.restlight.core.handler.method.Param;
-import io.esastack.restlight.core.context.RequestContext;
+import esa.commons.Result;
+import esa.commons.annotation.Internal;
+import io.esastack.restlight.core.resolver.Resolver;
 
-public interface HttpEntityResolverContext {
+@Internal
+public interface EntityResolver<C extends EntityResolverContext> extends Resolver<C> {
 
-    /**
-     * Obtains current {@link RequestContext}.
-     *
-     * @return request context
-     */
-    RequestContext context();
-
-    /**
-     * Obtains the {@link Param} to resolve.
-     *
-     * @return param
-     */
-    HttpEntity httpEntity();
-
+    @Override
+    Result<?, ?> resolve(C context) throws Exception;
 }
-

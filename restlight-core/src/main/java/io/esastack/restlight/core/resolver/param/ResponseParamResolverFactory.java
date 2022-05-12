@@ -19,25 +19,25 @@ import io.esastack.restlight.core.handler.method.Param;
 import io.esastack.restlight.core.resolver.converter.StringConverterProvider;
 import io.esastack.restlight.core.serialize.HttpRequestSerializer;
 import io.esastack.restlight.core.context.RequestContext;
-import io.esastack.restlight.core.context.HttpRequest;
+import io.esastack.restlight.core.context.HttpResponse;
 
 import java.util.List;
 
 /**
- * Binds the {@link HttpRequest} object directly.
+ * Binds the {@link HttpResponse} object directly.
  */
-public class HttpRequestParamResolverFactory implements HttpParamResolverFactory {
+public class ResponseParamResolverFactory implements ParamResolverFactory {
 
     @Override
-    public HttpParamResolver createResolver(Param param,
-                                            StringConverterProvider converters,
-                                            List<? extends HttpRequestSerializer> serializers) {
-        return RequestContext::request;
+    public ParamResolver createResolver(Param param,
+                                        StringConverterProvider converters,
+                                        List<? extends HttpRequestSerializer> serializers) {
+        return RequestContext::response;
     }
 
     @Override
     public boolean supports(Param parameter) {
-        return HttpRequest.class.isAssignableFrom(parameter.type());
+        return HttpResponse.class.isAssignableFrom(parameter.type());
     }
 
     /**

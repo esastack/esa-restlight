@@ -35,7 +35,7 @@ import java.util.Map;
  * Implementation of {@link NameAndValueResolverFactory} for resolving argument that annotated by
  * the RequestParam.
  */
-public abstract class AbstractHttpParamResolver extends NameAndValueResolverFactory {
+public abstract class AbstractParamResolver extends NameAndValueResolverFactory {
 
     @Override
     protected NameAndValueResolver createResolver(Param param,
@@ -100,7 +100,7 @@ public abstract class AbstractHttpParamResolver extends NameAndValueResolverFact
 
         @Override
         public NameAndValue<String> createNameAndValue(Param param) {
-            return AbstractHttpParamResolver.this.createNameAndValue(param);
+            return AbstractParamResolver.this.createNameAndValue(param);
         }
     }
 
@@ -112,7 +112,7 @@ public abstract class AbstractHttpParamResolver extends NameAndValueResolverFact
 
         @Override
         public NameAndValue<String> createNameAndValue(Param param) {
-            return AbstractHttpParamResolver.this.createNameAndValue(param);
+            return AbstractParamResolver.this.createNameAndValue(param);
         }
     }
 }

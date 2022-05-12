@@ -18,21 +18,15 @@ package io.esastack.restlight.core.resolver.entity.request;
 import esa.commons.Result;
 import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.context.RequestEntity;
+import io.esastack.restlight.core.resolver.entity.EntityResolver;
+import io.esastack.restlight.core.resolver.entity.EntityResolverContext;
 
 /**
  * This resolver will deserialize the {@link RequestEntity} to an instance.
  */
-public interface RequestEntityResolver {
+public interface RequestEntityResolver extends EntityResolver<RequestEntityResolverContext> {
 
-    /**
-     * Deserialize the given {@code entity} to result.
-     *
-     * @param entity  entity
-     * @param context context
-     * @return resolved value, which must not be null.
-     * @throws Exception any exception
-     */
-    Result<?, Void> readFrom(RequestEntity entity, RequestContext context) throws Exception;
-
+    @Override
+    Result<?, Void> resolve(RequestEntityResolverContext context) throws Exception;
 }
 

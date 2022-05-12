@@ -19,8 +19,9 @@ import esa.commons.collection.AttributeKey;
 import esa.commons.collection.AttributeMap;
 import esa.commons.collection.Attributes;
 import io.esastack.commons.net.http.MediaType;
+import io.esastack.restlight.core.DeployContext;
 import io.esastack.restlight.core.context.HttpEntity;
-import io.esastack.restlight.core.resolver.entity.HttpEntityResolverContext;
+import io.esastack.restlight.core.resolver.entity.EntityResolverContext;
 import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.context.impl.RequestContextImpl;
 import io.esastack.restlight.core.context.HttpRequest;
@@ -47,10 +48,15 @@ class InterceptorContextImplTest {
                 mock(HttpRequest.class), mock(HttpResponse.class));
         final HttpEntity entity = mock(HttpEntity.class);
 
-        final HttpEntityResolverContext underlying = new HttpEntityResolverContext() {
+        final EntityResolverContext underlying = new EntityResolverContext() {
             @Override
-            public RequestContext context() {
+            public RequestContext requestContext() {
                 return context0;
+            }
+
+            @Override
+            public DeployContext deployContext() {
+                return null;
             }
 
             @Override

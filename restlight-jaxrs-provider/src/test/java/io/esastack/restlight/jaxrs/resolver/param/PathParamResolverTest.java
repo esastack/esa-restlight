@@ -18,7 +18,7 @@ package io.esastack.restlight.jaxrs.resolver.param;
 import esa.commons.StringUtils;
 import io.esastack.restlight.core.handler.method.HandlerMethod;
 import io.esastack.restlight.core.handler.method.MethodParam;
-import io.esastack.restlight.core.resolver.param.HttpParamResolver;
+import io.esastack.restlight.core.resolver.param.ParamResolver;
 import io.esastack.restlight.jaxrs.resolver.ResolverUtils;
 import io.esastack.restlight.jaxrs.resolver.param.subject.ConstructorSubject;
 import io.esastack.restlight.jaxrs.resolver.param.subject.FromStringSubject;
@@ -182,7 +182,7 @@ class PathParamResolverTest {
         final RequestContext context = new RequestContextImpl(request, MockHttpResponse.aMockResponse().build());
         new PatternsPredicate(JaxrsMappingUtils.extractMapping(SUBJECT.getClass(),
                 param.method(), StringUtils.empty()).get().path()).test(context);
-        final HttpParamResolver resolver = resolverFactory.createResolver(param,
+        final ParamResolver resolver = resolverFactory.createResolver(param,
                 ResolverUtils.defaultConverters(param), null);
         return resolver.resolve(context);
     }

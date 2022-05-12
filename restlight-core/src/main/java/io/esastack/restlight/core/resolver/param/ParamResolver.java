@@ -16,20 +16,19 @@
 package io.esastack.restlight.core.resolver.param;
 
 import io.esastack.restlight.core.context.RequestContext;
+import io.esastack.restlight.core.handler.method.Param;
+import io.esastack.restlight.core.resolver.Resolver;
 
 /**
- * Allows customising the {@link RequestContext} before resolving the parameter of controller from
- * {@link RequestContext} and customizing the argument resoled from {@link RequestContext}.
+ * Interface for resolving {@link Param} to the real values of the handler method base on the current context.
  */
-public interface HttpParamResolverAdvice {
+public interface ParamResolver extends Resolver<ParamResolverContext> {
 
-    /**
-     * This method is called around {@link HttpParamResolver#resolve(RequestContext)}.
-     *
-     * @param context context
-     * @return resolved arg value
-     * @throws Exception exception
-     */
-    Object aroundResolve(HttpParamResolverContext context) throws Exception;
+    @Override
+    default Object resolve(ParamResolverContext context) throws Exception {
+        return resolve(context.requestContext());
+    }
 
+    Object resolve(RequestContext requestContext) throws Exception;
 }
+

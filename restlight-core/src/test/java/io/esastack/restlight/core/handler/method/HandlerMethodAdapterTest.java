@@ -20,7 +20,7 @@ import io.esastack.restlight.core.handler.impl.HandlerContext;
 import io.esastack.restlight.core.resolver.context.ContextResolver;
 import io.esastack.restlight.core.resolver.entity.request.RequestEntityResolver;
 import io.esastack.restlight.core.resolver.factory.HandlerResolverFactory;
-import io.esastack.restlight.core.resolver.param.HttpParamResolver;
+import io.esastack.restlight.core.resolver.param.ParamResolver;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -87,7 +87,7 @@ class HandlerMethodAdapterTest {
         when(resolverFactory.getContextResolver(handlerMethod.parameters()[0]))
                 .thenReturn(p1Resolver);
 
-        HttpParamResolver p2Resolver = mock(HttpParamResolver.class);
+        ParamResolver p2Resolver = mock(ParamResolver.class);
         when(resolverFactory.getParamResolver(handlerMethod.parameters()[1]))
                 .thenReturn(p2Resolver);
 

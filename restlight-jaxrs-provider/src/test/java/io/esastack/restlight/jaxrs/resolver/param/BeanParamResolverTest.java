@@ -33,7 +33,7 @@ import io.esastack.restlight.core.handler.method.MethodParam;
 import io.esastack.restlight.core.handler.method.ResolvableParamPredicate;
 import io.esastack.restlight.core.resolver.factory.HandlerResolverFactory;
 import io.esastack.restlight.core.resolver.factory.HandlerResolverFactoryImpl;
-import io.esastack.restlight.core.resolver.param.HttpParamResolver;
+import io.esastack.restlight.core.resolver.param.ParamResolver;
 import io.esastack.restlight.core.resolver.exception.ExceptionMapper;
 import io.esastack.restlight.core.resolver.exception.ExceptionResolverFactory;
 import io.esastack.restlight.core.serialize.JacksonHttpBodySerializer;
@@ -108,7 +108,7 @@ class BeanParamResolverTest {
         assertTrue(resolverFactory.supports(param));
         new PatternsPredicate(JaxrsMappingUtils.extractMapping(SUBJECT.getClass(),
                 param.method(), StringUtils.empty()).get().path()).test(context);
-        final HttpParamResolver resolver = resolverFactory.createResolver(param,
+        final ParamResolver resolver = resolverFactory.createResolver(param,
                 ResolverUtils.defaultConverters(param), null);
         return resolver.resolve(context);
     }

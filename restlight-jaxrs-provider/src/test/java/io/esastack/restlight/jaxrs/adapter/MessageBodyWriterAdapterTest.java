@@ -22,13 +22,16 @@ import esa.commons.collection.Attributes;
 import io.esastack.commons.net.http.HttpHeaders;
 import io.esastack.commons.net.http.MediaType;
 import io.esastack.commons.net.netty.http.Http1HeadersImpl;
-import io.esastack.restlight.core.context.ResponseEntity;
-import io.esastack.restlight.core.context.ResponseContent;
-import io.esastack.restlight.core.context.RequestContext;
-import io.esastack.restlight.core.context.impl.RequestContextImpl;
 import io.esastack.restlight.core.context.HttpOutputStream;
 import io.esastack.restlight.core.context.HttpRequest;
 import io.esastack.restlight.core.context.HttpResponse;
+import io.esastack.restlight.core.context.RequestContext;
+import io.esastack.restlight.core.context.ResponseContent;
+import io.esastack.restlight.core.context.ResponseEntity;
+import io.esastack.restlight.core.context.ResponseEntityChannel;
+import io.esastack.restlight.core.context.impl.RequestContextImpl;
+import io.esastack.restlight.core.resolver.entity.response.ResponseEntityResolverContext;
+import io.esastack.restlight.core.resolver.entity.response.ResponseEntityResolverContextImpl;
 import io.esastack.restlight.core.route.predicate.ProducesPredicate;
 import io.netty.buffer.ByteBufAllocator;
 import jakarta.ws.rs.core.MultivaluedHashMap;
@@ -71,7 +74,9 @@ class MessageBodyWriterAdapterTest {
         final Attributes attrs = new AttributeMap();
         when(entity.response()).thenReturn(response);
         final RequestContext context = new RequestContextImpl(attrs, mock(HttpRequest.class), response);
-        assertFalse(adapter.writeTo(entity, null, context).isOk());
+        final ResponseEntityResolverContext resolverContext =
+                new ResponseEntityResolverContextImpl(context, entity, mock(ResponseEntityChannel.class));
+        assertFalse(adapter.resolve(resolverContext).isOk());
 
         // MessageBodyWriter is null.
         final HttpOutputStream os = mock(HttpOutputStream.class);
@@ -79,7 +84,7 @@ class MessageBodyWriterAdapterTest {
         attrs.attr(ProducesPredicate.COMPATIBLE_MEDIA_TYPES).set(Collections.singletonList(MediaType.ALL));
         when(response.entity()).thenReturn("DEF");
         when(providers.getMessageBodyWriter(any(), any(), any(), any())).thenReturn(null);
-        assertFalse(adapter.writeTo(entity, null, context).isOk());
+        assertFalse(adapter.resolve(resolverContext).isOk());
         verify(os, never()).close();
 
         // MessageBodyWriter is not null.
@@ -110,7 +115,7 @@ class MessageBodyWriterAdapterTest {
         final ResponseContent content = mock(ResponseContent.class);
         context.attrs().attr(RequestContextImpl.RESPONSE_CONTENT).set(content);
         when(content.alloc()).thenReturn(ByteBufAllocator.DEFAULT);
-        final Result<Void, Void> handled = adapter.writeTo(entity, null, context);
+        final Result<Void, Void> handled = adapter.resolve(resolverContext);
         assertTrue(handled.isOk());
         verify(os).close();
         assertEquals(1, writableHeaders.size());

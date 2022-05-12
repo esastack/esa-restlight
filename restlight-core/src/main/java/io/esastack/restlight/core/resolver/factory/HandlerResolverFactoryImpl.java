@@ -29,12 +29,12 @@ import io.esastack.restlight.core.resolver.converter.StringConverter;
 import io.esastack.restlight.core.resolver.converter.StringConverterAdapter;
 import io.esastack.restlight.core.resolver.converter.StringConverterFactory;
 import io.esastack.restlight.core.resolver.converter.StringConverterProvider;
-import io.esastack.restlight.core.resolver.param.HttpParamResolver;
-import io.esastack.restlight.core.resolver.param.HttpParamResolverAdapter;
-import io.esastack.restlight.core.resolver.param.HttpParamResolverAdvice;
-import io.esastack.restlight.core.resolver.param.HttpParamResolverAdviceAdapter;
-import io.esastack.restlight.core.resolver.param.HttpParamResolverAdviceFactory;
-import io.esastack.restlight.core.resolver.param.HttpParamResolverFactory;
+import io.esastack.restlight.core.resolver.param.ParamResolver;
+import io.esastack.restlight.core.resolver.param.ParamResolverAdapter;
+import io.esastack.restlight.core.resolver.param.ParamResolverAdvice;
+import io.esastack.restlight.core.resolver.param.ParamResolverAdviceAdapter;
+import io.esastack.restlight.core.resolver.param.ParamResolverAdviceFactory;
+import io.esastack.restlight.core.resolver.param.ParamResolverFactory;
 import io.esastack.restlight.core.resolver.entity.request.RequestEntityResolver;
 import io.esastack.restlight.core.resolver.entity.request.RequestEntityResolverAdapter;
 import io.esastack.restlight.core.resolver.entity.request.RequestEntityResolverAdvice;
@@ -77,8 +77,8 @@ public class HandlerResolverFactoryImpl implements HandlerResolverFactory {
     private final List<RouteFilterFactory> routeFilters;
 
     private final List<StringConverterFactory> stringConverters;
-    private final List<HttpParamResolverFactory> paramResolvers;
-    private final List<HttpParamResolverAdviceFactory> paramResolverAdvices;
+    private final List<ParamResolverFactory> paramResolvers;
+    private final List<ParamResolverAdviceFactory> paramResolverAdvices;
     private final List<ContextResolverFactory> contextResolvers;
 
     /**
@@ -101,10 +101,10 @@ public class HandlerResolverFactoryImpl implements HandlerResolverFactory {
                                       Collection<? extends RouteFilterFactory> routeFilters,
                                       Collection<? extends StringConverterAdapter> stringConverters,
                                       Collection<? extends StringConverterFactory> stringConverterFactories,
-                                      Collection<? extends HttpParamResolverAdapter> paramResolvers,
-                                      Collection<? extends HttpParamResolverFactory> paramResolverFactories,
-                                      Collection<? extends HttpParamResolverAdviceAdapter> paramResolverAdvices,
-                                      Collection<? extends HttpParamResolverAdviceFactory> paramResolverAdviceFactories,
+                                      Collection<? extends ParamResolverAdapter> paramResolvers,
+                                      Collection<? extends ParamResolverFactory> paramResolverFactories,
+                                      Collection<? extends ParamResolverAdviceAdapter> paramResolverAdvices,
+                                      Collection<? extends ParamResolverAdviceFactory> paramResolverAdviceFactories,
                                       Collection<? extends ContextResolverAdapter> contextResolvers,
                                       Collection<? extends ContextResolverFactory> contextResolverFactories,
                                       Collection<? extends RequestEntityResolverAdapter> requestEntityResolvers,
@@ -190,13 +190,13 @@ public class HandlerResolverFactoryImpl implements HandlerResolverFactory {
                 StringConverterFactory::singleton);
     }
 
-    private static List<HttpParamResolverFactory> getParamResolvers(
-            Collection<? extends HttpParamResolverAdapter> resolvers,
-            Collection<? extends HttpParamResolverFactory> factories) {
+    private static List<ParamResolverFactory> getParamResolvers(
+            Collection<? extends ParamResolverAdapter> resolvers,
+            Collection<? extends ParamResolverFactory> factories) {
 
         return mergeResolvers(resolvers,
                 factories,
-                HttpParamResolverFactory::singleton);
+                ParamResolverFactory::singleton);
     }
 
     private static List<ContextResolverFactory> getContextResolvers(
@@ -207,13 +207,13 @@ public class HandlerResolverFactoryImpl implements HandlerResolverFactory {
                 ContextResolverFactory::singleton);
     }
 
-    private static List<HttpParamResolverAdviceFactory> getParamResolverAdvices(
-            Collection<? extends HttpParamResolverAdviceAdapter> resolvers,
-            Collection<? extends HttpParamResolverAdviceFactory> factories) {
+    private static List<ParamResolverAdviceFactory> getParamResolverAdvices(
+            Collection<? extends ParamResolverAdviceAdapter> resolvers,
+            Collection<? extends ParamResolverAdviceFactory> factories) {
 
         return mergeResolvers(resolvers,
                 factories,
-                HttpParamResolverAdviceFactory::singleton);
+                ParamResolverAdviceFactory::singleton);
     }
 
     private static <R, F> List<F> mergeResolvers(Collection<? extends R> resolvers,
@@ -268,7 +268,7 @@ public class HandlerResolverFactoryImpl implements HandlerResolverFactory {
     }
 
     @Override
-    public HttpParamResolver getParamResolver(Param param) {
+    public ParamResolver getParamResolver(Param param) {
         //resolve the fixed parameter resolver
         return paramResolvers.stream().filter(r -> r.supports(param))
                 .findFirst()
@@ -279,9 +279,9 @@ public class HandlerResolverFactoryImpl implements HandlerResolverFactory {
     }
 
     @Override
-    public List<HttpParamResolverAdvice> getParamResolverAdvices(Param param, HttpParamResolver resolver) {
+    public List<ParamResolverAdvice> getParamResolverAdvices(Param param, ParamResolver resolver) {
         if (paramResolverAdvices != null && !paramResolverAdvices.isEmpty()) {
-            List<HttpParamResolverAdvice> advices =
+            List<ParamResolverAdvice> advices =
                     paramResolverAdvices.stream()
                             .filter(advice -> advice.supports(param))
                             .map(factory -> Checks.checkNotNull(factory.createResolverAdvice(param, resolver),

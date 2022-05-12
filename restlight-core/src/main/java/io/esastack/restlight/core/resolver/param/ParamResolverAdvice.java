@@ -13,26 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.esastack.restlight.core.resolver.context;
+package io.esastack.restlight.core.resolver.param;
 
-import esa.commons.Checks;
-import io.esastack.restlight.core.DeployContext;
 import io.esastack.restlight.core.context.RequestContext;
-import io.esastack.restlight.core.resolver.ParamResolver;
+import io.esastack.restlight.core.resolver.ResolverAdvice;
 
-public class ContextParamResolver implements ParamResolver {
-
-    private final ContextResolver underlying;
-
-    public ContextParamResolver(ContextResolver underlying) {
-        Checks.checkNotNull(underlying, "underlying");
-        this.underlying = underlying;
-    }
-
-    @Override
-    public Object resolve(DeployContext deployContext,
-                          RequestContext context) throws Exception {
-        return underlying.resolve(deployContext);
-    }
+/**
+ * Allows customising the {@link RequestContext} before resolving the parameter of controller from
+ * {@link RequestContext} and customizing the argument resoled from {@link RequestContext}.
+ */
+public interface ParamResolverAdvice extends ResolverAdvice<ParamResolverContext> {
 }
-
