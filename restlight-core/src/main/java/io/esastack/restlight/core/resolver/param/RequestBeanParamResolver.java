@@ -24,10 +24,9 @@ import io.esastack.restlight.core.annotation.RequestBean;
 import io.esastack.restlight.core.handler.method.FieldParam;
 import io.esastack.restlight.core.handler.method.FieldParamImpl;
 import io.esastack.restlight.core.handler.method.Param;
-import io.esastack.restlight.core.resolver.factory.HandlerResolverFactory;
 import io.esastack.restlight.core.resolver.converter.StringConverterProvider;
+import io.esastack.restlight.core.resolver.factory.HandlerResolverFactory;
 import io.esastack.restlight.core.serialize.HttpRequestSerializer;
-import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.util.LoggerUtils;
 
 import java.lang.reflect.Constructor;
@@ -98,7 +97,7 @@ public class RequestBeanParamResolver implements ParamResolverFactory {
         }
 
         @Override
-        public Object resolve(RequestContext context) throws Exception {
+        public Object resolve(ParamResolverContext context) throws Exception {
             final Object allocated = typeMeta.alloc.alloc();
 
             // set the value to the instance one by one

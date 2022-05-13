@@ -35,13 +35,13 @@ import io.esastack.restlight.core.handler.method.MethodParamImpl;
 import io.esastack.restlight.core.handler.method.Param;
 import io.esastack.restlight.core.handler.method.ResolvableParam;
 import io.esastack.restlight.core.handler.method.ResolvableParamPredicate;
+import io.esastack.restlight.core.resolver.AdvisedResolverContextImpl;
 import io.esastack.restlight.core.resolver.Resolver;
 import io.esastack.restlight.core.resolver.ResolverContext;
-import io.esastack.restlight.core.resolver.ResolverContextImpl;
 import io.esastack.restlight.core.resolver.context.AdvisedContextResolver;
 import io.esastack.restlight.core.resolver.context.ContextResolver;
 import io.esastack.restlight.core.resolver.factory.HandlerResolverFactory;
-import io.esastack.restlight.core.resolver.param.AdvisedHttpParamResolver;
+import io.esastack.restlight.core.resolver.param.AdvisedParamResolver;
 import io.esastack.restlight.core.resolver.param.ParamResolver;
 import io.esastack.restlight.core.util.ConstructorUtils;
 
@@ -120,7 +120,7 @@ public class HandlerFactoryImpl implements HandlerFactory {
         final ResolvableHandler handler = getResolvableHandler(clazz, handlerContext);
         final ResolvableParam<ConstructorParam, Resolver>[] consParams = handler.consParamResolvers;
         final Object[] args = new Object[consParams.length];
-        ResolverContext resolverContext = new ResolverContextImpl(context, handlerContext);
+        ResolverContext resolverContext = new AdvisedResolverContextImpl(context, handlerContext);
         for (int i = 0; i < consParams.length; i++) {
             ResolvableParam<ConstructorParam, Resolver> resolvable = consParams[i];
             ConstructorParam param = resolvable.param();
@@ -149,7 +149,7 @@ public class HandlerFactoryImpl implements HandlerFactory {
     protected void doInit0(HandlerContext handlerContext, Object instance, Class<?> clazz, RequestContext context) {
         final ResolvableHandler handler = getResolvableHandler(clazz, handlerContext);
 
-        ResolverContext resolverContext = new ResolverContextImpl(context, handlerContext);
+        ResolverContext resolverContext = new AdvisedResolverContextImpl(context, handlerContext);
         // set fields
         for (ResolvableParam<FieldParam, Resolver> r : handler.fieldParamResolvers) {
             FieldParam param = r.param();
@@ -268,7 +268,7 @@ public class HandlerFactoryImpl implements HandlerFactory {
                                                                                HandlerResolverFactory factory) {
             ParamResolver paramResolver = factory.getParamResolver(param);
             if (paramResolver != null) {
-                return new ResolvableParam<>(param, new AdvisedHttpParamResolver(paramResolver,
+                return new ResolvableParam<>(param, new AdvisedParamResolver(paramResolver,
                         factory.getParamResolverAdvices(param, paramResolver)));
             } else {
                 ContextResolver contextResolver = factory.getContextResolver(param);

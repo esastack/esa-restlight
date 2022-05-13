@@ -18,13 +18,13 @@ package io.esastack.restlight.jaxrs.resolver.param;
 import esa.commons.Checks;
 import io.esastack.restlight.core.DeployContext;
 import io.esastack.restlight.core.handler.method.Param;
-import io.esastack.restlight.core.resolver.param.ParamResolver;
-import io.esastack.restlight.core.resolver.param.ParamResolverFactory;
 import io.esastack.restlight.core.resolver.converter.StringConverterProvider;
+import io.esastack.restlight.core.resolver.param.ParamResolver;
+import io.esastack.restlight.core.resolver.param.ParamResolverContext;
+import io.esastack.restlight.core.resolver.param.ParamResolverFactory;
 import io.esastack.restlight.core.serialize.HttpRequestSerializer;
 import io.esastack.restlight.jaxrs.impl.container.ResourceContextImpl;
 import io.esastack.restlight.jaxrs.util.JaxrsUtils;
-import io.esastack.restlight.core.context.RequestContext;
 import jakarta.ws.rs.container.ResourceContext;
 import jakarta.ws.rs.core.Context;
 
@@ -60,8 +60,8 @@ public class ResourceContextParamResolver implements ParamResolverFactory {
         }
 
         @Override
-        public Object resolve(RequestContext context) throws Exception {
-            return new ResourceContextImpl(this.context.handlerFactory().orElse(null), context);
+        public Object resolve(ParamResolverContext context) throws Exception {
+            return new ResourceContextImpl(this.context.handlerFactory().orElse(null), context.requestContext());
         }
     }
 }

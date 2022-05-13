@@ -16,7 +16,6 @@
 package io.esastack.restlight.jaxrs.impl.ext;
 
 import esa.commons.collection.AttributeMap;
-import io.esastack.restlight.core.DeployContext;
 import io.esastack.restlight.core.context.HttpRequest;
 import io.esastack.restlight.core.context.HttpResponse;
 import io.esastack.restlight.core.context.RequestContext;
@@ -88,11 +87,6 @@ class WriterInterceptorContextImplTest {
             @Override
             public RequestContext requestContext() {
                 return context0;
-            }
-
-            @Override
-            public DeployContext deployContext() {
-                return null;
             }
         };
         final ResolverExecutor<ResponseEntityResolverContext> executor =

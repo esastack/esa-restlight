@@ -52,7 +52,7 @@ public class ResolverConfig {
             public ParamResolver createResolver(Param param, StringConverterProvider converters,
                                                 List<? extends HttpRequestSerializer> serializers) {
                 return context -> UserData.Builder.anUserData()
-                        .name(context.request().getParam("name"))
+                        .name(context.requestContext().request().getParam("name"))
                         .build();
             }
 
@@ -134,7 +134,7 @@ public class ResolverConfig {
             @Override
             public ParamResolver createResolver(Param param, StringConverterProvider converters,
                                                 List<? extends HttpRequestSerializer> serializers) {
-                return context -> context.request().getParam("name");
+                return context -> context.requestContext().request().getParam("name");
             }
 
             @Override

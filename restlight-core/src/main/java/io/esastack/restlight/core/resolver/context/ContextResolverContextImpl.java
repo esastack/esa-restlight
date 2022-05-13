@@ -14,22 +14,22 @@
  * limitations under the License.
  */
 
-package io.esastack.restlight.core.resolver.param;
+package io.esastack.restlight.core.resolver.context;
 
 import esa.commons.Checks;
-import io.esastack.restlight.core.context.RequestContext;
+import io.esastack.restlight.core.DeployContext;
 
-public class ParamResolverContextImpl implements ParamResolverContext {
+public final class ContextResolverContextImpl implements ContextResolverContext {
 
-    private final RequestContext requestContext;
+    private final DeployContext deployContext;
 
-    public ParamResolverContextImpl(RequestContext requestContext) {
-        Checks.checkNotNull(requestContext, "requestContext");
-        this.requestContext = requestContext;
+    public ContextResolverContextImpl(DeployContext deployContext) {
+        Checks.checkNotNull(deployContext, "deployContext");
+        this.deployContext = deployContext;
     }
 
     @Override
-    public RequestContext requestContext() {
-        return requestContext;
+    public DeployContext deployContext() {
+        return deployContext;
     }
 }

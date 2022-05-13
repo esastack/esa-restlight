@@ -18,10 +18,21 @@ package io.esastack.restlight.core.resolver;
 
 import esa.commons.annotation.Internal;
 
+/**
+ * Executor to combine the {@link Resolver} and {@link ResolverAdvice} work types.
+ *
+ * @param <C> context.
+ */
 @Internal
 public interface ResolverExecutor<C extends ResolverContext> {
 
+    /**
+     * the {@link ResolverContext} different {@link ResolverExecutor} provides different implement.
+     */
     C context();
 
+    /**
+     * execute the {@link Resolver} and {@link ResolverAdvice}.
+     */
     Object proceed() throws Exception;
 }

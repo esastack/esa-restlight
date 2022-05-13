@@ -15,7 +15,6 @@
  */
 package io.esastack.restlight.jaxrs.resolver.param;
 
-import io.esastack.restlight.core.DeployContext;
 import io.esastack.restlight.core.context.HttpRequest;
 import io.esastack.restlight.core.context.impl.RequestContextImpl;
 import io.esastack.restlight.core.handler.method.HandlerMethod;
@@ -33,7 +32,6 @@ import jakarta.ws.rs.DefaultValue;
 import jakarta.ws.rs.QueryParam;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 
 import java.util.Collection;
 import java.util.Map;
@@ -146,8 +144,7 @@ class DefaultValueParamResolverTest {
         final ParamResolver resolver = resolverFactory.createResolver(param,
                 ResolverUtils.defaultConverters(param), null);
         ParamResolverContext resolverContext = new ParamResolverContextImpl(
-                new RequestContextImpl(request, MockHttpResponse.aMockResponse().build()),
-                Mockito.mock(DeployContext.class));
+                new RequestContextImpl(request, MockHttpResponse.aMockResponse().build()));
         return resolver.resolve(resolverContext);
     }
 

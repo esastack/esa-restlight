@@ -18,15 +18,15 @@ package io.esastack.restlight.jaxrs.adapter;
 import esa.commons.Checks;
 import io.esastack.commons.net.http.MediaType;
 import io.esastack.restlight.core.handler.method.Param;
-import io.esastack.restlight.core.resolver.param.ParamResolver;
-import io.esastack.restlight.core.resolver.param.ParamResolverFactory;
 import io.esastack.restlight.core.resolver.converter.StringConverterProvider;
+import io.esastack.restlight.core.resolver.param.ParamResolver;
+import io.esastack.restlight.core.resolver.param.ParamResolverContext;
+import io.esastack.restlight.core.resolver.param.ParamResolverFactory;
 import io.esastack.restlight.core.serialize.HttpRequestSerializer;
 import io.esastack.restlight.core.util.Ordered;
 import io.esastack.restlight.core.util.ResponseEntityUtils;
 import io.esastack.restlight.jaxrs.util.JaxrsUtils;
 import io.esastack.restlight.jaxrs.util.MediaTypeUtils;
-import io.esastack.restlight.core.context.RequestContext;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.ext.Providers;
 
@@ -70,9 +70,9 @@ public class JaxrsContextResolverFactory implements ParamResolverFactory {
         }
 
         @Override
-        public Object resolve(RequestContext context) throws Exception {
+        public Object resolve(ParamResolverContext context) throws Exception {
             jakarta.ws.rs.ext.ContextResolver<?> resolver;
-            for (MediaType mediaType : ResponseEntityUtils.getMediaTypes(context)) {
+            for (MediaType mediaType : ResponseEntityUtils.getMediaTypes(context.requestContext())) {
                 if ((resolver = providers.getContextResolver(param.type(),
                         MediaTypeUtils.convert(mediaType))) != null) {
                     return resolver.getContext(param.type());

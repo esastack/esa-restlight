@@ -16,7 +16,6 @@
 package io.esastack.restlight.core.resolver.entity.response;
 
 import esa.commons.Checks;
-import io.esastack.restlight.core.DeployContext;
 import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.context.ResponseEntity;
 import io.esastack.restlight.core.context.ResponseEntityChannel;
@@ -40,12 +39,6 @@ public class ResponseEntityResolverContextImpl implements ResponseEntityResolver
     @Override
     public RequestContext requestContext() {
         return context;
-    }
-
-    @Override
-    public DeployContext deployContext() {
-        throw new UnsupportedOperationException("cannot support get the DeployContext from " +
-                "ResponseEntityResolverContext");
     }
 
     @Override

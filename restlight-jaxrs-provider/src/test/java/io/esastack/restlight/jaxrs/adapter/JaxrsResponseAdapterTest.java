@@ -63,11 +63,6 @@ class JaxrsResponseAdapterTest {
             public RequestContext requestContext() {
                 return rCtx;
             }
-
-            @Override
-            public DeployContext deployContext() {
-                return null;
-            }
         };
         ResolverExecutor<ResponseEntityResolverContext> executor = new ResolverExecutor() {
             @Override

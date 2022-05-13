@@ -18,8 +18,19 @@ package io.esastack.restlight.core.resolver;
 
 import esa.commons.annotation.Internal;
 
+/**
+ * {@link Resolver} provide the ability to resolving the context to a target object.
+ * mainly provide two types implement:
+ * 1.advised resolver to bridge the work flow and {@link ResolverExecutor}
+ * 2.real resolver to resolve to the target object.
+ *
+ * @param <C> context
+ */
 @Internal
 public interface Resolver<C extends ResolverContext> {
 
+    /**
+     * resolve the context to a target object.
+     */
     Object resolve(C context) throws Exception;
 }

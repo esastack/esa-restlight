@@ -15,26 +15,26 @@
  */
 package io.esastack.restlight.core.resolver.param;
 
+import io.esastack.restlight.core.resolver.AdvisedResolverContext;
 import io.esastack.restlight.core.resolver.Resolver;
-import io.esastack.restlight.core.resolver.ResolverContext;
 
 import java.util.List;
 
-public class AdvisedHttpParamResolver implements Resolver<ResolverContext> {
+public class AdvisedParamResolver implements Resolver<AdvisedResolverContext> {
 
     private final ParamResolver resolver;
     private final List<ParamResolverAdvice> advices;
     private final boolean absentAdvices;
 
-    public AdvisedHttpParamResolver(ParamResolver resolver, List<ParamResolverAdvice> advices) {
+    public AdvisedParamResolver(ParamResolver resolver, List<ParamResolverAdvice> advices) {
         this.resolver = resolver;
         this.absentAdvices = (advices == null || advices.isEmpty());
         this.advices = advices;
     }
 
     @Override
-    public Object resolve(ResolverContext context) throws Exception {
-        ParamResolverContext resolverContext = new ParamResolverContextImpl(context);
+    public Object resolve(AdvisedResolverContext context) throws Exception {
+        ParamResolverContext resolverContext = new ParamResolverContextImpl(context.requestContext());
         if (absentAdvices) {
             return resolver.resolve(resolverContext);
         }

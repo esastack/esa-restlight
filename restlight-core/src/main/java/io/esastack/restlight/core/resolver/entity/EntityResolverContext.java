@@ -17,14 +17,20 @@ package io.esastack.restlight.core.resolver.entity;
 
 import esa.commons.annotation.Internal;
 import io.esastack.restlight.core.context.HttpEntity;
-import io.esastack.restlight.core.handler.method.Param;
+import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.resolver.ResolverContext;
 
 @Internal
 public interface EntityResolverContext extends ResolverContext {
 
     /**
-     * Obtains the {@link Param} to resolve.
+     *
+     * Obtains the {@link RequestContext} to resolve.
+     */
+    RequestContext requestContext();
+
+    /**
+     * Obtains the {@link HttpEntity} to resolve.
      *
      * @return param
      */

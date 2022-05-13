@@ -18,16 +18,14 @@ package io.esastack.restlight.jaxrs.adapter;
 import esa.commons.collection.AttributeKey;
 import esa.commons.collection.AttributeMap;
 import esa.commons.collection.Attributes;
-import io.esastack.restlight.core.DeployContext;
-import io.esastack.restlight.core.handler.method.HandlerMethod;
-import io.esastack.restlight.core.context.RequestEntity;
-import io.esastack.restlight.core.resolver.ResolverExecutor;
-import io.esastack.restlight.core.resolver.entity.EntityResolver;
-import io.esastack.restlight.core.resolver.entity.request.RequestEntityResolverContext;
-import io.esastack.restlight.core.context.RequestContext;
-import io.esastack.restlight.core.context.impl.RequestContextImpl;
 import io.esastack.restlight.core.context.HttpRequest;
 import io.esastack.restlight.core.context.HttpResponse;
+import io.esastack.restlight.core.context.RequestContext;
+import io.esastack.restlight.core.context.RequestEntity;
+import io.esastack.restlight.core.context.impl.RequestContextImpl;
+import io.esastack.restlight.core.handler.method.HandlerMethod;
+import io.esastack.restlight.core.resolver.ResolverExecutor;
+import io.esastack.restlight.core.resolver.entity.request.RequestEntityResolverContext;
 import jakarta.ws.rs.ext.ReaderInterceptor;
 import org.junit.jupiter.api.Test;
 
@@ -71,11 +69,6 @@ class ReaderInterceptorsAdapterTest {
             @Override
             public RequestContext requestContext() {
                 return context;
-            }
-
-            @Override
-            public DeployContext deployContext() {
-                return null;
             }
         };
         final ResolverExecutor<RequestEntityResolverContext> executor =

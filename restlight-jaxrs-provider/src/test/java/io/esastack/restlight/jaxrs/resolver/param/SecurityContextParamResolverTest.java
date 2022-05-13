@@ -20,6 +20,7 @@ import io.esastack.restlight.core.handler.method.FieldParamImpl;
 import io.esastack.restlight.core.handler.method.MethodParamImpl;
 import io.esastack.restlight.core.handler.method.Param;
 import io.esastack.restlight.core.resolver.param.ParamResolver;
+import io.esastack.restlight.core.resolver.param.ParamResolverContextImpl;
 import io.esastack.restlight.jaxrs.impl.JaxrsContextUtils;
 import io.esastack.restlight.jaxrs.resolver.ResolverUtils;
 import io.esastack.restlight.core.context.RequestContext;
@@ -61,7 +62,7 @@ class SecurityContextParamResolverTest {
 
         final SecurityContext securityContext = mock(SecurityContext.class);
         JaxrsContextUtils.setSecurityContext(ctx, securityContext);
-        assertSame(securityContext, resolver.resolve(ctx));
+        assertSame(securityContext, resolver.resolve(new ParamResolverContextImpl(ctx)));
     }
 
     private static class Subject {

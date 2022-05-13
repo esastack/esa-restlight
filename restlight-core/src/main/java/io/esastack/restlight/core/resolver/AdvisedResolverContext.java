@@ -14,16 +14,28 @@
  * limitations under the License.
  */
 
-package io.esastack.restlight.core.resolver.param;
+package io.esastack.restlight.core.resolver;
 
+import esa.commons.annotation.Internal;
+import io.esastack.restlight.core.DeployContext;
 import io.esastack.restlight.core.context.RequestContext;
-import io.esastack.restlight.core.resolver.ResolverContext;
 
-public interface ParamResolverContext extends ResolverContext {
+/**
+ * provide the context for advised type resolver. like:
+ * - {@link io.esastack.restlight.core.resolver.param.AdvisedParamResolver}
+ * - {@link io.esastack.restlight.core.resolver.context.AdvisedContextResolver}
+ * - {@link io.esastack.restlight.core.resolver.entity.request.AdvisedRequestEntityResolver}
+ */
+@Internal
+public interface AdvisedResolverContext extends ResolverContext {
 
     /**
-     *
-     * Obtains the {@link RequestContext} to resolve.
+     * the request context.
      */
     RequestContext requestContext();
+
+    /**
+     * the global deploy context.
+     */
+    DeployContext deployContext();
 }

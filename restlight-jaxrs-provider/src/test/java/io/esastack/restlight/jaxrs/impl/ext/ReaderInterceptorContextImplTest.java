@@ -17,7 +17,6 @@ package io.esastack.restlight.jaxrs.impl.ext;
 
 import esa.commons.collection.AttributeMap;
 import io.esastack.commons.net.netty.http.Http1HeadersImpl;
-import io.esastack.restlight.core.DeployContext;
 import io.esastack.restlight.core.context.HttpRequest;
 import io.esastack.restlight.core.context.HttpResponse;
 import io.esastack.restlight.core.context.RequestContext;
@@ -28,7 +27,6 @@ import io.esastack.restlight.core.resolver.entity.request.RequestEntityResolverC
 import jakarta.ws.rs.ext.ReaderInterceptor;
 import jakarta.ws.rs.ext.ReaderInterceptorContext;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -64,11 +62,6 @@ class ReaderInterceptorContextImplTest {
             @Override
             public RequestContext requestContext() {
                 return context0;
-            }
-
-            @Override
-            public DeployContext deployContext() {
-                return null;
             }
 
             @Override

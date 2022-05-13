@@ -31,6 +31,7 @@ import io.esastack.restlight.core.resolver.entity.response.ResponseEntityResolve
 import io.esastack.restlight.core.resolver.entity.response.ResponseEntityResolverContext;
 import io.esastack.restlight.core.resolver.param.ParamResolverAdapter;
 import io.esastack.restlight.core.resolver.param.ParamResolverAdviceAdapter;
+import io.esastack.restlight.core.resolver.param.ParamResolverContext;
 import io.esastack.restlight.core.serialize.HttpBodySerializer;
 import io.esastack.restlight.test.context.MockMvc;
 import org.junit.jupiter.api.Assertions;
@@ -89,7 +90,7 @@ class MinorityMockMvcBuilderTest {
         }
 
         @Override
-        public Object resolve(RequestContext context) {
+        public Object resolve(ParamResolverContext context) {
             return null;
         }
 

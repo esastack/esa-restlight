@@ -18,6 +18,7 @@ package io.esastack.restlight.jaxrs.resolver.param;
 import io.esastack.restlight.core.handler.method.HandlerMethod;
 import io.esastack.restlight.core.handler.method.MethodParam;
 import io.esastack.restlight.core.resolver.param.ParamResolver;
+import io.esastack.restlight.core.resolver.param.ParamResolverContextImpl;
 import io.esastack.restlight.jaxrs.resolver.ResolverUtils;
 import io.esastack.restlight.jaxrs.resolver.param.subject.ConstructorSubject;
 import io.esastack.restlight.jaxrs.resolver.param.subject.FromStringSubject;
@@ -160,7 +161,8 @@ class RequestHeaderParamResolverTest {
         assertTrue(resolverFactory.supports(param));
         final ParamResolver resolver = resolverFactory.createResolver(param,
                 ResolverUtils.defaultConverters(param), null);
-        return resolver.resolve(new RequestContextImpl(request, MockHttpResponse.aMockResponse().build()));
+        return resolver.resolve(new ParamResolverContextImpl(
+                new RequestContextImpl(request, MockHttpResponse.aMockResponse().build())));
     }
 
     private static class Subject {

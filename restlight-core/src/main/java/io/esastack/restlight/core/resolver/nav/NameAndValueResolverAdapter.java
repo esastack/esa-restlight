@@ -17,10 +17,10 @@ package io.esastack.restlight.core.resolver.nav;
 
 import esa.commons.Checks;
 import esa.commons.ObjectUtils;
+import io.esastack.restlight.core.exception.WebServerException;
 import io.esastack.restlight.core.handler.method.Param;
 import io.esastack.restlight.core.resolver.param.ParamResolver;
-import io.esastack.restlight.core.exception.WebServerException;
-import io.esastack.restlight.core.context.RequestContext;
+import io.esastack.restlight.core.resolver.param.ParamResolverContext;
 
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -38,8 +38,8 @@ public class NameAndValueResolverAdapter implements ParamResolver {
     }
 
     @Override
-    public Object resolve(RequestContext ctx) {
-        Object arg = resolver.resolve(nav.name(), ctx);
+    public Object resolve(ParamResolverContext ctx) {
+        Object arg = resolver.resolve(nav.name(), ctx.requestContext());
         if (arg == null) {
             Supplier<?> defaultValue = nav.defaultValue();
             if (defaultValue != null) {

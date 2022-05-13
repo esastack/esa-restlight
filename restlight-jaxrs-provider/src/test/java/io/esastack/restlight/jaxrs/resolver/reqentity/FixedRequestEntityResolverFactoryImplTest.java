@@ -16,15 +16,19 @@
 package io.esastack.restlight.jaxrs.resolver.reqentity;
 
 import io.esastack.commons.net.http.MediaType;
-import io.esastack.restlight.core.DeployContext;
 import io.esastack.restlight.core.annotation.RequestSerializer;
 import io.esastack.restlight.core.annotation.Serializer;
-import io.esastack.restlight.core.handler.method.HandlerMethod;
-import io.esastack.restlight.core.handler.method.MethodParam;
+import io.esastack.restlight.core.context.HttpRequest;
+import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.context.RequestEntity;
 import io.esastack.restlight.core.context.RequestEntityImpl;
-import io.esastack.restlight.core.resolver.entity.request.RequestEntityResolver;
+import io.esastack.restlight.core.context.impl.RequestContextImpl;
+import io.esastack.restlight.core.handler.method.HandlerMethod;
+import io.esastack.restlight.core.handler.method.MethodParam;
+import io.esastack.restlight.core.mock.MockHttpRequest;
+import io.esastack.restlight.core.mock.MockHttpResponse;
 import io.esastack.restlight.core.resolver.entity.request.FixedRequestEntityResolverFactory;
+import io.esastack.restlight.core.resolver.entity.request.RequestEntityResolver;
 import io.esastack.restlight.core.resolver.entity.request.RequestEntityResolverContext;
 import io.esastack.restlight.core.resolver.entity.request.RequestEntityResolverContextImpl;
 import io.esastack.restlight.core.serialize.HttpRequestSerializer;
@@ -32,15 +36,9 @@ import io.esastack.restlight.core.serialize.JacksonHttpBodySerializer;
 import io.esastack.restlight.core.serialize.JacksonSerializer;
 import io.esastack.restlight.jaxrs.resolver.Pojo;
 import io.esastack.restlight.jaxrs.resolver.ResolverUtils;
-import io.esastack.restlight.core.context.RequestContext;
-import io.esastack.restlight.core.context.impl.RequestContextImpl;
-import io.esastack.restlight.core.context.HttpRequest;
-import io.esastack.restlight.core.mock.MockHttpRequest;
-import io.esastack.restlight.core.mock.MockHttpResponse;
 import io.netty.handler.codec.http.HttpHeaderNames;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 
 import java.util.Collections;
 import java.util.Map;
@@ -102,7 +100,7 @@ class FixedRequestEntityResolverFactoryImplTest {
         final RequestContext context = new RequestContextImpl(request, MockHttpResponse.aMockResponse().build());
         final RequestEntity entity = new RequestEntityImpl(param, context);
         final RequestEntityResolverContext resolverContext =
-                new RequestEntityResolverContextImpl(Mockito.mock(DeployContext.class), context, entity);
+                new RequestEntityResolverContextImpl(context, entity);
         return resolver.resolve(resolverContext).get();
     }
 

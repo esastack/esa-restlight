@@ -16,33 +16,30 @@
 package io.esastack.restlight.springmvc.resolver.reqentity;
 
 import io.esastack.commons.net.http.MediaType;
-import io.esastack.restlight.core.DeployContext;
-import io.esastack.restlight.core.DeployContextImpl;
-import io.esastack.restlight.core.handler.method.HandlerMethod;
-import io.esastack.restlight.core.handler.method.MethodParam;
+import io.esastack.restlight.core.context.HttpRequest;
+import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.context.RequestEntity;
 import io.esastack.restlight.core.context.RequestEntityImpl;
-import io.esastack.restlight.core.resolver.entity.request.RequestEntityResolver;
+import io.esastack.restlight.core.context.impl.RequestContextImpl;
+import io.esastack.restlight.core.exception.WebServerException;
+import io.esastack.restlight.core.handler.method.HandlerMethod;
+import io.esastack.restlight.core.handler.method.MethodParam;
+import io.esastack.restlight.core.mock.MockHttpRequest;
+import io.esastack.restlight.core.mock.MockHttpResponse;
 import io.esastack.restlight.core.resolver.entity.request.FlexibleRequestEntityResolverFactory;
+import io.esastack.restlight.core.resolver.entity.request.RequestEntityResolver;
 import io.esastack.restlight.core.resolver.entity.request.RequestEntityResolverContext;
 import io.esastack.restlight.core.resolver.entity.request.RequestEntityResolverContextImpl;
 import io.esastack.restlight.core.serialize.GsonHttpBodySerializer;
 import io.esastack.restlight.core.serialize.HttpRequestSerializer;
 import io.esastack.restlight.core.serialize.JacksonHttpBodySerializer;
 import io.esastack.restlight.core.serialize.JacksonSerializer;
-import io.esastack.restlight.core.exception.WebServerException;
-import io.esastack.restlight.core.context.RequestContext;
-import io.esastack.restlight.core.context.impl.RequestContextImpl;
-import io.esastack.restlight.core.context.HttpRequest;
-import io.esastack.restlight.core.mock.MockHttpRequest;
-import io.esastack.restlight.core.mock.MockHttpResponse;
 import io.esastack.restlight.springmvc.annotation.shaded.RequestBody0;
 import io.esastack.restlight.springmvc.resolver.Pojo;
 import io.esastack.restlight.springmvc.resolver.ResolverUtils;
 import io.netty.handler.codec.http.HttpHeaderNames;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.Arrays;
@@ -165,8 +162,7 @@ class FlexibleRequestEntityResolverFactoryImplTest {
                 .build();
         final RequestContext context = new RequestContextImpl(request,
                 MockHttpResponse.aMockResponse().build());
-        final DeployContext deployContext = Mockito.mock(DeployContext.class);
-        RequestEntityResolverContext resolverContext = new RequestEntityResolverContextImpl(deployContext, context,
+        RequestEntityResolverContext resolverContext = new RequestEntityResolverContextImpl(context,
                 new RequestEntityImpl(param, context));
         final Object resolvedWithJson = resolver.resolve(resolverContext).get();
         assertEquals(origin, resolvedWithJson);
@@ -178,8 +174,7 @@ class FlexibleRequestEntityResolverFactoryImplTest {
                 .build();
         final RequestContext context2 = new RequestContextImpl(request2,
                 MockHttpResponse.aMockResponse().build());
-        final DeployContext deployContext2 = Mockito.mock(DeployContext.class);
-        RequestEntityResolverContext resolverContext2 = new RequestEntityResolverContextImpl(deployContext2, context2,
+        RequestEntityResolverContext resolverContext2 = new RequestEntityResolverContextImpl(context2,
                 new RequestEntityImpl(param, context2));
         final Object resolvedWithXml = resolver.resolve(resolverContext2).get();
         assertEquals(origin, resolvedWithXml);
@@ -194,8 +189,7 @@ class FlexibleRequestEntityResolverFactoryImplTest {
 
         final RequestContext context = new RequestContextImpl(request,
                 MockHttpResponse.aMockResponse().build());
-        final DeployContext deployContext = Mockito.mock(DeployContext.class);
-        RequestEntityResolverContext resolverContext = new RequestEntityResolverContextImpl(deployContext, context,
+        RequestEntityResolverContext resolverContext = new RequestEntityResolverContextImpl(context,
                 new RequestEntityImpl(param, context));
         return resolver.resolve(resolverContext).get();
     }

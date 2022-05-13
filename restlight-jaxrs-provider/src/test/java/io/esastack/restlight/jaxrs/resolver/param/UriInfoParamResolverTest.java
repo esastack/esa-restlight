@@ -15,18 +15,20 @@
  */
 package io.esastack.restlight.jaxrs.resolver.param;
 
+import io.esastack.restlight.core.context.HttpRequest;
+import io.esastack.restlight.core.context.HttpResponse;
+import io.esastack.restlight.core.context.RequestContext;
+import io.esastack.restlight.core.context.impl.RequestContextImpl;
 import io.esastack.restlight.core.handler.method.ConstructorParamImpl;
 import io.esastack.restlight.core.handler.method.FieldParamImpl;
 import io.esastack.restlight.core.handler.method.MethodParamImpl;
 import io.esastack.restlight.core.handler.method.Param;
-import io.esastack.restlight.core.resolver.param.ParamResolver;
-import io.esastack.restlight.jaxrs.resolver.ResolverUtils;
-import io.esastack.restlight.core.context.RequestContext;
-import io.esastack.restlight.core.context.impl.RequestContextImpl;
-import io.esastack.restlight.core.context.HttpRequest;
-import io.esastack.restlight.core.context.HttpResponse;
 import io.esastack.restlight.core.mock.MockHttpRequest;
 import io.esastack.restlight.core.mock.MockHttpResponse;
+import io.esastack.restlight.core.resolver.param.ParamResolver;
+import io.esastack.restlight.core.resolver.param.ParamResolverContext;
+import io.esastack.restlight.core.resolver.param.ParamResolverContextImpl;
+import io.esastack.restlight.jaxrs.resolver.ResolverUtils;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.UriInfo;
 import org.junit.jupiter.api.Test;
@@ -57,8 +59,9 @@ class UriInfoParamResolverTest {
         final HttpRequest request = MockHttpRequest.aMockRequest().build();
         final HttpResponse response = MockHttpResponse.aMockResponse().build();
         final RequestContext ctx = new RequestContextImpl(request, response);
-        final UriInfo uriInfo1 = (UriInfo) resolver.resolve(ctx);
-        final UriInfo uriInfo2 = (UriInfo) resolver.resolve(ctx);
+        final ParamResolverContext resolverContext = new ParamResolverContextImpl(ctx);
+        final UriInfo uriInfo1 = (UriInfo) resolver.resolve(resolverContext);
+        final UriInfo uriInfo2 = (UriInfo) resolver.resolve(resolverContext);
         assertNotNull(uriInfo1);
         assertSame(uriInfo1, uriInfo2);
     }

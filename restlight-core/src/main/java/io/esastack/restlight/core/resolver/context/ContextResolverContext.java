@@ -14,29 +14,16 @@
  * limitations under the License.
  */
 
-package io.esastack.restlight.core.resolver;
+package io.esastack.restlight.core.resolver.context;
 
 import io.esastack.restlight.core.DeployContext;
-import io.esastack.restlight.core.context.RequestContext;
+import io.esastack.restlight.core.resolver.ResolverContext;
 
-public final class ResolverContextImpl implements ResolverContext {
+public interface ContextResolverContext extends ResolverContext {
 
-    private final RequestContext requestContext;
-
-    private final DeployContext deployContext;
-
-    public ResolverContextImpl(RequestContext requestContext, DeployContext deployContext) {
-        this.requestContext = requestContext;
-        this.deployContext = deployContext;
-    }
-
-    @Override
-    public RequestContext requestContext() {
-        return requestContext;
-    }
-
-    @Override
-    public DeployContext deployContext() {
-        return deployContext;
-    }
+    /**
+     *
+     * Obtains the {@link DeployContext} to resolve.
+     */
+    DeployContext deployContext();
 }

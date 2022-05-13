@@ -28,9 +28,9 @@ import io.esastack.restlight.core.handler.method.HandlerMethod;
 import io.esastack.restlight.core.handler.method.HandlerMethodAdapter;
 import io.esastack.restlight.core.handler.method.MethodParam;
 import io.esastack.restlight.core.handler.method.ResolvableParam;
+import io.esastack.restlight.core.resolver.AdvisedResolverContextImpl;
 import io.esastack.restlight.core.resolver.Resolver;
 import io.esastack.restlight.core.resolver.ResolverContext;
-import io.esastack.restlight.core.resolver.ResolverContextImpl;
 import io.esastack.restlight.core.route.Execution;
 import io.esastack.restlight.core.util.Futures;
 
@@ -95,6 +95,7 @@ abstract class AbstractExecution<H extends HandlerMethodAdapter> implements Exec
         final ResolvableParam<MethodParam, Resolver>[] params = handlerMethod.paramResolvers();
         final Object[] args = new Object[params.length];
         //resolve parameters one by one
+        ResolverContext resolverContext = new AdvisedResolverContextImpl(context, handlerMethod.context());
         for (int i = 0; i < params.length; i++) {
             ResolvableParam<MethodParam, Resolver> resolvable = params[i];
             final MethodParam param = resolvable.param();
@@ -104,7 +105,6 @@ abstract class AbstractExecution<H extends HandlerMethodAdapter> implements Exec
                 if (resolvable.resolver() != null) {
                     //it may return a null value
                     try {
-                        ResolverContext resolverContext = new ResolverContextImpl(context, handlerMethod.context());
                         args[i] = resolvable.resolver().resolve(resolverContext);
                     } catch (Exception e) {
                         //wrap exception

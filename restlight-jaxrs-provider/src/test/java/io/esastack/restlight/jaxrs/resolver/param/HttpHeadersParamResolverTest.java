@@ -15,18 +15,19 @@
  */
 package io.esastack.restlight.jaxrs.resolver.param;
 
+import io.esastack.restlight.core.context.HttpRequest;
+import io.esastack.restlight.core.context.HttpResponse;
+import io.esastack.restlight.core.context.RequestContext;
+import io.esastack.restlight.core.context.impl.RequestContextImpl;
 import io.esastack.restlight.core.handler.method.ConstructorParamImpl;
 import io.esastack.restlight.core.handler.method.FieldParamImpl;
 import io.esastack.restlight.core.handler.method.MethodParamImpl;
 import io.esastack.restlight.core.handler.method.Param;
-import io.esastack.restlight.core.resolver.param.ParamResolver;
-import io.esastack.restlight.jaxrs.resolver.ResolverUtils;
-import io.esastack.restlight.core.context.RequestContext;
-import io.esastack.restlight.core.context.impl.RequestContextImpl;
-import io.esastack.restlight.core.context.HttpRequest;
-import io.esastack.restlight.core.context.HttpResponse;
 import io.esastack.restlight.core.mock.MockHttpRequest;
 import io.esastack.restlight.core.mock.MockHttpResponse;
+import io.esastack.restlight.core.resolver.param.ParamResolver;
+import io.esastack.restlight.core.resolver.param.ParamResolverContextImpl;
+import io.esastack.restlight.jaxrs.resolver.ResolverUtils;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.HttpHeaders;
 import org.junit.jupiter.api.Test;
@@ -59,7 +60,7 @@ class HttpHeadersParamResolverTest {
         request.headers().add("name0", "value0");
         request.headers().add("name1", "value1");
 
-        final HttpHeaders resolved = (HttpHeaders) resolver.resolve(context);
+        final HttpHeaders resolved = (HttpHeaders) resolver.resolve(new ParamResolverContextImpl(context));
         assertEquals(2, resolved.getRequestHeaders().size());
         assertEquals("value0", resolved.getHeaderString("name0"));
         assertEquals("value1", resolved.getHeaderString("name1"));

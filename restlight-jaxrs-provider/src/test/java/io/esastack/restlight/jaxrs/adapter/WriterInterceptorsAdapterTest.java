@@ -18,7 +18,6 @@ package io.esastack.restlight.jaxrs.adapter;
 import esa.commons.collection.AttributeKey;
 import esa.commons.collection.AttributeMap;
 import esa.commons.collection.Attributes;
-import io.esastack.restlight.core.DeployContext;
 import io.esastack.restlight.core.context.HttpRequest;
 import io.esastack.restlight.core.context.HttpResponse;
 import io.esastack.restlight.core.context.RequestContext;
@@ -97,11 +96,6 @@ class WriterInterceptorsAdapterTest {
             @Override
             public RequestContext requestContext() {
                 return context;
-            }
-
-            @Override
-            public DeployContext deployContext() {
-                return null;
             }
         };
 

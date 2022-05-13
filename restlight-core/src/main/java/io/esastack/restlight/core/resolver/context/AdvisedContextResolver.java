@@ -16,10 +16,10 @@
 package io.esastack.restlight.core.resolver.context;
 
 import esa.commons.Checks;
+import io.esastack.restlight.core.resolver.AdvisedResolverContext;
 import io.esastack.restlight.core.resolver.Resolver;
-import io.esastack.restlight.core.resolver.ResolverContext;
 
-public class AdvisedContextResolver implements Resolver<ResolverContext> {
+public class AdvisedContextResolver implements Resolver<AdvisedResolverContext> {
 
     private final ContextResolver underlying;
 
@@ -29,8 +29,8 @@ public class AdvisedContextResolver implements Resolver<ResolverContext> {
     }
 
     @Override
-    public Object resolve(ResolverContext context) throws Exception {
-        return underlying.resolve(context.deployContext());
+    public Object resolve(AdvisedResolverContext context) throws Exception {
+        return underlying.resolve(new ContextResolverContextImpl(context.deployContext()));
     }
 }
 

@@ -16,28 +16,18 @@
 package io.esastack.restlight.core.resolver.entity.request;
 
 import esa.commons.Checks;
-import io.esastack.restlight.core.DeployContext;
 import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.context.RequestEntity;
-import io.esastack.restlight.core.resolver.ResolverContext;
 
 public class RequestEntityResolverContextImpl implements RequestEntityResolverContext {
 
-    private final DeployContext deployContext;
     private final RequestContext requestContext;
     private final RequestEntity entity;
 
-    public RequestEntityResolverContextImpl(ResolverContext resolverContext,
-                                            RequestEntity requestEntity) {
-        this(resolverContext.deployContext(), resolverContext.requestContext(), requestEntity);
-    }
-
-    public RequestEntityResolverContextImpl(DeployContext deployContext,
-                                            RequestContext requestContext,
+    public RequestEntityResolverContextImpl(RequestContext requestContext,
                                             RequestEntity entity) {
         Checks.checkNotNull(requestContext, "requestContext");
         Checks.checkNotNull(entity, "entity");
-        this.deployContext = deployContext;
         this.requestContext = requestContext;
         this.entity = entity;
     }
@@ -50,11 +40,6 @@ public class RequestEntityResolverContextImpl implements RequestEntityResolverCo
     @Override
     public RequestContext requestContext() {
         return requestContext;
-    }
-
-    @Override
-    public DeployContext deployContext() {
-        return deployContext;
     }
 }
 

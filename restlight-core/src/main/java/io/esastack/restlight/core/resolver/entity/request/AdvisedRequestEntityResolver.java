@@ -16,16 +16,17 @@
 package io.esastack.restlight.core.resolver.entity.request;
 
 import esa.commons.Checks;
+import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.context.RequestEntity;
 import io.esastack.restlight.core.context.RequestEntityImpl;
 import io.esastack.restlight.core.handler.method.Param;
+import io.esastack.restlight.core.resolver.AdvisedResolverContext;
 import io.esastack.restlight.core.resolver.Resolver;
-import io.esastack.restlight.core.resolver.ResolverContext;
 import io.esastack.restlight.core.resolver.entity.EntityResolverExecutor;
 
 import java.util.List;
 
-public class AdvisedRequestEntityResolver implements Resolver<ResolverContext> {
+public class AdvisedRequestEntityResolver implements Resolver<AdvisedResolverContext> {
 
     private final Param param;
     private final RequestEntityResolver[] resolvers;
@@ -41,11 +42,12 @@ public class AdvisedRequestEntityResolver implements Resolver<ResolverContext> {
     }
 
     @Override
-    public Object resolve(ResolverContext context) throws Exception {
-        RequestEntity entity = new RequestEntityImpl(param, context.requestContext());
-        RequestEntityResolverContext resolverContext = new RequestEntityResolverContextImpl(context, entity);
+    public Object resolve(AdvisedResolverContext context) throws Exception {
+        RequestContext requestContext = context.requestContext();
+        RequestEntity entity = new RequestEntityImpl(param, requestContext);
+        RequestEntityResolverContext resolverContext = new RequestEntityResolverContextImpl(requestContext, entity);
         String unSupportMsg = "There is no suitable resolver to resolve param: " + param
-                + ", content-type: " + context.requestContext().request().contentType();
+                + ", content-type: " + requestContext.request().contentType();
         return new EntityResolverExecutor(resolverContext, resolvers, advices, unSupportMsg).proceed();
     }
 }

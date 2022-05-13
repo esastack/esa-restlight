@@ -17,6 +17,7 @@ package io.esastack.restlight.ext.multipart.spi;
 
 import io.esastack.restlight.core.handler.method.MethodParam;
 import io.esastack.restlight.core.resolver.param.ParamResolver;
+import io.esastack.restlight.core.resolver.param.ParamResolverContextImpl;
 import io.esastack.restlight.ext.multipart.core.MultipartFile;
 import io.esastack.restlight.core.exception.WebServerException;
 import io.esastack.restlight.core.context.impl.RequestContextImpl;
@@ -40,8 +41,8 @@ class MultipartFileParamResolverTest extends AbstractMultipartResolverTest {
         AbstractMultipartParamResolver factory = fileResolver.createResolver(fileResolver.buildFactory(config));
         assertTrue(factory.supports(param));
         final ParamResolver resolver = factory.createResolver(param, key -> null, null);
-        return resolver.resolve(new RequestContextImpl(request,
-                MockHttpResponse.aMockResponse().build()));
+        return resolver.resolve(new ParamResolverContextImpl(new RequestContextImpl(request,
+                MockHttpResponse.aMockResponse().build())));
     }
 
     private static Object createFormResolverAndResolve(HttpRequest request,
@@ -51,7 +52,8 @@ class MultipartFileParamResolverTest extends AbstractMultipartResolverTest {
         AbstractMultipartParamResolver factory = attrResolver.createResolver(attrResolver.buildFactory(config));
         assertTrue(factory.supports(param));
         final ParamResolver resolver = factory.createResolver(param, defaultConverters(param), null);
-        return resolver.resolve(new RequestContextImpl(request, MockHttpResponse.aMockResponse().build()));
+        return resolver.resolve(new ParamResolverContextImpl(
+                new RequestContextImpl(request, MockHttpResponse.aMockResponse().build())));
     }
 
     @Test

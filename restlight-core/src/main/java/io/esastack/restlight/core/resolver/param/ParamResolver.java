@@ -15,7 +15,6 @@
  */
 package io.esastack.restlight.core.resolver.param;
 
-import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.handler.method.Param;
 import io.esastack.restlight.core.resolver.Resolver;
 
@@ -25,10 +24,6 @@ import io.esastack.restlight.core.resolver.Resolver;
 public interface ParamResolver extends Resolver<ParamResolverContext> {
 
     @Override
-    default Object resolve(ParamResolverContext context) throws Exception {
-        return resolve(context.requestContext());
-    }
-
-    Object resolve(RequestContext requestContext) throws Exception;
+    Object resolve(ParamResolverContext context) throws Exception;
 }
 

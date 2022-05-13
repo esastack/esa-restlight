@@ -23,7 +23,7 @@ import io.esastack.restlight.core.resolver.context.ContextResolver;
 import io.esastack.restlight.core.resolver.entity.request.AdvisedRequestEntityResolver;
 import io.esastack.restlight.core.resolver.entity.request.RequestEntityResolver;
 import io.esastack.restlight.core.resolver.factory.HandlerResolverFactory;
-import io.esastack.restlight.core.resolver.param.AdvisedHttpParamResolver;
+import io.esastack.restlight.core.resolver.param.AdvisedParamResolver;
 import io.esastack.restlight.core.resolver.param.ParamResolver;
 import io.esastack.restlight.core.util.RouteUtils;
 
@@ -118,7 +118,7 @@ public class HandlerMethodAdapter<H extends HandlerMethod> implements HandlerMet
         } else {
             ParamResolver paramResolver = factory.getParamResolver(param);
             if (paramResolver != null) {
-                return new ResolvableParam<>(param, new AdvisedHttpParamResolver(paramResolver,
+                return new ResolvableParam<>(param, new AdvisedParamResolver(paramResolver,
                         factory.getParamResolverAdvices(param, paramResolver)));
             } else {
                 List<RequestEntityResolver> requestEntityResolvers = factory.getRequestEntityResolvers(param);

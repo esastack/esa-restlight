@@ -18,8 +18,16 @@ package io.esastack.restlight.core.resolver;
 
 import esa.commons.annotation.Internal;
 
+/**
+ * the cut point around the {@link Resolver#resolve(ResolverContext)}.
+ * 
+ * @param <C> context
+ */
 @Internal
 public interface ResolverAdvice<C extends ResolverContext> {
 
+    /**
+     * around the {@link Resolver#resolve(ResolverContext)}
+     */
     Object aroundResolve(ResolverExecutor<C> executor) throws Exception;
 }

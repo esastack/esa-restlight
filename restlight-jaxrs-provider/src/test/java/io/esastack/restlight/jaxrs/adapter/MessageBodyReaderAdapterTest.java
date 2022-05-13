@@ -18,11 +18,10 @@ package io.esastack.restlight.jaxrs.adapter;
 import esa.commons.Result;
 import io.esastack.commons.net.http.MediaType;
 import io.esastack.commons.net.netty.http.Http1HeadersImpl;
-import io.esastack.restlight.core.DeployContext;
-import io.esastack.restlight.core.handler.method.Param;
-import io.esastack.restlight.core.context.RequestEntity;
-import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.context.HttpRequest;
+import io.esastack.restlight.core.context.RequestContext;
+import io.esastack.restlight.core.context.RequestEntity;
+import io.esastack.restlight.core.handler.method.Param;
 import io.esastack.restlight.core.resolver.entity.request.RequestEntityResolverContext;
 import io.esastack.restlight.core.resolver.entity.request.RequestEntityResolverContextImpl;
 import jakarta.ws.rs.WebApplicationException;
@@ -30,7 +29,6 @@ import jakarta.ws.rs.core.MultivaluedMap;
 import jakarta.ws.rs.ext.MessageBodyReader;
 import jakarta.ws.rs.ext.Providers;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 
 import java.io.InputStream;
 import java.lang.annotation.Annotation;
@@ -61,11 +59,10 @@ class MessageBodyReaderAdapterTest {
         final RequestEntity entity = mock(RequestEntity.class);
         final RequestContext context = mock(RequestContext.class);
         final HttpRequest request = mock(HttpRequest.class);
-        final DeployContext deployContext = mock(DeployContext.class);
         when(context.request()).thenReturn(request);
         when(request.headers()).thenReturn(new Http1HeadersImpl());
         RequestEntityResolverContext resolverContext =
-                new RequestEntityResolverContextImpl(deployContext, context, entity);
+                new RequestEntityResolverContextImpl(context, entity);
         MessageBodyReaderAdapter<?> adapter = new MessageBodyReaderAdapter<>(providers);
         assertFalse(adapter.resolve(resolverContext).isOk());
 

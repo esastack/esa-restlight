@@ -36,6 +36,7 @@ import io.esastack.restlight.core.resolver.factory.HandlerResolverFactoryImpl;
 import io.esastack.restlight.core.resolver.param.ParamResolver;
 import io.esastack.restlight.core.resolver.exception.ExceptionMapper;
 import io.esastack.restlight.core.resolver.exception.ExceptionResolverFactory;
+import io.esastack.restlight.core.resolver.param.ParamResolverContextImpl;
 import io.esastack.restlight.core.serialize.JacksonHttpBodySerializer;
 import io.esastack.restlight.core.spi.impl.DefaultStringConverterFactory;
 import io.esastack.restlight.core.util.Constants;
@@ -110,7 +111,7 @@ class BeanParamResolverTest {
                 param.method(), StringUtils.empty()).get().path()).test(context);
         final ParamResolver resolver = resolverFactory.createResolver(param,
                 ResolverUtils.defaultConverters(param), null);
-        return resolver.resolve(context);
+        return resolver.resolve(new ParamResolverContextImpl(context));
     }
 
     private static class Subject {
