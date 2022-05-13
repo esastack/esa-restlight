@@ -16,17 +16,19 @@
 
 package io.esastack.restlight.core.resolver;
 
-import esa.commons.annotation.Beta;
 import esa.commons.annotation.Internal;
-import io.esastack.restlight.core.DeployContext;
-import io.esastack.restlight.core.context.RequestContext;
 
+/**
+ * {@link ResolverContext} provide work context for the {@link Resolver} and {@link ResolverExecutor},
+ * Here are two types context:
+ *  1.{@link AdvisedResolverContext}: mainly for bridging the context from workflow and real resolver.
+ *    like {@link io.esastack.restlight.core.resolver.context.AdvisedContextResolver},
+ *    {@link io.esastack.restlight.core.resolver.param.AdvisedParamResolver},
+ *    {@link io.esastack.restlight.core.resolver.entity.request.AdvisedRequestEntityResolver}
+ *  2.{@link io.esastack.restlight.core.resolver.param.ParamResolverContext} and
+ *    {@link io.esastack.restlight.core.resolver.entity.EntityResolverContext}: mainly for provide
+ *    the context for real resolvers.
+ */
 @Internal
 public interface ResolverContext {
-
-    RequestContext requestContext();
-
-    @Internal
-    @Beta
-    DeployContext deployContext();
 }
