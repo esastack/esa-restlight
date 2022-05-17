@@ -16,7 +16,7 @@
 package io.esastack.restlight.jaxrs.impl.ext;
 
 import io.esastack.restlight.core.resolver.ResolverExecutor;
-import io.esastack.restlight.core.resolver.entity.request.RequestEntityResolverContext;
+import io.esastack.restlight.core.resolver.param.ParamResolverContext;
 import io.esastack.restlight.jaxrs.impl.core.ModifiableMultivaluedMap;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.MultivaluedMap;
@@ -28,15 +28,15 @@ import java.io.InputStream;
 
 public class ReaderInterceptorContextImpl extends InterceptorContextImpl implements ReaderInterceptorContext {
 
-    private final ResolverExecutor<RequestEntityResolverContext> underlying;
+    private final ResolverExecutor<ParamResolverContext> underlying;
 
     private final ReaderInterceptor[] interceptors;
     private final int interceptorsSize;
     private int index;
 
-    public ReaderInterceptorContextImpl(ResolverExecutor<RequestEntityResolverContext> underlying,
+    public ReaderInterceptorContextImpl(ResolverExecutor<ParamResolverContext> underlying,
                                         ReaderInterceptor[] interceptors) {
-        super(underlying.context());
+        super(underlying.context().requestContext(), underlying.context().httpEntity());
         this.underlying = underlying;
         this.interceptors = interceptors;
         this.interceptorsSize = interceptors != null ? interceptors.length : 0;

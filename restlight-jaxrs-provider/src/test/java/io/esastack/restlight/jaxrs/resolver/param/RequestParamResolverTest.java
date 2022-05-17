@@ -58,7 +58,7 @@ class RequestParamResolverTest {
         final HttpResponse response = MockHttpResponse.aMockResponse().build();
         final RequestContext context = new RequestContextImpl(request, response);
 
-        final Request resolved = (Request) resolver.resolve(new ParamResolverContextImpl(context));
+        final Request resolved = (Request) resolver.resolve(new ParamResolverContextImpl(context, param));
         assertEquals(HttpMethod.GET.name(), resolved.getMethod());
     }
 

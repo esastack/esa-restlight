@@ -23,4 +23,8 @@ import io.esastack.restlight.core.resolver.ResolverAdvice;
  * {@link RequestContext} and customizing the argument resoled from {@link RequestContext}.
  */
 public interface ParamResolverAdvice extends ResolverAdvice<ParamResolverContext> {
+
+    default boolean isEntityAdvice() {
+        return false;
+    }
 }

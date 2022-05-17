@@ -16,15 +16,11 @@
 package io.esastack.restlight.jaxrs.adapter;
 
 import esa.commons.collection.AttributeMap;
-import io.esastack.restlight.core.DeployContext;
 import io.esastack.restlight.core.context.ResponseEntity;
 import io.esastack.restlight.core.context.ResponseEntityChannel;
 import io.esastack.restlight.core.context.ResponseEntityImpl;
-import io.esastack.restlight.core.resolver.ResolverContext;
 import io.esastack.restlight.core.resolver.ResolverExecutor;
-import io.esastack.restlight.core.resolver.entity.EntityResolver;
-import io.esastack.restlight.core.resolver.entity.EntityResolverExecutor;
-import io.esastack.restlight.core.resolver.entity.response.ResponseEntityResolverContext;
+import io.esastack.restlight.core.resolver.ret.entity.ResponseEntityResolverContext;
 import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.context.impl.RequestContextImpl;
 import io.esastack.restlight.core.context.HttpRequest;

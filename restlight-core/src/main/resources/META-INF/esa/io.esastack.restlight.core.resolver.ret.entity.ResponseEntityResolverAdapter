@@ -1,0 +1,5 @@
+io.esastack.restlight.core.resolver.ret.entity.ByteArrayResponseEntityResolver
+io.esastack.restlight.core.resolver.ret.entity.ByteBufResponseEntityResolver
+io.esastack.restlight.core.resolver.ret.entity.CharSequenceResponseEntityResolver
+io.esastack.restlight.core.resolver.ret.entity.PrimitiveResponseEntityResolver
+io.esastack.restlight.core.resolver.ret.entity.ResponseFileEntityResolver

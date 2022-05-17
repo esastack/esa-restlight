@@ -86,7 +86,7 @@ public class DynamicFeatureAdapter implements HandlerConfigure {
         List<OrderComponent<ReaderInterceptor>> readerInterceptors = filterByNameBindings(handlerMethod,
                 providers.readerInterceptors(), false);
         if (!readerInterceptors.isEmpty()) {
-            configurable.addRequestEntityResolverAdvice(new ReaderInterceptorsAdapter(
+            configurable.addParamResolverAdvice(new ReaderInterceptorsAdapter(
                     ascendingOrdered(readerInterceptors).toArray(new ReaderInterceptor[0]),
                     ProvidersPredicate.BINDING_HANDLER));
         }

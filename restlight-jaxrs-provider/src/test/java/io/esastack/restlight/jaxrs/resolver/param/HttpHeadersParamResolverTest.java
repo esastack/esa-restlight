@@ -60,7 +60,7 @@ class HttpHeadersParamResolverTest {
         request.headers().add("name0", "value0");
         request.headers().add("name1", "value1");
 
-        final HttpHeaders resolved = (HttpHeaders) resolver.resolve(new ParamResolverContextImpl(context));
+        final HttpHeaders resolved = (HttpHeaders) resolver.resolve(new ParamResolverContextImpl(context, param));
         assertEquals(2, resolved.getRequestHeaders().size());
         assertEquals("value0", resolved.getHeaderString("name0"));
         assertEquals("value1", resolved.getHeaderString("name1"));

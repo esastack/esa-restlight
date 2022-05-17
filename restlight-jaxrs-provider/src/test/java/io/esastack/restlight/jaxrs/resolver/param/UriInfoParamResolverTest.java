@@ -59,7 +59,7 @@ class UriInfoParamResolverTest {
         final HttpRequest request = MockHttpRequest.aMockRequest().build();
         final HttpResponse response = MockHttpResponse.aMockResponse().build();
         final RequestContext ctx = new RequestContextImpl(request, response);
-        final ParamResolverContext resolverContext = new ParamResolverContextImpl(ctx);
+        final ParamResolverContext resolverContext = new ParamResolverContextImpl(ctx, param);
         final UriInfo uriInfo1 = (UriInfo) resolver.resolve(resolverContext);
         final UriInfo uriInfo2 = (UriInfo) resolver.resolve(resolverContext);
         assertNotNull(uriInfo1);

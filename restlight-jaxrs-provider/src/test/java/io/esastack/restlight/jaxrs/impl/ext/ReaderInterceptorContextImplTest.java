@@ -17,13 +17,15 @@ package io.esastack.restlight.jaxrs.impl.ext;
 
 import esa.commons.collection.AttributeMap;
 import io.esastack.commons.net.netty.http.Http1HeadersImpl;
+import io.esastack.restlight.core.context.HttpEntity;
 import io.esastack.restlight.core.context.HttpRequest;
 import io.esastack.restlight.core.context.HttpResponse;
 import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.context.RequestEntity;
 import io.esastack.restlight.core.context.impl.RequestContextImpl;
+import io.esastack.restlight.core.handler.method.Param;
 import io.esastack.restlight.core.resolver.ResolverExecutor;
-import io.esastack.restlight.core.resolver.entity.request.RequestEntityResolverContext;
+import io.esastack.restlight.core.resolver.param.ParamResolverContext;
 import jakarta.ws.rs.ext.ReaderInterceptor;
 import jakarta.ws.rs.ext.ReaderInterceptorContext;
 import org.junit.jupiter.api.Test;
@@ -49,7 +51,10 @@ class ReaderInterceptorContextImplTest {
         assertThrows(NullPointerException.class, () -> new ReaderInterceptorContextImpl(null,
                 new ReaderInterceptor[0]));
         ResolverExecutor mockExecutor = mock(ResolverExecutor.class);
-        when(mockExecutor.context()).thenReturn(mock(RequestEntityResolverContext.class));
+        ParamResolverContext resolverContext = mock(ParamResolverContext.class);
+        when(resolverContext.requestContext()).thenReturn(mock(RequestContext.class));
+        when(resolverContext.httpEntity()).thenReturn(mock(RequestEntity.class));
+        when(mockExecutor.context()).thenReturn(resolverContext);
         assertDoesNotThrow(() -> new ReaderInterceptorContextImpl(mockExecutor, null));
 
         final HttpRequest request = mock(HttpRequest.class);
@@ -58,7 +63,12 @@ class ReaderInterceptorContextImplTest {
         final RequestEntity entity = mock(RequestEntity.class);
 
         final AtomicInteger count = new AtomicInteger();
-        final RequestEntityResolverContext underlying = new RequestEntityResolverContext() {
+        final ParamResolverContext underlying = new ParamResolverContext() {
+            @Override
+            public Param param() {
+                return null;
+            }
+
             @Override
             public RequestContext requestContext() {
                 return context0;
@@ -69,10 +79,10 @@ class ReaderInterceptorContextImplTest {
                 return entity;
             }
         };
-        final ResolverExecutor<RequestEntityResolverContext> executor =
-                new ResolverExecutor<RequestEntityResolverContext>() {
+        final ResolverExecutor<ParamResolverContext> executor =
+                new ResolverExecutor<ParamResolverContext>() {
                     @Override
-                    public RequestEntityResolverContext context() {
+                    public ParamResolverContext context() {
                         return underlying;
                     }
 

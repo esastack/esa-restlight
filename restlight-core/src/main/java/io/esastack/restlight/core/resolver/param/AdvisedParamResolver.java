@@ -15,30 +15,26 @@
  */
 package io.esastack.restlight.core.resolver.param;
 
-import io.esastack.restlight.core.resolver.AdvisedResolverContext;
+import esa.commons.Checks;
 import io.esastack.restlight.core.resolver.Resolver;
 
 import java.util.List;
 
-public class AdvisedParamResolver implements Resolver<AdvisedResolverContext> {
+public class AdvisedParamResolver implements Resolver<ParamResolverContext> {
 
-    private final ParamResolver resolver;
-    private final List<ParamResolverAdvice> advices;
-    private final boolean absentAdvices;
+    private final ParamResolver[] resolvers;
+    private final ParamResolverAdvice[] advices;
 
-    public AdvisedParamResolver(ParamResolver resolver, List<ParamResolverAdvice> advices) {
-        this.resolver = resolver;
-        this.absentAdvices = (advices == null || advices.isEmpty());
-        this.advices = advices;
+    public AdvisedParamResolver(List<ParamResolver> resolvers, List<ParamResolverAdvice> advices) {
+        Checks.checkNotNull(resolvers, "resolvers");
+        Checks.checkNotNull(advices, "advices");
+        this.resolvers = resolvers.toArray(new ParamResolver[0]);
+        this.advices = advices.toArray(new ParamResolverAdvice[0]);
     }
 
     @Override
-    public Object resolve(AdvisedResolverContext context) throws Exception {
-        ParamResolverContext resolverContext = new ParamResolverContextImpl(context.requestContext());
-        if (absentAdvices) {
-            return resolver.resolve(resolverContext);
-        }
-        return new ParamResolverExecutor(resolverContext, resolver, advices).proceed();
+    public Object resolve(ParamResolverContext context) throws Exception {
+        return new ParamResolverExecutor(context, resolvers, advices).proceed();
     }
 }
 

@@ -26,6 +26,7 @@ import io.esastack.restlight.core.deploy.ExtensionsHandler;
 import io.esastack.restlight.core.deploy.MiniConfigurableDeployments;
 import io.esastack.restlight.core.handler.method.ResolvableParamPredicate;
 import io.esastack.restlight.core.util.ConstructorUtils;
+import io.esastack.restlight.core.util.LoggerUtils;
 import io.esastack.restlight.jaxrs.adapter.DynamicFeatureAdapter;
 import io.esastack.restlight.jaxrs.adapter.JaxrsContextResolverFactory;
 import io.esastack.restlight.jaxrs.adapter.JaxrsExceptionMapperAdapter;
@@ -48,7 +49,6 @@ import io.esastack.restlight.jaxrs.resolver.context.ProvidersResolverAdapter;
 import io.esastack.restlight.jaxrs.resolver.param.ResourceContextParamResolver;
 import io.esastack.restlight.jaxrs.spi.HeaderDelegateFactory;
 import io.esastack.restlight.jaxrs.util.JaxrsUtils;
-import io.esastack.restlight.core.util.LoggerUtils;
 import jakarta.ws.rs.ApplicationPath;
 import jakarta.ws.rs.container.ContainerRequestFilter;
 import jakarta.ws.rs.container.ContainerResponseFilter;
@@ -229,7 +229,7 @@ public class JaxrsExtensionsHandler implements ExtensionsHandler {
             }
         }
 
-        deployments.addRequestEntityResolver(new MessageBodyReaderAdapter<>(providers));
+        deployments.addParamResolver(new MessageBodyReaderAdapter<>(providers));
         deployments.addResponseEntityResolver(new MessageBodyWriterAdapter<>(providers));
         for (ProxyComponent<ExceptionMapper<Throwable>> mapper : factory.exceptionMappers()) {
             deployments.addExceptionResolver((Class<Throwable>) ClassUtils.findFirstGenericType(
@@ -286,7 +286,7 @@ public class JaxrsExtensionsHandler implements ExtensionsHandler {
             }
         }
         if (!readInterceptors.isEmpty()) {
-            deployments.addRequestEntityResolverAdvice(new ReaderInterceptorsAdapter(ascendingOrdered(
+            deployments.addParamResolverAdvice(new ReaderInterceptorsAdapter(ascendingOrdered(
                     readInterceptors).toArray(new ReaderInterceptor[0]), ProvidersPredicate.BINDING_GLOBAL));
         }
 

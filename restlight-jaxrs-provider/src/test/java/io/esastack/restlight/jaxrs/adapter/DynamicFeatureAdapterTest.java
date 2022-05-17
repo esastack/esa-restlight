@@ -21,8 +21,8 @@ import io.esastack.restlight.core.filter.RouteFilter;
 import io.esastack.restlight.core.handler.method.HandlerMethod;
 import io.esastack.restlight.core.handler.method.HandlerMethodImpl;
 import io.esastack.restlight.core.resolver.context.ContextResolverAdapter;
-import io.esastack.restlight.core.resolver.entity.request.RequestEntityResolverAdvice;
-import io.esastack.restlight.core.resolver.entity.response.ResponseEntityResolverAdvice;
+import io.esastack.restlight.core.resolver.param.ParamResolverAdvice;
+import io.esastack.restlight.core.resolver.ret.entity.ResponseEntityResolverAdvice;
 import io.esastack.restlight.jaxrs.configure.ProxyComponent;
 import io.esastack.restlight.jaxrs.impl.core.ConfigurableImpl;
 import io.esastack.restlight.jaxrs.impl.core.ConfigurationImpl;
@@ -77,12 +77,12 @@ class DynamicFeatureAdapterTest {
         final DynamicFeatureAdapter feature = new DynamicFeatureAdapter(deployContext, null,
                 null, configuration);
 
-        final List<RequestEntityResolverAdvice> requestAdvices = new LinkedList<>();
+        final List<ParamResolverAdvice> requestAdvices = new LinkedList<>();
         final List<ResponseEntityResolverAdvice> responseAdvices = new LinkedList<>();
         final List<RouteFilter> routeFilters = new LinkedList<>();
         final List<ContextResolverAdapter> contextResolvers = new LinkedList<>();
         final ConfigurableHandler configurable = mock(ConfigurableHandler.class);
-        when(configurable.addRequestEntityResolverAdvice(any())).thenAnswer(invocationOnMock -> {
+        when(configurable.addParamResolverAdvice(any())).thenAnswer(invocationOnMock -> {
             requestAdvices.add(invocationOnMock.getArgument(0));
             return null;
         });

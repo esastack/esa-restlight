@@ -29,7 +29,7 @@ import io.esastack.restlight.core.handler.method.HandlerMethod;
 import io.esastack.restlight.core.mock.MockHttpRequest;
 import io.esastack.restlight.core.mock.MockHttpResponse;
 import io.esastack.restlight.core.resolver.ResolverExecutor;
-import io.esastack.restlight.core.resolver.entity.response.ResponseEntityResolverContext;
+import io.esastack.restlight.core.resolver.ret.entity.ResponseEntityResolverContext;
 import io.netty.buffer.ByteBufAllocator;
 import jakarta.ws.rs.core.MultivaluedHashMap;
 import jakarta.ws.rs.core.MultivaluedMap;
@@ -85,7 +85,7 @@ class WriterInterceptorsAdapterTest {
         final ResponseEntityResolverContext rspCtx = new ResponseEntityResolverContext() {
             @Override
             public ResponseEntity httpEntity() {
-                return null;
+                return mock(ResponseEntity.class);
             }
 
             @Override

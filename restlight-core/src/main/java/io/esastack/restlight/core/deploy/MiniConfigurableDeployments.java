@@ -19,6 +19,8 @@ import esa.commons.annotation.Internal;
 import io.esastack.restlight.core.DeployContext;
 import io.esastack.restlight.core.Deployments;
 import io.esastack.restlight.core.Restlight;
+import io.esastack.restlight.core.dispatcher.IExceptionHandler;
+import io.esastack.restlight.core.filter.Filter;
 import io.esastack.restlight.core.handler.HandlerMapping;
 import io.esastack.restlight.core.handler.HandlerMappingProvider;
 import io.esastack.restlight.core.interceptor.HandlerInterceptor;
@@ -28,29 +30,23 @@ import io.esastack.restlight.core.interceptor.MappingInterceptor;
 import io.esastack.restlight.core.interceptor.RouteInterceptor;
 import io.esastack.restlight.core.resolver.context.ContextResolverAdapter;
 import io.esastack.restlight.core.resolver.context.ContextResolverFactory;
+import io.esastack.restlight.core.resolver.converter.StringConverterFactory;
 import io.esastack.restlight.core.resolver.exception.ExceptionResolver;
 import io.esastack.restlight.core.resolver.factory.HandlerResolverFactory;
 import io.esastack.restlight.core.resolver.param.ParamResolverAdapter;
 import io.esastack.restlight.core.resolver.param.ParamResolverAdviceAdapter;
 import io.esastack.restlight.core.resolver.param.ParamResolverAdviceFactory;
 import io.esastack.restlight.core.resolver.param.ParamResolverFactory;
-import io.esastack.restlight.core.resolver.entity.request.RequestEntityResolverAdapter;
-import io.esastack.restlight.core.resolver.entity.request.RequestEntityResolverAdviceAdapter;
-import io.esastack.restlight.core.resolver.entity.request.RequestEntityResolverAdviceFactory;
-import io.esastack.restlight.core.resolver.entity.request.RequestEntityResolverFactory;
-import io.esastack.restlight.core.resolver.entity.response.ResponseEntityResolverAdapter;
-import io.esastack.restlight.core.resolver.entity.response.ResponseEntityResolverAdviceAdapter;
-import io.esastack.restlight.core.resolver.entity.response.ResponseEntityResolverAdviceFactory;
-import io.esastack.restlight.core.resolver.entity.response.ResponseEntityResolverFactory;
-import io.esastack.restlight.core.resolver.converter.StringConverterFactory;
+import io.esastack.restlight.core.resolver.ret.entity.ResponseEntityResolverAdapter;
+import io.esastack.restlight.core.resolver.ret.entity.ResponseEntityResolverAdviceAdapter;
+import io.esastack.restlight.core.resolver.ret.entity.ResponseEntityResolverAdviceFactory;
+import io.esastack.restlight.core.resolver.ret.entity.ResponseEntityResolverFactory;
+import io.esastack.restlight.core.route.RouteRegistry;
 import io.esastack.restlight.core.serialize.HttpBodySerializer;
 import io.esastack.restlight.core.serialize.HttpRequestSerializer;
 import io.esastack.restlight.core.serialize.HttpResponseSerializer;
-import io.esastack.restlight.core.spi.RouteFilterFactory;
-import io.esastack.restlight.core.dispatcher.IExceptionHandler;
-import io.esastack.restlight.core.filter.Filter;
-import io.esastack.restlight.core.route.RouteRegistry;
 import io.esastack.restlight.core.spi.FilterFactory;
+import io.esastack.restlight.core.spi.RouteFilterFactory;
 
 import java.util.Collection;
 
@@ -481,74 +477,6 @@ public class MiniConfigurableDeployments {
      */
     public MiniConfigurableDeployments addContextResolvers(Collection<? extends ContextResolverFactory> resolvers) {
         deployments.addContextResolvers(resolvers);
-        return self();
-    }
-
-    /**
-     * Adds {@link RequestEntityResolverAdapter} which will be registered in the {@link HandlerResolverFactory}
-     *
-     * @param resolver resolver
-     * @return this deployments
-     */
-    public MiniConfigurableDeployments addRequestEntityResolver(RequestEntityResolverAdapter resolver) {
-        deployments.addRequestEntityResolver(resolver);
-        return self();
-    }
-
-    /**
-     * Adds {@link RequestEntityResolverFactory} which will be registered in the {@link HandlerResolverFactory}
-     *
-     * @param resolver resolver
-     * @return this deployments
-     */
-    public MiniConfigurableDeployments addRequestEntityResolver(RequestEntityResolverFactory resolver) {
-        deployments.addRequestEntityResolver(resolver);
-        return self();
-    }
-
-    /**
-     * Adds {@link RequestEntityResolverFactory}s which will be registered in the {@link HandlerResolverFactory}
-     *
-     * @param resolvers resolvers
-     * @return this deployments
-     */
-    public MiniConfigurableDeployments addRequestEntityResolvers(Collection<? extends RequestEntityResolverFactory>
-                                                                         resolvers) {
-        deployments.addRequestEntityResolvers(resolvers);
-        return self();
-    }
-
-    /**
-     * Adds {@link RequestEntityResolverAdviceAdapter} which will be registered in the {@link HandlerResolverFactory}
-     *
-     * @param advice advice
-     * @return this deployments
-     */
-    public MiniConfigurableDeployments addRequestEntityResolverAdvice(RequestEntityResolverAdviceAdapter advice) {
-        deployments.addRequestEntityResolverAdvice(advice);
-        return self();
-    }
-
-    /**
-     * Adds {@link RequestEntityResolverAdviceFactory} which will be registered in the {@link HandlerResolverFactory}
-     *
-     * @param advice advice
-     * @return this deployments
-     */
-    public MiniConfigurableDeployments addRequestEntityResolverAdvice(RequestEntityResolverAdviceFactory advice) {
-        deployments.addRequestEntityResolverAdvice(advice);
-        return self();
-    }
-
-    /**
-     * Adds {@link RequestEntityResolverAdviceFactory}s which will be registered in the {@link HandlerResolverFactory}
-     *
-     * @param advices resolvers
-     * @return this deployments
-     */
-    public MiniConfigurableDeployments addRequestEntityResolverAdvices(
-            Collection<? extends RequestEntityResolverAdviceFactory> advices) {
-        deployments.addRequestEntityResolverAdvices(advices);
         return self();
     }
 

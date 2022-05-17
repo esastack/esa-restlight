@@ -19,38 +19,38 @@ import esa.commons.StringUtils;
 import esa.commons.collection.Attributes;
 import io.esastack.restlight.core.DeployContext;
 import io.esastack.restlight.core.config.RestlightOptions;
+import io.esastack.restlight.core.context.HttpRequest;
+import io.esastack.restlight.core.context.RequestContext;
+import io.esastack.restlight.core.context.impl.RequestContextImpl;
 import io.esastack.restlight.core.deploy.HandlerConfigure;
-import io.esastack.restlight.core.handler.Handlers;
+import io.esastack.restlight.core.dispatcher.DispatcherHandler;
 import io.esastack.restlight.core.handler.HandlerAdvicesFactory;
 import io.esastack.restlight.core.handler.HandlerContextProvider;
 import io.esastack.restlight.core.handler.HandlerFactory;
-import io.esastack.restlight.core.locator.HandlerValueResolverLocator;
-import io.esastack.restlight.core.locator.MappingLocator;
-import io.esastack.restlight.core.locator.RouteMethodLocator;
-import io.esastack.restlight.core.interceptor.InterceptorFactory;
+import io.esastack.restlight.core.handler.Handlers;
 import io.esastack.restlight.core.handler.method.HandlerMethod;
 import io.esastack.restlight.core.handler.method.MethodParam;
 import io.esastack.restlight.core.handler.method.ResolvableParamPredicate;
+import io.esastack.restlight.core.interceptor.InterceptorFactory;
+import io.esastack.restlight.core.locator.HandlerValueResolverLocator;
+import io.esastack.restlight.core.locator.MappingLocator;
+import io.esastack.restlight.core.locator.RouteMethodLocator;
+import io.esastack.restlight.core.mock.MockHttpRequest;
+import io.esastack.restlight.core.mock.MockHttpResponse;
+import io.esastack.restlight.core.resolver.exception.ExceptionMapper;
+import io.esastack.restlight.core.resolver.exception.ExceptionResolverFactory;
 import io.esastack.restlight.core.resolver.factory.HandlerResolverFactory;
 import io.esastack.restlight.core.resolver.factory.HandlerResolverFactoryImpl;
 import io.esastack.restlight.core.resolver.param.ParamResolver;
-import io.esastack.restlight.core.resolver.exception.ExceptionMapper;
-import io.esastack.restlight.core.resolver.exception.ExceptionResolverFactory;
 import io.esastack.restlight.core.resolver.param.ParamResolverContextImpl;
+import io.esastack.restlight.core.route.RouteRegistry;
+import io.esastack.restlight.core.route.predicate.PatternsPredicate;
 import io.esastack.restlight.core.serialize.JacksonHttpBodySerializer;
+import io.esastack.restlight.core.server.processor.schedule.Scheduler;
 import io.esastack.restlight.core.spi.impl.DefaultStringConverterFactory;
 import io.esastack.restlight.core.util.Constants;
 import io.esastack.restlight.jaxrs.resolver.ResolverUtils;
 import io.esastack.restlight.jaxrs.util.JaxrsMappingUtils;
-import io.esastack.restlight.core.dispatcher.DispatcherHandler;
-import io.esastack.restlight.core.context.RequestContext;
-import io.esastack.restlight.core.context.impl.RequestContextImpl;
-import io.esastack.restlight.core.context.HttpRequest;
-import io.esastack.restlight.core.mock.MockHttpRequest;
-import io.esastack.restlight.core.mock.MockHttpResponse;
-import io.esastack.restlight.core.route.RouteRegistry;
-import io.esastack.restlight.core.route.predicate.PatternsPredicate;
-import io.esastack.restlight.core.server.processor.schedule.Scheduler;
 import jakarta.ws.rs.BeanParam;
 import jakarta.ws.rs.CookieParam;
 import jakarta.ws.rs.GET;
@@ -111,7 +111,7 @@ class BeanParamResolverTest {
                 param.method(), StringUtils.empty()).get().path()).test(context);
         final ParamResolver resolver = resolverFactory.createResolver(param,
                 ResolverUtils.defaultConverters(param), null);
-        return resolver.resolve(new ParamResolverContextImpl(context));
+        return resolver.resolve(new ParamResolverContextImpl(context, param));
     }
 
     private static class Subject {
@@ -224,10 +224,6 @@ class BeanParamResolverTest {
                             new MatrixVariableParamResolver(),
                             new PathParamResolver(),
                             new QueryParamResolver()),
-                    null,
-                    null,
-                    null,
-                    null,
                     null,
                     null,
                     null,

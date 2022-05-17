@@ -144,7 +144,7 @@ class DefaultValueParamResolverTest {
         final ParamResolver resolver = resolverFactory.createResolver(param,
                 ResolverUtils.defaultConverters(param), null);
         ParamResolverContext resolverContext = new ParamResolverContextImpl(
-                new RequestContextImpl(request, MockHttpResponse.aMockResponse().build()));
+                new RequestContextImpl(request, MockHttpResponse.aMockResponse().build()), param);
         return resolver.resolve(resolverContext);
     }
 

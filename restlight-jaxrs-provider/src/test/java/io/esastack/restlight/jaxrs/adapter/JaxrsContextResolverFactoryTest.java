@@ -22,6 +22,7 @@ import io.esastack.restlight.core.context.HttpResponse;
 import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.context.impl.RequestContextImpl;
 import io.esastack.restlight.core.handler.method.MethodParamImpl;
+import io.esastack.restlight.core.handler.method.Param;
 import io.esastack.restlight.core.resolver.param.ParamResolverContext;
 import io.esastack.restlight.core.resolver.param.ParamResolverContextImpl;
 import io.esastack.restlight.core.route.predicate.ProducesPredicate;
@@ -61,7 +62,7 @@ class JaxrsContextResolverFactoryTest {
         final Attributes attributes = new AttributeMap();
         final RequestContext context = new RequestContextImpl(attributes, mock(HttpRequest.class),
                 mock(HttpResponse.class));
-        final ParamResolverContext resolverContext = new ParamResolverContextImpl(context);
+        final ParamResolverContext resolverContext = new ParamResolverContextImpl(context, mock(Param.class));
         attributes.attr(ProducesPredicate.COMPATIBLE_MEDIA_TYPES)
                 .set(Collections.singletonList(io.esastack.commons.net.http.MediaType.ALL));
         when(providers.getContextResolver(String.class, MediaType.WILDCARD_TYPE)).thenReturn(type -> "Hello");

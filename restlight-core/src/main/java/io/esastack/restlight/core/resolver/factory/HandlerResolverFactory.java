@@ -22,10 +22,8 @@ import io.esastack.restlight.core.handler.method.Param;
 import io.esastack.restlight.core.resolver.context.ContextResolver;
 import io.esastack.restlight.core.resolver.param.ParamResolver;
 import io.esastack.restlight.core.resolver.param.ParamResolverAdvice;
-import io.esastack.restlight.core.resolver.entity.request.RequestEntityResolver;
-import io.esastack.restlight.core.resolver.entity.request.RequestEntityResolverAdvice;
-import io.esastack.restlight.core.resolver.entity.response.ResponseEntityResolver;
-import io.esastack.restlight.core.resolver.entity.response.ResponseEntityResolverAdvice;
+import io.esastack.restlight.core.resolver.ret.entity.ResponseEntityResolver;
+import io.esastack.restlight.core.resolver.ret.entity.ResponseEntityResolverAdvice;
 import io.esastack.restlight.core.serialize.HttpRequestSerializer;
 import io.esastack.restlight.core.serialize.HttpResponseSerializer;
 import io.esastack.restlight.core.spi.FutureTransferFactory;
@@ -51,12 +49,20 @@ public interface HandlerResolverFactory {
     List<RouteFilter> getRouteFilters(HandlerMethod method);
 
     /**
-     * Get the {@link ParamResolver} for given parameter.
+     * Get the {@link ParamResolver} for given parameter no contains the entity param resolver.
      *
      * @param param parameter
      * @return resolver
      */
-    ParamResolver getParamResolver(Param param);
+    ParamResolver getNoEntityParamResolver(Param param);
+
+    /**
+     * Get the {@link ParamResolver} for given parameter only contains the entity param resolver.
+     *
+     * @param param parameter
+     * @return resolver
+     */
+    List<ParamResolver> getEntityParamResolvers(Param param);
 
     /**
      * Obtains the {@link ContextResolver} for given {@code param}.
@@ -70,25 +76,10 @@ public interface HandlerResolverFactory {
      * Obtains the {@link ParamResolverAdvice}s for given parameter.
      *
      * @param param param
+     * @param entityAdvice entity advice or common advice
      * @return advices
      */
-    List<ParamResolverAdvice> getParamResolverAdvices(Param param, ParamResolver resolver);
-
-    /**
-     * Obtains request entity resolvers, must not be {@code null}.
-     *
-     * @param param param
-     * @return resolvers
-     */
-    List<RequestEntityResolver> getRequestEntityResolvers(Param param);
-
-    /**
-     * Obtains the {@link RequestEntityResolverAdvice}s for given {@link Param}.
-     *
-     * @param param     param
-     * @return advices
-     */
-    List<RequestEntityResolverAdvice> getRequestEntityResolverAdvices(Param param);
+    List<ParamResolverAdvice> getParamResolverAdvices(Param param, boolean entityAdvice);
 
     /**
      * Get response entity resolvers, must not be {@code null}.

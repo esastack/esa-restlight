@@ -18,14 +18,40 @@ package io.esastack.restlight.core.resolver.param;
 
 import esa.commons.Checks;
 import io.esastack.restlight.core.context.RequestContext;
+import io.esastack.restlight.core.context.RequestEntity;
+import io.esastack.restlight.core.context.RequestEntityImpl;
+import io.esastack.restlight.core.handler.method.Param;
 
 public class ParamResolverContextImpl implements ParamResolverContext {
 
     private final RequestContext requestContext;
+    private final RequestEntity entity;
+    private final Param param;
 
-    public ParamResolverContextImpl(RequestContext requestContext) {
+    public ParamResolverContextImpl(RequestContext requestContext,
+                                    Param param) {
+        this(requestContext, new RequestEntityImpl(param, requestContext), param);
+    }
+
+    public ParamResolverContextImpl(RequestContext requestContext,
+                                    RequestEntity entity,
+                                    Param param) {
         Checks.checkNotNull(requestContext, "requestContext");
+        Checks.checkNotNull(entity, "entity");
+        Checks.checkNotNull(param, "param");
         this.requestContext = requestContext;
+        this.entity = entity;
+        this.param = param;
+    }
+
+    @Override
+    public RequestEntity httpEntity() {
+        return entity;
+    }
+
+    @Override
+    public Param param() {
+        return param;
     }
 
     @Override

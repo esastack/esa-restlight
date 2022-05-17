@@ -16,21 +16,21 @@
 package io.esastack.restlight.jaxrs.resolver.param;
 
 import esa.commons.StringUtils;
+import io.esastack.restlight.core.context.HttpRequest;
+import io.esastack.restlight.core.context.RequestContext;
+import io.esastack.restlight.core.context.impl.RequestContextImpl;
 import io.esastack.restlight.core.handler.method.HandlerMethod;
 import io.esastack.restlight.core.handler.method.MethodParam;
+import io.esastack.restlight.core.mock.MockHttpRequest;
+import io.esastack.restlight.core.mock.MockHttpResponse;
 import io.esastack.restlight.core.resolver.param.ParamResolver;
 import io.esastack.restlight.core.resolver.param.ParamResolverContextImpl;
+import io.esastack.restlight.core.route.predicate.PatternsPredicate;
 import io.esastack.restlight.jaxrs.resolver.ResolverUtils;
 import io.esastack.restlight.jaxrs.resolver.param.subject.ConstructorSubject;
 import io.esastack.restlight.jaxrs.resolver.param.subject.FromStringSubject;
 import io.esastack.restlight.jaxrs.resolver.param.subject.ValueOfSubject;
 import io.esastack.restlight.jaxrs.util.JaxrsMappingUtils;
-import io.esastack.restlight.core.context.RequestContext;
-import io.esastack.restlight.core.context.impl.RequestContextImpl;
-import io.esastack.restlight.core.context.HttpRequest;
-import io.esastack.restlight.core.mock.MockHttpRequest;
-import io.esastack.restlight.core.mock.MockHttpResponse;
-import io.esastack.restlight.core.route.predicate.PatternsPredicate;
 import jakarta.ws.rs.DefaultValue;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.MatrixParam;
@@ -202,7 +202,7 @@ class MatrixVariableParamResolverTest {
                 param.method(), StringUtils.empty()).get().path()).test(context);
         final ParamResolver resolver = resolverFactory.createResolver(param,
                 ResolverUtils.defaultConverters(param), null);
-        return resolver.resolve(new ParamResolverContextImpl(context));
+        return resolver.resolve(new ParamResolverContextImpl(context, param));
     }
 
     private static class Subject {

@@ -16,25 +16,26 @@
 package io.esastack.restlight.core.resolver.param;
 
 import esa.commons.Checks;
+import esa.commons.Result;
+import io.esastack.restlight.core.exception.WebServerException;
 import io.esastack.restlight.core.resolver.ResolverExecutor;
-
-import java.util.List;
 
 final class ParamResolverExecutor implements ResolverExecutor<ParamResolverContext> {
 
     private final ParamResolverContext context;
-    private final ParamResolver resolver;
+    private final ParamResolver[] resolvers;
     private final ParamResolverAdvice[] advices;
     private int index;
 
     public ParamResolverExecutor(ParamResolverContext context,
-                                 ParamResolver resolver,
-                                 List<ParamResolverAdvice> advices) {
+                                 ParamResolver[] resolvers,
+                                 ParamResolverAdvice[] advices) {
         Checks.checkNotNull(context, "context");
-        Checks.checkNotNull(resolver, "resolver");
+        Checks.checkNotNull(resolvers, "resolvers");
+        Checks.checkNotNull(advices, "advices");
         this.context = context;
-        this.resolver = resolver;
-        this.advices = (advices == null ? null : advices.toArray(new ParamResolverAdvice[0]));
+        this.resolvers = resolvers;
+        this.advices = advices;
     }
 
     @Override
@@ -45,7 +46,19 @@ final class ParamResolverExecutor implements ResolverExecutor<ParamResolverConte
     @Override
     public Object proceed() throws Exception {
         if (advices == null || index >= advices.length) {
-            return resolver.resolve(context);
+            for (ParamResolver resolver : resolvers) {
+                Object result = resolver.resolve(context);
+                if (result instanceof Result) {
+                    Result handled = (Result) result;
+                    if (handled.isOk()) {
+                        return handled.get();
+                    }
+                    continue;
+                }
+                return result;
+            }
+            // todo add message
+            throw WebServerException.notSupported("");
         }
 
         return advices[index++].aroundResolve(this);

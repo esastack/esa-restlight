@@ -68,7 +68,7 @@ class ResourceContextParamResolverTest {
         final HttpRequest request = MockHttpRequest.aMockRequest().build();
         final HttpResponse response = MockHttpResponse.aMockResponse().build();
         final RequestContext ctx = new RequestContextImpl(request, response);
-        final ParamResolverContext resolverContext = new ParamResolverContextImpl(ctx);
+        final ParamResolverContext resolverContext = new ParamResolverContextImpl(ctx, param);
 
         when(context.handlerFactory()).thenReturn(Optional.of(mock(HandlerFactory.class)));
         assertNotNull(resolver.resolve(resolverContext));

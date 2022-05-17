@@ -20,13 +20,11 @@ import io.esastack.restlight.core.context.ResponseEntity;
 import io.esastack.restlight.core.handler.method.HandlerMethod;
 import io.esastack.restlight.core.handler.method.Param;
 import io.esastack.restlight.core.resolver.converter.StringConverterProvider;
-import io.esastack.restlight.core.resolver.entity.request.RequestEntityResolver;
-import io.esastack.restlight.core.resolver.entity.request.RequestEntityResolverContext;
-import io.esastack.restlight.core.resolver.entity.request.RequestEntityResolverFactory;
-import io.esastack.restlight.core.resolver.entity.response.AbstractResponseEntityResolver;
-import io.esastack.restlight.core.resolver.entity.response.ResponseEntityResolver;
-import io.esastack.restlight.core.resolver.entity.response.ResponseEntityResolverFactory;
+import io.esastack.restlight.core.resolver.ret.entity.AbstractResponseEntityResolver;
+import io.esastack.restlight.core.resolver.ret.entity.ResponseEntityResolver;
+import io.esastack.restlight.core.resolver.ret.entity.ResponseEntityResolverFactory;
 import io.esastack.restlight.core.resolver.param.ParamResolver;
+import io.esastack.restlight.core.resolver.param.ParamResolverContext;
 import io.esastack.restlight.core.resolver.param.ParamResolverFactory;
 import io.esastack.restlight.core.serialize.HttpRequestSerializer;
 import io.esastack.restlight.core.serialize.HttpResponseSerializer;
@@ -64,17 +62,12 @@ public class ResolverConfig {
     }
 
     @Bean
-    public RequestEntityResolverFactory requestEntityResolverFactory() {
-        return new RequestEntityResolverFactory() {
+    public ParamResolverFactory paramEntityResolverFactory() {
+        return new ParamResolverFactory() {
             @Override
-            public RequestEntityResolver createResolver(Param param, StringConverterProvider converters,
+            public ParamResolver createResolver(Param param, StringConverterProvider converters,
                                                         List<? extends HttpRequestSerializer> serializers) {
                 return new Resolver(serializers.get(0));
-            }
-
-            @Override
-            public int getOrder() {
-                return RequestEntityResolverFactory.super.getOrder();
             }
 
             @Override
@@ -82,7 +75,7 @@ public class ResolverConfig {
                 return param.hasAnnotation(CustomRequestBody.class);
             }
 
-            class Resolver implements RequestEntityResolver {
+            class Resolver implements ParamResolver {
 
                 private final HttpRequestSerializer serializer;
 
@@ -91,13 +84,18 @@ public class ResolverConfig {
                 }
 
                 @Override
-                public Result<?, Void> resolve(RequestEntityResolverContext context) throws Exception {
+                public Result<?, Void> resolve(ParamResolverContext context) throws Exception {
                     Result<?, Void> result = serializer.deserialize(context.httpEntity());
                     if (result.isOk()) {
                         UserData userData = (UserData) result.get();
                         userData.setName("test");
                     }
                     return result;
+                }
+
+                @Override
+                public boolean isEntityResolver() {
+                    return true;
                 }
             }
         };

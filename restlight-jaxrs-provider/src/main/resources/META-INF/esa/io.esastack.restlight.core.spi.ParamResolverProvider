@@ -1,2 +1,2 @@
 io.esastack.restlight.jaxrs.spi.BeanParamResolverProvider
-
+io.esastack.restlight.jaxrs.spi.FlexibleRequestEntityResolverProvider

@@ -82,8 +82,6 @@ public class HandlerContext extends DelegatingDeployContext {
         OrderedComparator.sort(configuration.getParamResolvers());
         OrderedComparator.sort(configuration.getContextResolvers());
         OrderedComparator.sort(configuration.getParamResolverAdvices());
-        OrderedComparator.sort(configuration.getRequestEntityResolvers());
-        OrderedComparator.sort(configuration.getRequestEntityResolverAdvices());
         OrderedComparator.sort(configuration.getResponseEntityResolvers());
         OrderedComparator.sort(configuration.getResponseEntityResolverAdvices());
 
@@ -100,10 +98,6 @@ public class HandlerContext extends DelegatingDeployContext {
                 configuration.getParamResolverAdvices(),
                 null,
                 configuration.getContextResolvers(),
-                null,
-                configuration.getRequestEntityResolvers(),
-                null,
-                configuration.getRequestEntityResolverAdvices(),
                 null,
                 configuration.getResponseEntityResolvers(),
                 null,

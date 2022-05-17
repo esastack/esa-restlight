@@ -20,8 +20,6 @@ import io.esastack.restlight.core.handler.impl.HandlerContext;
 import io.esastack.restlight.core.resolver.Resolver;
 import io.esastack.restlight.core.resolver.context.AdvisedContextResolver;
 import io.esastack.restlight.core.resolver.context.ContextResolver;
-import io.esastack.restlight.core.resolver.entity.request.AdvisedRequestEntityResolver;
-import io.esastack.restlight.core.resolver.entity.request.RequestEntityResolver;
 import io.esastack.restlight.core.resolver.factory.HandlerResolverFactory;
 import io.esastack.restlight.core.resolver.param.AdvisedParamResolver;
 import io.esastack.restlight.core.resolver.param.ParamResolver;
@@ -29,12 +27,13 @@ import io.esastack.restlight.core.util.RouteUtils;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
 /**
  * An adapter of {@link HandlerMethod} which holds the {@link ParamResolver}s, {@link ContextResolver}s or
- * {@link RequestEntityResolver} to resolve method parameters.
+ * {@link ParamResolver} to resolve method parameters.
  *
  * @param <H> generic handler method
  */
@@ -116,18 +115,18 @@ public class HandlerMethodAdapter<H extends HandlerMethod> implements HandlerMet
         if (contextResolver != null) {
             return new ResolvableParam<>(param, new AdvisedContextResolver(contextResolver));
         } else {
-            ParamResolver paramResolver = factory.getParamResolver(param);
+            ParamResolver paramResolver = factory.getNoEntityParamResolver(param);
             if (paramResolver != null) {
-                return new ResolvableParam<>(param, new AdvisedParamResolver(paramResolver,
-                        factory.getParamResolverAdvices(param, paramResolver)));
+                return new ResolvableParam<>(param, new AdvisedParamResolver(Collections.singletonList(paramResolver),
+                        factory.getParamResolverAdvices(param, false)));
             } else {
-                List<RequestEntityResolver> requestEntityResolvers = factory.getRequestEntityResolvers(param);
-                if (requestEntityResolvers.isEmpty()) {
+                List<ParamResolver> paramResolvers = factory.getEntityParamResolvers(param);
+                if (paramResolvers.isEmpty()) {
                     throw new IllegalArgumentException("There is no suitable resolver to handle param: ["
                             + param.toString() + "]");
                 } else {
-                    return new ResolvableParam<>(param, new AdvisedRequestEntityResolver(param,
-                            requestEntityResolvers, factory.getRequestEntityResolverAdvices(param)));
+                    return new ResolvableParam<>(param, new AdvisedParamResolver(
+                            paramResolvers, factory.getParamResolverAdvices(param, true)));
                 }
             }
         }

@@ -26,7 +26,7 @@ public interface ParamResolverAdviceFactory extends ParamPredicate, Ordered {
     /**
      * Converts given {@link ParamResolverAdviceAdapter} to {@link ParamResolverAdviceFactory} which
      * always use the given {@link ParamResolverAdviceAdapter} as the result of
-     * {@link #createResolverAdvice(Param, ParamResolver)}
+     * {@link #createResolverAdvice(Param)}
      *
      * @param resolver resolver
      * @return of factory bean
@@ -39,10 +39,9 @@ public interface ParamResolverAdviceFactory extends ParamPredicate, Ordered {
      * Creates an instance of {@link ParamResolverAdvice} for given handler method.
      *
      * @param param    method
-     * @param resolver argumentResolver associated with this parameter
      * @return advice
      */
-    ParamResolverAdvice createResolverAdvice(Param param, ParamResolver resolver);
+    ParamResolverAdvice createResolverAdvice(Param param);
 
     @Override
     default int getOrder() {
@@ -59,8 +58,7 @@ public interface ParamResolverAdviceFactory extends ParamPredicate, Ordered {
         }
 
         @Override
-        public ParamResolverAdvice createResolverAdvice(Param param,
-                                                        ParamResolver paramResolver) {
+        public ParamResolverAdvice createResolverAdvice(Param param) {
             return resolver;
         }
 

@@ -62,7 +62,7 @@ class SecurityContextParamResolverTest {
 
         final SecurityContext securityContext = mock(SecurityContext.class);
         JaxrsContextUtils.setSecurityContext(ctx, securityContext);
-        assertSame(securityContext, resolver.resolve(new ParamResolverContextImpl(ctx)));
+        assertSame(securityContext, resolver.resolve(new ParamResolverContextImpl(ctx, param)));
     }
 
     private static class Subject {

@@ -130,7 +130,9 @@ class AbstractExecutionTest {
         params[0] = new ResolvableParam(param, argResolver);
         when(mock.paramResolvers())
                 .thenReturn(params);
-        final Object[] args = execution.resolveArgs(mock(RequestContext.class));
+        final RequestContext requestContext = mock(RequestContext.class);
+        when(requestContext.request()).thenReturn(mock(HttpRequest.class));
+        final Object[] args = execution.resolveArgs(requestContext);
         assertNotNull(args);
         assertEquals(1, args.length);
         assertEquals("foo", args[0]);

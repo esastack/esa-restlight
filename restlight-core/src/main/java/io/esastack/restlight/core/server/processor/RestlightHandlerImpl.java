@@ -34,13 +34,13 @@ import io.esastack.restlight.core.filter.Filter;
 import io.esastack.restlight.core.handler.HandlerContextProvider;
 import io.esastack.restlight.core.handler.impl.HandlerContext;
 import io.esastack.restlight.core.handler.method.HandlerMethod;
-import io.esastack.restlight.core.resolver.entity.EntityResolver;
-import io.esastack.restlight.core.resolver.entity.EntityResolverAdvice;
-import io.esastack.restlight.core.resolver.entity.EntityResolverExecutor;
-import io.esastack.restlight.core.resolver.entity.response.ResponseEntityResolver;
-import io.esastack.restlight.core.resolver.entity.response.ResponseEntityResolverAdvice;
-import io.esastack.restlight.core.resolver.entity.response.ResponseEntityResolverContext;
-import io.esastack.restlight.core.resolver.entity.response.ResponseEntityResolverContextImpl;
+import io.esastack.restlight.core.resolver.ret.ReturnValueResolver;
+import io.esastack.restlight.core.resolver.ret.ReturnValueResolverAdvice;
+import io.esastack.restlight.core.resolver.ret.ReturnValueResolverExecutor;
+import io.esastack.restlight.core.resolver.ret.entity.ResponseEntityResolver;
+import io.esastack.restlight.core.resolver.ret.entity.ResponseEntityResolverAdvice;
+import io.esastack.restlight.core.resolver.ret.entity.ResponseEntityResolverContext;
+import io.esastack.restlight.core.resolver.ret.entity.ResponseEntityResolverContextImpl;
 import io.esastack.restlight.core.resolver.factory.HandlerResolverFactory;
 import io.esastack.restlight.core.route.ExceptionHandler;
 import io.esastack.restlight.core.route.Route;
@@ -91,16 +91,16 @@ public class RestlightHandlerImpl extends AbstractRestlightHandler {
             final ResponseEntityResolverContext rspCtx = new ResponseEntityResolverContextImpl(context,
                     entity, channelFactory.create(context));
             setEntityTypeIfNecessary(rspCtx, context.response());
-            EntityResolver[] resolvers = Optional.ofNullable(resolverFactory.getResponseEntityResolvers(method))
+            ReturnValueResolver[] resolvers = Optional.ofNullable(resolverFactory.getResponseEntityResolvers(method))
                     .orElse(Collections.emptyList())
                     .toArray(new ResponseEntityResolver[0]);
-            EntityResolverAdvice[] advices = Optional
+            ReturnValueResolverAdvice[] advices = Optional
                     .ofNullable(resolverFactory.getResponseEntityResolverAdvices(method))
                     .orElse(Collections.emptyList())
                     .toArray(new ResponseEntityResolverAdvice[0]);
             String unSupportMsg = "There is no suitable resolver to resolve response entity: " + entity;
-            final EntityResolverExecutor executor =
-                    new EntityResolverExecutor(rspCtx, resolvers, advices, unSupportMsg);
+            final ReturnValueResolverExecutor executor =
+                    new ReturnValueResolverExecutor(rspCtx, resolvers, advices, unSupportMsg);
             final HttpRequest request = context.request();
             try {
                 executor.proceed();

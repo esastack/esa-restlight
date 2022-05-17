@@ -16,7 +16,7 @@
 package io.esastack.restlight.springmvc.resolver.rspentity;
 
 import io.esastack.restlight.core.handler.method.HandlerMethod;
-import io.esastack.restlight.core.resolver.entity.response.ResponseEntityResolver;
+import io.esastack.restlight.core.resolver.ret.entity.ResponseEntityResolver;
 import io.esastack.restlight.core.serialize.FastJsonHttpBodySerializer;
 import io.esastack.restlight.core.context.HttpRequest;
 import io.esastack.restlight.core.context.HttpResponse;

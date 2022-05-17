@@ -31,9 +31,9 @@ import io.esastack.restlight.core.handler.method.Param;
 import io.esastack.restlight.core.mock.MockResponseContent;
 import io.esastack.restlight.core.resolver.converter.StringConverterFactory;
 import io.esastack.restlight.core.resolver.converter.StringConverterProvider;
-import io.esastack.restlight.core.resolver.entity.response.ResponseEntityResolver;
-import io.esastack.restlight.core.resolver.entity.response.ResponseEntityResolverContext;
-import io.esastack.restlight.core.resolver.entity.response.ResponseEntityResolverContextImpl;
+import io.esastack.restlight.core.resolver.ret.entity.ResponseEntityResolver;
+import io.esastack.restlight.core.resolver.ret.entity.ResponseEntityResolverContext;
+import io.esastack.restlight.core.resolver.ret.entity.ResponseEntityResolverContextImpl;
 import io.esastack.restlight.core.spi.impl.DefaultStringConverterFactory;
 
 import java.util.Map;

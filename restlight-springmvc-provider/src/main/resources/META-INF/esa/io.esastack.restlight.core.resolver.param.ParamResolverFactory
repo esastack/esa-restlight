@@ -4,3 +4,4 @@ io.esastack.restlight.springmvc.resolver.param.PathVariableParamResolver
 io.esastack.restlight.springmvc.resolver.param.RequestAttributeParamResolver
 io.esastack.restlight.springmvc.resolver.param.RequestHeaderParamResolver
 io.esastack.restlight.springmvc.resolver.param.RequestParamResolver
+io.esastack.restlight.springmvc.resolver.reqentity.FixedRequestEntityResolverFactoryImpl

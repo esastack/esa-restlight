@@ -25,5 +25,9 @@ public interface ParamResolver extends Resolver<ParamResolverContext> {
 
     @Override
     Object resolve(ParamResolverContext context) throws Exception;
+
+    default boolean isEntityResolver() {
+        return false;
+    }
 }
 

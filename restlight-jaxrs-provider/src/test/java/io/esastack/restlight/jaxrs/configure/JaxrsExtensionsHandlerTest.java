@@ -21,11 +21,11 @@ import io.esastack.restlight.core.deploy.HandlerConfigure;
 import io.esastack.restlight.core.deploy.MiniConfigurableDeployments;
 import io.esastack.restlight.core.resolver.context.ContextResolverAdapter;
 import io.esastack.restlight.core.resolver.exception.ExceptionResolver;
+import io.esastack.restlight.core.resolver.param.ParamResolverAdapter;
+import io.esastack.restlight.core.resolver.param.ParamResolverAdviceAdapter;
 import io.esastack.restlight.core.resolver.param.ParamResolverFactory;
-import io.esastack.restlight.core.resolver.entity.request.RequestEntityResolverAdapter;
-import io.esastack.restlight.core.resolver.entity.request.RequestEntityResolverAdviceAdapter;
-import io.esastack.restlight.core.resolver.entity.response.ResponseEntityResolverAdapter;
-import io.esastack.restlight.core.resolver.entity.response.ResponseEntityResolverAdviceAdapter;
+import io.esastack.restlight.core.resolver.ret.entity.ResponseEntityResolverAdapter;
+import io.esastack.restlight.core.resolver.ret.entity.ResponseEntityResolverAdviceAdapter;
 import io.esastack.restlight.core.resolver.converter.StringConverterFactory;
 import io.esastack.restlight.jaxrs.adapter.DynamicFeatureAdapter;
 import io.esastack.restlight.jaxrs.adapter.JaxrsContextResolverFactory;
@@ -268,16 +268,16 @@ class JaxrsExtensionsHandlerTest {
         when(factory.paramConverterProviders()).thenReturn(Collections.singleton(
                 new ProxyComponent<>(paramConverter, paramConverter)));
 
-        final List<RequestEntityResolverAdapter> requestResolvers = new LinkedList<>();
+        final List<ParamResolverAdapter> requestResolvers = new LinkedList<>();
         final List<ResponseEntityResolverAdapter> responseResolvers = new LinkedList<>();
         final AtomicReference<Class<?>> exceptionClass = new AtomicReference<>();
         final AtomicReference<ExceptionResolver<?>> exceptionResolver = new AtomicReference<>();
         final List<ParamResolverFactory> paramResolvers = new LinkedList<>();
         final List<StringConverterFactory> stringConverters = new LinkedList<>();
         final List<HandlerConfigure> configures = new LinkedList<>();
-        when(deployments.addRequestEntityResolver(any(RequestEntityResolverAdapter.class)))
+        when(deployments.addParamResolver(any(ParamResolverAdapter.class)))
                 .thenAnswer(invocationOnMock -> {
-                    requestResolvers.add((RequestEntityResolverAdapter) invocationOnMock.getArguments()[0]);
+                    requestResolvers.add((ParamResolverAdapter) invocationOnMock.getArguments()[0]);
                     return null;
                 });
         when(deployments.addResponseEntityResolver(any(ResponseEntityResolverAdapter.class)))
@@ -376,9 +376,9 @@ class JaxrsExtensionsHandlerTest {
         when(factory.readerInterceptors()).thenReturn(Collections.emptyList());
         when(factory.writerInterceptors()).thenReturn(Collections.emptyList());
 
-        final List<RequestEntityResolverAdviceAdapter> requestEntityResolverAdvices = new LinkedList<>();
+        final List<ParamResolverAdapter> requestEntityResolverAdvices = new LinkedList<>();
         final List<ResponseEntityResolverAdviceAdapter> responseEntityResolverAdvices = new LinkedList<>();
-        when(deployments.addRequestEntityResolverAdvice(any(RequestEntityResolverAdviceAdapter.class)))
+        when(deployments.addParamResolverAdvice(any(ParamResolverAdviceAdapter.class)))
                 .thenAnswer(invocationOnMock -> {
                     requestEntityResolverAdvices.add(invocationOnMock.getArgument(0));
                     return null;

@@ -18,8 +18,8 @@ package io.esastack.restlight.core.resolver.factory;
 import esa.commons.Checks;
 import esa.commons.collection.Attributes;
 import io.esastack.restlight.core.deploy.HandlerConfiguration;
-import io.esastack.restlight.core.handler.FutureTransfer;
 import io.esastack.restlight.core.filter.RouteFilter;
+import io.esastack.restlight.core.handler.FutureTransfer;
 import io.esastack.restlight.core.handler.method.HandlerMethod;
 import io.esastack.restlight.core.handler.method.Param;
 import io.esastack.restlight.core.resolver.context.ContextResolver;
@@ -29,24 +29,18 @@ import io.esastack.restlight.core.resolver.converter.StringConverter;
 import io.esastack.restlight.core.resolver.converter.StringConverterAdapter;
 import io.esastack.restlight.core.resolver.converter.StringConverterFactory;
 import io.esastack.restlight.core.resolver.converter.StringConverterProvider;
+import io.esastack.restlight.core.resolver.ret.entity.ResponseEntityResolver;
+import io.esastack.restlight.core.resolver.ret.entity.ResponseEntityResolverAdapter;
+import io.esastack.restlight.core.resolver.ret.entity.ResponseEntityResolverAdvice;
+import io.esastack.restlight.core.resolver.ret.entity.ResponseEntityResolverAdviceAdapter;
+import io.esastack.restlight.core.resolver.ret.entity.ResponseEntityResolverAdviceFactory;
+import io.esastack.restlight.core.resolver.ret.entity.ResponseEntityResolverFactory;
 import io.esastack.restlight.core.resolver.param.ParamResolver;
 import io.esastack.restlight.core.resolver.param.ParamResolverAdapter;
 import io.esastack.restlight.core.resolver.param.ParamResolverAdvice;
 import io.esastack.restlight.core.resolver.param.ParamResolverAdviceAdapter;
 import io.esastack.restlight.core.resolver.param.ParamResolverAdviceFactory;
 import io.esastack.restlight.core.resolver.param.ParamResolverFactory;
-import io.esastack.restlight.core.resolver.entity.request.RequestEntityResolver;
-import io.esastack.restlight.core.resolver.entity.request.RequestEntityResolverAdapter;
-import io.esastack.restlight.core.resolver.entity.request.RequestEntityResolverAdvice;
-import io.esastack.restlight.core.resolver.entity.request.RequestEntityResolverAdviceAdapter;
-import io.esastack.restlight.core.resolver.entity.request.RequestEntityResolverAdviceFactory;
-import io.esastack.restlight.core.resolver.entity.request.RequestEntityResolverFactory;
-import io.esastack.restlight.core.resolver.entity.response.ResponseEntityResolver;
-import io.esastack.restlight.core.resolver.entity.response.ResponseEntityResolverAdapter;
-import io.esastack.restlight.core.resolver.entity.response.ResponseEntityResolverAdvice;
-import io.esastack.restlight.core.resolver.entity.response.ResponseEntityResolverAdviceAdapter;
-import io.esastack.restlight.core.resolver.entity.response.ResponseEntityResolverAdviceFactory;
-import io.esastack.restlight.core.resolver.entity.response.ResponseEntityResolverFactory;
 import io.esastack.restlight.core.serialize.HttpRequestSerializer;
 import io.esastack.restlight.core.serialize.HttpResponseSerializer;
 import io.esastack.restlight.core.spi.FutureTransferFactory;
@@ -82,12 +76,6 @@ public class HandlerResolverFactoryImpl implements HandlerResolverFactory {
     private final List<ContextResolverFactory> contextResolvers;
 
     /**
-     * Customize request entity resolvers
-     */
-    private final List<RequestEntityResolverFactory> requestEntityResolvers;
-    private final List<RequestEntityResolverAdviceFactory> requestEntityResolverAdvices;
-
-    /**
      * Customize response entity resolvers
      */
     private final List<ResponseEntityResolverFactory> responseEntityResolvers;
@@ -107,13 +95,6 @@ public class HandlerResolverFactoryImpl implements HandlerResolverFactory {
                                       Collection<? extends ParamResolverAdviceFactory> paramResolverAdviceFactories,
                                       Collection<? extends ContextResolverAdapter> contextResolvers,
                                       Collection<? extends ContextResolverFactory> contextResolverFactories,
-                                      Collection<? extends RequestEntityResolverAdapter> requestEntityResolvers,
-                                      Collection<? extends RequestEntityResolverFactory>
-                                              requestEntityResolverFactories,
-                                      Collection<? extends RequestEntityResolverAdviceAdapter>
-                                              requestEntityResolverAdvices,
-                                      Collection<? extends RequestEntityResolverAdviceFactory>
-                                              requestEntityResolverAdviceFactories,
                                       Collection<? extends ResponseEntityResolverAdapter>
                                               responseEntityResolvers,
                                       Collection<? extends ResponseEntityResolverFactory>
@@ -134,33 +115,11 @@ public class HandlerResolverFactoryImpl implements HandlerResolverFactory {
         this.paramResolverAdvices = getParamResolverAdvices(paramResolverAdvices,
                 paramResolverAdviceFactories);
         this.contextResolvers = getContextResolvers(contextResolvers, contextResolverFactories);
-        this.requestEntityResolvers = getRequestEntityResolvers(requestEntityResolvers,
-                requestEntityResolverFactories);
-        this.requestEntityResolverAdvices = getRequestEntityResolverAdvices(requestEntityResolverAdvices,
-                requestEntityResolverAdviceFactories);
         this.responseEntityResolvers = getResponseEntityResolvers(responseEntityResolvers,
                 responseEntityResolverFactories);
         this.responseEntityResolverAdvices = getResponseEntityResolverAdvices(responseEntityResolverAdvices,
                 responseEntityResolverAdviceFactories);
         this.responseResolversFactory = new ResponseResolversFactory();
-    }
-
-    private static List<RequestEntityResolverFactory> getRequestEntityResolvers(
-            Collection<? extends RequestEntityResolverAdapter> resolvers,
-            Collection<? extends RequestEntityResolverFactory> factories) {
-
-        return mergeResolvers(resolvers,
-                factories,
-                RequestEntityResolverFactory::singleton);
-    }
-
-    private static List<RequestEntityResolverAdviceFactory> getRequestEntityResolverAdvices(
-            Collection<? extends RequestEntityResolverAdviceAdapter> resolvers,
-            Collection<? extends RequestEntityResolverAdviceFactory> factories) {
-
-        return mergeResolvers(resolvers,
-                factories,
-                RequestEntityResolverAdviceFactory::singleton);
     }
 
     private static List<ResponseEntityResolverFactory> getResponseEntityResolvers(
@@ -268,25 +227,39 @@ public class HandlerResolverFactoryImpl implements HandlerResolverFactory {
     }
 
     @Override
-    public ParamResolver getParamResolver(Param param) {
+    public ParamResolver getNoEntityParamResolver(Param param) {
         //resolve the fixed parameter resolver
         return paramResolvers.stream().filter(r -> r.supports(param))
-                .findFirst()
                 .map(factory -> Checks.checkNotNull(factory.createResolver(param, getStringConverters(param),
                         rxSerializers),
                         "Failed to create ParamResolver for parameter: " + param))
+                .filter(resolver -> !resolver.isEntityResolver())
+                .findFirst()
                 .orElse(null);
     }
 
     @Override
-    public List<ParamResolverAdvice> getParamResolverAdvices(Param param, ParamResolver resolver) {
+    public List<ParamResolver> getEntityParamResolvers(Param param) {
+        return paramResolvers
+                .stream()
+                .filter(r -> r.supports(param))
+                .map(factory -> Checks.checkNotNull(factory.createResolver(param, getStringConverters(param),
+                        rxSerializers),
+                        "Failed to create ParamResolver for parameter: " + param))
+                .filter(ParamResolver::isEntityResolver)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ParamResolverAdvice> getParamResolverAdvices(Param param, boolean entityAdvice) {
         if (paramResolverAdvices != null && !paramResolverAdvices.isEmpty()) {
-            List<ParamResolverAdvice> advices =
-                    paramResolverAdvices.stream()
-                            .filter(advice -> advice.supports(param))
-                            .map(factory -> Checks.checkNotNull(factory.createResolverAdvice(param, resolver),
-                                    "Failed to create ParamResolverAdvice for parameter: " + param))
-                            .collect(Collectors.toList());
+            List<ParamResolverAdvice> advices = paramResolverAdvices
+                    .stream()
+                    .filter(advice -> advice.supports(param))
+                    .map(factory -> Checks.checkNotNull(factory.createResolverAdvice(param),
+                            "Failed to create ParamResolverAdvice for parameter: " + param))
+                    .filter(advice -> advice.isEntityAdvice() == entityAdvice)
+                    .collect(Collectors.toList());
 
             if (!advices.isEmpty()) {
                 return Collections.unmodifiableList(advices);
@@ -303,34 +276,6 @@ public class HandlerResolverFactoryImpl implements HandlerResolverFactory {
                 .map(factory -> Checks.checkNotNull(factory.createResolver(param),
                         "Failed to create ContextResolver for parameter: " + param))
                 .orElse(null);
-    }
-
-    @Override
-    public List<RequestEntityResolver> getRequestEntityResolvers(Param param) {
-        List<RequestEntityResolver> resolvers = new ArrayList<>();
-        requestEntityResolvers.forEach(factory -> {
-            if (factory.supports(param)) {
-                resolvers.add(factory.createResolver(param, getStringConverters(param), rxSerializers));
-            }
-        });
-        return Collections.unmodifiableList(resolvers);
-    }
-
-    @Override
-    public List<RequestEntityResolverAdvice> getRequestEntityResolverAdvices(Param param) {
-        if (requestEntityResolverAdvices != null && !requestEntityResolverAdvices.isEmpty()) {
-            List<RequestEntityResolverAdvice> advices =
-                    requestEntityResolverAdvices.stream()
-                            .filter(advice -> advice.supports(param))
-                            .map(factory -> Checks.checkNotNull(factory.createResolverAdvice(param),
-                                    "Failed to create RequestEntityResolverAdvice for handler: "
-                                            + param))
-                            .collect(Collectors.toList());
-            if (!advices.isEmpty()) {
-                return Collections.unmodifiableList(advices);
-            }
-        }
-        return Collections.emptyList();
     }
 
     @Override
@@ -381,14 +326,10 @@ public class HandlerResolverFactoryImpl implements HandlerResolverFactory {
                     new LinkedList<>(factory.paramResolvers),
                     new LinkedList<>(factory.paramResolverAdvices),
                     new LinkedList<>(factory.contextResolvers),
-                    new LinkedList<>(factory.requestEntityResolvers),
-                    new LinkedList<>(factory.requestEntityResolverAdvices),
                     new LinkedList<>(factory.responseEntityResolvers),
                     new LinkedList<>(factory.responseEntityResolverAdvices));
         } else {
             return new HandlerConfiguration(attributes,
-                    Collections.emptyList(),
-                    Collections.emptyList(),
                     Collections.emptyList(),
                     Collections.emptyList(),
                     Collections.emptyList(),

@@ -186,7 +186,7 @@ class PathParamResolverTest {
                 param.method(), StringUtils.empty()).get().path()).test(context);
         final ParamResolver resolver = resolverFactory.createResolver(param,
                 ResolverUtils.defaultConverters(param), null);
-        final ParamResolverContext resolverContext = new ParamResolverContextImpl(context);
+        final ParamResolverContext resolverContext = new ParamResolverContextImpl(context, param);
         return resolver.resolve(resolverContext);
     }
 

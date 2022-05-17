@@ -19,11 +19,12 @@ import esa.commons.collection.AttributeMap;
 import io.esastack.restlight.core.context.HttpRequest;
 import io.esastack.restlight.core.context.HttpResponse;
 import io.esastack.restlight.core.context.RequestContext;
+import io.esastack.restlight.core.context.RequestEntity;
 import io.esastack.restlight.core.context.ResponseEntity;
 import io.esastack.restlight.core.context.ResponseEntityChannel;
 import io.esastack.restlight.core.context.impl.RequestContextImpl;
 import io.esastack.restlight.core.resolver.ResolverExecutor;
-import io.esastack.restlight.core.resolver.entity.response.ResponseEntityResolverContext;
+import io.esastack.restlight.core.resolver.ret.entity.ResponseEntityResolverContext;
 import jakarta.ws.rs.core.MultivaluedHashMap;
 import jakarta.ws.rs.ext.WriterInterceptor;
 import jakarta.ws.rs.ext.WriterInterceptorContext;
@@ -61,7 +62,10 @@ class WriterInterceptorContextImplTest {
                 mock(ResolverExecutor.class), mock(OutputStream.class),
                 null, new WriterInterceptor[0]));
         ResolverExecutor<ResponseEntityResolverContext> mockExecutor = mock(ResolverExecutor.class);
-        when(mockExecutor.context()).thenReturn(mock(ResponseEntityResolverContext.class));
+        final ResponseEntityResolverContext resolverContext = mock(ResponseEntityResolverContext.class);
+        when(resolverContext.requestContext()).thenReturn(mock(RequestContext.class));
+        when(resolverContext.httpEntity()).thenReturn(mock(ResponseEntity.class));
+        when(mockExecutor.context()).thenReturn(resolverContext);
         assertDoesNotThrow(() -> new WriterInterceptorContextImpl(mockExecutor,
                 mock(OutputStream.class), new MultivaluedHashMap<>(), null));
 

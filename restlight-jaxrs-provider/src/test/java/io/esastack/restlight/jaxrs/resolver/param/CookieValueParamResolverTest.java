@@ -162,7 +162,7 @@ class CookieValueParamResolverTest {
         final ParamResolver resolver = resolverFactory.createResolver(param,
                 ResolverUtils.defaultConverters(param), null);
         return resolver.resolve(new ParamResolverContextImpl(
-                new RequestContextImpl(request, MockHttpResponse.aMockResponse().build())));
+                new RequestContextImpl(request, MockHttpResponse.aMockResponse().build()), param));
     }
 
     private static class Subject {

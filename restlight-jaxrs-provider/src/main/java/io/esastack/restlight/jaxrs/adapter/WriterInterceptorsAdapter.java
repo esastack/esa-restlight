@@ -18,9 +18,9 @@ package io.esastack.restlight.jaxrs.adapter;
 import esa.commons.Checks;
 import io.esastack.restlight.core.handler.method.HandlerMethod;
 import io.esastack.restlight.core.resolver.ResolverExecutor;
-import io.esastack.restlight.core.resolver.entity.EntityResolverContext;
-import io.esastack.restlight.core.resolver.entity.response.ResponseEntityResolverAdviceAdapter;
-import io.esastack.restlight.core.resolver.entity.response.ResponseEntityResolverContext;
+import io.esastack.restlight.core.resolver.ret.ReturnValueResolverContext;
+import io.esastack.restlight.core.resolver.ret.entity.ResponseEntityResolverAdviceAdapter;
+import io.esastack.restlight.core.resolver.ret.entity.ResponseEntityResolverContext;
 import io.esastack.restlight.jaxrs.impl.ext.WriterInterceptorContextImpl;
 import io.esastack.restlight.jaxrs.util.JaxrsUtils;
 import jakarta.ws.rs.core.MultivaluedMap;
@@ -40,7 +40,7 @@ public class WriterInterceptorsAdapter implements ResponseEntityResolverAdviceAd
 
     @Override
     public void aroundResolve0(ResolverExecutor<ResponseEntityResolverContext> executor) throws Exception {
-        EntityResolverContext context = executor.context();
+        ReturnValueResolverContext context = executor.context();
         if (predicate.test(context.requestContext())) {
             MultivaluedMap<String, Object> headers =
                     JaxrsUtils.convertToMap(context.requestContext().response().headers());

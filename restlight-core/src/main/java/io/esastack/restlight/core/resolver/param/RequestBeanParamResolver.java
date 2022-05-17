@@ -179,7 +179,7 @@ public class RequestBeanParamResolver implements ParamResolverFactory {
         protected ParamResolver findResolver(FieldParam fieldParam,
                                              StringConverterProvider converters,
                                              HandlerResolverFactory resolverFactory) {
-            return resolverFactory.getParamResolver(fieldParam);
+            return resolverFactory.getNoEntityParamResolver(fieldParam);
         }
     }
 

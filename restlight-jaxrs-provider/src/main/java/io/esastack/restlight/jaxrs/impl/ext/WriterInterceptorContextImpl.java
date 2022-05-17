@@ -18,7 +18,7 @@ package io.esastack.restlight.jaxrs.impl.ext;
 import esa.commons.Checks;
 import esa.commons.ClassUtils;
 import io.esastack.restlight.core.resolver.ResolverExecutor;
-import io.esastack.restlight.core.resolver.entity.response.ResponseEntityResolverContext;
+import io.esastack.restlight.core.resolver.ret.entity.ResponseEntityResolverContext;
 import io.esastack.restlight.jaxrs.util.JaxrsUtils;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.container.ContainerResponseFilter;
@@ -49,7 +49,7 @@ public class WriterInterceptorContextImpl extends InterceptorContextImpl impleme
                                         OutputStream outputStream,
                                         MultivaluedMap<String, Object> headers,
                                         WriterInterceptor[] interceptors) {
-        super(underlying.context());
+        super(underlying.context().requestContext(), underlying.context().httpEntity());
         Checks.checkNotNull(outputStream, "outputStream");
         Checks.checkNotNull(headers, "headers");
         this.underlying = underlying;
