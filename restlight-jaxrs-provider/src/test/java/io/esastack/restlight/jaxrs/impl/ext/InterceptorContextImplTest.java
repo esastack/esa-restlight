@@ -19,10 +19,10 @@ import esa.commons.collection.AttributeKey;
 import esa.commons.collection.AttributeMap;
 import esa.commons.collection.Attributes;
 import io.esastack.commons.net.http.MediaType;
-import io.esastack.restlight.core.context.HttpEntity;
 import io.esastack.restlight.core.context.HttpRequest;
 import io.esastack.restlight.core.context.HttpResponse;
 import io.esastack.restlight.core.context.RequestContext;
+import io.esastack.restlight.core.context.ResponseEntity;
 import io.esastack.restlight.core.context.impl.RequestContextImpl;
 import io.esastack.restlight.core.resolver.ret.ReturnValueResolverContext;
 import org.junit.jupiter.api.Test;
@@ -45,7 +45,7 @@ class InterceptorContextImplTest {
         final Attributes attributes = new AttributeMap();
         final RequestContext context0 = new RequestContextImpl(attributes,
                 mock(HttpRequest.class), mock(HttpResponse.class));
-        final HttpEntity entity = mock(HttpEntity.class);
+        final ResponseEntity entity = mock(ResponseEntity.class);
 
         final ReturnValueResolverContext underlying = new ReturnValueResolverContext() {
             @Override
@@ -54,7 +54,7 @@ class InterceptorContextImplTest {
             }
 
             @Override
-            public HttpEntity httpEntity() {
+            public ResponseEntity httpEntity() {
                 return entity;
             }
         };
