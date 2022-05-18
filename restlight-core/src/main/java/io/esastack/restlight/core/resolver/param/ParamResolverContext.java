@@ -18,21 +18,14 @@ package io.esastack.restlight.core.resolver.param;
 
 import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.context.RequestEntity;
-import io.esastack.restlight.core.handler.method.Param;
 import io.esastack.restlight.core.resolver.ResolverContext;
 
 public interface ParamResolverContext extends ResolverContext {
 
     /**
-     * Obtains the {@link Param} to resolve.
-     */
-    Param param();
-
-    /**
      * Obtains the {@link RequestContext} to resolve.
      */
     RequestContext requestContext();
-
 
     /**
      * Obtains the {@link RequestEntity} to resolve.

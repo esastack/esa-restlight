@@ -26,32 +26,23 @@ public class ParamResolverContextImpl implements ParamResolverContext {
 
     private final RequestContext requestContext;
     private final RequestEntity entity;
-    private final Param param;
 
     public ParamResolverContextImpl(RequestContext requestContext,
                                     Param param) {
-        this(requestContext, new RequestEntityImpl(param, requestContext), param);
+        this(requestContext, new RequestEntityImpl(param, requestContext));
     }
 
     public ParamResolverContextImpl(RequestContext requestContext,
-                                    RequestEntity entity,
-                                    Param param) {
+                                    RequestEntity entity) {
         Checks.checkNotNull(requestContext, "requestContext");
         Checks.checkNotNull(entity, "entity");
-        Checks.checkNotNull(param, "param");
         this.requestContext = requestContext;
         this.entity = entity;
-        this.param = param;
     }
 
     @Override
     public RequestEntity httpEntity() {
         return entity;
-    }
-
-    @Override
-    public Param param() {
-        return param;
     }
 
     @Override

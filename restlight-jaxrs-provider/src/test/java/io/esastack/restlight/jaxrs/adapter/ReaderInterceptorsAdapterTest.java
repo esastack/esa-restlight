@@ -68,11 +68,6 @@ class ReaderInterceptorsAdapterTest {
             }
 
             @Override
-            public Param param() {
-                return null;
-            }
-
-            @Override
             public RequestContext requestContext() {
                 return context;
             }

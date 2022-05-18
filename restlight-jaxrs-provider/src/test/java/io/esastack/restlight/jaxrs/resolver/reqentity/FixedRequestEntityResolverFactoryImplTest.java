@@ -101,7 +101,7 @@ class FixedRequestEntityResolverFactoryImplTest {
         final RequestContext context = new RequestContextImpl(request, MockHttpResponse.aMockResponse().build());
         final RequestEntity entity = new RequestEntityImpl(param, context);
         final ParamResolverContext resolverContext =
-                new ParamResolverContextImpl(context, entity, param);
+                new ParamResolverContextImpl(context, entity);
         return ((Result) resolver.resolve(resolverContext)).get();
     }
 

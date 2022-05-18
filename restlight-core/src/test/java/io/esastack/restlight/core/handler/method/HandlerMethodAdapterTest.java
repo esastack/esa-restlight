@@ -83,7 +83,7 @@ class HandlerMethodAdapterTest {
                 () -> new HandlerMethodAdapter<>(context, handlerMethod));
 
         ContextResolver p1Resolver = mock(ContextResolver.class);
-        when(resolverFactory.getContextResolver(handlerMethod.parameters()[0]))
+        when(resolverFactory.getContextResolver(handlerMethod.parameters()[0], context))
                 .thenReturn(p1Resolver);
 
         ParamResolver p2Resolver = mock(ParamResolver.class);

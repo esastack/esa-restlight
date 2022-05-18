@@ -16,24 +16,21 @@
 package io.esastack.restlight.core.resolver.context;
 
 import esa.commons.Checks;
-import io.esastack.restlight.core.DeployContext;
 import io.esastack.restlight.core.resolver.Resolver;
 import io.esastack.restlight.core.resolver.ResolverContext;
 
 public class AdvisedContextResolver implements Resolver<ResolverContext> {
 
     private ContextResolver underlying;
-    private DeployContext deployContext;
 
     public AdvisedContextResolver(ContextResolver underlying) {
         Checks.checkNotNull(underlying, "underlying");
         this.underlying = underlying;
-        deployContext = DeployContextProvider.getDeployContext();
     }
 
     @Override
     public Object resolve(ResolverContext context) throws Exception {
-        return underlying.resolve(new ContextResolverContextImpl(deployContext));
+        return underlying.resolve(new ContextResolverContextImpl());
     }
 }
 

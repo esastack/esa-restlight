@@ -66,7 +66,7 @@ class JaxrsHandlerFactoryTest {
         final Application application = new Application();
         final ResourceContext resourceContext = new ResourceContextImpl(mock(HandlerFactory.class),
                 mock(RequestContext.class));
-        when(resolverFactory.getContextResolver(any())).thenAnswer(invocationOnMock ->
+        when(resolverFactory.getContextResolver(any(), any())).thenAnswer(invocationOnMock ->
                 (ContextResolver) (context) -> {
                     Param param = invocationOnMock.getArgument(0);
                     if (param.type().equals(Configuration.class)) {

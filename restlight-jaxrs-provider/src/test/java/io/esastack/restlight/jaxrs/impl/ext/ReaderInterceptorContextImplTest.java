@@ -64,10 +64,6 @@ class ReaderInterceptorContextImplTest {
 
         final AtomicInteger count = new AtomicInteger();
         final ParamResolverContext underlying = new ParamResolverContext() {
-            @Override
-            public Param param() {
-                return null;
-            }
 
             @Override
             public RequestContext requestContext() {

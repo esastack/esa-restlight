@@ -59,11 +59,10 @@ class MessageBodyReaderAdapterTest {
         final RequestEntity entity = mock(RequestEntity.class);
         final RequestContext context = mock(RequestContext.class);
         final HttpRequest request = mock(HttpRequest.class);
-        final Param param = mock(Param.class);
         when(context.request()).thenReturn(request);
         when(request.headers()).thenReturn(new Http1HeadersImpl());
         ParamResolverContext resolverContext =
-                new ParamResolverContextImpl(context, entity, param);
+                new ParamResolverContextImpl(context, entity);
         MessageBodyReaderAdapter<?> adapter = new MessageBodyReaderAdapter<>(providers);
         assertFalse(adapter.resolve(resolverContext).isOk());
 

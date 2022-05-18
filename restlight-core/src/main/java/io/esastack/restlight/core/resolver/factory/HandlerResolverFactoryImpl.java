@@ -17,6 +17,7 @@ package io.esastack.restlight.core.resolver.factory;
 
 import esa.commons.Checks;
 import esa.commons.collection.Attributes;
+import io.esastack.restlight.core.DeployContext;
 import io.esastack.restlight.core.deploy.HandlerConfiguration;
 import io.esastack.restlight.core.filter.RouteFilter;
 import io.esastack.restlight.core.handler.FutureTransfer;
@@ -29,18 +30,18 @@ import io.esastack.restlight.core.resolver.converter.StringConverter;
 import io.esastack.restlight.core.resolver.converter.StringConverterAdapter;
 import io.esastack.restlight.core.resolver.converter.StringConverterFactory;
 import io.esastack.restlight.core.resolver.converter.StringConverterProvider;
-import io.esastack.restlight.core.resolver.ret.entity.ResponseEntityResolver;
-import io.esastack.restlight.core.resolver.ret.entity.ResponseEntityResolverAdapter;
-import io.esastack.restlight.core.resolver.ret.entity.ResponseEntityResolverAdvice;
-import io.esastack.restlight.core.resolver.ret.entity.ResponseEntityResolverAdviceAdapter;
-import io.esastack.restlight.core.resolver.ret.entity.ResponseEntityResolverAdviceFactory;
-import io.esastack.restlight.core.resolver.ret.entity.ResponseEntityResolverFactory;
 import io.esastack.restlight.core.resolver.param.ParamResolver;
 import io.esastack.restlight.core.resolver.param.ParamResolverAdapter;
 import io.esastack.restlight.core.resolver.param.ParamResolverAdvice;
 import io.esastack.restlight.core.resolver.param.ParamResolverAdviceAdapter;
 import io.esastack.restlight.core.resolver.param.ParamResolverAdviceFactory;
 import io.esastack.restlight.core.resolver.param.ParamResolverFactory;
+import io.esastack.restlight.core.resolver.ret.entity.ResponseEntityResolver;
+import io.esastack.restlight.core.resolver.ret.entity.ResponseEntityResolverAdapter;
+import io.esastack.restlight.core.resolver.ret.entity.ResponseEntityResolverAdvice;
+import io.esastack.restlight.core.resolver.ret.entity.ResponseEntityResolverAdviceAdapter;
+import io.esastack.restlight.core.resolver.ret.entity.ResponseEntityResolverAdviceFactory;
+import io.esastack.restlight.core.resolver.ret.entity.ResponseEntityResolverFactory;
 import io.esastack.restlight.core.serialize.HttpRequestSerializer;
 import io.esastack.restlight.core.serialize.HttpResponseSerializer;
 import io.esastack.restlight.core.spi.FutureTransferFactory;
@@ -269,11 +270,11 @@ public class HandlerResolverFactoryImpl implements HandlerResolverFactory {
     }
 
     @Override
-    public ContextResolver getContextResolver(Param param) {
+    public ContextResolver getContextResolver(Param param, DeployContext deployContext) {
         //resolve the fixed parameter resolver
         return contextResolvers.stream().filter(r -> r.supports(param))
                 .findFirst()
-                .map(factory -> Checks.checkNotNull(factory.createResolver(param),
+                .map(factory -> Checks.checkNotNull(factory.createResolver(param, deployContext),
                         "Failed to create ContextResolver for parameter: " + param))
                 .orElse(null);
     }

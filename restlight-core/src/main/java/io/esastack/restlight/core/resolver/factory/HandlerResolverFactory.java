@@ -15,6 +15,7 @@
  */
 package io.esastack.restlight.core.resolver.factory;
 
+import io.esastack.restlight.core.DeployContext;
 import io.esastack.restlight.core.handler.FutureTransfer;
 import io.esastack.restlight.core.filter.RouteFilter;
 import io.esastack.restlight.core.handler.method.HandlerMethod;
@@ -68,9 +69,10 @@ public interface HandlerResolverFactory {
      * Obtains the {@link ContextResolver} for given {@code param}.
      *
      * @param param param
+     * @param deployContext  deployContext
      * @return context resolver
      */
-    ContextResolver getContextResolver(Param param);
+    ContextResolver getContextResolver(Param param, DeployContext deployContext);
 
     /**
      * Obtains the {@link ParamResolverAdvice}s for given parameter.

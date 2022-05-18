@@ -37,7 +37,6 @@ import io.esastack.restlight.core.resolver.context.ContextResolver;
 import io.esastack.restlight.core.resolver.exception.ExceptionResolver;
 import io.esastack.restlight.core.resolver.factory.HandlerResolverFactory;
 import io.esastack.restlight.core.resolver.param.ParamResolver;
-import io.esastack.restlight.core.resolver.param.ParamResolverContext;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -87,7 +86,7 @@ public class MockHandlerData {
         when(mapping.methodInfo()).thenReturn(methodInfo);
         when(methodInfo.handlerMethod()).thenReturn(handlerMethod);
         context = mock(HandlerContext.class);
-        resolverFactory = mockResolverFactory(handlerMethod);
+        resolverFactory = mockResolverFactory(handlerMethod, context);
         when(context.resolverFactory()).thenReturn(Optional.of(resolverFactory));
         when(context.paramPredicate()).thenReturn(Optional.of(new DefaultResolvableParamPredicate()));
         when(context.handlerAdvicesFactory()).thenReturn(Optional.of(mock(HandlerAdvicesFactory.class)));
@@ -144,12 +143,13 @@ public class MockHandlerData {
         return handlerMethodAdapter;
     }
 
-    private HandlerResolverFactory mockResolverFactory(HandlerMethod handlerMethod) throws Exception {
+    private HandlerResolverFactory mockResolverFactory(HandlerMethod handlerMethod, HandlerContext context)
+            throws Exception {
         final HandlerResolverFactory resolverFactory = mock(HandlerResolverFactory.class);
         ContextResolver p1Resolver = mock(ContextResolver.class);
 
         if (handlerMethod.beanType() == Subject.class) {
-            when(resolverFactory.getContextResolver(handlerMethod.parameters()[0]))
+            when(resolverFactory.getContextResolver(handlerMethod.parameters()[0], context))
                     .thenReturn(p1Resolver);
             when(p1Resolver.resolve(any())).thenReturn(null);
 

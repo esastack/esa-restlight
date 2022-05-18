@@ -68,7 +68,7 @@ public class JaxrsHandlerFactory extends HandlerFactoryImpl {
             Object[] consArgs = new Object[resolvable.constructor.getParameterCount()];
             ResolvableParam<ConstructorParam, ContextResolver>[] consParams = resolvable.consParamResolvers;
             int index = 0;
-            ContextResolverContext resolverContext = new ContextResolverContextImpl(handlerContext);
+            ContextResolverContext resolverContext = new ContextResolverContextImpl();
             for (ResolvableParam<ConstructorParam, ContextResolver> param : consParams) {
                 try {
                     consArgs[index++] = param.resolver().resolve(resolverContext);
@@ -106,7 +106,7 @@ public class JaxrsHandlerFactory extends HandlerFactoryImpl {
                 if (r.resolver() != null) {
                     //it may return a null value
                     try {
-                        Object arg = r.resolver().resolve(new ContextResolverContextImpl(handlerContext));
+                        Object arg = r.resolver().resolve(new ContextResolverContextImpl());
                         ReflectionUtils.invokeMethod(param.method(), instance, arg);
                     } catch (InvocationTargetException ex) {
                         throw new IllegalStateException("Failed to invoke method: [" + param.method() + "]",
@@ -123,7 +123,7 @@ public class JaxrsHandlerFactory extends HandlerFactoryImpl {
                 if (r.resolver() != null) {
                     try {
                         BeanUtils.setFieldValue(instance, param.name(),
-                                r.resolver().resolve(new ContextResolverContextImpl(handlerContext)));
+                                r.resolver().resolve(new ContextResolverContextImpl()));
                     } catch (Exception e) {
                         //wrap exception
                         throw WebServerException.wrap(e);
@@ -144,6 +144,7 @@ public class JaxrsHandlerFactory extends HandlerFactoryImpl {
         private final ResolvableParam<ConstructorParam, ContextResolver>[] consParamResolvers;
         private final ResolvableParam<MethodParam, ContextResolver>[] setterParamResolvers;
         private final ResolvableParam<FieldParam, ContextResolver>[] fieldParamResolvers;
+        private final DeployContext context;
 
         private ResolvableProvider(Class<?> clazz, DeployContext context) {
             HandlerResolverFactory resolverFactory = context.resolverFactory()
@@ -153,6 +154,7 @@ public class JaxrsHandlerFactory extends HandlerFactoryImpl {
             this.constructor = ConstructorUtils.extractResolvable(clazz, resolvable);
             Checks.checkState(this.constructor != null,
                     "There is no suitable constructor to instantiate class: " + clazz.getName());
+            this.context = context;
             this.consParamResolvers = contextResolversOfCons(constructor, resolvable, resolverFactory);
             this.setterParamResolvers = contextResolversOfSetter(clazz, resolvable, resolverFactory);
             this.fieldParamResolvers = contextResolversOfField(clazz, resolvable, resolverFactory);
@@ -168,7 +170,7 @@ public class JaxrsHandlerFactory extends HandlerFactoryImpl {
             for (int i = 0; i < constructor.getParameterCount(); i++) {
                 ConstructorParam param = new ConstructorParamImpl(constructor, i);
                 if (predicate.test(param)) {
-                    params.add(new ResolvableParam<>(param, factory.getContextResolver(param)));
+                    params.add(new ResolvableParam<>(param, factory.getContextResolver(param, context)));
                 }
             }
             return params.toArray(new ResolvableParam[0]);
@@ -187,7 +189,7 @@ public class JaxrsHandlerFactory extends HandlerFactoryImpl {
                     .forEach(m -> {
                         MethodParam param = new MethodParamImpl(m, 0);
                         if (predicate.test(param)) {
-                            params.add(new ResolvableParam<>(param, factory.getContextResolver(param)));
+                            params.add(new ResolvableParam<>(param, factory.getContextResolver(param, context)));
                         }
                     });
             return params.toArray(new ResolvableParam[0]);
@@ -204,7 +206,7 @@ public class JaxrsHandlerFactory extends HandlerFactoryImpl {
                     .forEach(f -> {
                         FieldParam param = new FieldParamImpl(f);
                         if (predicate.test(param)) {
-                            params.add(new ResolvableParam<>(param, factory.getContextResolver(param)));
+                            params.add(new ResolvableParam<>(param, factory.getContextResolver(param, context)));
                         }
                     });
             return params.toArray(new ResolvableParam[0]);

@@ -111,7 +111,7 @@ public class HandlerMethodAdapter<H extends HandlerMethod> implements HandlerMet
             return fixedResolverWrap;
         }
 
-        ContextResolver contextResolver = factory.getContextResolver(param);
+        ContextResolver contextResolver = factory.getContextResolver(param, context);
         if (contextResolver != null) {
             return new ResolvableParam<>(param, new AdvisedContextResolver(contextResolver));
         } else {

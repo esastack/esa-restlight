@@ -16,14 +16,7 @@
 
 package io.esastack.restlight.core.resolver.context;
 
-import io.esastack.restlight.core.DeployContext;
 import io.esastack.restlight.core.resolver.ResolverContext;
 
 public interface ContextResolverContext extends ResolverContext {
-
-    /**
-     *
-     * Obtains the {@link DeployContext} to resolve.
-     */
-    DeployContext deployContext();
 }

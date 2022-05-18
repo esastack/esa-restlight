@@ -209,6 +209,7 @@ public class HandlerFactoryImpl implements HandlerFactory {
         private final ResolvableParam<ConstructorParam, Resolver>[] consParamResolvers;
         private final ResolvableParam<MethodParam, Resolver>[] setterParamResolvers;
         private final ResolvableParam<FieldParam, Resolver>[] fieldParamResolvers;
+        private final HandlerContext context;
 
         private ResolvableHandler(Class<?> clazz, HandlerContext context) {
             ResolvableParamPredicate resolvable = context.paramPredicate()
@@ -221,6 +222,7 @@ public class HandlerFactoryImpl implements HandlerFactory {
             this.consParamResolvers = mergeConsParamResolvers(constructor, resolvable, resolverFactory);
             this.setterParamResolvers = mergeSetterParamResolvers(clazz, resolvable, resolverFactory);
             this.fieldParamResolvers = mergeFieldParamResolvers(clazz, resolvable, resolverFactory);
+            this.context = context;
         }
 
         @SuppressWarnings("unchecked")
@@ -273,7 +275,7 @@ public class HandlerFactoryImpl implements HandlerFactory {
                 return new ResolvableParam<>(param, new AdvisedParamResolver(Collections.singletonList(paramResolver),
                         factory.getParamResolverAdvices(param, false)));
             } else {
-                ContextResolver contextResolver = factory.getContextResolver(param);
+                ContextResolver contextResolver = factory.getContextResolver(param, context);
                 if (contextResolver != null) {
                     return new ResolvableParam<>(param, new AdvisedContextResolver(contextResolver));
                 } else {
