@@ -37,6 +37,8 @@ import io.esastack.restlight.core.resolver.context.ContextResolver;
 import io.esastack.restlight.core.resolver.exception.ExceptionResolver;
 import io.esastack.restlight.core.resolver.factory.HandlerResolverFactory;
 import io.esastack.restlight.core.resolver.param.ParamResolver;
+import io.esastack.restlight.core.resolver.param.entity.AdvisedRequestEntityResolverProvider;
+import io.esastack.restlight.core.resolver.param.entity.RequestEntityResolver;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -149,18 +151,25 @@ public class MockHandlerData {
         ContextResolver p1Resolver = mock(ContextResolver.class);
 
         if (handlerMethod.beanType() == Subject.class) {
-            when(resolverFactory.getContextResolver(handlerMethod.parameters()[0], context))
+            when(resolverFactory.getContextResolver(handlerMethod.parameters()[0]))
                     .thenReturn(p1Resolver);
             when(p1Resolver.resolve(any())).thenReturn(null);
 
             ParamResolver p2Resolver = mock(ParamResolver.class);
-            when(resolverFactory.getNoEntityParamResolver(handlerMethod.parameters()[1]))
+            when(resolverFactory.getParamResolver(handlerMethod.parameters()[1]))
                     .thenReturn(p2Resolver);
             when(p2Resolver.resolve(any())).thenReturn(null);
 
-            List<ParamResolver> p3Resolver = mock(List.class);
-            when(resolverFactory.getEntityParamResolvers(handlerMethod.parameters()[2]))
+            when(context.resolverFactory()).thenReturn(Optional.of(resolverFactory));
+            List<RequestEntityResolver> p3Resolver = mock(List.class);
+            when(resolverFactory.getRequestEntityResolvers(handlerMethod.parameters()[2]))
                     .thenReturn(p3Resolver);
+            AdvisedRequestEntityResolverProvider resolverProvider = new AdvisedRequestEntityResolverProvider();
+            ParamResolver paramResolver = resolverProvider.factoryBean(context).get()
+                    .createResolver(handlerMethod.parameters()[2], null, null, resolverFactory);
+            when(resolverFactory.getParamResolver(handlerMethod.parameters()[2]))
+                    .thenReturn(paramResolver);
+
         }
         return resolverFactory;
     }

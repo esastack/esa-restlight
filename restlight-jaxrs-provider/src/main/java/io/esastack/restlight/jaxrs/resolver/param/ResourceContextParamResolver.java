@@ -19,6 +19,7 @@ import esa.commons.Checks;
 import io.esastack.restlight.core.DeployContext;
 import io.esastack.restlight.core.handler.method.Param;
 import io.esastack.restlight.core.resolver.converter.StringConverterProvider;
+import io.esastack.restlight.core.resolver.factory.HandlerResolverFactory;
 import io.esastack.restlight.core.resolver.param.ParamResolver;
 import io.esastack.restlight.core.resolver.param.ParamResolverContext;
 import io.esastack.restlight.core.resolver.param.ParamResolverFactory;
@@ -45,13 +46,14 @@ public class ResourceContextParamResolver implements ParamResolverFactory {
     }
 
     @Override
-    public ParamResolver createResolver(Param param,
-                                        StringConverterProvider converters,
-                                        List<? extends HttpRequestSerializer> serializers) {
+    public ParamResolver<ParamResolverContext> createResolver(Param param,
+                                                              StringConverterProvider converters,
+                                                              List<? extends HttpRequestSerializer> serializers,
+                                                              HandlerResolverFactory resolverFactory) {
         return new ResourceContextResolver(context);
     }
 
-    private static class ResourceContextResolver implements ParamResolver {
+    private static class ResourceContextResolver implements ParamResolver<ParamResolverContext> {
 
         private final DeployContext context;
 

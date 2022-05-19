@@ -48,7 +48,6 @@ import io.esastack.restlight.core.util.ConstructorUtils;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -270,12 +269,12 @@ public class HandlerFactoryImpl implements HandlerFactory {
 
         private <P extends Param> ResolvableParam<P, Resolver> getResolverWrap(P param,
                                                                                HandlerResolverFactory factory) {
-            ParamResolver paramResolver = factory.getNoEntityParamResolver(param);
+            ParamResolver paramResolver = factory.getParamResolver(param);
             if (paramResolver != null) {
-                return new ResolvableParam<>(param, new AdvisedParamResolver(Collections.singletonList(paramResolver),
-                        factory.getParamResolverAdvices(param, false)));
+                return new ResolvableParam<>(param, new AdvisedParamResolver(paramResolver,
+                        factory.getParamResolverAdvices(param, paramResolver)));
             } else {
-                ContextResolver contextResolver = factory.getContextResolver(param, context);
+                ContextResolver contextResolver = factory.getContextResolver(param);
                 if (contextResolver != null) {
                     return new ResolvableParam<>(param, new AdvisedContextResolver(contextResolver));
                 } else {

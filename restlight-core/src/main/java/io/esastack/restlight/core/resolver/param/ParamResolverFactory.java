@@ -20,6 +20,7 @@ import esa.commons.spi.SPI;
 import io.esastack.restlight.core.handler.method.Param;
 import io.esastack.restlight.core.resolver.converter.StringConverter;
 import io.esastack.restlight.core.resolver.converter.StringConverterProvider;
+import io.esastack.restlight.core.resolver.factory.HandlerResolverFactory;
 import io.esastack.restlight.core.serialize.HttpRequestSerializer;
 import io.esastack.restlight.core.util.Ordered;
 
@@ -31,7 +32,7 @@ public interface ParamResolverFactory extends ParamPredicate, Ordered {
     /**
      * Converts given {@link ParamResolverAdapter} to {@link ParamResolverFactory} which
      * always use the given {@link ParamResolverAdapter} as the result of
-     * {@link #createResolver(Param, StringConverterProvider, List)}
+     * {@link #createResolver(Param, StringConverterProvider, List, HandlerResolverFactory)}
      *
      * @param resolver resolver
      * @return of factory bean
@@ -47,11 +48,13 @@ public interface ParamResolverFactory extends ParamPredicate, Ordered {
      * @param converters    the provider which is used to get a {@link StringConverter} when resolving
      *                      given {@code param}.
      * @param serializers   all the {@link HttpRequestSerializer}s of current context
+     * @param resolverFactory resolverFactory.
      * @return resolver
      */
     ParamResolver createResolver(Param param,
                                  StringConverterProvider converters,
-                                 List<? extends HttpRequestSerializer> serializers);
+                                 List<? extends HttpRequestSerializer> serializers,
+                                 HandlerResolverFactory resolverFactory);
 
     /**
      * Default to HIGHEST_PRECEDENCE.
@@ -75,7 +78,8 @@ public interface ParamResolverFactory extends ParamPredicate, Ordered {
         @Override
         public ParamResolver createResolver(Param param,
                                             StringConverterProvider converters,
-                                            List<? extends HttpRequestSerializer> serializers) {
+                                            List<? extends HttpRequestSerializer> serializers,
+                                            HandlerResolverFactory resolverFactory) {
             return resolver;
         }
 

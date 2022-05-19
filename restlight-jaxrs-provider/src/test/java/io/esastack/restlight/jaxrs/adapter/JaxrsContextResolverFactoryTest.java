@@ -67,11 +67,11 @@ class JaxrsContextResolverFactoryTest {
                 .set(Collections.singletonList(io.esastack.commons.net.http.MediaType.ALL));
         when(providers.getContextResolver(String.class, MediaType.WILDCARD_TYPE)).thenReturn(type -> "Hello");
         assertEquals("Hello", resolver.createResolver(new MethodParamImpl(method, 0),
-                null, null).resolve(resolverContext));
+                null, null, null).resolve(resolverContext));
         attributes.attr(ProducesPredicate.COMPATIBLE_MEDIA_TYPES)
                 .set(Collections.singletonList(io.esastack.commons.net.http.MediaType.APPLICATION_JSON));
         assertNull(resolver.createResolver(new MethodParamImpl(method, 0),
-                null, null).resolve(resolverContext));
+                null, null, null).resolve(resolverContext));
     }
 
     private String demo(@Context String name, String address) {

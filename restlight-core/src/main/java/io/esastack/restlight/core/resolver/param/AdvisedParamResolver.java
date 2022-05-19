@@ -15,26 +15,29 @@
  */
 package io.esastack.restlight.core.resolver.param;
 
-import esa.commons.Checks;
 import io.esastack.restlight.core.resolver.Resolver;
 
 import java.util.List;
 
 public class AdvisedParamResolver implements Resolver<ParamResolverContext> {
 
-    private final ParamResolver[] resolvers;
+    private final ParamResolver resolver;
     private final ParamResolverAdvice[] advices;
+    private final boolean absentAdvices;
 
-    public AdvisedParamResolver(List<ParamResolver> resolvers, List<ParamResolverAdvice> advices) {
-        Checks.checkNotNull(resolvers, "resolvers");
-        Checks.checkNotNull(advices, "advices");
-        this.resolvers = resolvers.toArray(new ParamResolver[0]);
-        this.advices = advices.toArray(new ParamResolverAdvice[0]);
+    public AdvisedParamResolver(ParamResolver resolver, List<ParamResolverAdvice> advices) {
+        this.resolver = resolver;
+        this.absentAdvices = (advices == null || advices.isEmpty());
+        this.advices = (advices == null ? new ParamResolverAdvice[0] : advices.toArray(new ParamResolverAdvice[0]));
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public Object resolve(ParamResolverContext context) throws Exception {
-        return new ParamResolverExecutor(context, resolvers, advices).proceed();
+        if (absentAdvices) {
+            return resolver.resolve(context);
+        }
+        return new ParamResolverExecutor(context, resolver, advices).proceed();
     }
 }
 

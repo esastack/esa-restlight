@@ -23,8 +23,6 @@ import io.esastack.restlight.core.handler.method.Param;
 import io.esastack.restlight.core.resolver.converter.StringConverter;
 import io.esastack.restlight.core.resolver.converter.StringConverterProvider;
 import io.esastack.restlight.core.resolver.nav.NameAndValue;
-import io.esastack.restlight.core.resolver.param.ParamResolver;
-import io.esastack.restlight.core.resolver.param.ParamResolverContext;
 import io.esastack.restlight.core.resolver.param.ParamResolverFactory;
 import io.esastack.restlight.core.serialize.HttpRequestSerializer;
 
@@ -37,7 +35,7 @@ import static io.esastack.restlight.core.resolver.param.entity.FlexibleRequestEn
  * Implementation of {@link ParamResolverFactory} for resolving argument that annotated by the
  * {@code RequestBody} and {@link RequestSerializer}, {@link Serializer}
  */
-public abstract class FixedRequestEntityResolverFactory implements ParamResolverFactory {
+public abstract class FixedRequestEntityResolverFactory implements RequestEntityResolverFactory {
 
     @Override
     public boolean supports(Param param) {
@@ -56,7 +54,7 @@ public abstract class FixedRequestEntityResolverFactory implements ParamResolver
     }
 
     @Override
-    public ParamResolver createResolver(Param param,
+    public RequestEntityResolver createResolver(Param param,
                                         StringConverterProvider converters,
                                         List<? extends HttpRequestSerializer> serializers) {
         final Class<? extends HttpRequestSerializer> target = findRequestSerializer(param);
@@ -123,7 +121,7 @@ public abstract class FixedRequestEntityResolverFactory implements ParamResolver
         return target;
     }
 
-    private class Resolver implements ParamResolver {
+    private class Resolver implements RequestEntityResolver {
 
         private final NameAndValue<String> nav;
         private final StringConverter converter;
@@ -138,7 +136,7 @@ public abstract class FixedRequestEntityResolverFactory implements ParamResolver
         }
 
         @Override
-        public Result<?, Void> resolve(ParamResolverContext context) throws Exception {
+        public Result<?, Void> resolve(RequestEntityResolverContext context) throws Exception {
             return checkRequired(nav, converter, serializer.deserialize(context.httpEntity()));
         }
     }

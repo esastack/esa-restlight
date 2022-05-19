@@ -19,6 +19,8 @@ import esa.commons.Checks;
 import esa.commons.collection.Attributes;
 import io.esastack.restlight.core.resolver.context.ContextResolverFactory;
 import io.esastack.restlight.core.resolver.converter.StringConverterFactory;
+import io.esastack.restlight.core.resolver.param.entity.RequestEntityResolverAdviceFactory;
+import io.esastack.restlight.core.resolver.param.entity.RequestEntityResolverFactory;
 import io.esastack.restlight.core.resolver.ret.entity.ResponseEntityResolverAdviceFactory;
 import io.esastack.restlight.core.resolver.ret.entity.ResponseEntityResolverFactory;
 import io.esastack.restlight.core.resolver.param.ParamResolverAdviceFactory;
@@ -36,6 +38,8 @@ public class HandlerConfiguration {
     private final List<ParamResolverFactory> paramResolvers;
     private final List<ParamResolverAdviceFactory> paramResolverAdvices;
     private final List<ContextResolverFactory> contextResolvers;
+    private final List<RequestEntityResolverFactory> requestEntityResolvers;
+    private final List<RequestEntityResolverAdviceFactory> requestEntityResolverAdvices;
     private final List<ResponseEntityResolverFactory> responseEntityResolvers;
     private final List<ResponseEntityResolverAdviceFactory> responseEntityResolverAdvices;
 
@@ -45,6 +49,8 @@ public class HandlerConfiguration {
                                 List<ParamResolverFactory> paramResolvers,
                                 List<ParamResolverAdviceFactory> paramResolverAdvices,
                                 List<ContextResolverFactory> contextResolvers,
+                                List<RequestEntityResolverFactory> requestEntityResolvers,
+                                List<RequestEntityResolverAdviceFactory> requestEntityResolverAdvices,
                                 List<ResponseEntityResolverFactory> responseEntityResolvers,
                                 List<ResponseEntityResolverAdviceFactory> responseEntityResolverAdvices) {
         Checks.checkNotNull(attributes, "attributes");
@@ -54,6 +60,8 @@ public class HandlerConfiguration {
         this.paramResolvers = paramResolvers;
         this.paramResolverAdvices = paramResolverAdvices;
         this.contextResolvers = contextResolvers;
+        this.requestEntityResolvers = requestEntityResolvers;
+        this.requestEntityResolverAdvices = requestEntityResolverAdvices;
         this.responseEntityResolvers = responseEntityResolvers;
         this.responseEntityResolverAdvices = responseEntityResolverAdvices;
     }
@@ -76,6 +84,14 @@ public class HandlerConfiguration {
 
     public List<ContextResolverFactory> getContextResolvers() {
         return contextResolvers;
+    }
+
+    public List<RequestEntityResolverFactory> getRequestEntityResolvers() {
+        return requestEntityResolvers;
+    }
+
+    public List<RequestEntityResolverAdviceFactory> getRequestEntityResolverAdvices() {
+        return requestEntityResolverAdvices;
     }
 
     public List<ResponseEntityResolverFactory> getResponseEntityResolvers() {
@@ -111,6 +127,18 @@ public class HandlerConfiguration {
     void addContextResolvers(Collection<? extends ContextResolverFactory> resolvers) {
         if (resolvers != null) {
             this.contextResolvers.addAll(resolvers);
+        }
+    }
+
+    void addRequestEntityResolvers(Collection<? extends RequestEntityResolverFactory> resolvers) {
+        if (resolvers != null) {
+            this.requestEntityResolvers.addAll(resolvers);
+        }
+    }
+
+    void addRequestEntityResolverAdvices(Collection<? extends RequestEntityResolverAdviceFactory> advices) {
+        if (advices != null) {
+            this.requestEntityResolverAdvices.addAll(advices);
         }
     }
 

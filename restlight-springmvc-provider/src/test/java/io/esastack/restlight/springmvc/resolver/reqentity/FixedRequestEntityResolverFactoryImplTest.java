@@ -31,6 +31,9 @@ import io.esastack.restlight.core.resolver.param.ParamResolver;
 import io.esastack.restlight.core.resolver.param.ParamResolverContext;
 import io.esastack.restlight.core.resolver.param.ParamResolverContextImpl;
 import io.esastack.restlight.core.resolver.param.entity.FixedRequestEntityResolverFactory;
+import io.esastack.restlight.core.resolver.param.entity.RequestEntityResolver;
+import io.esastack.restlight.core.resolver.param.entity.RequestEntityResolverContext;
+import io.esastack.restlight.core.resolver.param.entity.RequestEntityResolverContextImpl;
 import io.esastack.restlight.core.serialize.HttpRequestSerializer;
 import io.esastack.restlight.core.serialize.JacksonHttpBodySerializer;
 import io.esastack.restlight.core.serialize.JacksonSerializer;
@@ -99,13 +102,14 @@ class FixedRequestEntityResolverFactoryImplTest {
     private static Object createResolverAndResolve(HttpRequest request, String method) throws Exception {
         final MethodParam param = handlerMethods.get(method).parameters()[0];
         assertTrue(resolverFactory.supports(param));
-        final ParamResolver resolver = resolverFactory.createResolver(param,
+        final RequestEntityResolver resolver = resolverFactory.createResolver(param,
                 ResolverUtils.defaultConverters(param),
                 Collections.singletonList(new JacksonHttpBodySerializer()));
 
         final RequestContext context = new RequestContextImpl(request,
                 MockHttpResponse.aMockResponse().build());
-        ParamResolverContext resolverContext = new ParamResolverContextImpl(context, param);
+        RequestEntityResolverContext resolverContext = new RequestEntityResolverContextImpl(
+                new RequestEntityImpl(param, context), context);
         return ((Result) resolver.resolve(resolverContext)).get();
     }
 

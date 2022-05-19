@@ -21,6 +21,8 @@ import io.esastack.restlight.core.handler.method.HandlerMethod;
 import io.esastack.restlight.core.resolver.context.ContextResolverAdapter;
 import io.esastack.restlight.core.resolver.param.ParamResolverAdapter;
 import io.esastack.restlight.core.resolver.param.ParamResolverAdviceAdapter;
+import io.esastack.restlight.core.resolver.param.entity.RequestEntityResolverAdapter;
+import io.esastack.restlight.core.resolver.param.entity.RequestEntityResolverAdviceAdapter;
 import io.esastack.restlight.core.resolver.ret.entity.ResponseEntityResolverAdapter;
 import io.esastack.restlight.core.resolver.ret.entity.ResponseEntityResolverAdviceAdapter;
 
@@ -64,6 +66,22 @@ public interface ConfigurableHandler {
      * @return this configurable
      */
     ConfigurableHandler addContextResolver(ContextResolverAdapter resolver);
+
+    /**
+     * Add {@link RequestEntityResolverAdapter}.
+     *
+     * @param resolver resolver corresponding with specified {@link HandlerMethod}.
+     * @return this configurable
+     */
+    ConfigurableHandler addRequestEntityResolver(RequestEntityResolverAdapter resolver);
+
+    /**
+     * Add {@link RequestEntityResolverAdviceAdapter}s.
+     *
+     * @param advice advices corresponding with specified {@link HandlerMethod}.
+     * @return this configurable
+     */
+    ConfigurableHandler addRequestEntityResolverAdvice(RequestEntityResolverAdviceAdapter advice);
 
     /**
      * Add {@link ResponseEntityResolverAdapter}s.

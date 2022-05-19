@@ -185,7 +185,7 @@ class PathParamResolverTest {
         new PatternsPredicate(JaxrsMappingUtils.extractMapping(SUBJECT.getClass(),
                 param.method(), StringUtils.empty()).get().path()).test(context);
         final ParamResolver resolver = resolverFactory.createResolver(param,
-                ResolverUtils.defaultConverters(param), null);
+                ResolverUtils.defaultConverters(param), null, null);
         final ParamResolverContext resolverContext = new ParamResolverContextImpl(context, param);
         return resolver.resolve(resolverContext);
     }

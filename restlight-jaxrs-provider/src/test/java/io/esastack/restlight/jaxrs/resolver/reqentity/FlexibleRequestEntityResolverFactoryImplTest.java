@@ -26,10 +26,10 @@ import io.esastack.restlight.core.handler.method.HandlerMethod;
 import io.esastack.restlight.core.handler.method.MethodParam;
 import io.esastack.restlight.core.mock.MockHttpRequest;
 import io.esastack.restlight.core.mock.MockHttpResponse;
-import io.esastack.restlight.core.resolver.param.ParamResolver;
-import io.esastack.restlight.core.resolver.param.ParamResolverContext;
-import io.esastack.restlight.core.resolver.param.ParamResolverContextImpl;
 import io.esastack.restlight.core.resolver.param.entity.FlexibleRequestEntityResolverFactory;
+import io.esastack.restlight.core.resolver.param.entity.RequestEntityResolver;
+import io.esastack.restlight.core.resolver.param.entity.RequestEntityResolverContext;
+import io.esastack.restlight.core.resolver.param.entity.RequestEntityResolverContextImpl;
 import io.esastack.restlight.core.serialize.GsonHttpBodySerializer;
 import io.esastack.restlight.core.serialize.HttpRequestSerializer;
 import io.esastack.restlight.core.serialize.JacksonHttpBodySerializer;
@@ -97,7 +97,7 @@ class FlexibleRequestEntityResolverFactoryImplTest {
                 return entity.mediaType().isCompatibleWith(MediaType.APPLICATION_XML);
             }
         }, new JacksonHttpBodySerializer());
-        ParamResolver resolver = new FlexibleRequestEntityResolverFactoryImpl()
+        RequestEntityResolver resolver = new FlexibleRequestEntityResolverFactoryImpl()
                 .createResolver(param, ResolverUtils.defaultConverters(param), serializers);
 
         final Pojo origin = new Pojo(1024, "hello restlight");
@@ -107,8 +107,9 @@ class FlexibleRequestEntityResolverFactoryImplTest {
                 .withBody(JacksonSerializer.getDefaultMapper().writeValueAsBytes(origin))
                 .build();
         final RequestContext context = new RequestContextImpl(request, MockHttpResponse.aMockResponse().build());
-        final ParamResolverContext resolverContext = new ParamResolverContextImpl(context, param);
-        final Result resolvedWithJson = (Result) resolver.resolve(resolverContext);
+        final RequestEntityResolverContext resolverContext = new RequestEntityResolverContextImpl(
+                new RequestEntityImpl(param, context), context);
+        final Result resolvedWithJson = resolver.resolve(resolverContext);
         assertEquals(origin, resolvedWithJson.get());
 
         final HttpRequest request2 = MockHttpRequest
@@ -117,8 +118,9 @@ class FlexibleRequestEntityResolverFactoryImplTest {
                 .withBody(JacksonSerializer.getDefaultMapper().writeValueAsBytes(origin))
                 .build();
         final RequestContext context2 = new RequestContextImpl(request2, MockHttpResponse.aMockResponse().build());
-        final ParamResolverContext resolverContext2 = new ParamResolverContextImpl(context2, param);
-        final Result resolvedWithXml = (Result) resolver.resolve(resolverContext2);
+        final RequestEntityResolverContext resolverContext2 = new RequestEntityResolverContextImpl(
+                new RequestEntityImpl(param, context2), context2);
+        final Result resolvedWithXml = resolver.resolve(resolverContext2);
 
         assertEquals(origin, resolvedWithXml.get());
     }
@@ -126,15 +128,15 @@ class FlexibleRequestEntityResolverFactoryImplTest {
     private static Object createResolverAndResolve(HttpRequest request, String method) throws Exception {
         final MethodParam param = handlerMethods.get(method).parameters()[0];
         assertTrue(resolverFactory.supports(param));
-        final ParamResolver resolver = resolverFactory.createResolver(param,
+        final RequestEntityResolver resolver = resolverFactory.createResolver(param,
                 ResolverUtils.defaultConverters(param),
                 Collections.singletonList(new JacksonHttpBodySerializer()));
 
         final RequestContext context = new RequestContextImpl(request, MockHttpResponse.aMockResponse().build());
         final RequestEntity entity = new RequestEntityImpl(param, context);
-        final ParamResolverContext resolverContext =
-                new ParamResolverContextImpl(context, param);
-        return ((Result) resolver.resolve(resolverContext)).get();
+        final RequestEntityResolverContext resolverContext =
+                new RequestEntityResolverContextImpl(entity, context);
+        return resolver.resolve(resolverContext).get();
     }
 
     private static class Subject {

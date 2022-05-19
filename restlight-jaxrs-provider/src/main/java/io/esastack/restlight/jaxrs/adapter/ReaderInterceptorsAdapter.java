@@ -16,14 +16,13 @@
 package io.esastack.restlight.jaxrs.adapter;
 
 import esa.commons.Checks;
-import io.esastack.restlight.core.handler.method.Param;
 import io.esastack.restlight.core.resolver.ResolverExecutor;
-import io.esastack.restlight.core.resolver.param.ParamResolverAdviceAdapter;
-import io.esastack.restlight.core.resolver.param.ParamResolverContext;
+import io.esastack.restlight.core.resolver.param.entity.RequestEntityResolverAdviceAdapter;
+import io.esastack.restlight.core.resolver.param.entity.RequestEntityResolverContext;
 import io.esastack.restlight.jaxrs.impl.ext.ReaderInterceptorContextImpl;
 import jakarta.ws.rs.ext.ReaderInterceptor;
 
-public class ReaderInterceptorsAdapter implements ParamResolverAdviceAdapter {
+public class ReaderInterceptorsAdapter implements RequestEntityResolverAdviceAdapter {
 
     private final ReaderInterceptor[] interceptors;
     private final ProvidersPredicate predicate;
@@ -36,18 +35,13 @@ public class ReaderInterceptorsAdapter implements ParamResolverAdviceAdapter {
     }
 
     @Override
-    public Object aroundResolve(ResolverExecutor<ParamResolverContext> executor) throws Exception {
-        ParamResolverContext context = executor.context();
+    public Object aroundResolve(ResolverExecutor<RequestEntityResolverContext> executor) throws Exception {
+        RequestEntityResolverContext context = executor.context();
         if (predicate.test(context.requestContext())) {
             return new ReaderInterceptorContextImpl(executor, interceptors).proceed();
         } else {
             return executor.proceed();
         }
-    }
-
-    @Override
-    public boolean supports(Param param) {
-        return true;
     }
 }
 

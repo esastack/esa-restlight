@@ -24,9 +24,8 @@ import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.context.RequestEntity;
 import io.esastack.restlight.core.context.impl.RequestContextImpl;
 import io.esastack.restlight.core.handler.method.HandlerMethod;
-import io.esastack.restlight.core.handler.method.Param;
 import io.esastack.restlight.core.resolver.ResolverExecutor;
-import io.esastack.restlight.core.resolver.param.ParamResolverContext;
+import io.esastack.restlight.core.resolver.param.entity.RequestEntityResolverContext;
 import jakarta.ws.rs.ext.ReaderInterceptor;
 import org.junit.jupiter.api.Test;
 
@@ -61,7 +60,7 @@ class ReaderInterceptorsAdapterTest {
         final Attributes attrs = new AttributeMap();
         final RequestContext context =
                 new RequestContextImpl(attrs, mock(HttpRequest.class), mock(HttpResponse.class));
-        final ParamResolverContext context1 = new ParamResolverContext() {
+        final RequestEntityResolverContext context1 = new RequestEntityResolverContext() {
             @Override
             public RequestEntity httpEntity() {
                 return mock(RequestEntity.class);
@@ -72,10 +71,10 @@ class ReaderInterceptorsAdapterTest {
                 return context;
             }
         };
-        final ResolverExecutor<ParamResolverContext> executor =
-                new ResolverExecutor<ParamResolverContext>() {
+        final ResolverExecutor<RequestEntityResolverContext> executor =
+                new ResolverExecutor<RequestEntityResolverContext>() {
                     @Override
-                    public ParamResolverContext context() {
+                    public RequestEntityResolverContext context() {
                         return context1;
                     }
 

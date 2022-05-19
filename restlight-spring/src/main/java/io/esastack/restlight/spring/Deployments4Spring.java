@@ -24,12 +24,10 @@ import io.esastack.restlight.core.AbstractRestlight;
 import io.esastack.restlight.core.Deployments;
 import io.esastack.restlight.core.config.RestlightOptions;
 import io.esastack.restlight.core.deploy.HandlerConfigure;
-import io.esastack.restlight.core.dispatcher.IExceptionHandler;
-import io.esastack.restlight.core.filter.Filter;
-import io.esastack.restlight.core.filter.RouteFilterAdapter;
+import io.esastack.restlight.core.handler.HandlerRegistryAware;
 import io.esastack.restlight.core.handler.HandlerMapping;
 import io.esastack.restlight.core.handler.HandlerMappingProvider;
-import io.esastack.restlight.core.handler.HandlerRegistryAware;
+import io.esastack.restlight.core.filter.RouteFilterAdapter;
 import io.esastack.restlight.core.interceptor.HandlerInterceptor;
 import io.esastack.restlight.core.interceptor.Interceptor;
 import io.esastack.restlight.core.interceptor.InterceptorFactory;
@@ -37,44 +35,52 @@ import io.esastack.restlight.core.interceptor.MappingInterceptor;
 import io.esastack.restlight.core.interceptor.RouteInterceptor;
 import io.esastack.restlight.core.resolver.context.ContextResolverAdapter;
 import io.esastack.restlight.core.resolver.context.ContextResolverFactory;
-import io.esastack.restlight.core.resolver.converter.StringConverterAdapter;
-import io.esastack.restlight.core.resolver.converter.StringConverterFactory;
 import io.esastack.restlight.core.resolver.exception.ExceptionResolver;
 import io.esastack.restlight.core.resolver.param.ParamResolverAdapter;
 import io.esastack.restlight.core.resolver.param.ParamResolverAdviceAdapter;
 import io.esastack.restlight.core.resolver.param.ParamResolverAdviceFactory;
 import io.esastack.restlight.core.resolver.param.ParamResolverFactory;
+import io.esastack.restlight.core.resolver.param.entity.RequestEntityResolverAdapter;
+import io.esastack.restlight.core.resolver.param.entity.RequestEntityResolverAdviceAdapter;
+import io.esastack.restlight.core.resolver.param.entity.RequestEntityResolverAdviceFactory;
+import io.esastack.restlight.core.resolver.param.entity.RequestEntityResolverFactory;
 import io.esastack.restlight.core.resolver.ret.entity.ResponseEntityResolverAdapter;
 import io.esastack.restlight.core.resolver.ret.entity.ResponseEntityResolverAdviceAdapter;
 import io.esastack.restlight.core.resolver.ret.entity.ResponseEntityResolverAdviceFactory;
 import io.esastack.restlight.core.resolver.ret.entity.ResponseEntityResolverFactory;
-import io.esastack.restlight.core.route.Route;
+import io.esastack.restlight.core.resolver.converter.StringConverterAdapter;
+import io.esastack.restlight.core.resolver.converter.StringConverterFactory;
 import io.esastack.restlight.core.serialize.GsonHttpBodySerializer;
 import io.esastack.restlight.core.serialize.HttpRequestSerializer;
 import io.esastack.restlight.core.serialize.HttpResponseSerializer;
+import io.esastack.restlight.core.spi.ContextResolverProvider;
+import io.esastack.restlight.core.spi.HandlerRegistryAwareFactory;
+import io.esastack.restlight.core.spi.ParamResolverAdviceProvider;
+import io.esastack.restlight.core.spi.ParamResolverProvider;
+import io.esastack.restlight.core.spi.RequestEntityResolverAdviceProvider;
+import io.esastack.restlight.core.spi.RequestEntityResolverProvider;
+import io.esastack.restlight.core.spi.ResponseEntityResolverAdviceProvider;
+import io.esastack.restlight.core.spi.ResponseEntityResolverProvider;
+import io.esastack.restlight.core.spi.RouteFilterFactory;
+import io.esastack.restlight.core.spi.impl.JacksonDefaultSerializerFactory;
+import io.esastack.restlight.core.util.Constants;
+import io.esastack.restlight.core.util.OrderedComparator;
+import io.esastack.restlight.core.dispatcher.IExceptionHandler;
 import io.esastack.restlight.core.server.connection.ConnectionHandler;
 import io.esastack.restlight.core.server.connection.ConnectionInitHandler;
 import io.esastack.restlight.core.server.connection.DisConnectionHandler;
+import io.esastack.restlight.core.filter.Filter;
+import io.esastack.restlight.core.route.Route;
 import io.esastack.restlight.core.server.processor.schedule.RequestTaskHook;
 import io.esastack.restlight.core.server.processor.schedule.Scheduler;
 import io.esastack.restlight.core.spi.ConnectionHandlerFactory;
 import io.esastack.restlight.core.spi.ConnectionInitHandlerFactory;
-import io.esastack.restlight.core.spi.ContextResolverProvider;
 import io.esastack.restlight.core.spi.DisConnectionHandlerFactory;
 import io.esastack.restlight.core.spi.ExceptionHandlerFactory;
 import io.esastack.restlight.core.spi.FilterFactory;
-import io.esastack.restlight.core.spi.HandlerRegistryAwareFactory;
-import io.esastack.restlight.core.spi.ParamResolverAdviceProvider;
-import io.esastack.restlight.core.spi.ParamResolverProvider;
 import io.esastack.restlight.core.spi.RequestTaskHookFactory;
-import io.esastack.restlight.core.spi.ResponseEntityResolverAdviceProvider;
-import io.esastack.restlight.core.spi.ResponseEntityResolverProvider;
-import io.esastack.restlight.core.spi.RouteFilterFactory;
 import io.esastack.restlight.core.spi.RouteRegistryAware;
 import io.esastack.restlight.core.spi.RouteRegistryAwareFactory;
-import io.esastack.restlight.core.spi.impl.JacksonDefaultSerializerFactory;
-import io.esastack.restlight.core.util.Constants;
-import io.esastack.restlight.core.util.OrderedComparator;
 import io.esastack.restlight.spring.serialize.GsonHttpBodySerializerAdapter;
 import io.esastack.restlight.spring.spi.AdviceLocator;
 import io.esastack.restlight.spring.spi.ControllerLocator;
@@ -130,6 +136,7 @@ public class Deployments4Spring extends Deployments {
         configureStringConverter(context);
         configureParamResolversAndAdvices(context);
         configureContextResolvers(context);
+        configureRequestEntityResolversAndAdvices(context);
         configureResponseEntityResolversAndAdvices(context);
         configureSerializers(context);
         configureExceptionResolvers(context);
@@ -350,6 +357,34 @@ public class Deployments4Spring extends Deployments {
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .forEach(this::addContextResolver);
+    }
+
+    private void configureRequestEntityResolversAndAdvices(ApplicationContext context) {
+        // auto inject request entity resolvers
+        beansOfType(context, RequestEntityResolverAdapter.class)
+                .values()
+                .forEach(this::addRequestEntityResolver);
+        this.addRequestEntityResolvers(beansOfType(context, RequestEntityResolverFactory.class).values());
+        beansOfType(context, RequestEntityResolverProvider.class)
+                .values()
+                .stream()
+                .map(p -> p.factoryBean(ctx()))
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .forEach(this::addRequestEntityResolver);
+
+        // auto inject request entity resolver advices.
+        beansOfType(context, RequestEntityResolverAdviceAdapter.class)
+                .values()
+                .forEach(this::addRequestEntityResolverAdvice);
+        this.addRequestEntityResolverAdvices(beansOfType(context, RequestEntityResolverAdviceFactory.class).values());
+        beansOfType(context, RequestEntityResolverAdviceProvider.class)
+                .values()
+                .stream()
+                .map(p -> p.factoryBean(ctx()))
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .forEach(this::addRequestEntityResolverAdvice);
     }
 
     private void configureResponseEntityResolversAndAdvices(ApplicationContext context) {

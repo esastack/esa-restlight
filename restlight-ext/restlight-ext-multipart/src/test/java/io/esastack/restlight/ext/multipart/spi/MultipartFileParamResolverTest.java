@@ -40,7 +40,7 @@ class MultipartFileParamResolverTest extends AbstractMultipartResolverTest {
         final MethodParam param = handlerMethods.get(method).parameters()[index];
         AbstractMultipartParamResolver factory = fileResolver.createResolver(fileResolver.buildFactory(config));
         assertTrue(factory.supports(param));
-        final ParamResolver resolver = factory.createResolver(param, key -> null, null);
+        final ParamResolver resolver = factory.createResolver(param, key -> null, null, null);
         return resolver.resolve(new ParamResolverContextImpl(new RequestContextImpl(request,
                 MockHttpResponse.aMockResponse().build()), param));
     }
@@ -51,7 +51,7 @@ class MultipartFileParamResolverTest extends AbstractMultipartResolverTest {
         final MethodParam param = handlerMethods.get(method).parameters()[index];
         AbstractMultipartParamResolver factory = attrResolver.createResolver(attrResolver.buildFactory(config));
         assertTrue(factory.supports(param));
-        final ParamResolver resolver = factory.createResolver(param, defaultConverters(param), null);
+        final ParamResolver resolver = factory.createResolver(param, defaultConverters(param), null, null);
         return resolver.resolve(new ParamResolverContextImpl(
                 new RequestContextImpl(request, MockHttpResponse.aMockResponse().build()), param));
     }

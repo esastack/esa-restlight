@@ -17,7 +17,6 @@ package io.esastack.restlight.core.resolver.context;
 
 import esa.commons.Checks;
 import esa.commons.spi.SPI;
-import io.esastack.restlight.core.DeployContext;
 import io.esastack.restlight.core.handler.method.Param;
 import io.esastack.restlight.core.resolver.param.ParamPredicate;
 import io.esastack.restlight.core.resolver.param.ParamResolverAdvice;
@@ -29,7 +28,7 @@ public interface ContextResolverFactory extends ParamPredicate, Ordered {
     /**
      * Converts given {@link ContextResolverAdapter} to {@link ContextResolverFactory} which
      * always use the given {@link ContextResolverAdapter} as the result of
-     * {@link #createResolver(Param, DeployContext)}
+     * {@link #createResolver(Param)}
      *
      * @param resolver resolver
      * @return of factory bean
@@ -44,7 +43,7 @@ public interface ContextResolverFactory extends ParamPredicate, Ordered {
      * @param param param
      * @return advice
      */
-    ContextResolver createResolver(Param param, DeployContext deployContext);
+    ContextResolver createResolver(Param param);
 
     @Override
     default int getOrder() {
@@ -61,7 +60,7 @@ public interface ContextResolverFactory extends ParamPredicate, Ordered {
         }
 
         @Override
-        public ContextResolver createResolver(Param param, DeployContext deployContext) {
+        public ContextResolver createResolver(Param param) {
             return resolver;
         }
 

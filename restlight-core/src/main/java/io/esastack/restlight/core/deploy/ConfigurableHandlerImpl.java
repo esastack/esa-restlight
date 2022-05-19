@@ -19,12 +19,18 @@ import esa.commons.Checks;
 import esa.commons.collection.Attributes;
 import io.esastack.restlight.core.filter.RouteFilter;
 import io.esastack.restlight.core.handler.method.HandlerMethod;
+import io.esastack.restlight.core.handler.method.Param;
 import io.esastack.restlight.core.resolver.context.ContextResolverAdapter;
 import io.esastack.restlight.core.resolver.context.ContextResolverFactory;
 import io.esastack.restlight.core.resolver.param.ParamResolverAdapter;
 import io.esastack.restlight.core.resolver.param.ParamResolverAdviceAdapter;
 import io.esastack.restlight.core.resolver.param.ParamResolverAdviceFactory;
 import io.esastack.restlight.core.resolver.param.ParamResolverFactory;
+import io.esastack.restlight.core.resolver.param.entity.RequestEntityResolverAdapter;
+import io.esastack.restlight.core.resolver.param.entity.RequestEntityResolverAdvice;
+import io.esastack.restlight.core.resolver.param.entity.RequestEntityResolverAdviceAdapter;
+import io.esastack.restlight.core.resolver.param.entity.RequestEntityResolverAdviceFactory;
+import io.esastack.restlight.core.resolver.param.entity.RequestEntityResolverFactory;
 import io.esastack.restlight.core.resolver.ret.entity.ResponseEntityResolverAdapter;
 import io.esastack.restlight.core.resolver.ret.entity.ResponseEntityResolverAdvice;
 import io.esastack.restlight.core.resolver.ret.entity.ResponseEntityResolverAdviceAdapter;
@@ -97,6 +103,40 @@ public class ConfigurableHandlerImpl implements ConfigurableHandler {
             return this;
         }
         configuration.addContextResolvers(Collections.singletonList(ContextResolverFactory.singleton(resolver)));
+        return this;
+    }
+
+    @Override
+    public ConfigurableHandler addRequestEntityResolver(RequestEntityResolverAdapter resolver) {
+        if (resolver == null) {
+            return this;
+        }
+        configuration.addRequestEntityResolvers(Collections.singletonList(
+                RequestEntityResolverFactory.singleton(resolver)));
+        return this;
+    }
+
+    @Override
+    public ConfigurableHandler addRequestEntityResolverAdvice(RequestEntityResolverAdviceAdapter advice) {
+        if (advice == null) {
+            return this;
+        }
+
+        configuration.addRequestEntityResolverAdvices(Collections.singleton(new RequestEntityResolverAdviceFactory() {
+            @Override
+            public boolean supports(Param param) {
+                if (param.isMethodParam()) {
+                    return ConfigurableHandlerImpl.this.method.method().equals(param.methodParam().method());
+                }
+                return false;
+            }
+
+            @Override
+            public RequestEntityResolverAdvice createResolverAdvice(Param param) {
+                return advice;
+            }
+        }));
+
         return this;
     }
 

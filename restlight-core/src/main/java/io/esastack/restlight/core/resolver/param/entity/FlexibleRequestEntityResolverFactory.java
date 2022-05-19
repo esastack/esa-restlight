@@ -25,9 +25,6 @@ import io.esastack.restlight.core.handler.method.Param;
 import io.esastack.restlight.core.resolver.converter.StringConverter;
 import io.esastack.restlight.core.resolver.converter.StringConverterProvider;
 import io.esastack.restlight.core.resolver.nav.NameAndValue;
-import io.esastack.restlight.core.resolver.param.ParamResolver;
-import io.esastack.restlight.core.resolver.param.ParamResolverContext;
-import io.esastack.restlight.core.resolver.param.ParamResolverFactory;
 import io.esastack.restlight.core.serialize.HttpRequestSerializer;
 import io.esastack.restlight.core.serialize.ProtoBufHttpBodySerializer;
 import io.esastack.restlight.core.util.Constants;
@@ -36,7 +33,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.function.Supplier;
 
-public abstract class FlexibleRequestEntityResolverFactory implements ParamResolverFactory {
+public abstract class FlexibleRequestEntityResolverFactory implements RequestEntityResolverFactory {
 
     private final boolean negotiation;
     private final String paramName;
@@ -54,7 +51,7 @@ public abstract class FlexibleRequestEntityResolverFactory implements ParamResol
     }
 
     @Override
-    public ParamResolver createResolver(Param param,
+    public RequestEntityResolver createResolver(Param param,
                                         StringConverterProvider converters,
                                         List<? extends HttpRequestSerializer> serializers) {
         if (param.isMethodParam()
@@ -99,7 +96,7 @@ public abstract class FlexibleRequestEntityResolverFactory implements ParamResol
         return handled;
     }
 
-    private class DefaultResolver implements ParamResolver {
+    private class DefaultResolver implements RequestEntityResolver {
 
         private final NameAndValue<String> nav;
         private final StringConverter converter;
@@ -114,7 +111,7 @@ public abstract class FlexibleRequestEntityResolverFactory implements ParamResol
         }
 
         @Override
-        public Result<?, Void> resolve(ParamResolverContext context) throws Exception {
+        public Result<?, Void> resolve(RequestEntityResolverContext context) throws Exception {
             RequestEntity entity = context.httpEntity();
             RequestContext requestContext = context.requestContext();
             MediaType contentType = getMediaType(entity, requestContext);
@@ -136,11 +133,6 @@ public abstract class FlexibleRequestEntityResolverFactory implements ParamResol
                 }
             }
             return checkRequired(nav, converter, Result.err());
-        }
-
-        @Override
-        public boolean isEntityResolver() {
-            return true;
         }
 
         protected MediaType getMediaType(RequestEntity entity, RequestContext ctx) {

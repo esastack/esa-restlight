@@ -53,7 +53,7 @@ class HttpHeadersParamResolverTest {
 
         final Param param = new FieldParamImpl(
                 Subject.class.getDeclaredField("headers"));
-        ParamResolver resolver = factory.createResolver(param, ResolverUtils.defaultConverters(param), null);
+        ParamResolver resolver = factory.createResolver(param, ResolverUtils.defaultConverters(param), null, null);
         final HttpRequest request = MockHttpRequest.aMockRequest().build();
         final HttpResponse response = MockHttpResponse.aMockResponse().build();
         final RequestContext context = new RequestContextImpl(request, response);

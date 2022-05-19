@@ -19,15 +19,15 @@ import esa.commons.Checks;
 import esa.commons.Result;
 import io.esastack.restlight.core.context.RequestEntity;
 import io.esastack.restlight.core.handler.method.Param;
-import io.esastack.restlight.core.resolver.param.ParamResolverAdapter;
-import io.esastack.restlight.core.resolver.param.ParamResolverContext;
+import io.esastack.restlight.core.resolver.param.entity.RequestEntityResolverAdapter;
+import io.esastack.restlight.core.resolver.param.entity.RequestEntityResolverContext;
 import io.esastack.restlight.jaxrs.impl.core.ModifiableMultivaluedMap;
 import io.esastack.restlight.jaxrs.util.MediaTypeUtils;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.ext.MessageBodyReader;
 import jakarta.ws.rs.ext.Providers;
 
-public class MessageBodyReaderAdapter<T> implements ParamResolverAdapter {
+public class MessageBodyReaderAdapter<T> implements RequestEntityResolverAdapter {
 
     private final Providers providers;
 
@@ -38,7 +38,7 @@ public class MessageBodyReaderAdapter<T> implements ParamResolverAdapter {
 
     @SuppressWarnings("unchecked")
     @Override
-    public Result<?, Void> resolve(ParamResolverContext context) throws Exception {
+    public Result<?, Void> resolve(RequestEntityResolverContext context) throws Exception {
         RequestEntity entity = context.httpEntity();
         Class<?> type;
         if ((type = entity.type()) == null) {
@@ -70,9 +70,5 @@ public class MessageBodyReaderAdapter<T> implements ParamResolverAdapter {
         return 90;
     }
 
-    @Override
-    public boolean isEntityResolver() {
-        return true;
-    }
 }
 

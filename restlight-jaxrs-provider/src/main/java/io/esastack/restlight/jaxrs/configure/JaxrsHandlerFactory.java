@@ -170,7 +170,7 @@ public class JaxrsHandlerFactory extends HandlerFactoryImpl {
             for (int i = 0; i < constructor.getParameterCount(); i++) {
                 ConstructorParam param = new ConstructorParamImpl(constructor, i);
                 if (predicate.test(param)) {
-                    params.add(new ResolvableParam<>(param, factory.getContextResolver(param, context)));
+                    params.add(new ResolvableParam<>(param, factory.getContextResolver(param)));
                 }
             }
             return params.toArray(new ResolvableParam[0]);
@@ -189,7 +189,7 @@ public class JaxrsHandlerFactory extends HandlerFactoryImpl {
                     .forEach(m -> {
                         MethodParam param = new MethodParamImpl(m, 0);
                         if (predicate.test(param)) {
-                            params.add(new ResolvableParam<>(param, factory.getContextResolver(param, context)));
+                            params.add(new ResolvableParam<>(param, factory.getContextResolver(param)));
                         }
                     });
             return params.toArray(new ResolvableParam[0]);
@@ -206,7 +206,7 @@ public class JaxrsHandlerFactory extends HandlerFactoryImpl {
                     .forEach(f -> {
                         FieldParam param = new FieldParamImpl(f);
                         if (predicate.test(param)) {
-                            params.add(new ResolvableParam<>(param, factory.getContextResolver(param, context)));
+                            params.add(new ResolvableParam<>(param, factory.getContextResolver(param)));
                         }
                     });
             return params.toArray(new ResolvableParam[0]);

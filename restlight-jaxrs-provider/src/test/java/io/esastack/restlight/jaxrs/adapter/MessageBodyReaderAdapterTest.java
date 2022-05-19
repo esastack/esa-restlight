@@ -22,8 +22,8 @@ import io.esastack.restlight.core.context.HttpRequest;
 import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.context.RequestEntity;
 import io.esastack.restlight.core.handler.method.Param;
-import io.esastack.restlight.core.resolver.param.ParamResolverContext;
-import io.esastack.restlight.core.resolver.param.ParamResolverContextImpl;
+import io.esastack.restlight.core.resolver.param.entity.RequestEntityResolverContext;
+import io.esastack.restlight.core.resolver.param.entity.RequestEntityResolverContextImpl;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.MultivaluedMap;
 import jakarta.ws.rs.ext.MessageBodyReader;
@@ -61,8 +61,8 @@ class MessageBodyReaderAdapterTest {
         final HttpRequest request = mock(HttpRequest.class);
         when(context.request()).thenReturn(request);
         when(request.headers()).thenReturn(new Http1HeadersImpl());
-        ParamResolverContext resolverContext =
-                new ParamResolverContextImpl(context, entity);
+        RequestEntityResolverContext resolverContext =
+                new RequestEntityResolverContextImpl(entity, context);
         MessageBodyReaderAdapter<?> adapter = new MessageBodyReaderAdapter<>(providers);
         assertFalse(adapter.resolve(resolverContext).isOk());
 

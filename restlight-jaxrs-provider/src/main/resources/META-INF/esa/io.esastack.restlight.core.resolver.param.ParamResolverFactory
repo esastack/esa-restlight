@@ -10,4 +10,3 @@ io.esastack.restlight.jaxrs.resolver.param.MatrixVariableParamResolver
 io.esastack.restlight.jaxrs.resolver.param.PathParamResolver
 io.esastack.restlight.jaxrs.resolver.param.QueryParamResolver
 io.esastack.restlight.jaxrs.resolver.param.RequestHeaderParamResolver
-io.esastack.restlight.jaxrs.resolver.reqentity.FixedRequestEntityResolverFactoryImpl

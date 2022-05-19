@@ -27,7 +27,6 @@ import io.esastack.restlight.core.util.RouteUtils;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -111,23 +110,17 @@ public class HandlerMethodAdapter<H extends HandlerMethod> implements HandlerMet
             return fixedResolverWrap;
         }
 
-        ContextResolver contextResolver = factory.getContextResolver(param, context);
+        ContextResolver contextResolver = factory.getContextResolver(param);
         if (contextResolver != null) {
             return new ResolvableParam<>(param, new AdvisedContextResolver(contextResolver));
         } else {
-            ParamResolver paramResolver = factory.getNoEntityParamResolver(param);
+            ParamResolver paramResolver = factory.getParamResolver(param);
             if (paramResolver != null) {
-                return new ResolvableParam<>(param, new AdvisedParamResolver(Collections.singletonList(paramResolver),
-                        factory.getParamResolverAdvices(param, false)));
+                return new ResolvableParam<>(param, new AdvisedParamResolver(paramResolver,
+                        factory.getParamResolverAdvices(param, paramResolver)));
             } else {
-                List<ParamResolver> paramResolvers = factory.getEntityParamResolvers(param);
-                if (paramResolvers.isEmpty()) {
-                    throw new IllegalArgumentException("There is no suitable resolver to handle param: ["
-                            + param.toString() + "]");
-                } else {
-                    return new ResolvableParam<>(param, new AdvisedParamResolver(
-                            paramResolvers, factory.getParamResolverAdvices(param, true)));
-                }
+                throw new IllegalArgumentException("There is no suitable resolver to handle param: ["
+                        + param.toString() + "]");
             }
         }
     }

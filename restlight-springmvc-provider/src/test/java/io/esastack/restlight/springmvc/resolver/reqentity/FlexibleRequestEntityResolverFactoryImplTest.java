@@ -31,6 +31,9 @@ import io.esastack.restlight.core.resolver.param.ParamResolver;
 import io.esastack.restlight.core.resolver.param.ParamResolverContext;
 import io.esastack.restlight.core.resolver.param.ParamResolverContextImpl;
 import io.esastack.restlight.core.resolver.param.entity.FlexibleRequestEntityResolverFactory;
+import io.esastack.restlight.core.resolver.param.entity.RequestEntityResolver;
+import io.esastack.restlight.core.resolver.param.entity.RequestEntityResolverContext;
+import io.esastack.restlight.core.resolver.param.entity.RequestEntityResolverContextImpl;
 import io.esastack.restlight.core.serialize.GsonHttpBodySerializer;
 import io.esastack.restlight.core.serialize.HttpRequestSerializer;
 import io.esastack.restlight.core.serialize.JacksonHttpBodySerializer;
@@ -151,7 +154,7 @@ class FlexibleRequestEntityResolverFactoryImplTest {
                 return entity.mediaType().isCompatibleWith(MediaType.APPLICATION_XML);
             }
         }, new JacksonHttpBodySerializer());
-        ParamResolver resolver =
+        RequestEntityResolver resolver =
                 new FlexibleRequestEntityResolverFactoryImpl(false, null)
                 .createResolver(param, ResolverUtils.defaultConverters(param), serializers);
 
@@ -163,7 +166,8 @@ class FlexibleRequestEntityResolverFactoryImplTest {
                 .build();
         final RequestContext context = new RequestContextImpl(request,
                 MockHttpResponse.aMockResponse().build());
-        ParamResolverContext resolverContext = new ParamResolverContextImpl(context, param);
+        RequestEntityResolverContextImpl resolverContext = new RequestEntityResolverContextImpl(
+                new RequestEntityImpl(param, context), context);
         final Object resolvedWithJson = ((Result) resolver.resolve(resolverContext)).get();
         assertEquals(origin, resolvedWithJson);
 
@@ -174,7 +178,8 @@ class FlexibleRequestEntityResolverFactoryImplTest {
                 .build();
         final RequestContext context2 = new RequestContextImpl(request2,
                 MockHttpResponse.aMockResponse().build());
-        ParamResolverContext resolverContext2 = new ParamResolverContextImpl(context2, param);
+        RequestEntityResolverContextImpl resolverContext2 = new RequestEntityResolverContextImpl(
+                new RequestEntityImpl(param, context2), context2);
         final Object resolvedWithXml = ((Result) resolver.resolve(resolverContext2)).get();
         assertEquals(origin, resolvedWithXml);
     }
@@ -182,13 +187,14 @@ class FlexibleRequestEntityResolverFactoryImplTest {
     private static Object createResolverAndResolve(HttpRequest request, String method) throws Exception {
         final MethodParam param = handlerMethods.get(method).parameters()[0];
         assertTrue(resolverFactory.supports(param));
-        final ParamResolver resolver = resolverFactory.createResolver(param,
+        final RequestEntityResolver resolver = resolverFactory.createResolver(param,
                 ResolverUtils.defaultConverters(param),
                 Collections.singletonList(new JacksonHttpBodySerializer()));
 
         final RequestContext context = new RequestContextImpl(request,
                 MockHttpResponse.aMockResponse().build());
-        ParamResolverContext resolverContext = new ParamResolverContextImpl(context, param);
+        RequestEntityResolverContext resolverContext = new RequestEntityResolverContextImpl(
+                new RequestEntityImpl(param, context), context);
         return ((Result) resolver.resolve(resolverContext)).get();
     }
 

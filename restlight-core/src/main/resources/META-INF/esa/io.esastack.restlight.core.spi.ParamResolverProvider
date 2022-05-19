@@ -1,3 +1,4 @@
 io.esastack.restlight.core.spi.impl.QueryBeanParamResolverProvider
 io.esastack.restlight.core.spi.impl.RequestBeanParamResolverProvider
 io.esastack.restlight.core.spi.impl.HandlersParamResolverProvider
+io.esastack.restlight.core.resolver.param.entity.AdvisedRequestEntityResolverProvider

@@ -20,6 +20,10 @@ import io.esastack.restlight.core.context.ResponseEntity;
 import io.esastack.restlight.core.handler.method.HandlerMethod;
 import io.esastack.restlight.core.handler.method.Param;
 import io.esastack.restlight.core.resolver.converter.StringConverterProvider;
+import io.esastack.restlight.core.resolver.factory.HandlerResolverFactory;
+import io.esastack.restlight.core.resolver.param.entity.RequestEntityResolver;
+import io.esastack.restlight.core.resolver.param.entity.RequestEntityResolverContext;
+import io.esastack.restlight.core.resolver.param.entity.RequestEntityResolverFactory;
 import io.esastack.restlight.core.resolver.ret.entity.AbstractResponseEntityResolver;
 import io.esastack.restlight.core.resolver.ret.entity.ResponseEntityResolver;
 import io.esastack.restlight.core.resolver.ret.entity.ResponseEntityResolverFactory;
@@ -47,8 +51,9 @@ public class ResolverConfig {
     public ParamResolverFactory paramResolverFactory() {
         return new ParamResolverFactory() {
             @Override
-            public ParamResolver createResolver(Param param, StringConverterProvider converters,
-                                                List<? extends HttpRequestSerializer> serializers) {
+            public ParamResolver<ParamResolverContext> createResolver(
+                    Param param, StringConverterProvider converters,
+                    List<? extends HttpRequestSerializer> serializers, HandlerResolverFactory resolverFactory) {
                 return context -> UserData.Builder.anUserData()
                         .name(context.requestContext().request().getParam("name"))
                         .build();
@@ -62,12 +67,17 @@ public class ResolverConfig {
     }
 
     @Bean
-    public ParamResolverFactory paramEntityResolverFactory() {
-        return new ParamResolverFactory() {
+    public RequestEntityResolverFactory requestEntityResolverFactory() {
+        return new RequestEntityResolverFactory() {
             @Override
-            public ParamResolver createResolver(Param param, StringConverterProvider converters,
+            public RequestEntityResolver createResolver(Param param, StringConverterProvider converters,
                                                         List<? extends HttpRequestSerializer> serializers) {
                 return new Resolver(serializers.get(0));
+            }
+
+            @Override
+            public int getOrder() {
+                return RequestEntityResolverFactory.super.getOrder();
             }
 
             @Override
@@ -75,7 +85,7 @@ public class ResolverConfig {
                 return param.hasAnnotation(CustomRequestBody.class);
             }
 
-            class Resolver implements ParamResolver {
+            class Resolver implements RequestEntityResolver {
 
                 private final HttpRequestSerializer serializer;
 
@@ -84,18 +94,13 @@ public class ResolverConfig {
                 }
 
                 @Override
-                public Result<?, Void> resolve(ParamResolverContext context) throws Exception {
+                public Result<?, Void> resolve(RequestEntityResolverContext context) throws Exception {
                     Result<?, Void> result = serializer.deserialize(context.httpEntity());
                     if (result.isOk()) {
                         UserData userData = (UserData) result.get();
                         userData.setName("test");
                     }
                     return result;
-                }
-
-                @Override
-                public boolean isEntityResolver() {
-                    return true;
                 }
             }
         };
@@ -130,8 +135,9 @@ public class ResolverConfig {
     public ParamResolverFactory customParamResolverFactory() {
         return new ParamResolverFactory() {
             @Override
-            public ParamResolver createResolver(Param param, StringConverterProvider converters,
-                                                List<? extends HttpRequestSerializer> serializers) {
+            public ParamResolver<ParamResolverContext> createResolver(
+                    Param param, StringConverterProvider converters,
+                    List<? extends HttpRequestSerializer> serializers, HandlerResolverFactory resolverFactory) {
                 return context -> context.requestContext().request().getParam("name");
             }
 

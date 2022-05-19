@@ -17,16 +17,16 @@ package io.esastack.restlight.springmvc.spi;
 
 import io.esastack.restlight.core.DeployContext;
 import io.esastack.restlight.core.config.SerializeOptions;
-import io.esastack.restlight.core.resolver.param.ParamResolverFactory;
-import io.esastack.restlight.core.spi.ParamResolverProvider;
+import io.esastack.restlight.core.resolver.param.entity.RequestEntityResolverFactory;
+import io.esastack.restlight.core.spi.RequestEntityResolverProvider;
 import io.esastack.restlight.springmvc.resolver.reqentity.FlexibleRequestEntityResolverFactoryImpl;
 
 import java.util.Optional;
 
-public class FlexibleRequestEntityResolverProvider implements ParamResolverProvider {
+public class FlexibleRequestEntityResolverProvider implements RequestEntityResolverProvider {
 
     @Override
-    public Optional<ParamResolverFactory> factoryBean(DeployContext ctx) {
+    public Optional<RequestEntityResolverFactory> factoryBean(DeployContext ctx) {
         SerializeOptions options = ctx.options().getSerialize().getRequest();
         return Optional.of(new FlexibleRequestEntityResolverFactoryImpl(options.isNegotiation(),
                 options.getNegotiationParam()));

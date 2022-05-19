@@ -64,7 +64,7 @@ class ResourceContextParamResolverTest {
                 ResourceContext.class), 0)));
 
         final Param param = new FieldParamImpl(Subject.class.getDeclaredField("resourceContext"));
-        ParamResolver resolver = factory.createResolver(param, ResolverUtils.defaultConverters(param), null);
+        ParamResolver resolver = factory.createResolver(param, ResolverUtils.defaultConverters(param), null, null);
         final HttpRequest request = MockHttpRequest.aMockRequest().build();
         final HttpResponse response = MockHttpResponse.aMockResponse().build();
         final RequestContext ctx = new RequestContextImpl(request, response);

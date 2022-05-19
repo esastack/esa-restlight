@@ -22,98 +22,104 @@ import esa.commons.StringUtils;
 import esa.commons.annotation.Beta;
 import esa.commons.annotation.Internal;
 import esa.commons.spi.SpiLoader;
-import io.esastack.restlight.core.config.BizThreadsOptions;
 import io.esastack.restlight.core.config.RestlightOptions;
-import io.esastack.restlight.core.config.TimeoutOptions;
 import io.esastack.restlight.core.deploy.ConfigurableDeployments;
+import io.esastack.restlight.core.handler.DefaultHandlerRegistry;
 import io.esastack.restlight.core.deploy.DeploymentsConfigure;
 import io.esastack.restlight.core.deploy.ExtensionsHandler;
 import io.esastack.restlight.core.deploy.HandlerConfigure;
-import io.esastack.restlight.core.deploy.MiniConfigurableDeployments;
-import io.esastack.restlight.core.dispatcher.DispatcherHandler;
-import io.esastack.restlight.core.dispatcher.DispatcherHandlerImpl;
-import io.esastack.restlight.core.dispatcher.IExceptionHandler;
-import io.esastack.restlight.core.filter.Filter;
-import io.esastack.restlight.core.filter.RouteFilterAdapter;
-import io.esastack.restlight.core.handler.DefaultHandlerRegistry;
-import io.esastack.restlight.core.handler.HandlerMapping;
-import io.esastack.restlight.core.handler.HandlerMappingProvider;
 import io.esastack.restlight.core.handler.HandlerRegistry;
 import io.esastack.restlight.core.handler.HandlerRegistryAware;
 import io.esastack.restlight.core.handler.HandlersImpl;
+import io.esastack.restlight.core.deploy.MiniConfigurableDeployments;
+import io.esastack.restlight.core.handler.HandlerMapping;
+import io.esastack.restlight.core.handler.HandlerMappingProvider;
+import io.esastack.restlight.core.filter.RouteFilterAdapter;
 import io.esastack.restlight.core.handler.impl.HandlerAdvicesFactoryImpl;
 import io.esastack.restlight.core.handler.impl.HandlerContexts;
+import io.esastack.restlight.core.locator.HandlerValueResolverLocator;
+import io.esastack.restlight.core.locator.MappingLocator;
+import io.esastack.restlight.core.locator.RouteMethodLocator;
 import io.esastack.restlight.core.interceptor.HandlerInterceptor;
 import io.esastack.restlight.core.interceptor.Interceptor;
 import io.esastack.restlight.core.interceptor.InterceptorFactory;
 import io.esastack.restlight.core.interceptor.MappingInterceptor;
 import io.esastack.restlight.core.interceptor.RouteInterceptor;
-import io.esastack.restlight.core.locator.HandlerValueResolverLocator;
-import io.esastack.restlight.core.locator.MappingLocator;
-import io.esastack.restlight.core.locator.RouteMethodLocator;
 import io.esastack.restlight.core.resolver.context.ContextResolverAdapter;
 import io.esastack.restlight.core.resolver.context.ContextResolverFactory;
-import io.esastack.restlight.core.resolver.converter.StringConverterAdapter;
-import io.esastack.restlight.core.resolver.converter.StringConverterFactory;
-import io.esastack.restlight.core.resolver.exception.DefaultExceptionMapper;
-import io.esastack.restlight.core.resolver.exception.DefaultExceptionResolverFactory;
 import io.esastack.restlight.core.resolver.exception.ExceptionResolver;
-import io.esastack.restlight.core.resolver.exception.ExceptionResolverFactory;
 import io.esastack.restlight.core.resolver.factory.HandlerResolverFactory;
 import io.esastack.restlight.core.resolver.factory.HandlerResolverFactoryImpl;
 import io.esastack.restlight.core.resolver.param.ParamResolverAdapter;
 import io.esastack.restlight.core.resolver.param.ParamResolverAdviceAdapter;
 import io.esastack.restlight.core.resolver.param.ParamResolverAdviceFactory;
 import io.esastack.restlight.core.resolver.param.ParamResolverFactory;
+import io.esastack.restlight.core.resolver.param.entity.RequestEntityResolverAdapter;
+import io.esastack.restlight.core.resolver.param.entity.RequestEntityResolverAdviceAdapter;
+import io.esastack.restlight.core.resolver.param.entity.RequestEntityResolverAdviceFactory;
+import io.esastack.restlight.core.resolver.param.entity.RequestEntityResolverFactory;
 import io.esastack.restlight.core.resolver.ret.entity.ResponseEntityResolverAdapter;
 import io.esastack.restlight.core.resolver.ret.entity.ResponseEntityResolverAdviceAdapter;
 import io.esastack.restlight.core.resolver.ret.entity.ResponseEntityResolverAdviceFactory;
 import io.esastack.restlight.core.resolver.ret.entity.ResponseEntityResolverFactory;
-import io.esastack.restlight.core.route.Route;
-import io.esastack.restlight.core.route.RouteRegistry;
-import io.esastack.restlight.core.route.impl.AbstractRouteRegistry;
-import io.esastack.restlight.core.route.impl.CachedRouteRegistry;
-import io.esastack.restlight.core.route.impl.RoutableRegistry;
-import io.esastack.restlight.core.route.impl.SimpleRouteRegistry;
+import io.esastack.restlight.core.resolver.converter.StringConverterAdapter;
+import io.esastack.restlight.core.resolver.converter.StringConverterFactory;
+import io.esastack.restlight.core.resolver.exception.DefaultExceptionMapper;
+import io.esastack.restlight.core.resolver.exception.DefaultExceptionResolverFactory;
+import io.esastack.restlight.core.resolver.exception.ExceptionResolverFactory;
 import io.esastack.restlight.core.serialize.HttpBodySerializer;
 import io.esastack.restlight.core.serialize.HttpRequestSerializer;
 import io.esastack.restlight.core.serialize.HttpResponseSerializer;
-import io.esastack.restlight.core.server.connection.ConnectionHandler;
-import io.esastack.restlight.core.server.connection.ConnectionInitHandler;
-import io.esastack.restlight.core.server.connection.DisConnectionHandler;
-import io.esastack.restlight.core.server.processor.RestlightHandler;
-import io.esastack.restlight.core.server.processor.schedule.ExecutorScheduler;
-import io.esastack.restlight.core.server.processor.schedule.RequestTask;
-import io.esastack.restlight.core.server.processor.schedule.RequestTaskHook;
-import io.esastack.restlight.core.server.processor.schedule.RestlightThreadFactory;
-import io.esastack.restlight.core.server.processor.schedule.ScheduledRestlightHandler;
-import io.esastack.restlight.core.server.processor.schedule.Scheduler;
-import io.esastack.restlight.core.server.processor.schedule.Schedulers;
-import io.esastack.restlight.core.spi.ConnectionHandlerFactory;
-import io.esastack.restlight.core.spi.ConnectionInitHandlerFactory;
 import io.esastack.restlight.core.spi.ContextResolverProvider;
 import io.esastack.restlight.core.spi.DefaultSerializerFactory;
-import io.esastack.restlight.core.spi.DisConnectionHandlerFactory;
-import io.esastack.restlight.core.spi.ExceptionHandlerFactory;
 import io.esastack.restlight.core.spi.ExceptionResolverFactoryProvider;
 import io.esastack.restlight.core.spi.ExtensionsHandlerFactory;
-import io.esastack.restlight.core.spi.FilterFactory;
 import io.esastack.restlight.core.spi.FutureTransferFactory;
 import io.esastack.restlight.core.spi.HandlerAdviceFactory;
 import io.esastack.restlight.core.spi.HandlerFactoryProvider;
 import io.esastack.restlight.core.spi.HandlerRegistryAwareFactory;
 import io.esastack.restlight.core.spi.ParamResolverAdviceProvider;
 import io.esastack.restlight.core.spi.ParamResolverProvider;
-import io.esastack.restlight.core.spi.RequestTaskHookFactory;
+import io.esastack.restlight.core.spi.RequestEntityResolverAdviceProvider;
+import io.esastack.restlight.core.spi.RequestEntityResolverProvider;
 import io.esastack.restlight.core.spi.ResponseEntityResolverAdviceProvider;
 import io.esastack.restlight.core.spi.ResponseEntityResolverProvider;
 import io.esastack.restlight.core.spi.RouteFilterFactory;
-import io.esastack.restlight.core.spi.RouteRegistryAware;
-import io.esastack.restlight.core.spi.RouteRegistryAwareFactory;
 import io.esastack.restlight.core.util.Constants;
-import io.esastack.restlight.core.util.LoggerUtils;
 import io.esastack.restlight.core.util.OrderedComparator;
 import io.esastack.restlight.core.util.RouteUtils;
+import io.esastack.restlight.core.dispatcher.DispatcherHandler;
+import io.esastack.restlight.core.dispatcher.DispatcherHandlerImpl;
+import io.esastack.restlight.core.dispatcher.IExceptionHandler;
+import io.esastack.restlight.core.server.processor.schedule.RestlightThreadFactory;
+import io.esastack.restlight.core.config.BizThreadsOptions;
+import io.esastack.restlight.core.config.TimeoutOptions;
+import io.esastack.restlight.core.server.connection.ConnectionHandler;
+import io.esastack.restlight.core.server.connection.ConnectionInitHandler;
+import io.esastack.restlight.core.server.connection.DisConnectionHandler;
+import io.esastack.restlight.core.filter.Filter;
+import io.esastack.restlight.core.server.processor.RestlightHandler;
+import io.esastack.restlight.core.route.Route;
+import io.esastack.restlight.core.route.RouteRegistry;
+import io.esastack.restlight.core.route.impl.AbstractRouteRegistry;
+import io.esastack.restlight.core.route.impl.CachedRouteRegistry;
+import io.esastack.restlight.core.route.impl.RoutableRegistry;
+import io.esastack.restlight.core.route.impl.SimpleRouteRegistry;
+import io.esastack.restlight.core.server.processor.schedule.ExecutorScheduler;
+import io.esastack.restlight.core.server.processor.schedule.RequestTask;
+import io.esastack.restlight.core.server.processor.schedule.RequestTaskHook;
+import io.esastack.restlight.core.server.processor.schedule.ScheduledRestlightHandler;
+import io.esastack.restlight.core.server.processor.schedule.Scheduler;
+import io.esastack.restlight.core.server.processor.schedule.Schedulers;
+import io.esastack.restlight.core.spi.ConnectionHandlerFactory;
+import io.esastack.restlight.core.spi.ConnectionInitHandlerFactory;
+import io.esastack.restlight.core.spi.DisConnectionHandlerFactory;
+import io.esastack.restlight.core.spi.ExceptionHandlerFactory;
+import io.esastack.restlight.core.spi.FilterFactory;
+import io.esastack.restlight.core.spi.RequestTaskHookFactory;
+import io.esastack.restlight.core.spi.RouteRegistryAware;
+import io.esastack.restlight.core.spi.RouteRegistryAwareFactory;
+import io.esastack.restlight.core.util.LoggerUtils;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -166,6 +172,8 @@ public abstract class Deployments {
     private final List<ParamResolverFactory> paramResolvers = new LinkedList<>();
     private final List<ParamResolverAdviceFactory> paramResolverAdvices = new LinkedList<>();
     private final List<ContextResolverFactory> contextResolvers = new LinkedList<>();
+    private final List<RequestEntityResolverFactory> requestEntityResolvers = new LinkedList<>();
+    private final List<RequestEntityResolverAdviceFactory> requestEntityResolverAdvices = new LinkedList<>();
     private final List<ResponseEntityResolverFactory> responseEntityResolvers = new LinkedList<>();
     private final List<ResponseEntityResolverAdviceFactory> responseEntityResolverAdvices = new LinkedList<>();
     private final List<HttpRequestSerializer> rxSerializers = new LinkedList<>();
@@ -680,6 +688,85 @@ public abstract class Deployments {
         return self();
     }
 
+    /**
+     * Adds {@link RequestEntityResolverAdapter} which will be registered in the {@link HandlerResolverFactory}
+     *
+     * @param resolver resolver
+     * @return this deployments
+     */
+    public Deployments addRequestEntityResolver(RequestEntityResolverAdapter resolver) {
+        checkImmutable();
+        Checks.checkNotNull(resolver, "resolver");
+        return addRequestEntityResolver(RequestEntityResolverFactory.singleton(resolver));
+    }
+
+    /**
+     * Adds {@link RequestEntityResolverFactory} which will be registered in the {@link HandlerResolverFactory}
+     *
+     * @param resolver resolver
+     * @return this deployments
+     */
+    public Deployments addRequestEntityResolver(RequestEntityResolverFactory resolver) {
+        checkImmutable();
+        Checks.checkNotNull(resolver, "resolver");
+        this.requestEntityResolvers.add(resolver);
+        return self();
+    }
+
+    /**
+     * Adds {@link RequestEntityResolverFactory}s which will be registered in the {@link HandlerResolverFactory}
+     *
+     * @param resolvers resolvers
+     * @return this deployments
+     */
+    public Deployments addRequestEntityResolvers(Collection<? extends RequestEntityResolverFactory> resolvers) {
+        checkImmutable();
+        if (resolvers != null && !resolvers.isEmpty()) {
+            this.requestEntityResolvers.addAll(resolvers);
+        }
+        return self();
+    }
+
+    /**
+     * Adds {@link RequestEntityResolverAdviceAdapter} which will be registered in the {@link HandlerResolverFactory}
+     *
+     * @param advice advice
+     * @return this deployments
+     */
+    public Deployments addRequestEntityResolverAdvice(RequestEntityResolverAdviceAdapter advice) {
+        checkImmutable();
+        Checks.checkNotNull(advice, "advice");
+        return addRequestEntityResolverAdvice(RequestEntityResolverAdviceFactory.singleton(advice));
+    }
+
+    /**
+     * Adds {@link RequestEntityResolverAdviceFactory} which will be registered in the {@link HandlerResolverFactory}
+     *
+     * @param advice advice
+     * @return this deployments
+     */
+    public Deployments addRequestEntityResolverAdvice(RequestEntityResolverAdviceFactory advice) {
+        checkImmutable();
+        Checks.checkNotNull(advice, "advice");
+        this.requestEntityResolverAdvices.add(advice);
+        return self();
+    }
+
+    /**
+     * Adds {@link RequestEntityResolverAdviceFactory}s which will be registered in the {@link HandlerResolverFactory}
+     *
+     * @param advices resolvers
+     * @return this deployments
+     */
+    public Deployments addRequestEntityResolverAdvices(
+            Collection<? extends RequestEntityResolverAdviceFactory> advices) {
+        checkImmutable();
+        if (advices != null && !advices.isEmpty()) {
+            this.requestEntityResolverAdvices.addAll(advices);
+        }
+        return self();
+    }
+
     public Deployments addResponseEntityResolver(ResponseEntityResolverAdapter resolver) {
         checkImmutable();
         Checks.checkNotNull(resolver, "resolver");
@@ -1089,6 +1176,8 @@ public abstract class Deployments {
         OrderedComparator.sort(paramResolvers);
         OrderedComparator.sort(paramResolverAdvices);
         OrderedComparator.sort(contextResolvers);
+        OrderedComparator.sort(requestEntityResolvers);
+        OrderedComparator.sort(requestEntityResolverAdvices);
         OrderedComparator.sort(responseEntityResolvers);
         OrderedComparator.sort(responseEntityResolverAdvices);
 
@@ -1112,6 +1201,10 @@ public abstract class Deployments {
                 paramResolverAdvices,
                 null,
                 contextResolvers,
+                null,
+                requestEntityResolvers,
+                null,
+                requestEntityResolverAdvices,
                 null,
                 responseEntityResolvers,
                 null,
@@ -1188,6 +1281,34 @@ public abstract class Deployments {
         addContextResolvers(SpiLoader.cached(ContextResolverFactory.class)
                 .getByGroup(restlight.name(), true));
         addContextResolvers(SpiLoader.cached(ContextResolverProvider.class)
+                .getByGroup(restlight.name(), true)
+                .stream()
+                .map(provider -> provider.factoryBean(ctx()))
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .collect(Collectors.toList()));
+
+        // load RequestEntityResolver from spi
+        SpiLoader.cached(RequestEntityResolverAdapter.class)
+                .getByGroup(restlight.name(), true)
+                .forEach(this::addRequestEntityResolver);
+        addRequestEntityResolvers(SpiLoader.cached(RequestEntityResolverFactory.class)
+                .getByGroup(restlight.name(), true));
+        addRequestEntityResolvers(SpiLoader.cached(RequestEntityResolverProvider.class)
+                .getByGroup(restlight.name(), true)
+                .stream()
+                .map(provider -> provider.factoryBean(ctx()))
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .collect(Collectors.toList()));
+
+        // load RequestEntityResolverAdvice from spi
+        SpiLoader.cached(RequestEntityResolverAdviceAdapter.class)
+                .getByGroup(restlight.name(), true)
+                .forEach(this::addRequestEntityResolverAdvice);
+        addRequestEntityResolverAdvices(SpiLoader.cached(RequestEntityResolverAdviceFactory.class)
+                .getByGroup(restlight.name(), true));
+        addRequestEntityResolverAdvices(SpiLoader.cached(RequestEntityResolverAdviceProvider.class)
                 .getByGroup(restlight.name(), true)
                 .stream()
                 .map(provider -> provider.factoryBean(ctx()))

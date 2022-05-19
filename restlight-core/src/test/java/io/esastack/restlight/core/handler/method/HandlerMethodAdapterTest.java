@@ -20,6 +20,8 @@ import io.esastack.restlight.core.handler.impl.HandlerContext;
 import io.esastack.restlight.core.resolver.context.ContextResolver;
 import io.esastack.restlight.core.resolver.factory.HandlerResolverFactory;
 import io.esastack.restlight.core.resolver.param.ParamResolver;
+import io.esastack.restlight.core.resolver.param.entity.AdvisedRequestEntityResolverProvider;
+import io.esastack.restlight.core.resolver.param.entity.RequestEntityResolver;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -83,16 +85,22 @@ class HandlerMethodAdapterTest {
                 () -> new HandlerMethodAdapter<>(context, handlerMethod));
 
         ContextResolver p1Resolver = mock(ContextResolver.class);
-        when(resolverFactory.getContextResolver(handlerMethod.parameters()[0], context))
+        when(resolverFactory.getContextResolver(handlerMethod.parameters()[0]))
                 .thenReturn(p1Resolver);
 
         ParamResolver p2Resolver = mock(ParamResolver.class);
-        when(resolverFactory.getNoEntityParamResolver(handlerMethod.parameters()[1]))
+        when(resolverFactory.getParamResolver(handlerMethod.parameters()[1]))
                 .thenReturn(p2Resolver);
 
-        List<ParamResolver> p3Resolver = mock(List.class);
-        when(resolverFactory.getEntityParamResolvers(handlerMethod.parameters()[2]))
+        when(context.resolverFactory()).thenReturn(Optional.of(resolverFactory));
+        List<RequestEntityResolver> p3Resolver = mock(List.class);
+        when(resolverFactory.getRequestEntityResolvers(handlerMethod.parameters()[2]))
                 .thenReturn(p3Resolver);
+        AdvisedRequestEntityResolverProvider resolverProvider = new AdvisedRequestEntityResolverProvider();
+        ParamResolver paramResolver = resolverProvider.factoryBean(context).get()
+                .createResolver(handlerMethod.parameters()[2], null, null, resolverFactory);
+        when(resolverFactory.getParamResolver(handlerMethod.parameters()[2]))
+                .thenReturn(paramResolver);
 
         HandlerMethodAdapter<HandlerMethod> handlerMethodAdapter
                 = new HandlerMethodAdapter<>(context, handlerMethod);

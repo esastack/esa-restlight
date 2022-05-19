@@ -17,7 +17,7 @@ package io.esastack.restlight.jaxrs.spi;
 
 import io.esastack.restlight.core.DeployContext;
 import io.esastack.restlight.core.config.RestlightOptionsConfigure;
-import io.esastack.restlight.core.resolver.param.ParamResolverFactory;
+import io.esastack.restlight.core.resolver.param.entity.RequestEntityResolverFactory;
 import io.esastack.restlight.jaxrs.resolver.reqentity.FlexibleRequestEntityResolverFactoryImpl;
 import org.junit.jupiter.api.Test;
 
@@ -36,7 +36,7 @@ class FlexibleRequestEntityResolverProviderTest {
         final DeployContext context = mock(DeployContext.class);
         when(context.options()).thenReturn(RestlightOptionsConfigure.defaultOpts());
 
-        final Optional<ParamResolverFactory> rst = provider.factoryBean(context);
+        final Optional<RequestEntityResolverFactory> rst = provider.factoryBean(context);
         assertTrue(rst.isPresent());
         assertEquals(FlexibleRequestEntityResolverFactoryImpl.class, rst.get().getClass());
     }

@@ -15,14 +15,15 @@
  */
 package io.esastack.restlight.core.resolver.factory;
 
-import io.esastack.restlight.core.DeployContext;
-import io.esastack.restlight.core.handler.FutureTransfer;
 import io.esastack.restlight.core.filter.RouteFilter;
+import io.esastack.restlight.core.handler.FutureTransfer;
 import io.esastack.restlight.core.handler.method.HandlerMethod;
 import io.esastack.restlight.core.handler.method.Param;
 import io.esastack.restlight.core.resolver.context.ContextResolver;
 import io.esastack.restlight.core.resolver.param.ParamResolver;
 import io.esastack.restlight.core.resolver.param.ParamResolverAdvice;
+import io.esastack.restlight.core.resolver.param.entity.RequestEntityResolver;
+import io.esastack.restlight.core.resolver.param.entity.RequestEntityResolverAdvice;
 import io.esastack.restlight.core.resolver.ret.entity.ResponseEntityResolver;
 import io.esastack.restlight.core.resolver.ret.entity.ResponseEntityResolverAdvice;
 import io.esastack.restlight.core.serialize.HttpRequestSerializer;
@@ -50,38 +51,44 @@ public interface HandlerResolverFactory {
     List<RouteFilter> getRouteFilters(HandlerMethod method);
 
     /**
-     * Get the {@link ParamResolver} for given parameter no contains the entity param resolver.
+     * Get the {@link ParamResolver} for given parameter.
      *
      * @param param parameter
      * @return resolver
      */
-    ParamResolver getNoEntityParamResolver(Param param);
-
-    /**
-     * Get the {@link ParamResolver} for given parameter only contains the entity param resolver.
-     *
-     * @param param parameter
-     * @return resolver
-     */
-    List<ParamResolver> getEntityParamResolvers(Param param);
+    ParamResolver getParamResolver(Param param);
 
     /**
      * Obtains the {@link ContextResolver} for given {@code param}.
      *
      * @param param param
-     * @param deployContext  deployContext
      * @return context resolver
      */
-    ContextResolver getContextResolver(Param param, DeployContext deployContext);
+    ContextResolver getContextResolver(Param param);
 
     /**
      * Obtains the {@link ParamResolverAdvice}s for given parameter.
      *
      * @param param param
-     * @param entityAdvice entity advice or common advice
      * @return advices
      */
-    List<ParamResolverAdvice> getParamResolverAdvices(Param param, boolean entityAdvice);
+    List<ParamResolverAdvice> getParamResolverAdvices(Param param, ParamResolver resolver);
+
+    /**
+     * Obtains request entity resolvers, must not be {@code null}.
+     *
+     * @param param param
+     * @return resolvers
+     */
+    List<RequestEntityResolver> getRequestEntityResolvers(Param param);
+
+    /**
+     * Obtains the {@link RequestEntityResolverAdvice}s for given {@link Param}.
+     *
+     * @param param     param
+     * @return advices
+     */
+    List<RequestEntityResolverAdvice> getRequestEntityResolverAdvices(Param param);
 
     /**
      * Get response entity resolvers, must not be {@code null}.

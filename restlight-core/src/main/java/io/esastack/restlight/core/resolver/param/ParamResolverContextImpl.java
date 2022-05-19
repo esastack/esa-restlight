@@ -41,11 +41,6 @@ public class ParamResolverContextImpl implements ParamResolverContext {
     }
 
     @Override
-    public RequestEntity httpEntity() {
-        return entity;
-    }
-
-    @Override
     public RequestContext requestContext() {
         return requestContext;
     }

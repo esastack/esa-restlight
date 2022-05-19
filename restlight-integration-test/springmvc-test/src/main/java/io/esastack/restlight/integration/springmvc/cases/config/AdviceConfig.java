@@ -16,14 +16,18 @@ package io.esastack.restlight.integration.springmvc.cases.config;
 import io.esastack.restlight.core.handler.method.HandlerMethod;
 import io.esastack.restlight.core.handler.method.Param;
 import io.esastack.restlight.core.resolver.ResolverExecutor;
+import io.esastack.restlight.core.resolver.param.entity.RequestEntityResolverAdvice;
+import io.esastack.restlight.core.resolver.param.entity.RequestEntityResolverAdviceAdapter;
+import io.esastack.restlight.core.resolver.param.entity.RequestEntityResolverAdviceFactory;
+import io.esastack.restlight.core.resolver.param.entity.RequestEntityResolverContext;
 import io.esastack.restlight.core.resolver.ret.entity.ResponseEntityResolverAdvice;
 import io.esastack.restlight.core.resolver.ret.entity.ResponseEntityResolverAdviceAdapter;
 import io.esastack.restlight.core.resolver.ret.entity.ResponseEntityResolverAdviceFactory;
 import io.esastack.restlight.core.resolver.ret.entity.ResponseEntityResolverContext;
+import io.esastack.restlight.core.resolver.param.ParamResolver;
 import io.esastack.restlight.core.resolver.param.ParamResolverAdvice;
 import io.esastack.restlight.core.resolver.param.ParamResolverAdviceAdapter;
 import io.esastack.restlight.core.resolver.param.ParamResolverAdviceFactory;
-import io.esastack.restlight.core.resolver.param.ParamResolverContext;
 import io.esastack.restlight.integration.springmvc.entity.UserData;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -36,7 +40,7 @@ public class AdviceConfig {
         return new ParamResolverAdviceFactory() {
 
             @Override
-            public ParamResolverAdvice createResolverAdvice(Param param) {
+            public ParamResolverAdvice createResolverAdvice(Param param, ParamResolver resolver) {
                 return context -> context.proceed() + "-advice-factory";
             }
 
@@ -63,22 +67,14 @@ public class AdviceConfig {
     }
 
     @Bean
-    public ParamResolverAdviceFactory requestEntityResolverAdviceFactory() {
-        return new ParamResolverAdviceFactory() {
+    public RequestEntityResolverAdviceFactory requestEntityResolverAdviceFactory() {
+        return new RequestEntityResolverAdviceFactory() {
             @Override
-            public ParamResolverAdvice createResolverAdvice(Param param) {
-                return new ParamResolverAdvice() {
-                    @Override
-                    public Object aroundResolve(ResolverExecutor<ParamResolverContext> executor) throws Exception {
-                        UserData user = (UserData) executor.proceed();
-                        user.setName(user.getName() + "-advice-factory");
-                        return user;
-                    }
-
-                    @Override
-                    public boolean isEntityAdvice() {
-                        return true;
-                    }
+            public RequestEntityResolverAdvice createResolverAdvice(Param param) {
+                return context -> {
+                    UserData user = (UserData) context.proceed();
+                    user.setName(user.getName() + "-advice-factory");
+                    return user;
                 };
             }
 
@@ -90,11 +86,11 @@ public class AdviceConfig {
     }
 
     @Bean
-    public ParamResolverAdviceAdapter requestEntityResolverAdviceAdapter() {
-        return new ParamResolverAdviceAdapter() {
+    public RequestEntityResolverAdviceAdapter requestEntityResolverAdviceAdapter() {
+        return new RequestEntityResolverAdviceAdapter() {
 
             @Override
-            public Object aroundResolve(ResolverExecutor<ParamResolverContext> executor) throws Exception {
+            public Object aroundResolve(ResolverExecutor<RequestEntityResolverContext> executor) throws Exception {
                 UserData user = (UserData) executor.proceed();
                 user.setName(user.getName() + "-advice-adaptor");
                 return user;
@@ -103,11 +99,6 @@ public class AdviceConfig {
             @Override
             public boolean supports(Param param) {
                 return param.methodParam().method().getName().equals("customEntityAdviceByAdaptor");
-            }
-
-            @Override
-            public boolean isEntityAdvice() {
-                return true;
             }
         };
     }

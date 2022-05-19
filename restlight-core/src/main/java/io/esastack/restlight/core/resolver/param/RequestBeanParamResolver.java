@@ -63,7 +63,8 @@ public class RequestBeanParamResolver implements ParamResolverFactory {
     @Override
     public ParamResolver createResolver(Param param,
                                         StringConverterProvider converters,
-                                        List<? extends HttpRequestSerializer> serializers) {
+                                        List<? extends HttpRequestSerializer> serializers,
+                                        HandlerResolverFactory resolverFactory) {
         Class<?> type = param.type();
         // instantiate target object by unsafe
 
@@ -88,7 +89,7 @@ public class RequestBeanParamResolver implements ParamResolverFactory {
         return 100;
     }
 
-    private static final class Resolver implements ParamResolver {
+    private static final class Resolver implements ParamResolver<ParamResolverContext> {
 
         final TypeMeta typeMeta;
 
@@ -179,7 +180,7 @@ public class RequestBeanParamResolver implements ParamResolverFactory {
         protected ParamResolver findResolver(FieldParam fieldParam,
                                              StringConverterProvider converters,
                                              HandlerResolverFactory resolverFactory) {
-            return resolverFactory.getNoEntityParamResolver(fieldParam);
+            return resolverFactory.getParamResolver(fieldParam);
         }
     }
 

@@ -16,25 +16,22 @@
 package io.esastack.restlight.core.resolver.param;
 
 import esa.commons.Checks;
-import esa.commons.Result;
-import io.esastack.restlight.core.exception.WebServerException;
 import io.esastack.restlight.core.resolver.ResolverExecutor;
 
 final class ParamResolverExecutor implements ResolverExecutor<ParamResolverContext> {
 
     private final ParamResolverContext context;
-    private final ParamResolver[] resolvers;
+    private final ParamResolver resolver;
     private final ParamResolverAdvice[] advices;
     private int index;
 
     public ParamResolverExecutor(ParamResolverContext context,
-                                 ParamResolver[] resolvers,
+                                 ParamResolver resolver,
                                  ParamResolverAdvice[] advices) {
         Checks.checkNotNull(context, "context");
-        Checks.checkNotNull(resolvers, "resolvers");
-        Checks.checkNotNull(advices, "advices");
+        Checks.checkNotNull(resolver, "resolver");
         this.context = context;
-        this.resolvers = resolvers;
+        this.resolver = resolver;
         this.advices = advices;
     }
 
@@ -46,19 +43,7 @@ final class ParamResolverExecutor implements ResolverExecutor<ParamResolverConte
     @Override
     public Object proceed() throws Exception {
         if (advices == null || index >= advices.length) {
-            for (ParamResolver resolver : resolvers) {
-                Object result = resolver.resolve(context);
-                if (result instanceof Result) {
-                    Result handled = (Result) result;
-                    if (handled.isOk()) {
-                        return handled.get();
-                    }
-                    continue;
-                }
-                return result;
-            }
-            // todo add message
-            throw WebServerException.notSupported("");
+            return resolver.resolve(context);
         }
 
         return advices[index++].aroundResolve(this);

@@ -110,7 +110,7 @@ class BeanParamResolverTest {
         new PatternsPredicate(JaxrsMappingUtils.extractMapping(SUBJECT.getClass(),
                 param.method(), StringUtils.empty()).get().path()).test(context);
         final ParamResolver resolver = resolverFactory.createResolver(param,
-                ResolverUtils.defaultConverters(param), null);
+                ResolverUtils.defaultConverters(param), null, null);
         return resolver.resolve(new ParamResolverContextImpl(context, param));
     }
 
@@ -224,6 +224,10 @@ class BeanParamResolverTest {
                             new MatrixVariableParamResolver(),
                             new PathParamResolver(),
                             new QueryParamResolver()),
+                    null,
+                    null,
+                    null,
+                    null,
                     null,
                     null,
                     null,

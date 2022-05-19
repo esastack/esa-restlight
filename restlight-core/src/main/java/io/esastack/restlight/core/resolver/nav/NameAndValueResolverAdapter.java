@@ -25,7 +25,7 @@ import io.esastack.restlight.core.resolver.param.ParamResolverContext;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-public class NameAndValueResolverAdapter implements ParamResolver {
+public class NameAndValueResolverAdapter implements ParamResolver<ParamResolverContext> {
 
     private final NameAndValue<?> nav;
     private final NameAndValueResolver resolver;

@@ -21,13 +21,9 @@ import io.esastack.restlight.core.resolver.Resolver;
 /**
  * Interface for resolving {@link Param} to the real values of the handler method base on the current context.
  */
-public interface ParamResolver extends Resolver<ParamResolverContext> {
+public interface ParamResolver<C extends ParamResolverContext> extends Resolver<C> {
 
     @Override
-    Object resolve(ParamResolverContext context) throws Exception;
-
-    default boolean isEntityResolver() {
-        return false;
-    }
+    Object resolve(C context) throws Exception;
 }
 
