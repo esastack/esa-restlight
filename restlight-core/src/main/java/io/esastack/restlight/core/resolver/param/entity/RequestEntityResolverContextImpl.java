@@ -30,7 +30,7 @@ public class RequestEntityResolverContextImpl implements RequestEntityResolverCo
     }
 
     @Override
-    public RequestEntity httpEntity() {
+    public RequestEntity requestEntity() {
         return httpEntity;
     }
 

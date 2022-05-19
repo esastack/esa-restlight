@@ -49,7 +49,7 @@ public class WriterInterceptorContextImpl extends InterceptorContextImpl impleme
                                         OutputStream outputStream,
                                         MultivaluedMap<String, Object> headers,
                                         WriterInterceptor[] interceptors) {
-        super(underlying.context().requestContext(), underlying.context().httpEntity());
+        super(underlying.context().requestContext(), underlying.context().responseEntity());
         Checks.checkNotNull(outputStream, "outputStream");
         Checks.checkNotNull(headers, "headers");
         this.underlying = underlying;

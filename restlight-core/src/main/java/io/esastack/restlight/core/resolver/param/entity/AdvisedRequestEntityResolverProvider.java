@@ -42,16 +42,10 @@ public final class AdvisedRequestEntityResolverProvider implements ParamResolver
 
     @Override
     public Optional<ParamResolverFactory> factoryBean(DeployContext ctx) {
-        return Optional.of(new AdvisedRequestEntityResolverFactory(ctx));
+        return Optional.of(new AdvisedRequestEntityResolverFactory());
     }
 
     private static class AdvisedRequestEntityResolverFactory implements ParamResolverFactory {
-
-        private final DeployContext deployContext;
-
-        private AdvisedRequestEntityResolverFactory(DeployContext deployContext) {
-            this.deployContext = deployContext;
-        }
 
         @Override
         public ParamResolver<ParamResolverContext> createResolver(Param param, StringConverterProvider converters,

@@ -19,7 +19,6 @@ import esa.commons.collection.AttributeMap;
 import io.esastack.restlight.core.context.HttpRequest;
 import io.esastack.restlight.core.context.HttpResponse;
 import io.esastack.restlight.core.context.RequestContext;
-import io.esastack.restlight.core.context.RequestEntity;
 import io.esastack.restlight.core.context.ResponseEntity;
 import io.esastack.restlight.core.context.ResponseEntityChannel;
 import io.esastack.restlight.core.context.impl.RequestContextImpl;
@@ -64,7 +63,7 @@ class WriterInterceptorContextImplTest {
         ResolverExecutor<ResponseEntityResolverContext> mockExecutor = mock(ResolverExecutor.class);
         final ResponseEntityResolverContext resolverContext = mock(ResponseEntityResolverContext.class);
         when(resolverContext.requestContext()).thenReturn(mock(RequestContext.class));
-        when(resolverContext.httpEntity()).thenReturn(mock(ResponseEntity.class));
+        when(resolverContext.responseEntity()).thenReturn(mock(ResponseEntity.class));
         when(mockExecutor.context()).thenReturn(resolverContext);
         assertDoesNotThrow(() -> new WriterInterceptorContextImpl(mockExecutor,
                 mock(OutputStream.class), new MultivaluedHashMap<>(), null));
@@ -79,7 +78,7 @@ class WriterInterceptorContextImplTest {
         final AtomicInteger count = new AtomicInteger();
         final ResponseEntityResolverContext underlying = new ResponseEntityResolverContext() {
             @Override
-            public ResponseEntity httpEntity() {
+            public ResponseEntity responseEntity() {
                 return entity;
             }
 

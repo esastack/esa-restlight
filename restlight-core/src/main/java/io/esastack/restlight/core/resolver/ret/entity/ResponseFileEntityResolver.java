@@ -41,7 +41,7 @@ public class ResponseFileEntityResolver implements ResponseEntityResolverAdapter
 
     @Override
     public Result<Void, Void> resolve(ResponseEntityResolverContext context) throws Exception {
-        ResponseEntity entity = context.httpEntity();
+        ResponseEntity entity = context.responseEntity();
         if (!ResponseEntityUtils.isAssignableFrom(entity, File.class)) {
             return Result.err();
         }

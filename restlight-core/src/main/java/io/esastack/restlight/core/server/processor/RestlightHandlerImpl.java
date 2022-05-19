@@ -153,10 +153,10 @@ public class RestlightHandlerImpl extends AbstractRestlightHandler {
     }
 
     private void setEntityTypeIfNecessary(ResponseEntityResolverContext rspCtx, HttpResponse response) {
-        if (response.entity() != null && rspCtx.httpEntity().type() == null) {
+        if (response.entity() != null && rspCtx.responseEntity().type() == null) {
             Class<?> entityType = ClassUtils.getUserType(response.entity());
-            rspCtx.httpEntity().type(entityType);
-            rspCtx.httpEntity().genericType(ClassUtils.getRawType(entityType));
+            rspCtx.responseEntity().type(entityType);
+            rspCtx.responseEntity().genericType(ClassUtils.getRawType(entityType));
         }
     }
 

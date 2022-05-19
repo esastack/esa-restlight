@@ -52,7 +52,7 @@ public abstract class AbstractResponseEntityResolver implements ResponseEntityRe
 
     @Override
     public Result<Void, Void> resolve(ResponseEntityResolverContext context) throws Exception {
-        ResponseEntity entity = context.httpEntity();
+        ResponseEntity entity = context.responseEntity();
         RequestContext requestContext = context.requestContext();
         if (!supports(entity)) {
             return Result.err();

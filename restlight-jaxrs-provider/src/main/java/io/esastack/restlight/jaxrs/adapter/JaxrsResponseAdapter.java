@@ -38,8 +38,8 @@ public class JaxrsResponseAdapter implements ResponseEntityResolverAdviceAdapter
             GenericEntity<?> gEntity = (GenericEntity<?>) entity;
             entity = gEntity.getEntity();
             context.requestContext().response().entity(entity);
-            context.httpEntity().type(gEntity.getRawType());
-            context.httpEntity().genericType(gEntity.getType());
+            context.responseEntity().type(gEntity.getRawType());
+            context.responseEntity().genericType(gEntity.getType());
         }
         Response response = null;
         if (entity instanceof Response) {
@@ -74,8 +74,8 @@ public class JaxrsResponseAdapter implements ResponseEntityResolverAdviceAdapter
             target.requestContext().response().entity(entity);
             Class<?> type = ClassUtils.getUserType(entity);
             Class<?> genericType = ClassUtils.getRawType(type);
-            target.httpEntity().type(type);
-            target.httpEntity().genericType(genericType);
+            target.responseEntity().type(type);
+            target.responseEntity().genericType(genericType);
         }
         target.requestContext().response().status(from.getStatus());
     }

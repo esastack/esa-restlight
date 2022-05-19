@@ -109,7 +109,7 @@ public class AdviceConfig {
             @Override
             public ResponseEntityResolverAdvice createResolverAdvice(HandlerMethod method) {
                 return context -> {
-                    UserData user = (UserData) context.context().httpEntity().response().entity();
+                    UserData user = (UserData) context.context().responseEntity().response().entity();
                     user.setName(user.getName() + "-advice-factory");
                     context.proceed();
                 };
@@ -127,7 +127,7 @@ public class AdviceConfig {
         return new ResponseEntityResolverAdviceAdapter() {
             @Override
             public void aroundResolve0(ResolverExecutor<ResponseEntityResolverContext> executor) throws Exception {
-                UserData user = (UserData) executor.context().httpEntity().response().entity();
+                UserData user = (UserData) executor.context().responseEntity().response().entity();
                 user.setName(user.getName() + "-advice-adaptor");
                 executor.proceed();
             }

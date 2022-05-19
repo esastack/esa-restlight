@@ -17,7 +17,6 @@
 package io.esastack.restlight.core.resolver.param;
 
 import io.esastack.restlight.core.context.RequestContext;
-import io.esastack.restlight.core.context.RequestEntity;
 import io.esastack.restlight.core.resolver.ResolverContext;
 
 public interface ParamResolverContext extends ResolverContext {

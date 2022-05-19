@@ -27,8 +27,7 @@ public interface ResponseEntityResolverContext extends ReturnValueResolverContex
      *
      * @return param
      */
-    @Override
-    ResponseEntity httpEntity();
+    ResponseEntity responseEntity();
 
     /**
      * Obtains teh {@link ResponseEntityChannel}.

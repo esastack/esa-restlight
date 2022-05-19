@@ -24,5 +24,5 @@ public interface RequestEntityResolverContext extends ParamResolverContext {
     /**
      * Obtains the {@link RequestEntity} to resolve.
      */
-    RequestEntity httpEntity();
+    RequestEntity requestEntity();
 }

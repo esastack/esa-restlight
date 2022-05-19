@@ -25,7 +25,6 @@ import io.esastack.restlight.core.handler.method.Param;
 public class ParamResolverContextImpl implements ParamResolverContext {
 
     private final RequestContext requestContext;
-    private final RequestEntity entity;
 
     public ParamResolverContextImpl(RequestContext requestContext,
                                     Param param) {
@@ -37,7 +36,6 @@ public class ParamResolverContextImpl implements ParamResolverContext {
         Checks.checkNotNull(requestContext, "requestContext");
         Checks.checkNotNull(entity, "entity");
         this.requestContext = requestContext;
-        this.entity = entity;
     }
 
     @Override

@@ -84,7 +84,7 @@ class WriterInterceptorsAdapterTest {
 
         final ResponseEntityResolverContext rspCtx = new ResponseEntityResolverContext() {
             @Override
-            public ResponseEntity httpEntity() {
+            public ResponseEntity responseEntity() {
                 return mock(ResponseEntity.class);
             }
 

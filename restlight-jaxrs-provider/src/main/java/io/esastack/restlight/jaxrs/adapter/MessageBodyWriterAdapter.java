@@ -43,7 +43,7 @@ public class MessageBodyWriterAdapter<T> implements ResponseEntityResolverAdapte
     @SuppressWarnings("unchecked")
     @Override
     public Result<Void, Void> resolve(ResponseEntityResolverContext context) throws Exception {
-        ResponseEntity entity = context.httpEntity();
+        ResponseEntity entity = context.responseEntity();
         RequestContext requestContext = context.requestContext();
         if (entity.response().entity() == null) {
             return Result.err();

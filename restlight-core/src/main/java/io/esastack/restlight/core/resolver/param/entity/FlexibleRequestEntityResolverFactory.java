@@ -112,7 +112,7 @@ public abstract class FlexibleRequestEntityResolverFactory implements RequestEnt
 
         @Override
         public Result<?, Void> resolve(RequestEntityResolverContext context) throws Exception {
-            RequestEntity entity = context.httpEntity();
+            RequestEntity entity = context.requestEntity();
             RequestContext requestContext = context.requestContext();
             MediaType contentType = getMediaType(entity, requestContext);
             //convert argument if content-type is text/plain or missing.

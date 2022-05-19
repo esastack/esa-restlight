@@ -16,9 +16,7 @@
 package io.esastack.restlight.core.resolver.ret;
 
 import esa.commons.annotation.Internal;
-import io.esastack.restlight.core.context.HttpEntity;
 import io.esastack.restlight.core.context.RequestContext;
-import io.esastack.restlight.core.context.ResponseEntity;
 import io.esastack.restlight.core.resolver.ResolverContext;
 
 @Internal
@@ -29,13 +27,5 @@ public interface ReturnValueResolverContext extends ResolverContext {
      * Obtains the {@link RequestContext} to resolve.
      */
     RequestContext requestContext();
-
-    /**
-     * Obtains the {@link HttpEntity} to resolve.
-     *
-     * @return param
-     */
-    ResponseEntity httpEntity();
-
 }
 

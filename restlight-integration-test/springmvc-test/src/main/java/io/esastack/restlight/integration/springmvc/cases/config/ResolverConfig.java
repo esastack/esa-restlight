@@ -95,7 +95,7 @@ public class ResolverConfig {
 
                 @Override
                 public Result<?, Void> resolve(RequestEntityResolverContext context) throws Exception {
-                    Result<?, Void> result = serializer.deserialize(context.httpEntity());
+                    Result<?, Void> result = serializer.deserialize(context.requestEntity());
                     if (result.isOk()) {
                         UserData userData = (UserData) result.get();
                         userData.setName("test");

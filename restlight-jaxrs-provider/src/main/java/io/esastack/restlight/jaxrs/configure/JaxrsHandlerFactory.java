@@ -34,7 +34,6 @@ import io.esastack.restlight.core.handler.method.MethodParamImpl;
 import io.esastack.restlight.core.handler.method.ResolvableParam;
 import io.esastack.restlight.core.handler.method.ResolvableParamPredicate;
 import io.esastack.restlight.core.resolver.context.ContextResolver;
-import io.esastack.restlight.core.resolver.context.ContextResolverContext;
 import io.esastack.restlight.core.resolver.context.ContextResolverContextImpl;
 import io.esastack.restlight.core.resolver.factory.HandlerResolverFactory;
 import io.esastack.restlight.core.util.ConstructorUtils;
@@ -68,10 +67,9 @@ public class JaxrsHandlerFactory extends HandlerFactoryImpl {
             Object[] consArgs = new Object[resolvable.constructor.getParameterCount()];
             ResolvableParam<ConstructorParam, ContextResolver>[] consParams = resolvable.consParamResolvers;
             int index = 0;
-            ContextResolverContext resolverContext = new ContextResolverContextImpl();
             for (ResolvableParam<ConstructorParam, ContextResolver> param : consParams) {
                 try {
-                    consArgs[index++] = param.resolver().resolve(resolverContext);
+                    consArgs[index++] = param.resolver().resolve(ContextResolverContextImpl.INSTANCE);
                 } catch (Throwable th) {
                     //wrap exception
                     throw WebServerException.wrap(th);
@@ -106,7 +104,7 @@ public class JaxrsHandlerFactory extends HandlerFactoryImpl {
                 if (r.resolver() != null) {
                     //it may return a null value
                     try {
-                        Object arg = r.resolver().resolve(new ContextResolverContextImpl());
+                        Object arg = r.resolver().resolve(ContextResolverContextImpl.INSTANCE);
                         ReflectionUtils.invokeMethod(param.method(), instance, arg);
                     } catch (InvocationTargetException ex) {
                         throw new IllegalStateException("Failed to invoke method: [" + param.method() + "]",
@@ -123,7 +121,7 @@ public class JaxrsHandlerFactory extends HandlerFactoryImpl {
                 if (r.resolver() != null) {
                     try {
                         BeanUtils.setFieldValue(instance, param.name(),
-                                r.resolver().resolve(new ContextResolverContextImpl()));
+                                r.resolver().resolve(ContextResolverContextImpl.INSTANCE));
                     } catch (Exception e) {
                         //wrap exception
                         throw WebServerException.wrap(e);

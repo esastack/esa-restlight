@@ -42,7 +42,7 @@ public class ResponseEntityResolverContextImpl implements ResponseEntityResolver
     }
 
     @Override
-    public ResponseEntity httpEntity() {
+    public ResponseEntity responseEntity() {
         return entity;
     }
 

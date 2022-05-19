@@ -137,7 +137,7 @@ public abstract class FixedRequestEntityResolverFactory implements RequestEntity
 
         @Override
         public Result<?, Void> resolve(RequestEntityResolverContext context) throws Exception {
-            return checkRequired(nav, converter, serializer.deserialize(context.httpEntity()));
+            return checkRequired(nav, converter, serializer.deserialize(context.requestEntity()));
         }
     }
 }

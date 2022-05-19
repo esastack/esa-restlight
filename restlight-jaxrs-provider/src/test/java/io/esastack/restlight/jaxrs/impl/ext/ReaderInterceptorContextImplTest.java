@@ -51,7 +51,7 @@ class ReaderInterceptorContextImplTest {
         ResolverExecutor mockExecutor = mock(ResolverExecutor.class);
         RequestEntityResolverContext resolverContext = mock(RequestEntityResolverContext.class);
         when(resolverContext.requestContext()).thenReturn(mock(RequestContext.class));
-        when(resolverContext.httpEntity()).thenReturn(mock(RequestEntity.class));
+        when(resolverContext.requestEntity()).thenReturn(mock(RequestEntity.class));
         when(mockExecutor.context()).thenReturn(resolverContext);
         assertDoesNotThrow(() -> new ReaderInterceptorContextImpl(mockExecutor, null));
 
@@ -69,7 +69,7 @@ class ReaderInterceptorContextImplTest {
             }
 
             @Override
-            public RequestEntity httpEntity() {
+            public RequestEntity requestEntity() {
                 return entity;
             }
         };

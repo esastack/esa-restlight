@@ -36,7 +36,7 @@ public class ReaderInterceptorContextImpl extends InterceptorContextImpl impleme
 
     public ReaderInterceptorContextImpl(ResolverExecutor<RequestEntityResolverContext> underlying,
                                         ReaderInterceptor[] interceptors) {
-        super(underlying.context().requestContext(), underlying.context().httpEntity());
+        super(underlying.context().requestContext(), underlying.context().requestEntity());
         this.underlying = underlying;
         this.interceptors = interceptors;
         this.interceptorsSize = interceptors != null ? interceptors.length : 0;
@@ -64,7 +64,7 @@ public class ReaderInterceptorContextImpl extends InterceptorContextImpl impleme
 
     @Override
     public void setInputStream(InputStream is) {
-        underlying.context().httpEntity().inputStream(is);
+        underlying.context().requestEntity().inputStream(is);
     }
 
     @Override

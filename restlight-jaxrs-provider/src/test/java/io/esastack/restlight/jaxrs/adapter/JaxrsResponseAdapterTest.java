@@ -46,7 +46,7 @@ class JaxrsResponseAdapterTest {
         final ResponseEntity entity = new ResponseEntityImpl(null, response, null);
         ResponseEntityResolverContext context = new ResponseEntityResolverContext() {
             @Override
-            public ResponseEntity httpEntity() {
+            public ResponseEntity responseEntity() {
                 return entity;
             }
 

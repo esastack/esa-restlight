@@ -23,8 +23,9 @@ import io.esastack.restlight.core.context.HttpRequest;
 import io.esastack.restlight.core.context.HttpResponse;
 import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.context.ResponseEntity;
+import io.esastack.restlight.core.context.ResponseEntityChannel;
 import io.esastack.restlight.core.context.impl.RequestContextImpl;
-import io.esastack.restlight.core.resolver.ret.ReturnValueResolverContext;
+import io.esastack.restlight.core.resolver.ret.entity.ResponseEntityResolverContext;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -47,20 +48,25 @@ class InterceptorContextImplTest {
                 mock(HttpRequest.class), mock(HttpResponse.class));
         final ResponseEntity entity = mock(ResponseEntity.class);
 
-        final ReturnValueResolverContext underlying = new ReturnValueResolverContext() {
+        final ResponseEntityResolverContext underlying = new ResponseEntityResolverContext() {
             @Override
             public RequestContext requestContext() {
                 return context0;
             }
 
             @Override
-            public ResponseEntity httpEntity() {
+            public ResponseEntity responseEntity() {
                 return entity;
+            }
+
+            @Override
+            public ResponseEntityChannel channel() {
+                return null;
             }
         };
 
         final InterceptorContextImpl context =
-                new InterceptorContextImpl(underlying.requestContext(), underlying.httpEntity());
+                new InterceptorContextImpl(underlying.requestContext(), underlying.responseEntity());
         assertNull(context.getProperty("name"));
         attributes.attr(AttributeKey.valueOf("name")).set("value1");
         assertEquals("value1", context.getProperty("name"));

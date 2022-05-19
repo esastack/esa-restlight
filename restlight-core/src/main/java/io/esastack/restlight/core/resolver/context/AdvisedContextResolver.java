@@ -21,7 +21,7 @@ import io.esastack.restlight.core.resolver.ResolverContext;
 
 public class AdvisedContextResolver implements Resolver<ResolverContext> {
 
-    private ContextResolver underlying;
+    private final ContextResolver underlying;
 
     public AdvisedContextResolver(ContextResolver underlying) {
         Checks.checkNotNull(underlying, "underlying");
@@ -30,7 +30,7 @@ public class AdvisedContextResolver implements Resolver<ResolverContext> {
 
     @Override
     public Object resolve(ResolverContext context) throws Exception {
-        return underlying.resolve(new ContextResolverContextImpl());
+        return underlying.resolve(ContextResolverContextImpl.INSTANCE);
     }
 }
 

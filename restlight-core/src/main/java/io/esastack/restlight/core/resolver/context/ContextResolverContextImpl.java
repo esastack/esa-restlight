@@ -17,4 +17,9 @@
 package io.esastack.restlight.core.resolver.context;
 
 public final class ContextResolverContextImpl implements ContextResolverContext {
+
+    /**
+     * the default for all the request.
+     */
+    public static final ContextResolverContext INSTANCE = new ContextResolverContextImpl();
 }

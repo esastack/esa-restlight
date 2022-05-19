@@ -62,7 +62,7 @@ class ReaderInterceptorsAdapterTest {
                 new RequestContextImpl(attrs, mock(HttpRequest.class), mock(HttpResponse.class));
         final RequestEntityResolverContext context1 = new RequestEntityResolverContext() {
             @Override
-            public RequestEntity httpEntity() {
+            public RequestEntity requestEntity() {
                 return mock(RequestEntity.class);
             }
 
