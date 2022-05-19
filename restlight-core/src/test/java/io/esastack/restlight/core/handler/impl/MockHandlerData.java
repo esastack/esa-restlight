@@ -24,20 +24,21 @@ import io.esastack.restlight.core.handler.HandlerAdvicesFactory;
 import io.esastack.restlight.core.handler.HandlerFactory;
 import io.esastack.restlight.core.handler.HandlerMapping;
 import io.esastack.restlight.core.handler.HandlerValueResolver;
-import io.esastack.restlight.core.handler.method.HandlerMethodAdapter;
-import io.esastack.restlight.core.handler.method.RouteMethodInfo;
 import io.esastack.restlight.core.handler.Handlers;
-import io.esastack.restlight.core.interceptor.Interceptor;
-import io.esastack.restlight.core.interceptor.InterceptorPredicate;
 import io.esastack.restlight.core.handler.method.DefaultResolvableParamPredicate;
 import io.esastack.restlight.core.handler.method.HandlerMethod;
+import io.esastack.restlight.core.handler.method.HandlerMethodAdapter;
 import io.esastack.restlight.core.handler.method.RouteHandlerMethod;
 import io.esastack.restlight.core.handler.method.RouteHandlerMethodImpl;
+import io.esastack.restlight.core.handler.method.RouteMethodInfo;
+import io.esastack.restlight.core.interceptor.Interceptor;
+import io.esastack.restlight.core.interceptor.InterceptorPredicate;
 import io.esastack.restlight.core.resolver.context.ContextResolver;
 import io.esastack.restlight.core.resolver.exception.ExceptionResolver;
 import io.esastack.restlight.core.resolver.factory.HandlerResolverFactory;
 import io.esastack.restlight.core.resolver.param.ParamResolver;
-import io.esastack.restlight.core.resolver.entity.request.RequestEntityResolver;
+import io.esastack.restlight.core.resolver.param.entity.AdvisedRequestEntityResolverProvider;
+import io.esastack.restlight.core.resolver.param.entity.RequestEntityResolver;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -87,7 +88,7 @@ public class MockHandlerData {
         when(mapping.methodInfo()).thenReturn(methodInfo);
         when(methodInfo.handlerMethod()).thenReturn(handlerMethod);
         context = mock(HandlerContext.class);
-        resolverFactory = mockResolverFactory(handlerMethod);
+        resolverFactory = mockResolverFactory(handlerMethod, context);
         when(context.resolverFactory()).thenReturn(Optional.of(resolverFactory));
         when(context.paramPredicate()).thenReturn(Optional.of(new DefaultResolvableParamPredicate()));
         when(context.handlerAdvicesFactory()).thenReturn(Optional.of(mock(HandlerAdvicesFactory.class)));
@@ -144,7 +145,8 @@ public class MockHandlerData {
         return handlerMethodAdapter;
     }
 
-    private HandlerResolverFactory mockResolverFactory(HandlerMethod handlerMethod) throws Exception {
+    private HandlerResolverFactory mockResolverFactory(HandlerMethod handlerMethod, HandlerContext context)
+            throws Exception {
         final HandlerResolverFactory resolverFactory = mock(HandlerResolverFactory.class);
         ContextResolver p1Resolver = mock(ContextResolver.class);
 
@@ -158,9 +160,16 @@ public class MockHandlerData {
                     .thenReturn(p2Resolver);
             when(p2Resolver.resolve(any())).thenReturn(null);
 
+            when(context.resolverFactory()).thenReturn(Optional.of(resolverFactory));
             List<RequestEntityResolver> p3Resolver = mock(List.class);
             when(resolverFactory.getRequestEntityResolvers(handlerMethod.parameters()[2]))
                     .thenReturn(p3Resolver);
+            AdvisedRequestEntityResolverProvider resolverProvider = new AdvisedRequestEntityResolverProvider();
+            ParamResolver paramResolver = resolverProvider.factoryBean(context).get()
+                    .createResolver(handlerMethod.parameters()[2], null, null, resolverFactory);
+            when(resolverFactory.getParamResolver(handlerMethod.parameters()[2]))
+                    .thenReturn(paramResolver);
+
         }
         return resolverFactory;
     }

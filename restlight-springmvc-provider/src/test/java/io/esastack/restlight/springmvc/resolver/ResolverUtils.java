@@ -24,9 +24,11 @@ import io.esastack.restlight.core.handler.method.HandlerMethodImpl;
 import io.esastack.restlight.core.handler.method.Param;
 import io.esastack.restlight.core.context.ResponseEntityChannelImpl;
 import io.esastack.restlight.core.context.ResponseEntityImpl;
-import io.esastack.restlight.core.resolver.entity.response.ResponseEntityResolver;
+import io.esastack.restlight.core.resolver.ret.entity.ResponseEntityResolver;
 import io.esastack.restlight.core.resolver.converter.StringConverterFactory;
 import io.esastack.restlight.core.resolver.converter.StringConverterProvider;
+import io.esastack.restlight.core.resolver.ret.entity.ResponseEntityResolverContext;
+import io.esastack.restlight.core.resolver.ret.entity.ResponseEntityResolverContextImpl;
 import io.esastack.restlight.core.spi.impl.DefaultStringConverterFactory;
 import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.context.impl.RequestContextImpl;
@@ -50,8 +52,10 @@ public class ResolverUtils {
         final RequestContext context = new RequestContextImpl(request, response);
         response.entity(returnValue);
         context.attrs().attr(RequestContextImpl.RESPONSE_CONTENT).set(new MockResponseContent(buffer));
-        resolver.writeTo(new ResponseEntityImpl(method, response, MediaType.ALL),
-                new ResponseEntityChannelImpl(context), context);
+        ResponseEntityResolverContext resolverContext = new ResponseEntityResolverContextImpl(context,
+                new ResponseEntityImpl(method, response, MediaType.ALL),
+                new ResponseEntityChannelImpl(context));
+        resolver.resolve(resolverContext);
         return buffer.getBytes();
     }
 

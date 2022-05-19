@@ -18,9 +18,10 @@ package io.esastack.restlight.core.handler.method;
 import io.esastack.restlight.core.annotation.Intercepted;
 import io.esastack.restlight.core.handler.impl.HandlerContext;
 import io.esastack.restlight.core.resolver.context.ContextResolver;
-import io.esastack.restlight.core.resolver.entity.request.RequestEntityResolver;
 import io.esastack.restlight.core.resolver.factory.HandlerResolverFactory;
 import io.esastack.restlight.core.resolver.param.ParamResolver;
+import io.esastack.restlight.core.resolver.param.entity.AdvisedRequestEntityResolverProvider;
+import io.esastack.restlight.core.resolver.param.entity.RequestEntityResolver;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -91,9 +92,15 @@ class HandlerMethodAdapterTest {
         when(resolverFactory.getParamResolver(handlerMethod.parameters()[1]))
                 .thenReturn(p2Resolver);
 
+        when(context.resolverFactory()).thenReturn(Optional.of(resolverFactory));
         List<RequestEntityResolver> p3Resolver = mock(List.class);
         when(resolverFactory.getRequestEntityResolvers(handlerMethod.parameters()[2]))
                 .thenReturn(p3Resolver);
+        AdvisedRequestEntityResolverProvider resolverProvider = new AdvisedRequestEntityResolverProvider();
+        ParamResolver paramResolver = resolverProvider.factoryBean(context).get()
+                .createResolver(handlerMethod.parameters()[2], null, null, resolverFactory);
+        when(resolverFactory.getParamResolver(handlerMethod.parameters()[2]))
+                .thenReturn(paramResolver);
 
         HandlerMethodAdapter<HandlerMethod> handlerMethodAdapter
                 = new HandlerMethodAdapter<>(context, handlerMethod);

@@ -18,9 +18,9 @@ package io.esastack.restlight.core.resolver.context;
 import esa.commons.Checks;
 import esa.commons.spi.SPI;
 import io.esastack.restlight.core.handler.method.Param;
-import io.esastack.restlight.core.util.Ordered;
 import io.esastack.restlight.core.resolver.param.ParamPredicate;
 import io.esastack.restlight.core.resolver.param.ParamResolverAdvice;
+import io.esastack.restlight.core.util.Ordered;
 
 @SPI
 public interface ContextResolverFactory extends ParamPredicate, Ordered {

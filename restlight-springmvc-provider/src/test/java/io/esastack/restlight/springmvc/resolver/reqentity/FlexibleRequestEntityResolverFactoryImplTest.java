@@ -15,23 +15,29 @@
  */
 package io.esastack.restlight.springmvc.resolver.reqentity;
 
+import esa.commons.Result;
 import io.esastack.commons.net.http.MediaType;
-import io.esastack.restlight.core.handler.method.HandlerMethod;
-import io.esastack.restlight.core.handler.method.MethodParam;
+import io.esastack.restlight.core.context.HttpRequest;
+import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.context.RequestEntity;
 import io.esastack.restlight.core.context.RequestEntityImpl;
-import io.esastack.restlight.core.resolver.entity.request.RequestEntityResolver;
-import io.esastack.restlight.core.resolver.entity.request.FlexibleRequestEntityResolverFactory;
+import io.esastack.restlight.core.context.impl.RequestContextImpl;
+import io.esastack.restlight.core.exception.WebServerException;
+import io.esastack.restlight.core.handler.method.HandlerMethod;
+import io.esastack.restlight.core.handler.method.MethodParam;
+import io.esastack.restlight.core.mock.MockHttpRequest;
+import io.esastack.restlight.core.mock.MockHttpResponse;
+import io.esastack.restlight.core.resolver.param.ParamResolver;
+import io.esastack.restlight.core.resolver.param.ParamResolverContext;
+import io.esastack.restlight.core.resolver.param.ParamResolverContextImpl;
+import io.esastack.restlight.core.resolver.param.entity.FlexibleRequestEntityResolverFactory;
+import io.esastack.restlight.core.resolver.param.entity.RequestEntityResolver;
+import io.esastack.restlight.core.resolver.param.entity.RequestEntityResolverContext;
+import io.esastack.restlight.core.resolver.param.entity.RequestEntityResolverContextImpl;
 import io.esastack.restlight.core.serialize.GsonHttpBodySerializer;
 import io.esastack.restlight.core.serialize.HttpRequestSerializer;
 import io.esastack.restlight.core.serialize.JacksonHttpBodySerializer;
 import io.esastack.restlight.core.serialize.JacksonSerializer;
-import io.esastack.restlight.core.exception.WebServerException;
-import io.esastack.restlight.core.context.RequestContext;
-import io.esastack.restlight.core.context.impl.RequestContextImpl;
-import io.esastack.restlight.core.context.HttpRequest;
-import io.esastack.restlight.core.mock.MockHttpRequest;
-import io.esastack.restlight.core.mock.MockHttpResponse;
 import io.esastack.restlight.springmvc.annotation.shaded.RequestBody0;
 import io.esastack.restlight.springmvc.resolver.Pojo;
 import io.esastack.restlight.springmvc.resolver.ResolverUtils;
@@ -160,7 +166,9 @@ class FlexibleRequestEntityResolverFactoryImplTest {
                 .build();
         final RequestContext context = new RequestContextImpl(request,
                 MockHttpResponse.aMockResponse().build());
-        final Object resolvedWithJson = resolver.readFrom(new RequestEntityImpl(param, context), context).get();
+        RequestEntityResolverContextImpl resolverContext = new RequestEntityResolverContextImpl(
+                new RequestEntityImpl(param, context), context);
+        final Object resolvedWithJson = ((Result) resolver.resolve(resolverContext)).get();
         assertEquals(origin, resolvedWithJson);
 
         final HttpRequest request2 = MockHttpRequest
@@ -170,7 +178,9 @@ class FlexibleRequestEntityResolverFactoryImplTest {
                 .build();
         final RequestContext context2 = new RequestContextImpl(request2,
                 MockHttpResponse.aMockResponse().build());
-        final Object resolvedWithXml = resolver.readFrom(new RequestEntityImpl(param, context2), context2).get();
+        RequestEntityResolverContextImpl resolverContext2 = new RequestEntityResolverContextImpl(
+                new RequestEntityImpl(param, context2), context2);
+        final Object resolvedWithXml = ((Result) resolver.resolve(resolverContext2)).get();
         assertEquals(origin, resolvedWithXml);
     }
 
@@ -183,7 +193,9 @@ class FlexibleRequestEntityResolverFactoryImplTest {
 
         final RequestContext context = new RequestContextImpl(request,
                 MockHttpResponse.aMockResponse().build());
-        return resolver.readFrom(new RequestEntityImpl(param, context), context).get();
+        RequestEntityResolverContext resolverContext = new RequestEntityResolverContextImpl(
+                new RequestEntityImpl(param, context), context);
+        return ((Result) resolver.resolve(resolverContext)).get();
     }
 
     private static class Subject {

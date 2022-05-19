@@ -34,7 +34,7 @@ class AsyncResponseParamResolverTest {
         assertFalse(resolver.supports(new ConstructorParamImpl(A.class.getConstructor(AsyncResponse.class), 0)));
         assertTrue(resolver.supports(new MethodParamImpl(A.class.getDeclaredMethod("sayHell0",
                 AsyncResponse.class), 0)));
-        assertNotNull(resolver.createResolver(null, null, null));
+        assertNotNull(resolver.createResolver(null, null, null, null));
     }
 
     private static final class A {

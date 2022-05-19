@@ -15,7 +15,8 @@
  */
 package io.esastack.restlight.jaxrs.impl.ext;
 
-import io.esastack.restlight.core.resolver.entity.request.RequestEntityResolverContext;
+import io.esastack.restlight.core.resolver.ResolverExecutor;
+import io.esastack.restlight.core.resolver.param.entity.RequestEntityResolverContext;
 import io.esastack.restlight.jaxrs.impl.core.ModifiableMultivaluedMap;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.MultivaluedMap;
@@ -27,14 +28,15 @@ import java.io.InputStream;
 
 public class ReaderInterceptorContextImpl extends InterceptorContextImpl implements ReaderInterceptorContext {
 
-    private final RequestEntityResolverContext underlying;
+    private final ResolverExecutor<RequestEntityResolverContext> underlying;
 
     private final ReaderInterceptor[] interceptors;
     private final int interceptorsSize;
     private int index;
 
-    public ReaderInterceptorContextImpl(RequestEntityResolverContext underlying, ReaderInterceptor[] interceptors) {
-        super(underlying);
+    public ReaderInterceptorContextImpl(ResolverExecutor<RequestEntityResolverContext> underlying,
+                                        ReaderInterceptor[] interceptors) {
+        super(underlying.context().requestContext(), underlying.context().requestEntity());
         this.underlying = underlying;
         this.interceptors = interceptors;
         this.interceptorsSize = interceptors != null ? interceptors.length : 0;
@@ -57,17 +59,17 @@ public class ReaderInterceptorContextImpl extends InterceptorContextImpl impleme
 
     @Override
     public InputStream getInputStream() {
-        return underlying.context().request().inputStream();
+        return underlying.context().requestContext().request().inputStream();
     }
 
     @Override
     public void setInputStream(InputStream is) {
-        underlying.httpEntity().inputStream(is);
+        underlying.context().requestEntity().inputStream(is);
     }
 
     @Override
     public MultivaluedMap<String, String> getHeaders() {
-        return new ModifiableMultivaluedMap(underlying.context().request().headers());
+        return new ModifiableMultivaluedMap(underlying.context().requestContext().request().headers());
     }
 }
 

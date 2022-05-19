@@ -17,21 +17,22 @@ package io.esastack.restlight.test.bootstrap;
 
 import esa.commons.Result;
 import io.esastack.commons.net.http.MediaType;
-import io.esastack.restlight.core.interceptor.HandlerInterceptor;
+import io.esastack.restlight.core.context.RequestContext;
+import io.esastack.restlight.core.context.RequestEntity;
+import io.esastack.restlight.core.context.ResponseEntity;
 import io.esastack.restlight.core.handler.method.HandlerMethod;
 import io.esastack.restlight.core.handler.method.Param;
+import io.esastack.restlight.core.interceptor.HandlerInterceptor;
+import io.esastack.restlight.core.mock.MockHttpRequest;
+import io.esastack.restlight.core.resolver.ResolverExecutor;
+import io.esastack.restlight.core.resolver.ret.entity.AbstractResponseEntityResolver;
+import io.esastack.restlight.core.resolver.ret.entity.ResponseEntityResolverAdapter;
+import io.esastack.restlight.core.resolver.ret.entity.ResponseEntityResolverAdviceAdapter;
+import io.esastack.restlight.core.resolver.ret.entity.ResponseEntityResolverContext;
 import io.esastack.restlight.core.resolver.param.ParamResolverAdapter;
 import io.esastack.restlight.core.resolver.param.ParamResolverAdviceAdapter;
 import io.esastack.restlight.core.resolver.param.ParamResolverContext;
-import io.esastack.restlight.core.context.RequestEntity;
-import io.esastack.restlight.core.context.ResponseEntity;
-import io.esastack.restlight.core.resolver.entity.response.ResponseEntityResolverAdapter;
-import io.esastack.restlight.core.resolver.entity.response.ResponseEntityResolverAdviceAdapter;
-import io.esastack.restlight.core.resolver.entity.response.ResponseEntityResolverContext;
-import io.esastack.restlight.core.resolver.entity.response.AbstractResponseEntityResolver;
 import io.esastack.restlight.core.serialize.HttpBodySerializer;
-import io.esastack.restlight.core.context.RequestContext;
-import io.esastack.restlight.core.mock.MockHttpRequest;
 import io.esastack.restlight.test.context.MockMvc;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -46,8 +47,8 @@ class MinorityMockMvcBuilderTest {
         final MinorityMockMvcBuilder builder = new MinorityMockMvcBuilder(new Object());
         builder.controllerAdvices(A.class, new B());
         builder.serializers(Collections.singletonList(new HttpBodySerializerImpl()));
-        builder.paramResolvers(Collections.singletonList(new ParamResolverImpl()));
-        builder.paramResolverAdvices(Collections.singletonList(new ParamResolverAdviceImpl()));
+        builder.paramResolvers(Collections.singletonList(new HttpParamResolverImpl()));
+        builder.paramResolverAdvices(Collections.singletonList(new HttpParamResolverAdviceImpl()));
         builder.responseEntityResolvers(Collections.singletonList(new ResponseEntityResolverImpl()));
         builder.responseEntityResolverAdvices(Collections.singletonList(new ResponseEntityResolverAdviceImpl()));
         builder.interceptors(Collections.singletonList(new InterceptorImpl()));
@@ -83,13 +84,13 @@ class MinorityMockMvcBuilderTest {
         }
     }
 
-    private static class ParamResolverImpl implements ParamResolverAdapter {
+    private static class HttpParamResolverImpl implements ParamResolverAdapter {
 
-        private ParamResolverImpl() {
+        private HttpParamResolverImpl() {
         }
 
         @Override
-        public Object resolve(RequestContext context) {
+        public Object resolve(ParamResolverContext context) {
             return null;
         }
 
@@ -99,14 +100,14 @@ class MinorityMockMvcBuilderTest {
         }
     }
 
-    private static class ParamResolverAdviceImpl implements ParamResolverAdviceAdapter {
+    private static class HttpParamResolverAdviceImpl implements ParamResolverAdviceAdapter {
 
-        private ParamResolverAdviceImpl() {
+        private HttpParamResolverAdviceImpl() {
         }
 
         @Override
-        public Object aroundResolve(ParamResolverContext context) throws Exception {
-            return context.proceed();
+        public Object aroundResolve(ResolverExecutor executor) throws Exception {
+            return executor.proceed();
         }
 
         @Override
@@ -140,14 +141,16 @@ class MinorityMockMvcBuilderTest {
         }
 
         @Override
-        public void aroundWrite(ResponseEntityResolverContext context) throws Exception {
-            context.proceed();
+        public void aroundResolve0(ResolverExecutor<ResponseEntityResolverContext> executor) throws Exception {
+            executor.proceed();
         }
 
         @Override
         public boolean supports(HandlerMethod method) {
             return true;
         }
+
+
     }
 
     private static class InterceptorImpl implements HandlerInterceptor {

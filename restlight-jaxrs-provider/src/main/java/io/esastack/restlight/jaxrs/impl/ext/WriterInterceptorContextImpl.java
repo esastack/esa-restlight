@@ -17,7 +17,8 @@ package io.esastack.restlight.jaxrs.impl.ext;
 
 import esa.commons.Checks;
 import esa.commons.ClassUtils;
-import io.esastack.restlight.core.resolver.entity.response.ResponseEntityResolverContext;
+import io.esastack.restlight.core.resolver.ResolverExecutor;
+import io.esastack.restlight.core.resolver.ret.entity.ResponseEntityResolverContext;
 import io.esastack.restlight.jaxrs.util.JaxrsUtils;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.container.ContainerResponseFilter;
@@ -37,18 +38,18 @@ import java.lang.reflect.Type;
  */
 public class WriterInterceptorContextImpl extends InterceptorContextImpl implements WriterInterceptorContext {
 
-    private final ResponseEntityResolverContext underlying;
+    private final ResolverExecutor<ResponseEntityResolverContext> underlying;
     private final MultivaluedMap<String, Object> headers;
     private final WriterInterceptor[] interceptors;
     private final int interceptorsSize;
     private OutputStream outputStream;
     private int index;
 
-    public WriterInterceptorContextImpl(ResponseEntityResolverContext underlying,
+    public WriterInterceptorContextImpl(ResolverExecutor<ResponseEntityResolverContext> underlying,
                                         OutputStream outputStream,
                                         MultivaluedMap<String, Object> headers,
                                         WriterInterceptor[] interceptors) {
-        super(underlying);
+        super(underlying.context().requestContext(), underlying.context().responseEntity());
         Checks.checkNotNull(outputStream, "outputStream");
         Checks.checkNotNull(headers, "headers");
         this.underlying = underlying;
@@ -62,7 +63,8 @@ public class WriterInterceptorContextImpl extends InterceptorContextImpl impleme
     public void proceed() throws IOException, WebApplicationException {
         if (index >= interceptorsSize) {
             try {
-                JaxrsUtils.convertThenAddToHeaders(headers, underlying.context().response().headers());
+                JaxrsUtils.convertThenAddToHeaders(headers,
+                        underlying.context().requestContext().response().headers());
                 underlying.proceed();
                 return;
             } catch (IOException ex) {
@@ -77,12 +79,12 @@ public class WriterInterceptorContextImpl extends InterceptorContextImpl impleme
 
     @Override
     public Object getEntity() {
-        return underlying.context().response().entity();
+        return underlying.context().requestContext().response().entity();
     }
 
     @Override
     public void setEntity(Object entity) {
-        underlying.context().response().entity(entity);
+        underlying.context().requestContext().response().entity(entity);
         if (entity != null) {
             Class<?> type = ClassUtils.getUserType(entity);
             Type genericType = ClassUtils.getRawType(type);

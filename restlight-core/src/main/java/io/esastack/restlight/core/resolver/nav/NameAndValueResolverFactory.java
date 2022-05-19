@@ -16,6 +16,7 @@
 package io.esastack.restlight.core.resolver.nav;
 
 import io.esastack.restlight.core.handler.method.Param;
+import io.esastack.restlight.core.resolver.factory.HandlerResolverFactory;
 import io.esastack.restlight.core.resolver.param.ParamResolver;
 import io.esastack.restlight.core.resolver.param.ParamResolverFactory;
 import io.esastack.restlight.core.resolver.converter.StringConverter;
@@ -29,7 +30,8 @@ public abstract class NameAndValueResolverFactory implements ParamResolverFactor
     @Override
     public ParamResolver createResolver(Param param,
                                         StringConverterProvider converters,
-                                        List<? extends HttpRequestSerializer> serializers) {
+                                        List<? extends HttpRequestSerializer> serializers,
+                                        HandlerResolverFactory resolverFactory) {
         return new NameAndValueResolverAdapter(param, createResolver(param, converters));
     }
 

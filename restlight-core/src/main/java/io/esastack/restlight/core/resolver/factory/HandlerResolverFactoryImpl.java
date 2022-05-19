@@ -17,9 +17,10 @@ package io.esastack.restlight.core.resolver.factory;
 
 import esa.commons.Checks;
 import esa.commons.collection.Attributes;
+import io.esastack.restlight.core.DeployContext;
 import io.esastack.restlight.core.deploy.HandlerConfiguration;
-import io.esastack.restlight.core.handler.FutureTransfer;
 import io.esastack.restlight.core.filter.RouteFilter;
+import io.esastack.restlight.core.handler.FutureTransfer;
 import io.esastack.restlight.core.handler.method.HandlerMethod;
 import io.esastack.restlight.core.handler.method.Param;
 import io.esastack.restlight.core.resolver.context.ContextResolver;
@@ -35,18 +36,18 @@ import io.esastack.restlight.core.resolver.param.ParamResolverAdvice;
 import io.esastack.restlight.core.resolver.param.ParamResolverAdviceAdapter;
 import io.esastack.restlight.core.resolver.param.ParamResolverAdviceFactory;
 import io.esastack.restlight.core.resolver.param.ParamResolverFactory;
-import io.esastack.restlight.core.resolver.entity.request.RequestEntityResolver;
-import io.esastack.restlight.core.resolver.entity.request.RequestEntityResolverAdapter;
-import io.esastack.restlight.core.resolver.entity.request.RequestEntityResolverAdvice;
-import io.esastack.restlight.core.resolver.entity.request.RequestEntityResolverAdviceAdapter;
-import io.esastack.restlight.core.resolver.entity.request.RequestEntityResolverAdviceFactory;
-import io.esastack.restlight.core.resolver.entity.request.RequestEntityResolverFactory;
-import io.esastack.restlight.core.resolver.entity.response.ResponseEntityResolver;
-import io.esastack.restlight.core.resolver.entity.response.ResponseEntityResolverAdapter;
-import io.esastack.restlight.core.resolver.entity.response.ResponseEntityResolverAdvice;
-import io.esastack.restlight.core.resolver.entity.response.ResponseEntityResolverAdviceAdapter;
-import io.esastack.restlight.core.resolver.entity.response.ResponseEntityResolverAdviceFactory;
-import io.esastack.restlight.core.resolver.entity.response.ResponseEntityResolverFactory;
+import io.esastack.restlight.core.resolver.param.entity.RequestEntityResolver;
+import io.esastack.restlight.core.resolver.param.entity.RequestEntityResolverAdapter;
+import io.esastack.restlight.core.resolver.param.entity.RequestEntityResolverAdvice;
+import io.esastack.restlight.core.resolver.param.entity.RequestEntityResolverAdviceAdapter;
+import io.esastack.restlight.core.resolver.param.entity.RequestEntityResolverAdviceFactory;
+import io.esastack.restlight.core.resolver.param.entity.RequestEntityResolverFactory;
+import io.esastack.restlight.core.resolver.ret.entity.ResponseEntityResolver;
+import io.esastack.restlight.core.resolver.ret.entity.ResponseEntityResolverAdapter;
+import io.esastack.restlight.core.resolver.ret.entity.ResponseEntityResolverAdvice;
+import io.esastack.restlight.core.resolver.ret.entity.ResponseEntityResolverAdviceAdapter;
+import io.esastack.restlight.core.resolver.ret.entity.ResponseEntityResolverAdviceFactory;
+import io.esastack.restlight.core.resolver.ret.entity.ResponseEntityResolverFactory;
 import io.esastack.restlight.core.serialize.HttpRequestSerializer;
 import io.esastack.restlight.core.serialize.HttpResponseSerializer;
 import io.esastack.restlight.core.spi.FutureTransferFactory;
@@ -59,6 +60,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicReference;
@@ -271,10 +273,9 @@ public class HandlerResolverFactoryImpl implements HandlerResolverFactory {
     public ParamResolver getParamResolver(Param param) {
         //resolve the fixed parameter resolver
         return paramResolvers.stream().filter(r -> r.supports(param))
+                .map(factory -> factory.createResolver(param, getStringConverters(param), rxSerializers, this))
+                .filter(Objects::nonNull)
                 .findFirst()
-                .map(factory -> Checks.checkNotNull(factory.createResolver(param, getStringConverters(param),
-                        rxSerializers),
-                        "Failed to create ParamResolver for parameter: " + param))
                 .orElse(null);
     }
 

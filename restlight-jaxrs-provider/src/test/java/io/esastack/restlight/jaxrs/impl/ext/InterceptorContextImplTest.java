@@ -19,12 +19,13 @@ import esa.commons.collection.AttributeKey;
 import esa.commons.collection.AttributeMap;
 import esa.commons.collection.Attributes;
 import io.esastack.commons.net.http.MediaType;
-import io.esastack.restlight.core.context.HttpEntity;
-import io.esastack.restlight.core.resolver.entity.HttpEntityResolverContext;
-import io.esastack.restlight.core.context.RequestContext;
-import io.esastack.restlight.core.context.impl.RequestContextImpl;
 import io.esastack.restlight.core.context.HttpRequest;
 import io.esastack.restlight.core.context.HttpResponse;
+import io.esastack.restlight.core.context.RequestContext;
+import io.esastack.restlight.core.context.ResponseEntity;
+import io.esastack.restlight.core.context.ResponseEntityChannel;
+import io.esastack.restlight.core.context.impl.RequestContextImpl;
+import io.esastack.restlight.core.resolver.ret.entity.ResponseEntityResolverContext;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -40,26 +41,32 @@ class InterceptorContextImplTest {
 
     @Test
     void testBasic() {
-        assertThrows(NullPointerException.class, () -> new InterceptorContextImpl(null));
+        assertThrows(NullPointerException.class, () -> new InterceptorContextImpl(null, null));
 
         final Attributes attributes = new AttributeMap();
         final RequestContext context0 = new RequestContextImpl(attributes,
                 mock(HttpRequest.class), mock(HttpResponse.class));
-        final HttpEntity entity = mock(HttpEntity.class);
+        final ResponseEntity entity = mock(ResponseEntity.class);
 
-        final HttpEntityResolverContext underlying = new HttpEntityResolverContext() {
+        final ResponseEntityResolverContext underlying = new ResponseEntityResolverContext() {
             @Override
-            public RequestContext context() {
+            public RequestContext requestContext() {
                 return context0;
             }
 
             @Override
-            public HttpEntity httpEntity() {
+            public ResponseEntity responseEntity() {
                 return entity;
+            }
+
+            @Override
+            public ResponseEntityChannel channel() {
+                return null;
             }
         };
 
-        final InterceptorContextImpl context = new InterceptorContextImpl(underlying);
+        final InterceptorContextImpl context =
+                new InterceptorContextImpl(underlying.requestContext(), underlying.responseEntity());
         assertNull(context.getProperty("name"));
         attributes.attr(AttributeKey.valueOf("name")).set("value1");
         assertEquals("value1", context.getProperty("name"));

@@ -18,6 +18,7 @@ package io.esastack.restlight.jaxrs.resolver.param;
 import io.esastack.restlight.core.handler.method.HandlerMethod;
 import io.esastack.restlight.core.handler.method.MethodParam;
 import io.esastack.restlight.core.resolver.param.ParamResolver;
+import io.esastack.restlight.core.resolver.param.ParamResolverContextImpl;
 import io.esastack.restlight.jaxrs.resolver.ResolverUtils;
 import io.esastack.restlight.jaxrs.resolver.param.subject.ConstructorSubject;
 import io.esastack.restlight.jaxrs.resolver.param.subject.FromStringSubject;
@@ -159,8 +160,9 @@ class CookieValueParamResolverTest {
         final MethodParam param = handlerMethods.get(method).parameters()[0];
         assertTrue(resolverFactory.supports(param));
         final ParamResolver resolver = resolverFactory.createResolver(param,
-                ResolverUtils.defaultConverters(param), null);
-        return resolver.resolve(new RequestContextImpl(request, MockHttpResponse.aMockResponse().build()));
+                ResolverUtils.defaultConverters(param), null, null);
+        return resolver.resolve(new ParamResolverContextImpl(
+                new RequestContextImpl(request, MockHttpResponse.aMockResponse().build()), param));
     }
 
     private static class Subject {

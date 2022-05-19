@@ -20,6 +20,8 @@ import esa.commons.ObjectUtils;
 import esa.commons.reflect.BeanUtils;
 import esa.commons.reflect.ReflectionUtils;
 import io.esastack.restlight.core.DeployContext;
+import io.esastack.restlight.core.context.RequestContext;
+import io.esastack.restlight.core.exception.WebServerException;
 import io.esastack.restlight.core.handler.Handlers;
 import io.esastack.restlight.core.handler.impl.HandlerContext;
 import io.esastack.restlight.core.handler.impl.HandlerFactoryImpl;
@@ -32,10 +34,10 @@ import io.esastack.restlight.core.handler.method.MethodParamImpl;
 import io.esastack.restlight.core.handler.method.ResolvableParam;
 import io.esastack.restlight.core.handler.method.ResolvableParamPredicate;
 import io.esastack.restlight.core.resolver.context.ContextResolver;
+import io.esastack.restlight.core.resolver.context.ContextResolverContext;
+import io.esastack.restlight.core.resolver.context.ContextResolverContextImpl;
 import io.esastack.restlight.core.resolver.factory.HandlerResolverFactory;
 import io.esastack.restlight.core.util.ConstructorUtils;
-import io.esastack.restlight.core.exception.WebServerException;
-import io.esastack.restlight.core.context.RequestContext;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -46,6 +48,8 @@ import java.util.concurrent.ConcurrentHashMap;
 public class JaxrsHandlerFactory extends HandlerFactoryImpl {
 
     private final ConcurrentHashMap<Class<?>, ResolvableProvider> resolvableProviders = new ConcurrentHashMap<>();
+
+    private static final ContextResolverContext DEFAULT_CONTEXT = new ContextResolverContextImpl();
 
     public JaxrsHandlerFactory(DeployContext defaultContext, Handlers handlers) {
         super(defaultContext, handlers);
@@ -68,7 +72,7 @@ public class JaxrsHandlerFactory extends HandlerFactoryImpl {
             int index = 0;
             for (ResolvableParam<ConstructorParam, ContextResolver> param : consParams) {
                 try {
-                    consArgs[index++] = param.resolver().resolve(handlerContext);
+                    consArgs[index++] = param.resolver().resolve(DEFAULT_CONTEXT);
                 } catch (Throwable th) {
                     //wrap exception
                     throw WebServerException.wrap(th);
@@ -103,7 +107,7 @@ public class JaxrsHandlerFactory extends HandlerFactoryImpl {
                 if (r.resolver() != null) {
                     //it may return a null value
                     try {
-                        Object arg = r.resolver().resolve(handlerContext);
+                        Object arg = r.resolver().resolve(DEFAULT_CONTEXT);
                         ReflectionUtils.invokeMethod(param.method(), instance, arg);
                     } catch (InvocationTargetException ex) {
                         throw new IllegalStateException("Failed to invoke method: [" + param.method() + "]",
@@ -119,7 +123,8 @@ public class JaxrsHandlerFactory extends HandlerFactoryImpl {
                 //resolve args with resolver
                 if (r.resolver() != null) {
                     try {
-                        BeanUtils.setFieldValue(instance, param.name(), r.resolver().resolve(handlerContext));
+                        BeanUtils.setFieldValue(instance, param.name(),
+                                r.resolver().resolve(DEFAULT_CONTEXT));
                     } catch (Exception e) {
                         //wrap exception
                         throw WebServerException.wrap(e);
@@ -140,6 +145,7 @@ public class JaxrsHandlerFactory extends HandlerFactoryImpl {
         private final ResolvableParam<ConstructorParam, ContextResolver>[] consParamResolvers;
         private final ResolvableParam<MethodParam, ContextResolver>[] setterParamResolvers;
         private final ResolvableParam<FieldParam, ContextResolver>[] fieldParamResolvers;
+        private final DeployContext context;
 
         private ResolvableProvider(Class<?> clazz, DeployContext context) {
             HandlerResolverFactory resolverFactory = context.resolverFactory()
@@ -149,6 +155,7 @@ public class JaxrsHandlerFactory extends HandlerFactoryImpl {
             this.constructor = ConstructorUtils.extractResolvable(clazz, resolvable);
             Checks.checkState(this.constructor != null,
                     "There is no suitable constructor to instantiate class: " + clazz.getName());
+            this.context = context;
             this.consParamResolvers = contextResolversOfCons(constructor, resolvable, resolverFactory);
             this.setterParamResolvers = contextResolversOfSetter(clazz, resolvable, resolverFactory);
             this.fieldParamResolvers = contextResolversOfField(clazz, resolvable, resolverFactory);

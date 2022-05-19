@@ -22,7 +22,7 @@ import io.esastack.restlight.core.util.Ordered;
  * Interface for resolving method parameters to the real values of the handler method base on the current context.
  */
 @SPI
-public interface ParamResolverAdapter extends ParamPredicate, ParamResolver, Ordered {
+public interface ParamResolverAdapter extends ParamPredicate, ParamResolver<ParamResolverContext>, Ordered {
 
     @Override
     default int getOrder() {

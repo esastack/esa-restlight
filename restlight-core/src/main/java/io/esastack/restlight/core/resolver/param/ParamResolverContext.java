@@ -13,31 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package io.esastack.restlight.core.resolver.param;
 
-import io.esastack.restlight.core.handler.method.Param;
 import io.esastack.restlight.core.context.RequestContext;
+import io.esastack.restlight.core.resolver.ResolverContext;
 
-/**
- * This {@link ParamResolverContext} is designed to hold context which is passed among
- * {@link ParamResolverAdvice}s.
- */
-public interface ParamResolverContext {
+public interface ParamResolverContext extends ResolverContext {
 
     /**
-     * Obtains current {@link RequestContext}.
-     *
-     * @return request context
+     * Obtains the {@link RequestContext} to resolve.
      */
     RequestContext requestContext();
-
-    /**
-     * Resolves the specified {@link Param} by given {@link #requestContext()}.
-     *
-     * @return context
-     * @throws Exception exception
-     */
-    Object proceed() throws Exception;
-
 }
-

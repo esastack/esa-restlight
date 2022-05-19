@@ -15,19 +15,20 @@
  */
 package io.esastack.restlight.core.handler.impl;
 
+import io.esastack.restlight.core.context.HttpRequest;
+import io.esastack.restlight.core.context.HttpResponse;
+import io.esastack.restlight.core.context.RequestContext;
+import io.esastack.restlight.core.context.impl.RequestContextImpl;
+import io.esastack.restlight.core.exception.WebServerException;
 import io.esastack.restlight.core.handler.HandlerInvoker;
 import io.esastack.restlight.core.handler.HandlerValueResolver;
 import io.esastack.restlight.core.handler.method.HandlerMethod;
 import io.esastack.restlight.core.handler.method.HandlerMethodAdapter;
 import io.esastack.restlight.core.handler.method.MethodParam;
 import io.esastack.restlight.core.handler.method.ResolvableParam;
-import io.esastack.restlight.core.exception.WebServerException;
-import io.esastack.restlight.core.context.RequestContext;
-import io.esastack.restlight.core.context.impl.RequestContextImpl;
-import io.esastack.restlight.core.context.HttpRequest;
-import io.esastack.restlight.core.context.HttpResponse;
 import io.esastack.restlight.core.mock.MockHttpResponse;
-import io.esastack.restlight.core.resolver.ResolverWrap;
+import io.esastack.restlight.core.resolver.Resolver;
+import io.esastack.restlight.core.resolver.ResolverContext;
 import org.junit.jupiter.api.Test;
 
 import java.util.concurrent.CompletableFuture;
@@ -123,13 +124,15 @@ class AbstractExecutionTest {
                 };
 
         final MethodParam param = mock(MethodParam.class);
-        final ResolverWrap argResolver = mock(ResolverWrap.class);
-        when(argResolver.resolve(any(), any())).thenReturn("foo");
+        final Resolver argResolver = mock(Resolver.class);
+        when(argResolver.resolve(any(ResolverContext.class))).thenReturn("foo");
         final ResolvableParam[] params = new ResolvableParam[1];
         params[0] = new ResolvableParam(param, argResolver);
         when(mock.paramResolvers())
                 .thenReturn(params);
-        final Object[] args = execution.resolveArgs(mock(RequestContext.class));
+        final RequestContext requestContext = mock(RequestContext.class);
+        when(requestContext.request()).thenReturn(mock(HttpRequest.class));
+        final Object[] args = execution.resolveArgs(requestContext);
         assertNotNull(args);
         assertEquals(1, args.length);
         assertEquals("foo", args[0]);
@@ -183,8 +186,8 @@ class AbstractExecutionTest {
                 };
 
         final MethodParam param = mock(MethodParam.class);
-        final ResolverWrap argResolver = mock(ResolverWrap.class);
-        when(argResolver.resolve(any(), any())).thenThrow(new IllegalStateException());
+        final Resolver argResolver = mock(Resolver.class);
+        when(argResolver.resolve(any(ResolverContext.class))).thenThrow(new IllegalStateException());
         //noinspection unchecked
         when(param.type()).thenReturn((Class) Object.class);
         final ResolvableParam[] params = new ResolvableParam[1];

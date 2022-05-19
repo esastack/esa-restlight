@@ -16,9 +16,9 @@
 package io.esastack.restlight.jaxrs.resolver.param;
 
 import io.esastack.restlight.core.handler.method.Param;
+import io.esastack.restlight.core.resolver.param.AbstractParamResolver;
 import io.esastack.restlight.core.resolver.param.ParamResolverFactory;
 import io.esastack.restlight.core.resolver.nav.NameAndValue;
-import io.esastack.restlight.core.resolver.param.AbstractParamResolver;
 import io.esastack.restlight.jaxrs.util.JaxrsMappingUtils;
 import io.esastack.restlight.jaxrs.util.JaxrsUtils;
 import jakarta.ws.rs.QueryParam;

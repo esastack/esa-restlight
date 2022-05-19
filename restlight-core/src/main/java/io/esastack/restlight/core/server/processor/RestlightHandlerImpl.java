@@ -22,29 +22,36 @@ import esa.commons.logging.LoggerFactory;
 import io.esastack.commons.net.http.HttpStatus;
 import io.esastack.commons.net.http.MediaType;
 import io.esastack.restlight.core.DeployContext;
-import io.esastack.restlight.core.filter.Filter;
-import io.esastack.restlight.core.handler.impl.HandlerContext;
-import io.esastack.restlight.core.handler.HandlerContextProvider;
-import io.esastack.restlight.core.handler.method.HandlerMethod;
-import io.esastack.restlight.core.resolver.factory.HandlerResolverFactory;
+import io.esastack.restlight.core.context.HttpRequest;
+import io.esastack.restlight.core.context.HttpResponse;
+import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.context.ResponseEntity;
 import io.esastack.restlight.core.context.ResponseEntityImpl;
-import io.esastack.restlight.core.resolver.entity.response.ResponseEntityResolverContext;
-import io.esastack.restlight.core.resolver.entity.response.ResponseEntityResolverContextImpl;
-import io.esastack.restlight.core.spi.ResponseEntityChannelFactory;
-import io.esastack.restlight.core.spi.impl.RouteTracking;
-import io.esastack.restlight.core.util.ResponseEntityUtils;
 import io.esastack.restlight.core.dispatcher.DispatcherHandlerImpl;
 import io.esastack.restlight.core.dispatcher.ExceptionHandlerChain;
 import io.esastack.restlight.core.exception.WebServerException;
-import io.esastack.restlight.core.context.RequestContext;
-import io.esastack.restlight.core.context.HttpRequest;
-import io.esastack.restlight.core.context.HttpResponse;
+import io.esastack.restlight.core.filter.Filter;
+import io.esastack.restlight.core.handler.HandlerContextProvider;
+import io.esastack.restlight.core.handler.impl.HandlerContext;
+import io.esastack.restlight.core.handler.method.HandlerMethod;
+import io.esastack.restlight.core.resolver.ret.ReturnValueResolver;
+import io.esastack.restlight.core.resolver.ret.ReturnValueResolverAdvice;
+import io.esastack.restlight.core.resolver.ret.ReturnValueResolverExecutor;
+import io.esastack.restlight.core.resolver.ret.entity.ResponseEntityResolver;
+import io.esastack.restlight.core.resolver.ret.entity.ResponseEntityResolverAdvice;
+import io.esastack.restlight.core.resolver.ret.entity.ResponseEntityResolverContext;
+import io.esastack.restlight.core.resolver.ret.entity.ResponseEntityResolverContextImpl;
+import io.esastack.restlight.core.resolver.factory.HandlerResolverFactory;
 import io.esastack.restlight.core.route.ExceptionHandler;
 import io.esastack.restlight.core.route.Route;
+import io.esastack.restlight.core.spi.ResponseEntityChannelFactory;
+import io.esastack.restlight.core.spi.impl.RouteTracking;
 import io.esastack.restlight.core.util.Futures;
+import io.esastack.restlight.core.util.ResponseEntityUtils;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CompletionStage;
 
 public class RestlightHandlerImpl extends AbstractRestlightHandler {
@@ -82,18 +89,26 @@ public class RestlightHandlerImpl extends AbstractRestlightHandler {
                     mediaTypes.isEmpty() ? null : mediaTypes.get(0));
             HandlerResolverFactory resolverFactory = getResolverFactory(method);
             final ResponseEntityResolverContext rspCtx = new ResponseEntityResolverContextImpl(context,
-                    entity, channelFactory.create(context), resolverFactory.getResponseEntityResolvers(method),
-                    resolverFactory.getResponseEntityResolverAdvices(method));
-
+                    entity, channelFactory.create(context));
             setEntityTypeIfNecessary(rspCtx, context.response());
+            ReturnValueResolver[] resolvers = Optional.ofNullable(resolverFactory.getResponseEntityResolvers(method))
+                    .orElse(Collections.emptyList())
+                    .toArray(new ResponseEntityResolver[0]);
+            ReturnValueResolverAdvice[] advices = Optional
+                    .ofNullable(resolverFactory.getResponseEntityResolverAdvices(method))
+                    .orElse(Collections.emptyList())
+                    .toArray(new ResponseEntityResolverAdvice[0]);
+            String unSupportMsg = "There is no suitable resolver to resolve response entity: " + entity;
+            final ReturnValueResolverExecutor executor =
+                    new ReturnValueResolverExecutor(rspCtx, resolvers, advices, unSupportMsg);
             final HttpRequest request = context.request();
             try {
-                rspCtx.proceed();
+                executor.proceed();
                 if (!rspCtx.channel().isCommitted()) {
                     logger.error("The response entity({}) of request(url={}, method={}) still haven't been committed"
                             + " after all ResponseEntity advices, maybe the write operation was terminated by"
                             + " an advice?", entity, request.path(), request.method());
-                    rspCtx.context().response().status(HttpStatus.INTERNAL_SERVER_ERROR.code());
+                    rspCtx.requestContext().response().status(HttpStatus.INTERNAL_SERVER_ERROR.code());
                     rspCtx.channel().end();
                 }
             } catch (Throwable ex) {
@@ -106,7 +121,7 @@ public class RestlightHandlerImpl extends AbstractRestlightHandler {
                     } else {
                         status = HttpStatus.INTERNAL_SERVER_ERROR;
                     }
-                    rspCtx.context().response().status(status.code());
+                    rspCtx.requestContext().response().status(status.code());
                     rspCtx.channel().end();
                 } else {
                     logger.error("Unexpected error occurred after committing response entity({})" +
@@ -138,10 +153,10 @@ public class RestlightHandlerImpl extends AbstractRestlightHandler {
     }
 
     private void setEntityTypeIfNecessary(ResponseEntityResolverContext rspCtx, HttpResponse response) {
-        if (response.entity() != null && rspCtx.httpEntity().type() == null) {
+        if (response.entity() != null && rspCtx.responseEntity().type() == null) {
             Class<?> entityType = ClassUtils.getUserType(response.entity());
-            rspCtx.httpEntity().type(entityType);
-            rspCtx.httpEntity().genericType(ClassUtils.getRawType(entityType));
+            rspCtx.responseEntity().type(entityType);
+            rspCtx.responseEntity().genericType(ClassUtils.getRawType(entityType));
         }
     }
 

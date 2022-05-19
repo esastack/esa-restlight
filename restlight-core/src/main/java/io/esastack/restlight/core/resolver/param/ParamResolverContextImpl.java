@@ -13,41 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package io.esastack.restlight.core.resolver.param;
 
 import esa.commons.Checks;
 import io.esastack.restlight.core.context.RequestContext;
-
-import java.util.List;
+import io.esastack.restlight.core.context.RequestEntity;
+import io.esastack.restlight.core.context.RequestEntityImpl;
+import io.esastack.restlight.core.handler.method.Param;
 
 public class ParamResolverContextImpl implements ParamResolverContext {
 
-    private final RequestContext context;
-    private final ParamResolver resolver;
-    private final ParamResolverAdvice[] advices;
-    private int index;
+    private final RequestContext requestContext;
 
-    public ParamResolverContextImpl(RequestContext context,
-                                    ParamResolver resolver,
-                                    List<ParamResolverAdvice> advices) {
-        Checks.checkNotNull(context, "context");
-        Checks.checkNotNull(resolver, "resolver");
-        this.context = context;
-        this.resolver = resolver;
-        this.advices = (advices == null ? null : advices.toArray(new ParamResolverAdvice[0]));
+    public ParamResolverContextImpl(RequestContext requestContext,
+                                    Param param) {
+        this(requestContext, new RequestEntityImpl(param, requestContext));
+    }
+
+    public ParamResolverContextImpl(RequestContext requestContext,
+                                    RequestEntity entity) {
+        Checks.checkNotNull(requestContext, "requestContext");
+        Checks.checkNotNull(entity, "entity");
+        this.requestContext = requestContext;
     }
 
     @Override
     public RequestContext requestContext() {
-        return context;
-    }
-
-    @Override
-    public Object proceed() throws Exception {
-        if (advices == null || index >= advices.length) {
-            return resolver.resolve(context);
-        }
-
-        return advices[index++].aroundResolve(this);
+        return requestContext;
     }
 }

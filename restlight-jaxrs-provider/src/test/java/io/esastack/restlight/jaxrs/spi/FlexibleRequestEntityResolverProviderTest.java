@@ -17,7 +17,7 @@ package io.esastack.restlight.jaxrs.spi;
 
 import io.esastack.restlight.core.DeployContext;
 import io.esastack.restlight.core.config.RestlightOptionsConfigure;
-import io.esastack.restlight.core.resolver.entity.request.RequestEntityResolverFactory;
+import io.esastack.restlight.core.resolver.param.entity.RequestEntityResolverFactory;
 import io.esastack.restlight.jaxrs.resolver.reqentity.FlexibleRequestEntityResolverFactoryImpl;
 import org.junit.jupiter.api.Test;
 

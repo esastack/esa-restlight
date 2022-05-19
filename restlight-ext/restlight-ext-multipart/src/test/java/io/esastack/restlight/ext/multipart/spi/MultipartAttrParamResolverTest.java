@@ -21,6 +21,7 @@ import io.esastack.restlight.core.exception.WebServerException;
 import io.esastack.restlight.core.context.impl.RequestContextImpl;
 import io.esastack.restlight.core.context.HttpRequest;
 import io.esastack.restlight.core.mock.MockHttpResponse;
+import io.esastack.restlight.core.resolver.param.ParamResolverContextImpl;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -37,8 +38,9 @@ class MultipartAttrParamResolverTest extends AbstractMultipartResolverTest {
         AbstractMultipartParamResolver factory = attrResolver.createResolver(attrResolver.buildFactory(config));
         assertTrue(factory.supports(param));
 
-        final ParamResolver resolver = factory.createResolver(param, defaultConverters(param), null);
-        return resolver.resolve(new RequestContextImpl(request, MockHttpResponse.aMockResponse().build()));
+        final ParamResolver resolver = factory.createResolver(param, defaultConverters(param), null, null);
+        return resolver.resolve(new ParamResolverContextImpl(
+                new RequestContextImpl(request, MockHttpResponse.aMockResponse().build()), param));
     }
 
     @Test

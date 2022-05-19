@@ -15,22 +15,28 @@
  */
 package io.esastack.restlight.springmvc.resolver.reqentity;
 
+import esa.commons.Result;
 import io.esastack.commons.net.http.MediaType;
 import io.esastack.restlight.core.annotation.RequestSerializer;
 import io.esastack.restlight.core.annotation.Serializer;
+import io.esastack.restlight.core.context.HttpRequest;
+import io.esastack.restlight.core.context.RequestContext;
+import io.esastack.restlight.core.context.RequestEntityImpl;
+import io.esastack.restlight.core.context.impl.RequestContextImpl;
 import io.esastack.restlight.core.handler.method.HandlerMethod;
 import io.esastack.restlight.core.handler.method.MethodParam;
-import io.esastack.restlight.core.context.RequestEntityImpl;
-import io.esastack.restlight.core.resolver.entity.request.RequestEntityResolver;
-import io.esastack.restlight.core.resolver.entity.request.FixedRequestEntityResolverFactory;
+import io.esastack.restlight.core.mock.MockHttpRequest;
+import io.esastack.restlight.core.mock.MockHttpResponse;
+import io.esastack.restlight.core.resolver.param.ParamResolver;
+import io.esastack.restlight.core.resolver.param.ParamResolverContext;
+import io.esastack.restlight.core.resolver.param.ParamResolverContextImpl;
+import io.esastack.restlight.core.resolver.param.entity.FixedRequestEntityResolverFactory;
+import io.esastack.restlight.core.resolver.param.entity.RequestEntityResolver;
+import io.esastack.restlight.core.resolver.param.entity.RequestEntityResolverContext;
+import io.esastack.restlight.core.resolver.param.entity.RequestEntityResolverContextImpl;
 import io.esastack.restlight.core.serialize.HttpRequestSerializer;
 import io.esastack.restlight.core.serialize.JacksonHttpBodySerializer;
 import io.esastack.restlight.core.serialize.JacksonSerializer;
-import io.esastack.restlight.core.context.RequestContext;
-import io.esastack.restlight.core.context.impl.RequestContextImpl;
-import io.esastack.restlight.core.context.HttpRequest;
-import io.esastack.restlight.core.mock.MockHttpRequest;
-import io.esastack.restlight.core.mock.MockHttpResponse;
 import io.esastack.restlight.springmvc.annotation.shaded.RequestBody0;
 import io.esastack.restlight.springmvc.resolver.Pojo;
 import io.esastack.restlight.springmvc.resolver.ResolverUtils;
@@ -102,7 +108,9 @@ class FixedRequestEntityResolverFactoryImplTest {
 
         final RequestContext context = new RequestContextImpl(request,
                 MockHttpResponse.aMockResponse().build());
-        return resolver.readFrom(new RequestEntityImpl(param, context), context).get();
+        RequestEntityResolverContext resolverContext = new RequestEntityResolverContextImpl(
+                new RequestEntityImpl(param, context), context);
+        return ((Result) resolver.resolve(resolverContext)).get();
     }
 
     private static class Subject {

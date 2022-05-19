@@ -19,7 +19,8 @@ import esa.commons.collection.AttributeMap;
 import io.esastack.restlight.core.context.ResponseEntity;
 import io.esastack.restlight.core.context.ResponseEntityChannel;
 import io.esastack.restlight.core.context.ResponseEntityImpl;
-import io.esastack.restlight.core.resolver.entity.response.ResponseEntityResolverContext;
+import io.esastack.restlight.core.resolver.ResolverExecutor;
+import io.esastack.restlight.core.resolver.ret.entity.ResponseEntityResolverContext;
 import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.context.impl.RequestContextImpl;
 import io.esastack.restlight.core.context.HttpRequest;
@@ -45,7 +46,7 @@ class JaxrsResponseAdapterTest {
         final ResponseEntity entity = new ResponseEntityImpl(null, response, null);
         ResponseEntityResolverContext context = new ResponseEntityResolverContext() {
             @Override
-            public ResponseEntity httpEntity() {
+            public ResponseEntity responseEntity() {
                 return entity;
             }
 
@@ -55,22 +56,28 @@ class JaxrsResponseAdapterTest {
             }
 
             @Override
-            public void proceed() {
-
-            }
-
-            @Override
-            public RequestContext context() {
+            public RequestContext requestContext() {
                 return rCtx;
             }
         };
-        adapter.aroundWrite(context);
+        ResolverExecutor<ResponseEntityResolverContext> executor = new ResolverExecutor() {
+            @Override
+            public ResponseEntityResolverContext context() {
+                return context;
+            }
+
+            @Override
+            public Object proceed() throws Exception {
+                return null;
+            }
+        };
+        adapter.aroundResolve0(executor);
         assertNull(entity.type());
         assertNull(entity.genericType());
 
         // plain GenericEntity
         response.entity(new GenericEntity<>("ABC", String.class));
-        adapter.aroundWrite(context);
+        adapter.aroundResolve0(executor);
         assertEquals("ABC", response.entity());
         assertEquals(String.class, entity.type());
         assertEquals(String.class, entity.genericType());
@@ -81,7 +88,7 @@ class JaxrsResponseAdapterTest {
         entity.genericType(null);
         final Response rsp = Response.ok("DEF").build();
         response.entity(new GenericEntity<>(rsp, Response.class));
-        adapter.aroundWrite(context);
+        adapter.aroundResolve0(executor);
         assertEquals("DEF", response.entity());
         assertEquals(String.class, entity.type());
         assertEquals(String.class, entity.genericType());
@@ -93,7 +100,7 @@ class JaxrsResponseAdapterTest {
         entity.genericType(null);
         final Response.ResponseBuilder builder = Response.notModified().entity(100);
         response.entity(new GenericEntity<>(builder, Response.ResponseBuilder.class));
-        adapter.aroundWrite(context);
+        adapter.aroundResolve0(executor);
         assertEquals(100, response.entity());
         assertEquals(Integer.class, entity.type());
         assertEquals(Integer.class, entity.genericType());

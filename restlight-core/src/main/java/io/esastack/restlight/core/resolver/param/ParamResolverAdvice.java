@@ -16,20 +16,15 @@
 package io.esastack.restlight.core.resolver.param;
 
 import io.esastack.restlight.core.context.RequestContext;
+import io.esastack.restlight.core.resolver.ResolverAdvice;
+import io.esastack.restlight.core.resolver.ResolverExecutor;
 
 /**
  * Allows customising the {@link RequestContext} before resolving the parameter of controller from
  * {@link RequestContext} and customizing the argument resoled from {@link RequestContext}.
  */
-public interface ParamResolverAdvice {
+public interface ParamResolverAdvice<C extends ParamResolverContext> extends ResolverAdvice<C> {
 
-    /**
-     * This method is called around {@link ParamResolver#resolve(RequestContext)}.
-     *
-     * @param context context
-     * @return resolved arg value
-     * @throws Exception exception
-     */
-    Object aroundResolve(ParamResolverContext context) throws Exception;
-
+    @Override
+    Object aroundResolve(ResolverExecutor<C> executor) throws Exception;
 }

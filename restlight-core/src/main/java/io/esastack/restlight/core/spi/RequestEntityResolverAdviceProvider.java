@@ -13,11 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package io.esastack.restlight.core.spi;
 
 import esa.commons.spi.SPI;
 import io.esastack.restlight.core.DeployContext;
-import io.esastack.restlight.core.resolver.entity.request.RequestEntityResolverAdviceFactory;
+import io.esastack.restlight.core.resolver.param.entity.RequestEntityResolverAdviceFactory;
 
 import java.util.Optional;
 
@@ -37,4 +38,3 @@ public interface RequestEntityResolverAdviceProvider {
     Optional<RequestEntityResolverAdviceFactory> factoryBean(DeployContext ctx);
 
 }
-

@@ -18,10 +18,12 @@ package io.esastack.restlight.jaxrs.adapter;
 import esa.commons.Result;
 import io.esastack.commons.net.http.MediaType;
 import io.esastack.commons.net.netty.http.Http1HeadersImpl;
-import io.esastack.restlight.core.handler.method.Param;
-import io.esastack.restlight.core.context.RequestEntity;
-import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.context.HttpRequest;
+import io.esastack.restlight.core.context.RequestContext;
+import io.esastack.restlight.core.context.RequestEntity;
+import io.esastack.restlight.core.handler.method.Param;
+import io.esastack.restlight.core.resolver.param.entity.RequestEntityResolverContext;
+import io.esastack.restlight.core.resolver.param.entity.RequestEntityResolverContextImpl;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.MultivaluedMap;
 import jakarta.ws.rs.ext.MessageBodyReader;
@@ -59,13 +61,15 @@ class MessageBodyReaderAdapterTest {
         final HttpRequest request = mock(HttpRequest.class);
         when(context.request()).thenReturn(request);
         when(request.headers()).thenReturn(new Http1HeadersImpl());
+        RequestEntityResolverContext resolverContext =
+                new RequestEntityResolverContextImpl(entity, context);
         MessageBodyReaderAdapter<?> adapter = new MessageBodyReaderAdapter<>(providers);
-        assertFalse(adapter.readFrom(entity, context).isOk());
+        assertFalse(adapter.resolve(resolverContext).isOk());
 
         doReturn(String.class).when(entity).type();
         when(entity.mediaType()).thenReturn(MediaType.ALL);
         when(providers.getMessageBodyReader(any(), any(), any(), any())).thenReturn(null);
-        assertFalse(adapter.readFrom(entity, context).isOk());
+        assertFalse(adapter.resolve(resolverContext).isOk());
 
         when(providers.getMessageBodyReader(any(), any(), any(), any())).thenReturn(new MessageBodyReader<Object>() {
             @Override
@@ -82,7 +86,7 @@ class MessageBodyReaderAdapterTest {
                 return "DEF";
             }
         });
-        Result<?, Void> handled = adapter.readFrom(entity, context);
+        Result<?, Void> handled = adapter.resolve(resolverContext);
         assertTrue(handled.isOk());
         assertEquals("DEF", handled.get());
     }

@@ -16,22 +16,14 @@
 package io.esastack.restlight.core.resolver.param;
 
 import io.esastack.restlight.core.handler.method.Param;
-import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.resolver.Resolver;
 
 /**
  * Interface for resolving {@link Param} to the real values of the handler method base on the current context.
  */
-public interface ParamResolver extends Resolver {
+public interface ParamResolver<C extends ParamResolverContext> extends Resolver<C> {
 
-    /**
-     * Resolves method parameter into an argument value.
-     *
-     * @param context context
-     * @return value resolved
-     * @throws Exception ex
-     */
-    Object resolve(RequestContext context) throws Exception;
-
+    @Override
+    Object resolve(C context) throws Exception;
 }
 

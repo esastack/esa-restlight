@@ -16,8 +16,8 @@
 package io.esastack.restlight.jaxrs.resolver.context;
 
 import esa.commons.Checks;
-import io.esastack.restlight.core.DeployContext;
 import io.esastack.restlight.core.handler.method.Param;
+import io.esastack.restlight.core.resolver.context.ContextResolverContext;
 import jakarta.ws.rs.core.Configuration;
 
 public class ConfigurationResolverAdapter extends AbstractContextResolverAdapter {
@@ -30,7 +30,7 @@ public class ConfigurationResolverAdapter extends AbstractContextResolverAdapter
     }
 
     @Override
-    public Object resolve(DeployContext context) throws Exception {
+    public Object resolve(ContextResolverContext context) throws Exception {
         return configuration;
     }
 

@@ -16,9 +16,8 @@
 package io.esastack.restlight.core.handler.method;
 
 import esa.commons.Checks;
-import io.esastack.restlight.core.resolver.Resolver;
 
-public class ResolvableParam<P extends Param, R extends Resolver> {
+public class ResolvableParam<P extends Param, R> {
 
     private final P param;
     private final R resolver;

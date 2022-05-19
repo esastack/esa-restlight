@@ -17,12 +17,13 @@ package io.esastack.restlight.jaxrs.impl.ext;
 
 import esa.commons.collection.AttributeMap;
 import io.esastack.commons.net.netty.http.Http1HeadersImpl;
-import io.esastack.restlight.core.context.RequestEntity;
-import io.esastack.restlight.core.resolver.entity.request.RequestEntityResolverContext;
-import io.esastack.restlight.core.context.RequestContext;
-import io.esastack.restlight.core.context.impl.RequestContextImpl;
 import io.esastack.restlight.core.context.HttpRequest;
 import io.esastack.restlight.core.context.HttpResponse;
+import io.esastack.restlight.core.context.RequestContext;
+import io.esastack.restlight.core.context.RequestEntity;
+import io.esastack.restlight.core.context.impl.RequestContextImpl;
+import io.esastack.restlight.core.resolver.ResolverExecutor;
+import io.esastack.restlight.core.resolver.param.entity.RequestEntityResolverContext;
 import jakarta.ws.rs.ext.ReaderInterceptor;
 import jakarta.ws.rs.ext.ReaderInterceptorContext;
 import org.junit.jupiter.api.Test;
@@ -47,8 +48,12 @@ class ReaderInterceptorContextImplTest {
     void testBasic() throws Throwable {
         assertThrows(NullPointerException.class, () -> new ReaderInterceptorContextImpl(null,
                 new ReaderInterceptor[0]));
-        assertDoesNotThrow(() -> new ReaderInterceptorContextImpl(mock(RequestEntityResolverContext.class),
-                null));
+        ResolverExecutor mockExecutor = mock(ResolverExecutor.class);
+        RequestEntityResolverContext resolverContext = mock(RequestEntityResolverContext.class);
+        when(resolverContext.requestContext()).thenReturn(mock(RequestContext.class));
+        when(resolverContext.requestEntity()).thenReturn(mock(RequestEntity.class));
+        when(mockExecutor.context()).thenReturn(resolverContext);
+        assertDoesNotThrow(() -> new ReaderInterceptorContextImpl(mockExecutor, null));
 
         final HttpRequest request = mock(HttpRequest.class);
         final HttpResponse response = mock(HttpResponse.class);
@@ -57,25 +62,34 @@ class ReaderInterceptorContextImplTest {
 
         final AtomicInteger count = new AtomicInteger();
         final RequestEntityResolverContext underlying = new RequestEntityResolverContext() {
+
             @Override
-            public RequestContext context() {
+            public RequestContext requestContext() {
                 return context0;
             }
 
             @Override
-            public RequestEntity httpEntity() {
+            public RequestEntity requestEntity() {
                 return entity;
             }
-
-            @Override
-            public Object proceed() {
-                count.incrementAndGet();
-                return count;
-            }
         };
+        final ResolverExecutor<RequestEntityResolverContext> executor =
+                new ResolverExecutor<RequestEntityResolverContext>() {
+                    @Override
+                    public RequestEntityResolverContext context() {
+                        return underlying;
+                    }
+
+                    @Override
+                    public Object proceed() throws Exception {
+                        count.incrementAndGet();
+                        return count;
+                    }
+                };
+
         final ReaderInterceptor interceptor1 = mock(ReaderInterceptor.class);
         final ReaderInterceptor interceptor2 = mock(ReaderInterceptor.class);
-        final ReaderInterceptorContext context = new ReaderInterceptorContextImpl(underlying,
+        final ReaderInterceptorContext context = new ReaderInterceptorContextImpl(executor,
                 new ReaderInterceptor[]{interceptor1, interceptor2});
 
         verify(request, never()).inputStream();
@@ -97,7 +111,7 @@ class ReaderInterceptorContextImplTest {
 
         clearInvocations(interceptor1, interceptor2);
         reset(interceptor1, interceptor2);
-        final ReaderInterceptorContext context1 = new ReaderInterceptorContextImpl(underlying,
+        final ReaderInterceptorContext context1 = new ReaderInterceptorContextImpl(executor,
                 new ReaderInterceptor[] {interceptor1, interceptor2});
         when(interceptor1.aroundReadFrom(any())).thenAnswer(invocationOnMock -> context1.proceed());
         when(interceptor2.aroundReadFrom(any())).thenThrow(new RuntimeException());
@@ -110,7 +124,7 @@ class ReaderInterceptorContextImplTest {
 
         clearInvocations(interceptor1, interceptor2);
         reset(interceptor1, interceptor2);
-        final ReaderInterceptorContext context2 = new ReaderInterceptorContextImpl(underlying,
+        final ReaderInterceptorContext context2 = new ReaderInterceptorContextImpl(executor,
                 new ReaderInterceptor[] {interceptor1, interceptor2});
         assertEquals(0, count.intValue());
         when(interceptor1.aroundReadFrom(any())).thenAnswer(invocationOnMock -> context2.proceed());

@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 OPPO ESA Stack Project
+ * Copyright 2022 OPPO ESA Stack Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,13 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package io.esastack.restlight.core.resolver;
 
-import io.esastack.restlight.core.handler.method.Param;
+import esa.commons.annotation.Internal;
 
 /**
- * This is a marker interface which is used to identity the implementation can be used to resolve a {@link Param}.
+ * {@link Resolver} provide the ability to resolving the context to a target object.
+ * mainly provide two types implement:
+ * 1.advised resolver to bridge the work flow and {@link ResolverExecutor}
+ * 2.real resolver to resolve to the target object.
+ *
+ * @param <C> context
  */
-public interface Resolver {
-}
+@Internal
+public interface Resolver<C extends ResolverContext> {
 
+    /**
+     * resolve the context to a target object.
+     */
+    Object resolve(C context) throws Exception;
+}

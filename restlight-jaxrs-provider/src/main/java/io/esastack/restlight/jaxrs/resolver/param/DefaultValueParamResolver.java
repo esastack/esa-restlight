@@ -16,7 +16,9 @@
 package io.esastack.restlight.jaxrs.resolver.param;
 
 import io.esastack.restlight.core.handler.method.Param;
+import io.esastack.restlight.core.resolver.factory.HandlerResolverFactory;
 import io.esastack.restlight.core.resolver.param.ParamResolver;
+import io.esastack.restlight.core.resolver.param.ParamResolverContext;
 import io.esastack.restlight.core.resolver.param.ParamResolverFactory;
 import io.esastack.restlight.core.resolver.converter.StringConverterProvider;
 import io.esastack.restlight.core.serialize.HttpRequestSerializer;
@@ -29,9 +31,10 @@ import java.util.List;
 public class DefaultValueParamResolver implements ParamResolverFactory {
 
     @Override
-    public ParamResolver createResolver(Param param,
-                                        StringConverterProvider converters,
-                                        List<? extends HttpRequestSerializer> serializers) {
+    public ParamResolver<ParamResolverContext> createResolver(Param param,
+                                                              StringConverterProvider converters,
+                                                              List<? extends HttpRequestSerializer> serializers,
+                                                              HandlerResolverFactory resolverFactory) {
         DefaultValue ann = JaxrsUtils.getAnnotation(param, DefaultValue.class);
         final Object defaultValue =
                 ConverterUtils.forceConvertStringValue(ann.value(), param.genericType());

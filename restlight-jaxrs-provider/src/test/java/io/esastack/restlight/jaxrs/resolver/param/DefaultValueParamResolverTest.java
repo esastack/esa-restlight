@@ -15,17 +15,19 @@
  */
 package io.esastack.restlight.jaxrs.resolver.param;
 
+import io.esastack.restlight.core.context.HttpRequest;
+import io.esastack.restlight.core.context.impl.RequestContextImpl;
 import io.esastack.restlight.core.handler.method.HandlerMethod;
 import io.esastack.restlight.core.handler.method.MethodParam;
+import io.esastack.restlight.core.mock.MockHttpRequest;
+import io.esastack.restlight.core.mock.MockHttpResponse;
 import io.esastack.restlight.core.resolver.param.ParamResolver;
+import io.esastack.restlight.core.resolver.param.ParamResolverContext;
+import io.esastack.restlight.core.resolver.param.ParamResolverContextImpl;
 import io.esastack.restlight.jaxrs.resolver.ResolverUtils;
 import io.esastack.restlight.jaxrs.resolver.param.subject.ConstructorSubject;
 import io.esastack.restlight.jaxrs.resolver.param.subject.FromStringSubject;
 import io.esastack.restlight.jaxrs.resolver.param.subject.ValueOfSubject;
-import io.esastack.restlight.core.context.impl.RequestContextImpl;
-import io.esastack.restlight.core.context.HttpRequest;
-import io.esastack.restlight.core.mock.MockHttpRequest;
-import io.esastack.restlight.core.mock.MockHttpResponse;
 import jakarta.ws.rs.DefaultValue;
 import jakarta.ws.rs.QueryParam;
 import org.junit.jupiter.api.BeforeAll;
@@ -140,8 +142,10 @@ class DefaultValueParamResolverTest {
         final MethodParam param = handlerMethods.get(method).parameters()[0];
         assertTrue(resolverFactory.supports(param));
         final ParamResolver resolver = resolverFactory.createResolver(param,
-                ResolverUtils.defaultConverters(param), null);
-        return resolver.resolve(new RequestContextImpl(request, MockHttpResponse.aMockResponse().build()));
+                ResolverUtils.defaultConverters(param), null, null);
+        ParamResolverContext resolverContext = new ParamResolverContextImpl(
+                new RequestContextImpl(request, MockHttpResponse.aMockResponse().build()), param);
+        return resolver.resolve(resolverContext);
     }
 
     private static class Subject {

@@ -17,12 +17,12 @@ package io.esastack.restlight.jaxrs.adapter;
 
 import esa.commons.Checks;
 import esa.commons.Result;
-import io.esastack.restlight.core.handler.method.Param;
 import io.esastack.restlight.core.context.RequestEntity;
-import io.esastack.restlight.core.resolver.entity.request.RequestEntityResolverAdapter;
+import io.esastack.restlight.core.handler.method.Param;
+import io.esastack.restlight.core.resolver.param.entity.RequestEntityResolverAdapter;
+import io.esastack.restlight.core.resolver.param.entity.RequestEntityResolverContext;
 import io.esastack.restlight.jaxrs.impl.core.ModifiableMultivaluedMap;
 import io.esastack.restlight.jaxrs.util.MediaTypeUtils;
-import io.esastack.restlight.core.context.RequestContext;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.ext.MessageBodyReader;
 import jakarta.ws.rs.ext.Providers;
@@ -38,7 +38,8 @@ public class MessageBodyReaderAdapter<T> implements RequestEntityResolverAdapter
 
     @SuppressWarnings("unchecked")
     @Override
-    public Result<?, Void> readFrom(RequestEntity entity, RequestContext context) throws Exception {
+    public Result<?, Void> resolve(RequestEntityResolverContext context) throws Exception {
+        RequestEntity entity = context.requestEntity();
         Class<?> type;
         if ((type = entity.type()) == null) {
             return Result.err();
@@ -52,7 +53,8 @@ public class MessageBodyReaderAdapter<T> implements RequestEntityResolverAdapter
             return Result.err();
         }
         Object value = reader.readFrom((Class<T>) type, entity.genericType(), entity.annotations(),
-                mediaType, new ModifiableMultivaluedMap(context.request().headers()), entity.inputStream());
+                mediaType, new ModifiableMultivaluedMap(context.requestContext().request().headers()),
+                entity.inputStream());
         return Result.ok(value);
     }
 

@@ -15,19 +15,19 @@ package io.esastack.restlight.integration.springmvc.cases.config;
 
 import io.esastack.restlight.core.handler.method.HandlerMethod;
 import io.esastack.restlight.core.handler.method.Param;
+import io.esastack.restlight.core.resolver.ResolverExecutor;
+import io.esastack.restlight.core.resolver.param.entity.RequestEntityResolverAdvice;
+import io.esastack.restlight.core.resolver.param.entity.RequestEntityResolverAdviceAdapter;
+import io.esastack.restlight.core.resolver.param.entity.RequestEntityResolverAdviceFactory;
+import io.esastack.restlight.core.resolver.param.entity.RequestEntityResolverContext;
+import io.esastack.restlight.core.resolver.ret.entity.ResponseEntityResolverAdvice;
+import io.esastack.restlight.core.resolver.ret.entity.ResponseEntityResolverAdviceAdapter;
+import io.esastack.restlight.core.resolver.ret.entity.ResponseEntityResolverAdviceFactory;
+import io.esastack.restlight.core.resolver.ret.entity.ResponseEntityResolverContext;
 import io.esastack.restlight.core.resolver.param.ParamResolver;
 import io.esastack.restlight.core.resolver.param.ParamResolverAdvice;
 import io.esastack.restlight.core.resolver.param.ParamResolverAdviceAdapter;
 import io.esastack.restlight.core.resolver.param.ParamResolverAdviceFactory;
-import io.esastack.restlight.core.resolver.param.ParamResolverContext;
-import io.esastack.restlight.core.resolver.entity.request.RequestEntityResolverAdvice;
-import io.esastack.restlight.core.resolver.entity.request.RequestEntityResolverAdviceAdapter;
-import io.esastack.restlight.core.resolver.entity.request.RequestEntityResolverAdviceFactory;
-import io.esastack.restlight.core.resolver.entity.request.RequestEntityResolverContext;
-import io.esastack.restlight.core.resolver.entity.response.ResponseEntityResolverAdvice;
-import io.esastack.restlight.core.resolver.entity.response.ResponseEntityResolverAdviceAdapter;
-import io.esastack.restlight.core.resolver.entity.response.ResponseEntityResolverAdviceFactory;
-import io.esastack.restlight.core.resolver.entity.response.ResponseEntityResolverContext;
 import io.esastack.restlight.integration.springmvc.entity.UserData;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -55,13 +55,13 @@ public class AdviceConfig {
     public ParamResolverAdviceAdapter paramResolverAdviceAdapter() {
         return new ParamResolverAdviceAdapter() {
             @Override
-            public boolean supports(Param param) {
-                return param.methodParam().method().getName().equals("customParamAdviceByAdaptor");
+            public Object aroundResolve(ResolverExecutor executor) throws Exception {
+                return executor.proceed() + "-advice-adaptor";
             }
 
             @Override
-            public Object aroundResolve(ParamResolverContext context) throws Exception {
-                return context.proceed() + "-advice-adaptor";
+            public boolean supports(Param param) {
+                return param.methodParam().method().getName().equals("customParamAdviceByAdaptor");
             }
         };
     }
@@ -90,15 +90,15 @@ public class AdviceConfig {
         return new RequestEntityResolverAdviceAdapter() {
 
             @Override
-            public boolean supports(Param param) {
-                return param.methodParam().method().getName().equals("customEntityAdviceByAdaptor");
+            public Object aroundResolve(ResolverExecutor<RequestEntityResolverContext> executor) throws Exception {
+                UserData user = (UserData) executor.proceed();
+                user.setName(user.getName() + "-advice-adaptor");
+                return user;
             }
 
             @Override
-            public Object aroundRead(RequestEntityResolverContext context) throws Exception {
-                UserData user = (UserData) context.proceed();
-                user.setName(user.getName() + "-advice-adaptor");
-                return user;
+            public boolean supports(Param param) {
+                return param.methodParam().method().getName().equals("customEntityAdviceByAdaptor");
             }
         };
     }
@@ -109,7 +109,7 @@ public class AdviceConfig {
             @Override
             public ResponseEntityResolverAdvice createResolverAdvice(HandlerMethod method) {
                 return context -> {
-                    UserData user = (UserData) context.httpEntity().response().entity();
+                    UserData user = (UserData) context.context().responseEntity().response().entity();
                     user.setName(user.getName() + "-advice-factory");
                     context.proceed();
                 };
@@ -126,10 +126,10 @@ public class AdviceConfig {
     public ResponseEntityResolverAdviceAdapter responseEntityResolverAdviceAdapter() {
         return new ResponseEntityResolverAdviceAdapter() {
             @Override
-            public void aroundWrite(ResponseEntityResolverContext context) throws Exception {
-                UserData user = (UserData) context.httpEntity().response().entity();
+            public void aroundResolve0(ResolverExecutor<ResponseEntityResolverContext> executor) throws Exception {
+                UserData user = (UserData) executor.context().responseEntity().response().entity();
                 user.setName(user.getName() + "-advice-adaptor");
-                context.proceed();
+                executor.proceed();
             }
 
             @Override

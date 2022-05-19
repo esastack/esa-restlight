@@ -16,9 +16,9 @@
 package io.esastack.restlight.jaxrs.resolver.rspentity;
 
 import io.esastack.restlight.core.handler.method.HandlerMethod;
-import io.esastack.restlight.core.resolver.entity.response.ResponseEntityResolver;
-import io.esastack.restlight.core.resolver.entity.response.ResponseEntityResolverFactory;
-import io.esastack.restlight.core.resolver.entity.response.FlexibleResponseEntityResolver;
+import io.esastack.restlight.core.resolver.ret.entity.ResponseEntityResolver;
+import io.esastack.restlight.core.resolver.ret.entity.ResponseEntityResolverFactory;
+import io.esastack.restlight.core.resolver.ret.entity.FlexibleResponseEntityResolver;
 import io.esastack.restlight.core.serialize.HttpResponseSerializer;
 
 import java.util.List;

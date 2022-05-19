@@ -21,10 +21,10 @@ import io.esastack.restlight.core.handler.method.HandlerMethod;
 import io.esastack.restlight.core.resolver.context.ContextResolverAdapter;
 import io.esastack.restlight.core.resolver.param.ParamResolverAdapter;
 import io.esastack.restlight.core.resolver.param.ParamResolverAdviceAdapter;
-import io.esastack.restlight.core.resolver.entity.request.RequestEntityResolverAdapter;
-import io.esastack.restlight.core.resolver.entity.request.RequestEntityResolverAdviceAdapter;
-import io.esastack.restlight.core.resolver.entity.response.ResponseEntityResolverAdapter;
-import io.esastack.restlight.core.resolver.entity.response.ResponseEntityResolverAdviceAdapter;
+import io.esastack.restlight.core.resolver.param.entity.RequestEntityResolverAdapter;
+import io.esastack.restlight.core.resolver.param.entity.RequestEntityResolverAdviceAdapter;
+import io.esastack.restlight.core.resolver.ret.entity.ResponseEntityResolverAdapter;
+import io.esastack.restlight.core.resolver.ret.entity.ResponseEntityResolverAdviceAdapter;
 
 public interface ConfigurableHandler {
 

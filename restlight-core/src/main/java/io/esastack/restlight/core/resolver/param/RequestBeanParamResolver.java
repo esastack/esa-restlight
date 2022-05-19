@@ -24,10 +24,9 @@ import io.esastack.restlight.core.annotation.RequestBean;
 import io.esastack.restlight.core.handler.method.FieldParam;
 import io.esastack.restlight.core.handler.method.FieldParamImpl;
 import io.esastack.restlight.core.handler.method.Param;
-import io.esastack.restlight.core.resolver.factory.HandlerResolverFactory;
 import io.esastack.restlight.core.resolver.converter.StringConverterProvider;
+import io.esastack.restlight.core.resolver.factory.HandlerResolverFactory;
 import io.esastack.restlight.core.serialize.HttpRequestSerializer;
-import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.util.LoggerUtils;
 
 import java.lang.reflect.Constructor;
@@ -64,7 +63,8 @@ public class RequestBeanParamResolver implements ParamResolverFactory {
     @Override
     public ParamResolver createResolver(Param param,
                                         StringConverterProvider converters,
-                                        List<? extends HttpRequestSerializer> serializers) {
+                                        List<? extends HttpRequestSerializer> serializers,
+                                        HandlerResolverFactory resolverFactory) {
         Class<?> type = param.type();
         // instantiate target object by unsafe
 
@@ -89,7 +89,7 @@ public class RequestBeanParamResolver implements ParamResolverFactory {
         return 100;
     }
 
-    private static final class Resolver implements ParamResolver {
+    private static final class Resolver implements ParamResolver<ParamResolverContext> {
 
         final TypeMeta typeMeta;
 
@@ -98,7 +98,7 @@ public class RequestBeanParamResolver implements ParamResolverFactory {
         }
 
         @Override
-        public Object resolve(RequestContext context) throws Exception {
+        public Object resolve(ParamResolverContext context) throws Exception {
             final Object allocated = typeMeta.alloc.alloc();
 
             // set the value to the instance one by one

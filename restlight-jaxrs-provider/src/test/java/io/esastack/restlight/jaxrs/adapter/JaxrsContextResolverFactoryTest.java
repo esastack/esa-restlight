@@ -17,13 +17,16 @@ package io.esastack.restlight.jaxrs.adapter;
 
 import esa.commons.collection.AttributeMap;
 import esa.commons.collection.Attributes;
-import io.esastack.restlight.core.handler.method.MethodParamImpl;
-import io.esastack.restlight.core.util.Ordered;
-import io.esastack.restlight.core.context.RequestContext;
-import io.esastack.restlight.core.context.impl.RequestContextImpl;
 import io.esastack.restlight.core.context.HttpRequest;
 import io.esastack.restlight.core.context.HttpResponse;
+import io.esastack.restlight.core.context.RequestContext;
+import io.esastack.restlight.core.context.impl.RequestContextImpl;
+import io.esastack.restlight.core.handler.method.MethodParamImpl;
+import io.esastack.restlight.core.handler.method.Param;
+import io.esastack.restlight.core.resolver.param.ParamResolverContext;
+import io.esastack.restlight.core.resolver.param.ParamResolverContextImpl;
 import io.esastack.restlight.core.route.predicate.ProducesPredicate;
+import io.esastack.restlight.core.util.Ordered;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.ext.Providers;
@@ -59,15 +62,16 @@ class JaxrsContextResolverFactoryTest {
         final Attributes attributes = new AttributeMap();
         final RequestContext context = new RequestContextImpl(attributes, mock(HttpRequest.class),
                 mock(HttpResponse.class));
+        final ParamResolverContext resolverContext = new ParamResolverContextImpl(context, mock(Param.class));
         attributes.attr(ProducesPredicate.COMPATIBLE_MEDIA_TYPES)
                 .set(Collections.singletonList(io.esastack.commons.net.http.MediaType.ALL));
         when(providers.getContextResolver(String.class, MediaType.WILDCARD_TYPE)).thenReturn(type -> "Hello");
         assertEquals("Hello", resolver.createResolver(new MethodParamImpl(method, 0),
-                null, null).resolve(context));
+                null, null, null).resolve(resolverContext));
         attributes.attr(ProducesPredicate.COMPATIBLE_MEDIA_TYPES)
                 .set(Collections.singletonList(io.esastack.commons.net.http.MediaType.APPLICATION_JSON));
         assertNull(resolver.createResolver(new MethodParamImpl(method, 0),
-                null, null).resolve(context));
+                null, null, null).resolve(resolverContext));
     }
 
     private String demo(@Context String name, String address) {

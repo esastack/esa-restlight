@@ -21,6 +21,7 @@ import io.esastack.restlight.core.handler.method.FieldParamImpl;
 import io.esastack.restlight.core.handler.method.MethodParamImpl;
 import io.esastack.restlight.core.handler.method.Param;
 import io.esastack.restlight.core.resolver.param.ParamResolver;
+import io.esastack.restlight.core.resolver.param.ParamResolverContextImpl;
 import io.esastack.restlight.jaxrs.resolver.ResolverUtils;
 import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.context.impl.RequestContextImpl;
@@ -52,12 +53,12 @@ class RequestParamResolverTest {
                 Request.class), 0)));
 
         final Param param = new FieldParamImpl(Subject.class.getDeclaredField("request"));
-        ParamResolver resolver = factory.createResolver(param, ResolverUtils.defaultConverters(param), null);
+        ParamResolver resolver = factory.createResolver(param, ResolverUtils.defaultConverters(param), null, null);
         final HttpRequest request = MockHttpRequest.aMockRequest().build();
         final HttpResponse response = MockHttpResponse.aMockResponse().build();
         final RequestContext context = new RequestContextImpl(request, response);
 
-        final Request resolved = (Request) resolver.resolve(context);
+        final Request resolved = (Request) resolver.resolve(new ParamResolverContextImpl(context, param));
         assertEquals(HttpMethod.GET.name(), resolved.getMethod());
     }
 
