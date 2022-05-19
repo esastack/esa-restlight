@@ -23,6 +23,8 @@ public class AdvisedContextResolver implements Resolver<ResolverContext> {
 
     private final ContextResolver underlying;
 
+    private static final ContextResolverContext DEFAULT_CONTEXT = new ContextResolverContextImpl();
+
     public AdvisedContextResolver(ContextResolver underlying) {
         Checks.checkNotNull(underlying, "underlying");
         this.underlying = underlying;
@@ -30,7 +32,7 @@ public class AdvisedContextResolver implements Resolver<ResolverContext> {
 
     @Override
     public Object resolve(ResolverContext context) throws Exception {
-        return underlying.resolve(ContextResolverContextImpl.INSTANCE);
+        return underlying.resolve(DEFAULT_CONTEXT);
     }
 }
 
