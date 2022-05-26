@@ -15,12 +15,14 @@
  */
 package io.esastack.restlight.starter.actuator.adapt;
 
+import org.springframework.boot.actuate.endpoint.web.WebOperation;
+
 import java.lang.annotation.Annotation;
 
 class JaxrxEndpointHandlerMethod extends EndpointHandlerMethod {
 
-    JaxrxEndpointHandlerMethod(Object bean, String scheduler) {
-        super(bean, scheduler);
+    JaxrxEndpointHandlerMethod(WebOperation bean, String scheduler) {
+        super(new OperationHandler(bean), scheduler);
     }
 
     @Override

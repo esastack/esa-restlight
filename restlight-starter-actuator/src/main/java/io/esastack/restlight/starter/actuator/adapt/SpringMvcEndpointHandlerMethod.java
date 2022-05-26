@@ -17,6 +17,7 @@ package io.esastack.restlight.starter.actuator.adapt;
 
 import io.esastack.restlight.springmvc.annotation.shaded.RequestBody0;
 import io.esastack.restlight.springmvc.annotation.shaded.ResponseBody0;
+import org.springframework.boot.actuate.endpoint.web.WebOperation;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationHandler;
@@ -28,8 +29,8 @@ class SpringMvcEndpointHandlerMethod extends EndpointHandlerMethod {
     private static final Annotation responseBody = responseBody();
     private static final Annotation requestBody = requestBody();
 
-    SpringMvcEndpointHandlerMethod(Object bean, String scheduler) {
-        super(bean, scheduler);
+    SpringMvcEndpointHandlerMethod(WebOperation bean, String scheduler) {
+        super(new OperationHandler(bean), scheduler);
     }
 
     @Override

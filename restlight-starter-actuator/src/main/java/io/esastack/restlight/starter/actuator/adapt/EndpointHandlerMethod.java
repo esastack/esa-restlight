@@ -29,7 +29,7 @@ abstract class EndpointHandlerMethod extends HandlerMethodImpl implements RouteH
         }
     }
 
-    EndpointHandlerMethod(Object bean, String scheduler) {
+    EndpointHandlerMethod(OperationHandler bean, String scheduler) {
         super(OperationHandler.class, HANDLE_METHOD);
         Checks.checkNotNull(bean, "bean");
         this.bean = bean;
