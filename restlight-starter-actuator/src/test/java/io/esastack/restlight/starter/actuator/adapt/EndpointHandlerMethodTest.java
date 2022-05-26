@@ -15,9 +15,9 @@
  */
 package io.esastack.restlight.starter.actuator.adapt;
 
+import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.handler.method.HandlerMethod;
 import io.esastack.restlight.core.handler.method.MethodParam;
-import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.server.processor.schedule.Schedulers;
 import io.esastack.restlight.springmvc.annotation.shaded.RequestBody0;
 import io.esastack.restlight.springmvc.annotation.shaded.ResponseBody0;
@@ -42,7 +42,8 @@ class EndpointHandlerMethodTest {
 
     @Test
     void testSpringMvc() {
-        final EndpointHandlerMethod handlerMethod = EndpointHandlerMethod.forSpringMvc(webOperation(), Schedulers.BIZ);
+        final SpringMvcEndpointHandlerMethod handlerMethod = new SpringMvcEndpointHandlerMethod(webOperation(),
+                Schedulers.BIZ);
         assertTrue(handlerMethod.hasMethodAnnotation(ResponseBody0.shadedClass(), false));
         final Annotation responseBody = handlerMethod.getMethodAnnotation(ResponseBody0.shadedClass(), false);
         assertNotNull(responseBody);
@@ -51,7 +52,7 @@ class EndpointHandlerMethodTest {
         assertNotNull(responseBody.toString());
         assertEquals(responseBody, handlerMethod.getMethodAnnotation(ResponseBody0.shadedClass(), false));
         assertEquals(responseBody,
-                EndpointHandlerMethod.forSpringMvc(webOperation(), Schedulers.BIZ)
+                new SpringMvcEndpointHandlerMethod(webOperation(), Schedulers.BIZ)
                         .getMethodAnnotation(ResponseBody0.shadedClass(), false));
         assertNotNull(responseBody.toString());
 
@@ -73,7 +74,7 @@ class EndpointHandlerMethodTest {
         assertNotNull(requestBody.toString());
         assertEquals(requestBody, body.getAnnotation(RequestBody0.shadedClass()));
         assertEquals(requestBody,
-                EndpointHandlerMethod.forSpringMvc(webOperation(), Schedulers.BIZ)
+                new SpringMvcEndpointHandlerMethod(webOperation(), Schedulers.BIZ)
                         .parameters()[1].getAnnotation(RequestBody0.shadedClass()));
         assertNotNull(requestBody.toString());
         assertFalse(RequestBody0.fromShade(requestBody).required());
@@ -81,7 +82,7 @@ class EndpointHandlerMethodTest {
 
     @Test
     void testJaxrs() {
-        final HandlerMethod handlerMethod = EndpointHandlerMethod.forJaxrs(webOperation(), Schedulers.BIZ);
+        final HandlerMethod handlerMethod = new JaxrxEndpointHandlerMethod(webOperation(), Schedulers.BIZ);
         assertNotNull(handlerMethod.parameters());
         assertEquals(2, handlerMethod.parameters().length);
         assertEquals(handlerMethod.parameters()[0].type(), RequestContext.class);

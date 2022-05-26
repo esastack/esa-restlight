@@ -14,9 +14,20 @@ description: >
 
 ```xml
 <dependency>
+    <groupId>io.esastack</groupId>
+    <artifactId>restlight-starter</artifactId>
+    <version>${restlight.version}</version>
+</dependency>
+<dependency>
 	<groupId>io.esastack</groupId>
 	<artifactId>restlight-jaxrs-provider</artifactId>
 	<version>${restlight.version}</version>
+</dependency>
+<dependency>
+	<groupId>io.esastack</groupId>
+	<artifactId>commons</artifactId>
+	// ${commons.version} >= 0.2.1
+	<version>${commons.version}</version>
 </dependency>
 ```
 

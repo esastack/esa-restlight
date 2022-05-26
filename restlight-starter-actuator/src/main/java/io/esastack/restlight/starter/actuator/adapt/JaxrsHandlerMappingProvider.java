@@ -28,6 +28,6 @@ public class JaxrsHandlerMappingProvider extends BaseHandlerMappingProvider {
 
     @Override
     EndpointHandlerMethod getHandler(WebOperation op, String scheduler) {
-        return EndpointHandlerMethod.forJaxrs(op, scheduler);
+        return new JaxrxEndpointHandlerMethod(op, scheduler);
     }
 }

@@ -27,7 +27,7 @@ public class SpringMvcHandlerMappingProvider extends BaseHandlerMappingProvider 
     }
 
     @Override
-    EndpointHandlerMethod getHandler(WebOperation op, String scheduler) {
-        return EndpointHandlerMethod.forSpringMvc(op, scheduler);
+    SpringMvcEndpointHandlerMethod getHandler(WebOperation op, String scheduler) {
+        return new SpringMvcEndpointHandlerMethod(op, scheduler);
     }
 }
