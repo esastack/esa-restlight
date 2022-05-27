@@ -19,7 +19,7 @@
     <parent>
         <groupId>io.esastack</groupId>
         <artifactId>restlight-parent</artifactId>
-        <version>1.0.0</version>
+        <version>1.0.1-SNAPSHOT</version>
     </parent>
     <artifactId>restlight-jaxrs-provider</artifactId>
     <name>Restlight :: Jaxrs Provider</name>
