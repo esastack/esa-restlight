@@ -15,12 +15,12 @@
  */
 package io.esastack.restlight.core.resolver.param;
 
+import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.handler.method.Param;
 import io.esastack.restlight.core.resolver.converter.StringConverterProvider;
 import io.esastack.restlight.core.resolver.factory.HandlerResolverFactory;
 import io.esastack.restlight.core.serialize.HttpRequestSerializer;
 import io.esastack.restlight.core.util.Ordered;
-import io.esastack.restlight.core.context.RequestContext;
 
 import java.util.List;
 
@@ -31,7 +31,7 @@ public class RequestContextResolverFactory implements ParamResolverFactory {
                                                               StringConverterProvider converters,
                                                               List<? extends HttpRequestSerializer> serializers,
                                                               HandlerResolverFactory resolverFactory) {
-        return (context) -> context;
+        return ParamResolverContext::requestContext;
     }
 
     @Override

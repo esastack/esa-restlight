@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 OPPO ESA Stack Project
+ * Copyright 2022 OPPO ESA Stack Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,19 +15,28 @@
  */
 package io.esastack.restlight.starter.actuator.adapt;
 
-import org.springframework.boot.actuate.autoconfigure.endpoint.web.WebEndpointProperties;
-import org.springframework.boot.actuate.endpoint.web.WebEndpointsSupplier;
 import org.springframework.boot.actuate.endpoint.web.WebOperation;
 
-public class JaxrsHandlerMappingProvider extends BaseHandlerMappingProvider {
+import java.lang.annotation.Annotation;
 
-    public JaxrsHandlerMappingProvider(WebEndpointsSupplier webEndpointsSupplier,
-                                       WebEndpointProperties webEndpointProperties) {
-        super(webEndpointsSupplier, webEndpointProperties);
+class JaxrxEndpointHandlerMethod extends EndpointHandlerMethod {
+
+    JaxrxEndpointHandlerMethod(WebOperation bean, String scheduler) {
+        super(new OperationHandler(bean), scheduler);
     }
 
     @Override
-    EndpointHandlerMethod getHandler(WebOperation op, String scheduler) {
-        return new JaxrxEndpointHandlerMethod(op, scheduler);
+    Annotation paramAnnotation() {
+        return null;
+    }
+
+    @Override
+    Annotation methodAnnotation() {
+        return null;
+    }
+
+    @Override
+    public String toString() {
+        return "Jaxrs Endpoint Handler Proxy";
     }
 }

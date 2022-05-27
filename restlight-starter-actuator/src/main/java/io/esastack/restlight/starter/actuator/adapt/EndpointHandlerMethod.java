@@ -17,24 +17,18 @@ package io.esastack.restlight.starter.actuator.adapt;
 
 import esa.commons.Checks;
 import esa.commons.reflect.ReflectionUtils;
+import io.esastack.restlight.core.context.RequestContext;
 import io.esastack.restlight.core.handler.method.HandlerMethodImpl;
 import io.esastack.restlight.core.handler.method.MethodParam;
 import io.esastack.restlight.core.handler.method.RouteHandlerMethod;
-import io.esastack.restlight.core.context.RequestContext;
-import io.esastack.restlight.springmvc.annotation.shaded.RequestBody0;
-import io.esastack.restlight.springmvc.annotation.shaded.ResponseBody0;
-import org.springframework.boot.actuate.endpoint.web.WebOperation;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
-import java.lang.reflect.Proxy;
 import java.lang.reflect.Type;
 import java.util.Map;
 
-class EndpointHandlerMethod extends HandlerMethodImpl implements RouteHandlerMethod {
-
+abstract class EndpointHandlerMethod extends HandlerMethodImpl implements RouteHandlerMethod {
     private static final Method HANDLE_METHOD;
     private final Object bean;
     private final String scheduler;
@@ -50,42 +44,39 @@ class EndpointHandlerMethod extends HandlerMethodImpl implements RouteHandlerMet
         }
     }
 
-    private final Annotation responseBody = newResponseBody();
-
-    private EndpointHandlerMethod(Object bean, String scheduler) {
+    EndpointHandlerMethod(OperationHandler bean, String scheduler) {
         super(OperationHandler.class, HANDLE_METHOD);
         Checks.checkNotNull(bean, "bean");
         this.bean = bean;
         this.scheduler = scheduler;
     }
 
-    static EndpointHandlerMethod forSpringMvc(WebOperation op, String scheduler) {
-        return new EndpointHandlerMethod(new OperationHandler(op), scheduler);
-    }
-
-    static EndpointHandlerMethod forJaxrs(WebOperation op, String scheduler) {
-        return new EndpointHandlerMethod(new OperationHandler(op), scheduler) {
-            @Override
-            public String toString() {
-                return "Jaxrs Endpoint Handler Proxy";
-            }
-        };
-    }
-
     @SuppressWarnings("unchecked")
     @Override
     public <A extends Annotation> A getMethodAnnotation(Class<A> annotationType, boolean recursive) {
-        if (ResponseBody0.shadedClass().equals(annotationType)) {
-            return (A) responseBody;
+        Annotation methodAnnotation = methodAnnotation();
+        if (methodAnnotation != null && annotationType != null
+                && annotationType.equals(methodAnnotation.annotationType())) {
+            return (A) methodAnnotation;
         }
         return super.getMethodAnnotation(annotationType, recursive);
+    }
+
+    @Override
+    public <A extends Annotation> boolean hasMethodAnnotation(Class<A> annotationType, boolean recursive) {
+        Annotation methodAnnotation = methodAnnotation();
+        if (methodAnnotation != null && annotationType != null
+                && annotationType.equals(methodAnnotation.annotationType())) {
+            return true;
+        }
+        return super.hasMethodAnnotation(annotationType, recursive);
     }
 
     @Override
     protected MethodParam getMethodParam(int i) {
         MethodParam p = super.getMethodParam(i);
         if (p.index() == 1) {
-            return new RequestBodyParam(responseBody, p);
+            return new RequestBodyParam(methodAnnotation(), p);
         }
         return p;
     }
@@ -104,42 +95,43 @@ class EndpointHandlerMethod extends HandlerMethodImpl implements RouteHandlerMet
         return bean;
     }
 
-    @Override
-    public String toString() {
-        return "SpringMvc Endpoint Handler Proxy";
-    }
+    private final class RequestBodyParam implements MethodParam {
 
-    private static class RequestBodyParam implements MethodParam {
-
-        private final Annotation requestBody = newRequestBody();
-        private final Annotation responseBody;
+        private final Annotation paramAnnotation;
+        private final Annotation methodAnnotation;
         private final MethodParam delegate;
         private final Annotation[] annotations;
 
-        private RequestBodyParam(Annotation responseBody,
-                                 MethodParam delegate) {
-            this.responseBody = responseBody;
+        private RequestBodyParam(Annotation methodAnnotation, MethodParam delegate) {
             Checks.checkNotNull(delegate, "delegate");
+            this.methodAnnotation = methodAnnotation;
+            this.paramAnnotation = paramAnnotation();
             this.delegate = delegate;
-            Annotation[] anns = delegate.annotations();
-            Annotation[] newAnns = new Annotation[anns.length + 1];
-            System.arraycopy(delegate.annotations(), 0, newAnns, 0, anns.length);
-            newAnns[newAnns.length - 1] = requestBody;
-            this.annotations = newAnns;
+            if (paramAnnotation != null) {
+                Annotation[] anns = delegate.annotations();
+                Annotation[] newAnns = new Annotation[anns.length + 1];
+                System.arraycopy(delegate.annotations(), 0, newAnns, 0, anns.length);
+                newAnns[newAnns.length - 1] = paramAnnotation;
+                this.annotations = newAnns;
+            } else {
+                this.annotations = delegate.annotations();
+            }
         }
 
         @SuppressWarnings("unchecked")
         @Override
         public <A extends Annotation> A getAnnotation(Class<A> ann) {
-            if (RequestBody0.shadedClass().equals(ann)) {
-                return (A) requestBody;
+            if (paramAnnotation != null && ann != null
+                    && ann.equals(paramAnnotation.annotationType())) {
+                return (A) paramAnnotation;
             }
             return delegate.getAnnotation(ann);
         }
 
         @Override
         public <A extends Annotation> boolean hasAnnotation(Class<A> ann) {
-            if (RequestBody0.shadedClass().equals(ann)) {
+            if (paramAnnotation != null && ann != null
+                    && ann.equals(paramAnnotation.annotationType())) {
                 return true;
             }
             return delegate.hasAnnotation(ann);
@@ -153,20 +145,21 @@ class EndpointHandlerMethod extends HandlerMethodImpl implements RouteHandlerMet
         @SuppressWarnings("unchecked")
         @Override
         public <A extends Annotation> A getMethodAnnotation(Class<A> ann) {
-            if (ResponseBody0.shadedClass().equals(ann)) {
-                return (A) responseBody;
+            if (methodAnnotation != null && ann != null
+                    && ann.equals(methodAnnotation.annotationType())) {
+                return (A) methodAnnotation;
             }
             return delegate.getMethodAnnotation(ann);
         }
 
         @Override
         public <A extends Annotation> boolean hasMethodAnnotation(Class<A> ann) {
-            if (ResponseBody0.shadedClass().equals(ann)) {
+            if (methodAnnotation != null && ann != null
+                    && ann.equals(methodAnnotation.annotationType())) {
                 return true;
             }
             return delegate.hasMethodAnnotation(ann);
         }
-
 
         @Override
         public String name() {
@@ -204,81 +197,7 @@ class EndpointHandlerMethod extends HandlerMethodImpl implements RouteHandlerMet
         }
     }
 
-    private static Annotation newRequestBody() {
-        final Class<?>[] ifs = new Class<?>[]{RequestBody0.shadedClass()};
-        return (Annotation) Proxy.newProxyInstance(RequestBody0.shadedClass().getClassLoader(),
-                ifs,
-                new RequestBodyInvocationHandler());
-    }
+    abstract Annotation paramAnnotation();
 
-    private static Annotation newResponseBody() {
-        final Class<?>[] ifs = new Class<?>[]{ResponseBody0.shadedClass()};
-        return (Annotation) Proxy.newProxyInstance(ResponseBody0.shadedClass().getClassLoader(),
-                ifs,
-                new ResponseBodyInvocationHandler());
-    }
-
-    private abstract static class AbstractAnnotationInvocationHandler implements InvocationHandler {
-
-        private static final String EQUALS = "equals";
-        private static final String HASH_CODE = "hashCode";
-        private static final String TO_STRING = "toString";
-        private static final String ANNOTATION_TYPE = "annotationType";
-
-        @Override
-        public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-            if (EQUALS.equals(method.getName())) {
-                return annotationType().isInstance(args[0]);
-            }
-            if (HASH_CODE.equals(method.getName())) {
-                return hashCode();
-            }
-
-            if (TO_STRING.equals(method.getName())) {
-                return annotationType().getSimpleName() + "(EndpointProxy)@" + Integer.toHexString(hashCode());
-            }
-
-            if (ANNOTATION_TYPE.equals(method.getName())) {
-                return annotationType();
-            }
-            return this.doInvoke(proxy, method, args);
-        }
-
-        abstract Object doInvoke(Object proxy, Method method, Object[] args) throws Throwable;
-
-        abstract Class<? extends Annotation> annotationType();
-    }
-
-    private static class RequestBodyInvocationHandler extends AbstractAnnotationInvocationHandler {
-        private static final String REQUIRED = "required";
-
-        @Override
-        Object doInvoke(Object proxy, Method method, Object[] args) throws Throwable {
-            if (REQUIRED.equals(method.getName())) {
-                // @RequestBody(required = true)
-                return Boolean.FALSE;
-            }
-            throw new IllegalAccessException("Unexpected access of endpoint handler method: "
-                    + method.toGenericString());
-        }
-
-        @Override
-        Class<? extends Annotation> annotationType() {
-            return RequestBody0.shadedClass();
-        }
-    }
-
-    private static class ResponseBodyInvocationHandler extends AbstractAnnotationInvocationHandler {
-
-        @Override
-        Object doInvoke(Object proxy, Method method, Object[] args) throws Throwable {
-            throw new IllegalAccessException("Unexpected access of endpoint handler method: "
-                    + method.toGenericString());
-        }
-
-        @Override
-        Class<? extends Annotation> annotationType() {
-            return ResponseBody0.shadedClass();
-        }
-    }
+    abstract Annotation methodAnnotation();
 }

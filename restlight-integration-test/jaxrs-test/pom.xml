@@ -36,16 +36,6 @@
             <groupId>io.esastack</groupId>
             <artifactId>restlight-starter</artifactId>
             <version>${project.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>io.esastack</groupId>
-                    <artifactId>restlight-springmvc-annotation</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>io.esastack</groupId>
-                    <artifactId>restlight-springmvc-provider</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
 
         <dependency>
