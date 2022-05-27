@@ -558,9 +558,20 @@ if (!doNotTrack) {
 </blockquote>
 <p>引入依赖</p>
 <div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#204a87;font-weight:bold">&lt;dependency&gt;</span>
+    <span style="color:#204a87;font-weight:bold">&lt;groupId&gt;</span>io.esastack<span style="color:#204a87;font-weight:bold">&lt;/groupId&gt;</span>
+    <span style="color:#204a87;font-weight:bold">&lt;artifactId&gt;</span>restlight-starter<span style="color:#204a87;font-weight:bold">&lt;/artifactId&gt;</span>
+    <span style="color:#204a87;font-weight:bold">&lt;version&gt;</span>${restlight.version}<span style="color:#204a87;font-weight:bold">&lt;/version&gt;</span>
+<span style="color:#204a87;font-weight:bold">&lt;/dependency&gt;</span>
+<span style="color:#204a87;font-weight:bold">&lt;dependency&gt;</span>
 	<span style="color:#204a87;font-weight:bold">&lt;groupId&gt;</span>io.esastack<span style="color:#204a87;font-weight:bold">&lt;/groupId&gt;</span>
 	<span style="color:#204a87;font-weight:bold">&lt;artifactId&gt;</span>restlight-jaxrs-provider<span style="color:#204a87;font-weight:bold">&lt;/artifactId&gt;</span>
 	<span style="color:#204a87;font-weight:bold">&lt;version&gt;</span>${restlight.version}<span style="color:#204a87;font-weight:bold">&lt;/version&gt;</span>
+<span style="color:#204a87;font-weight:bold">&lt;/dependency&gt;</span>
+<span style="color:#204a87;font-weight:bold">&lt;dependency&gt;</span>
+	<span style="color:#204a87;font-weight:bold">&lt;groupId&gt;</span>io.esastack<span style="color:#204a87;font-weight:bold">&lt;/groupId&gt;</span>
+	<span style="color:#204a87;font-weight:bold">&lt;artifactId&gt;</span>commons<span style="color:#204a87;font-weight:bold">&lt;/artifactId&gt;</span>
+	// ${commons.version} &gt;= 0.2.2
+	<span style="color:#204a87;font-weight:bold">&lt;version&gt;</span>${commons.version}<span style="color:#204a87;font-weight:bold">&lt;/version&gt;</span>
 <span style="color:#204a87;font-weight:bold">&lt;/dependency&gt;</span>
 </code></pre></div>
         <div class="section-index">
@@ -658,7 +669,7 @@ if (!doNotTrack) {
 	
 	
 	<div class="text-muted mt-5 pt-3 border-top">
-  Last modified March 10, 2022: <a href="https://github.com/esastack/esa-restlight/commit/79630ff3ff95737a7f6c0018265dc505ff3e3528">introduce docsy as the website framework and add docs-v1.0.0 (#120) (79630ff)</a>
+  Last modified May 27, 2022: <a href="https://github.com/esastack/esa-restlight/commit/1854a81b505080da72d21a2ea5747243f7470e9d">remove springmvc from startor (#198) (1854a81)</a>
 </div>
 
 </div>
