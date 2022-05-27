@@ -27,7 +27,7 @@ Create a Spring Boot application and add dependency
 <dependency>
     <groupId>io.esastack</groupId>
     <artifactId>commons</artifactId>
-    // ${commons.version} >= 0.2.1
+    // ${commons.version} >= 0.2.2
     <version>${commons.version}</version>
 </dependency>
 ```
