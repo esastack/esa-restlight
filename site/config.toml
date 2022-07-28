@@ -214,12 +214,12 @@ enable = false
   desc = "Discuss development issues around the project"
 
 # multi-versions
+#[[params.versions]]
+#  version = "1.0.0(Newest)"
+#  url = "/docs"
 [[params.versions]]
-  version = "1.0.0(Newest)"
+  version = "v0.1.1(Newest)"
   url = "/docs"
-[[params.versions]]
-  version = "v0.1.1"
-  url = "/docs-v0.1.1"
 [[params.versions]]
   version = "v0.1.0"
   url = "/docs-v0.1.0"

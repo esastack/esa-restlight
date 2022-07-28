@@ -31,7 +31,7 @@ public class HelloController implements RestlightBizExecutorAware {
 
 
     @GetMapping("/foo")
-    public CompletableFuture<String> foo() {
+    public CompletionStage<String> foo() {
         return CompletableFuture.supplyAsync(() -> "Hello Restlight!", bizExecutor);
     }
 

@@ -223,36 +223,41 @@ public Foo bar(@RequestBody User user) {
 
 ## 多个序列化器框架如何选择使用哪个序列化器实现？
 
-序列化器接口`HttpRequestSerializer`， `HttpResponseSerializer`中均定义了`suppot(xxx)`方法， 用于在多个序列化器并存的情况下判断使用哪一个序列化器。以`HttpRequestSerializer`为例
-
 ```java
-public interface HttpRequestSerializer extends BaseHttpSerializer, RxSerializer {
-    
-    boolean supportsRead(MediaType mediaType, Type type);
-    
+public interface HttpRequestSerializer extends Ordered {
+
+    /**
+     * Deserialize the data from byte array to the object.
+     *
+     * @param entity entity
+     * @param <T>    generic type
+     * @return handled value
+     * @throws Exception any exception
+     */
+    <T> HandledValue<T> deserialize(RequestEntity entity) throws Exception;
+
 }
 ```
-
-`HttpRequestSerializer`中定义了`supportsRead(MediaType mediaType, Type type)`方法用于判断当前序列化器是否支持此次请求的序列化， 其中参数`MediaType`为请求的`ContentType`， `Type`为当前反序列化的目标类型。
+如上，在进行序列化之前首先判断当前序列化器是否支持给定的`RequestEntity`，如果为`false`则直接返回`HandledValue.failed()`，否则返回反序列化后的结果。
 
 同样`HttpResponseSerializer`
 
 ```java
-public interface HttpResponseSerializer extends BaseHttpSerializer, TxSerializer {
+public interface HttpResponseSerializer extends Ordered {
 
-    boolean supportsWrite(MediaType mediaType, Type type);
-
-    Object customResponse(AsyncRequest request, AsyncResponse response, Object returnValue);
+    /**
+     * Serialize the object to byte array.
+     *
+     * @param entity response entity
+     * @return handled value
+     * @throws Exception any exception
+     */
+    HandledValue<byte[]> serialize(ResponseEntity entity) throws Exception;
 
 }
 ```
 
-- `supportsWrite(MediaType mediaType, Type type)`方法用于判断当前序列化器是否支持此次请求的序列化， 其中参数`MediaType`为请求的`Accept`字段中的值， `Type`为当序列化的原始类型。
-- `customResponse(xxx)`将会在实际调用序列化之前被调用， 并使用返回值的Object作为此次序列化的原始对象（也就是说允许用户在响应的序列化之前更改响应的对象）
-
-
-
-同时， 序列化器实现本身具有优先级由`getOrder()`表示(值越低优先级越高)
+> 序列化器实现本身具有优先级由`getOrder()`表示(值越低优先级越高)
 
 当最终无法找到匹配的序列化器时， 会通过默认的优先级进行序列化（暂时仅响应序列化为此行为）。
 
@@ -302,7 +307,6 @@ Restlight内置了ProtoBuf序列化器的实现，对应支持的MediaType为`ap
 同时使用ProtoBuf序列化器序列化后的响应结果的`Content-Type`也为`application/x-protobuf`)。
 
 针对ProtoBuf序列化的特点，ProtoBuf序列化后还将增加Header， `X-Protobuf-Schema`和`X-Protobuf-Message`分别返回Message对象的`getDescriptorForType().getFile().getName()`和`getDescriptorForType().getFullName`的结果。
-
 
 ## 特殊类型返回值的序列化
 

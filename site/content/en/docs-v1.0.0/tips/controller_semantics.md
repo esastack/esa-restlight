@@ -49,7 +49,6 @@ Controller中的`@PathVariable`与第二个Congroller的path重复
 {{< /alert >}}
 
 {{< alert title="Note" >}}
-同样的道理，如果Controller语义存在相交的语义（可能存在使用复杂的正则等方式定义的Controller接口，因此可能存在相交的情况）也适用。
+- 同样的道理，如果Controller语义存在相交的语义（可能存在使用复杂的正则等方式定义的Controller接口，因此可能存在相交的情况）也适用。
+- Restlight检测到歧义时会打印WARNING日志
 {{< /alert >}}
-
-Restlight检测到歧义时会打印WARNING日志

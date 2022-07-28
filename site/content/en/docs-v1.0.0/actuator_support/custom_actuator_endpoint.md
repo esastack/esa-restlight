@@ -41,7 +41,7 @@ esa-restlight
 
 ## 自定义异步`EndPoint`
 
-用户可以自己定义基于`Completablefture`的`Endpoint`实现定制化的健康检查接口
+用户可以自己定义基于`CompletionStage`的`Endpoint`实现定制化的健康检查接口
 
 eg
 
@@ -50,7 +50,7 @@ eg
 public class AppIdEndpoint {
 
     @ReadOperation
-    public CompletableFuture<String> appId() {
+    public CompletionStage<String> appId() {
         return CompletableFuture.supplyAsync(() -> {
 
             // do something...

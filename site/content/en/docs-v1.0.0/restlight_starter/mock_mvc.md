@@ -47,15 +47,15 @@ public class BootstrapWithContextTest {
 
     @Test
     public void testListAll() {
-        mockMvc.perform(MockAsyncRequest.aMockRequest().withUri("/demo1/list").build())
-                .addExpect(r -> assertTrue(((List) r.result()).isEmpty()))
+        mockMvc.perform(MockHttpRequest.aMockRequest().withUri("/demo1/list").build())
+                .addExpect(r -> assertTrue(((List) r.response().entity()).isEmpty()))
                 .addExpect(r -> assertEquals(200, r.response().status()));
     }
 
     @Test
     public void testListAll2() {
-        mockMvc.perform(MockAsyncRequest.aMockRequest().withUri("/demo2/list").build())
-                .addExpect(r -> assertTrue(((List) r.result()).isEmpty()))
+        mockMvc.perform(MockHttpRequest.aMockRequest().withUri("/demo2/list").build())
+                .addExpect(r -> assertTrue(((List) r.response().entity()).isEmpty()))
                 .addExpect(r -> assertEquals(200, r.response().status()));
     }
 }
@@ -84,15 +84,15 @@ public class BootstrapWithSingletonTest {
 
     @Test
     public void testListAll() {
-        mockMvc.perform(MockAsyncRequest.aMockRequest().withUri("/demo1/list").build())
-                .addExpect(r -> assertTrue(((List) r.result()).isEmpty()))
+        mockMvc.perform(MockHttpRequest.aMockRequest().withUri("/demo1/list").build())
+                .addExpect(r -> assertTrue(((List) r.response().entity()).isEmpty()))
                 .addExpect(r -> assertEquals(200, r.response().status()));
     }
 
     @Test
     public void testListAll2() {
-        mockMvc.perform(MockAsyncRequest.aMockRequest().withUri("/demo2/list").build())
-                .addExpect(r -> assertTrue(((List) r.result()).isEmpty()))
+        mockMvc.perform(MockHttpRequest.aMockRequest().withUri("/demo2/list").build())
+                .addExpect(r -> assertTrue(((List) r.response().entity()).isEmpty()))
                 .addExpect(r -> assertEquals(200, r.response().status()));
     }
 }
@@ -111,18 +111,19 @@ public class MockMvcAutowiredTest {
 
     @Test
     public void testListAll() {
-        mockMvc.perform(MockAsyncRequest.aMockRequest().withUri("/demo1/list").build())
-                .addExpect(r -> assertTrue(((List) r.result()).isEmpty()))
-                .addExpect(r -> assertEquals(200, r.response().getStatus()));
+        mockMvc.perform(MockHttpRequest.aMockRequest().withUri("/demo1/list").build())
+                .addExpect(r -> assertTrue(((List) r.response().entity()).isEmpty()))
+                .addExpect(r -> assertEquals(200, r.response().status()));
     }
 
     @Test
     public void testListAll2() {
-        mockMvc.perform(MockAsyncRequest.aMockRequest().withUri("/demo2/list").build())
-                .addExpect(r -> assertTrue(((List) r.result()).isEmpty()))
-                .addExpect(r -> assertEquals(200, r.response().getStatus()));
+        mockMvc.perform(MockHttpRequest.aMockRequest().withUri("/demo2/list").build())
+                .addExpect(r -> assertTrue(((List) r.response().entity()).isEmpty()))
+                .addExpect(r -> assertEquals(200, r.response().status()));
     }
 }
+
 ```
 
 ## 4. 异步方法测试
@@ -140,8 +141,8 @@ public class AsyncDemoControllerTest {
 
     @Test
     public void testListAll() {
-        mockMvc.perform(MockAsyncRequest.aMockRequest().withUri("/async/list").build())
-                .addExpect(r -> assertTrue(((List) r.result()).isEmpty()))
+        mockMvc.perform(MockHttpRequest.aMockRequest().withUri("/async/list").build())
+                .addExpect(r -> assertTrue(((List) r.response().entity()).isEmpty()))
                 .addExpect(r -> assertEquals(200, r.response().status()));
     }
 }

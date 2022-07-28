@@ -17,8 +17,8 @@ weight: 30
 {{< /alert >}}
 
 {{< alert title="Note" >}}
-在Interceptor#preHandle0()和Interceptor#postHandle0()中直接通过throw抛出的异常将不会被
-异常处理器处理，如果需要被正常处理，请使用CompletableFuture.completeExceptionally()封装异常
+在`Interceptor#preHandle0()`和`Interceptor#postHandle0()`中直接通过throw抛出的异常将不会被
+异常处理器处理，如果需要被正常处理，请使用`CompletableFuture.completeExceptionally()`封装异常
 {{< /alert >}}
 
 ## 拦截器定位
@@ -26,21 +26,21 @@ weight: 30
 面向`Controller/Route`， 同时支持按需匹配的拦截器
 
 1. **面向`Controller/Route`**: 拦截器一定能让用户根据需求选择匹配到哪个`Controller`接口
-2. **按需匹配**： 支持按照`AsyncRequest`条件让用户灵活决定拦截器的匹配规则
+2. **按需匹配**： 支持按照`RequestContext`条件让用户灵活决定拦截器的匹配规则
 
 ## `InternalInterceptor`
 
 核心拦截器实现， 封装了拦截器核心行为
 
-- `CompletableFuture<Boolean> preHandle0(AsyncRequest, AsyncResponse, Object)`
+- `CompletableFuture<Boolean> preHandle0(RequestContext, Object)`
 
   `Controller`执行前执行。返回布尔值表示是否允许当前请求继续往下执行。
 
-- `CompletableFuture<Void> postHandle0(AsyncRequest, AsyncResponse, Object)`
+- `CompletableFuture<Void> postHandle0(RequestContext, Object)`
 
   `Controller`刚执行完之后执行
 
-- `CompletableFuture<Void> afterCompletion0(AsyncRequest, AsyncResponse, Exception)`
+- `CompletableFuture<Void> afterCompletion0(RequestContext, Object, Exception)`
 
   请求行完之后执行
 
@@ -57,7 +57,7 @@ weight: 30
 
 **初始化阶段**： 初始化阶段为每一个`Controller`确定所有可能匹配到当前`Controller`的拦截器列表（包含可能匹配以及一定会匹配到当前`Controller`的拦截器）。
 
-**运行时阶段**： 一个请求`AsyncRequest`到来时将通过将`AsyncRequest`作为参数传递到拦截器做路由判定， 决定是否匹配。
+**运行时阶段**： 一个请求到来时通过将`RequestContext`作为参数传递到拦截器做路由判定，决定是否匹配。
 
 {{< alert title="Tip" >}}
 通过初始化与运行时两个阶段的匹配行为扩展满足用户多样性匹配需求， 用户既可以直接将拦截器绑定到固定的`Controller`也可以让拦截器随心所欲的根据请求去选择匹配。
@@ -101,10 +101,10 @@ public interface Affinity {
 
 ```java
 public interface InterceptorPredicate extends RequestPredicate {
-    InterceptorPredicate ALWAYS = request -> Boolean.TRUE;
+    InterceptorPredicate ALWAYS = context -> Boolean.TRUE;
 }
 
-public interface RequestPredicate extends Predicate<AsyncRequest> {
+public interface RequestPredicate extends Predicate<RequestContext> {
     // ignore this
     default boolean mayAmbiguousWith(RequestPredicate another) {
         return false;
@@ -112,33 +112,33 @@ public interface RequestPredicate extends Predicate<AsyncRequest> {
 }
 ```
 
-`test(AsyncRequest)`方法用于对每个请求的匹配。可以满足根据`AsyncRequest`运行时的任意条件的匹配（而不仅仅是局限于`URL`匹配）
+`test(RequestContext)`方法用于对每个请求的匹配。可以满足根据`RequestContext`运行时的任意条件的匹配（而不仅仅是局限于`URL`匹配）
 
 ## `Interceptor`
 
-`Interceptor`接口为同时拥有`Affinity`（`Controller/Route`匹配）以及`InterceptorPredicate`（请求`AsyncRequest`匹配）的接口
+`Interceptor`接口为同时拥有`Affinity`（`Controller/Route`匹配）以及`InterceptorPredicate`（请求`RequestContext`匹配）的接口
 
 ```java
 public interface Interceptor extends InternalInterceptor, Affinity {
-
+    
     /**
      * Gets the predicate of current interceptor. determines whether current interceptor should be matched to a {@link
-     * esa.httpserver.core.AsyncRequest}.
+     * RequestContext}.
      *
      * @return predicate, or {@code null} if {@link #affinity()} return's a negative value.
      */
     InterceptorPredicate predicate();
-
+    
     /**
      * Default to highest affinity.
      * <p>
-     * Whether a {@link Interceptor} should be matched to a {@link esa.restlight.server.route.Route} is depends on it.
+     * Whether a {@link Interceptor} should be matched to a {@link Route} is depends on it.
      *
      * @return affinity
      */
     @Override
     default int affinity() {
-        return HIGHEST;
+      return HIGHEST;
     }
 }
 ```
@@ -152,35 +152,32 @@ eg.
 ```java
 @Bean
 public InterceptorFactory interceptor() {
-    return (ctx, route) -> new Interceptor() {
+    return (ctx, route) -> Optional.of(new Interceptor() {
         @Override
-        public CompletableFuture<Boolean> preHandle0(AsyncRequest request,
-                                                     AsyncResponse response,
-                                                     Object handler) {
+        public CompletionStage<Boolean> preHandle0(RequestContext context, Object handler) {
             // biz logic
             return CompletableFuture.completedFuture(true);
         }
-
-
+        
         @Override
         public InterceptorPredicate predicate() {
-            return request -> request.containsHeader("X-Foo");
+            return context -> context.request().headers().contains("X-Foo");
         }
-
+        
         @Override
         public int affinity() {
             HttpMethod[] method = route.mapping().method();
             if (method.length == 1 && method[0] == HttpMethod.GET) {
                 return ATTACHED;
             }
-            return DETACHED;
+             return DETACHED;
         }
-    };
+    });
 }
 ```
 
 {{< alert title="Note" >}}
-运行时仅在`request.containsHeader("X-Foo")`上做匹配， 性能损耗极低。
+运行时仅在`context.request().headers().contains("X-Foo")`上做匹配， 性能损耗极低。
 {{< /alert >}}
 
 ## `RouteInterceptor`
@@ -191,14 +188,14 @@ public InterceptorFactory interceptor() {
 public interface RouteInterceptor extends InternalInterceptor {
 
     /**
-     * Gets the affinity value between current interceptor and the given {@link Route}.
+     * Gets the affinity value between current interceptor and the given {@link Routing}.
      *
      * @param ctx   context
      * @param route route to match
      *
      * @return affinity value.
      */
-    boolean match(DeployContext<? extends RestlightOptions> ctx, Route route);
+    boolean match(DeployContext ctx, Routing route);
 }
 ```
 
@@ -212,22 +209,19 @@ eg.
 ```java
 @Bean
 public RouteInterceptor interceptor() {
-    return new RouteInterceptor() {
-
-        @Override
-        public CompletableFuture<Boolean> preHandle0(AsyncRequest request,
-                                                     AsyncResponse response,
-                                                     Object handler) {
-            // biz logic
-            return CompletableFuture.completedFuture(true);
-        }
-
-        @Override
-        public boolean match(DeployContext<? extends RestlightOptions> ctx, Route route) {
-            HttpMethod[] method = route.mapping().method();
-            return method.length == 1 && method[0] == HttpMethod.GET;
-        }
-    };
+  return new RouteInterceptor() {
+  
+    @Override
+    public boolean match(DeployContext ctx, Routing route) {
+        HttpMethod[] method = route.mapping().method();
+        return method.length == 1 && method[0] == HttpMethod.GET;
+    }
+    
+    @Override
+    public CompletionStage<Boolean> preHandle0(RequestContext context, Object handler) {
+        // biz logic
+        return CompletableFuture.completedFuture(true);
+    }};
 }
 ```
 
@@ -251,16 +245,14 @@ public MappingInterceptor interceptor() {
     return new MappingInterceptor() {
 
         @Override
-        public CompletableFuture<Boolean> preHandle0(AsyncRequest request,
-                                                     AsyncResponse response,
-                                                     Object handler) {
+        public CompletionStage<Boolean> preHandle0(RequestContext context, Object handler) {
             // biz logic
             return CompletableFuture.completedFuture(true);
         }
-        
+    
         @Override
-        public boolean test(AsyncRequest request) {
-            return request.containsHeader("X-Foo");
+        public boolean test(RequestContext context) {
+            return context.request().headers().contains("X-Foo");
         }
     };
 }
@@ -303,9 +295,7 @@ public HandlerInterceptor interceptor() {
     return new HandlerInterceptor() {
 
         @Override
-        public CompletableFuture<Boolean> preHandle0(AsyncRequest request,
-                                                     AsyncResponse response,
-                                                     Object handler) {
+        public CompletionStage<Boolean> preHandle0(RequestContext context, Object handler) {
             // biz logic
             return CompletableFuture.completedFuture(true);
         }
@@ -314,7 +304,7 @@ public HandlerInterceptor interceptor() {
         public String[] includes() {
             return new String[] {"/foo/**"};
         }
-
+        
         @Override
         public String[] excludes() {
             return new String[] {"/foo/bar"};
@@ -338,6 +328,6 @@ public interface InterceptorFactory {
      * @param route target route.
      * @return interceptor
      */
-    Optional<Interceptor> create(DeployContext<? extends RestlightOptions> ctx, Route route);
+    Optional<Interceptor> create(DeployContext ctx, Routing route);
 }
 ```
