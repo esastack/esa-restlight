@@ -33,7 +33,7 @@ Create a Spring Boot application and add dependency
 <dependency>
     <groupId>io.esastack</groupId>
     <artifactId>restlight-starter</artifactId>
-    <version>${mvn.version}</version>
+    <version>0.1.1</version>
 </dependency>
 ```
 
