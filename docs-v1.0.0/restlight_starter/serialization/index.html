@@ -1,0 +1,562 @@
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="generator" content="Hugo 0.92.2" />
+<meta name="robots" content="index, follow">
+
+
+<link rel="shortcut icon" href="/favicons/favicon.ico" >
+<link rel="apple-touch-icon" href="/favicons/apple-touch-icon-180x180.png" sizes="180x180">
+<link rel="icon" type="image/png" href="/favicons/favicon-16x16.png" sizes="16x16">
+<link rel="icon" type="image/png" href="/favicons/favicon-32x32.png" sizes="32x32">
+<link rel="icon" type="image/png" href="/favicons/android-36x36.png" sizes="36x36">
+<link rel="icon" type="image/png" href="/favicons/android-48x48.png" sizes="48x48">
+<link rel="icon" type="image/png" href="/favicons/android-72x72.png" sizes="72x72">
+<link rel="icon" type="image/png" href="/favicons/android-96x96.png" sizes="96x96">
+<link rel="icon" type="image/png" href="/favicons/android-144x144.png" sizes="144x144">
+<link rel="icon" type="image/png" href="/favicons/android-192x192.png" sizes="192x192">
+
+<title>序列化 | ESA Restlight</title>
+<meta name="description" content="序列化支持
+
+jackson(默认)
+fastjson
+Gson
+ProtoBuf
+自定义支持
+
+
+
+
+Note
+
+    其中Json相关的序列化方式默认配置了日期格式为yyyy-MM-dd HH:mm:ss
+
+
+
+序列化切换
+默认使用Jackson序列化，因此Restlight也默认引入 …">
+<meta property="og:title" content="序列化" />
+<meta property="og:description" content="序列化支持
+ jackson(默认) fastjson Gson ProtoBuf 自定义支持  Note 其中Json相关的序列化方式默认配置了日期格式为yyyy-MM-dd HH:mm:ss  序列化切换 默认使用Jackson序列化，因此Restlight也默认引入了Jackson依赖，如果想要切换成别的序列化方式，则需要引入对应的Maven依赖并进行简单的配置。
+Example：以切换Gson为例
+ 引入Gson依赖：  &lt;dependency&gt; &lt;groupId&gt;com.google.code.gson&lt;/groupId&gt; &lt;artifactId&gt;gson&lt;/artifactId&gt; &lt;version&gt;2.8.5&lt;/version&gt; &lt;/dependency&gt; 注入Gson序列化器  @Bean public HttpBodySerializer bodySerializer() { return new GsonHttpBodySerializer(); } 完成切换。
+Tip 如果不想继续引入默认的Jackson依赖可以使用&lt;exclusions/&gt;标签排除， 同时一旦注入了自定义的序列化器原来默认的Jackson序列化器将不会再生效  序列化器 接口标准定义
+ HttpRequestSerializer： 用于请求的反序列化。 HttpResponseSerializer： 用于响应的序列化。 HttpBodySerializer： 继承自HttpRequestSerializer以及HttpResponseSerializer, 可同时提供请求与响应的序列化功能。  内置的序列化器
+ FastJsonHttpBodySerializer JacksonHttpBodySerializer GsonHttpBodySerializer ProtoBufHttpBodySerializer  Note 切换时引入Maven依赖并注入对应的序列化器即可  定制序列化器 可以选择通过继承或者自定义实现HttpRequestSerializer以及HttpResponseSerializer接口（或者HttpResponseSerializer同理）的方式实现定制序列化。
+如，在上面的例子中我们切换序列化方式为jackson，此时我们想定制序列化的日期格式为yyyy-MM-dd
+@Bean public HttpBodySerializer bodySerializer() { ObjectMapper objectMapper = new ObjectMapper(); objectMapper." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="/docs-v1.0.0/restlight_starter/serialization/" /><meta property="article:section" content="docs-v1.0.0" />
+
+<meta property="article:modified_time" content="2022-07-28T18:08:53+08:00" /><meta property="og:site_name" content="ESA Restlight" />
+
+<meta itemprop="name" content="序列化">
+<meta itemprop="description" content="序列化支持
+ jackson(默认) fastjson Gson ProtoBuf 自定义支持  Note 其中Json相关的序列化方式默认配置了日期格式为yyyy-MM-dd HH:mm:ss  序列化切换 默认使用Jackson序列化，因此Restlight也默认引入了Jackson依赖，如果想要切换成别的序列化方式，则需要引入对应的Maven依赖并进行简单的配置。
+Example：以切换Gson为例
+ 引入Gson依赖：  &lt;dependency&gt; &lt;groupId&gt;com.google.code.gson&lt;/groupId&gt; &lt;artifactId&gt;gson&lt;/artifactId&gt; &lt;version&gt;2.8.5&lt;/version&gt; &lt;/dependency&gt; 注入Gson序列化器  @Bean public HttpBodySerializer bodySerializer() { return new GsonHttpBodySerializer(); } 完成切换。
+Tip 如果不想继续引入默认的Jackson依赖可以使用&lt;exclusions/&gt;标签排除， 同时一旦注入了自定义的序列化器原来默认的Jackson序列化器将不会再生效  序列化器 接口标准定义
+ HttpRequestSerializer： 用于请求的反序列化。 HttpResponseSerializer： 用于响应的序列化。 HttpBodySerializer： 继承自HttpRequestSerializer以及HttpResponseSerializer, 可同时提供请求与响应的序列化功能。  内置的序列化器
+ FastJsonHttpBodySerializer JacksonHttpBodySerializer GsonHttpBodySerializer ProtoBufHttpBodySerializer  Note 切换时引入Maven依赖并注入对应的序列化器即可  定制序列化器 可以选择通过继承或者自定义实现HttpRequestSerializer以及HttpResponseSerializer接口（或者HttpResponseSerializer同理）的方式实现定制序列化。
+如，在上面的例子中我们切换序列化方式为jackson，此时我们想定制序列化的日期格式为yyyy-MM-dd
+@Bean public HttpBodySerializer bodySerializer() { ObjectMapper objectMapper = new ObjectMapper(); objectMapper.">
+<meta itemprop="dateModified" content="2022-07-28T18:08:53+08:00" />
+<meta itemprop="wordCount" content="352">
+<meta itemprop="keywords" content="feature," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="序列化"/>
+<meta name="twitter:description" content="序列化支持
+ jackson(默认) fastjson Gson ProtoBuf 自定义支持  Note 其中Json相关的序列化方式默认配置了日期格式为yyyy-MM-dd HH:mm:ss  序列化切换 默认使用Jackson序列化，因此Restlight也默认引入了Jackson依赖，如果想要切换成别的序列化方式，则需要引入对应的Maven依赖并进行简单的配置。
+Example：以切换Gson为例
+ 引入Gson依赖：  &lt;dependency&gt; &lt;groupId&gt;com.google.code.gson&lt;/groupId&gt; &lt;artifactId&gt;gson&lt;/artifactId&gt; &lt;version&gt;2.8.5&lt;/version&gt; &lt;/dependency&gt; 注入Gson序列化器  @Bean public HttpBodySerializer bodySerializer() { return new GsonHttpBodySerializer(); } 完成切换。
+Tip 如果不想继续引入默认的Jackson依赖可以使用&lt;exclusions/&gt;标签排除， 同时一旦注入了自定义的序列化器原来默认的Jackson序列化器将不会再生效  序列化器 接口标准定义
+ HttpRequestSerializer： 用于请求的反序列化。 HttpResponseSerializer： 用于响应的序列化。 HttpBodySerializer： 继承自HttpRequestSerializer以及HttpResponseSerializer, 可同时提供请求与响应的序列化功能。  内置的序列化器
+ FastJsonHttpBodySerializer JacksonHttpBodySerializer GsonHttpBodySerializer ProtoBufHttpBodySerializer  Note 切换时引入Maven依赖并注入对应的序列化器即可  定制序列化器 可以选择通过继承或者自定义实现HttpRequestSerializer以及HttpResponseSerializer接口（或者HttpResponseSerializer同理）的方式实现定制序列化。
+如，在上面的例子中我们切换序列化方式为jackson，此时我们想定制序列化的日期格式为yyyy-MM-dd
+@Bean public HttpBodySerializer bodySerializer() { ObjectMapper objectMapper = new ObjectMapper(); objectMapper."/>
+
+
+
+
+<link rel="preload" href="/scss/main.min.d6e0d5abc6f6a3c1d53dbb7d3961f4afa416f54a6cd0393408d9a241c4e351fa.css" as="style">
+<link href="/scss/main.min.d6e0d5abc6f6a3c1d53dbb7d3961f4afa416f54a6cd0393408d9a241c4e351fa.css" rel="stylesheet" integrity="">
+
+<script
+  src="https://code.jquery.com/jquery-3.6.0.min.js"
+  integrity="sha384-vtXRMe3mGCbOeY7l30aIg8H9p3GdeSe4IFlP6G8JMa7o7lXvnz3GFKzPxzJdPfGK"
+  crossorigin="anonymous"></script>
+
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-00000000-0', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+  </head>
+  <body class="td-page">
+    <header>
+      
+<nav class="js-navbar-scroll navbar navbar-expand navbar-dark flex-column flex-md-row td-navbar">
+        <a class="navbar-brand" href="/">
+		<span class="navbar-logo"><svg id="layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 180 180" style="enable-background:new 0 0 180 180"><style>.st0{fill-rule:evenodd;clip-rule:evenodd;fill:#fff}.st1{opacity:.6;fill-rule:evenodd;clip-rule:evenodd;fill:#fff;enable-background:new}.st2{opacity:.3;fill-rule:evenodd;clip-rule:evenodd;fill:#fff;enable-background:new}</style><g><path class="st0" d="M127.6 95.9c-11-2.2-23.9-3.5-37.7-3.5-13.9.0-26.8 1.2-37.7 3.5 11 2.2 23.9 3.5 37.7 3.5S116.7 98 127.6 95.9zM135.8 97.8c-12.7 3.2-28.6 5.2-45.9 5.2s-33.3-2-45.9-5.2c-2.1.5-4.1 1.1-5.9 1.7-6.5 2.2-11.6 4.7-14.9 7.3-3.3 2.6-4.4 4.9-4.4 6.8s1.1 4.2 4.4 6.8 8.4 5.2 14.9 7.3c13.1 4.3 31.5 7 51.8 7s38.7-2.7 51.8-7c6.5-2.2 11.6-4.7 14.9-7.3s4.4-4.9 4.4-6.8-1.1-4.2-4.4-6.8-8.4-5.2-14.9-7.3C139.9 98.9 137.9 98.3 135.8 97.8z"/><path class="st1" d="M120.9 59.2C111.5 57.7 101 57 89.8 57c-11.1.0-21.7.9-31.1 2.2 9.4 1.5 19.9 2.2 31.1 2.2C101 61.5 111.5 60.7 120.9 59.2zm10 1.8c-11.8 2.6-25.9 4.1-41 4.1-15.2.0-29.2-1.5-41-4.1-3.9.9-7.5 1.9-10.9 3-6.5 2.2-11.6 4.7-14.9 7.3-3.3 2.6-4.4 4.9-4.4 6.8s1.1 4.2 4.4 6.8c3.3 2.6 8.4 5.2 14.9 7.3 13.1 4.3 31.5 7 51.8 7s38.7-2.7 51.8-7c6.5-2.2 11.6-4.7 14.9-7.3s4.4-4.9 4.4-6.8-1.1-4.2-4.4-6.8-8.4-5.2-14.9-7.3C138.4 63 134.8 62 130.9 61z"/><path class="st2" d="M161.1 40.3c0 1.9-1.1 4.2-4.4 6.8-3.3 2.6-8.4 5.2-14.9 7.3-13.1 4.3-31.5 7-51.8 7s-38.7-2.7-51.8-7c-6.5-2.2-11.6-4.7-14.9-7.3s-4.4-4.9-4.4-6.8 1.1-4.2 4.4-6.8 8.4-5.2 14.9-7.3c13.1-4.3 31.5-7 51.8-7s38.7 2.7 51.8 7c6.5 2.2 11.6 4.7 14.9 7.3S161.1 38.5 161.1 40.3z"/></g></svg></span><span class="font-weight-bold">ESA Restlight</span>
+	</a>
+	<div class="td-navbar-nav-scroll ml-md-auto" id="main_navbar">
+		<ul class="navbar-nav mt-2 mt-lg-0">
+			
+			
+			<li class="nav-item mr-4 mb-2 mb-lg-0">
+				
+				
+				
+				
+				
+				
+				<a class="nav-link" href="/docs/" ><i class='fas fa-book pr-2'></i><span>Docs</span></a>
+			</li>
+			
+			<li class="nav-item mr-4 mb-2 mb-lg-0">
+				
+				
+				
+				
+				
+				
+				<a class="nav-link" href="/blog/" ><i class='fas fa-rss pr-2'></i><span>Blog</span></a>
+			</li>
+			
+			<li class="nav-item mr-4 mb-2 mb-lg-0">
+				
+				
+				
+				
+				
+				
+				<a class="nav-link" href="https://github.com/esastack/esa-restlight" target="_blank" ><i class='fab fa-github pr-2'></i><span>Github</span></a>
+			</li>
+			
+			<li class="nav-item mr-4 mb-2 mb-lg-0">
+				
+				
+				
+				
+				
+				
+				<a class="nav-link" href="https://www.esastack.io" target="_blank" ><span>ESA Stack</span></a>
+			</li>
+			
+
+
+
+
+
+			
+		</ul>
+	</div>
+	<div class="navbar-nav d-none d-lg-block"><input type="search" class="form-control td-search-input" placeholder="&#xf002; Search this site…" aria-label="Search this site…" autocomplete="off">
+</div>
+</nav>
+
+    </header>
+    <div class="container-fluid td-default td-outer">
+      <main role="main" class="td-main">
+        
+
+<p>序列化支持</p>
+<ul>
+<li>jackson(默认)</li>
+<li>fastjson</li>
+<li>Gson</li>
+<li>ProtoBuf</li>
+<li>自定义支持</li>
+</ul>
+
+
+<div class="alert alert-primary" role="alert">
+<h4 class="alert-heading">Note</h4>
+
+    其中Json相关的序列化方式默认配置了日期格式为<code>yyyy-MM-dd HH:mm:ss</code>
+
+</div>
+
+<h2 id="序列化切换">序列化切换</h2>
+<p>默认使用Jackson序列化，因此Restlight也默认引入了Jackson依赖，如果想要切换成别的序列化方式，则需要引入对应的Maven依赖并进行简单的配置。</p>
+<p>Example：以切换Gson为例</p>
+<ol>
+<li>引入Gson依赖：</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#204a87;font-weight:bold">&lt;dependency&gt;</span>
+     <span style="color:#204a87;font-weight:bold">&lt;groupId&gt;</span>com.google.code.gson<span style="color:#204a87;font-weight:bold">&lt;/groupId&gt;</span>
+     <span style="color:#204a87;font-weight:bold">&lt;artifactId&gt;</span>gson<span style="color:#204a87;font-weight:bold">&lt;/artifactId&gt;</span>
+     <span style="color:#204a87;font-weight:bold">&lt;version&gt;</span>2.8.5<span style="color:#204a87;font-weight:bold">&lt;/version&gt;</span>
+<span style="color:#204a87;font-weight:bold">&lt;/dependency&gt;</span>
+</code></pre></div><ol start="2">
+<li>注入Gson序列化器</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#5c35cc;font-weight:bold">@Bean</span>
+<span style="color:#204a87;font-weight:bold">public</span> <span style="color:#000">HttpBodySerializer</span> <span style="color:#000">bodySerializer</span><span style="color:#ce5c00;font-weight:bold">()</span> <span style="color:#ce5c00;font-weight:bold">{</span>
+    <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#204a87;font-weight:bold">new</span> <span style="color:#000">GsonHttpBodySerializer</span><span style="color:#ce5c00;font-weight:bold">();</span>
+<span style="color:#ce5c00;font-weight:bold">}</span>
+</code></pre></div><p>完成切换。</p>
+
+
+<div class="alert alert-primary" role="alert">
+<h4 class="alert-heading">Tip</h4>
+
+    如果不想继续引入默认的Jackson依赖可以使用<code>&lt;exclusions/&gt;</code>标签排除， 同时一旦注入了自定义的序列化器原来默认的Jackson序列化器将不会再生效
+
+</div>
+
+<h2 id="序列化器">序列化器</h2>
+<p><strong>接口标准定义</strong></p>
+<ul>
+<li><code>HttpRequestSerializer</code>： 用于请求的反序列化。</li>
+<li><code>HttpResponseSerializer</code>： 用于响应的序列化。</li>
+<li><code>HttpBodySerializer</code>： 继承自<code>HttpRequestSerializer</code>以及<code>HttpResponseSerializer</code>, 可同时提供请求与响应的序列化功能。</li>
+</ul>
+<p><strong>内置的序列化器</strong></p>
+<ul>
+<li><code>FastJsonHttpBodySerializer</code></li>
+<li><code>JacksonHttpBodySerializer</code></li>
+<li><code>GsonHttpBodySerializer</code></li>
+<li><code>ProtoBufHttpBodySerializer</code></li>
+</ul>
+
+
+<div class="alert alert-primary" role="alert">
+<h4 class="alert-heading">Note</h4>
+
+    切换时引入Maven依赖并注入对应的序列化器即可
+
+</div>
+
+<h2 id="定制序列化器">定制序列化器</h2>
+<p>可以选择通过继承或者自定义实现<code>HttpRequestSerializer</code>以及<code>HttpResponseSerializer</code>接口（或者<code>HttpResponseSerializer</code>同理）的方式实现定制序列化。</p>
+<p>如，在上面的例子中我们切换序列化方式为jackson，此时我们想定制序列化的日期格式为<code>yyyy-MM-dd</code></p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#5c35cc;font-weight:bold">@Bean</span>
+<span style="color:#204a87;font-weight:bold">public</span> <span style="color:#000">HttpBodySerializer</span> <span style="color:#000">bodySerializer</span><span style="color:#ce5c00;font-weight:bold">()</span> <span style="color:#ce5c00;font-weight:bold">{</span>
+    <span style="color:#000">ObjectMapper</span> <span style="color:#000">objectMapper</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#204a87;font-weight:bold">new</span> <span style="color:#000">ObjectMapper</span><span style="color:#ce5c00;font-weight:bold">();</span>
+    <span style="color:#000">objectMapper</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#c4a000">setDateFormat</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#204a87;font-weight:bold">new</span> <span style="color:#000">SimpleDateFormat</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#4e9a06">&#34;yyyy-MM-dd&#34;</span><span style="color:#ce5c00;font-weight:bold">));</span>
+    <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#204a87;font-weight:bold">new</span> <span style="color:#000">HttpJsonBodySerializerAdapter</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#204a87;font-weight:bold">new</span> <span style="color:#000">JacksonSerializer</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#000">objectMapper</span><span style="color:#ce5c00;font-weight:bold">))</span> <span style="color:#ce5c00;font-weight:bold">{};</span>
+<span style="color:#ce5c00;font-weight:bold">}</span>
+</code></pre></div><p>同样也可以定制更多的序列化选项。</p>
+<h2 id="多个序列化器并存">多个序列化器并存</h2>
+<p>Restlight并不像Spring MVC一样要求一个应用中只能使用一种序列化方式，Restlight允许多种序列化方式并存。</p>
+<p>实际的服务中我们可能有这样的需求：我们对接服务A时使用的是ProtoBuf序列化，而其他情况都是使用的fastjson序列化。</p>
+<p>配置如下：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#5c35cc;font-weight:bold">@Bean</span>
+<span style="color:#204a87;font-weight:bold">public</span> <span style="color:#000">HttpBodySerializer</span> <span style="color:#000">fastjsonBodySerializer</span><span style="color:#ce5c00;font-weight:bold">()</span> <span style="color:#ce5c00;font-weight:bold">{</span>
+    <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#204a87;font-weight:bold">new</span> <span style="color:#000">FastJsonHttpBodySerializer</span><span style="color:#ce5c00;font-weight:bold">();</span>
+ 
+<span style="color:#5c35cc;font-weight:bold">@Bean</span>
+<span style="color:#204a87;font-weight:bold">public</span> <span style="color:#000">HttpBodySerializer</span> <span style="color:#000">protoBufBodySerializer</span><span style="color:#ce5c00;font-weight:bold">()</span> <span style="color:#ce5c00;font-weight:bold">{</span>
+    <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#204a87;font-weight:bold">new</span> <span style="color:#000">ProtoBufHttpBodySerializer</span><span style="color:#ce5c00;font-weight:bold">();</span>
+<span style="color:#ce5c00;font-weight:bold">}</span>
+</code></pre></div><p>直接注入两个序列化器即可。</p>
+<p>上面的配置当MediaType（请求对应<code>ContentType</code>, 响应对应<code>Accept</code>）为<code>application/json</code>时使用JSON序列化,  为<code>application/x-protobuf</code>时使用ProtoBuf序列化.</p>
+<h2 id="兼容spring-boot标准">兼容Spring Boot标准</h2>
+<p>使用Spring Boot时，经常在配置文件里面添加Jackson和Gson的配置，如：</p>
+<pre tabindex="0"><code class="language-properties" data-lang="properties">spring.jackson.date-format=yyyy-MM-dd HH:mm:ss
+spring.gson.date-format=yyyy-MM-dd HH:mm:ss
+</code></pre><p>Restlight同样支持该标准，其作用逻辑如下图所示：
+<img src="../../../img/serialization_of_springboot.png" alt="序列化器兼容springboot逻辑图.png">
+如图所示，配置文件中Jackson和Gson相关内容要想生效，需要满足如下条件：</p>
+<blockquote>
+<ol>
+<li>用户没有手动定制HttpJsonBodySerializerAdapter</li>
+<li>用户没有手动注入Jackson或者Gson序列化器(FastJsonHttpBodySerializer和GsonJsonHttpBodySerializer)</li>
+<li>用户没有手动注入ObjectMapper或者Gson对象</li>
+<li>配置文件有对Jackson和Gson进行配置</li>
+</ol>
+</blockquote>
+<p>满足以上四个条件，配置文件中关于Jackson和Gson的配置，才会在对应的Jackson和Gson序列化器中生效。</p>
+<h3 id="响应序列化内容协商json与protobuf序列化">响应序列化内容协商(Json与ProtoBuf序列化)</h3>
+
+
+<div class="alert alert-primary" role="alert">
+<h4 class="alert-heading">Note</h4>
+
+    前提： json和ProtoBuf的序列化器已经被正确的配置。
+
+</div>
+
+<p>当 json和ProtoBuf的序列化器同时存在时， 响应序列化方式可以通过url中的参数来指定。</p>
+<ul>
+<li>首先开启序列化协商功能：</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-pro" data-lang="pro"><span style="color:#4e9a06">#</span> <span style="color:#4e9a06">开启请求序列化协商</span>
+<span style="color:#4e9a06">restlight</span><span style="color:#000;font-weight:bold">.</span><span style="color:#4e9a06">server</span><span style="color:#000;font-weight:bold">.</span><span style="color:#4e9a06">serialize</span><span style="color:#000;font-weight:bold">.</span><span style="color:#4e9a06">request</span><span style="color:#000;font-weight:bold">.</span><span style="color:#4e9a06">negotiation</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">true</span>
+<span style="color:#4e9a06">#</span> <span style="color:#4e9a06">开启响应序列化协商</span>
+<span style="color:#4e9a06">restlight</span><span style="color:#000;font-weight:bold">.</span><span style="color:#4e9a06">server</span><span style="color:#000;font-weight:bold">.</span><span style="color:#4e9a06">serialize</span><span style="color:#000;font-weight:bold">.</span><span style="color:#4e9a06">response</span><span style="color:#000;font-weight:bold">.</span><span style="color:#4e9a06">negotiation</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">true</span>
+</code></pre></div><p>指定使用json序列化</p>
+<p><strong>eg</strong>:  <code>/foo/{bar}?format=json</code></p>
+<p>指定使用protobuf序列化</p>
+<p><strong>eg</strong>:  <code>/foo/{bar}?format=pb</code></p>
+
+
+<div class="alert alert-primary" role="alert">
+<h4 class="alert-heading">Note</h4>
+
+    参数可选值：<code>json</code>, <code>pb</code>
+
+</div>
+
+<ul>
+<li>当参数<code>format</code>与应用自身的某些接口中的参数冲突时可以通过配置修改参数名称</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-pro" data-lang="pro"><span style="color:#4e9a06">restlight</span><span style="color:#000;font-weight:bold">.</span><span style="color:#4e9a06">server</span><span style="color:#000;font-weight:bold">.</span><span style="color:#4e9a06">serialize</span><span style="color:#000;font-weight:bold">.</span><span style="color:#4e9a06">request</span><span style="color:#000;font-weight:bold">.</span><span style="color:#4e9a06">negotiation</span><span style="color:#ce5c00;font-weight:bold">-</span><span style="color:#4e9a06">param</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">your</span><span style="color:#ce5c00;font-weight:bold">-</span><span style="color:#4e9a06">param</span><span style="color:#ce5c00;font-weight:bold">-</span><span style="color:#4e9a06">name</span>
+<span style="color:#4e9a06">restlight</span><span style="color:#000;font-weight:bold">.</span><span style="color:#4e9a06">server</span><span style="color:#000;font-weight:bold">.</span><span style="color:#4e9a06">serialize</span><span style="color:#000;font-weight:bold">.</span><span style="color:#4e9a06">response</span><span style="color:#000;font-weight:bold">.</span><span style="color:#4e9a06">negotiation</span><span style="color:#ce5c00;font-weight:bold">-</span><span style="color:#4e9a06">param</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">your</span><span style="color:#ce5c00;font-weight:bold">-</span><span style="color:#4e9a06">param</span><span style="color:#ce5c00;font-weight:bold">-</span><span style="color:#4e9a06">name</span>
+</code></pre></div>
+
+<div class="alert alert-primary" role="alert">
+<h4 class="alert-heading">Tip</h4>
+
+    此种方式实际上相当于在请求的<code>Accept</code>字段中加入了<code>application/json</code>, <code>application/x-protobuf</code>值， 因此如果使用了自定义的序列化器，根据<code>HttpResponseSerializer.supportsWrite(MediaType mediaType, Type type)</code>方法实现不同可能与实际行为不符。 具体请参考下文<code>多个序列化器框架如何选择使用哪个序列化器实现</code>章节。
+
+</div>
+
+<h2 id="使用requestserializer指定请求序列化器">使用<code>@RequestSerializer</code>指定请求序列化器</h2>
+<p>当配置了多个序列化器时， 可以使用<code>@RequestSerializer</code>中指定使用某个固定的序列化方式</p>
+<p>下面的Controller指定使用Jackson反序列化请求数据</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#5c35cc;font-weight:bold">@PostMapping</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#4e9a06">&#34;/foo&#34;</span><span style="color:#ce5c00;font-weight:bold">)</span>
+<span style="color:#204a87;font-weight:bold">public</span> <span style="color:#204a87;font-weight:bold">void</span> <span style="color:#000">bar</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#5c35cc;font-weight:bold">@RequestBody</span> <span style="color:#5c35cc;font-weight:bold">@RequestSerializer</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#000">JacksonHttpBodySerializer</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#c4a000">class</span><span style="color:#ce5c00;font-weight:bold">)</span> <span style="color:#000">User</span> <span style="color:#000">user</span><span style="color:#ce5c00;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">{</span>
+    <span style="color:#8f5902;font-style:italic">// ...
+</span><span style="color:#8f5902;font-style:italic"></span><span style="color:#ce5c00;font-weight:bold">}</span>
+</code></pre></div>
+
+<div class="alert alert-primary" role="alert">
+<h4 class="alert-heading">Tip</h4>
+
+    <code>@RequestSerializer</code>可以在Prameter, Method以及Class上使用， 优先级依次递减。
+
+</div>
+
+<h2 id="使用responseserializer指定响应序列化器">使用<code>@ResponseSerializer</code>指定响应序列化器</h2>
+<p>当配置了多个序列化器时， 可以使用<code>@ResponseSerializer</code>中指定使用某个固定的序列化方式</p>
+<p>下面的Controller指定使用Jackson序列化响应结果</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#5c35cc;font-weight:bold">@PostMapping</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#4e9a06">&#34;/foo&#34;</span><span style="color:#ce5c00;font-weight:bold">)</span>
+<span style="color:#5c35cc;font-weight:bold">@ResponseSerializer</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#000">JacksonHttpBodySerializer</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#c4a000">class</span><span style="color:#ce5c00;font-weight:bold">)</span>
+<span style="color:#204a87;font-weight:bold">public</span> <span style="color:#000">Foo</span> <span style="color:#000">bar</span><span style="color:#ce5c00;font-weight:bold">()</span> <span style="color:#ce5c00;font-weight:bold">{</span>
+    <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#204a87;font-weight:bold">new</span> <span style="color:#000">Foo</span><span style="color:#ce5c00;font-weight:bold">();</span>
+<span style="color:#ce5c00;font-weight:bold">}</span>
+</code></pre></div>
+
+<div class="alert alert-primary" role="alert">
+<h4 class="alert-heading">Tip</h4>
+
+    <code>@ResponseSerializer</code>可以在Method以及Class上使用， 优先级依次递减。
+
+</div>
+
+<h2 id="使用serializer指定请求--响应序列化器">使用<code>@Serializer</code>指定请求 &amp; 响应序列化器</h2>
+<p>当配置了多个序列化器时， 可以使用<code>@Serializer</code>中指定使用某个固定的序列化方式， 相当于同时指定<code>RequestSerializer</code>以及<code>@ResponseSerializer</code>。</p>
+<p>下面的Controller指定使用Jackson序列化</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#5c35cc;font-weight:bold">@PostMapping</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#4e9a06">&#34;/foo&#34;</span><span style="color:#ce5c00;font-weight:bold">)</span>
+<span style="color:#5c35cc;font-weight:bold">@Serializer</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#000">JacksonHttpBodySerializer</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#c4a000">class</span><span style="color:#ce5c00;font-weight:bold">)</span>
+<span style="color:#204a87;font-weight:bold">public</span> <span style="color:#000">Foo</span> <span style="color:#000">bar</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#5c35cc;font-weight:bold">@RequestBody</span> <span style="color:#000">User</span> <span style="color:#000">user</span><span style="color:#ce5c00;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">{</span>
+    <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#204a87;font-weight:bold">new</span> <span style="color:#000">Foo</span><span style="color:#ce5c00;font-weight:bold">();</span>
+<span style="color:#ce5c00;font-weight:bold">}</span>
+</code></pre></div>
+
+<div class="alert alert-primary" role="alert">
+<h4 class="alert-heading">Tip</h4>
+
+    <code>@ResponseSerializer</code>可以在Method以及Class上使用， 优先级依次递减。
+
+</div>
+
+<h2 id="多个序列化器框架如何选择使用哪个序列化器实现">多个序列化器框架如何选择使用哪个序列化器实现？</h2>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#204a87;font-weight:bold">public</span> <span style="color:#204a87;font-weight:bold">interface</span> <span style="color:#000">HttpRequestSerializer</span> <span style="color:#204a87;font-weight:bold">extends</span> <span style="color:#000">Ordered</span> <span style="color:#ce5c00;font-weight:bold">{</span>
+
+    <span style="color:#8f5902;font-style:italic">/**
+</span><span style="color:#8f5902;font-style:italic">     * Deserialize the data from byte array to the object.
+</span><span style="color:#8f5902;font-style:italic">     *
+</span><span style="color:#8f5902;font-style:italic">     * @param entity entity
+</span><span style="color:#8f5902;font-style:italic">     * @param &lt;T&gt;    generic type
+</span><span style="color:#8f5902;font-style:italic">     * @return handled value
+</span><span style="color:#8f5902;font-style:italic">     * @throws Exception any exception
+</span><span style="color:#8f5902;font-style:italic">     */</span>
+    <span style="color:#ce5c00;font-weight:bold">&lt;</span><span style="color:#000">T</span><span style="color:#ce5c00;font-weight:bold">&gt;</span> <span style="color:#000">HandledValue</span><span style="color:#ce5c00;font-weight:bold">&lt;</span><span style="color:#000">T</span><span style="color:#ce5c00;font-weight:bold">&gt;</span> <span style="color:#000">deserialize</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#000">RequestEntity</span> <span style="color:#000">entity</span><span style="color:#ce5c00;font-weight:bold">)</span> <span style="color:#204a87;font-weight:bold">throws</span> <span style="color:#000">Exception</span><span style="color:#ce5c00;font-weight:bold">;</span>
+
+<span style="color:#ce5c00;font-weight:bold">}</span>
+</code></pre></div><p>如上，在进行序列化之前首先判断当前序列化器是否支持给定的<code>RequestEntity</code>，如果为<code>false</code>则直接返回<code>HandledValue.failed()</code>，否则返回反序列化后的结果。</p>
+<p>同样<code>HttpResponseSerializer</code></p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#204a87;font-weight:bold">public</span> <span style="color:#204a87;font-weight:bold">interface</span> <span style="color:#000">HttpResponseSerializer</span> <span style="color:#204a87;font-weight:bold">extends</span> <span style="color:#000">Ordered</span> <span style="color:#ce5c00;font-weight:bold">{</span>
+
+    <span style="color:#8f5902;font-style:italic">/**
+</span><span style="color:#8f5902;font-style:italic">     * Serialize the object to byte array.
+</span><span style="color:#8f5902;font-style:italic">     *
+</span><span style="color:#8f5902;font-style:italic">     * @param entity response entity
+</span><span style="color:#8f5902;font-style:italic">     * @return handled value
+</span><span style="color:#8f5902;font-style:italic">     * @throws Exception any exception
+</span><span style="color:#8f5902;font-style:italic">     */</span>
+    <span style="color:#000">HandledValue</span><span style="color:#ce5c00;font-weight:bold">&lt;</span><span style="color:#204a87;font-weight:bold">byte</span><span style="color:#ce5c00;font-weight:bold">[]&gt;</span> <span style="color:#000">serialize</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#000">ResponseEntity</span> <span style="color:#000">entity</span><span style="color:#ce5c00;font-weight:bold">)</span> <span style="color:#204a87;font-weight:bold">throws</span> <span style="color:#000">Exception</span><span style="color:#ce5c00;font-weight:bold">;</span>
+
+<span style="color:#ce5c00;font-weight:bold">}</span>
+</code></pre></div><blockquote>
+<p>序列化器实现本身具有优先级由<code>getOrder()</code>表示(值越低优先级越高)</p>
+</blockquote>
+<p>当最终无法找到匹配的序列化器时， 会通过默认的优先级进行序列化（暂时仅响应序列化为此行为）。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#5c35cc;font-weight:bold">@Bean</span>
+<span style="color:#204a87;font-weight:bold">public</span> <span style="color:#000">HttpBodySerializer</span> <span style="color:#000">fastjsonBodySerializer</span><span style="color:#ce5c00;font-weight:bold">()</span> <span style="color:#ce5c00;font-weight:bold">{</span>
+    <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#204a87;font-weight:bold">new</span> <span style="color:#000">FastJsonHttpBodySerializer</span><span style="color:#ce5c00;font-weight:bold">()</span> <span style="color:#ce5c00;font-weight:bold">{</span>
+       <span style="color:#5c35cc;font-weight:bold">@Override</span>
+       <span style="color:#204a87;font-weight:bold">public</span> <span style="color:#204a87;font-weight:bold">int</span> <span style="color:#000">getOrder</span><span style="color:#ce5c00;font-weight:bold">()</span> <span style="color:#ce5c00;font-weight:bold">{</span>
+           <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">0</span><span style="color:#ce5c00;font-weight:bold">;</span>
+       <span style="color:#ce5c00;font-weight:bold">}</span>
+   <span style="color:#ce5c00;font-weight:bold">};</span>
+ 
+<span style="color:#5c35cc;font-weight:bold">@Bean</span>
+<span style="color:#204a87;font-weight:bold">public</span> <span style="color:#000">HttpBodySerializer</span> <span style="color:#000">protoBufBodySerializer</span><span style="color:#ce5c00;font-weight:bold">()</span> <span style="color:#ce5c00;font-weight:bold">{</span>
+    <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#204a87;font-weight:bold">new</span> <span style="color:#000">ProtoBufHttpBodySerializer</span><span style="color:#ce5c00;font-weight:bold">()</span> <span style="color:#ce5c00;font-weight:bold">{</span>
+        <span style="color:#5c35cc;font-weight:bold">@Override</span>
+        <span style="color:#204a87;font-weight:bold">public</span> <span style="color:#204a87;font-weight:bold">int</span> <span style="color:#000">getOrder</span><span style="color:#ce5c00;font-weight:bold">()</span> <span style="color:#ce5c00;font-weight:bold">{</span>
+            <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">1</span><span style="color:#ce5c00;font-weight:bold">;</span>
+        <span style="color:#ce5c00;font-weight:bold">}</span>
+    <span style="color:#ce5c00;font-weight:bold">};</span>
+<span style="color:#ce5c00;font-weight:bold">}</span>
+   
+</code></pre></div><h2 id="多种序列化并存时的优先级">多种序列化并存时的优先级</h2>
+<ul>
+<li>请求序列化</li>
+</ul>
+<ol>
+<li>如果指定了<code>@RequestSerializer</code>或者<code>@Serializer</code>中指定的序列化方式则使用该序列化方式</li>
+<li>使用序列化协商中的参数指定的序列化器</li>
+<li>根据<code>ContentType</code>查找序列化器</li>
+<li>未找到则报错</li>
+</ol>
+<ul>
+<li>响应序列化</li>
+</ul>
+<ol>
+<li>如果指定了<code>@ResponseSerializer</code>或者<code>@Serializer</code>中指定的序列化方式则使用该序列化方式</li>
+<li>使用序列化协商中的参数指定的序列化器</li>
+<li>根据<code>Accept</code>查找序列化器</li>
+<li>根据<code>RequestMapping</code>中produces指定的序列化器（未找到进入6）</li>
+<li>未找到使用默认优先级最高的序列化器</li>
+</ol>
+<h2 id="protobuf序列化支持">ProtoBuf序列化支持</h2>
+<p>Restlight内置了ProtoBuf序列化器的实现，对应支持的MediaType为<code>application/x-protobuf</code>(需要请求的<code>Content-Type</code>为<code>application/x-protobuf</code></p>
+<p>同时使用ProtoBuf序列化器序列化后的响应结果的<code>Content-Type</code>也为<code>application/x-protobuf</code>)。</p>
+<p>针对ProtoBuf序列化的特点，ProtoBuf序列化后还将增加Header， <code>X-Protobuf-Schema</code>和<code>X-Protobuf-Message</code>分别返回Message对象的<code>getDescriptorForType().getFile().getName()</code>和<code>getDescriptorForType().getFullName</code>的结果。</p>
+<h2 id="特殊类型返回值的序列化">特殊类型返回值的序列化</h2>
+<p>不管Controller上是否加有<code>@ResponseBody</code>注解， 在使用序列化器序列化之前都将遵守以下原则</p>
+<blockquote>
+<ul>
+<li>值为String类型直接返回该字符串结果。</li>
+<li>值为byte[]类型直接将结果写入响应。</li>
+<li>值为ByteBuf类型时直接将结果写入响应</li>
+<li>以上均不符合则使用序列化器进行序列化。</li>
+<li>如果Controlelr上未配置<code>@ResponseBody</code>，值为基本类型或基本类型包装类将返回该类型的字符串结果（调用String.valueOf()）。</li>
+<li>以上均不符合则抛异常。</li>
+</ul>
+</blockquote>
+
+
+
+      </main>
+      
+<footer class="bg-dark py-5 row d-print-none">
+  <div class="container-fluid mx-sm-5">
+    <div class="row">
+      <div class="col-6 col-sm-4 text-xs-center order-sm-2">
+        
+        
+        
+<ul class="list-inline mb-0">
+  
+  <li class="list-inline-item mx-2 h3" data-toggle="tooltip" data-placement="top" title="User mailing list" aria-label="User mailing list">
+    <a class="text-white" target="_blank" rel="noopener" href="mailto:esa.stack@oppo.com" aria-label="User mailing list">
+      <i class="fa fa-envelope"></i>
+    </a>
+  </li>
+  
+</ul>
+
+        
+        
+      </div>
+      <div class="col-6 col-sm-4 text-right text-xs-center order-sm-3">
+        
+        
+        
+<ul class="list-inline mb-0">
+  
+  <li class="list-inline-item mx-2 h3" data-toggle="tooltip" data-placement="top" title="GitHub" aria-label="GitHub">
+    <a class="text-white" target="_blank" rel="noopener" href="https://github.com/esastack/esa-restlight" aria-label="GitHub">
+      <i class="fab fa-github"></i>
+    </a>
+  </li>
+  
+  <li class="list-inline-item mx-2 h3" data-toggle="tooltip" data-placement="top" title="Developer mailing list" aria-label="Developer mailing list">
+    <a class="text-white" target="_blank" rel="noopener" href="mailto:esa.stack@oppo.com" aria-label="Developer mailing list">
+      <i class="fa fa-envelope"></i>
+    </a>
+  </li>
+  
+</ul>
+
+        
+        
+      </div>
+      <div class="col-12 col-sm-4 text-center py-2 order-sm-2">
+        <small class="text-white">&copy; 2022 OPPO ESA Stack Project All Rights Reserved</small>
+        
+	
+		
+	
+      </div>
+    </div>
+  </div>
+</footer>
+
+
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
+    integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
+    crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.min.js"
+    integrity="sha512-UR25UO94eTnCVwjbXozyeVd6ZqpaAE9naiEUBK/A+QDbfSTQFhPGj5lOR6d8tsgbBk84Ggb5A3EkjsOgPRPcKA=="
+    crossorigin="anonymous"></script>
+
+
+
+
+
+<script src='/js/tabpane-persist.js'></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script src="/js/main.min.7380160122c24d59789a168af05fcec445fe4e5f2069dd9f3a0c991f10269ae0.js" integrity="sha256-c4AWASLCTVl4mhaK8F/OxEX&#43;Tl8gad2fOgyZHxAmmuA=" crossorigin="anonymous"></script>
+
+
+
+
+
+
+  </body>
+</html>

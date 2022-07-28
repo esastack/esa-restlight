@@ -51,7 +51,7 @@ Tip 如果不想继续引入默认的Jackson依赖可以使用&lt;exclusions/&gt
 <meta property="og:type" content="article" />
 <meta property="og:url" content="/docs/restlight_starter/serialization/" /><meta property="article:section" content="docs" />
 
-<meta property="article:modified_time" content="2022-03-10T16:20:14+08:00" /><meta property="og:site_name" content="ESA Restlight" />
+<meta property="article:modified_time" content="2022-07-28T18:08:53+08:00" /><meta property="og:site_name" content="ESA Restlight" />
 
 <meta itemprop="name" content="序列化">
 <meta itemprop="description" content="序列化支持
@@ -63,8 +63,8 @@ Tip 如果不想继续引入默认的Jackson依赖可以使用&lt;exclusions/&gt
  FastJsonHttpBodySerializer JacksonHttpBodySerializer GsonHttpBodySerializer ProtoBufHttpBodySerializer  Note 切换时引入Maven依赖并注入对应的序列化器即可  定制序列化器 可以选择通过继承或者自定义实现HttpRequestSerializer以及HttpResponseSerializer接口（或者HttpResponseSerializer同理）的方式实现定制序列化。
 如，在上面的例子中我们切换序列化方式为jackson，此时我们想定制序列化的日期格式为yyyy-MM-dd
 @Bean public HttpBodySerializer bodySerializer() { ObjectMapper objectMapper = new ObjectMapper(); objectMapper.">
-<meta itemprop="dateModified" content="2022-03-10T16:20:14+08:00" />
-<meta itemprop="wordCount" content="352">
+<meta itemprop="dateModified" content="2022-07-28T18:08:53+08:00" />
+<meta itemprop="wordCount" content="322">
 <meta itemprop="keywords" content="feature," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="序列化"/>
 <meta name="twitter:description" content="序列化支持
@@ -160,9 +160,7 @@ if (!doNotTrack) {
 </a>
 <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
 	
-	<a class="dropdown-item" href="/docs">1.0.0(Newest)</a>
-	
-	<a class="dropdown-item" href="/docs-v0.1.1">v0.1.1</a>
+	<a class="dropdown-item" href="/docs">v0.1.1(Newest)</a>
 	
 	<a class="dropdown-item" href="/docs-v0.1.0">v0.1.0</a>
 	
@@ -195,11 +193,7 @@ if (!doNotTrack) {
       <li class="td-sidebar-nav__section-title td-sidebar-nav__section with-child active-path" id="m-docs-li">
   <a href="/docs/" class="align-left pl-0 td-sidebar-link td-sidebar-link__section tree-root" id="m-docs"><span class="">ESA Restlight</span></a>
   <ul class="ul-1">
-    <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docslatest_introduction-li">
-  <input type="checkbox" id="m-docslatest_introduction-check"/>
-  <label for="m-docslatest_introduction-check"><a href="/docs/latest_introduction/" class="align-left pl-0  td-sidebar-link td-sidebar-link__section" id="m-docslatest_introduction"><span class="">新版说明</span></a></label>
-  
-</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsgetting_started-li">
+    <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsgetting_started-li">
   <input type="checkbox" id="m-docsgetting_started-check"/>
   <label for="m-docsgetting_started-check"><a href="/docs/getting_started/" class="align-left pl-0  td-sidebar-link td-sidebar-link__section" id="m-docsgetting_started"><span class="">Getting Started</span></a></label>
   
@@ -224,10 +218,6 @@ if (!doNotTrack) {
   <input type="checkbox" id="m-docsrestlight_starterfilter-check"/>
   <label for="m-docsrestlight_starterfilter-check"><a href="/docs/restlight_starter/filter/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsrestlight_starterfilter"><span class="">Filter</span></a></label>
   
-</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsrestlight_starterroute_filter-li">
-  <input type="checkbox" id="m-docsrestlight_starterroute_filter-check"/>
-  <label for="m-docsrestlight_starterroute_filter-check"><a href="/docs/restlight_starter/route_filter/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsrestlight_starterroute_filter"><span class="">RouteFilter</span></a></label>
-  
 </li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsrestlight_starterinterceptor-li">
   <input type="checkbox" id="m-docsrestlight_starterinterceptor-check"/>
   <label for="m-docsrestlight_starterinterceptor-check"><a href="/docs/restlight_starter/interceptor/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsrestlight_starterinterceptor"><span class="">拦截器</span></a></label>
@@ -236,29 +226,21 @@ if (!doNotTrack) {
   <input type="checkbox" id="m-docsrestlight_starterexception_resolver-check"/>
   <label for="m-docsrestlight_starterexception_resolver-check"><a href="/docs/restlight_starter/exception_resolver/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsrestlight_starterexception_resolver"><span class="">异常处理</span></a></label>
   
-</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsrestlight_starterparam_resolver-li">
-  <input type="checkbox" id="m-docsrestlight_starterparam_resolver-check"/>
-  <label for="m-docsrestlight_starterparam_resolver-check"><a href="/docs/restlight_starter/param_resolver/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsrestlight_starterparam_resolver"><span class="">参数解析</span></a></label>
+</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsrestlight_starterargument_resolver-li">
+  <input type="checkbox" id="m-docsrestlight_starterargument_resolver-check"/>
+  <label for="m-docsrestlight_starterargument_resolver-check"><a href="/docs/restlight_starter/argument_resolver/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsrestlight_starterargument_resolver"><span class="">参数解析</span></a></label>
   
-</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsrestlight_starterparam_resolver_advice-li">
-  <input type="checkbox" id="m-docsrestlight_starterparam_resolver_advice-check"/>
-  <label for="m-docsrestlight_starterparam_resolver_advice-check"><a href="/docs/restlight_starter/param_resolver_advice/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsrestlight_starterparam_resolver_advice"><span class="">ParamResolverAdvice</span></a></label>
+</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsrestlight_starterargument_resolver_advice-li">
+  <input type="checkbox" id="m-docsrestlight_starterargument_resolver_advice-check"/>
+  <label for="m-docsrestlight_starterargument_resolver_advice-check"><a href="/docs/restlight_starter/argument_resolver_advice/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsrestlight_starterargument_resolver_advice"><span class="">ArgumentResolverAdvice</span></a></label>
   
-</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsrestlight_starterrequestentity_resolver-li">
-  <input type="checkbox" id="m-docsrestlight_starterrequestentity_resolver-check"/>
-  <label for="m-docsrestlight_starterrequestentity_resolver-check"><a href="/docs/restlight_starter/requestentity_resolver/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsrestlight_starterrequestentity_resolver"><span class="">请求实体数据解析</span></a></label>
+</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsrestlight_starterreturnvalue_resolver-li">
+  <input type="checkbox" id="m-docsrestlight_starterreturnvalue_resolver-check"/>
+  <label for="m-docsrestlight_starterreturnvalue_resolver-check"><a href="/docs/restlight_starter/returnvalue_resolver/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsrestlight_starterreturnvalue_resolver"><span class="">返回值解析</span></a></label>
   
-</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsrestlight_starterrequestentity_resolver_advice-li">
-  <input type="checkbox" id="m-docsrestlight_starterrequestentity_resolver_advice-check"/>
-  <label for="m-docsrestlight_starterrequestentity_resolver_advice-check"><a href="/docs/restlight_starter/requestentity_resolver_advice/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsrestlight_starterrequestentity_resolver_advice"><span class="">RequestResolverAdvice</span></a></label>
-  
-</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsrestlight_starterresponseentity_resolver-li">
-  <input type="checkbox" id="m-docsrestlight_starterresponseentity_resolver-check"/>
-  <label for="m-docsrestlight_starterresponseentity_resolver-check"><a href="/docs/restlight_starter/responseentity_resolver/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsrestlight_starterresponseentity_resolver"><span class="">返回值解析</span></a></label>
-  
-</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsrestlight_starterresponseentity_resolver_advice-li">
-  <input type="checkbox" id="m-docsrestlight_starterresponseentity_resolver_advice-check"/>
-  <label for="m-docsrestlight_starterresponseentity_resolver_advice-check"><a href="/docs/restlight_starter/responseentity_resolver_advice/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsrestlight_starterresponseentity_resolver_advice"><span class="">ResponseResolverAdvice</span></a></label>
+</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsrestlight_starterreturnvalue_resolver_advice-li">
+  <input type="checkbox" id="m-docsrestlight_starterreturnvalue_resolver_advice-check"/>
+  <label for="m-docsrestlight_starterreturnvalue_resolver_advice-check"><a href="/docs/restlight_starter/returnvalue_resolver_advice/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsrestlight_starterreturnvalue_resolver_advice"><span class="">ReturnValueResolverAdvice</span></a></label>
   
 </li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child active-path" id="m-docsrestlight_starterserialization-li">
   <input type="checkbox" id="m-docsrestlight_starterserialization-check" checked/>
@@ -381,16 +363,31 @@ if (!doNotTrack) {
   </ul>
 </li><li class="td-sidebar-nav__section-title td-sidebar-nav__section with-child" id="m-docsjaxrs_support-li">
   <input type="checkbox" id="m-docsjaxrs_support-check"/>
-  <label for="m-docsjaxrs_support-check"><a href="/docs/jaxrs_support/" class="align-left pl-0  td-sidebar-link td-sidebar-link__section" id="m-docsjaxrs_support"><span class="">JAX-RS3.0 支持</span></a></label>
+  <label for="m-docsjaxrs_support-check"><a href="/docs/jaxrs_support/" class="align-left pl-0  td-sidebar-link td-sidebar-link__section" id="m-docsjaxrs_support"><span class="">JAX-RS 支持</span></a></label>
   
   <ul class="ul-2 foldable">
     <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsjaxrs_supportannotations_support-li">
   <input type="checkbox" id="m-docsjaxrs_supportannotations_support-check"/>
   <label for="m-docsjaxrs_supportannotations_support-check"><a href="/docs/jaxrs_support/annotations_support/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsjaxrs_supportannotations_support"><span class="">JAX-RS 注解支持</span></a></label>
   
-</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsjaxrs_supportinterface_support-li">
-  <input type="checkbox" id="m-docsjaxrs_supportinterface_support-check"/>
-  <label for="m-docsjaxrs_supportinterface_support-check"><a href="/docs/jaxrs_support/interface_support/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsjaxrs_supportinterface_support"><span class="">JAX-RS 接口支持</span></a></label>
+</li>
+  </ul>
+</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section with-child" id="m-docsrestlight_server-li">
+  <input type="checkbox" id="m-docsrestlight_server-check"/>
+  <label for="m-docsrestlight_server-check"><a href="/docs/restlight_server/" class="align-left pl-0  td-sidebar-link td-sidebar-link__section" id="m-docsrestlight_server"><span class="">Restlight Server</span></a></label>
+  
+  <ul class="ul-2 foldable">
+    <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsrestlight_serverquick_start-li">
+  <input type="checkbox" id="m-docsrestlight_serverquick_start-check"/>
+  <label for="m-docsrestlight_serverquick_start-check"><a href="/docs/restlight_server/quick_start/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsrestlight_serverquick_start"><span class="">Quick Start</span></a></label>
+  
+</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsrestlight_serverterminology-li">
+  <input type="checkbox" id="m-docsrestlight_serverterminology-check"/>
+  <label for="m-docsrestlight_serverterminology-check"><a href="/docs/restlight_server/terminology/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsrestlight_serverterminology"><span class="">术语</span></a></label>
+  
+</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsrestlight_serverhandle_request-li">
+  <input type="checkbox" id="m-docsrestlight_serverhandle_request-check"/>
+  <label for="m-docsrestlight_serverhandle_request-check"><a href="/docs/restlight_server/handle_request/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsrestlight_serverhandle_request"><span class="">请求处理</span></a></label>
   
 </li>
   </ul>
@@ -399,25 +396,13 @@ if (!doNotTrack) {
   <label for="m-docsrestlight_core-check"><a href="/docs/restlight_core/" class="align-left pl-0  td-sidebar-link td-sidebar-link__section" id="m-docsrestlight_core"><span class="">Restlight Core</span></a></label>
   
   <ul class="ul-2 foldable">
-    <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsrestlight_coreterminology-li">
-  <input type="checkbox" id="m-docsrestlight_coreterminology-check"/>
-  <label for="m-docsrestlight_coreterminology-check"><a href="/docs/restlight_core/terminology/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsrestlight_coreterminology"><span class="">术语</span></a></label>
-  
-</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsrestlight_corehandle_request-li">
-  <input type="checkbox" id="m-docsrestlight_corehandle_request-check"/>
-  <label for="m-docsrestlight_corehandle_request-check"><a href="/docs/restlight_core/handle_request/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsrestlight_corehandle_request"><span class="">请求处理</span></a></label>
-  
-</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsrestlight_coreuse_jaxrs-li">
+    <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsrestlight_coreuse_jaxrs-li">
   <input type="checkbox" id="m-docsrestlight_coreuse_jaxrs-check"/>
   <label for="m-docsrestlight_coreuse_jaxrs-check"><a href="/docs/restlight_core/use_jaxrs/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsrestlight_coreuse_jaxrs"><span class="">配合 JAX-RS标准</span></a></label>
   
 </li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsrestlight_coreuse_springmvc-li">
   <input type="checkbox" id="m-docsrestlight_coreuse_springmvc-check"/>
   <label for="m-docsrestlight_coreuse_springmvc-check"><a href="/docs/restlight_core/use_springmvc/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsrestlight_coreuse_springmvc"><span class="">配合 SpringMVC标准</span></a></label>
-  
-</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsrestlight_coreregister_deregister_handler-li">
-  <input type="checkbox" id="m-docsrestlight_coreregister_deregister_handler-check"/>
-  <label for="m-docsrestlight_coreregister_deregister_handler-check"><a href="/docs/restlight_core/register_deregister_handler/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsrestlight_coreregister_deregister_handler"><span class="">动态添加/卸载路由</span></a></label>
   
 </li>
   </ul>
@@ -443,7 +428,7 @@ if (!doNotTrack) {
   
 </li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsasync_supporttips_of_completablefuture-li">
   <input type="checkbox" id="m-docsasync_supporttips_of_completablefuture-check"/>
-  <label for="m-docsasync_supporttips_of_completablefuture-check"><a href="/docs/async_support/tips_of_completablefuture/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsasync_supporttips_of_completablefuture"><span class="">CompletionStage使用注意</span></a></label>
+  <label for="m-docsasync_supporttips_of_completablefuture-check"><a href="/docs/async_support/tips_of_completablefuture/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsasync_supporttips_of_completablefuture"><span class="">CompletableFuture使用注意</span></a></label>
   
 </li>
   </ul>
@@ -819,36 +804,26 @@ spring.gson.date-format=yyyy-MM-dd HH:mm:ss
 </div>
 
 <h2 id="多个序列化器框架如何选择使用哪个序列化器实现">多个序列化器框架如何选择使用哪个序列化器实现？</h2>
-<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#204a87;font-weight:bold">public</span> <span style="color:#204a87;font-weight:bold">interface</span> <span style="color:#000">HttpRequestSerializer</span> <span style="color:#204a87;font-weight:bold">extends</span> <span style="color:#000">Ordered</span> <span style="color:#ce5c00;font-weight:bold">{</span>
-
-    <span style="color:#8f5902;font-style:italic">/**
-</span><span style="color:#8f5902;font-style:italic">     * Deserialize the data from byte array to the object.
-</span><span style="color:#8f5902;font-style:italic">     *
-</span><span style="color:#8f5902;font-style:italic">     * @param entity entity
-</span><span style="color:#8f5902;font-style:italic">     * @param &lt;T&gt;    generic type
-</span><span style="color:#8f5902;font-style:italic">     * @return handled value
-</span><span style="color:#8f5902;font-style:italic">     * @throws Exception any exception
-</span><span style="color:#8f5902;font-style:italic">     */</span>
-    <span style="color:#ce5c00;font-weight:bold">&lt;</span><span style="color:#000">T</span><span style="color:#ce5c00;font-weight:bold">&gt;</span> <span style="color:#000">HandledValue</span><span style="color:#ce5c00;font-weight:bold">&lt;</span><span style="color:#000">T</span><span style="color:#ce5c00;font-weight:bold">&gt;</span> <span style="color:#000">deserialize</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#000">RequestEntity</span> <span style="color:#000">entity</span><span style="color:#ce5c00;font-weight:bold">)</span> <span style="color:#204a87;font-weight:bold">throws</span> <span style="color:#000">Exception</span><span style="color:#ce5c00;font-weight:bold">;</span>
-
+<p>序列化器接口<code>HttpRequestSerializer</code>， <code>HttpResponseSerializer</code>中均定义了<code>suppot(xxx)</code>方法， 用于在多个序列化器并存的情况下判断使用哪一个序列化器。以<code>HttpRequestSerializer</code>为例</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#204a87;font-weight:bold">public</span> <span style="color:#204a87;font-weight:bold">interface</span> <span style="color:#000">HttpRequestSerializer</span> <span style="color:#204a87;font-weight:bold">extends</span> <span style="color:#000">BaseHttpSerializer</span><span style="color:#ce5c00;font-weight:bold">,</span> <span style="color:#000">RxSerializer</span> <span style="color:#ce5c00;font-weight:bold">{</span>
+    
+    <span style="color:#204a87;font-weight:bold">boolean</span> <span style="color:#000">supportsRead</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#000">MediaType</span> <span style="color:#000">mediaType</span><span style="color:#ce5c00;font-weight:bold">,</span> <span style="color:#000">Type</span> <span style="color:#000">type</span><span style="color:#ce5c00;font-weight:bold">);</span>
+    
 <span style="color:#ce5c00;font-weight:bold">}</span>
-</code></pre></div><p>如上，在进行序列化之前首先判断当前序列化器是否支持给定的<code>RequestEntity</code>，如果为<code>false</code>则直接返回<code>HandledValue.failed()</code>，否则返回反序列化后的结果。</p>
+</code></pre></div><p><code>HttpRequestSerializer</code>中定义了<code>supportsRead(MediaType mediaType, Type type)</code>方法用于判断当前序列化器是否支持此次请求的序列化， 其中参数<code>MediaType</code>为请求的<code>ContentType</code>， <code>Type</code>为当前反序列化的目标类型。</p>
 <p>同样<code>HttpResponseSerializer</code></p>
-<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#204a87;font-weight:bold">public</span> <span style="color:#204a87;font-weight:bold">interface</span> <span style="color:#000">HttpResponseSerializer</span> <span style="color:#204a87;font-weight:bold">extends</span> <span style="color:#000">Ordered</span> <span style="color:#ce5c00;font-weight:bold">{</span>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#204a87;font-weight:bold">public</span> <span style="color:#204a87;font-weight:bold">interface</span> <span style="color:#000">HttpResponseSerializer</span> <span style="color:#204a87;font-weight:bold">extends</span> <span style="color:#000">BaseHttpSerializer</span><span style="color:#ce5c00;font-weight:bold">,</span> <span style="color:#000">TxSerializer</span> <span style="color:#ce5c00;font-weight:bold">{</span>
 
-    <span style="color:#8f5902;font-style:italic">/**
-</span><span style="color:#8f5902;font-style:italic">     * Serialize the object to byte array.
-</span><span style="color:#8f5902;font-style:italic">     *
-</span><span style="color:#8f5902;font-style:italic">     * @param entity response entity
-</span><span style="color:#8f5902;font-style:italic">     * @return handled value
-</span><span style="color:#8f5902;font-style:italic">     * @throws Exception any exception
-</span><span style="color:#8f5902;font-style:italic">     */</span>
-    <span style="color:#000">HandledValue</span><span style="color:#ce5c00;font-weight:bold">&lt;</span><span style="color:#204a87;font-weight:bold">byte</span><span style="color:#ce5c00;font-weight:bold">[]&gt;</span> <span style="color:#000">serialize</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#000">ResponseEntity</span> <span style="color:#000">entity</span><span style="color:#ce5c00;font-weight:bold">)</span> <span style="color:#204a87;font-weight:bold">throws</span> <span style="color:#000">Exception</span><span style="color:#ce5c00;font-weight:bold">;</span>
+    <span style="color:#204a87;font-weight:bold">boolean</span> <span style="color:#000">supportsWrite</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#000">MediaType</span> <span style="color:#000">mediaType</span><span style="color:#ce5c00;font-weight:bold">,</span> <span style="color:#000">Type</span> <span style="color:#000">type</span><span style="color:#ce5c00;font-weight:bold">);</span>
+
+    <span style="color:#000">Object</span> <span style="color:#000">customResponse</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#000">AsyncRequest</span> <span style="color:#000">request</span><span style="color:#ce5c00;font-weight:bold">,</span> <span style="color:#000">AsyncResponse</span> <span style="color:#000">response</span><span style="color:#ce5c00;font-weight:bold">,</span> <span style="color:#000">Object</span> <span style="color:#000">returnValue</span><span style="color:#ce5c00;font-weight:bold">);</span>
 
 <span style="color:#ce5c00;font-weight:bold">}</span>
-</code></pre></div><blockquote>
-<p>序列化器实现本身具有优先级由<code>getOrder()</code>表示(值越低优先级越高)</p>
-</blockquote>
+</code></pre></div><ul>
+<li><code>supportsWrite(MediaType mediaType, Type type)</code>方法用于判断当前序列化器是否支持此次请求的序列化， 其中参数<code>MediaType</code>为请求的<code>Accept</code>字段中的值， <code>Type</code>为当序列化的原始类型。</li>
+<li><code>customResponse(xxx)</code>将会在实际调用序列化之前被调用， 并使用返回值的Object作为此次序列化的原始对象（也就是说允许用户在响应的序列化之前更改响应的对象）</li>
+</ul>
+<p>同时， 序列化器实现本身具有优先级由<code>getOrder()</code>表示(值越低优先级越高)</p>
 <p>当最终无法找到匹配的序列化器时， 会通过默认的优先级进行序列化（暂时仅响应序列化为此行为）。</p>
 <div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#5c35cc;font-weight:bold">@Bean</span>
 <span style="color:#204a87;font-weight:bold">public</span> <span style="color:#000">HttpBodySerializer</span> <span style="color:#000">fastjsonBodySerializer</span><span style="color:#ce5c00;font-weight:bold">()</span> <span style="color:#ce5c00;font-weight:bold">{</span>
@@ -971,7 +946,7 @@ spring.gson.date-format=yyyy-MM-dd HH:mm:ss
 	
 	
 	<div class="text-muted mt-5 pt-3 border-top">
-  Last modified March 10, 2022: <a href="https://github.com/esastack/esa-restlight/commit/79630ff3ff95737a7f6c0018265dc505ff3e3528">introduce docsy as the website framework and add docs-v1.0.0 (#120) (79630ff)</a>
+  Last modified July 28, 2022: <a href="https://github.com/esastack/esa-restlight/commit/8423db1fc4f1562660275f9687daeea75cc0dad9">refactor main docs to v0.1.1 (#199) (8423db1)</a>
 </div>
 
 </div>

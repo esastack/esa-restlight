@@ -14,11 +14,11 @@
     
     
     <item>
-      <title>Docs: 术语</title>
-      <link>/docs/restlight_core/terminology/</link>
+      <title>Docs-V1.0.0: 术语</title>
+      <link>/docs-v1.0.0/restlight_core/terminology/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>/docs/restlight_core/terminology/</guid>
+      <guid>/docs-v1.0.0/restlight_core/terminology/</guid>
       <description>
         
         
@@ -141,11 +141,46 @@
     </item>
     
     <item>
-      <title>Docs-V0.1.1: Restlight Core</title>
-      <link>/docs-v0.1.1/restlight_core/</link>
+      <title>Docs-V1.0.0: Restlight Core</title>
+      <link>/docs-v1.0.0/restlight_core/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>/docs-v0.1.1/restlight_core/</guid>
+      <guid>/docs-v1.0.0/restlight_core/</guid>
+      <description>
+        
+        
+        &lt;ul&gt;
+&lt;li&gt;引入业务线程池&lt;/li&gt;
+&lt;li&gt;基于&lt;code&gt;CompletionStage&lt;/code&gt;的响应式编程支持&lt;/li&gt;
+&lt;li&gt;线程调度&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Filter&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;请求路由（根据url, method, header等条件将请求路由到对应的Handler）&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;RouteFilter&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Controller&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;ControllerAdvice&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;HandlerInterceptor&lt;/code&gt;: 拦截器&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;ExceptionHandler&lt;/code&gt;: 全局异常处理器&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;BeanValidation&lt;/code&gt;: 参数校验&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;ParamResolver&lt;/code&gt;: 参数解析扩展&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;ParamResolverAdvice&lt;/code&gt;: 参数解析扩展&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;ResponseEntityResolver&lt;/code&gt;: 返回值解析扩展&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;ResponseEntityResolverAdvice&lt;/code&gt;: 返回值解析扩展&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;RequestSerializer&lt;/code&gt;: 请求序列化器（通常负责反序列化Body内容）&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;ResposneSerializer&lt;/code&gt;: 响应序列化器（通常负责序列化响应对象到Body）&lt;/li&gt;
+&lt;li&gt;内置&lt;code&gt;Jackson&lt;/code&gt;, &lt;code&gt;Fastjson&lt;/code&gt;, &lt;code&gt;Gson&lt;/code&gt;, &lt;code&gt;ProtoBuf&lt;/code&gt;序列化支持&lt;/li&gt;
+&lt;li&gt;…&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;code&gt;Restlight Core&lt;/code&gt;为核心实现， 实际使用时需配合&lt;code&gt;Restlight SpringMVC&lt;/code&gt;以及&lt;code&gt;Restlight JAX-RS&lt;/code&gt;实现。&lt;/p&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Docs: Restlight Core</title>
+      <link>/docs/restlight_core/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/docs/restlight_core/</guid>
       <description>
         
         
@@ -181,46 +216,11 @@
     </item>
     
     <item>
-      <title>Docs: Restlight Core</title>
-      <link>/docs/restlight_core/</link>
+      <title>Docs-V1.0.0: 动态添加/卸载路由</title>
+      <link>/docs-v1.0.0/restlight_core/register_deregister_handler/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>/docs/restlight_core/</guid>
-      <description>
-        
-        
-        &lt;ul&gt;
-&lt;li&gt;引入业务线程池&lt;/li&gt;
-&lt;li&gt;基于&lt;code&gt;CompletionStage&lt;/code&gt;的响应式编程支持&lt;/li&gt;
-&lt;li&gt;线程调度&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;Filter&lt;/code&gt;&lt;/li&gt;
-&lt;li&gt;请求路由（根据url, method, header等条件将请求路由到对应的Handler）&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;RouteFilter&lt;/code&gt;&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;Controller&lt;/code&gt;&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;ControllerAdvice&lt;/code&gt;&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;HandlerInterceptor&lt;/code&gt;: 拦截器&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;ExceptionHandler&lt;/code&gt;: 全局异常处理器&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;BeanValidation&lt;/code&gt;: 参数校验&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;ParamResolver&lt;/code&gt;: 参数解析扩展&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;ParamResolverAdvice&lt;/code&gt;: 参数解析扩展&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;ResponseEntityResolver&lt;/code&gt;: 返回值解析扩展&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;ResponseEntityResolverAdvice&lt;/code&gt;: 返回值解析扩展&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;RequestSerializer&lt;/code&gt;: 请求序列化器（通常负责反序列化Body内容）&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;ResposneSerializer&lt;/code&gt;: 响应序列化器（通常负责序列化响应对象到Body）&lt;/li&gt;
-&lt;li&gt;内置&lt;code&gt;Jackson&lt;/code&gt;, &lt;code&gt;Fastjson&lt;/code&gt;, &lt;code&gt;Gson&lt;/code&gt;, &lt;code&gt;ProtoBuf&lt;/code&gt;序列化支持&lt;/li&gt;
-&lt;li&gt;…&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;&lt;code&gt;Restlight Core&lt;/code&gt;为核心实现， 实际使用时需配合&lt;code&gt;Restlight SpringMVC&lt;/code&gt;以及&lt;code&gt;Restlight JAX-RS&lt;/code&gt;实现。&lt;/p&gt;
-
-      </description>
-    </item>
-    
-    <item>
-      <title>Docs: 动态添加/卸载路由</title>
-      <link>/docs/restlight_core/register_deregister_handler/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>/docs/restlight_core/register_deregister_handler/</guid>
+      <guid>/docs-v1.0.0/restlight_core/register_deregister_handler/</guid>
       <description>
         
         

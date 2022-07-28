@@ -21,19 +21,19 @@
 <link rel="icon" type="image/png" href="/favicons/android-192x192.png" sizes="192x192">
 
 <title>Restlight Core | ESA Restlight</title>
-<meta name="description" content="`io.esastack.restlight.core.Restlight`为`Restlight`架构中的`Restlight Core`模块的入口类， 在[`ESA HttpServer`](https://github.com/esastack/esa-httpserver) 基础上丰富了更多的功能
+<meta name="description" content="`esa.restlight.core.Restlight`为`Restlight`架构中的`Restlight Core`模块的入口类， 在`Restlight Server` 基础上丰富了更多的功能
 ">
 <meta property="og:title" content="Restlight Core" />
-<meta property="og:description" content="`io.esastack.restlight.core.Restlight`为`Restlight`架构中的`Restlight Core`模块的入口类， 在[`ESA HttpServer`](https://github.com/esastack/esa-httpserver) 基础上丰富了更多的功能
+<meta property="og:description" content="`esa.restlight.core.Restlight`为`Restlight`架构中的`Restlight Core`模块的入口类， 在`Restlight Server` 基础上丰富了更多的功能
 " />
 <meta property="og:type" content="website" />
 <meta property="og:url" content="/docs/restlight_core/" /><meta property="og:site_name" content="ESA Restlight" />
 
 <meta itemprop="name" content="Restlight Core">
-<meta itemprop="description" content="`io.esastack.restlight.core.Restlight`为`Restlight`架构中的`Restlight Core`模块的入口类， 在[`ESA HttpServer`](https://github.com/esastack/esa-httpserver) 基础上丰富了更多的功能
+<meta itemprop="description" content="`esa.restlight.core.Restlight`为`Restlight`架构中的`Restlight Core`模块的入口类， 在`Restlight Server` 基础上丰富了更多的功能
 "><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Restlight Core"/>
-<meta name="twitter:description" content="`io.esastack.restlight.core.Restlight`为`Restlight`架构中的`Restlight Core`模块的入口类， 在[`ESA HttpServer`](https://github.com/esastack/esa-httpserver) 基础上丰富了更多的功能
+<meta name="twitter:description" content="`esa.restlight.core.Restlight`为`Restlight`架构中的`Restlight Core`模块的入口类， 在`Restlight Server` 基础上丰富了更多的功能
 "/>
 
 
@@ -147,7 +147,7 @@ This is the multi-page printable view of this section.
 
 
 <h1 class="title">Restlight Core</h1>
-<div class="lead"><code>io.esastack.restlight.core.Restlight</code>为<code>Restlight</code>架构中的<code>Restlight Core</code>模块的入口类， 在<a href="https://github.com/esastack/esa-httpserver"><code>ESA HttpServer</code></a> 基础上丰富了更多的功能</div>
+<div class="lead"><code>esa.restlight.core.Restlight</code>为<code>Restlight</code>架构中的<code>Restlight Core</code>模块的入口类， 在<code>Restlight Server</code> 基础上丰富了更多的功能</div>
 
 
 
@@ -163,7 +163,7 @@ This is the multi-page printable view of this section.
     
     
 	
-<li>1: <a href="#pg-509dc5711ef212b166a05b4df94e2f11">术语</a></li>
+<li>1: <a href="#pg-ff50837446697282f95741f162ffbb69">配合 JAX-RS标准</a></li>
 
 
     
@@ -171,31 +171,7 @@ This is the multi-page printable view of this section.
     
     
 	
-<li>2: <a href="#pg-842417e6af6b3d29afd39be8ade88fcd">请求处理</a></li>
-
-
-    
-  
-    
-    
-	
-<li>3: <a href="#pg-ff50837446697282f95741f162ffbb69">配合 JAX-RS标准</a></li>
-
-
-    
-  
-    
-    
-	
-<li>4: <a href="#pg-931ecc71f9fd4e756da8447114ff66c6">配合 SpringMVC标准</a></li>
-
-
-    
-  
-    
-    
-	
-<li>5: <a href="#pg-e1246975e669e8d9adfaccc82bf5a05a">动态添加/卸载路由</a></li>
+<li>2: <a href="#pg-931ecc71f9fd4e756da8447114ff66c6">配合 SpringMVC标准</a></li>
 
 
     
@@ -206,131 +182,45 @@ This is the multi-page printable view of this section.
 
 <div class="content">
       <ul>
-<li>引入业务线程池</li>
-<li>基于<code>CompletionStage</code>的响应式编程支持</li>
-<li>线程调度</li>
-<li><code>Filter</code></li>
-<li>请求路由（根据url, method, header等条件将请求路由到对应的Handler）</li>
-<li><code>RouteFilter</code></li>
 <li><code>Controller</code></li>
 <li><code>ControllerAdvice</code></li>
 <li><code>HandlerInterceptor</code>: 拦截器</li>
 <li><code>ExceptionHandler</code>: 全局异常处理器</li>
 <li><code>BeanValidation</code>: 参数校验</li>
-<li><code>ParamResolver</code>: 参数解析扩展</li>
-<li><code>ParamResolverAdvice</code>: 参数解析扩展</li>
-<li><code>ResponseEntityResolver</code>: 返回值解析扩展</li>
-<li><code>ResponseEntityResolverAdvice</code>: 返回值解析扩展</li>
+<li><code>ArgumentResolver</code>: 参数解析扩展</li>
+<li><code>ArgumentResolverAdvice</code>: 参数解析扩展</li>
+<li><code>ReturnValueResolver</code>: 返回值解析扩展</li>
+<li><code>ReturnValueResolverAdvice</code>: 返回值解析扩展</li>
 <li><code>RequestSerializer</code>: 请求序列化器（通常负责反序列化Body内容）</li>
 <li><code>ResposneSerializer</code>: 响应序列化器（通常负责序列化响应对象到Body）</li>
 <li>内置<code>Jackson</code>, <code>Fastjson</code>, <code>Gson</code>, <code>ProtoBuf</code>序列化支持</li>
 <li>…</li>
 </ul>
+<p><code>Restlight Core</code>在<code>Restlight Server</code>中<code>Route</code>的业务处理部分做了封装， 完成拦截器，参数绑定，反序列化，返回值解析，序列化等一系列功能。</p>
 <p><code>Restlight Core</code>为核心实现， 实际使用时需配合<code>Restlight SpringMVC</code>以及<code>Restlight JAX-RS</code>实现。</p>
 
-</div>
-</div>
-
-
-  
-  
-  
-  
-
-  
-  
-
-  
-    
-    
-	
-    
-
-<div class="td-content" style="page-break-before: always">
-    
-	<h1 id="pg-509dc5711ef212b166a05b4df94e2f11">1 - 术语</h1>
-    
-	<h2 id="requestcontext"><code>RequestContext</code></h2>
-<p>表示一个请求处理过程中的上下文信息，包含：<code>HttpRequest</code>、<code>HttpResponse</code>、<code>Attributes</code>等</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#204a87;font-weight:bold">public</span> <span style="color:#204a87;font-weight:bold">interface</span> <span style="color:#000">RequestContext</span> <span style="color:#ce5c00;font-weight:bold">{</span>
-
-    <span style="color:#8f5902;font-style:italic">/**
-</span><span style="color:#8f5902;font-style:italic">     * Obtains current {@code request}.
-</span><span style="color:#8f5902;font-style:italic">     *
-</span><span style="color:#8f5902;font-style:italic">     * @return request
-</span><span style="color:#8f5902;font-style:italic">     */</span>
-    <span style="color:#000">HttpRequest</span> <span style="color:#000">request</span><span style="color:#ce5c00;font-weight:bold">();</span>
-
-    <span style="color:#8f5902;font-style:italic">/**
-</span><span style="color:#8f5902;font-style:italic">     * Obtains current {@code response}.
-</span><span style="color:#8f5902;font-style:italic">     *
-</span><span style="color:#8f5902;font-style:italic">     * @return response
-</span><span style="color:#8f5902;font-style:italic">     */</span>
-    <span style="color:#000">HttpResponse</span> <span style="color:#000">response</span><span style="color:#ce5c00;font-weight:bold">();</span>
-
-    <span style="color:#8f5902;font-style:italic">/**
-</span><span style="color:#8f5902;font-style:italic">     * Obtains {@link Attributes} corresponding with current {@link RequestContext}.
-</span><span style="color:#8f5902;font-style:italic">     *
-</span><span style="color:#8f5902;font-style:italic">     * @return attributes
-</span><span style="color:#8f5902;font-style:italic">     */</span>
-    <span style="color:#000">Attributes</span> <span style="color:#000">attrs</span><span style="color:#ce5c00;font-weight:bold">();</span>
-
-<span style="color:#ce5c00;font-weight:bold">}</span>
-</code></pre></div>
 
 <div class="alert alert-primary" role="alert">
 <h4 class="alert-heading">Tip</h4>
 
-    <ul>
-<li><code>RequestContext</code>所属包名为<code>io.esastack.restlight.core.context</code></li>
-<li><code>HttpRequest</code>所属包名为<code>io.esastack.restlight.core.core</code></li>
-<li><code>HttpResponse</code>所属包名为<code>io.esastack.restlight.core.core</code></li>
-<li><code>Attributes</code>所属包名为<code>esa.commons.collection</code></li>
-</ul>
-
+    <code>Restlight Core</code>拥有<code>Restlight Server</code>的所有特性， 具体功能特性请参考<code>Restlight Server</code>部分
 
 </div>
 
-<h2 id="mapping"><code>Mapping</code></h2>
-<p>表示一个请求匹配的条件， 用于确定一个请求是否能够路由到某个目标对对象。</p>
-<p>eg.</p>
-<p><code>curl -X GET http://localhost:8080/hello</code></p>
-<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000">Mapping</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#c4a000">get</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#4e9a06">&#34;/hello&#34;</span><span style="color:#ce5c00;font-weight:bold">);</span>
-</code></pre></div><p><code>curl -X POST http://localhost:8080/foo?a=1</code></p>
-<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000">Mapping</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#c4a000">post</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#4e9a06">&#34;/foo&#34;</span><span style="color:#ce5c00;font-weight:bold">)</span>
-    <span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#c4a000">hasParam</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#4e9a06">&#34;a&#34;</span><span style="color:#ce5c00;font-weight:bold">,</span> <span style="color:#4e9a06">&#34;1&#34;</span><span style="color:#ce5c00;font-weight:bold">);</span>
-</code></pre></div><p><code>curl -X GET -H &quot;a:1&quot; -H &quot;Content-Type:application/json&quot; -H &quot;Accept:application/json&quot; http://localhost:8080/foo?a=1</code></p>
-<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000">Mapping</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#c4a000">get</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#4e9a06">&#34;/foo&#34;</span><span style="color:#ce5c00;font-weight:bold">)</span>
-        <span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#c4a000">hasParam</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#4e9a06">&#34;a&#34;</span><span style="color:#ce5c00;font-weight:bold">,</span> <span style="color:#4e9a06">&#34;1&#34;</span><span style="color:#ce5c00;font-weight:bold">)</span>
-        <span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#c4a000">noneParam</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#4e9a06">&#34;b&#34;</span><span style="color:#ce5c00;font-weight:bold">,</span> <span style="color:#4e9a06">&#34;1&#34;</span><span style="color:#ce5c00;font-weight:bold">)</span>
-        <span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#c4a000">hasHeader</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#4e9a06">&#34;a&#34;</span><span style="color:#ce5c00;font-weight:bold">,</span> <span style="color:#4e9a06">&#34;1&#34;</span><span style="color:#ce5c00;font-weight:bold">)</span>
-        <span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#c4a000">noneHeader</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#4e9a06">&#34;b&#34;</span><span style="color:#ce5c00;font-weight:bold">,</span> <span style="color:#4e9a06">&#34;1&#34;</span><span style="color:#ce5c00;font-weight:bold">)</span>
-        <span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#c4a000">consumes</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#000">MediaType</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#c4a000">APPLICATION_JSON</span><span style="color:#ce5c00;font-weight:bold">)</span>
-        <span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#c4a000">produces</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#000">MediaType</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#c4a000">APPLICATION_JSON</span><span style="color:#ce5c00;font-weight:bold">);</span>
-</code></pre></div><h2 id="route"><code>Route</code></h2>
-<p><code>Route</code>中包含了一个<code>Mapping</code>用于路由匹配， 一个请求都将期望路由到具体的一个<code>Route</code>， 如果找不到任何一个<code>Route</code>则响应一个<code>404</code>， 同时一个<code>Route</code>还负责请求本身的业务处理。</p>
-<p>eg.</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#5c35cc;font-weight:bold">@Bean</span>
-<span style="color:#204a87;font-weight:bold">public</span> <span style="color:#000">ManagementConfigure</span> <span style="color:#000">configure</span><span style="color:#ce5c00;font-weight:bold">()</span> <span style="color:#ce5c00;font-weight:bold">{</span>
-    <span style="color:#000">Mapping</span> <span style="color:#000">mapping</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">Mapping</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#c4a000">get</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#4e9a06">&#34;/foo&#34;</span><span style="color:#ce5c00;font-weight:bold">);</span>
-    <span style="color:#000">Route</span> <span style="color:#000">route</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">Route</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#c4a000">route</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#000">mapping</span><span style="color:#ce5c00;font-weight:bold">)</span>
-        <span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#c4a000">handle</span><span style="color:#ce5c00;font-weight:bold">((</span><span style="color:#000">ctx</span><span style="color:#ce5c00;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">-&gt;</span> <span style="color:#ce5c00;font-weight:bold">{</span>
-            <span style="color:#000">ctx</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#c4a000">response</span><span style="color:#ce5c00;font-weight:bold">().</span><span style="color:#c4a000">entity</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#4e9a06">&#34;Hello Restlight!&#34;</span><span style="color:#ce5c00;font-weight:bold">);</span>
-        <span style="color:#ce5c00;font-weight:bold">})</span>
-        <span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#c4a000">onError</span><span style="color:#ce5c00;font-weight:bold">(((</span><span style="color:#000">ctx</span><span style="color:#ce5c00;font-weight:bold">,</span> <span style="color:#000">error</span><span style="color:#ce5c00;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">-&gt;</span> <span style="color:#ce5c00;font-weight:bold">{</span>
-            <span style="color:#8f5902;font-style:italic">// error occurred
-</span><span style="color:#8f5902;font-style:italic"></span>         <span style="color:#ce5c00;font-weight:bold">}))</span>
-        <span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#c4a000">onComplete</span><span style="color:#ce5c00;font-weight:bold">(((</span><span style="color:#000">ctx</span><span style="color:#ce5c00;font-weight:bold">,</span> <span style="color:#000">t</span><span style="color:#ce5c00;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">-&gt;</span> <span style="color:#ce5c00;font-weight:bold">{</span>
-            <span style="color:#8f5902;font-style:italic">// request completed
-</span><span style="color:#8f5902;font-style:italic"></span>        <span style="color:#ce5c00;font-weight:bold">}));</span>
-<span style="color:#ce5c00;font-weight:bold">}</span>
-</code></pre></div>
+<p>由于<code>Restlight Core</code>为标准实现， 需要配合<code>Restlight SpringMVC</code>或者<code>Restlight JAX-RS</code>一起使用</p>
+
+</div>
 </div>
 
 
+  
+  
+  
+  
 
-    
-	
+  
+  
+
   
     
     
@@ -339,66 +229,7 @@ This is the multi-page printable view of this section.
 
 <div class="td-content" style="page-break-before: always">
     
-	<h1 id="pg-842417e6af6b3d29afd39be8ade88fcd">2 - 请求处理</h1>
-    
-	<h2 id="业务处理">业务处理</h2>
-<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000">Mapping</span> <span style="color:#000">mapping</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">Mapping</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#c4a000">get</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#4e9a06">&#34;/foo&#34;</span><span style="color:#ce5c00;font-weight:bold">);</span>
-<span style="color:#000">Route</span> <span style="color:#000">route</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">Route</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#c4a000">route</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#000">mapping</span><span style="color:#ce5c00;font-weight:bold">)</span>
-        <span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#c4a000">handle</span><span style="color:#ce5c00;font-weight:bold">((</span><span style="color:#000">ctx</span><span style="color:#ce5c00;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">-&gt;</span> <span style="color:#ce5c00;font-weight:bold">{</span>
-            <span style="color:#8f5902;font-style:italic">// biz logic here
-</span><span style="color:#8f5902;font-style:italic"></span>            <span style="color:#000">ctx</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#c4a000">response</span><span style="color:#ce5c00;font-weight:bold">().</span><span style="color:#c4a000">entity</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#4e9a06">&#34;Hello Restlight!&#34;</span><span style="color:#ce5c00;font-weight:bold">);</span>
-        <span style="color:#ce5c00;font-weight:bold">});</span>
-</code></pre></div><h2 id="异常处理">异常处理</h2>
-<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000">Mapping</span> <span style="color:#000">mapping</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">Mapping</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#c4a000">get</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#4e9a06">&#34;/foo&#34;</span><span style="color:#ce5c00;font-weight:bold">);</span>
-<span style="color:#000">Route</span> <span style="color:#000">route</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">Route</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#c4a000">route</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#000">mapping</span><span style="color:#ce5c00;font-weight:bold">)</span>
-        <span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#c4a000">handle</span><span style="color:#ce5c00;font-weight:bold">((</span><span style="color:#000">ctx</span><span style="color:#ce5c00;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">-&gt;</span> <span style="color:#ce5c00;font-weight:bold">{</span>
-            <span style="color:#8f5902;font-style:italic">// biz logic here
-</span><span style="color:#8f5902;font-style:italic"></span>            <span style="color:#000">ctx</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#c4a000">response</span><span style="color:#ce5c00;font-weight:bold">().</span><span style="color:#c4a000">entity</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#4e9a06">&#34;Hello Restlight!&#34;</span><span style="color:#ce5c00;font-weight:bold">);</span>
-        <span style="color:#ce5c00;font-weight:bold">})</span>
-        <span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#c4a000">onError</span><span style="color:#ce5c00;font-weight:bold">(((</span><span style="color:#000">ctx</span><span style="color:#ce5c00;font-weight:bold">,</span> <span style="color:#000">error</span><span style="color:#ce5c00;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">-&gt;</span> <span style="color:#ce5c00;font-weight:bold">{</span>
-            <span style="color:#8f5902;font-style:italic">// error occurred
-</span><span style="color:#8f5902;font-style:italic"></span>        <span style="color:#ce5c00;font-weight:bold">}));</span>
-</code></pre></div><h2 id="complete事件">Complete事件</h2>
-<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000">Mapping</span> <span style="color:#000">mapping</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">Mapping</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#c4a000">get</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#4e9a06">&#34;/foo&#34;</span><span style="color:#ce5c00;font-weight:bold">);</span>
-<span style="color:#000">Route</span> <span style="color:#000">route</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">Route</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#c4a000">route</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#000">mapping</span><span style="color:#ce5c00;font-weight:bold">)</span>
-        <span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#c4a000">handle</span><span style="color:#ce5c00;font-weight:bold">((</span><span style="color:#000">ctx</span><span style="color:#ce5c00;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">-&gt;</span> <span style="color:#ce5c00;font-weight:bold">{</span>
-            <span style="color:#8f5902;font-style:italic">// biz logic here
-</span><span style="color:#8f5902;font-style:italic"></span>            <span style="color:#000">ctx</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#c4a000">response</span><span style="color:#ce5c00;font-weight:bold">().</span><span style="color:#c4a000">entity</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#4e9a06">&#34;Hello Restlight!&#34;</span><span style="color:#ce5c00;font-weight:bold">);</span>
-        <span style="color:#ce5c00;font-weight:bold">})</span>
-        <span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#c4a000">onComplete</span><span style="color:#ce5c00;font-weight:bold">(((</span><span style="color:#000">ctx</span><span style="color:#ce5c00;font-weight:bold">,</span> <span style="color:#000">t</span><span style="color:#ce5c00;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">-&gt;</span> <span style="color:#ce5c00;font-weight:bold">{</span>
-            <span style="color:#8f5902;font-style:italic">// request completed
-</span><span style="color:#8f5902;font-style:italic"></span>        <span style="color:#ce5c00;font-weight:bold">}));</span>
-</code></pre></div><h2 id="异步">异步</h2>
-<p><code>Route</code>请求处理生命周期均支持基于<code>Completablefuture</code>的异步使用</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000">Route</span> <span style="color:#000">route</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">route</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#000">get</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#4e9a06">&#34;/foo&#34;</span><span style="color:#ce5c00;font-weight:bold">))</span>
-        <span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#c4a000">handleAsync</span><span style="color:#ce5c00;font-weight:bold">((</span><span style="color:#000">ctx</span><span style="color:#ce5c00;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">-&gt;</span>
-                <span style="color:#000">CompletableFuture</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#c4a000">runAsync</span><span style="color:#ce5c00;font-weight:bold">(()</span> <span style="color:#ce5c00;font-weight:bold">-&gt;</span> <span style="color:#ce5c00;font-weight:bold">{</span>
-                    <span style="color:#8f5902;font-style:italic">// biz logic
-</span><span style="color:#8f5902;font-style:italic"></span>                <span style="color:#ce5c00;font-weight:bold">}))</span>
-        <span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#c4a000">onErrorAsync</span><span style="color:#ce5c00;font-weight:bold">((</span><span style="color:#000">ctx</span><span style="color:#ce5c00;font-weight:bold">,</span> <span style="color:#000">throwable</span><span style="color:#ce5c00;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">-&gt;</span>
-                <span style="color:#000">CompletableFuture</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#c4a000">runAsync</span><span style="color:#ce5c00;font-weight:bold">(()</span> <span style="color:#ce5c00;font-weight:bold">-&gt;</span> <span style="color:#ce5c00;font-weight:bold">{</span>
-                    <span style="color:#8f5902;font-style:italic">// error
-</span><span style="color:#8f5902;font-style:italic"></span>                <span style="color:#ce5c00;font-weight:bold">}))</span>
-        <span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#c4a000">onCompleteAsync</span><span style="color:#ce5c00;font-weight:bold">((</span><span style="color:#000">ctx</span><span style="color:#ce5c00;font-weight:bold">,</span> <span style="color:#000">t</span><span style="color:#ce5c00;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">-&gt;</span>
-                <span style="color:#000">CompletableFuture</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#c4a000">runAsync</span><span style="color:#ce5c00;font-weight:bold">(()</span> <span style="color:#ce5c00;font-weight:bold">-&gt;</span> <span style="color:#ce5c00;font-weight:bold">{</span>
-                    <span style="color:#8f5902;font-style:italic">// complete
-</span><span style="color:#8f5902;font-style:italic"></span>                <span style="color:#ce5c00;font-weight:bold">}));</span>
-</code></pre></div>
-</div>
-
-
-
-    
-	
-  
-    
-    
-	
-    
-
-<div class="td-content" style="page-break-before: always">
-    
-	<h1 id="pg-ff50837446697282f95741f162ffbb69">3 - 配合 JAX-RS标准</h1>
+	<h1 id="pg-ff50837446697282f95741f162ffbb69">1 - 配合 JAX-RS标准</h1>
     <div class="lead">基于<code>Restlight Core</code>为兼容<code>JAX-RS</code>注解使用习惯的扩展实现</div>
 	<p>eg.</p>
 <p>引入依赖</p>
@@ -447,7 +278,7 @@ This is the multi-page printable view of this section.
 
 <div class="td-content" style="page-break-before: always">
     
-	<h1 id="pg-931ecc71f9fd4e756da8447114ff66c6">4 - 配合 SpringMVC标准</h1>
+	<h1 id="pg-931ecc71f9fd4e756da8447114ff66c6">2 - 配合 SpringMVC标准</h1>
     <div class="lead">基于<code>Restlight Core</code>为兼容<code>SpringMVC</code>注解使用习惯的扩展实现</div>
 	<p>eg.</p>
 <p>引入依赖</p>
@@ -480,97 +311,6 @@ This is the multi-page printable view of this section.
 </code></pre></div><p>启动并访问： http://localhost:8080/hello  即可看到输出：</p>
 <pre tabindex="0"><code class="language-properties" data-lang="properties">Hello Restlight!
 </code></pre>
-</div>
-
-
-
-    
-	
-  
-    
-    
-	
-    
-
-<div class="td-content" style="page-break-before: always">
-    
-	<h1 id="pg-e1246975e669e8d9adfaccc82bf5a05a">5 - 动态添加/卸载路由</h1>
-    <div class="lead"><code>Restlight</code>提供了动态添加/卸载路由的功能，支持在应用运行期间实时添加/卸载路由，无需重启。</div>
-	<h2 id="方式一restlight-core单独使用">方式一：<code>Restlight-Core</code>单独使用</h2>
-
-
-<div class="alert alert-warning" role="alert">
-<h4 class="alert-heading">Note</h4>
-
-    使用该种方式需要手动生成<code>Route</code>信息。
-
-</div>
-
-<p>eg.</p>
-<h4 id="自定义routeregistryaware">自定义<code>RouteRegistryAware</code></h4>
-<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#204a87;font-weight:bold">public</span> <span style="color:#204a87;font-weight:bold">interface</span> <span style="color:#000">RouteRegistryAware</span> <span style="color:#ce5c00;font-weight:bold">{</span>
-
-    <span style="color:#8f5902;font-style:italic">/**
-</span><span style="color:#8f5902;font-style:italic">     * This callback method is invoked when all the internal routes have been registered to {@code registry}.
-</span><span style="color:#8f5902;font-style:italic">     *
-</span><span style="color:#8f5902;font-style:italic">     * @param registry registry
-</span><span style="color:#8f5902;font-style:italic">     */</span>
-    <span style="color:#204a87;font-weight:bold">void</span> <span style="color:#000">setRegistry</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#000">RouteRegistry</span> <span style="color:#000">registry</span><span style="color:#ce5c00;font-weight:bold">);</span>
-
-<span style="color:#ce5c00;font-weight:bold">}</span>
-</code></pre></div><p>应用启动时通过自动注入的方式将<code>RouteRegistry</code>传递给<code>RouteRegistryAware</code>的实现类，在程序运行期间可以通过<code>RouteRegistry</code>动态的添加/卸载路由。</p>
-<h4 id="将自定义的routeregistryaware在应用启动时添加到启动上下文中">将自定义的<code>RouteRegistryAware</code>在应用启动时添加到启动上下文中</h4>
-<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000">Restlight</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#c4a000">forServer</span><span style="color:#ce5c00;font-weight:bold">()</span>
-        <span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#c4a000">daemon</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#204a87;font-weight:bold">false</span><span style="color:#ce5c00;font-weight:bold">)</span>
-        <span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#c4a000">deployments</span><span style="color:#ce5c00;font-weight:bold">()</span>
-        <span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#c4a000">addRouteRegistryAware</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#204a87;font-weight:bold">new</span> <span style="color:#000">CustomRouteRegistryAware</span><span style="color:#ce5c00;font-weight:bold">())</span>
-        <span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#c4a000">server</span><span style="color:#ce5c00;font-weight:bold">()</span>
-        <span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#c4a000">start</span><span style="color:#ce5c00;font-weight:bold">();</span>
-</code></pre></div><blockquote>
-<blockquote>
-<p>通过将自定义的<code>RouteRegistryAware</code>或者<code>RouteRegistryAwareFactory</code>配置成SPI加载的形式或者注入<code>Spring</code>容器也可完成启动时注入的功能。</p>
-</blockquote>
-</blockquote>
-<h2 id="方式二配合springmvc或者jax-rs使用">方式二：配合<code>SpringMVC</code>或者<code>JAX-RS</code>使用</h2>
-
-
-<div class="alert alert-primary" role="alert">
-<h4 class="alert-heading">Note</h4>
-
-    使用该种方式时框架将自动根据传入的<code>Controller</code>类解析出<code>Route</code>信息，使用者只需要关心<code>Controller</code>即可。
-
-</div>
-
-<p>eg.</p>
-<h4 id="自定义handlerregistryaware">自定义<code>HandlerRegistryAware</code></h4>
-<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#204a87;font-weight:bold">public</span> <span style="color:#204a87;font-weight:bold">interface</span> <span style="color:#000">HandlerRegistryAware</span> <span style="color:#ce5c00;font-weight:bold">{</span>
-
-    <span style="color:#8f5902;font-style:italic">/**
-</span><span style="color:#8f5902;font-style:italic">     * This callback method is invoked when all the internal handlers have been registered to {@code registry}.
-</span><span style="color:#8f5902;font-style:italic">     *
-</span><span style="color:#8f5902;font-style:italic">     * @param registry registry
-</span><span style="color:#8f5902;font-style:italic">     */</span>
-    <span style="color:#204a87;font-weight:bold">void</span> <span style="color:#000">setRegistry</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#000">HandlerRegistry</span> <span style="color:#000">registry</span><span style="color:#ce5c00;font-weight:bold">);</span>
-
-<span style="color:#ce5c00;font-weight:bold">}</span>
-</code></pre></div><p>应用启动时通过自动注入的方式将<code>HandlerRegistry</code>传递给<code>HandlerRegistryAware</code>的实现类，在程序运行期间可以通过<code>HandlerRegistry</code>动态的添加/卸载路由。</p>
-<h4 id="将自定义的handlerregistryaware在应用启动时添加到启动上下文中">将自定义的<code>HandlerRegistryAware</code>在应用启动时添加到启动上下文中</h4>
-<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000">Restlight</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#c4a000">forServer</span><span style="color:#ce5c00;font-weight:bold">()</span>
-        <span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#c4a000">daemon</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#204a87;font-weight:bold">false</span><span style="color:#ce5c00;font-weight:bold">)</span>
-        <span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#c4a000">deployments</span><span style="color:#ce5c00;font-weight:bold">()</span>
-        <span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#c4a000">addHandlerRegistryAware</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#204a87;font-weight:bold">new</span> <span style="color:#000">CustomRouteRegistryAware</span><span style="color:#ce5c00;font-weight:bold">())</span>
-        <span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#c4a000">server</span><span style="color:#ce5c00;font-weight:bold">()</span>
-        <span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#c4a000">start</span><span style="color:#ce5c00;font-weight:bold">();</span>
-</code></pre></div>
-
-<div class="alert alert-primary" role="alert">
-<h4 class="alert-heading">Note</h4>
-
-    通过将自定义的<code>HandlerRegistryAware</code>或者<code>HandlerRegistryAwareFactory</code>配置成SPI加载的形式或者注入<code>Spring</code>容器也可完成启动时注入的功能。
-
-</div>
-
-
 </div>
 
 

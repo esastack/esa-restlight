@@ -39,11 +39,11 @@ restlight.server.ext.connection-creation-limit.max-per-second=40000
     </item>
     
     <item>
-      <title>Docs-V0.1.1: 新建连接数限制</title>
-      <link>/docs-v0.1.1/restlight_ext/connection_creation_limit/</link>
+      <title>Docs-V1.0.0: 新建连接数限制</title>
+      <link>/docs-v1.0.0/restlight_ext/connection_creation_limit/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>/docs-v0.1.1/restlight_ext/connection_creation_limit/</guid>
+      <guid>/docs-v1.0.0/restlight_ext/connection_creation_limit/</guid>
       <description>
         
         
@@ -128,11 +128,11 @@ restlight.server.ext.cpu-load-protection.max-discard-rate=80.0D
     </item>
     
     <item>
-      <title>Docs-V0.1.1: CPU Load保护</title>
-      <link>/docs-v0.1.1/restlight_ext/cpu_load_pretection/</link>
+      <title>Docs-V1.0.0: CPU Load保护</title>
+      <link>/docs-v1.0.0/restlight_ext/cpu_load_pretection/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>/docs-v0.1.1/restlight_ext/cpu_load_pretection/</guid>
+      <guid>/docs-v1.0.0/restlight_ext/cpu_load_pretection/</guid>
       <description>
         
         
@@ -299,11 +299,11 @@ restlight.server.ext.accesslog.enable=true
     </item>
     
     <item>
-      <title>Docs-V0.1.1: Access Log</title>
-      <link>/docs-v0.1.1/restlight_ext/accesslog/</link>
+      <title>Docs-V1.0.0: Access Log</title>
+      <link>/docs-v1.0.0/restlight_ext/accesslog/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>/docs-v0.1.1/restlight_ext/accesslog/</guid>
+      <guid>/docs-v1.0.0/restlight_ext/accesslog/</guid>
       <description>
         
         
@@ -523,11 +523,11 @@ restlight.server.ext.cors.rules[0].max-age=3600
     </item>
     
     <item>
-      <title>Docs-V0.1.1: 跨域</title>
-      <link>/docs-v0.1.1/restlight_ext/cors_origin/</link>
+      <title>Docs-V1.0.0: 跨域</title>
+      <link>/docs-v1.0.0/restlight_ext/cors_origin/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>/docs-v0.1.1/restlight_ext/cors_origin/</guid>
+      <guid>/docs-v1.0.0/restlight_ext/cors_origin/</guid>
       <description>
         
         
@@ -674,11 +674,11 @@ restlight.server.ext.multipart.memory-threshold=2097152
     </item>
     
     <item>
-      <title>Docs-V0.1.1: 文件及表单参数解析</title>
-      <link>/docs-v0.1.1/restlight_ext/multipart_support/</link>
+      <title>Docs-V1.0.0: 文件及表单参数解析</title>
+      <link>/docs-v1.0.0/restlight_ext/multipart_support/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>/docs-v0.1.1/restlight_ext/multipart_support/</guid>
+      <guid>/docs-v1.0.0/restlight_ext/multipart_support/</guid>
       <description>
         
         
@@ -930,11 +930,11 @@ Restlight已在内部开源，签名验证的代码实现参见：restlight-supp
     </item>
     
     <item>
-      <title>Docs-V0.1.1: 签名认证</title>
-      <link>/docs-v0.1.1/restlight_ext/signature_validation/</link>
+      <title>Docs-V1.0.0: 签名认证</title>
+      <link>/docs-v1.0.0/restlight_ext/signature_validation/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>/docs-v0.1.1/restlight_ext/signature_validation/</guid>
+      <guid>/docs-v1.0.0/restlight_ext/signature_validation/</guid>
       <description>
         
         
@@ -1015,14 +1015,15 @@ Restlight已在内部开源，签名验证的代码实现参见：restlight-supp
 &lt;h3 id=&#34;自定义参数签名验证拦截器&#34;&gt;自定义参数签名验证拦截器&lt;/h3&gt;
 &lt;p&gt;&lt;code&gt;Restlight&lt;/code&gt;默认使用&lt;strong&gt;HmacSHA1&lt;/strong&gt;作为验签时原始请求的签名生成方法，当用户使用其它算法可以注入自定义的参数签名验证拦截器，使用示例如下：&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;color:#5c35cc;font-weight:bold&#34;&gt;@Component&lt;/span&gt;
-&lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#000&#34;&gt;CustomizeSignatureValidationFactory&lt;/span&gt; &lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;extends&lt;/span&gt; &lt;span style=&#34;color:#000&#34;&gt;SignValidationHandlerInterceptorFactory&lt;/span&gt; &lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;{&lt;/span&gt;
+&lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#000&#34;&gt;CustomizeSignatureValidationFactory&lt;/span&gt; &lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;extends&lt;/span&gt; &lt;span style=&#34;color:#000&#34;&gt;SignValidationInterceptorFactory&lt;/span&gt; &lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;{&lt;/span&gt;
 
-    &lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#000&#34;&gt;CustomizeSignatureValidationFactory&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color:#000&#34;&gt;SecretDistributor&lt;/span&gt; &lt;span style=&#34;color:#000&#34;&gt;distributor&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;{&lt;/span&gt;
-        &lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;super&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color:#000&#34;&gt;distributor&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;);&lt;/span&gt;
+    &lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#000&#34;&gt;CustomizeSignatureValidationFactory&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color:#000&#34;&gt;SecretProvider&lt;/span&gt; &lt;span style=&#34;color:#000&#34;&gt;provider&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;{&lt;/span&gt;
+        &lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;super&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color:#000&#34;&gt;provider&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;);&lt;/span&gt;
     &lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;}&lt;/span&gt;
 
     &lt;span style=&#34;color:#5c35cc;font-weight:bold&#34;&gt;@Override&lt;/span&gt;
-    &lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;protected&lt;/span&gt; &lt;span style=&#34;color:#000&#34;&gt;AbstractSignatureRouteInterceptor&lt;/span&gt; &lt;span style=&#34;color:#000&#34;&gt;doCreate&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color:#000&#34;&gt;SignatureOptions&lt;/span&gt; &lt;span style=&#34;color:#000&#34;&gt;options&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;,&lt;/span&gt; &lt;span style=&#34;color:#000&#34;&gt;SecretDistributor&lt;/span&gt; &lt;span style=&#34;color:#000&#34;&gt;distributor&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;{&lt;/span&gt;
+    &lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;protected&lt;/span&gt; &lt;span style=&#34;color:#000&#34;&gt;AbstractSignatureRouteInterceptor&lt;/span&gt; &lt;span style=&#34;color:#000&#34;&gt;doCreate&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color:#000&#34;&gt;SignatureOptions&lt;/span&gt; &lt;span style=&#34;color:#000&#34;&gt;options&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;,&lt;/span&gt;
+                                                         &lt;span style=&#34;color:#000&#34;&gt;SecretProvider&lt;/span&gt; &lt;span style=&#34;color:#000&#34;&gt;distributor&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;{&lt;/span&gt;
         &lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;new&lt;/span&gt; &lt;span style=&#34;color:#000&#34;&gt;AbstractSignatureRouteInterceptor&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color:#000&#34;&gt;options&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;,&lt;/span&gt; &lt;span style=&#34;color:#000&#34;&gt;distributor&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;{&lt;/span&gt;
             &lt;span style=&#34;color:#5c35cc;font-weight:bold&#34;&gt;@Override&lt;/span&gt;
             &lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;protected&lt;/span&gt; &lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;boolean&lt;/span&gt; &lt;span style=&#34;color:#000&#34;&gt;validate&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;byte&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;[]&lt;/span&gt; &lt;span style=&#34;color:#000&#34;&gt;data&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;,&lt;/span&gt; &lt;span style=&#34;color:#000&#34;&gt;String&lt;/span&gt; &lt;span style=&#34;color:#000&#34;&gt;signature&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;,&lt;/span&gt; &lt;span style=&#34;color:#000&#34;&gt;String&lt;/span&gt; &lt;span style=&#34;color:#000&#34;&gt;sk&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;{&lt;/span&gt;
@@ -1121,15 +1122,14 @@ Restlight已在内部开源，签名验证的代码实现参见：restlight-supp
 &lt;h3 id=&#34;自定义参数签名验证拦截器&#34;&gt;自定义参数签名验证拦截器&lt;/h3&gt;
 &lt;p&gt;&lt;code&gt;Restlight&lt;/code&gt;默认使用&lt;strong&gt;HmacSHA1&lt;/strong&gt;作为验签时原始请求的签名生成方法，当用户使用其它算法可以注入自定义的参数签名验证拦截器，使用示例如下：&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;color:#5c35cc;font-weight:bold&#34;&gt;@Component&lt;/span&gt;
-&lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#000&#34;&gt;CustomizeSignatureValidationFactory&lt;/span&gt; &lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;extends&lt;/span&gt; &lt;span style=&#34;color:#000&#34;&gt;SignValidationInterceptorFactory&lt;/span&gt; &lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;{&lt;/span&gt;
+&lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#000&#34;&gt;CustomizeSignatureValidationFactory&lt;/span&gt; &lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;extends&lt;/span&gt; &lt;span style=&#34;color:#000&#34;&gt;SignValidationHandlerInterceptorFactory&lt;/span&gt; &lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;{&lt;/span&gt;
 
-    &lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#000&#34;&gt;CustomizeSignatureValidationFactory&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color:#000&#34;&gt;SecretProvider&lt;/span&gt; &lt;span style=&#34;color:#000&#34;&gt;provider&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;{&lt;/span&gt;
-        &lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;super&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color:#000&#34;&gt;provider&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;);&lt;/span&gt;
+    &lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#000&#34;&gt;CustomizeSignatureValidationFactory&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color:#000&#34;&gt;SecretDistributor&lt;/span&gt; &lt;span style=&#34;color:#000&#34;&gt;distributor&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;{&lt;/span&gt;
+        &lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;super&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color:#000&#34;&gt;distributor&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;);&lt;/span&gt;
     &lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;}&lt;/span&gt;
 
     &lt;span style=&#34;color:#5c35cc;font-weight:bold&#34;&gt;@Override&lt;/span&gt;
-    &lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;protected&lt;/span&gt; &lt;span style=&#34;color:#000&#34;&gt;AbstractSignatureRouteInterceptor&lt;/span&gt; &lt;span style=&#34;color:#000&#34;&gt;doCreate&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color:#000&#34;&gt;SignatureOptions&lt;/span&gt; &lt;span style=&#34;color:#000&#34;&gt;options&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;,&lt;/span&gt;
-                                                         &lt;span style=&#34;color:#000&#34;&gt;SecretProvider&lt;/span&gt; &lt;span style=&#34;color:#000&#34;&gt;distributor&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;{&lt;/span&gt;
+    &lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;protected&lt;/span&gt; &lt;span style=&#34;color:#000&#34;&gt;AbstractSignatureRouteInterceptor&lt;/span&gt; &lt;span style=&#34;color:#000&#34;&gt;doCreate&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color:#000&#34;&gt;SignatureOptions&lt;/span&gt; &lt;span style=&#34;color:#000&#34;&gt;options&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;,&lt;/span&gt; &lt;span style=&#34;color:#000&#34;&gt;SecretDistributor&lt;/span&gt; &lt;span style=&#34;color:#000&#34;&gt;distributor&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;{&lt;/span&gt;
         &lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;new&lt;/span&gt; &lt;span style=&#34;color:#000&#34;&gt;AbstractSignatureRouteInterceptor&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color:#000&#34;&gt;options&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;,&lt;/span&gt; &lt;span style=&#34;color:#000&#34;&gt;distributor&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;{&lt;/span&gt;
             &lt;span style=&#34;color:#5c35cc;font-weight:bold&#34;&gt;@Override&lt;/span&gt;
             &lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;protected&lt;/span&gt; &lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;boolean&lt;/span&gt; &lt;span style=&#34;color:#000&#34;&gt;validate&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;byte&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;[]&lt;/span&gt; &lt;span style=&#34;color:#000&#34;&gt;data&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;,&lt;/span&gt; &lt;span style=&#34;color:#000&#34;&gt;String&lt;/span&gt; &lt;span style=&#34;color:#000&#34;&gt;signature&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;,&lt;/span&gt; &lt;span style=&#34;color:#000&#34;&gt;String&lt;/span&gt; &lt;span style=&#34;color:#000&#34;&gt;sk&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;{&lt;/span&gt;
@@ -1252,11 +1252,11 @@ restlight.server.ext.xss.mode=escape
     </item>
     
     <item>
-      <title>Docs-V0.1.1: XSS过滤</title>
-      <link>/docs-v0.1.1/restlight_ext/xss_support/</link>
+      <title>Docs-V1.0.0: XSS过滤</title>
+      <link>/docs-v1.0.0/restlight_ext/xss_support/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>/docs-v0.1.1/restlight_ext/xss_support/</guid>
+      <guid>/docs-v1.0.0/restlight_ext/xss_support/</guid>
       <description>
         
         
@@ -1502,11 +1502,11 @@ restlight.server.ext.whitelist.expire=60000
     </item>
     
     <item>
-      <title>Docs-V0.1.1: IP白名单</title>
-      <link>/docs-v0.1.1/restlight_ext/ip_white_list/</link>
+      <title>Docs-V1.0.0: IP白名单</title>
+      <link>/docs-v1.0.0/restlight_ext/ip_white_list/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>/docs-v0.1.1/restlight_ext/ip_white_list/</guid>
+      <guid>/docs-v1.0.0/restlight_ext/ip_white_list/</guid>
       <description>
         
         
@@ -1836,11 +1836,11 @@ restlight.server.ext.validation.message-file=validation-message
     </item>
     
     <item>
-      <title>Docs-V0.1.1: 数据校验</title>
-      <link>/docs-v0.1.1/restlight_ext/data_validate/</link>
+      <title>Docs-V1.0.0: 数据校验</title>
+      <link>/docs-v1.0.0/restlight_ext/data_validate/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>/docs-v0.1.1/restlight_ext/data_validate/</guid>
+      <guid>/docs-v1.0.0/restlight_ext/data_validate/</guid>
       <description>
         
         
@@ -2396,11 +2396,11 @@ restlight.server.ext.validation.message-file=validation-message
     </item>
     
     <item>
-      <title>Docs-V0.1.1: 扩展能力</title>
-      <link>/docs-v0.1.1/restlight_ext/</link>
+      <title>Docs-V1.0.0: 扩展能力</title>
+      <link>/docs-v1.0.0/restlight_ext/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>/docs-v0.1.1/restlight_ext/</guid>
+      <guid>/docs-v1.0.0/restlight_ext/</guid>
       <description>
         
         

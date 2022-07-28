@@ -79,14 +79,11 @@ public void foo1() {
 &lt;div class=&#34;alert alert-primary&#34; role=&#34;alert&#34;&gt;
 &lt;h4 class=&#34;alert-heading&#34;&gt;Note&lt;/h4&gt;
 
-    &lt;ul&gt;
-&lt;li&gt;同样的道理，如果Controller语义存在相交的语义（可能存在使用复杂的正则等方式定义的Controller接口，因此可能存在相交的情况）也适用。&lt;/li&gt;
-&lt;li&gt;Restlight检测到歧义时会打印WARNING日志&lt;/li&gt;
-&lt;/ul&gt;
-
+    同样的道理，如果Controller语义存在相交的语义（可能存在使用复杂的正则等方式定义的Controller接口，因此可能存在相交的情况）也适用。
 
 &lt;/div&gt;
 
+&lt;p&gt;Restlight检测到歧义时会打印WARNING日志&lt;/p&gt;
 
       </description>
     </item>

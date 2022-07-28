@@ -42,55 +42,55 @@ Note …">
 <meta property="og:title" content="拦截器" />
 <meta property="og:description" content="Restlight支持多种拦截器，适用于不同性能/功能场景
  RouteInterceptor MappingInterceptor HandlerInterceptor InterceptorFactory  Tip 实现对应的拦截器接口并注入Spring即可  Note 在Interceptor#preHandle0()和Interceptor#postHandle0()中直接通过throw抛出的异常将不会被 异常处理器处理，如果需要被正常处理，请使用CompletableFuture.completeExceptionally()封装异常  拦截器定位 面向Controller/Route， 同时支持按需匹配的拦截器
- 面向Controller/Route: 拦截器一定能让用户根据需求选择匹配到哪个Controller接口 按需匹配： 支持按照RequestContext条件让用户灵活决定拦截器的匹配规则  InternalInterceptor 核心拦截器实现， 封装了拦截器核心行为
-  CompletableFuture&lt;Boolean&gt; preHandle0(RequestContext, Object)
+ 面向Controller/Route: 拦截器一定能让用户根据需求选择匹配到哪个Controller接口 按需匹配： 支持按照AsyncRequest条件让用户灵活决定拦截器的匹配规则  InternalInterceptor 核心拦截器实现， 封装了拦截器核心行为
+  CompletableFuture&lt;Boolean&gt; preHandle0(AsyncRequest, AsyncResponse, Object)
 Controller执行前执行。返回布尔值表示是否允许当前请求继续往下执行。
-  CompletableFuture&lt;Void&gt; postHandle0(RequestContext, Object)
+  CompletableFuture&lt;Void&gt; postHandle0(AsyncRequest, AsyncResponse, Object)
 Controller刚执行完之后执行
-  CompletableFuture&lt;Void&gt; afterCompletion0(RequestContext, Object, Exception)
+  CompletableFuture&lt;Void&gt; afterCompletion0(AsyncRequest, AsyncResponse, Exception)
 请求行完之后执行
   int getOrder()
 返回当前拦截器的优先级（默认为最低优先级），我们保证getOrder返回值决定拦截器的执行顺序，但是不支持使用@Order(int)注解情况下的顺序（虽然有时候看似顺序和@Order一致，但那只是巧合）。
   Note  框架在真正执行拦截器调用的时候只会调用上述方法(而不是preHandle(xxx), postHandle(xxx), afterCompletion(xxx)) 请勿直接使用此接口，此接口仅仅是拦截器的核心实现类   拦截器匹配 初始化阶段： 初始化阶段为每一个Controller确定所有可能匹配到当前Controller的拦截器列表（包含可能匹配以及一定会匹配到当前Controller的拦截器）。
-运行时阶段： 一个请求到来时通过将RequestContext作为参数传递到拦截器做路由判定，决定是否匹配。
+运行时阶段： 一个请求AsyncRequest到来时将通过将AsyncRequest作为参数传递到拦截器做路由判定， 决定是否匹配。
 Tip 通过初始化与运行时两个阶段的匹配行为扩展满足用户多样性匹配需求， 用户既可以直接将拦截器绑定到固定的Controller也可以让拦截器随心所欲的根据请求去选择匹配。  Affinity亲和性 public interface Affinity { /** * Current component is always attaching with the target subject." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="/docs/restlight_starter/interceptor/" /><meta property="article:section" content="docs" />
 
-<meta property="article:modified_time" content="2022-03-10T16:20:14+08:00" /><meta property="og:site_name" content="ESA Restlight" />
+<meta property="article:modified_time" content="2022-07-28T18:08:53+08:00" /><meta property="og:site_name" content="ESA Restlight" />
 
 <meta itemprop="name" content="拦截器">
 <meta itemprop="description" content="Restlight支持多种拦截器，适用于不同性能/功能场景
  RouteInterceptor MappingInterceptor HandlerInterceptor InterceptorFactory  Tip 实现对应的拦截器接口并注入Spring即可  Note 在Interceptor#preHandle0()和Interceptor#postHandle0()中直接通过throw抛出的异常将不会被 异常处理器处理，如果需要被正常处理，请使用CompletableFuture.completeExceptionally()封装异常  拦截器定位 面向Controller/Route， 同时支持按需匹配的拦截器
- 面向Controller/Route: 拦截器一定能让用户根据需求选择匹配到哪个Controller接口 按需匹配： 支持按照RequestContext条件让用户灵活决定拦截器的匹配规则  InternalInterceptor 核心拦截器实现， 封装了拦截器核心行为
-  CompletableFuture&lt;Boolean&gt; preHandle0(RequestContext, Object)
+ 面向Controller/Route: 拦截器一定能让用户根据需求选择匹配到哪个Controller接口 按需匹配： 支持按照AsyncRequest条件让用户灵活决定拦截器的匹配规则  InternalInterceptor 核心拦截器实现， 封装了拦截器核心行为
+  CompletableFuture&lt;Boolean&gt; preHandle0(AsyncRequest, AsyncResponse, Object)
 Controller执行前执行。返回布尔值表示是否允许当前请求继续往下执行。
-  CompletableFuture&lt;Void&gt; postHandle0(RequestContext, Object)
+  CompletableFuture&lt;Void&gt; postHandle0(AsyncRequest, AsyncResponse, Object)
 Controller刚执行完之后执行
-  CompletableFuture&lt;Void&gt; afterCompletion0(RequestContext, Object, Exception)
+  CompletableFuture&lt;Void&gt; afterCompletion0(AsyncRequest, AsyncResponse, Exception)
 请求行完之后执行
   int getOrder()
 返回当前拦截器的优先级（默认为最低优先级），我们保证getOrder返回值决定拦截器的执行顺序，但是不支持使用@Order(int)注解情况下的顺序（虽然有时候看似顺序和@Order一致，但那只是巧合）。
   Note  框架在真正执行拦截器调用的时候只会调用上述方法(而不是preHandle(xxx), postHandle(xxx), afterCompletion(xxx)) 请勿直接使用此接口，此接口仅仅是拦截器的核心实现类   拦截器匹配 初始化阶段： 初始化阶段为每一个Controller确定所有可能匹配到当前Controller的拦截器列表（包含可能匹配以及一定会匹配到当前Controller的拦截器）。
-运行时阶段： 一个请求到来时通过将RequestContext作为参数传递到拦截器做路由判定，决定是否匹配。
+运行时阶段： 一个请求AsyncRequest到来时将通过将AsyncRequest作为参数传递到拦截器做路由判定， 决定是否匹配。
 Tip 通过初始化与运行时两个阶段的匹配行为扩展满足用户多样性匹配需求， 用户既可以直接将拦截器绑定到固定的Controller也可以让拦截器随心所欲的根据请求去选择匹配。  Affinity亲和性 public interface Affinity { /** * Current component is always attaching with the target subject.">
-<meta itemprop="dateModified" content="2022-03-10T16:20:14+08:00" />
-<meta itemprop="wordCount" content="593">
+<meta itemprop="dateModified" content="2022-07-28T18:08:53+08:00" />
+<meta itemprop="wordCount" content="611">
 <meta itemprop="keywords" content="feature," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="拦截器"/>
 <meta name="twitter:description" content="Restlight支持多种拦截器，适用于不同性能/功能场景
  RouteInterceptor MappingInterceptor HandlerInterceptor InterceptorFactory  Tip 实现对应的拦截器接口并注入Spring即可  Note 在Interceptor#preHandle0()和Interceptor#postHandle0()中直接通过throw抛出的异常将不会被 异常处理器处理，如果需要被正常处理，请使用CompletableFuture.completeExceptionally()封装异常  拦截器定位 面向Controller/Route， 同时支持按需匹配的拦截器
- 面向Controller/Route: 拦截器一定能让用户根据需求选择匹配到哪个Controller接口 按需匹配： 支持按照RequestContext条件让用户灵活决定拦截器的匹配规则  InternalInterceptor 核心拦截器实现， 封装了拦截器核心行为
-  CompletableFuture&lt;Boolean&gt; preHandle0(RequestContext, Object)
+ 面向Controller/Route: 拦截器一定能让用户根据需求选择匹配到哪个Controller接口 按需匹配： 支持按照AsyncRequest条件让用户灵活决定拦截器的匹配规则  InternalInterceptor 核心拦截器实现， 封装了拦截器核心行为
+  CompletableFuture&lt;Boolean&gt; preHandle0(AsyncRequest, AsyncResponse, Object)
 Controller执行前执行。返回布尔值表示是否允许当前请求继续往下执行。
-  CompletableFuture&lt;Void&gt; postHandle0(RequestContext, Object)
+  CompletableFuture&lt;Void&gt; postHandle0(AsyncRequest, AsyncResponse, Object)
 Controller刚执行完之后执行
-  CompletableFuture&lt;Void&gt; afterCompletion0(RequestContext, Object, Exception)
+  CompletableFuture&lt;Void&gt; afterCompletion0(AsyncRequest, AsyncResponse, Exception)
 请求行完之后执行
   int getOrder()
 返回当前拦截器的优先级（默认为最低优先级），我们保证getOrder返回值决定拦截器的执行顺序，但是不支持使用@Order(int)注解情况下的顺序（虽然有时候看似顺序和@Order一致，但那只是巧合）。
   Note  框架在真正执行拦截器调用的时候只会调用上述方法(而不是preHandle(xxx), postHandle(xxx), afterCompletion(xxx)) 请勿直接使用此接口，此接口仅仅是拦截器的核心实现类   拦截器匹配 初始化阶段： 初始化阶段为每一个Controller确定所有可能匹配到当前Controller的拦截器列表（包含可能匹配以及一定会匹配到当前Controller的拦截器）。
-运行时阶段： 一个请求到来时通过将RequestContext作为参数传递到拦截器做路由判定，决定是否匹配。
+运行时阶段： 一个请求AsyncRequest到来时将通过将AsyncRequest作为参数传递到拦截器做路由判定， 决定是否匹配。
 Tip 通过初始化与运行时两个阶段的匹配行为扩展满足用户多样性匹配需求， 用户既可以直接将拦截器绑定到固定的Controller也可以让拦截器随心所欲的根据请求去选择匹配。  Affinity亲和性 public interface Affinity { /** * Current component is always attaching with the target subject."/>
 
 
@@ -176,9 +176,7 @@ if (!doNotTrack) {
 </a>
 <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
 	
-	<a class="dropdown-item" href="/docs">1.0.0(Newest)</a>
-	
-	<a class="dropdown-item" href="/docs-v0.1.1">v0.1.1</a>
+	<a class="dropdown-item" href="/docs">v0.1.1(Newest)</a>
 	
 	<a class="dropdown-item" href="/docs-v0.1.0">v0.1.0</a>
 	
@@ -211,11 +209,7 @@ if (!doNotTrack) {
       <li class="td-sidebar-nav__section-title td-sidebar-nav__section with-child active-path" id="m-docs-li">
   <a href="/docs/" class="align-left pl-0 td-sidebar-link td-sidebar-link__section tree-root" id="m-docs"><span class="">ESA Restlight</span></a>
   <ul class="ul-1">
-    <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docslatest_introduction-li">
-  <input type="checkbox" id="m-docslatest_introduction-check"/>
-  <label for="m-docslatest_introduction-check"><a href="/docs/latest_introduction/" class="align-left pl-0  td-sidebar-link td-sidebar-link__section" id="m-docslatest_introduction"><span class="">新版说明</span></a></label>
-  
-</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsgetting_started-li">
+    <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsgetting_started-li">
   <input type="checkbox" id="m-docsgetting_started-check"/>
   <label for="m-docsgetting_started-check"><a href="/docs/getting_started/" class="align-left pl-0  td-sidebar-link td-sidebar-link__section" id="m-docsgetting_started"><span class="">Getting Started</span></a></label>
   
@@ -240,10 +234,6 @@ if (!doNotTrack) {
   <input type="checkbox" id="m-docsrestlight_starterfilter-check"/>
   <label for="m-docsrestlight_starterfilter-check"><a href="/docs/restlight_starter/filter/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsrestlight_starterfilter"><span class="">Filter</span></a></label>
   
-</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsrestlight_starterroute_filter-li">
-  <input type="checkbox" id="m-docsrestlight_starterroute_filter-check"/>
-  <label for="m-docsrestlight_starterroute_filter-check"><a href="/docs/restlight_starter/route_filter/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsrestlight_starterroute_filter"><span class="">RouteFilter</span></a></label>
-  
 </li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child active-path" id="m-docsrestlight_starterinterceptor-li">
   <input type="checkbox" id="m-docsrestlight_starterinterceptor-check" checked/>
   <label for="m-docsrestlight_starterinterceptor-check"><a href="/docs/restlight_starter/interceptor/" class="align-left pl-0  active td-sidebar-link td-sidebar-link__page" id="m-docsrestlight_starterinterceptor"><span class="td-sidebar-nav-active-item">拦截器</span></a></label>
@@ -252,29 +242,21 @@ if (!doNotTrack) {
   <input type="checkbox" id="m-docsrestlight_starterexception_resolver-check"/>
   <label for="m-docsrestlight_starterexception_resolver-check"><a href="/docs/restlight_starter/exception_resolver/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsrestlight_starterexception_resolver"><span class="">异常处理</span></a></label>
   
-</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsrestlight_starterparam_resolver-li">
-  <input type="checkbox" id="m-docsrestlight_starterparam_resolver-check"/>
-  <label for="m-docsrestlight_starterparam_resolver-check"><a href="/docs/restlight_starter/param_resolver/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsrestlight_starterparam_resolver"><span class="">参数解析</span></a></label>
+</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsrestlight_starterargument_resolver-li">
+  <input type="checkbox" id="m-docsrestlight_starterargument_resolver-check"/>
+  <label for="m-docsrestlight_starterargument_resolver-check"><a href="/docs/restlight_starter/argument_resolver/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsrestlight_starterargument_resolver"><span class="">参数解析</span></a></label>
   
-</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsrestlight_starterparam_resolver_advice-li">
-  <input type="checkbox" id="m-docsrestlight_starterparam_resolver_advice-check"/>
-  <label for="m-docsrestlight_starterparam_resolver_advice-check"><a href="/docs/restlight_starter/param_resolver_advice/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsrestlight_starterparam_resolver_advice"><span class="">ParamResolverAdvice</span></a></label>
+</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsrestlight_starterargument_resolver_advice-li">
+  <input type="checkbox" id="m-docsrestlight_starterargument_resolver_advice-check"/>
+  <label for="m-docsrestlight_starterargument_resolver_advice-check"><a href="/docs/restlight_starter/argument_resolver_advice/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsrestlight_starterargument_resolver_advice"><span class="">ArgumentResolverAdvice</span></a></label>
   
-</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsrestlight_starterrequestentity_resolver-li">
-  <input type="checkbox" id="m-docsrestlight_starterrequestentity_resolver-check"/>
-  <label for="m-docsrestlight_starterrequestentity_resolver-check"><a href="/docs/restlight_starter/requestentity_resolver/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsrestlight_starterrequestentity_resolver"><span class="">请求实体数据解析</span></a></label>
+</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsrestlight_starterreturnvalue_resolver-li">
+  <input type="checkbox" id="m-docsrestlight_starterreturnvalue_resolver-check"/>
+  <label for="m-docsrestlight_starterreturnvalue_resolver-check"><a href="/docs/restlight_starter/returnvalue_resolver/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsrestlight_starterreturnvalue_resolver"><span class="">返回值解析</span></a></label>
   
-</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsrestlight_starterrequestentity_resolver_advice-li">
-  <input type="checkbox" id="m-docsrestlight_starterrequestentity_resolver_advice-check"/>
-  <label for="m-docsrestlight_starterrequestentity_resolver_advice-check"><a href="/docs/restlight_starter/requestentity_resolver_advice/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsrestlight_starterrequestentity_resolver_advice"><span class="">RequestResolverAdvice</span></a></label>
-  
-</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsrestlight_starterresponseentity_resolver-li">
-  <input type="checkbox" id="m-docsrestlight_starterresponseentity_resolver-check"/>
-  <label for="m-docsrestlight_starterresponseentity_resolver-check"><a href="/docs/restlight_starter/responseentity_resolver/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsrestlight_starterresponseentity_resolver"><span class="">返回值解析</span></a></label>
-  
-</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsrestlight_starterresponseentity_resolver_advice-li">
-  <input type="checkbox" id="m-docsrestlight_starterresponseentity_resolver_advice-check"/>
-  <label for="m-docsrestlight_starterresponseentity_resolver_advice-check"><a href="/docs/restlight_starter/responseentity_resolver_advice/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsrestlight_starterresponseentity_resolver_advice"><span class="">ResponseResolverAdvice</span></a></label>
+</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsrestlight_starterreturnvalue_resolver_advice-li">
+  <input type="checkbox" id="m-docsrestlight_starterreturnvalue_resolver_advice-check"/>
+  <label for="m-docsrestlight_starterreturnvalue_resolver_advice-check"><a href="/docs/restlight_starter/returnvalue_resolver_advice/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsrestlight_starterreturnvalue_resolver_advice"><span class="">ReturnValueResolverAdvice</span></a></label>
   
 </li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsrestlight_starterserialization-li">
   <input type="checkbox" id="m-docsrestlight_starterserialization-check"/>
@@ -397,16 +379,31 @@ if (!doNotTrack) {
   </ul>
 </li><li class="td-sidebar-nav__section-title td-sidebar-nav__section with-child" id="m-docsjaxrs_support-li">
   <input type="checkbox" id="m-docsjaxrs_support-check"/>
-  <label for="m-docsjaxrs_support-check"><a href="/docs/jaxrs_support/" class="align-left pl-0  td-sidebar-link td-sidebar-link__section" id="m-docsjaxrs_support"><span class="">JAX-RS3.0 支持</span></a></label>
+  <label for="m-docsjaxrs_support-check"><a href="/docs/jaxrs_support/" class="align-left pl-0  td-sidebar-link td-sidebar-link__section" id="m-docsjaxrs_support"><span class="">JAX-RS 支持</span></a></label>
   
   <ul class="ul-2 foldable">
     <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsjaxrs_supportannotations_support-li">
   <input type="checkbox" id="m-docsjaxrs_supportannotations_support-check"/>
   <label for="m-docsjaxrs_supportannotations_support-check"><a href="/docs/jaxrs_support/annotations_support/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsjaxrs_supportannotations_support"><span class="">JAX-RS 注解支持</span></a></label>
   
-</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsjaxrs_supportinterface_support-li">
-  <input type="checkbox" id="m-docsjaxrs_supportinterface_support-check"/>
-  <label for="m-docsjaxrs_supportinterface_support-check"><a href="/docs/jaxrs_support/interface_support/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsjaxrs_supportinterface_support"><span class="">JAX-RS 接口支持</span></a></label>
+</li>
+  </ul>
+</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section with-child" id="m-docsrestlight_server-li">
+  <input type="checkbox" id="m-docsrestlight_server-check"/>
+  <label for="m-docsrestlight_server-check"><a href="/docs/restlight_server/" class="align-left pl-0  td-sidebar-link td-sidebar-link__section" id="m-docsrestlight_server"><span class="">Restlight Server</span></a></label>
+  
+  <ul class="ul-2 foldable">
+    <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsrestlight_serverquick_start-li">
+  <input type="checkbox" id="m-docsrestlight_serverquick_start-check"/>
+  <label for="m-docsrestlight_serverquick_start-check"><a href="/docs/restlight_server/quick_start/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsrestlight_serverquick_start"><span class="">Quick Start</span></a></label>
+  
+</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsrestlight_serverterminology-li">
+  <input type="checkbox" id="m-docsrestlight_serverterminology-check"/>
+  <label for="m-docsrestlight_serverterminology-check"><a href="/docs/restlight_server/terminology/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsrestlight_serverterminology"><span class="">术语</span></a></label>
+  
+</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsrestlight_serverhandle_request-li">
+  <input type="checkbox" id="m-docsrestlight_serverhandle_request-check"/>
+  <label for="m-docsrestlight_serverhandle_request-check"><a href="/docs/restlight_server/handle_request/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsrestlight_serverhandle_request"><span class="">请求处理</span></a></label>
   
 </li>
   </ul>
@@ -415,25 +412,13 @@ if (!doNotTrack) {
   <label for="m-docsrestlight_core-check"><a href="/docs/restlight_core/" class="align-left pl-0  td-sidebar-link td-sidebar-link__section" id="m-docsrestlight_core"><span class="">Restlight Core</span></a></label>
   
   <ul class="ul-2 foldable">
-    <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsrestlight_coreterminology-li">
-  <input type="checkbox" id="m-docsrestlight_coreterminology-check"/>
-  <label for="m-docsrestlight_coreterminology-check"><a href="/docs/restlight_core/terminology/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsrestlight_coreterminology"><span class="">术语</span></a></label>
-  
-</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsrestlight_corehandle_request-li">
-  <input type="checkbox" id="m-docsrestlight_corehandle_request-check"/>
-  <label for="m-docsrestlight_corehandle_request-check"><a href="/docs/restlight_core/handle_request/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsrestlight_corehandle_request"><span class="">请求处理</span></a></label>
-  
-</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsrestlight_coreuse_jaxrs-li">
+    <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsrestlight_coreuse_jaxrs-li">
   <input type="checkbox" id="m-docsrestlight_coreuse_jaxrs-check"/>
   <label for="m-docsrestlight_coreuse_jaxrs-check"><a href="/docs/restlight_core/use_jaxrs/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsrestlight_coreuse_jaxrs"><span class="">配合 JAX-RS标准</span></a></label>
   
 </li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsrestlight_coreuse_springmvc-li">
   <input type="checkbox" id="m-docsrestlight_coreuse_springmvc-check"/>
   <label for="m-docsrestlight_coreuse_springmvc-check"><a href="/docs/restlight_core/use_springmvc/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsrestlight_coreuse_springmvc"><span class="">配合 SpringMVC标准</span></a></label>
-  
-</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsrestlight_coreregister_deregister_handler-li">
-  <input type="checkbox" id="m-docsrestlight_coreregister_deregister_handler-check"/>
-  <label for="m-docsrestlight_coreregister_deregister_handler-check"><a href="/docs/restlight_core/register_deregister_handler/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsrestlight_coreregister_deregister_handler"><span class="">动态添加/卸载路由</span></a></label>
   
 </li>
   </ul>
@@ -459,7 +444,7 @@ if (!doNotTrack) {
   
 </li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsasync_supporttips_of_completablefuture-li">
   <input type="checkbox" id="m-docsasync_supporttips_of_completablefuture-check"/>
-  <label for="m-docsasync_supporttips_of_completablefuture-check"><a href="/docs/async_support/tips_of_completablefuture/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsasync_supporttips_of_completablefuture"><span class="">CompletionStage使用注意</span></a></label>
+  <label for="m-docsasync_supporttips_of_completablefuture-check"><a href="/docs/async_support/tips_of_completablefuture/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsasync_supporttips_of_completablefuture"><span class="">CompletableFuture使用注意</span></a></label>
   
 </li>
   </ul>
@@ -649,8 +634,8 @@ if (!doNotTrack) {
 <div class="alert alert-primary" role="alert">
 <h4 class="alert-heading">Note</h4>
 
-    在<code>Interceptor#preHandle0()</code>和<code>Interceptor#postHandle0()</code>中直接通过throw抛出的异常将不会被
-异常处理器处理，如果需要被正常处理，请使用<code>CompletableFuture.completeExceptionally()</code>封装异常
+    在Interceptor#preHandle0()和Interceptor#postHandle0()中直接通过throw抛出的异常将不会被
+异常处理器处理，如果需要被正常处理，请使用CompletableFuture.completeExceptionally()封装异常
 
 </div>
 
@@ -658,21 +643,21 @@ if (!doNotTrack) {
 <p>面向<code>Controller/Route</code>， 同时支持按需匹配的拦截器</p>
 <ol>
 <li><strong>面向<code>Controller/Route</code></strong>: 拦截器一定能让用户根据需求选择匹配到哪个<code>Controller</code>接口</li>
-<li><strong>按需匹配</strong>： 支持按照<code>RequestContext</code>条件让用户灵活决定拦截器的匹配规则</li>
+<li><strong>按需匹配</strong>： 支持按照<code>AsyncRequest</code>条件让用户灵活决定拦截器的匹配规则</li>
 </ol>
 <h2 id="internalinterceptor"><code>InternalInterceptor</code></h2>
 <p>核心拦截器实现， 封装了拦截器核心行为</p>
 <ul>
 <li>
-<p><code>CompletableFuture&lt;Boolean&gt; preHandle0(RequestContext, Object)</code></p>
+<p><code>CompletableFuture&lt;Boolean&gt; preHandle0(AsyncRequest, AsyncResponse, Object)</code></p>
 <p><code>Controller</code>执行前执行。返回布尔值表示是否允许当前请求继续往下执行。</p>
 </li>
 <li>
-<p><code>CompletableFuture&lt;Void&gt; postHandle0(RequestContext, Object)</code></p>
+<p><code>CompletableFuture&lt;Void&gt; postHandle0(AsyncRequest, AsyncResponse, Object)</code></p>
 <p><code>Controller</code>刚执行完之后执行</p>
 </li>
 <li>
-<p><code>CompletableFuture&lt;Void&gt; afterCompletion0(RequestContext, Object, Exception)</code></p>
+<p><code>CompletableFuture&lt;Void&gt; afterCompletion0(AsyncRequest, AsyncResponse, Exception)</code></p>
 <p>请求行完之后执行</p>
 </li>
 <li>
@@ -695,7 +680,7 @@ if (!doNotTrack) {
 
 <h2 id="拦截器匹配">拦截器匹配</h2>
 <p><strong>初始化阶段</strong>： 初始化阶段为每一个<code>Controller</code>确定所有可能匹配到当前<code>Controller</code>的拦截器列表（包含可能匹配以及一定会匹配到当前<code>Controller</code>的拦截器）。</p>
-<p><strong>运行时阶段</strong>： 一个请求到来时通过将<code>RequestContext</code>作为参数传递到拦截器做路由判定，决定是否匹配。</p>
+<p><strong>运行时阶段</strong>： 一个请求<code>AsyncRequest</code>到来时将通过将<code>AsyncRequest</code>作为参数传递到拦截器做路由判定， 决定是否匹配。</p>
 
 
 <div class="alert alert-primary" role="alert">
@@ -737,38 +722,38 @@ if (!doNotTrack) {
 </ul>
 <h3 id="interceptorpredicate"><code>InterceptorPredicate</code></h3>
 <div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#204a87;font-weight:bold">public</span> <span style="color:#204a87;font-weight:bold">interface</span> <span style="color:#000">InterceptorPredicate</span> <span style="color:#204a87;font-weight:bold">extends</span> <span style="color:#000">RequestPredicate</span> <span style="color:#ce5c00;font-weight:bold">{</span>
-    <span style="color:#000">InterceptorPredicate</span> <span style="color:#000">ALWAYS</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">context</span> <span style="color:#ce5c00;font-weight:bold">-&gt;</span> <span style="color:#000">Boolean</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#c4a000">TRUE</span><span style="color:#ce5c00;font-weight:bold">;</span>
+    <span style="color:#000">InterceptorPredicate</span> <span style="color:#000">ALWAYS</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">request</span> <span style="color:#ce5c00;font-weight:bold">-&gt;</span> <span style="color:#000">Boolean</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#c4a000">TRUE</span><span style="color:#ce5c00;font-weight:bold">;</span>
 <span style="color:#ce5c00;font-weight:bold">}</span>
 
-<span style="color:#204a87;font-weight:bold">public</span> <span style="color:#204a87;font-weight:bold">interface</span> <span style="color:#000">RequestPredicate</span> <span style="color:#204a87;font-weight:bold">extends</span> <span style="color:#000">Predicate</span><span style="color:#ce5c00;font-weight:bold">&lt;</span><span style="color:#000">RequestContext</span><span style="color:#ce5c00;font-weight:bold">&gt;</span> <span style="color:#ce5c00;font-weight:bold">{</span>
+<span style="color:#204a87;font-weight:bold">public</span> <span style="color:#204a87;font-weight:bold">interface</span> <span style="color:#000">RequestPredicate</span> <span style="color:#204a87;font-weight:bold">extends</span> <span style="color:#000">Predicate</span><span style="color:#ce5c00;font-weight:bold">&lt;</span><span style="color:#000">AsyncRequest</span><span style="color:#ce5c00;font-weight:bold">&gt;</span> <span style="color:#ce5c00;font-weight:bold">{</span>
     <span style="color:#8f5902;font-style:italic">// ignore this
 </span><span style="color:#8f5902;font-style:italic"></span>    <span style="color:#204a87;font-weight:bold">default</span> <span style="color:#204a87;font-weight:bold">boolean</span> <span style="color:#000">mayAmbiguousWith</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#000">RequestPredicate</span> <span style="color:#000">another</span><span style="color:#ce5c00;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">{</span>
         <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#204a87;font-weight:bold">false</span><span style="color:#ce5c00;font-weight:bold">;</span>
     <span style="color:#ce5c00;font-weight:bold">}</span>
 <span style="color:#ce5c00;font-weight:bold">}</span>
-</code></pre></div><p><code>test(RequestContext)</code>方法用于对每个请求的匹配。可以满足根据<code>RequestContext</code>运行时的任意条件的匹配（而不仅仅是局限于<code>URL</code>匹配）</p>
+</code></pre></div><p><code>test(AsyncRequest)</code>方法用于对每个请求的匹配。可以满足根据<code>AsyncRequest</code>运行时的任意条件的匹配（而不仅仅是局限于<code>URL</code>匹配）</p>
 <h2 id="interceptor"><code>Interceptor</code></h2>
-<p><code>Interceptor</code>接口为同时拥有<code>Affinity</code>（<code>Controller/Route</code>匹配）以及<code>InterceptorPredicate</code>（请求<code>RequestContext</code>匹配）的接口</p>
+<p><code>Interceptor</code>接口为同时拥有<code>Affinity</code>（<code>Controller/Route</code>匹配）以及<code>InterceptorPredicate</code>（请求<code>AsyncRequest</code>匹配）的接口</p>
 <div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#204a87;font-weight:bold">public</span> <span style="color:#204a87;font-weight:bold">interface</span> <span style="color:#000">Interceptor</span> <span style="color:#204a87;font-weight:bold">extends</span> <span style="color:#000">InternalInterceptor</span><span style="color:#ce5c00;font-weight:bold">,</span> <span style="color:#000">Affinity</span> <span style="color:#ce5c00;font-weight:bold">{</span>
-    
+
     <span style="color:#8f5902;font-style:italic">/**
 </span><span style="color:#8f5902;font-style:italic">     * Gets the predicate of current interceptor. determines whether current interceptor should be matched to a {@link
-</span><span style="color:#8f5902;font-style:italic">     * RequestContext}.
+</span><span style="color:#8f5902;font-style:italic">     * esa.httpserver.core.AsyncRequest}.
 </span><span style="color:#8f5902;font-style:italic">     *
 </span><span style="color:#8f5902;font-style:italic">     * @return predicate, or {@code null} if {@link #affinity()} return&#39;s a negative value.
 </span><span style="color:#8f5902;font-style:italic">     */</span>
     <span style="color:#000">InterceptorPredicate</span> <span style="color:#000">predicate</span><span style="color:#ce5c00;font-weight:bold">();</span>
-    
+
     <span style="color:#8f5902;font-style:italic">/**
 </span><span style="color:#8f5902;font-style:italic">     * Default to highest affinity.
 </span><span style="color:#8f5902;font-style:italic">     * &lt;p&gt;
-</span><span style="color:#8f5902;font-style:italic">     * Whether a {@link Interceptor} should be matched to a {@link Route} is depends on it.
+</span><span style="color:#8f5902;font-style:italic">     * Whether a {@link Interceptor} should be matched to a {@link esa.restlight.server.route.Route} is depends on it.
 </span><span style="color:#8f5902;font-style:italic">     *
 </span><span style="color:#8f5902;font-style:italic">     * @return affinity
 </span><span style="color:#8f5902;font-style:italic">     */</span>
     <span style="color:#5c35cc;font-weight:bold">@Override</span>
     <span style="color:#204a87;font-weight:bold">default</span> <span style="color:#204a87;font-weight:bold">int</span> <span style="color:#000">affinity</span><span style="color:#ce5c00;font-weight:bold">()</span> <span style="color:#ce5c00;font-weight:bold">{</span>
-      <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">HIGHEST</span><span style="color:#ce5c00;font-weight:bold">;</span>
+        <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">HIGHEST</span><span style="color:#ce5c00;font-weight:bold">;</span>
     <span style="color:#ce5c00;font-weight:bold">}</span>
 <span style="color:#ce5c00;font-weight:bold">}</span>
 </code></pre></div><p>由于<code>int affinity()</code>根据不同的<code>Controller/Route</code>可能得出不同的结果， 因此需要使用<code>InterceptorFactory</code>进行创建</p>
@@ -776,34 +761,37 @@ if (!doNotTrack) {
 <p>实现一个拦截器， 拦截所有GET接口（仅包含GET）且Header中包含<code>X-Foo</code>请求头的请求</p>
 <div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#5c35cc;font-weight:bold">@Bean</span>
 <span style="color:#204a87;font-weight:bold">public</span> <span style="color:#000">InterceptorFactory</span> <span style="color:#000">interceptor</span><span style="color:#ce5c00;font-weight:bold">()</span> <span style="color:#ce5c00;font-weight:bold">{</span>
-    <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#000">ctx</span><span style="color:#ce5c00;font-weight:bold">,</span> <span style="color:#000">route</span><span style="color:#ce5c00;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">-&gt;</span> <span style="color:#000">Optional</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#c4a000">of</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#204a87;font-weight:bold">new</span> <span style="color:#000">Interceptor</span><span style="color:#ce5c00;font-weight:bold">()</span> <span style="color:#ce5c00;font-weight:bold">{</span>
+    <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#000">ctx</span><span style="color:#ce5c00;font-weight:bold">,</span> <span style="color:#000">route</span><span style="color:#ce5c00;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">-&gt;</span> <span style="color:#204a87;font-weight:bold">new</span> <span style="color:#000">Interceptor</span><span style="color:#ce5c00;font-weight:bold">()</span> <span style="color:#ce5c00;font-weight:bold">{</span>
         <span style="color:#5c35cc;font-weight:bold">@Override</span>
-        <span style="color:#204a87;font-weight:bold">public</span> <span style="color:#000">CompletionStage</span><span style="color:#ce5c00;font-weight:bold">&lt;</span><span style="color:#000">Boolean</span><span style="color:#ce5c00;font-weight:bold">&gt;</span> <span style="color:#000">preHandle0</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#000">RequestContext</span> <span style="color:#000">context</span><span style="color:#ce5c00;font-weight:bold">,</span> <span style="color:#000">Object</span> <span style="color:#000">handler</span><span style="color:#ce5c00;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">{</span>
+        <span style="color:#204a87;font-weight:bold">public</span> <span style="color:#000">CompletableFuture</span><span style="color:#ce5c00;font-weight:bold">&lt;</span><span style="color:#000">Boolean</span><span style="color:#ce5c00;font-weight:bold">&gt;</span> <span style="color:#000">preHandle0</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#000">AsyncRequest</span> <span style="color:#000">request</span><span style="color:#ce5c00;font-weight:bold">,</span>
+                                                     <span style="color:#000">AsyncResponse</span> <span style="color:#000">response</span><span style="color:#ce5c00;font-weight:bold">,</span>
+                                                     <span style="color:#000">Object</span> <span style="color:#000">handler</span><span style="color:#ce5c00;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">{</span>
             <span style="color:#8f5902;font-style:italic">// biz logic
 </span><span style="color:#8f5902;font-style:italic"></span>            <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">CompletableFuture</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#c4a000">completedFuture</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#204a87;font-weight:bold">true</span><span style="color:#ce5c00;font-weight:bold">);</span>
         <span style="color:#ce5c00;font-weight:bold">}</span>
-        
+
+
         <span style="color:#5c35cc;font-weight:bold">@Override</span>
         <span style="color:#204a87;font-weight:bold">public</span> <span style="color:#000">InterceptorPredicate</span> <span style="color:#000">predicate</span><span style="color:#ce5c00;font-weight:bold">()</span> <span style="color:#ce5c00;font-weight:bold">{</span>
-            <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">context</span> <span style="color:#ce5c00;font-weight:bold">-&gt;</span> <span style="color:#000">context</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#c4a000">request</span><span style="color:#ce5c00;font-weight:bold">().</span><span style="color:#c4a000">headers</span><span style="color:#ce5c00;font-weight:bold">().</span><span style="color:#c4a000">contains</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#4e9a06">&#34;X-Foo&#34;</span><span style="color:#ce5c00;font-weight:bold">);</span>
+            <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">request</span> <span style="color:#ce5c00;font-weight:bold">-&gt;</span> <span style="color:#000">request</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#c4a000">containsHeader</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#4e9a06">&#34;X-Foo&#34;</span><span style="color:#ce5c00;font-weight:bold">);</span>
         <span style="color:#ce5c00;font-weight:bold">}</span>
-        
+
         <span style="color:#5c35cc;font-weight:bold">@Override</span>
         <span style="color:#204a87;font-weight:bold">public</span> <span style="color:#204a87;font-weight:bold">int</span> <span style="color:#000">affinity</span><span style="color:#ce5c00;font-weight:bold">()</span> <span style="color:#ce5c00;font-weight:bold">{</span>
             <span style="color:#000">HttpMethod</span><span style="color:#ce5c00;font-weight:bold">[]</span> <span style="color:#000">method</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">route</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#c4a000">mapping</span><span style="color:#ce5c00;font-weight:bold">().</span><span style="color:#c4a000">method</span><span style="color:#ce5c00;font-weight:bold">();</span>
             <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#000">method</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#c4a000">length</span> <span style="color:#ce5c00;font-weight:bold">==</span> <span style="color:#000">1</span> <span style="color:#ce5c00;font-weight:bold">&amp;&amp;</span> <span style="color:#000">method</span><span style="color:#ce5c00;font-weight:bold">[</span><span style="color:#000">0</span><span style="color:#ce5c00;font-weight:bold">]</span> <span style="color:#ce5c00;font-weight:bold">==</span> <span style="color:#000">HttpMethod</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#c4a000">GET</span><span style="color:#ce5c00;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">{</span>
                 <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">ATTACHED</span><span style="color:#ce5c00;font-weight:bold">;</span>
             <span style="color:#ce5c00;font-weight:bold">}</span>
-             <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">DETACHED</span><span style="color:#ce5c00;font-weight:bold">;</span>
+            <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">DETACHED</span><span style="color:#ce5c00;font-weight:bold">;</span>
         <span style="color:#ce5c00;font-weight:bold">}</span>
-    <span style="color:#ce5c00;font-weight:bold">});</span>
+    <span style="color:#ce5c00;font-weight:bold">};</span>
 <span style="color:#ce5c00;font-weight:bold">}</span>
 </code></pre></div>
 
 <div class="alert alert-primary" role="alert">
 <h4 class="alert-heading">Note</h4>
 
-    运行时仅在<code>context.request().headers().contains(&quot;X-Foo&quot;)</code>上做匹配， 性能损耗极低。
+    运行时仅在<code>request.containsHeader(&quot;X-Foo&quot;)</code>上做匹配， 性能损耗极低。
 
 </div>
 
@@ -812,14 +800,14 @@ if (!doNotTrack) {
 <div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#204a87;font-weight:bold">public</span> <span style="color:#204a87;font-weight:bold">interface</span> <span style="color:#000">RouteInterceptor</span> <span style="color:#204a87;font-weight:bold">extends</span> <span style="color:#000">InternalInterceptor</span> <span style="color:#ce5c00;font-weight:bold">{</span>
 
     <span style="color:#8f5902;font-style:italic">/**
-</span><span style="color:#8f5902;font-style:italic">     * Gets the affinity value between current interceptor and the given {@link Routing}.
+</span><span style="color:#8f5902;font-style:italic">     * Gets the affinity value between current interceptor and the given {@link Route}.
 </span><span style="color:#8f5902;font-style:italic">     *
 </span><span style="color:#8f5902;font-style:italic">     * @param ctx   context
 </span><span style="color:#8f5902;font-style:italic">     * @param route route to match
 </span><span style="color:#8f5902;font-style:italic">     *
 </span><span style="color:#8f5902;font-style:italic">     * @return affinity value.
 </span><span style="color:#8f5902;font-style:italic">     */</span>
-    <span style="color:#204a87;font-weight:bold">boolean</span> <span style="color:#000">match</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#000">DeployContext</span> <span style="color:#000">ctx</span><span style="color:#ce5c00;font-weight:bold">,</span> <span style="color:#000">Routing</span> <span style="color:#000">route</span><span style="color:#ce5c00;font-weight:bold">);</span>
+    <span style="color:#204a87;font-weight:bold">boolean</span> <span style="color:#000">match</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#000">DeployContext</span><span style="color:#ce5c00;font-weight:bold">&lt;?</span> <span style="color:#204a87;font-weight:bold">extends</span> <span style="color:#000">RestlightOptions</span><span style="color:#ce5c00;font-weight:bold">&gt;</span> <span style="color:#000">ctx</span><span style="color:#ce5c00;font-weight:bold">,</span> <span style="color:#000">Route</span> <span style="color:#000">route</span><span style="color:#ce5c00;font-weight:bold">);</span>
 <span style="color:#ce5c00;font-weight:bold">}</span>
 </code></pre></div>
 
@@ -834,19 +822,22 @@ if (!doNotTrack) {
 实现一个拦截器， 拦截所有GET请求（仅包含GET）</p>
 <div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#5c35cc;font-weight:bold">@Bean</span>
 <span style="color:#204a87;font-weight:bold">public</span> <span style="color:#000">RouteInterceptor</span> <span style="color:#000">interceptor</span><span style="color:#ce5c00;font-weight:bold">()</span> <span style="color:#ce5c00;font-weight:bold">{</span>
-  <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#204a87;font-weight:bold">new</span> <span style="color:#000">RouteInterceptor</span><span style="color:#ce5c00;font-weight:bold">()</span> <span style="color:#ce5c00;font-weight:bold">{</span>
-  
-    <span style="color:#5c35cc;font-weight:bold">@Override</span>
-    <span style="color:#204a87;font-weight:bold">public</span> <span style="color:#204a87;font-weight:bold">boolean</span> <span style="color:#000">match</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#000">DeployContext</span> <span style="color:#000">ctx</span><span style="color:#ce5c00;font-weight:bold">,</span> <span style="color:#000">Routing</span> <span style="color:#000">route</span><span style="color:#ce5c00;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">{</span>
-        <span style="color:#000">HttpMethod</span><span style="color:#ce5c00;font-weight:bold">[]</span> <span style="color:#000">method</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">route</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#c4a000">mapping</span><span style="color:#ce5c00;font-weight:bold">().</span><span style="color:#c4a000">method</span><span style="color:#ce5c00;font-weight:bold">();</span>
-        <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">method</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#c4a000">length</span> <span style="color:#ce5c00;font-weight:bold">==</span> <span style="color:#000">1</span> <span style="color:#ce5c00;font-weight:bold">&amp;&amp;</span> <span style="color:#000">method</span><span style="color:#ce5c00;font-weight:bold">[</span><span style="color:#000">0</span><span style="color:#ce5c00;font-weight:bold">]</span> <span style="color:#ce5c00;font-weight:bold">==</span> <span style="color:#000">HttpMethod</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#c4a000">GET</span><span style="color:#ce5c00;font-weight:bold">;</span>
-    <span style="color:#ce5c00;font-weight:bold">}</span>
-    
-    <span style="color:#5c35cc;font-weight:bold">@Override</span>
-    <span style="color:#204a87;font-weight:bold">public</span> <span style="color:#000">CompletionStage</span><span style="color:#ce5c00;font-weight:bold">&lt;</span><span style="color:#000">Boolean</span><span style="color:#ce5c00;font-weight:bold">&gt;</span> <span style="color:#000">preHandle0</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#000">RequestContext</span> <span style="color:#000">context</span><span style="color:#ce5c00;font-weight:bold">,</span> <span style="color:#000">Object</span> <span style="color:#000">handler</span><span style="color:#ce5c00;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">{</span>
-        <span style="color:#8f5902;font-style:italic">// biz logic
-</span><span style="color:#8f5902;font-style:italic"></span>        <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">CompletableFuture</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#c4a000">completedFuture</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#204a87;font-weight:bold">true</span><span style="color:#ce5c00;font-weight:bold">);</span>
-    <span style="color:#ce5c00;font-weight:bold">}};</span>
+    <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#204a87;font-weight:bold">new</span> <span style="color:#000">RouteInterceptor</span><span style="color:#ce5c00;font-weight:bold">()</span> <span style="color:#ce5c00;font-weight:bold">{</span>
+
+        <span style="color:#5c35cc;font-weight:bold">@Override</span>
+        <span style="color:#204a87;font-weight:bold">public</span> <span style="color:#000">CompletableFuture</span><span style="color:#ce5c00;font-weight:bold">&lt;</span><span style="color:#000">Boolean</span><span style="color:#ce5c00;font-weight:bold">&gt;</span> <span style="color:#000">preHandle0</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#000">AsyncRequest</span> <span style="color:#000">request</span><span style="color:#ce5c00;font-weight:bold">,</span>
+                                                     <span style="color:#000">AsyncResponse</span> <span style="color:#000">response</span><span style="color:#ce5c00;font-weight:bold">,</span>
+                                                     <span style="color:#000">Object</span> <span style="color:#000">handler</span><span style="color:#ce5c00;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">{</span>
+            <span style="color:#8f5902;font-style:italic">// biz logic
+</span><span style="color:#8f5902;font-style:italic"></span>            <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">CompletableFuture</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#c4a000">completedFuture</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#204a87;font-weight:bold">true</span><span style="color:#ce5c00;font-weight:bold">);</span>
+        <span style="color:#ce5c00;font-weight:bold">}</span>
+
+        <span style="color:#5c35cc;font-weight:bold">@Override</span>
+        <span style="color:#204a87;font-weight:bold">public</span> <span style="color:#204a87;font-weight:bold">boolean</span> <span style="color:#000">match</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#000">DeployContext</span><span style="color:#ce5c00;font-weight:bold">&lt;?</span> <span style="color:#204a87;font-weight:bold">extends</span> <span style="color:#000">RestlightOptions</span><span style="color:#ce5c00;font-weight:bold">&gt;</span> <span style="color:#000">ctx</span><span style="color:#ce5c00;font-weight:bold">,</span> <span style="color:#000">Route</span> <span style="color:#000">route</span><span style="color:#ce5c00;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">{</span>
+            <span style="color:#000">HttpMethod</span><span style="color:#ce5c00;font-weight:bold">[]</span> <span style="color:#000">method</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">route</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#c4a000">mapping</span><span style="color:#ce5c00;font-weight:bold">().</span><span style="color:#c4a000">method</span><span style="color:#ce5c00;font-weight:bold">();</span>
+            <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">method</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#c4a000">length</span> <span style="color:#ce5c00;font-weight:bold">==</span> <span style="color:#000">1</span> <span style="color:#ce5c00;font-weight:bold">&amp;&amp;</span> <span style="color:#000">method</span><span style="color:#ce5c00;font-weight:bold">[</span><span style="color:#000">0</span><span style="color:#ce5c00;font-weight:bold">]</span> <span style="color:#ce5c00;font-weight:bold">==</span> <span style="color:#000">HttpMethod</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#c4a000">GET</span><span style="color:#ce5c00;font-weight:bold">;</span>
+        <span style="color:#ce5c00;font-weight:bold">}</span>
+    <span style="color:#ce5c00;font-weight:bold">};</span>
 <span style="color:#ce5c00;font-weight:bold">}</span>
 </code></pre></div><h2 id="mappinginterceptor"><code>MappingInterceptor</code></h2>
 <p>绑定到所有<code>Controller/Route</code>， 并匹配请求的拦截器</p>
@@ -860,14 +851,16 @@ if (!doNotTrack) {
     <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#204a87;font-weight:bold">new</span> <span style="color:#000">MappingInterceptor</span><span style="color:#ce5c00;font-weight:bold">()</span> <span style="color:#ce5c00;font-weight:bold">{</span>
 
         <span style="color:#5c35cc;font-weight:bold">@Override</span>
-        <span style="color:#204a87;font-weight:bold">public</span> <span style="color:#000">CompletionStage</span><span style="color:#ce5c00;font-weight:bold">&lt;</span><span style="color:#000">Boolean</span><span style="color:#ce5c00;font-weight:bold">&gt;</span> <span style="color:#000">preHandle0</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#000">RequestContext</span> <span style="color:#000">context</span><span style="color:#ce5c00;font-weight:bold">,</span> <span style="color:#000">Object</span> <span style="color:#000">handler</span><span style="color:#ce5c00;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">{</span>
+        <span style="color:#204a87;font-weight:bold">public</span> <span style="color:#000">CompletableFuture</span><span style="color:#ce5c00;font-weight:bold">&lt;</span><span style="color:#000">Boolean</span><span style="color:#ce5c00;font-weight:bold">&gt;</span> <span style="color:#000">preHandle0</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#000">AsyncRequest</span> <span style="color:#000">request</span><span style="color:#ce5c00;font-weight:bold">,</span>
+                                                     <span style="color:#000">AsyncResponse</span> <span style="color:#000">response</span><span style="color:#ce5c00;font-weight:bold">,</span>
+                                                     <span style="color:#000">Object</span> <span style="color:#000">handler</span><span style="color:#ce5c00;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">{</span>
             <span style="color:#8f5902;font-style:italic">// biz logic
 </span><span style="color:#8f5902;font-style:italic"></span>            <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">CompletableFuture</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#c4a000">completedFuture</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#204a87;font-weight:bold">true</span><span style="color:#ce5c00;font-weight:bold">);</span>
         <span style="color:#ce5c00;font-weight:bold">}</span>
-    
+        
         <span style="color:#5c35cc;font-weight:bold">@Override</span>
-        <span style="color:#204a87;font-weight:bold">public</span> <span style="color:#204a87;font-weight:bold">boolean</span> <span style="color:#000">test</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#000">RequestContext</span> <span style="color:#000">context</span><span style="color:#ce5c00;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">{</span>
-            <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">context</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#c4a000">request</span><span style="color:#ce5c00;font-weight:bold">().</span><span style="color:#c4a000">headers</span><span style="color:#ce5c00;font-weight:bold">().</span><span style="color:#c4a000">contains</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#4e9a06">&#34;X-Foo&#34;</span><span style="color:#ce5c00;font-weight:bold">);</span>
+        <span style="color:#204a87;font-weight:bold">public</span> <span style="color:#204a87;font-weight:bold">boolean</span> <span style="color:#000">test</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#000">AsyncRequest</span> <span style="color:#000">request</span><span style="color:#ce5c00;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">{</span>
+            <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">request</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#c4a000">containsHeader</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#4e9a06">&#34;X-Foo&#34;</span><span style="color:#ce5c00;font-weight:bold">);</span>
         <span style="color:#ce5c00;font-weight:bold">}</span>
     <span style="color:#ce5c00;font-weight:bold">};</span>
 <span style="color:#ce5c00;font-weight:bold">}</span>
@@ -906,7 +899,9 @@ if (!doNotTrack) {
     <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#204a87;font-weight:bold">new</span> <span style="color:#000">HandlerInterceptor</span><span style="color:#ce5c00;font-weight:bold">()</span> <span style="color:#ce5c00;font-weight:bold">{</span>
 
         <span style="color:#5c35cc;font-weight:bold">@Override</span>
-        <span style="color:#204a87;font-weight:bold">public</span> <span style="color:#000">CompletionStage</span><span style="color:#ce5c00;font-weight:bold">&lt;</span><span style="color:#000">Boolean</span><span style="color:#ce5c00;font-weight:bold">&gt;</span> <span style="color:#000">preHandle0</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#000">RequestContext</span> <span style="color:#000">context</span><span style="color:#ce5c00;font-weight:bold">,</span> <span style="color:#000">Object</span> <span style="color:#000">handler</span><span style="color:#ce5c00;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">{</span>
+        <span style="color:#204a87;font-weight:bold">public</span> <span style="color:#000">CompletableFuture</span><span style="color:#ce5c00;font-weight:bold">&lt;</span><span style="color:#000">Boolean</span><span style="color:#ce5c00;font-weight:bold">&gt;</span> <span style="color:#000">preHandle0</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#000">AsyncRequest</span> <span style="color:#000">request</span><span style="color:#ce5c00;font-weight:bold">,</span>
+                                                     <span style="color:#000">AsyncResponse</span> <span style="color:#000">response</span><span style="color:#ce5c00;font-weight:bold">,</span>
+                                                     <span style="color:#000">Object</span> <span style="color:#000">handler</span><span style="color:#ce5c00;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">{</span>
             <span style="color:#8f5902;font-style:italic">// biz logic
 </span><span style="color:#8f5902;font-style:italic"></span>            <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">CompletableFuture</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#c4a000">completedFuture</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#204a87;font-weight:bold">true</span><span style="color:#ce5c00;font-weight:bold">);</span>
         <span style="color:#ce5c00;font-weight:bold">}</span>
@@ -915,7 +910,7 @@ if (!doNotTrack) {
         <span style="color:#204a87;font-weight:bold">public</span> <span style="color:#000">String</span><span style="color:#ce5c00;font-weight:bold">[]</span> <span style="color:#000">includes</span><span style="color:#ce5c00;font-weight:bold">()</span> <span style="color:#ce5c00;font-weight:bold">{</span>
             <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#204a87;font-weight:bold">new</span> <span style="color:#000">String</span><span style="color:#ce5c00;font-weight:bold">[]</span> <span style="color:#ce5c00;font-weight:bold">{</span><span style="color:#4e9a06">&#34;/foo/**&#34;</span><span style="color:#ce5c00;font-weight:bold">};</span>
         <span style="color:#ce5c00;font-weight:bold">}</span>
-        
+
         <span style="color:#5c35cc;font-weight:bold">@Override</span>
         <span style="color:#204a87;font-weight:bold">public</span> <span style="color:#000">String</span><span style="color:#ce5c00;font-weight:bold">[]</span> <span style="color:#000">excludes</span><span style="color:#ce5c00;font-weight:bold">()</span> <span style="color:#ce5c00;font-weight:bold">{</span>
             <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#204a87;font-weight:bold">new</span> <span style="color:#000">String</span><span style="color:#ce5c00;font-weight:bold">[]</span> <span style="color:#ce5c00;font-weight:bold">{</span><span style="color:#4e9a06">&#34;/foo/bar&#34;</span><span style="color:#ce5c00;font-weight:bold">};</span>
@@ -934,7 +929,7 @@ if (!doNotTrack) {
 </span><span style="color:#8f5902;font-style:italic">     * @param route target route.
 </span><span style="color:#8f5902;font-style:italic">     * @return interceptor
 </span><span style="color:#8f5902;font-style:italic">     */</span>
-    <span style="color:#000">Optional</span><span style="color:#ce5c00;font-weight:bold">&lt;</span><span style="color:#000">Interceptor</span><span style="color:#ce5c00;font-weight:bold">&gt;</span> <span style="color:#000">create</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#000">DeployContext</span> <span style="color:#000">ctx</span><span style="color:#ce5c00;font-weight:bold">,</span> <span style="color:#000">Routing</span> <span style="color:#000">route</span><span style="color:#ce5c00;font-weight:bold">);</span>
+    <span style="color:#000">Optional</span><span style="color:#ce5c00;font-weight:bold">&lt;</span><span style="color:#000">Interceptor</span><span style="color:#ce5c00;font-weight:bold">&gt;</span> <span style="color:#000">create</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#000">DeployContext</span><span style="color:#ce5c00;font-weight:bold">&lt;?</span> <span style="color:#204a87;font-weight:bold">extends</span> <span style="color:#000">RestlightOptions</span><span style="color:#ce5c00;font-weight:bold">&gt;</span> <span style="color:#000">ctx</span><span style="color:#ce5c00;font-weight:bold">,</span> <span style="color:#000">Route</span> <span style="color:#000">route</span><span style="color:#ce5c00;font-weight:bold">);</span>
 <span style="color:#ce5c00;font-weight:bold">}</span>
 </code></pre></div>
 	
@@ -1002,7 +997,7 @@ if (!doNotTrack) {
 	
 	
 	<div class="text-muted mt-5 pt-3 border-top">
-  Last modified March 10, 2022: <a href="https://github.com/esastack/esa-restlight/commit/79630ff3ff95737a7f6c0018265dc505ff3e3528">introduce docsy as the website framework and add docs-v1.0.0 (#120) (79630ff)</a>
+  Last modified July 28, 2022: <a href="https://github.com/esastack/esa-restlight/commit/8423db1fc4f1562660275f9687daeea75cc0dad9">refactor main docs to v0.1.1 (#199) (8423db1)</a>
 </div>
 
 </div>

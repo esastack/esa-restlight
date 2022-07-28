@@ -14,11 +14,11 @@
     
     
     <item>
-      <title>Docs: 请求处理</title>
-      <link>/docs/restlight_core/handle_request/</link>
+      <title>Docs-V1.0.0: 请求处理</title>
+      <link>/docs-v1.0.0/restlight_core/handle_request/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>/docs/restlight_core/handle_request/</guid>
+      <guid>/docs-v1.0.0/restlight_core/handle_request/</guid>
       <description>
         
         
@@ -99,11 +99,11 @@
     </item>
     
     <item>
-      <title>Docs-V0.1.1: Quick Start</title>
-      <link>/docs-v0.1.1/restlight_server/quick_start/</link>
+      <title>Docs: Quick Start</title>
+      <link>/docs/restlight_server/quick_start/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>/docs-v0.1.1/restlight_server/quick_start/</guid>
+      <guid>/docs/restlight_server/quick_start/</guid>
       <description>
         
         
@@ -172,11 +172,11 @@
     </item>
     
     <item>
-      <title>Docs-V0.1.1: 术语</title>
-      <link>/docs-v0.1.1/restlight_server/terminology/</link>
+      <title>Docs: 术语</title>
+      <link>/docs/restlight_server/terminology/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>/docs-v0.1.1/restlight_server/terminology/</guid>
+      <guid>/docs/restlight_server/terminology/</guid>
       <description>
         
         
@@ -270,11 +270,11 @@
     </item>
     
     <item>
-      <title>Docs-V0.1.1: 请求处理</title>
-      <link>/docs-v0.1.1/restlight_server/handle_request/</link>
+      <title>Docs: 请求处理</title>
+      <link>/docs/restlight_server/handle_request/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>/docs-v0.1.1/restlight_server/handle_request/</guid>
+      <guid>/docs/restlight_server/handle_request/</guid>
       <description>
         
         
@@ -347,11 +347,11 @@
     </item>
     
     <item>
-      <title>Docs-V0.1.1: Restlight Server</title>
-      <link>/docs-v0.1.1/restlight_server/</link>
+      <title>Docs: Restlight Server</title>
+      <link>/docs/restlight_server/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>/docs-v0.1.1/restlight_server/</guid>
+      <guid>/docs/restlight_server/</guid>
       <description>
         
         

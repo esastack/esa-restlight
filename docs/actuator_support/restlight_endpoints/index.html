@@ -27,13 +27,13 @@
 <meta property="og:type" content="article" />
 <meta property="og:url" content="/docs/actuator_support/restlight_endpoints/" /><meta property="article:section" content="docs" />
 
-<meta property="article:modified_time" content="2022-04-26T16:08:09+08:00" /><meta property="og:site_name" content="ESA Restlight" />
+<meta property="article:modified_time" content="2022-07-28T18:08:53+08:00" /><meta property="og:site_name" content="ESA Restlight" />
 
 <meta itemprop="name" content="Restlight Endpoint扩展">
 <meta itemprop="description" content="在[Spring Boot Actuator](https://github.com/spring-projects/spring-boot/tree/master/spring-boot-project/spring-boot-actuator)基础之上`Restlight`提供额外的功能扩展
 ">
-<meta itemprop="dateModified" content="2022-04-26T16:08:09+08:00" />
-<meta itemprop="wordCount" content="265">
+<meta itemprop="dateModified" content="2022-07-28T18:08:53+08:00" />
+<meta itemprop="wordCount" content="520">
 <meta itemprop="keywords" content="Actuator," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Restlight Endpoint扩展"/>
 <meta name="twitter:description" content="在[Spring Boot Actuator](https://github.com/spring-projects/spring-boot/tree/master/spring-boot-project/spring-boot-actuator)基础之上`Restlight`提供额外的功能扩展
@@ -122,9 +122,7 @@ if (!doNotTrack) {
 </a>
 <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
 	
-	<a class="dropdown-item" href="/docs">1.0.0(Newest)</a>
-	
-	<a class="dropdown-item" href="/docs-v0.1.1">v0.1.1</a>
+	<a class="dropdown-item" href="/docs">v0.1.1(Newest)</a>
 	
 	<a class="dropdown-item" href="/docs-v0.1.0">v0.1.0</a>
 	
@@ -157,11 +155,7 @@ if (!doNotTrack) {
       <li class="td-sidebar-nav__section-title td-sidebar-nav__section with-child active-path" id="m-docs-li">
   <a href="/docs/" class="align-left pl-0 td-sidebar-link td-sidebar-link__section tree-root" id="m-docs"><span class="">ESA Restlight</span></a>
   <ul class="ul-1">
-    <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docslatest_introduction-li">
-  <input type="checkbox" id="m-docslatest_introduction-check"/>
-  <label for="m-docslatest_introduction-check"><a href="/docs/latest_introduction/" class="align-left pl-0  td-sidebar-link td-sidebar-link__section" id="m-docslatest_introduction"><span class="">新版说明</span></a></label>
-  
-</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsgetting_started-li">
+    <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsgetting_started-li">
   <input type="checkbox" id="m-docsgetting_started-check"/>
   <label for="m-docsgetting_started-check"><a href="/docs/getting_started/" class="align-left pl-0  td-sidebar-link td-sidebar-link__section" id="m-docsgetting_started"><span class="">Getting Started</span></a></label>
   
@@ -186,10 +180,6 @@ if (!doNotTrack) {
   <input type="checkbox" id="m-docsrestlight_starterfilter-check"/>
   <label for="m-docsrestlight_starterfilter-check"><a href="/docs/restlight_starter/filter/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsrestlight_starterfilter"><span class="">Filter</span></a></label>
   
-</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsrestlight_starterroute_filter-li">
-  <input type="checkbox" id="m-docsrestlight_starterroute_filter-check"/>
-  <label for="m-docsrestlight_starterroute_filter-check"><a href="/docs/restlight_starter/route_filter/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsrestlight_starterroute_filter"><span class="">RouteFilter</span></a></label>
-  
 </li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsrestlight_starterinterceptor-li">
   <input type="checkbox" id="m-docsrestlight_starterinterceptor-check"/>
   <label for="m-docsrestlight_starterinterceptor-check"><a href="/docs/restlight_starter/interceptor/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsrestlight_starterinterceptor"><span class="">拦截器</span></a></label>
@@ -198,29 +188,21 @@ if (!doNotTrack) {
   <input type="checkbox" id="m-docsrestlight_starterexception_resolver-check"/>
   <label for="m-docsrestlight_starterexception_resolver-check"><a href="/docs/restlight_starter/exception_resolver/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsrestlight_starterexception_resolver"><span class="">异常处理</span></a></label>
   
-</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsrestlight_starterparam_resolver-li">
-  <input type="checkbox" id="m-docsrestlight_starterparam_resolver-check"/>
-  <label for="m-docsrestlight_starterparam_resolver-check"><a href="/docs/restlight_starter/param_resolver/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsrestlight_starterparam_resolver"><span class="">参数解析</span></a></label>
+</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsrestlight_starterargument_resolver-li">
+  <input type="checkbox" id="m-docsrestlight_starterargument_resolver-check"/>
+  <label for="m-docsrestlight_starterargument_resolver-check"><a href="/docs/restlight_starter/argument_resolver/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsrestlight_starterargument_resolver"><span class="">参数解析</span></a></label>
   
-</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsrestlight_starterparam_resolver_advice-li">
-  <input type="checkbox" id="m-docsrestlight_starterparam_resolver_advice-check"/>
-  <label for="m-docsrestlight_starterparam_resolver_advice-check"><a href="/docs/restlight_starter/param_resolver_advice/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsrestlight_starterparam_resolver_advice"><span class="">ParamResolverAdvice</span></a></label>
+</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsrestlight_starterargument_resolver_advice-li">
+  <input type="checkbox" id="m-docsrestlight_starterargument_resolver_advice-check"/>
+  <label for="m-docsrestlight_starterargument_resolver_advice-check"><a href="/docs/restlight_starter/argument_resolver_advice/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsrestlight_starterargument_resolver_advice"><span class="">ArgumentResolverAdvice</span></a></label>
   
-</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsrestlight_starterrequestentity_resolver-li">
-  <input type="checkbox" id="m-docsrestlight_starterrequestentity_resolver-check"/>
-  <label for="m-docsrestlight_starterrequestentity_resolver-check"><a href="/docs/restlight_starter/requestentity_resolver/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsrestlight_starterrequestentity_resolver"><span class="">请求实体数据解析</span></a></label>
+</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsrestlight_starterreturnvalue_resolver-li">
+  <input type="checkbox" id="m-docsrestlight_starterreturnvalue_resolver-check"/>
+  <label for="m-docsrestlight_starterreturnvalue_resolver-check"><a href="/docs/restlight_starter/returnvalue_resolver/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsrestlight_starterreturnvalue_resolver"><span class="">返回值解析</span></a></label>
   
-</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsrestlight_starterrequestentity_resolver_advice-li">
-  <input type="checkbox" id="m-docsrestlight_starterrequestentity_resolver_advice-check"/>
-  <label for="m-docsrestlight_starterrequestentity_resolver_advice-check"><a href="/docs/restlight_starter/requestentity_resolver_advice/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsrestlight_starterrequestentity_resolver_advice"><span class="">RequestResolverAdvice</span></a></label>
-  
-</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsrestlight_starterresponseentity_resolver-li">
-  <input type="checkbox" id="m-docsrestlight_starterresponseentity_resolver-check"/>
-  <label for="m-docsrestlight_starterresponseentity_resolver-check"><a href="/docs/restlight_starter/responseentity_resolver/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsrestlight_starterresponseentity_resolver"><span class="">返回值解析</span></a></label>
-  
-</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsrestlight_starterresponseentity_resolver_advice-li">
-  <input type="checkbox" id="m-docsrestlight_starterresponseentity_resolver_advice-check"/>
-  <label for="m-docsrestlight_starterresponseentity_resolver_advice-check"><a href="/docs/restlight_starter/responseentity_resolver_advice/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsrestlight_starterresponseentity_resolver_advice"><span class="">ResponseResolverAdvice</span></a></label>
+</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsrestlight_starterreturnvalue_resolver_advice-li">
+  <input type="checkbox" id="m-docsrestlight_starterreturnvalue_resolver_advice-check"/>
+  <label for="m-docsrestlight_starterreturnvalue_resolver_advice-check"><a href="/docs/restlight_starter/returnvalue_resolver_advice/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsrestlight_starterreturnvalue_resolver_advice"><span class="">ReturnValueResolverAdvice</span></a></label>
   
 </li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsrestlight_starterserialization-li">
   <input type="checkbox" id="m-docsrestlight_starterserialization-check"/>
@@ -343,16 +325,31 @@ if (!doNotTrack) {
   </ul>
 </li><li class="td-sidebar-nav__section-title td-sidebar-nav__section with-child" id="m-docsjaxrs_support-li">
   <input type="checkbox" id="m-docsjaxrs_support-check"/>
-  <label for="m-docsjaxrs_support-check"><a href="/docs/jaxrs_support/" class="align-left pl-0  td-sidebar-link td-sidebar-link__section" id="m-docsjaxrs_support"><span class="">JAX-RS3.0 支持</span></a></label>
+  <label for="m-docsjaxrs_support-check"><a href="/docs/jaxrs_support/" class="align-left pl-0  td-sidebar-link td-sidebar-link__section" id="m-docsjaxrs_support"><span class="">JAX-RS 支持</span></a></label>
   
   <ul class="ul-2 foldable">
     <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsjaxrs_supportannotations_support-li">
   <input type="checkbox" id="m-docsjaxrs_supportannotations_support-check"/>
   <label for="m-docsjaxrs_supportannotations_support-check"><a href="/docs/jaxrs_support/annotations_support/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsjaxrs_supportannotations_support"><span class="">JAX-RS 注解支持</span></a></label>
   
-</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsjaxrs_supportinterface_support-li">
-  <input type="checkbox" id="m-docsjaxrs_supportinterface_support-check"/>
-  <label for="m-docsjaxrs_supportinterface_support-check"><a href="/docs/jaxrs_support/interface_support/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsjaxrs_supportinterface_support"><span class="">JAX-RS 接口支持</span></a></label>
+</li>
+  </ul>
+</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section with-child" id="m-docsrestlight_server-li">
+  <input type="checkbox" id="m-docsrestlight_server-check"/>
+  <label for="m-docsrestlight_server-check"><a href="/docs/restlight_server/" class="align-left pl-0  td-sidebar-link td-sidebar-link__section" id="m-docsrestlight_server"><span class="">Restlight Server</span></a></label>
+  
+  <ul class="ul-2 foldable">
+    <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsrestlight_serverquick_start-li">
+  <input type="checkbox" id="m-docsrestlight_serverquick_start-check"/>
+  <label for="m-docsrestlight_serverquick_start-check"><a href="/docs/restlight_server/quick_start/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsrestlight_serverquick_start"><span class="">Quick Start</span></a></label>
+  
+</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsrestlight_serverterminology-li">
+  <input type="checkbox" id="m-docsrestlight_serverterminology-check"/>
+  <label for="m-docsrestlight_serverterminology-check"><a href="/docs/restlight_server/terminology/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsrestlight_serverterminology"><span class="">术语</span></a></label>
+  
+</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsrestlight_serverhandle_request-li">
+  <input type="checkbox" id="m-docsrestlight_serverhandle_request-check"/>
+  <label for="m-docsrestlight_serverhandle_request-check"><a href="/docs/restlight_server/handle_request/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsrestlight_serverhandle_request"><span class="">请求处理</span></a></label>
   
 </li>
   </ul>
@@ -361,25 +358,13 @@ if (!doNotTrack) {
   <label for="m-docsrestlight_core-check"><a href="/docs/restlight_core/" class="align-left pl-0  td-sidebar-link td-sidebar-link__section" id="m-docsrestlight_core"><span class="">Restlight Core</span></a></label>
   
   <ul class="ul-2 foldable">
-    <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsrestlight_coreterminology-li">
-  <input type="checkbox" id="m-docsrestlight_coreterminology-check"/>
-  <label for="m-docsrestlight_coreterminology-check"><a href="/docs/restlight_core/terminology/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsrestlight_coreterminology"><span class="">术语</span></a></label>
-  
-</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsrestlight_corehandle_request-li">
-  <input type="checkbox" id="m-docsrestlight_corehandle_request-check"/>
-  <label for="m-docsrestlight_corehandle_request-check"><a href="/docs/restlight_core/handle_request/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsrestlight_corehandle_request"><span class="">请求处理</span></a></label>
-  
-</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsrestlight_coreuse_jaxrs-li">
+    <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsrestlight_coreuse_jaxrs-li">
   <input type="checkbox" id="m-docsrestlight_coreuse_jaxrs-check"/>
   <label for="m-docsrestlight_coreuse_jaxrs-check"><a href="/docs/restlight_core/use_jaxrs/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsrestlight_coreuse_jaxrs"><span class="">配合 JAX-RS标准</span></a></label>
   
 </li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsrestlight_coreuse_springmvc-li">
   <input type="checkbox" id="m-docsrestlight_coreuse_springmvc-check"/>
   <label for="m-docsrestlight_coreuse_springmvc-check"><a href="/docs/restlight_core/use_springmvc/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsrestlight_coreuse_springmvc"><span class="">配合 SpringMVC标准</span></a></label>
-  
-</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsrestlight_coreregister_deregister_handler-li">
-  <input type="checkbox" id="m-docsrestlight_coreregister_deregister_handler-check"/>
-  <label for="m-docsrestlight_coreregister_deregister_handler-check"><a href="/docs/restlight_core/register_deregister_handler/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsrestlight_coreregister_deregister_handler"><span class="">动态添加/卸载路由</span></a></label>
   
 </li>
   </ul>
@@ -405,7 +390,7 @@ if (!doNotTrack) {
   
 </li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsasync_supporttips_of_completablefuture-li">
   <input type="checkbox" id="m-docsasync_supporttips_of_completablefuture-check"/>
-  <label for="m-docsasync_supporttips_of_completablefuture-check"><a href="/docs/async_support/tips_of_completablefuture/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsasync_supporttips_of_completablefuture"><span class="">CompletionStage使用注意</span></a></label>
+  <label for="m-docsasync_supporttips_of_completablefuture-check"><a href="/docs/async_support/tips_of_completablefuture/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsasync_supporttips_of_completablefuture"><span class="">CompletableFuture使用注意</span></a></label>
   
 </li>
   </ul>
@@ -452,12 +437,14 @@ if (!doNotTrack) {
     <li><a href="#业务线程池metrics">业务线程池Metrics</a>
       <ul>
         <li><a href="#1json-格式">1、Json 格式</a></li>
+        <li><a href="#2prometheus-格式">2、Prometheus 格式</a></li>
       </ul>
     </li>
     <li><a href="#业务线程池扩缩容">业务线程池扩缩容</a></li>
     <li><a href="#io线程池metrics">IO线程池Metrics</a>
       <ul>
         <li><a href="#1json-格式-1">1、Json 格式</a></li>
+        <li><a href="#2prometheus-格式-1">2、Prometheus 格式</a></li>
       </ul>
     </li>
     <li><a href="#获取restlight所有配置信息">获取Restlight所有配置信息</a></li>
@@ -602,7 +589,45 @@ if (!doNotTrack) {
     <span style="color:#204a87;font-weight:bold">&#34;queueCount&#34;</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#0000cf;font-weight:bold">0</span><span style="color:#000;font-weight:bold">,</span>
     <span style="color:#204a87;font-weight:bold">&#34;completedTaskCount&#34;</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#0000cf;font-weight:bold">5</span>
 <span style="color:#000;font-weight:bold">}</span>
-</code></pre></div><h2 id="业务线程池扩缩容">业务线程池扩缩容</h2>
+</code></pre></div><h3 id="2prometheus-格式">2、Prometheus 格式</h3>
+<p><strong><code>Get</code> <code>actuator/bizthreadpool4prometheus</code></strong></p>
+<p>Example:</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">curl -X GET localhost:8080/actuator/bizthreadpool4prometheus
+</code></pre></div><p>返回</p>
+<pre tabindex="0"><code># HELP core_pool_size  
+# TYPE core_pool_size gauge
+core_pool_size 1.0
+# HELP active_count  
+# TYPE active_count gauge
+active_count 0.0
+# HELP queue_count  
+# TYPE queue_count gauge
+queue_count 0.0
+# HELP largest_pool_size  
+# TYPE largest_pool_size gauge
+largest_pool_size 0.0
+# HELP reject_task_count  
+# TYPE reject_task_count gauge
+reject_task_count -1.0
+# HELP max_pool_size  
+# TYPE max_pool_size gauge
+max_pool_size 2.0
+# HELP pool_size  
+# TYPE pool_size gauge
+pool_size 0.0
+# HELP queue_length  
+# TYPE queue_length gauge
+queue_length 1024.0
+# HELP keep_alive_time_seconds  
+# TYPE keep_alive_time_seconds gauge
+keep_alive_time_seconds 60.0
+# HELP task_count  
+# TYPE task_count gauge
+task_count 0.0
+# HELP completed_task_count  
+# TYPE completed_task_count gauge
+completed_task_count 0.0
+</code></pre><h2 id="业务线程池扩缩容">业务线程池扩缩容</h2>
 <p><strong><code>Post</code> <code>actuator/bizthreadpool</code></strong></p>
 <div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">curl -X POST -H <span style="color:#4e9a06">&#34;Content-Type:application/json&#34;</span> -d <span style="color:#4e9a06">&#34;{\&#34;corePoolSize\&#34;:\&#34;1\&#34;,\&#34;maxPoolSize\&#34;:\&#34;2\&#34;}&#34;</span> localhost:8080/actuator/bizthreadpool
 </code></pre></div><h2 id="io线程池metrics">IO线程池Metrics</h2>
@@ -642,6 +667,68 @@ if (!doNotTrack) {
     <span style="color:#204a87;font-weight:bold">&#34;terminated&#34;</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#204a87;font-weight:bold">false</span><span style="color:#000;font-weight:bold">,</span>
     <span style="color:#204a87;font-weight:bold">&#34;shutDown&#34;</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#204a87;font-weight:bold">false</span>
 <span style="color:#000;font-weight:bold">}</span>
+</code></pre></div><h3 id="2prometheus-格式-1">2、Prometheus 格式</h3>
+<p><strong><code>Get</code> <code>actuator/ioexecutor4prometheus</code></strong></p>
+<p>Example:</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">curl -X GET localhost:8080/actuator/ioexecutor4prometheus
+</code></pre></div><p>返回</p>
+<pre tabindex="0"><code># HELP pending_tasks_netty_io_1_0  
+# TYPE pending_tasks_netty_io_1_0 gauge
+pending_tasks_netty_io_1_0 0.0
+# HELP thread_state_netty_io_1_1  
+# TYPE thread_state_netty_io_1_1 gauge
+thread_state_netty_io_1_1 1.0
+# HELP thread_states_runnable  
+# TYPE thread_states_runnable gauge
+thread_states_runnable 2.0
+# HELP task_queue_size_netty_io_1_1  
+# TYPE task_queue_size_netty_io_1_1 gauge
+task_queue_size_netty_io_1_1 0.0
+# HELP thread_priority  
+# TYPE thread_priority gauge
+thread_priority 5.0
+# HELP pending_tasks_netty_io_1_1  
+# TYPE pending_tasks_netty_io_1_1 gauge
+pending_tasks_netty_io_1_1 0.0
+# HELP pending_tasks  
+# TYPE pending_tasks gauge
+pending_tasks 0.0
+# HELP terminated  
+# TYPE terminated gauge
+terminated 0.0
+# HELP max_pending_tasks  
+# TYPE max_pending_tasks gauge
+max_pending_tasks 2.147483647E9
+# HELP thread_state_netty_io_1_0  
+# TYPE thread_state_netty_io_1_0 gauge
+thread_state_netty_io_1_0 1.0
+# HELP io_ratio  
+# TYPE io_ratio gauge
+io_ratio 50.0
+# HELP shutdown  
+# TYPE shutdown gauge
+shutdown 0.0
+# HELP task_queue_size_netty_io_1_0  
+# TYPE task_queue_size_netty_io_1_0 gauge
+task_queue_size_netty_io_1_0 0.0
+# HELP thread_count  
+# TYPE thread_count gauge
+thread_count 2.0
+</code></pre>
+
+<div class="alert alert-warning" role="alert">
+<h4 class="alert-heading">warning</h4>
+
+    比较昂贵的操作， 不建议频繁调用
+
+</div>
+
+<p>当使用的Springboot版本为2.3.X及以上时，需要在pom文件中引入micrometer-registry-prometheus 1.5.1及以上版本，此处以1.5.1版本为例，直接引入即可覆盖原有版本，具体操作如下：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#204a87;font-weight:bold">&lt;dependency&gt;</span>
+    <span style="color:#204a87;font-weight:bold">&lt;groupId&gt;</span>io.micrometer<span style="color:#204a87;font-weight:bold">&lt;/groupId&gt;</span>
+    <span style="color:#204a87;font-weight:bold">&lt;artifactId&gt;</span>micrometer-registry-prometheus<span style="color:#204a87;font-weight:bold">&lt;/artifactId&gt;</span>
+    <span style="color:#204a87;font-weight:bold">&lt;version&gt;</span>1.5.1<span style="color:#204a87;font-weight:bold">&lt;/version&gt;</span>
+<span style="color:#204a87;font-weight:bold">&lt;/dependency&gt;</span>
 </code></pre></div><h2 id="获取restlight所有配置信息">获取Restlight所有配置信息</h2>
 <p><strong><code>Get</code> <code>actuator/restlightconfigs</code></strong></p>
 <p>Example:</p>
@@ -788,7 +875,7 @@ if (!doNotTrack) {
 	
 	
 	<div class="text-muted mt-5 pt-3 border-top">
-  Last modified April 26, 2022: <a href="https://github.com/esastack/esa-restlight/commit/20df33eea55da45b44016f636037c1515973628a">delete docs about Prometheus (20df33e)</a>
+  Last modified July 28, 2022: <a href="https://github.com/esastack/esa-restlight/commit/8423db1fc4f1562660275f9687daeea75cc0dad9">refactor main docs to v0.1.1 (#199) (8423db1)</a>
 </div>
 
 </div>

@@ -398,18 +398,19 @@ This is the multi-page printable view of this section.
 <p>异常处理器可以类似Controller中异步处理一样完成异步的处理
 <code>Restlight</code>异步支持</p>
 <ul>
-<li>CompletionStage</li>
+<li>CompletableFuture</li>
 <li>ListenableFuture(Guava)</li>
+<li>Future(io.netty.util.concurrent.Future)</li>
 </ul>
-<p>使用CompletionStage异步方式：</p>
+<p>使用CompletableFuture异步方式：</p>
 <div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#5c35cc;font-weight:bold">@ExceptionHanlder</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#000">Exception</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#c4a000">class</span><span style="color:#ce5c00;font-weight:bold">)</span>
-<span style="color:#204a87;font-weight:bold">public</span> <span style="color:#000">CompletionStage</span><span style="color:#ce5c00;font-weight:bold">&lt;</span><span style="color:#000">String</span><span style="color:#ce5c00;font-weight:bold">&gt;</span> <span style="color:#000">handleExcption</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#000">Exception</span> <span style="color:#000">ex</span><span style="color:#ce5c00;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">{</span>
+<span style="color:#204a87;font-weight:bold">public</span> <span style="color:#000">CompletableFuture</span><span style="color:#ce5c00;font-weight:bold">&lt;</span><span style="color:#000">String</span><span style="color:#ce5c00;font-weight:bold">&gt;</span> <span style="color:#000">handleExcption</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#000">Exception</span> <span style="color:#000">ex</span><span style="color:#ce5c00;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">{</span>
     <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">CompletableFuture</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#c4a000">supplyAsync</span><span style="color:#ce5c00;font-weight:bold">(()</span> <span style="color:#ce5c00;font-weight:bold">-&gt;</span> <span style="color:#ce5c00;font-weight:bold">{</span>
         <span style="color:#8f5902;font-style:italic">// ...
 </span><span style="color:#8f5902;font-style:italic"></span>        <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#4e9a06">&#34;Hello Restlight!&#34;</span><span style="color:#ce5c00;font-weight:bold">;</span>
     <span style="color:#ce5c00;font-weight:bold">});</span>
 <span style="color:#ce5c00;font-weight:bold">}</span>
-</code></pre></div><p><code>ListenableFuture(Guava)</code>同理。</p>
+</code></pre></div><p><code>ListenableFuture(Guava)</code>与<code>Future(io.netty.util.concurrent.Future)</code>同理。</p>
 
 </div>
 

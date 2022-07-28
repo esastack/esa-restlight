@@ -171,7 +171,7 @@ This is the multi-page printable view of this section.
     
     
 	
-<li>2: <a href="#pg-90151b09924b0376f5d61f29b762a7fb">CompletionStage使用注意</a></li>
+<li>2: <a href="#pg-90151b09924b0376f5d61f29b762a7fb">CompletableFuture使用注意</a></li>
 
 
     
@@ -206,14 +206,14 @@ This is the multi-page printable view of this section.
 <div class="td-content" style="">
     
 	<h1 id="pg-8286989c9c6f7a25228e264e138b0adf">1 - Restlight 异步保证</h1>
-    <div class="lead"><code>Restlight</code>保证在框架层面对所有的<code>CompletionStage</code>处理都不会主动的切换执行的线程</div>
+    <div class="lead"><code>Restlight</code>保证在框架层面对所有的<code>CompletableFuture</code>处理都不会主动的切换执行的线程</div>
 	<p>这个保证使得用户无需担心不知道自己的代码将会在什么线程上执行。</p>
 
 
 <div class="alert alert-primary" role="alert">
 <h4 class="alert-heading">Tip</h4>
 
-    上面的保证意味着如果用字自己切换了执行的线程（通常异步可能都会做这个动作），那么这个节点以后的所有代码都将在切换后的线程上执行，而不是在<code>Restlight</code>的业务线程池。
+    上面的保证意味着如果用字自己切换了执行的线程（通常异步可能都会做这个动作）， 那么这个节点以后的所有代码都将在切换后的线程上执行， 而不是在<code>Restlight</code>的业务线程池。
 
 </div>
 
@@ -222,7 +222,9 @@ This is the multi-page printable view of this section.
 <div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#204a87;font-weight:bold">private</span> <span style="color:#204a87;font-weight:bold">final</span> <span style="color:#000">Executor</span> <span style="color:#000">customExecutor</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#ce5c00;font-weight:bold">...;</span>
             
 <span style="color:#5c35cc;font-weight:bold">@Override</span>
-<span style="color:#204a87;font-weight:bold">public</span> <span style="color:#000">CompletionStage</span><span style="color:#ce5c00;font-weight:bold">&lt;</span><span style="color:#000">Boolean</span><span style="color:#ce5c00;font-weight:bold">&gt;</span> <span style="color:#000">preHandle0</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#000">RequestContext</span> <span style="color:#000">context</span><span style="color:#ce5c00;font-weight:bold">,</span> <span style="color:#000">Object</span> <span style="color:#000">handler</span><span style="color:#ce5c00;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">{</span>
+<span style="color:#204a87;font-weight:bold">public</span> <span style="color:#000">CompletableFuture</span><span style="color:#ce5c00;font-weight:bold">&lt;</span><span style="color:#000">Boolean</span><span style="color:#ce5c00;font-weight:bold">&gt;</span> <span style="color:#000">preHandle0</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#000">AsyncRequest</span> <span style="color:#000">request</span><span style="color:#ce5c00;font-weight:bold">,</span>
+                                             <span style="color:#000">AsyncResponse</span> <span style="color:#000">response</span><span style="color:#ce5c00;font-weight:bold">,</span>
+                                             <span style="color:#000">Object</span> <span style="color:#000">handler</span><span style="color:#ce5c00;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">{</span>
     <span style="color:#8f5902;font-style:italic">// 线程切换到 customExecutor并回调Restlight
 </span><span style="color:#8f5902;font-style:italic"></span>    <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">CompletableFuture</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#c4a000">supplyAsync</span><span style="color:#ce5c00;font-weight:bold">(()</span> <span style="color:#ce5c00;font-weight:bold">-&gt;</span> <span style="color:#ce5c00;font-weight:bold">{</span>
         <span style="color:#8f5902;font-style:italic">// ....
@@ -236,9 +238,9 @@ This is the multi-page printable view of this section.
     <span style="color:#8f5902;font-style:italic">// biz logic
 </span><span style="color:#8f5902;font-style:italic"></span>    <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#4e9a06">&#34;Hello Restlight!&#34;</span><span style="color:#ce5c00;font-weight:bold">;</span>
 <span style="color:#ce5c00;font-weight:bold">}</span>
-</code></pre></div><p>如果需要回到业务线程池执行则需要用户自行通过<code>CompletionStage</code>进行操作</p>
+</code></pre></div><p>如果需要回到业务线程池执行则需要用户自行通过<code>CompletableFuture</code>进行操作</p>
 <div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#5c35cc;font-weight:bold">@GetMapping</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#000">value</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#4e9a06">&#34;/test&#34;</span><span style="color:#ce5c00;font-weight:bold">)</span>
-<span style="color:#204a87;font-weight:bold">public</span> <span style="color:#000">CompletionStage</span><span style="color:#ce5c00;font-weight:bold">&lt;</span><span style="color:#000">String</span><span style="color:#ce5c00;font-weight:bold">&gt;</span> <span style="color:#000">foo</span><span style="color:#ce5c00;font-weight:bold">()</span> <span style="color:#ce5c00;font-weight:bold">{</span>
+<span style="color:#204a87;font-weight:bold">public</span> <span style="color:#000">CompletableFuture</span><span style="color:#ce5c00;font-weight:bold">&lt;</span><span style="color:#000">String</span><span style="color:#ce5c00;font-weight:bold">&gt;</span> <span style="color:#000">foo</span><span style="color:#ce5c00;font-weight:bold">()</span> <span style="color:#ce5c00;font-weight:bold">{</span>
     <span style="color:#8f5902;font-style:italic">// 回到业务线程池执行Controller逻辑
 </span><span style="color:#8f5902;font-style:italic"></span>    <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">CompletableFuture</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#c4a000">supplyAsync</span><span style="color:#ce5c00;font-weight:bold">(()</span> <span style="color:#ce5c00;font-weight:bold">-&gt;</span> <span style="color:#ce5c00;font-weight:bold">{</span>
         <span style="color:#8f5902;font-style:italic">// biz logic
@@ -260,11 +262,11 @@ This is the multi-page printable view of this section.
 
 <div class="td-content" style="page-break-before: always">
     
-	<h1 id="pg-90151b09924b0376f5d61f29b762a7fb">2 - CompletionStage使用注意</h1>
+	<h1 id="pg-90151b09924b0376f5d61f29b762a7fb">2 - CompletableFuture使用注意</h1>
     
 	<ul>
-<li><code>CompletionStage</code>中<strong>不带</strong><code>xxxAsync(xxx)</code>的方法默认会在当前线程执行(当前线程指的是调用<code>CompletableFuture.complete(xxx)</code>或者<code>CompletableFuture.completeExceptionally(xxx)</code>的线程)， 因此此种方式<code>CompletableFuture</code>的线程执行策略为尽量不切换线程（这里的尽量并不是完全一定， 因为如果当前future已经为完成的状态那么<code>CompletableFuture</code>会直接执行后续逻辑）</li>
-<li><code>CompletionStage</code>中<strong>带</strong><code>xxxAsync(xxx)</code>的方法要求传入一个<code>Executor</code>， 后续回掉逻辑将在这个<code>Executor</code>中执行。 默认不传的情况下会使用<code>ForkJoinPool</code>中的公共线程池。 因此应当对所有的<code>xxxAsync(xxx)</code>方法调用格外注意， 一旦使用了错误的线程池可能导致隔离性的缺失， 性能不符合预期等问题。</li>
+<li><code>CompletableFuture</code>中<strong>不带</strong><code>xxxAsync(xxx)</code>的方法默认会在当前线程执行(当前线程指的是调用<code>CompletableFuture.complete(xxx)</code>或者<code>CompletableFuture.completeExceptionally(xxx)</code>的线程)， 因此此种方式<code>CompletableFuture</code>的线程执行策略为尽量不切换线程（这里的尽量并不是完全一定， 因为如果当前future已经为完成的状态那么<code>CompletableFuture</code>会直接执行后续逻辑）</li>
+<li><code>CompletableFuture</code>中<strong>带</strong><code>xxxAsync(xxx)</code>的方法要求传入一个<code>Executor</code>， 后续回掉逻辑将在这个<code>Executor</code>中执行。 默认不传的情况下会使用<code>ForkJoinPool</code>中的公共线程池。 因此应当对所有的<code>xxxAsync(xxx)</code>方法调用格外注意， 一旦使用了错误的线程池可能导致隔离性的缺失， 性能不符合预期等问题。</li>
 </ul>
 
 </div>

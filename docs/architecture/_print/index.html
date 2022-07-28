@@ -184,10 +184,19 @@ This is the multi-page printable view of this section.
 <p><strong>分层架构设计</strong></p>
 <p><img src="../../img/architecture.png" alt="Architecture"></p>
 <p>架构图中<code>ESA HttpServer</code>, <code>Restlight Server</code>, <code>Restlight Core</code>, <code>Restlight for Spring</code>, <code>Restlight Starter</code>几个模块均可作为一个独立的模块使用， 满足不同场景下的需求。</p>
-<p><strong>请求处理时序图</strong>
-<img src="../../img/time_sequence.jpg" alt="TimeSequence"></p>
 <h3 id="esa-httpserver">ESA HttpServer</h3>
 <p>基于<code>Netty</code> 实现的一个简易的<a href="https://github.com/esastack/esa-httpserver">HttpServer</a>， 支持Http1.1/Http2以及Https等</p>
+<h3 id="restlight-server">Restlight Server</h3>
+<p>在<code>ESA HttpServer</code>基础之上封装了</p>
+<ul>
+<li>引入业务线程池</li>
+<li><code>Filter</code></li>
+<li>请求路由（根据url, method, header等条件将请求路由到对应的Handler）</li>
+<li>基于<code>CompletableFuture</code>的响应式编程支持</li>
+<li>线程调度</li>
+<li>&hellip;</li>
+</ul>
+<h4 id="对应启动入口类esarestlightserverrestlite">对应启动入口类<code>esa.restlight.server.Restlite</code></h4>
 
 
 <div class="alert alert-primary" role="alert">
@@ -198,13 +207,8 @@ This is the multi-page printable view of this section.
 </div>
 
 <h3 id="restlight-core">Restlight Core</h3>
-<p>在<code>ESA HttpServer</code>之上， 引入了业务线程池、<code>Filter</code>、路由等并支持了以<code>Controller</code>方式（在<code>Controller</code>类中通过诸如<code>@RequestMappng</code>等注解的方式构造请求处理逻辑）完成业务逻辑以及诸多常用功能</p>
+<p>在<code>Restlight Server</code>之上， 扩展支持了<code>Controller</code>方式（在<code>Controller</code>类中通过诸如<code>@RequestMappng</code>等注解的方式构造请求处理逻辑）完成业务逻辑以及诸多常用功能</p>
 <ul>
-<li>引入业务线程池</li>
-<li><code>Filter</code></li>
-<li>请求路由（根据url, method, header等条件将请求路由到对应的Handler）</li>
-<li>基于<code>CompletionStage</code>的响应式编程支持</li>
-<li>线程调度</li>
 <li><code>HandlerInterceptor</code>: 拦截器</li>
 <li><code>ExceptionHandler</code>: 全局异常处理器</li>
 <li><code>BeanValidation</code>: 参数校验</li>
@@ -215,7 +219,7 @@ This is the multi-page printable view of this section.
 <li>内置<code>Jackson</code>, <code>Fastjson</code>, <code>Gson</code>, <code>ProtoBuf</code>序列化支持</li>
 <li>&hellip;</li>
 </ul>
-<h4 id="对应启动入口类ioesastackrestlightcorerestlight">对应启动入口类<code>io.esastack.restlight.core.Restlight</code></h4>
+<h4 id="对应启动入口类esarestlightcorerestlight">对应启动入口类<code>esa.restlight.core.Restlight</code></h4>
 
 
 <div class="alert alert-primary" role="alert">

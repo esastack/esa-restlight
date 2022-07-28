@@ -1,0 +1,279 @@
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="generator" content="Hugo 0.92.2" />
+<meta name="robots" content="index, follow">
+
+
+<link rel="shortcut icon" href="/favicons/favicon.ico" >
+<link rel="apple-touch-icon" href="/favicons/apple-touch-icon-180x180.png" sizes="180x180">
+<link rel="icon" type="image/png" href="/favicons/favicon-16x16.png" sizes="16x16">
+<link rel="icon" type="image/png" href="/favicons/favicon-32x32.png" sizes="32x32">
+<link rel="icon" type="image/png" href="/favicons/android-36x36.png" sizes="36x36">
+<link rel="icon" type="image/png" href="/favicons/android-48x48.png" sizes="48x48">
+<link rel="icon" type="image/png" href="/favicons/android-72x72.png" sizes="72x72">
+<link rel="icon" type="image/png" href="/favicons/android-96x96.png" sizes="96x96">
+<link rel="icon" type="image/png" href="/favicons/android-144x144.png" sizes="144x144">
+<link rel="icon" type="image/png" href="/favicons/android-192x192.png" sizes="192x192">
+
+<title>ResponseResolverAdvice | ESA Restlight</title>
+<meta name="description" content="`ResponseEntityResolverAdvice`允许用户在`ResponseEntityResolver`返回值处理的前后添加业务逻辑。
+">
+<meta property="og:title" content="ResponseResolverAdvice" />
+<meta property="og:description" content="`ResponseEntityResolverAdvice`允许用户在`ResponseEntityResolver`返回值处理的前后添加业务逻辑。
+" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="/docs-v1.0.0/restlight_starter/responseentity_resolver_advice/" /><meta property="article:section" content="docs-v1.0.0" />
+
+<meta property="article:modified_time" content="2022-07-28T18:08:53+08:00" /><meta property="og:site_name" content="ESA Restlight" />
+
+<meta itemprop="name" content="ResponseResolverAdvice">
+<meta itemprop="description" content="`ResponseEntityResolverAdvice`允许用户在`ResponseEntityResolver`返回值处理的前后添加业务逻辑。
+">
+<meta itemprop="dateModified" content="2022-07-28T18:08:53+08:00" />
+<meta itemprop="wordCount" content="91">
+<meta itemprop="keywords" content="feature," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="ResponseResolverAdvice"/>
+<meta name="twitter:description" content="`ResponseEntityResolverAdvice`允许用户在`ResponseEntityResolver`返回值处理的前后添加业务逻辑。
+"/>
+
+
+
+
+<link rel="preload" href="/scss/main.min.d6e0d5abc6f6a3c1d53dbb7d3961f4afa416f54a6cd0393408d9a241c4e351fa.css" as="style">
+<link href="/scss/main.min.d6e0d5abc6f6a3c1d53dbb7d3961f4afa416f54a6cd0393408d9a241c4e351fa.css" rel="stylesheet" integrity="">
+
+<script
+  src="https://code.jquery.com/jquery-3.6.0.min.js"
+  integrity="sha384-vtXRMe3mGCbOeY7l30aIg8H9p3GdeSe4IFlP6G8JMa7o7lXvnz3GFKzPxzJdPfGK"
+  crossorigin="anonymous"></script>
+
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-00000000-0', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+  </head>
+  <body class="td-page">
+    <header>
+      
+<nav class="js-navbar-scroll navbar navbar-expand navbar-dark flex-column flex-md-row td-navbar">
+        <a class="navbar-brand" href="/">
+		<span class="navbar-logo"><svg id="layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 180 180" style="enable-background:new 0 0 180 180"><style>.st0{fill-rule:evenodd;clip-rule:evenodd;fill:#fff}.st1{opacity:.6;fill-rule:evenodd;clip-rule:evenodd;fill:#fff;enable-background:new}.st2{opacity:.3;fill-rule:evenodd;clip-rule:evenodd;fill:#fff;enable-background:new}</style><g><path class="st0" d="M127.6 95.9c-11-2.2-23.9-3.5-37.7-3.5-13.9.0-26.8 1.2-37.7 3.5 11 2.2 23.9 3.5 37.7 3.5S116.7 98 127.6 95.9zM135.8 97.8c-12.7 3.2-28.6 5.2-45.9 5.2s-33.3-2-45.9-5.2c-2.1.5-4.1 1.1-5.9 1.7-6.5 2.2-11.6 4.7-14.9 7.3-3.3 2.6-4.4 4.9-4.4 6.8s1.1 4.2 4.4 6.8 8.4 5.2 14.9 7.3c13.1 4.3 31.5 7 51.8 7s38.7-2.7 51.8-7c6.5-2.2 11.6-4.7 14.9-7.3s4.4-4.9 4.4-6.8-1.1-4.2-4.4-6.8-8.4-5.2-14.9-7.3C139.9 98.9 137.9 98.3 135.8 97.8z"/><path class="st1" d="M120.9 59.2C111.5 57.7 101 57 89.8 57c-11.1.0-21.7.9-31.1 2.2 9.4 1.5 19.9 2.2 31.1 2.2C101 61.5 111.5 60.7 120.9 59.2zm10 1.8c-11.8 2.6-25.9 4.1-41 4.1-15.2.0-29.2-1.5-41-4.1-3.9.9-7.5 1.9-10.9 3-6.5 2.2-11.6 4.7-14.9 7.3-3.3 2.6-4.4 4.9-4.4 6.8s1.1 4.2 4.4 6.8c3.3 2.6 8.4 5.2 14.9 7.3 13.1 4.3 31.5 7 51.8 7s38.7-2.7 51.8-7c6.5-2.2 11.6-4.7 14.9-7.3s4.4-4.9 4.4-6.8-1.1-4.2-4.4-6.8-8.4-5.2-14.9-7.3C138.4 63 134.8 62 130.9 61z"/><path class="st2" d="M161.1 40.3c0 1.9-1.1 4.2-4.4 6.8-3.3 2.6-8.4 5.2-14.9 7.3-13.1 4.3-31.5 7-51.8 7s-38.7-2.7-51.8-7c-6.5-2.2-11.6-4.7-14.9-7.3s-4.4-4.9-4.4-6.8 1.1-4.2 4.4-6.8 8.4-5.2 14.9-7.3c13.1-4.3 31.5-7 51.8-7s38.7 2.7 51.8 7c6.5 2.2 11.6 4.7 14.9 7.3S161.1 38.5 161.1 40.3z"/></g></svg></span><span class="font-weight-bold">ESA Restlight</span>
+	</a>
+	<div class="td-navbar-nav-scroll ml-md-auto" id="main_navbar">
+		<ul class="navbar-nav mt-2 mt-lg-0">
+			
+			
+			<li class="nav-item mr-4 mb-2 mb-lg-0">
+				
+				
+				
+				
+				
+				
+				<a class="nav-link" href="/docs/" ><i class='fas fa-book pr-2'></i><span>Docs</span></a>
+			</li>
+			
+			<li class="nav-item mr-4 mb-2 mb-lg-0">
+				
+				
+				
+				
+				
+				
+				<a class="nav-link" href="/blog/" ><i class='fas fa-rss pr-2'></i><span>Blog</span></a>
+			</li>
+			
+			<li class="nav-item mr-4 mb-2 mb-lg-0">
+				
+				
+				
+				
+				
+				
+				<a class="nav-link" href="https://github.com/esastack/esa-restlight" target="_blank" ><i class='fab fa-github pr-2'></i><span>Github</span></a>
+			</li>
+			
+			<li class="nav-item mr-4 mb-2 mb-lg-0">
+				
+				
+				
+				
+				
+				
+				<a class="nav-link" href="https://www.esastack.io" target="_blank" ><span>ESA Stack</span></a>
+			</li>
+			
+
+
+
+
+
+			
+		</ul>
+	</div>
+	<div class="navbar-nav d-none d-lg-block"><input type="search" class="form-control td-search-input" placeholder="&#xf002; Search this site…" aria-label="Search this site…" autocomplete="off">
+</div>
+</nav>
+
+    </header>
+    <div class="container-fluid td-default td-outer">
+      <main role="main" class="td-main">
+        
+
+<h2 id="接口定义">接口定义</h2>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#204a87;font-weight:bold">public</span> <span style="color:#204a87;font-weight:bold">interface</span> <span style="color:#000">ResponseEntityResolverAdvice</span> <span style="color:#ce5c00;font-weight:bold">{</span>
+
+    <span style="color:#8f5902;font-style:italic">/**
+</span><span style="color:#8f5902;font-style:italic">     * This method will be called around
+</span><span style="color:#8f5902;font-style:italic">     * {@link ResponseEntityResolver#writeTo(ResponseEntity, ResponseEntityChannel, RequestContext)}.
+</span><span style="color:#8f5902;font-style:italic">     *
+</span><span style="color:#8f5902;font-style:italic">     * @param context context
+</span><span style="color:#8f5902;font-style:italic">     * @throws Exception exception
+</span><span style="color:#8f5902;font-style:italic">     */</span>
+    <span style="color:#204a87;font-weight:bold">void</span> <span style="color:#000">aroundWrite</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#000">ResponseEntityResolverContext</span> <span style="color:#000">context</span><span style="color:#ce5c00;font-weight:bold">)</span> <span style="color:#204a87;font-weight:bold">throws</span> <span style="color:#000">Exception</span><span style="color:#ce5c00;font-weight:bold">;</span>
+
+<span style="color:#ce5c00;font-weight:bold">}</span>
+</code></pre></div><h2 id="自定义responseentityresolveradvice">自定义<code>ResponseEntityResolverAdvice</code></h2>
+<p>与<code>ResponseEntityResolver</code>相同，<code>ResponseEntityResolverAdvice</code>自定应时同样需要实现<code>ResponseEntityResolverAdviceAdapter</code>或<code>ResponseEntityResolverAdviceFactory</code>接口</p>
+<h3 id="方式1-实现responseentityresolveradviceadapter">方式1 实现<code>ResponseEntityResolverAdviceAdapter</code></h3>
+<p>接口定义</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#204a87;font-weight:bold">public</span> <span style="color:#204a87;font-weight:bold">interface</span> <span style="color:#000">ResponseEntityResolverAdviceAdapter</span>
+        <span style="color:#204a87;font-weight:bold">extends</span> <span style="color:#000">HandlerPredicate</span><span style="color:#ce5c00;font-weight:bold">,</span> <span style="color:#000">ResponseEntityResolverAdvice</span><span style="color:#ce5c00;font-weight:bold">,</span> <span style="color:#000">Ordered</span> <span style="color:#ce5c00;font-weight:bold">{</span>
+
+    <span style="color:#5c35cc;font-weight:bold">@Override</span>
+    <span style="color:#204a87;font-weight:bold">default</span> <span style="color:#204a87;font-weight:bold">boolean</span> <span style="color:#000">supports</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#000">HandlerMethod</span> <span style="color:#000">method</span><span style="color:#ce5c00;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">{</span>
+        <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#204a87;font-weight:bold">true</span><span style="color:#ce5c00;font-weight:bold">;</span>
+    <span style="color:#ce5c00;font-weight:bold">}</span>
+
+    <span style="color:#5c35cc;font-weight:bold">@Override</span>
+    <span style="color:#204a87;font-weight:bold">default</span> <span style="color:#204a87;font-weight:bold">int</span> <span style="color:#000">getOrder</span><span style="color:#ce5c00;font-weight:bold">()</span> <span style="color:#ce5c00;font-weight:bold">{</span>
+        <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">Ordered</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#c4a000">HIGHEST_PRECEDENCE</span><span style="color:#ce5c00;font-weight:bold">;</span>
+    <span style="color:#ce5c00;font-weight:bold">}</span>
+<span style="color:#ce5c00;font-weight:bold">}</span>
+
+</code></pre></div><h3 id="方式2实现responseentityresolveradvicefactory">方式2：实现<code>ResponseEntityResolverAdviceFactory</code></h3>
+<p>接口定义</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#204a87;font-weight:bold">public</span> <span style="color:#204a87;font-weight:bold">interface</span> <span style="color:#000">ResponseEntityResolverAdviceFactory</span> <span style="color:#204a87;font-weight:bold">extends</span> <span style="color:#000">ResponseEntityPredicate</span><span style="color:#ce5c00;font-weight:bold">,</span> <span style="color:#000">Ordered</span> <span style="color:#ce5c00;font-weight:bold">{</span>
+    <span style="color:#8f5902;font-style:italic">/**
+</span><span style="color:#8f5902;font-style:italic">     * 生成ResponseEntityResolverAdvice
+</span><span style="color:#8f5902;font-style:italic">     */</span>
+    <span style="color:#000">ResponseEntityResolverAdvice</span> <span style="color:#000">createResolverAdvice</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#000">HandlerMethod</span> <span style="color:#000">method</span><span style="color:#ce5c00;font-weight:bold">);</span>
+
+    <span style="color:#5c35cc;font-weight:bold">@Override</span>
+    <span style="color:#204a87;font-weight:bold">default</span> <span style="color:#204a87;font-weight:bold">int</span> <span style="color:#000">getOrder</span><span style="color:#ce5c00;font-weight:bold">()</span> <span style="color:#ce5c00;font-weight:bold">{</span>
+        <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">HIGHEST_PRECEDENCE</span><span style="color:#ce5c00;font-weight:bold">;</span>
+    <span style="color:#ce5c00;font-weight:bold">}</span>
+<span style="color:#ce5c00;font-weight:bold">}</span>
+</code></pre></div><p><code>ResponseEntityResolverAdviceAdapter</code>接口以及<code>ResponseEntityResolverAdviceFactory</code>接口与<code>ResponseEntityResolver</code>中的<code>ResponseEntityResolverAdapter</code>接口以及<code>ResponseEntityResolverFactory</code>接口的使用方式相同，这里不过多赘述。</p>
+
+
+
+      </main>
+      
+<footer class="bg-dark py-5 row d-print-none">
+  <div class="container-fluid mx-sm-5">
+    <div class="row">
+      <div class="col-6 col-sm-4 text-xs-center order-sm-2">
+        
+        
+        
+<ul class="list-inline mb-0">
+  
+  <li class="list-inline-item mx-2 h3" data-toggle="tooltip" data-placement="top" title="User mailing list" aria-label="User mailing list">
+    <a class="text-white" target="_blank" rel="noopener" href="mailto:esa.stack@oppo.com" aria-label="User mailing list">
+      <i class="fa fa-envelope"></i>
+    </a>
+  </li>
+  
+</ul>
+
+        
+        
+      </div>
+      <div class="col-6 col-sm-4 text-right text-xs-center order-sm-3">
+        
+        
+        
+<ul class="list-inline mb-0">
+  
+  <li class="list-inline-item mx-2 h3" data-toggle="tooltip" data-placement="top" title="GitHub" aria-label="GitHub">
+    <a class="text-white" target="_blank" rel="noopener" href="https://github.com/esastack/esa-restlight" aria-label="GitHub">
+      <i class="fab fa-github"></i>
+    </a>
+  </li>
+  
+  <li class="list-inline-item mx-2 h3" data-toggle="tooltip" data-placement="top" title="Developer mailing list" aria-label="Developer mailing list">
+    <a class="text-white" target="_blank" rel="noopener" href="mailto:esa.stack@oppo.com" aria-label="Developer mailing list">
+      <i class="fa fa-envelope"></i>
+    </a>
+  </li>
+  
+</ul>
+
+        
+        
+      </div>
+      <div class="col-12 col-sm-4 text-center py-2 order-sm-2">
+        <small class="text-white">&copy; 2022 OPPO ESA Stack Project All Rights Reserved</small>
+        
+	
+		
+	
+      </div>
+    </div>
+  </div>
+</footer>
+
+
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
+    integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
+    crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.min.js"
+    integrity="sha512-UR25UO94eTnCVwjbXozyeVd6ZqpaAE9naiEUBK/A+QDbfSTQFhPGj5lOR6d8tsgbBk84Ggb5A3EkjsOgPRPcKA=="
+    crossorigin="anonymous"></script>
+
+
+
+
+
+<script src='/js/tabpane-persist.js'></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script src="/js/main.min.7380160122c24d59789a168af05fcec445fe4e5f2069dd9f3a0c991f10269ae0.js" integrity="sha256-c4AWASLCTVl4mhaK8F/OxEX&#43;Tl8gad2fOgyZHxAmmuA=" crossorigin="anonymous"></script>
+
+
+
+
+
+
+  </body>
+</html>

@@ -49,7 +49,45 @@
     &lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;&amp;#34;queueCount&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color:#0000cf;font-weight:bold&#34;&gt;0&lt;/span&gt;&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;,&lt;/span&gt;
     &lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;&amp;#34;completedTaskCount&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color:#0000cf;font-weight:bold&#34;&gt;5&lt;/span&gt;
 &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;}&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id=&#34;业务线程池扩缩容&#34;&gt;业务线程池扩缩容&lt;/h2&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id=&#34;2prometheus-格式&#34;&gt;2、Prometheus 格式&lt;/h3&gt;
+&lt;p&gt;&lt;strong&gt;&lt;code&gt;Get&lt;/code&gt; &lt;code&gt;actuator/bizthreadpool4prometheus&lt;/code&gt;&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Example:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;curl -X GET localhost:8080/actuator/bizthreadpool4prometheus
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;返回&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;# HELP core_pool_size  
+# TYPE core_pool_size gauge
+core_pool_size 1.0
+# HELP active_count  
+# TYPE active_count gauge
+active_count 0.0
+# HELP queue_count  
+# TYPE queue_count gauge
+queue_count 0.0
+# HELP largest_pool_size  
+# TYPE largest_pool_size gauge
+largest_pool_size 0.0
+# HELP reject_task_count  
+# TYPE reject_task_count gauge
+reject_task_count -1.0
+# HELP max_pool_size  
+# TYPE max_pool_size gauge
+max_pool_size 2.0
+# HELP pool_size  
+# TYPE pool_size gauge
+pool_size 0.0
+# HELP queue_length  
+# TYPE queue_length gauge
+queue_length 1024.0
+# HELP keep_alive_time_seconds  
+# TYPE keep_alive_time_seconds gauge
+keep_alive_time_seconds 60.0
+# HELP task_count  
+# TYPE task_count gauge
+task_count 0.0
+# HELP completed_task_count  
+# TYPE completed_task_count gauge
+completed_task_count 0.0
+&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&#34;业务线程池扩缩容&#34;&gt;业务线程池扩缩容&lt;/h2&gt;
 &lt;p&gt;&lt;strong&gt;&lt;code&gt;Post&lt;/code&gt; &lt;code&gt;actuator/bizthreadpool&lt;/code&gt;&lt;/strong&gt;&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;curl -X POST -H &lt;span style=&#34;color:#4e9a06&#34;&gt;&amp;#34;Content-Type:application/json&amp;#34;&lt;/span&gt; -d &lt;span style=&#34;color:#4e9a06&#34;&gt;&amp;#34;{\&amp;#34;corePoolSize\&amp;#34;:\&amp;#34;1\&amp;#34;,\&amp;#34;maxPoolSize\&amp;#34;:\&amp;#34;2\&amp;#34;}&amp;#34;&lt;/span&gt; localhost:8080/actuator/bizthreadpool
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id=&#34;io线程池metrics&#34;&gt;IO线程池Metrics&lt;/h2&gt;
@@ -89,6 +127,68 @@
     &lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;&amp;#34;terminated&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;false&lt;/span&gt;&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;,&lt;/span&gt;
     &lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;&amp;#34;shutDown&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;false&lt;/span&gt;
 &lt;span style=&#34;color:#000;font-weight:bold&#34;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id=&#34;2prometheus-格式-1&#34;&gt;2、Prometheus 格式&lt;/h3&gt;
+&lt;p&gt;&lt;strong&gt;&lt;code&gt;Get&lt;/code&gt; &lt;code&gt;actuator/ioexecutor4prometheus&lt;/code&gt;&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Example:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;curl -X GET localhost:8080/actuator/ioexecutor4prometheus
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;返回&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;# HELP pending_tasks_netty_io_1_0  
+# TYPE pending_tasks_netty_io_1_0 gauge
+pending_tasks_netty_io_1_0 0.0
+# HELP thread_state_netty_io_1_1  
+# TYPE thread_state_netty_io_1_1 gauge
+thread_state_netty_io_1_1 1.0
+# HELP thread_states_runnable  
+# TYPE thread_states_runnable gauge
+thread_states_runnable 2.0
+# HELP task_queue_size_netty_io_1_1  
+# TYPE task_queue_size_netty_io_1_1 gauge
+task_queue_size_netty_io_1_1 0.0
+# HELP thread_priority  
+# TYPE thread_priority gauge
+thread_priority 5.0
+# HELP pending_tasks_netty_io_1_1  
+# TYPE pending_tasks_netty_io_1_1 gauge
+pending_tasks_netty_io_1_1 0.0
+# HELP pending_tasks  
+# TYPE pending_tasks gauge
+pending_tasks 0.0
+# HELP terminated  
+# TYPE terminated gauge
+terminated 0.0
+# HELP max_pending_tasks  
+# TYPE max_pending_tasks gauge
+max_pending_tasks 2.147483647E9
+# HELP thread_state_netty_io_1_0  
+# TYPE thread_state_netty_io_1_0 gauge
+thread_state_netty_io_1_0 1.0
+# HELP io_ratio  
+# TYPE io_ratio gauge
+io_ratio 50.0
+# HELP shutdown  
+# TYPE shutdown gauge
+shutdown 0.0
+# HELP task_queue_size_netty_io_1_0  
+# TYPE task_queue_size_netty_io_1_0 gauge
+task_queue_size_netty_io_1_0 0.0
+# HELP thread_count  
+# TYPE thread_count gauge
+thread_count 2.0
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;div class=&#34;alert alert-warning&#34; role=&#34;alert&#34;&gt;
+&lt;h4 class=&#34;alert-heading&#34;&gt;warning&lt;/h4&gt;
+
+    比较昂贵的操作， 不建议频繁调用
+
+&lt;/div&gt;
+
+&lt;p&gt;当使用的Springboot版本为2.3.X及以上时，需要在pom文件中引入micrometer-registry-prometheus 1.5.1及以上版本，此处以1.5.1版本为例，直接引入即可覆盖原有版本，具体操作如下：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-xml&#34; data-lang=&#34;xml&#34;&gt;&lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;&amp;lt;dependency&amp;gt;&lt;/span&gt;
+    &lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;&amp;lt;groupId&amp;gt;&lt;/span&gt;io.micrometer&lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;&amp;lt;/groupId&amp;gt;&lt;/span&gt;
+    &lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;&amp;lt;artifactId&amp;gt;&lt;/span&gt;micrometer-registry-prometheus&lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;&amp;lt;/artifactId&amp;gt;&lt;/span&gt;
+    &lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;&amp;lt;version&amp;gt;&lt;/span&gt;1.5.1&lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;&amp;lt;/version&amp;gt;&lt;/span&gt;
+&lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;&amp;lt;/dependency&amp;gt;&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id=&#34;获取restlight所有配置信息&#34;&gt;获取Restlight所有配置信息&lt;/h2&gt;
 &lt;p&gt;&lt;strong&gt;&lt;code&gt;Get&lt;/code&gt; &lt;code&gt;actuator/restlightconfigs&lt;/code&gt;&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;Example:&lt;/p&gt;
@@ -201,13 +301,13 @@
 &lt;p&gt;返回&lt;/p&gt;
 &lt;pre tabindex=&#34;0&#34;&gt;&lt;code class=&#34;language-properties&#34; data-lang=&#34;properties&#34;&gt;esa-restlight
 &lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&#34;自定义异步endpoint&#34;&gt;自定义异步&lt;code&gt;EndPoint&lt;/code&gt;&lt;/h2&gt;
-&lt;p&gt;用户可以自己定义基于&lt;code&gt;CompletionStage&lt;/code&gt;的&lt;code&gt;Endpoint&lt;/code&gt;实现定制化的健康检查接口&lt;/p&gt;
+&lt;p&gt;用户可以自己定义基于&lt;code&gt;Completablefture&lt;/code&gt;的&lt;code&gt;Endpoint&lt;/code&gt;实现定制化的健康检查接口&lt;/p&gt;
 &lt;p&gt;eg&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;color:#5c35cc;font-weight:bold&#34;&gt;@Endpoint&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color:#000&#34;&gt;id&lt;/span&gt; &lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#4e9a06&#34;&gt;&amp;#34;appId&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;)&lt;/span&gt;
 &lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#000&#34;&gt;AppIdEndpoint&lt;/span&gt; &lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;{&lt;/span&gt;
 
     &lt;span style=&#34;color:#5c35cc;font-weight:bold&#34;&gt;@ReadOperation&lt;/span&gt;
-    &lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#000&#34;&gt;CompletionStage&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span style=&#34;color:#000&#34;&gt;String&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;&amp;gt;&lt;/span&gt; &lt;span style=&#34;color:#000&#34;&gt;appId&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;()&lt;/span&gt; &lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;{&lt;/span&gt;
+    &lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#000&#34;&gt;CompletableFuture&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span style=&#34;color:#000&#34;&gt;String&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;&amp;gt;&lt;/span&gt; &lt;span style=&#34;color:#000&#34;&gt;appId&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;()&lt;/span&gt; &lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;{&lt;/span&gt;
         &lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color:#000&#34;&gt;CompletableFuture&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color:#c4a000&#34;&gt;supplyAsync&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;(()&lt;/span&gt; &lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;-&amp;gt;&lt;/span&gt; &lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;{&lt;/span&gt;
 
             &lt;span style=&#34;color:#8f5902;font-style:italic&#34;&gt;// do something...
@@ -267,14 +367,13 @@ management.server.port=8081
 &lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#000&#34;&gt;ManagementConfigure&lt;/span&gt; &lt;span style=&#34;color:#000&#34;&gt;configure&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;()&lt;/span&gt; &lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;{&lt;/span&gt;
     &lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color:#000&#34;&gt;restlight&lt;/span&gt; &lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;-&amp;gt;&lt;/span&gt; &lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;{&lt;/span&gt;
         &lt;span style=&#34;color:#000&#34;&gt;restlight&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color:#c4a000&#34;&gt;address&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color:#000&#34;&gt;8081&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;)&lt;/span&gt;
-            &lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color:#c4a000&#34;&gt;deployments&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;()&lt;/span&gt;
-            &lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color:#c4a000&#34;&gt;addFilter&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;((&lt;/span&gt;&lt;span style=&#34;color:#000&#34;&gt;ctx&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;,&lt;/span&gt; &lt;span style=&#34;color:#000&#34;&gt;chain&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;-&amp;gt;&lt;/span&gt; &lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;{&lt;/span&gt;
-                &lt;span style=&#34;color:#8f5902;font-style:italic&#34;&gt;// biz logic
-&lt;/span&gt;&lt;span style=&#34;color:#8f5902;font-style:italic&#34;&gt;&lt;/span&gt;                &lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color:#000&#34;&gt;chain&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color:#c4a000&#34;&gt;doFilter&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color:#000&#34;&gt;ctx&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;);&lt;/span&gt;
-            &lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;});&lt;/span&gt;
-            &lt;span style=&#34;color:#000&#34;&gt;restlight&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color:#c4a000&#34;&gt;options&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;().&lt;/span&gt;&lt;span style=&#34;color:#c4a000&#34;&gt;setBizThreads&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color:#000&#34;&gt;BizThreadsOptionsConfigure&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color:#c4a000&#34;&gt;newOpts&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;()&lt;/span&gt;
-                &lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color:#c4a000&#34;&gt;core&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color:#000&#34;&gt;16&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;).&lt;/span&gt;&lt;span style=&#34;color:#c4a000&#34;&gt;max&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color:#000&#34;&gt;32&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;).&lt;/span&gt;&lt;span style=&#34;color:#c4a000&#34;&gt;configured&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;());&lt;/span&gt;
-            &lt;span style=&#34;color:#8f5902;font-style:italic&#34;&gt;// more...
+                &lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color:#c4a000&#34;&gt;addFilter&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;((&lt;/span&gt;&lt;span style=&#34;color:#000&#34;&gt;request&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;,&lt;/span&gt; &lt;span style=&#34;color:#000&#34;&gt;response&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;,&lt;/span&gt; &lt;span style=&#34;color:#000&#34;&gt;chain&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;-&amp;gt;&lt;/span&gt; &lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;{&lt;/span&gt;
+                    &lt;span style=&#34;color:#8f5902;font-style:italic&#34;&gt;// biz logic
+&lt;/span&gt;&lt;span style=&#34;color:#8f5902;font-style:italic&#34;&gt;&lt;/span&gt;                    &lt;span style=&#34;color:#204a87;font-weight:bold&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color:#000&#34;&gt;chain&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color:#c4a000&#34;&gt;doFilter&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color:#000&#34;&gt;request&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;,&lt;/span&gt; &lt;span style=&#34;color:#000&#34;&gt;response&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;);&lt;/span&gt;
+                &lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;});&lt;/span&gt;
+        &lt;span style=&#34;color:#000&#34;&gt;restlight&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color:#c4a000&#34;&gt;options&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;().&lt;/span&gt;&lt;span style=&#34;color:#c4a000&#34;&gt;setCoreBizThreads&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color:#000&#34;&gt;16&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;);&lt;/span&gt;
+        &lt;span style=&#34;color:#000&#34;&gt;restlight&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color:#c4a000&#34;&gt;options&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;().&lt;/span&gt;&lt;span style=&#34;color:#c4a000&#34;&gt;setMaxBizThreads&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color:#000&#34;&gt;32&lt;/span&gt;&lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;);&lt;/span&gt;
+        &lt;span style=&#34;color:#8f5902;font-style:italic&#34;&gt;// more...
 &lt;/span&gt;&lt;span style=&#34;color:#8f5902;font-style:italic&#34;&gt;&lt;/span&gt;    &lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;};&lt;/span&gt;
 &lt;span style=&#34;color:#ce5c00;font-weight:bold&#34;&gt;}&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;

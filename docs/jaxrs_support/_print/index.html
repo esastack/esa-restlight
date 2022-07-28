@@ -20,20 +20,20 @@
 <link rel="icon" type="image/png" href="/favicons/android-144x144.png" sizes="144x144">
 <link rel="icon" type="image/png" href="/favicons/android-192x192.png" sizes="192x192">
 
-<title>JAX-RS3.0 支持 | ESA Restlight</title>
-<meta name="description" content="`Restlight`支持了JAX-RS的使用习惯，你可以按照[JAX-RS](https://github.com/jakartaee/rest)的方式使用Restlight
+<title>JAX-RS 支持 | ESA Restlight</title>
+<meta name="description" content="`Restlight`支持了JAX-RS的使用习惯，你可以按照JAX-RS的方式使用Restlight
 ">
-<meta property="og:title" content="JAX-RS3.0 支持" />
-<meta property="og:description" content="`Restlight`支持了JAX-RS的使用习惯，你可以按照[JAX-RS](https://github.com/jakartaee/rest)的方式使用Restlight
+<meta property="og:title" content="JAX-RS 支持" />
+<meta property="og:description" content="`Restlight`支持了JAX-RS的使用习惯，你可以按照JAX-RS的方式使用Restlight
 " />
 <meta property="og:type" content="website" />
 <meta property="og:url" content="/docs/jaxrs_support/" /><meta property="og:site_name" content="ESA Restlight" />
 
-<meta itemprop="name" content="JAX-RS3.0 支持">
-<meta itemprop="description" content="`Restlight`支持了JAX-RS的使用习惯，你可以按照[JAX-RS](https://github.com/jakartaee/rest)的方式使用Restlight
+<meta itemprop="name" content="JAX-RS 支持">
+<meta itemprop="description" content="`Restlight`支持了JAX-RS的使用习惯，你可以按照JAX-RS的方式使用Restlight
 "><meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="JAX-RS3.0 支持"/>
-<meta name="twitter:description" content="`Restlight`支持了JAX-RS的使用习惯，你可以按照[JAX-RS](https://github.com/jakartaee/rest)的方式使用Restlight
+<meta name="twitter:title" content="JAX-RS 支持"/>
+<meta name="twitter:description" content="`Restlight`支持了JAX-RS的使用习惯，你可以按照JAX-RS的方式使用Restlight
 "/>
 
 
@@ -146,8 +146,8 @@ This is the multi-page printable view of this section.
 
 
 
-<h1 class="title">JAX-RS3.0 支持</h1>
-<div class="lead"><code>Restlight</code>支持了JAX-RS的使用习惯，你可以按照<a href="https://github.com/jakartaee/rest">JAX-RS</a>的方式使用Restlight</div>
+<h1 class="title">JAX-RS 支持</h1>
+<div class="lead"><code>Restlight</code>支持了JAX-RS的使用习惯，你可以按照JAX-RS的方式使用Restlight</div>
 
 
 
@@ -168,41 +168,16 @@ This is the multi-page printable view of this section.
 
     
   
-    
-    
-	
-<li>2: <a href="#pg-7e41b280a28969cd54bbefa39a7837f9">JAX-RS 接口支持</a></li>
-
-
-    
-  
 
     </ul>
 
 
 <div class="content">
-      <blockquote>
-<blockquote>
-<p>需要说明地是，<code>Restlight</code>全面支持了<code>JAX-RS3.0</code>标准，包括注解和接口定义。相比于<code>JAX-RS2.0</code>标准，3.0版本中的包名发生了改变（由<code>javax.ws.rs</code>改为<code>jakarta.ws.rs</code>），如果你从
-<code>JAX-RS2.0</code>升级而来，请知晓该变化。</p>
-</blockquote>
-</blockquote>
-<p>引入依赖</p>
+      <p>引入依赖</p>
 <div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#204a87;font-weight:bold">&lt;dependency&gt;</span>
-    <span style="color:#204a87;font-weight:bold">&lt;groupId&gt;</span>io.esastack<span style="color:#204a87;font-weight:bold">&lt;/groupId&gt;</span>
-    <span style="color:#204a87;font-weight:bold">&lt;artifactId&gt;</span>restlight-starter<span style="color:#204a87;font-weight:bold">&lt;/artifactId&gt;</span>
-    <span style="color:#204a87;font-weight:bold">&lt;version&gt;</span>${restlight.version}<span style="color:#204a87;font-weight:bold">&lt;/version&gt;</span>
-<span style="color:#204a87;font-weight:bold">&lt;/dependency&gt;</span>
-<span style="color:#204a87;font-weight:bold">&lt;dependency&gt;</span>
 	<span style="color:#204a87;font-weight:bold">&lt;groupId&gt;</span>io.esastack<span style="color:#204a87;font-weight:bold">&lt;/groupId&gt;</span>
 	<span style="color:#204a87;font-weight:bold">&lt;artifactId&gt;</span>restlight-jaxrs-provider<span style="color:#204a87;font-weight:bold">&lt;/artifactId&gt;</span>
 	<span style="color:#204a87;font-weight:bold">&lt;version&gt;</span>${restlight.version}<span style="color:#204a87;font-weight:bold">&lt;/version&gt;</span>
-<span style="color:#204a87;font-weight:bold">&lt;/dependency&gt;</span>
-<span style="color:#204a87;font-weight:bold">&lt;dependency&gt;</span>
-	<span style="color:#204a87;font-weight:bold">&lt;groupId&gt;</span>io.esastack<span style="color:#204a87;font-weight:bold">&lt;/groupId&gt;</span>
-	<span style="color:#204a87;font-weight:bold">&lt;artifactId&gt;</span>commons<span style="color:#204a87;font-weight:bold">&lt;/artifactId&gt;</span>
-	// ${commons.version} &gt;= 0.2.2
-	<span style="color:#204a87;font-weight:bold">&lt;version&gt;</span>${commons.version}<span style="color:#204a87;font-weight:bold">&lt;/version&gt;</span>
 <span style="color:#204a87;font-weight:bold">&lt;/dependency&gt;</span>
 </code></pre></div>
 </div>
@@ -223,7 +198,7 @@ This is the multi-page printable view of this section.
 	
     
 
-<div class="td-content" style="page-break-before: always">
+<div class="td-content" style="">
     
 	<h1 id="pg-1f76cd6f9a69602d8084fa71cdc12d89">1 - JAX-RS 注解支持</h1>
     
@@ -239,7 +214,6 @@ This is the multi-page printable view of this section.
 <li><code>@OPTIONS</code></li>
 <li><code>@Consumes</code></li>
 <li><code>@Produces</code></li>
-<li><code>@Context</code></li>
 <li><code>@QueryParam</code></li>
 <li><code>@PathParam</code></li>
 <li><code>@HeaderParam</code></li>
@@ -249,9 +223,21 @@ This is the multi-page printable view of this section.
 <li><code>@BeanParam</code></li>
 <li><code>@DefaultValue</code></li>
 </ul>
+
+
+<div class="alert alert-primary" role="alert">
+<h4 class="alert-heading">Note</h4>
+
+    现阶段<code>Restlight</code>仅实现了<code>JAX-RS</code>的注解， 其余功能暂未实现（<code>Provider</code>, <code>Request</code>, <code>Response</code>）等暂不支持
+
+</div>
+
+<h2 id="注解使用">注解使用</h2>
+<p><code>@QueryParam</code>, <code>@PathParam</code>,<code>@HeaderParam</code>,<code>@MatrixParam</code>, <code>@MatrixVariable</code>,<code>@FormParam</code></p>
+<p>参数绑不支持<code>javax.ws.rs.ext.ParamConverterProvier</code>扩展</p>
 <h2 id="个别注解说明">个别注解说明</h2>
 <h3 id="queryparam"><code>@QueryParam</code></h3>
-<p>除普通用法外， 当未指定<code>value()</code>或者<code>name</code>且参数对象为<code>Map&lt;String, List&lt;String&gt;</code>类型时， 将整个ParameterMap（即HttpRequest.paramsMap()）作为参数的值。</p>
+<p>除普通用法外， 当未指定<code>value()</code>或者<code>name</code>且参数对象为<code>Map&lt;String, List&lt;String&gt;</code>类型时， 将整个ParameterMap（即AsyncRequest.getParameterMap）作为参数的值。</p>
 <p>eg.</p>
 <div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#204a87;font-weight:bold">public</span> <span style="color:#204a87;font-weight:bold">void</span> <span style="color:#000">foo</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#5c35cc;font-weight:bold">@QueryParam</span> <span style="color:#000">Map</span><span style="color:#ce5c00;font-weight:bold">&lt;</span><span style="color:#000">String</span><span style="color:#ce5c00;font-weight:bold">,</span> <span style="color:#000">List</span><span style="color:#ce5c00;font-weight:bold">&lt;</span><span style="color:#000">String</span><span style="color:#ce5c00;font-weight:bold">&gt;</span> <span style="color:#000">params</span><span style="color:#ce5c00;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">{</span>
     <span style="color:#8f5902;font-style:italic">//...
@@ -270,7 +256,7 @@ This is the multi-page printable view of this section.
 <div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#204a87;font-weight:bold">public</span> <span style="color:#204a87;font-weight:bold">void</span> <span style="color:#000">foo</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#5c35cc;font-weight:bold">@CookieParam</span> <span style="color:#000">String</span> <span style="color:#000">c</span><span style="color:#ce5c00;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">{</span>
     <span style="color:#8f5902;font-style:italic">//...
 </span><span style="color:#8f5902;font-style:italic"></span><span style="color:#ce5c00;font-weight:bold">}</span>
-</code></pre></div><p><code>Cookie</code>对象(io.esastack.commons.net.http.Cookie)</p>
+</code></pre></div><p><code>Cookie</code>对象(io.netty.handler.codec.http.cookie.Cookie)</p>
 <div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#204a87;font-weight:bold">public</span> <span style="color:#204a87;font-weight:bold">void</span> <span style="color:#000">foo</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#5c35cc;font-weight:bold">@CookieParam</span> <span style="color:#000">Cookie</span> <span style="color:#000">c</span><span style="color:#ce5c00;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">{</span>
     <span style="color:#8f5902;font-style:italic">//...
 </span><span style="color:#8f5902;font-style:italic"></span><span style="color:#ce5c00;font-weight:bold">}</span>
@@ -283,115 +269,17 @@ This is the multi-page printable view of this section.
 <div class="alert alert-primary" role="alert">
 <h4 class="alert-heading">Note</h4>
 
-    不支持<code>JAX-RS</code>中的<code>jakarta.ws.rs.core.Cookie</code>， 仅支持<code>io.esastack.commons.net.http.Cookie</code>
+    不支持<code>JAX-RS</code>中的<code>jax.ws.rs.core.Cookie</code>， 仅支持<code>io.netty.handler.codec.http.cookie.Cookie</code>
 
 </div>
 
-
-</div>
-
-
-
-    
-	
-  
-    
-    
-	
-    
-
-<div class="td-content" style="page-break-before: always">
-    
-	<h1 id="pg-7e41b280a28969cd54bbefa39a7837f9">2 - JAX-RS 接口支持</h1>
-    <div class="lead"><code>Restlight支持JAX-RS3.0中定义的所有适用于服务端的标准接口</code></div>
-	<h2 id="支持的接口">支持的接口</h2>
-<ul>
-<li><code>Application</code></li>
-<li><code>Configuration</code></li>
-<li><code>Providers</code></li>
-<li><code>MessageBodyReader</code></li>
-<li><code>MessageBodyReader</code></li>
-<li><code>MessageBodyWriter</code></li>
-<li><code>ContextResolver</code></li>
-<li><code>ExceptionMapper</code></li>
-<li><code>Feature</code></li>
-<li><code>DynamicFeature</code></li>
-<li><code>ContainerRequestFilter</code></li>
-<li><code>ContainerResponseFilter</code></li>
-<li><code>ReaderInterceptor</code></li>
-<li><code>WriterInterceptor</code></li>
-<li><code>ParamConverterProvider</code></li>
-<li><code>@Priority</code></li>
-<li><code>@ConstrainedTo</code></li>
-<li><code>@PreMatching</code></li>
-<li><code>@NameBinding</code></li>
-<li>&hellip;</li>
-</ul>
-
-
-<div class="alert alert-primary" role="alert">
-<h4 class="alert-heading">Note</h4>
-
-    上述接口的语义、功能与<code>JAX-RS</code>标准中定义的相同。
-
-</div>
-
-<h2 id="使用方式">使用方式</h2>
-<p>使用时将实现上述接口的实现类直接注入<code>Spring</code>容器并加上指定注解（如果是<code>Controller</code>方法需要加上<code>@Path</code>，其他的扩展加上<code>@Provider</code>）即可生效。</p>
-<p>eg.</p>
-<h5 id="1自定义applicationapplicationpathabc为可选项">1.自定义<code>Application</code>，<code>@ApplicationPath(&quot;/abc&quot;)</code>为可选项</h5>
-<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#5c35cc;font-weight:bold">@ApplicationPath</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#4e9a06">&#34;/abc&#34;</span><span style="color:#ce5c00;font-weight:bold">)</span>
-<span style="color:#5c35cc;font-weight:bold">@Component</span>
-<span style="color:#204a87;font-weight:bold">public</span> <span style="color:#204a87;font-weight:bold">class</span> <span style="color:#000">ApplicationImpl</span> <span style="color:#204a87;font-weight:bold">extends</span> <span style="color:#000">Application</span> <span style="color:#ce5c00;font-weight:bold">{</span>
-
-    <span style="color:#5c35cc;font-weight:bold">@Override</span>
-    <span style="color:#204a87;font-weight:bold">public</span> <span style="color:#000">Set</span><span style="color:#ce5c00;font-weight:bold">&lt;</span><span style="color:#000">Class</span><span style="color:#ce5c00;font-weight:bold">&lt;?&gt;&gt;</span> <span style="color:#000">getClasses</span><span style="color:#ce5c00;font-weight:bold">()</span> <span style="color:#ce5c00;font-weight:bold">{</span>
-        <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">Collections</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#c4a000">singleton</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#000">HelloWorldResource</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#c4a000">class</span><span style="color:#ce5c00;font-weight:bold">);</span>
-    <span style="color:#ce5c00;font-weight:bold">}</span>
-
-<span style="color:#ce5c00;font-weight:bold">}</span>
-</code></pre></div><h5 id="2自定义provider">2.自定义<code>Provider</code></h5>
-<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#5c35cc;font-weight:bold">@Component</span>
-<span style="color:#5c35cc;font-weight:bold">@Provider</span>
-<span style="color:#204a87;font-weight:bold">public</span> <span style="color:#204a87;font-weight:bold">class</span> <span style="color:#000">RequestFilterDemo</span> <span style="color:#204a87;font-weight:bold">implements</span> <span style="color:#000">ContainerRequestFilter</span> <span style="color:#ce5c00;font-weight:bold">{</span>
-
-    <span style="color:#5c35cc;font-weight:bold">@Override</span>
-    <span style="color:#204a87;font-weight:bold">public</span> <span style="color:#204a87;font-weight:bold">void</span> <span style="color:#000">filter</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#000">ContainerRequestContext</span> <span style="color:#000">context</span><span style="color:#ce5c00;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">{</span>
-        <span style="color:#000">context</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#c4a000">getHeaders</span><span style="color:#ce5c00;font-weight:bold">().</span><span style="color:#c4a000">add</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#4e9a06">&#34;name&#34;</span><span style="color:#ce5c00;font-weight:bold">,</span> <span style="color:#4e9a06">&#34;value&#34;</span><span style="color:#ce5c00;font-weight:bold">);</span>
-    <span style="color:#ce5c00;font-weight:bold">}</span>
-    
-<span style="color:#ce5c00;font-weight:bold">}</span>
-</code></pre></div><h5 id="3自定义controller">3.自定义<code>Controller</code></h5>
-<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#5c35cc;font-weight:bold">@Component</span>
-<span style="color:#5c35cc;font-weight:bold">@Path</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#4e9a06">&#34;/simple&#34;</span><span style="color:#ce5c00;font-weight:bold">)</span>
-<span style="color:#204a87;font-weight:bold">public</span> <span style="color:#204a87;font-weight:bold">class</span> <span style="color:#000">HelloWorldController</span> <span style="color:#ce5c00;font-weight:bold">{</span>
-
-    <span style="color:#5c35cc;font-weight:bold">@GET</span>
-    <span style="color:#204a87;font-weight:bold">public</span> <span style="color:#000">String</span> <span style="color:#000">index</span><span style="color:#ce5c00;font-weight:bold">()</span> <span style="color:#ce5c00;font-weight:bold">{</span>
-        <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#4e9a06">&#34;Hello JAX-RS3.0&#34;</span><span style="color:#ce5c00;font-weight:bold">;</span>
-    <span style="color:#ce5c00;font-weight:bold">}</span>
-
-<span style="color:#ce5c00;font-weight:bold">}</span>
-
+<h3 id="headerparam"><code>@HeaderParam</code></h3>
+<p>除获取单个header之外， 可以如果参数类型为<code>io.netty.handler.codec.http.HttpHeaders</code>则以所有的Header作为参数的值</p>
+<p>eg:</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#204a87;font-weight:bold">public</span> <span style="color:#204a87;font-weight:bold">void</span> <span style="color:#000">foo</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#5c35cc;font-weight:bold">@HeaderParam</span> <span style="color:#000">HttpHeaders</span> <span style="color:#000">headers</span><span style="color:#ce5c00;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">{</span>
+    <span style="color:#8f5902;font-style:italic">//...
+</span><span style="color:#8f5902;font-style:italic"></span><span style="color:#ce5c00;font-weight:bold">}</span>
 </code></pre></div>
-
-<div class="alert alert-primary" role="alert">
-<h4 class="alert-heading">Note</h4>
-
-    <p>如果在非Spring环境下使用JAX-RS，则需要在应用初始化时将<code>JAX-RS</code>接口的实现类添加到启动上下文，示例如下：</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#000">Restlight</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#c4a000">forServer</span><span style="color:#ce5c00;font-weight:bold">()</span>
-        <span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#c4a000">daemon</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#204a87;font-weight:bold">false</span><span style="color:#ce5c00;font-weight:bold">)</span>
-        <span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#c4a000">deployments</span><span style="color:#ce5c00;font-weight:bold">()</span>
-        <span style="color:#8f5902;font-style:italic">// 添加JAX-RS接口实现类
-</span><span style="color:#8f5902;font-style:italic"></span>        <span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#c4a000">addExtensions</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#000">xxxx</span><span style="color:#ce5c00;font-weight:bold">)</span>
-        <span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#c4a000">server</span><span style="color:#ce5c00;font-weight:bold">()</span>
-        <span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#c4a000">start</span><span style="color:#ce5c00;font-weight:bold">();</span>
-    <span style="color:#ce5c00;font-weight:bold">}</span>
-</code></pre></div>
-
-</div>
-
-
 </div>
 
 
