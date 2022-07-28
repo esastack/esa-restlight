@@ -20,22 +20,12 @@ weight: 200
 
 架构图中`ESA HttpServer`, `Restlight Server`, `Restlight Core`, `Restlight for Spring`, `Restlight Starter`几个模块均可作为一个独立的模块使用， 满足不同场景下的需求。
 
+**请求处理时序图**
+![TimeSequence](../../img/time_sequence.jpg)
+
 ### ESA HttpServer
 
 基于`Netty` 实现的一个简易的[HttpServer](https://github.com/esastack/esa-httpserver)， 支持Http1.1/Http2以及Https等
-
-### Restlight Server
-
-在`ESA HttpServer`基础之上封装了
-
-- 引入业务线程池
-- `Filter`
-- 请求路由（根据url, method, header等条件将请求路由到对应的Handler）
-- 基于`CompletableFuture`的响应式编程支持
-- 线程调度
-- ...
-
-#### 对应启动入口类`esa.restlight.server.Restlite`
 
 {{< alert title="Tip">}}
 适合各类框架，中间件等基础组建中启动或期望使用代码显示启动HttpServer的场景
@@ -44,8 +34,13 @@ weight: 200
 
 ### Restlight Core
 
-在`Restlight Server`之上， 扩展支持了`Controller`方式（在`Controller`类中通过诸如`@RequestMappng`等注解的方式构造请求处理逻辑）完成业务逻辑以及诸多常用功能
+在`ESA HttpServer`之上， 引入了业务线程池、`Filter`、路由等并支持了以`Controller`方式（在`Controller`类中通过诸如`@RequestMappng`等注解的方式构造请求处理逻辑）完成业务逻辑以及诸多常用功能
 
+- 引入业务线程池
+- `Filter`
+- 请求路由（根据url, method, header等条件将请求路由到对应的Handler）
+- 基于`CompletionStage`的响应式编程支持
+- 线程调度
 - `HandlerInterceptor`: 拦截器
 - `ExceptionHandler`: 全局异常处理器
 - `BeanValidation`: 参数校验
@@ -56,7 +51,7 @@ weight: 200
 - 内置`Jackson`, `Fastjson`, `Gson`, `ProtoBuf`序列化支持
 - ...
 
-#### 对应启动入口类`esa.restlight.core.Restlight`
+#### 对应启动入口类`io.esastack.restlight.core.Restlight`
 
 {{< alert title="Tip" >}}
 适合各类框架，中间件等基础组建中启动或期望使用代码显示启动HttpServer的场景

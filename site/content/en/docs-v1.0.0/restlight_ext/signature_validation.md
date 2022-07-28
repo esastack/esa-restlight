@@ -96,14 +96,15 @@ public void index() {
 `Restlight`默认使用**HmacSHA1**作为验签时原始请求的签名生成方法，当用户使用其它算法可以注入自定义的参数签名验证拦截器，使用示例如下：
 ```java
 @Component
-public class CustomizeSignatureValidationFactory extends SignValidationHandlerInterceptorFactory {
+public class CustomizeSignatureValidationFactory extends SignValidationInterceptorFactory {
 
-    public CustomizeSignatureValidationFactory(SecretDistributor distributor) {
-        super(distributor);
+    public CustomizeSignatureValidationFactory(SecretProvider provider) {
+        super(provider);
     }
 
     @Override
-    protected AbstractSignatureRouteInterceptor doCreate(SignatureOptions options, SecretDistributor distributor) {
+    protected AbstractSignatureRouteInterceptor doCreate(SignatureOptions options,
+                                                         SecretProvider distributor) {
         return new AbstractSignatureRouteInterceptor(options, distributor) {
             @Override
             protected boolean validate(byte[] data, String signature, String sk) {

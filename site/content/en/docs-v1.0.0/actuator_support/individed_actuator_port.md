@@ -43,13 +43,14 @@ eg.
 public ManagementConfigure configure() {
     return restlight -> {
         restlight.address(8081)
-                .addFilter((request, response, chain) -> {
-                    // biz logic
-                    return chain.doFilter(request, response);
-                });
-        restlight.options().setCoreBizThreads(16);
-        restlight.options().setMaxBizThreads(32);
-        // more...
+            .deployments()
+            .addFilter((ctx, chain) -> {
+                // biz logic
+                return chain.doFilter(ctx);
+            });
+            restlight.options().setBizThreads(BizThreadsOptionsConfigure.newOpts()
+                .core(16).max(32).configured());
+            // more...
     };
 }
 ```

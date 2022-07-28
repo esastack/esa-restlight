@@ -3,6 +3,8 @@ tags: ["feature"]
 title: "Filter"
 linkTitle: "Filter"
 weight: 20
+description: >
+    `Filter`在接收到完整请求之后，路由匹配开始之前执行。
 ---
 
 ## 基本使用
@@ -12,13 +14,17 @@ weight: 20
 public Filter addHeaderFilter() {
     return new Filter() {
         @Override
-        public CompletableFuture<Void> doFilter(AsyncRequest request, AsyncResponse response, FilterChain chain) {
-            request.setHeader("foo", "bar");
-            return chain.doFilter(request, response);
+        public CompletionStage<Void> doFilter(FilterContext context, FilterChain chain) {
+            context.request().headers().set("foo", "bar");
+            return chain.doFilter(context);
         }
     };
 }
 ```
+
+{{< alert title="Note" >}}
+自定义`FilterFactory`将其注入Spring容器或者配置成可以被SPI加载的方式也可以实现`Filter`注入。
+{{< /alert >}}
 
 上面的例子将会给所有到来的请求都加上一个固定的Header。
 
@@ -29,12 +35,12 @@ public Filter addHeaderFilter() {
 public Filter filter() {
     return new Filter() {
         @Override
-        public CompletableFuture<Void> doFilter(AsyncRequest request, AsyncResponse response, FilterChain chain) {
+        public CompletionStage<Void> doFilter(FilterContext context, FilterChain chain) {
             return CompletableFuture.runAsync(() -> {
                 // do something...
             }).thenCompose(r -> {
                 // invoke next filter
-                return chain.doFilter(request, response);
+                return chain.doFilter(context);
             });
         }
     };
@@ -53,7 +59,7 @@ public Filter filter() {
 
 ```java
 @Override
-public CompletableFuture<Void> doFilter(AsyncRequest request, AsyncResponse response, FilterChain chain) {
+public CompletableFuture<Void> doFilter(FilterContext context, FilterChain chain) {
     return CompletableFuture.completedFuture(null);
 }
 ```

@@ -23,14 +23,13 @@ eg.
 ```java
 @Component
 public class GlobalExceptionResolver implements ExceptionResolver<RuntimeException> {
-    
+
     @Override
-    public CompletableFuture<Void> handleException(AsyncRequest request,
-                                                   AsyncResponse response,
-                                                   RuntimeException e) {
+    public CompletionStage<Void> handleException(RequestContext context, RuntimeException e) {
         // handle exception here
         return CompletableFuture.completedFuture(null);
     }
+
 }
 ```
 

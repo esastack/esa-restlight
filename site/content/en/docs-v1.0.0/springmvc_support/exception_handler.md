@@ -95,19 +95,18 @@ public class GlobalExceptionResolver {
 
 异常处理器可以类似Controller中异步处理一样完成异步的处理
 `Restlight`异步支持
-- CompletableFuture
+- CompletionStage
 - ListenableFuture(Guava)
-- Future(io.netty.util.concurrent.Future)
 
-使用CompletableFuture异步方式：
+使用CompletionStage异步方式：
 
 ```java
 @ExceptionHanlder(Exception.class)
-public CompletableFuture<String> handleExcption(Exception ex) {
+public CompletionStage<String> handleExcption(Exception ex) {
     return CompletableFuture.supplyAsync(() -> {
         // ...
         return "Hello Restlight!";
     });
 }
 ```
-`ListenableFuture(Guava)`与`Future(io.netty.util.concurrent.Future)`同理。
+`ListenableFuture(Guava)`同理。

@@ -24,26 +24,25 @@ eg.
 public RestlightConfigure configure() {
     return restlight -> {
         restlight.address(8081)
-            .childOption(ChannelOption.TCP_NODELAY, true)
-            .channelHandler(new LoggingHandler())
-            .deployments()
-            .addFilter((ctx, chain) -> {
-                // biz logic
-                return chain.doFilter(ctx);
-            })
-            .addHandlerInterceptor(new HandlerInterceptor() {
-                @Override
-                public boolean preHandle(RequestContext context, Object handler) {
+                .childOption(ChannelOption.TCP_NODELAY, true)
+                .channelHandler(new LoggingHandler())
+                .addFilter((request, response, chain) -> {
                     // biz logic
-                    return true;
-                }
-            });
-            restlight.options().setBizThreads(BizThreadsOptionsConfigure
-                .newOpts()
-                .core(16)
-                .max(32)
-                .configured());
-                    // more...
+                    return chain.doFilter(request, response);
+                })
+                .deployments()
+                .addHandlerInterceptor(new HandlerInterceptor() {
+                    @Override
+                    public boolean preHandle(AsyncRequest request,
+                                             AsyncResponse response,
+                                             Object handler) {
+                        // biz logic
+                        return true;
+                    }
+                });
+        restlight.options().setCoreBizThreads(16);
+        restlight.options().setMaxBizThreads(32);
+        // more...
     };
 }
 ```

@@ -17,7 +17,18 @@ Create a Spring Boot application and add dependency
 <dependency>
     <groupId>io.esastack</groupId>
     <artifactId>restlight-starter</artifactId>
-    <version>${mvn.version}</version>
+    <version>${restlight.version}</version>
+</dependency>
+<dependency>
+    <groupId>io.esastack</groupId>
+    <artifactId>restlight-springmvc-provider</artifactId>
+    <version>${restlight.version}</version>
+</dependency>
+<dependency>
+    <groupId>io.esastack</groupId>
+    <artifactId>commons</artifactId>
+    // ${commons.version} >= 0.2.2
+    <version>${commons.version}</version>
 </dependency>
 ```
 
